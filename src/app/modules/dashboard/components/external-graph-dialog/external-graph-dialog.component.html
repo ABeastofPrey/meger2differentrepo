@@ -1,0 +1,15 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title primary-bg">Show an External Recording</div>
+    <div class="content">
+      <mat-form-field>
+        <input type="text" placeholder="Record Name" matInput [(ngModel)]="name">
+        <span matSuffix>.REC</span>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="show()" [disabled]="name === null || name.length === 0">SHOW</button>
+  </div>
+</div>

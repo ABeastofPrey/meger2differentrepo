@@ -1,0 +1,107 @@
+.background {
+  background: url('../../../../../assets/pics/robot_bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.flex-full {
+  height: 100%;
+  width: 100%;
+}
+.jog-screen-card {
+  box-sizing: border-box;
+  height: calc(100% - 1em);
+  width: calc(100% - 0.5em);
+}
+.floating {
+  z-index: 2;
+  color: #fff;
+  transform: translateX(-20%) translateY(-25%) scale(0.5);
+}
+coordinates-display {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transition: transform 0.2s ease-out, color 0.2s linear;
+}
+.jog-parameters {
+  width: 100%;
+}
+
+::ng-deep mat-form-field{ width: 95%; }
+@media screen and (max-height: 800px) {
+  ::ng-deep .jog-parameter:nth-child(-n+4) mat-form-field{
+    width: calc(49% - 6px);
+  }
+  .mat-card-content, .content-teach {
+    font-size: 1.3em;
+  }
+}
+@media screen and (min-height: 680px) {
+  .mat-card-content, .content-teach {
+    font-size: 1.5em;
+  }
+}
+@media screen and (max-height: 480px) {
+  .mat-card-content, .content-teach {
+    font-size: 1em;
+  }
+}
+.mat-card { 
+  padding: 0;
+  background: rgba(255,255,255,0.9);
+}
+.mat-card-title { 
+  padding: 0.5em;
+  margin: 0;
+  font-size: 1.5em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.title-text {
+  font-size: 18px;
+  flex: 1;
+}
+.mat-card-title button{
+  position: absolute;
+  right: 1em;
+  top: 0.5em;
+}
+.mat-card-content {
+  padding: 0.5em;
+  margin: 0;
+  box-sizing: border-box;
+  height: calc(100% - 55px);
+  overflow: auto;
+}
+.card-title-icon {
+  position: absolute;
+  left: 0.5em;
+  top: 0.5em;
+}
+
+.card-title-text { margin-left: 30px; }
+.menu-content {
+  position: absolute;
+  transform: translateX(0);
+  width: 300%;
+  height: 100%;
+  display: flex;
+}
+.inner-content {
+  flex: 1;
+  padding: 1em;
+  box-sizing: border-box;
+  max-width: 33%;
+  overflow: auto;
+  text-align: center;
+}
+.content-align button { width: 90%; }
+.content-teach {
+  text-align: left;
+  padding: 10px 1em 1em 1em;
+}
+.teach-button { width: 100%; }
+::ng-deep .teach-menu button { font-size: 1.5em; }

@@ -1,0 +1,104 @@
+<div class="wrapper">
+  <mat-grid-list cols="8" rowHeight="fit">
+    <mat-grid-tile colspan="2" rowspan="1">
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar style='background-size: cover;' [style.background-image]="'url(' + profileSrc + ')'"></div>
+          <mat-card-title><b>Welcome, {{login.fName}}!</b></mat-card-title>
+          <mat-card-subtitle>{{login.permission}}</mat-card-subtitle>
+        </mat-card-header>
+        <div mat-card-image class="center-vertical-horizontal" [style.background-image]="'url(' + mcImage + ')'">
+          <div *ngIf="simulated" class="primary-bg mat-elevation-z3 simulated" matTooltip="This controller runs on VirtualBox">
+            VIRTUAL CONTROLLER
+          </div>
+        </div>
+        <p>Connected on port <b>{{login.port}}</b>.</p>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="6" rowspan="1">
+      <mat-card class="mat-elevation-z3" style="overflow: auto;">
+        <terminal tourAnchor="terminal"></terminal>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2" rowspan="2">
+      <mat-card class="info-card mat-elevation-z3" *ngIf="groupManager.sysInfo">
+        <div class="center-vertical title title-3">
+          <mat-icon>perm_device_information</mat-icon>System
+        </div>
+        <div class="center-vertical" style="margin-bottom: 8px;">
+          <mat-icon style="margin-right: 8px;">memory</mat-icon>
+          <span>{{groupManager.sysInfo.cpu}}</span>
+        </div>
+        <div class="graphs">
+          <div #graphDisk></div>
+          <div #graphMemory></div>
+        </div>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="6" rowspan="1">
+      <mat-card style="white-space: pre-wrap;" (contextmenu)="onContextMenu($event)" (click)="onMessageLogClick()" tourAnchor="message-log">
+        <mat-card-header>Message Log</mat-card-header>
+        <mat-card-content #msgLogContainer>{{notification.notifications}}</mat-card-content>
+        <ul class="context-menu mat-elevation-z10" *ngIf="contextMenuShown" [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">
+          <button mat-button color="primary" (click)="clear()"><mat-icon>clear</mat-icon>Clear Messages</button>
+        </ul>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2" rowspan="1" tourAnchor="sys-info">
+      <mat-card class="info-card mat-elevation-z3" *ngIf="groupManager.sysInfo">
+        <div class="center-vertical title title-1">
+          <mat-icon>info</mat-icon>Software
+        </div>
+        <mat-card-content>
+          <div class="info-line">
+            <div class="mat-subtitle-color">Version</div>
+            <div class="mat-title-color">{{groupManager.sysInfo.ver}}</div>
+          </div>
+          <div class="info-line">
+            <div class="mat-subtitle-color">Platform</div>
+            <div class="mat-title-color">{{groupManager.sysInfo.platform}}</div>
+          </div>
+          <div class="info-line">
+            <div class="mat-subtitle-color">Max. Axes</div>
+            <div class="mat-title-color">{{groupManager.sysInfo.maxAxes}}</div>
+          </div>
+          <div class="info-line">
+            <div class="mat-subtitle-color">Real Axes</div>
+            <div class="mat-title-color">{{groupManager.sysInfo.realAxes}}</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2" rowspan="1">
+      <mat-card class="info-card mat-elevation-z3" *ngIf="groupManager.sysInfo">
+        <div class="center-vertical title title-2">
+          <mat-icon>touch_app</mat-icon>Features
+        </div>
+        <mat-card-content class="mat-subtitle-color">
+          <div class="feature-line center-vertical" *ngFor="let f of groupManager.sysInfo.features">
+            <mat-icon>check_circle</mat-icon>
+            <div>{{f}}</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2" rowspan="1">
+      <mat-card class="info-card mat-elevation-z3">
+        <div class="center-vertical title title-4">
+          <mat-icon>group_work</mat-icon>Groups Configuration
+        </div>
+        <mat-card-content class="mat-subtitle-color">
+          <div class="feature-line center-vertical" *ngFor="let g of groupManager.groups">
+            <div>
+              <div class="mat-title-color group">{{g.name}}:</div>
+              <span *ngFor="let a of g.axes; let i=index;">
+                {{a}}
+                <span *ngIf="i < g.axes.length - 1">,</span>
+              </span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>

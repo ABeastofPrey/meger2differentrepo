@@ -1,0 +1,17 @@
+<div *ngIf="teach.value">
+  <mat-form-field *ngFor="let val of teach.value; let i = index" floatLabel="never">
+    <span matPrefix style='font-weight: bold;'>{{teach.legend[i]}}:&nbsp;&nbsp;</span>
+    <input *ngIf="teach.selectedTeachVariable.typeStr !== 'STRING'"
+      matInput
+      [placeholder]="teach.legend[i]" 
+      [(ngModel)]="teach.value[i].value"
+      (change)="teach.onKeyboardClose()"
+    >
+    <input *ngIf="teach.selectedTeachVariable.typeStr === 'STRING'"
+      matInput
+      [placeholder]="teach.legend[i]" 
+      [(ngModel)]="teach.value[i].value"
+      (change)="teach.onKeyboardClose()"
+    >
+  </mat-form-field>
+</div>

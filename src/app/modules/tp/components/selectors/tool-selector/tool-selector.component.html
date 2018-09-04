@@ -1,0 +1,5 @@
+<mat-form-field>
+  <mat-select placeholder="Tool" [(ngModel)]="dataService.selectedTool">
+    <mat-option *ngFor="let item of dataService.tools" value="{{item}}">{{item}}</mat-option>
+  </mat-select>
+</mat-form-field>

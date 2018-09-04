@@ -1,0 +1,14 @@
+<div class="mat-typography">
+  <div class="title mat-elevation-z1">
+    <mat-icon>create_new_folder</mat-icon>&nbsp;&nbsp;New Project
+  </div>
+  <div class="name-wrapper">
+    <mat-form-field>
+      <input matInput placeholder="Project Name" [(ngModel)]="fileName">
+    </mat-form-field>
+  </div>
+  <div class="actions">
+    <button mat-button mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="create()">CREATE PROJECT</button>
+  </div>
+</div>

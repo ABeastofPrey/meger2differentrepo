@@ -1,0 +1,14 @@
+.profile-pic {
+  width: 36px!important;
+  height: 36px!important;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%!important;
+  padding: 0!important;
+}
+.profile-pic img {
+  display: inline;
+  margin: 0 auto;
+  height: 100%;
+  width: auto;
+}

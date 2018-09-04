@@ -1,0 +1,39 @@
+<mat-tab-group>
+  <mat-tab label="Main">
+    <div class="content">
+      Main view goes here
+    </div>
+  </mat-tab>
+  <mat-tab [label]="tmp.value">
+    <div class="content">
+      <mat-form-field>
+        <input matInput placeholder="Custom View Description" value="Custom View 1" #tmp>
+      </mat-form-field>
+      <mat-card>
+        <div>// FILTERS SHOULD BE ADDED HERE</div>
+        <table class="io-table" matSort (matSortChange)="sortData($event)">
+          <tr>
+            <th mat-sort-header="index">Bit</th>
+            <th mat-sort-header="status">Status</th>
+            <th mat-sort-header="label">Label</th>
+          </tr>
+          <tr *ngFor="let inp of sortedData">
+            <td>{{inp.index}}</td>
+            <td>{{inp.status ? 'ON' : 'OFF'}}</td>
+            <td><input [(ngModel)]="inp.label"></td>
+          </tr>
+        </table>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab [label]="tmp2.value">
+    <div class="content">
+      <mat-form-field>
+        <input matInput placeholder="Custom View Description" value="Custom View 2" #tmp2>
+      </mat-form-field>
+      <mat-card>
+        Table should be here...
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,98 @@
+<div class="main-wrapper">
+  <div class="loader mat-elevation-z6" *ngIf="isLoading">
+    <img src="assets/pics/logo_only.gif">
+    Loading Simulator...
+  </div>
+  <div class="toolbar">
+    <button matTooltip="Cube" (click)="addObject('Cube')"><img src="assets/pics/icons/cube.png"></button>
+    <button matTooltip="Sphere" (click)="addObject('Sphere')"><img src="assets/pics/icons/sphere.png"></button>
+    <button matTooltip="Cylinder" (click)="addObject('Cylinder')"><img src="assets/pics/icons/cylinder.png"></button>
+  </div>
+  <split direction="horizontal" (dragEnd)="onDragEnd()">
+      <split-area size="15" class="side-panel">
+        <split direction="vertical">
+          <split-area size="50" (dragover)="onDragOverObject($event,null)" (drop)="onObjectDrop($event,null)">
+            <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
+              <mat-tree-node *matTreeNodeDef="let node">
+                <li class="leaf">
+                  <div 
+                    (dblclick)="openFile(node)"
+                    (click)="selectNode(node)"
+                    [class.selected]="lastSelectedNode === node"
+                    draggable="true"
+                    (dragstart)="onObjectDragStart($event,node)"
+                    (dragover)="onDragOverObject($event,node)"
+                    (drop)="onObjectDrop($event,node)"
+                  >
+                    <mat-icon>my_location</mat-icon>
+                    <span>{{node.name}}</span>
+                  </div>
+                </li>
+              </mat-tree-node>
+              <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
+                <li>
+                  <div 
+                    draggable="true"
+                    [class.selected]="lastSelectedNode === node"
+                    (dblclick)="toggleNode(node)"
+                    (click)="selectNode(node)"
+                    (dragstart)="onObjectDragStart($event,node)"
+                    (dragover)="onDragOverObject($event,node)"
+                    (drop)="onObjectDrop($event,node)"
+                  >
+                    <mat-icon>
+                      {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                    {{node.name}}
+                  </div>
+                  <ul [class.invisible]="!nestedTreeControl.isExpanded(node)">
+                    <ng-container matTreeNodeOutlet></ng-container>
+                  </ul>
+                </li>
+              </mat-nested-tree-node>
+            </mat-tree>
+          </split-area>
+          <split-area size="50">
+            <div *ngIf="lastSelectedNode" style="margin: 8px;">
+              <h2>{{lastSelectedNode.name}}</h2>
+              <table class="full">
+                <thead>
+                  <tr>
+                    <td>Property</td>
+                    <td>Value</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>POS_X</td>
+                  <td><input type="number" [(ngModel)]="lastSelectedNode.position.x" (ngModelChange)="onObjectParamChanged($event,lastSelectedNode,'pos_x')"></td>
+                </tr>
+                <tr>
+                  <td>POS_Y</td>
+                  <td><input type="number" [(ngModel)]="lastSelectedNode.position.y" (ngModelChange)="onObjectParamChanged($event,lastSelectedNode,'pos_y')"></td>
+                </tr>
+                <tr>
+                  <td>POS_Z</td>
+                  <td><input type="number" [(ngModel)]="lastSelectedNode.position.z" (ngModelChange)="onObjectParamChanged($event,lastSelectedNode,'pos_z')"></td>
+                </tr>
+                <tr>
+                  <td>ROT_X</td>
+                  <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.x" (ngModelChange)="onObjectParamChanged($event,lastSelectedNode,'rot_x')"></td>
+                </tr>
+                <tr>
+                  <td>ROT_Y</td>
+                  <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.y" (ngModelChange)="onObjectParamChanged($event,lastSelectedNode,'rot_y')"></td>
+                </tr>
+                <tr>
+                  <td>ROT_Z</td>
+                  <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.z" (ngModelChange)="onObjectParamChanged($event,lastSelectedNode,'rot_z')"></td>
+                </tr>
+              </table>
+            </div>
+          </split-area>
+        </split>
+      </split-area>
+    <split-area size="85">
+      <div class="wrapper" #threejs></div>
+    </split-area>
+  </split>
+</div>

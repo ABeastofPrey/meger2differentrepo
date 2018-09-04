@@ -1,0 +1,17 @@
+mat-form-field {
+  margin-top: -24px;
+  margin-bottom: -12px;
+}
+
+input.mat-input-element {
+  background: #fff;
+  border: 1px solid black;
+  cursor: text;
+  border-radius: 6px;
+  padding-left: 6px;
+  box-sizing: border-box;
+}
+
+input.mat-input-element:hover {
+  background: #ebebeb;
+}

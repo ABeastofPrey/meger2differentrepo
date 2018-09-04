@@ -1,0 +1,44 @@
+.header { padding: 24px; }
+.profile-pic {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.profile-pic img {
+  display: inline;
+  margin: 0 auto;
+  height: 100%;
+  width: auto;
+}
+.name {
+  font-weight: 500;
+  font-size: 18px;
+}
+.user-info {
+  line-height: 1.5;
+  margin: 8px;
+}
+li {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  outline: 0;
+}
+li mat-icon {
+  margin-right: 32px;
+}
+li.selected {
+  font-weight: 600;
+}
+.clickable:not(.disabled) {cursor: pointer;}
+.clickable:hover:not(.disabled) { 
+  -moz-box-shadow:    inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow:         inset 0 0 10px #000000;
+}
+.disabled {
+  cursor: not-allowed;
+}

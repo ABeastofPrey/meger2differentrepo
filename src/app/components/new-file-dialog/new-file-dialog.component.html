@@ -1,0 +1,15 @@
+<div class="mat-typography">
+  <div class="title mat-elevation-z1">
+    <mat-icon>create_new_folder</mat-icon>&nbsp;&nbsp;New File
+  </div>
+  <div class="name-wrapper">
+    <mat-form-field>
+      <input matInput placeholder="File Name" [(ngModel)]="fileName">
+      <span matSuffix *ngIf="this.data && this.data.ext">.{{this.data.ext}}</span>
+    </mat-form-field>
+  </div>
+  <div class="actions">
+    <button mat-button mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="create()">CREATE FILE</button>
+  </div>
+</div>

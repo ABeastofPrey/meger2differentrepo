@@ -1,0 +1,5 @@
+<mat-form-field>
+  <mat-select placeholder="Work Piece" [(ngModel)]="dataService.selectedWorkPiece">
+    <mat-option *ngFor="let item of dataService.workPieces" value="{{item}}">{{item}}</mat-option>
+  </mat-select>
+</mat-form-field>

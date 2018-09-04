@@ -1,0 +1,46 @@
+<div class="wrapper">
+  <div class="toolbar center-vertical mat-elevation-z3">
+    <button mat-raised-button color="primary" (click)="create()">NEW USER...</button>
+    <button mat-raised-button color="warn" [disabled]="selection.selected.length===0" (click)="deleteSelected()">DELETE USER(S)</button>
+  </div>
+  <mat-table #table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        <mat-checkbox color="primary"
+                      (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox color="primary"
+                      (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="pic">
+      <mat-header-cell *matHeaderCellDef>Profile Pic</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <div class="profile-pic">
+          <img [src]="element.pic">
+        </div>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="username">
+      <mat-header-cell *matHeaderCellDef mat-sort-header="username">Username</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.username}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="fullName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header="fullName">Full Name</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.fullName}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="permission">
+      <mat-header-cell *matHeaderCellDef mat-sort-header="permission">Permission</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{api.getUserPermission(element.permission)}}</mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="['select','pic','username','fullName','permission']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['select','pic','username','fullName','permission']; let element;"></mat-row>
+  </mat-table>
+</div>

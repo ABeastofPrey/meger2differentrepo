@@ -1,0 +1,63 @@
+<div class="side-menu-content">
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="program" [disabled]="prg.activeFile==null">PROGRAM</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="flow" [disabled]="prg.activeFile==null">FLOW</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="interpolation" [disabled]="prg.activeFile==null">INTERPOLATION</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="motion" [disabled]="prg.activeFile==null">MOTION</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="io" [disabled]="prg.activeFile==null">I/O</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="variables" [disabled]="prg.activeFile==null">VARIABLES</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="pallets" *ngIf="this.data.palletLibVer !== null" [disabled]="prg.activeFile==null">PALLETS</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="grippers" *ngIf="this.data.gripperLibVer !== null" [disabled]="prg.activeFile==null">GRIPPERS</button>
+  <!--<button mat-raised-button color="primary" [matMenuTriggerFor]="teach" [disabled]="parser.variablesInLine.length === 0">TEACH...</button>
+  <button mat-raised-button color="primary" (click)="menu_edit_line()" [disabled]="parser.lineParams === null"><mat-icon>mode_edit</mat-icon> EDIT...</button>-->
+  <mat-menu #teach="matMenu">
+    <button mat-menu-item *ngFor="let v of this.prg.variablesInLine" (click)="prg.teachVariable(v)">{{v.name}}<span *ngIf="v.selectedIndex > -1">[{{v.selectedIndex}}]</span></button>
+  </mat-menu>
+  <mat-menu #program="matMenu">
+    <button mat-menu-item (click)="menu_sub()">Sub</button>
+    <button mat-menu-item (click)="menu_function()">Function</button>
+    <button mat-menu-item (click)="menu_program()">Program</button>
+    <button mat-menu-item (click)="menu_call()">Call</button>
+  </mat-menu>
+  <mat-menu #flow="matMenu">
+    <button mat-menu-item (click)="menu_if_else()">If...Else...</button>
+    <button mat-menu-item (click)="menu_while()">While...</button>
+    <button mat-menu-item (click)="menu_for()">For...</button>
+    <button mat-menu-item (click)="menu_case()">Case</button>
+    <button mat-menu-item (click)="menu_sleep()">Sleep...</button>
+  </mat-menu>
+  <mat-menu #interpolation="matMenu">
+    <button mat-menu-item (click)="menu_move(false)">Move...</button>
+    <button mat-menu-item (click)="menu_move(true)">Moves...</button>
+    <button mat-menu-item [matMenuTriggerFor]="circle">Circle</button>
+    <button mat-menu-item (click)="menu_dopass()">DoPass...</button>
+  </mat-menu>
+  <mat-menu #circle="matMenu">
+    <button mat-menu-item (click)="menu_circle(false)">Arc...</button>
+    <button mat-menu-item (click)="menu_circle(true)">Angle...</button>
+  </mat-menu>
+  <mat-menu #motion="matMenu">
+    <button mat-menu-item (click)="menu_stop()">Stop...</button>
+    <button mat-menu-item (click)="menu_waitForMotion()">WaitForMotion...</button>
+    <button mat-menu-item (click)="menu_delay()">Delay...</button>
+    <button mat-menu-item (click)="menu_enable()">Enable...</button>
+    <button mat-menu-item (click)="menu_disable()">Disable...</button>
+  </mat-menu>
+  <mat-menu #io="matMenu">
+    <button mat-menu-item (click)="menu_inputs()">INPUTS...</button>
+    <button mat-menu-item (click)="menu_outputs()">OUTPUTS...</button>
+  </mat-menu>
+  <mat-menu #variables="matMenu">
+    <button mat-menu-item (click)="menu_dim()">Dim...</button>
+  </mat-menu>
+  <mat-menu #pallets="matMenu">
+    <button mat-menu-item (click)="menu_plt_pick()">Pick...</button>
+    <button mat-menu-item (click)="menu_plt_place()">Place...</button>
+    <button mat-menu-item (click)="menu_plt_home()">Home...</button>
+    <button mat-menu-item (click)="menu_plt_index()">Set Index...</button>
+  </mat-menu>
+  <mat-menu #grippers="matMenu">
+    <button mat-menu-item (click)="menu_grp_use()">Use Gripper...</button>
+    <button mat-menu-item (click)="menu_grp_open()">Open...</button>
+    <button mat-menu-item (click)="menu_grp_close()">Close...</button>
+  </mat-menu>
+</div>

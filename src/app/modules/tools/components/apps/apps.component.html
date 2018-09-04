@@ -1,0 +1,14 @@
+<div class="wrapper">
+  <div class="title">softMC Tools</div>
+  <input type="file" accept=".ipk, .rpm, .IPK, .RPM, .zip, .ZIP" #upload (change)="onUploadFilesChange($event)" class="file-input" />
+  <mat-card class="main">
+    <a href="/modbus/" target="_blank">
+      <mat-icon>perm_data_setting</mat-icon>
+      <div>Modbus Configurator</div>
+    </a>
+    <a (click)="uploadIPK()" *ngIf="login.permission === 'Administrator'">
+      <mat-icon>system_update</mat-icon>
+      <div>Update Firmware...</div>
+    </a>
+  </mat-card>
+</div>

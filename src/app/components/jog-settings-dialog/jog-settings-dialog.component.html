@@ -1,0 +1,15 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">
+      <div style="flex: 1;">Jog Settings</div>
+      <button mat-mini-fab color="primary" (click)="stat.toggleEnabled()"><mat-icon [ngClass]="{'indicator-on' : stat.enabled }">power_settings_new</mat-icon></button>
+    </div>
+    <div class="content">
+      <frame-selector class="jog-parameter" *ngIf="dataService.isRobotType"></frame-selector>
+      <p><speed-changer></speed-changer></p>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" (click)="close()">CLOSE</button>
+  </div>
+</div>

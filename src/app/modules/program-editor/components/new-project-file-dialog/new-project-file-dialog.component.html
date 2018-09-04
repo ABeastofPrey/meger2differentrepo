@@ -1,0 +1,25 @@
+<div class="mat-typography">
+  <div class="title mat-elevation-z1">
+    <mat-icon>note_add</mat-icon>&nbsp;&nbsp;New {{fileType}}
+  </div>
+  <mat-radio-group [(ngModel)]="source">
+    <mat-radio-button color="primary" value="mc">Select from softMC</mat-radio-button>
+    <mat-radio-button color="primary" value="new">Create a New File</mat-radio-button>
+  </mat-radio-group>
+  <div class="name-wrapper">
+    <mat-form-field *ngIf="source==='mc'">
+      <mat-select placeholder="Select a {{fileType}}" [(ngModel)]="selectedFile">
+        <mat-option *ngFor="let f of files" [value]="f">
+          {{ f.fileName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="source==='new'">
+      <input matInput [placeholder]="fileType + ' Name'" [(ngModel)]="fileName">
+    </mat-form-field>
+  </div>
+  <div class="actions">
+    <button mat-button mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" [disabled]="(source==='mc' && selectedFile === null) || (source === 'new' && (fileName === null || fileName.length === 0)) " (click)="add()">ADD {{fileType | uppercase }}</button>
+  </div>
+</div>

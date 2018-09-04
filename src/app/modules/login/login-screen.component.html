@@ -1,0 +1,36 @@
+<div class="wrapper center-vertical-horizontal mat-typography">
+  <div class="login-card mat-elevation-z3">
+    <header>
+      <div class="center-vertical">
+        <img src="assets/pics/logo_cs.png" height="100" width="100">
+        <div>
+          <div class="title">RoboStudio</div>
+          <div class="subtitle">v{{ver}}</div>
+        </div>
+      </div>
+    </header>
+    <div class="main">
+      <form [formGroup]="authForm" (ngSubmit)="submitForm()">
+        <fieldset [disabled]="isSubmitting">
+          <mat-form-field>
+            <mat-icon matPrefix>person</mat-icon>
+            <input matInput placeholder="Username" formControlName="username">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-icon matPrefix>security</mat-icon>
+            <input matInput placeholder="Password" type="password" formControlName="password">
+          </mat-form-field>
+          <button 
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!authForm.valid"
+          >
+            LOGIN
+          </button>
+          <div class="error" *ngIf="errors.error">{{errors.error}}</div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="flex-full background">
+  <mat-grid-list cols="3" rowHeight="fit" style='height: 100%;'>
+    <mat-grid-tile colspan="1">
+      <mat-card class="jog-screen-card mat-elevation-z3">
+        <mat-card-title class="mat-toolbar mat-primary mat-elevation-z1">
+          <span class="title-text">JOG SETTINGS</span>
+        </mat-card-title>
+        <mat-card-content class="jog-parameters">
+          <robot-selector class="jog-parameter"></robot-selector>
+          <frame-selector class="jog-parameter" *ngIf="data.isRobotType"></frame-selector>
+          <tool-selector class="jog-parameter" *ngIf="data.tools.length > 0 && data.isRobotType"></tool-selector>
+          <base-selector class="jog-parameter" *ngIf="data.bases.length > 0 && data.isRobotType"></base-selector>
+          <machine-table-selector class="jog-parameter" *ngIf="data.isRobotType"></machine-table-selector>
+          <work-piece-selector class="jog-parameter" *ngIf="data.isRobotType"></work-piece-selector>
+          <domain-selector class="jog-parameter"></domain-selector>
+          <speed-changer class="jog-parameter"></speed-changer>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+      <mat-card class="jog-screen-card mat-elevation-z3" style="position: relative;">
+        <coordinates-display></coordinates-display>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+      <mat-card class="jog-screen-card mat-elevation-z3">
+        <mat-card-title 
+          class="mat-toolbar mat-primary mat-elevation-z1"
+          [@menuState]="menuTypes[selectedMenuTypeIndex].name">
+          <mat-icon class="card-title-icon">
+            {{menuTypes[selectedMenuTypeIndex].icon}}
+          </mat-icon>
+          <span class="card-title-text">
+            {{menuTypes[selectedMenuTypeIndex].name}}
+          </span>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>menu</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu" [overlapTrigger]="false">
+            <button 
+              mat-menu-item 
+              *ngFor="let mType of menuTypes; let i=index"
+              (click)="onChange(i)">
+              <mat-icon>{{mType.icon}}</mat-icon>
+              <span>{{mType.name}}</span>
+            </button>
+          </mat-menu>
+        </mat-card-title>
+        <div class="menu-content" [@menuContent]="menuTypes[selectedMenuTypeIndex].name">
+          <div class="inner-content content-teach">
+            <mat-form-field 
+              [style.maxWidth]="(teach.selectedTeachVariable && teach.selectedTeachVariable.isArr) ? '50%' : '100%'">
+              <mat-select placeholder="Variable" [(ngModel)]="teach.selectedTeachVariable" [disabled]="data.varRefreshInProgress" id="jog_screen_variable">
+                <mat-option *ngIf="this.data.joints.length===0 && this.data.locations.length === 0 && this.data.longs.length === 0 && this.data.doubles.length === 0 && this.data.strings.length === 0" disabled>No Variables.</mat-option>
+                <mat-optgroup label="Joints" *ngIf="this.data.joints.length > 0"><mat-option *ngFor="let data of this.data.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+                <mat-optgroup label="Locations" *ngIf="this.data.locations.length > 0"><mat-option *ngFor="let data of this.data.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+                <mat-optgroup label="Longs" *ngIf="this.data.longs.length > 0"><mat-option *ngFor="let data of this.data.longs" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+                <mat-optgroup label="Doubles" *ngIf="this.data.doubles.length > 0"><mat-option *ngFor="let data of this.data.doubles" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field style="max-width: 45%;" *ngIf="teach.selectedTeachVariable && teach.selectedTeachVariable.isArr">
+              <mat-select placeholder="Index" [(ngModel)]="teach.selectedTeachVariableIndex">
+                <mat-option *ngFor="let data of teach.selectedTeachVariable.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <teach-variable-editor></teach-variable-editor>
+            <button mat-raised-button color="primary" (menuOpened)="onTeachMenuOpen(true)" (menuClosed)="onTeachMenuOpen(false)" [matMenuTriggerFor]="teachMenu" class="teach-button" [disabled]="teach.fullName == null || teach.selectedTeachVariable.typeStr === 'STRING' || (data.isRobotType !== teach.selectedTeachVariable.isPosition)"><mat-icon *ngIf="!isTeachMenuOpen">menu</mat-icon><mat-icon *ngIf="isTeachMenuOpen">close</mat-icon></button>
+            <mat-menu #teachMenu="matMenu" [overlapTrigger]="false" class="teach-menu">
+              <button mat-menu-item (click)="teach.teach()">TEACH</button>
+              <button mat-menu-item (click)="$event.stopPropagation()" (mousedown)="teach.move(false)" (mouseup)="teach.stop()" (touchstart)="teach.move(false)" (touchend)="teach.stop()" (mouseout)="teach.stop()">MOVE</button>
+              <button mat-menu-item (click)="$event.stopPropagation()" (mousedown)="teach.move(true)" (mouseup)="teach.stop()" (touchstart)="teach.move(true)" (touchend)="teach.stop()" (mouseout)="teach.stop()">MOVES</button>
+            </mat-menu>
+          </div>
+          <div class="inner-content content-align">
+            <p style='text-align: left;'>Tool Align</p>
+            <div>
+              <button mat-raised-button color="primary" (click)="$event.stopPropagation()" (mousedown)="align()" (mouseup)="stop()" (touchstart)="align()" (touchend)="stop()">Tool Align</button>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>

@@ -1,0 +1,8 @@
+.wrapper { text-align: center; }
+mat-icon { 
+  font-size: 64px;
+  height: 64px;
+  width: 64px;
+  color: #D50000;
+}
+h3 { color: #888; }

@@ -1,0 +1,23 @@
+.side-menu-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+}
+.side-menu-content button {
+  margin: 2px;
+  min-height: 34px;
+}
+.menu-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0,0,0,0.78);
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+.inline-buttons { display: flex; }
+.inline-buttons button {
+  flex: 1;
+  padding: 0;
+  min-width: 0;
+}

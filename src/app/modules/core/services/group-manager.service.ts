@@ -1,0 +1,94 @@
+import { Injectable } from '@angular/core';
+import {WebsocketService, MCQueryResponse} from './websocket.service';
+import {EventEmitter} from '@angular/core';
+import {ApiService} from './api.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GroupManagerService {
+  
+  sysInfo : SysInfo = null;
+  groups : Group[] = [];
+  sysInfoLoaded: EventEmitter<any> = new EventEmitter();
+  
+  private groupInterval : any;
+  private lastGrouplist : string = null;
+
+  constructor(
+    private ws: WebsocketService,
+    private api: ApiService
+  ) {
+    this.ws.isConnected.subscribe(stat=>{
+      if (stat) {
+        this.api.getSysInfo().then((ret:SysInfo)=>{
+          ret.ver = ret.ver.substring(0, ret.ver.indexOf(','));
+          this.sysInfo = ret;
+          this.groupInterval = setInterval(()=>{
+            this.refreshGroupsAndInfo();
+          },2000);
+          this.sysInfoLoaded.emit(true);
+        });
+      } else {
+        clearInterval(this.groupInterval);
+      }
+    });
+  }
+  
+  private refreshSysInfo() { // ONLY REFRESHES REAL AXES
+    this.ws.query('?sys.information').then((ret: MCQueryResponse)=>{
+      let index = ret.result.indexOf('Real number');
+      if (index > 0) {
+        let str = ret.result.substring(index+19).trim();
+        index = str.indexOf('\n');
+        str = str.substring(0,index);
+        this.sysInfo.realAxes = Number(str);
+      }
+    });
+  }
+  
+  private refreshGroupsAndInfo() {
+    let promises = [
+      this.ws.query('?grouplist'),
+    ];
+    Promise.all(promises).then((ret: any[])=>{
+      let grouplist: MCQueryResponse = ret[0];
+      if (grouplist.result === this.lastGrouplist)
+        return;
+      this.refreshSysInfo();
+      this.lastGrouplist = grouplist.result;
+      let elements : Group[] = [];
+      if (grouplist.result.indexOf('No groups') === 0)
+        return;
+      let groups = grouplist.result.split('\n');
+      for (let g of groups) {
+        let parts = g.split(':');
+        elements.push({
+          name: parts[0].trim(),
+          axes: parts[1].trim().split(',')
+        });
+      }
+      this.groups = elements;
+    });
+  }
+}
+
+export interface Group {
+  name: string;
+  axes: string[];
+}
+
+export interface SysInfo {
+  realAxes : number;
+  features : string[];
+  ver : string;
+  diskSize : number;
+  cycleTime : number;
+  cpu : string;
+  cpuFreq : number;
+  freeDiskSpace : number;
+  ramSize : number;
+  platform : string;
+  maxAxes : number;
+  freeRamSpace : number;
+}

@@ -1,0 +1,84 @@
+mat-grid-list { height: calc(100% * 1.5); }
+.wrapper {
+  position: relative;
+  padding: 16px;
+  box-sizing: border-box;
+  height: 100%;
+}
+mat-card {
+  flex: 1;
+  margin: 8px;
+  box-sizing: border-box;
+  height: calc(100% - 24px);
+  width: calc(100% - 24px);
+  display: flex;
+  flex-direction: column;
+}
+.mat-card-image {
+  height: calc(100% - 120px);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.simulated {
+  padding: 8px;
+  border-radius: 4px;
+}
+mat-card-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex: 1;
+}
+mat-card-title {
+  margin-bottom: 8px;
+}
+.welcome {
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  height: 30%;
+  min-height: 30px;
+  font-size: 24px;
+}
+terminal { flex: 1; overflow: auto;}
+.title, .welcome {
+  margin: -24px -24px 16px -24px !important;
+}
+.title {
+  padding: 8px;
+  font-weight: 400;
+  color: white;
+  font-size: 1.25em;
+}
+.title-1 { background: linear-gradient(60deg, #26c6da, #00acc1); }
+.title-2 { background: linear-gradient(60deg, #66bb6a, #43a047); }
+.title-3 { background: linear-gradient(60deg, #ffa726, #fb8c00); }
+.title-4 { background: linear-gradient(60deg, #311B92, #6200EA); }
+.info-line { margin-bottom: 6px;}
+.info-card .title mat-icon, .feature-line mat-icon { margin-right: 16px; }
+.feature-line {
+  line-height: 2; 
+  border-bottom: 1px solid #ccc;
+}
+mat-card-content {
+  overflow: auto;
+  max-height: calc(100% - 40px);
+}
+.group {
+  margin-bottom: -8px;
+  font-weight: bold;
+}
+.context-menu { 
+  position: absolute;
+  width: 200px;
+  background: #fff;
+  z-index: 2;
+}
+.context-menu button {
+  width: 100%;
+}
+::ng-deep .context-menu .mat-button-wrapper {
+  display: flex;
+  align-items: center;
+}

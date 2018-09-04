@@ -1,0 +1,41 @@
+.wrapper {
+  height: 100%;
+  width: 100%;
+}
+div, input {
+  user-select: text;
+  font-family: monospace;
+}
+input {
+  outline: none;
+  border: 0;
+  flex: 1;
+}
+.fab {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+}
+.file-input {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.context-menu { 
+  position: absolute;
+  width: 200px;
+  background: #fff;
+  z-index: 2;
+}
+.context-menu button {
+  width: 100%;
+}
+::ng-deep .context-menu .mat-button-wrapper {
+  display: flex;
+  align-items: center;
+}
+.editor {
+  flex: 1;
+}

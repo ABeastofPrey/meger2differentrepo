@@ -1,0 +1,39 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title primary-bg">Monitor a new Parameter</div>
+    <div class="content">
+      <mat-form-field>
+        <input type="text" placeholder="Parameter" matInput [formControl]="ctrl" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
+          <mat-option *ngFor="let option of filteredOptions" [value]="option.text">
+            {{ option.text }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Base" [(ngModel)]="newParam.base">
+          <mat-option value="DEC">Decimal</mat-option>
+          <mat-option value="HEX">Hexadecimal</mat-option>
+          <mat-option value="BIN">Binary</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Input Type" [(ngModel)]="newParam.inputType">
+          <mat-option value="INPUT">Text Box</mat-option>
+          <mat-option value="TOGGLE">On/Off Switch</mat-option>
+          <mat-option value="SLIDER">Slider</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="newParam.inputType === 'SLIDER'">
+        <input type="number" placeholder="Slider Min. Value" matInput [(ngModel)]="newParam.sliderMin">
+      </mat-form-field>
+      <mat-form-field *ngIf="newParam.inputType === 'SLIDER'"> 
+        <input type="number" placeholder="Slider Max. Value" matInput [(ngModel)]="newParam.sliderMax">
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="add()" [disabled]="newParam.name === null">ADD</button>
+  </div>
+</div>

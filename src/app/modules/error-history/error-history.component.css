@@ -1,0 +1,37 @@
+mat-expansion-panel {
+  margin: 0 auto;
+}
+.mat-accordion { overflow: auto; }
+.icon {
+  display: flex;
+  align-items: center;
+  margin-right: 24px;
+}
+.error-short {
+  flex: 1;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+.error-time {
+  color: rgba(0,0,0,0.52);
+  font-weight: 500;
+}
+.error-short-desc {
+  font-weight: 600;
+  overflow: hidden;
+  max-width: calc(100% - 100px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mat-expanded .error-short-desc { white-space: normal; }
+.error-wrapper {
+  display: flex;
+  flex: 1;
+}
+::ng-deep .error-panel .mat-expansion-panel-body {
+  padding: 0 72px 16px!important;
+}
+.severity-error {color: #B71C1C;}
+.severity-note {color: #9E9D24;}
+.severity-info {color: #039BE5;}

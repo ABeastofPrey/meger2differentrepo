@@ -1,0 +1,17 @@
+<div class='flex-full wrapper'>
+  <div class="diagnostics mat-elevation-z3">
+    <div class="header mat-elevation-z1">
+      <h2>Diagnostics</h2>
+      <button mat-mini-fab color="accent" (click)="refresh()" style="margin-left: 16px;"><mat-icon>refresh</mat-icon></button>
+      <mat-radio-group class="options" [(ngModel)]="state" (change)="refresh()">
+        <mat-radio-button value="1">Devices State</mat-radio-button>
+        <mat-radio-button value="2">Master State</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="diagnostics-container">
+      <div *ngIf="isRefreshing">Loading...</div>
+      <div [innerHTML]="content"></div>
+      <div #container></div>
+    </div>
+  </div>
+</div>

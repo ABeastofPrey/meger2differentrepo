@@ -1,0 +1,74 @@
+<div class='flex-full background'>
+  <mat-grid-list cols="3" rowHeight="fit" style='height: 100%;'>
+    <mat-grid-tile colspan="2">
+      <mat-card class="lbn-card mat-elevation-z3">
+        <mat-card-title class="mat-elevation-z1">LBN SETTINGS</mat-card-title>
+        <mat-card-content>
+          <div class='lbn-form'>
+            <div class="status">
+              <span class='lbn-form--title'>Status:</span>
+              {{lbn.status ? 'ON' : 'OFF'}}
+            </div>
+            <div class="inline-inputs">
+              <domain-selector [disabled]="true" prompt="Domain:" style="margin-right: 1em;"></domain-selector>
+              <robot-selector [disabled]="true" prompt="Motion Element:"></robot-selector>
+            </div>
+            <mat-form-field floatLabel="never">
+              <span matPrefix style='font-weight: bold;'>Frame:&nbsp;&nbsp;</span>
+              <mat-select [(ngModel)]="lbn.frame">
+                <mat-option *ngFor="let data of lbn.frames" [value]="data">
+                  {{data}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field floatLabel="never">
+              <span matPrefix style='font-weight: bold;'>Motion Type:&nbsp;&nbsp;</span>
+              <mat-select [(ngModel)]="lbn.motionType">
+                <mat-option *ngFor="let data of lbn.motionTypes" [value]="data">
+                  {{data}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field floatLabel="never" *ngIf="lbn.joint !== null">
+              <span matPrefix style='font-weight: bold;'>Joint Number:&nbsp;&nbsp;</span>
+              <mat-select [(ngModel)]="lbn.joint">
+                <mat-option *ngFor="let p of data.joints; let i = index" value="{{i+1}}">{{i+1}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="vrate-wrapper separator">
+              <div class='lbn-form--title'>V-Rate:</div>
+              <mat-slider [(ngModel)]="lbn.vrate" thumbLabel max="100" min="0" tickInterval="auto" style="flex: 1;"></mat-slider>
+              <span style="display: flex; align-items: center; margin-left: 1em; margin-right: 8px;">{{lbn.vrate}}</span>
+            </div>
+            <div class="lbn-enable-wrapper">
+              <mat-slide-toggle color="primary" style="transform: scale(1.1);" [(ngModel)]="lbn.status">Enable Lead By Nose</mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+      <mat-card class="mat-elevation-z3">
+        <mat-card-title class="mat-elevation-z1">Teach</mat-card-title>
+        <mat-card-content style="text-align: center;">
+          <mat-form-field 
+            [style.maxWidth]="(teach.selectedTeachVariable && teach.selectedTeachVariable.isArr && teach.selectedTeachVariable.isPosition) ? '50%' : '100%'">
+            <mat-select placeholder="Teach Position" [(ngModel)]="teach.selectedTeachVariable" [disabled]="data.varRefreshInProgress">
+              <mat-optgroup label="Joints" *ngIf="this.data.joints.length > 0"><mat-option *ngFor="let data of this.data.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+              <mat-optgroup label="Locations" *ngIf="this.data.locations.length > 0"><mat-option *ngFor="let data of this.data.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field style="max-width: 45%;" *ngIf="teach.selectedTeachVariable && teach.selectedTeachVariable.isPosition && teach.selectedTeachVariable.isArr">
+            <mat-select placeholder="Index" [(ngModel)]="teach.selectedTeachVariableIndex">
+              <mat-option *ngFor="let data of teach.selectedTeachVariable.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <teach-variable-editor *ngIf="teach.fullName && teach.selectedTeachVariable.isPosition"></teach-variable-editor>
+          <button mat-raised-button color="primary" (click)="teach.teach()" [disabled]="teach.fullName == null || !teach.selectedTeachVariable.isPosition">
+            TEACH
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>

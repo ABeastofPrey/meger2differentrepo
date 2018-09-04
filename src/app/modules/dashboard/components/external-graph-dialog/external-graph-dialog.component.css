@@ -1,0 +1,25 @@
+.main { height: 100%; }
+.wrapper {
+  height: calc(100% - 36px);
+  display: flex;
+  flex-direction: column;
+}
+.title {
+  display: flex;
+  align-items: center;
+  margin: -24px -24px 24px -24px;
+  padding: 16px;
+  font-size: 18px;
+}
+.actions {
+  text-align: right;
+  margin-top: 8px;
+}
+.content {
+  overflow: auto;
+  min-height: 100px;
+}
+mat-form-field {
+  display: block;
+  width: 100%;
+}

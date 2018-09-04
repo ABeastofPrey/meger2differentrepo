@@ -1,0 +1,36 @@
+<mat-card class="mat-elevation-z6">
+  <div class="title primary-bg">
+    <span>Watch</span>
+    <button mat-icon-button color="accent" (click)="watch.toggleWindow()"><mat-icon>close</mat-icon></button>
+  </div>
+  <div class="content">
+    <table>
+      <thead class="mat-title-color">
+        <tr>
+          <td></td>
+          <td style="width: 100px;">Variable Name</td>
+          <td style="width: 70px;">Context</td>
+          <td>Value</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><mat-icon>add</mat-icon></td>
+          <td><input type="text" [(ngModel)]="watch.newVarName" (keyup.enter)="watch.addVar()"></td>
+          <td>
+            <select [(ngModel)]="watch.newVarContext">
+              <option *ngFor="let c of watch.contexts" [value]="c">{{c}}</option>
+            </select>
+          </td>
+          <td><input type="text" readonly="true"></td>
+        </tr>
+        <tr *ngFor="let v of watch.vars; let i=index;">
+          <td><button mat-icon-button color="warn" (click)="watch.delete(i)"><mat-icon>delete</mat-icon></button></td>
+          <td>{{v.name}}</td>
+          <td>{{v.context}}</td>
+          <td>{{v.value}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</mat-card>

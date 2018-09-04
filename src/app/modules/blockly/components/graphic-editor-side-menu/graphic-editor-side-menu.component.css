@@ -1,0 +1,32 @@
+.wrapper {
+  background-color: #E0E0E0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.title { padding: 8px; height: 30px;}
+.title mat-icon {
+  cursor: pointer;
+  color: #F0F0F0;
+}
+.title mat-icon:hover {
+  color: #fff;
+}
+ul {
+  overflow: auto;
+  flex: 1;
+  color: #000;
+  padding-right: 16px;
+}
+
+ul li {
+  display: flex;
+  cursor: pointer;
+}
+
+ul li:hover { background-color: #eee; }
+
+ul li mat-icon {
+  margin-left: 8px;
+  font-size: 18px;
+}

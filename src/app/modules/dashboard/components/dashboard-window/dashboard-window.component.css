@@ -1,0 +1,52 @@
+.title { 
+  padding: 6px 12px;
+  font-size: 24px;
+  min-width: 200px;
+  font-weight: bold;
+}
+.move-content, .params-container { 
+  border: 1px solid #eee;
+  padding: 4px;
+}
+.params-title { min-width: 120px;}
+.content { 
+  padding: 12px;
+  display: flex;
+  background-color: #fff;
+}
+.expand {
+  margin: -12px -12px -12px 8px;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  cursor: pointer;
+}
+.expand mat-icon:hover {
+  color: #fff;
+}
+.move-content {
+  margin: 32px 0 0 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  max-height: 240px;
+  overflow: auto;
+}
+.move-content tr td:nth-child(2) {
+  padding-left: 6px;
+}
+
+.move-content mat-form-field {
+  min-width: auto;
+  width: 50px;
+  margin-top: -12px;
+  margin-bottom: -16px;
+}
+.move-content button {
+  min-height: 36px;
+  margin-bottom: 8px;
+}
+.wrapper {
+  position: absolute;
+}
+.params-list mat-form-field, mat-slider { width: 100%;}

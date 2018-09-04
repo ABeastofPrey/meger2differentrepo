@@ -1,0 +1,14 @@
+.content { padding: 16px; }
+.io-table th, .io-table td {
+  border: 1px solid black;
+  min-width: 100px;
+  text-align: center;
+}
+.io-table input {
+  outline: 0;
+  border:0;
+  margin: 8px;
+}
+::ng-deep .io-table .mat-sort-header-container {
+  justify-content: center;
+}

@@ -1,0 +1,25 @@
+<div #container class="wrapper">
+  <mat-card class="mat-elevation-z6"
+      ngDraggable
+      [handle]="dragHandle"
+      inBounds="true"
+      [bounds]="container"
+      mwlResizable
+      [ngStyle]="style"
+      [resizeEdges]="{bottom: true, right: true, top: false, left: true}"
+      [enableGhostResize]="true"
+      [resizeCursorPrecision]="24"
+      [validateResize]="validate"
+      (resizeEnd)="onResizeEnd($event)">
+    <div class="title primary-bg" #dragHandle>
+      <span>Notifications</span>
+      <button mat-icon-button color="accent" (click)="notification.toggleWindow()"><mat-icon>close</mat-icon></button>
+    </div>
+    <div class="content" #wrapper (contextmenu)="onContextMenu($event)" (click)="onClick()">
+      {{notification.notifications}}
+    </div>
+     <ul class="context-menu mat-elevation-z10" *ngIf="contextMenuShown" [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">
+      <button mat-button color="primary" (click)="clear()"><mat-icon>clear</mat-icon>Clear Messages</button>
+    </ul>
+  </mat-card>
+</div>

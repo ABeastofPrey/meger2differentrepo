@@ -1,0 +1,50 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.title {
+  height: 25%;
+  background-color: #444;
+  padding: 36px;
+  font-weight: 500;
+  font-size: 24px;
+  color: white;
+  display: flex;
+}
+.main {
+  position: absolute;
+  top: 90px;
+  left: 36px;
+  right: 36px;
+  bottom: 36px;
+  display: flex;
+  align-items: flex-start;
+}
+a {
+  cursor: pointer;
+  text-align: center;
+  padding: 24px;
+  transition: box-shadow 200ms, color 200ms;
+  -webkit-transition: box-shadow 200ms, color 200ms;
+  -moz-transition: box-shadow 200ms, color 200ms;
+  -o-transition: box-shadow 200ms, color 200ms;
+  text-decoration: none;
+  color: rgba(0,0,0,0.54)!important;
+}
+a:hover {
+  box-shadow: 0 4px 16px #e4e4e4;
+  color: rgba(0,0,0,0.87)!important;
+  text-decoration: none;
+}
+a img, a mat-icon {
+  width: 64px;
+  height: 64px;
+  font-size: 64px;
+}
+.file-input {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
