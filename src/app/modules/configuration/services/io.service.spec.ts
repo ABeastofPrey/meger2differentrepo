@@ -7,7 +7,14 @@ import { WebsocketService } from '../../core';
  * It contains all the test specs to IoService.
  */
 describe('IoService', () => {
+  /**
+   * The IoService Instance.
+   */
   let ioService: IoService;
+
+  /**
+   * The WebSocketSerivce spy instance.
+   */
   let webSocketServiceSpy: jasmine.SpyObj<WebsocketService>;
 
   /**
@@ -27,7 +34,7 @@ describe('IoService', () => {
   /**
    * IoService constructor test.
    */
-  it('should be created', () => {
+  it('io service should be created', () => {
     expect(ioService).toBeTruthy();
   });
 
@@ -74,8 +81,8 @@ describe('IoService', () => {
     expect(ioService).toBeTruthy();
 
     const spyValue = `[
-      {"index":"0","status":"false","label":"Omri"},
-      {"index":"1","status":"false","label":"Mirko"}
+      {"index":0,"value":"0","label":"Omri"},
+      {"index":1,"value":"0","label":"Mirko"}
     ]`;
 
     const mcQueryResponse = { result: spyValue, cmd: '', err: null };
@@ -100,8 +107,8 @@ describe('IoService', () => {
     expect(ioService).toBeTruthy();
 
     const spyValue = `[
-      {"index":"0","status":"false","label":"Omri"},
-      {"index":"1","status":"false","label":"Mirko"}
+      {"index":0,"value":"0","label":"Omri"},
+      {"index":1,"value":"0","label":"Mirko"}
     ]`;
 
     const errFrame = {
