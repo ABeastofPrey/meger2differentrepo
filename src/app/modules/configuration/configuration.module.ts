@@ -10,6 +10,7 @@ import { GuiComponent } from './components/gui/gui.component';
 import {UserMngrComponent} from './components/user-manager/user-mngr/user-mngr.component';
 import {NewUserDialogComponent} from './components/user-manager/new-user-dialog/new-user-dialog.component';
 import {GraphComponent} from './components/graph/graph.component';
+import { IoService } from './services/io.service';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import {GraphComponent} from './components/graph/graph.component';
     NewUserDialogComponent,
     GraphComponent
   ],
+  providers: [IoService],
   entryComponents: [
     NewUserDialogComponent,
     GraphComponent

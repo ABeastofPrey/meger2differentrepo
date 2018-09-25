@@ -1,39 +1,113 @@
 <mat-tab-group>
-  <mat-tab label="Main">
-    <div class="content">
-      Main view goes here
+  <mat-tab label="Standard View">
+    <div class="center-vertical">
+      <div class="content">
+        <div>
+          <mat-form-field class="content-full">
+            <mat-select placeholder="" [(ngModel)]="leftSelected" (selectionChange)="onViewSelectionChange('left')">
+              <mat-option *ngFor="let option of ioOptions" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-radio-group class="mat-radio-group" [(ngModel)]="leftRadioOptions" (change)="onViewSelectionChange('left')">
+            <mat-radio-button color="primary" [value]="radioButtonOptions[0]">Bit</mat-radio-button>
+            <mat-radio-button color="primary" style="margin-left: 25%" [value]="radioButtonOptions[1]">Byte</mat-radio-button>
+            <mat-radio-button color="primary" style="margin-left: 25%" [value]="radioButtonOptions[2]">Word</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="table-container" style="margin-top: 12px;">
+          <mat-table [dataSource]="leftDataSource" class="io-table" matSort>
+            <ng-container matColumnDef="index">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{leftRadioOptions === 'bit' ? 'Bit' : leftRadioOptions === 'byte' ? 'Byte' : 'Word'}}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.index}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="value">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{leftRadioOptions === 'bit' ? 'Status' : 'Value'}}
+              </mat-header-cell>
+              <ng-container *ngIf="leftRadioOptions === 'bit'">
+                <mat-cell color="primary" *matCellDef="let element">
+                  <input type="radio" name="LeftValue{{element.index}}" [checked]="element.value === '1'" (click)="onClickRadioButton(element.index, 'left')">
+                </mat-cell>
+              </ng-container>
+              <ng-container *ngIf="leftRadioOptions !== 'bit'">
+                <mat-cell color="primary" *matCellDef="let element"> {{element.value}} </mat-cell>
+              </ng-container>
+            </ng-container>
+
+            <ng-container matColumnDef="label">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Label </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                {{element.label}}
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </div>
+      </div>
+      <div class="content">
+        <div>
+          <mat-form-field class="content-full">
+            <mat-select placeholder="" [(ngModel)]="rightSelected" (selectionChange)="onViewSelectionChange('right')">
+              <mat-option *ngFor="let option of ioOptions" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-radio-group class="mat-radio-group" [(ngModel)]="rightRadioOptions" (change)="onViewSelectionChange('right')">
+            <mat-radio-button color="primary" [value]="radioButtonOptions[0]">Bit</mat-radio-button>
+            <mat-radio-button color="primary" style="margin-left: 25%" [value]="radioButtonOptions[1]">Byte</mat-radio-button>
+            <mat-radio-button color="primary" style="margin-left: 25%" [value]="radioButtonOptions[2]">Word</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="table-container" style="margin-top: 12px;">
+          <mat-table [dataSource]="rightDataSource" class="io-table" matSort>
+            <ng-container matColumnDef="index">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{rightRadioOptions === 'bit' ? 'Bit' : rightRadioOptions === 'byte' ? 'Byte' : 'Word'}}
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.index}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="value">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{rightRadioOptions === 'bit' ? 'Status' : 'Value'}}
+              </mat-header-cell>
+              <ng-container *ngIf="rightRadioOptions === 'bit'">
+                <mat-cell color="primary" *matCellDef="let element">
+                  <input type="radio" name="RightValue{{element.index}}" [checked]="element.value === '1'" (click)="onClickRadioButton(element.index, 'right')">
+                </mat-cell>
+              </ng-container>
+              <ng-container *ngIf="rightRadioOptions !== 'bit'">
+                <mat-cell color="primary" *matCellDef="let element"> {{element.value}} </mat-cell>
+              </ng-container>
+            </ng-container>
+
+            <ng-container matColumnDef="label">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Label </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                {{element.label}}
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </div>
+      </div>
     </div>
-  </mat-tab>
-  <mat-tab [label]="tmp.value">
-    <div class="content">
-      <mat-form-field>
-        <input matInput placeholder="Custom View Description" value="Custom View 1" #tmp>
-      </mat-form-field>
-      <mat-card>
-        <div>// FILTERS SHOULD BE ADDED HERE</div>
-        <table class="io-table" matSort (matSortChange)="sortData($event)">
-          <tr>
-            <th mat-sort-header="index">Bit</th>
-            <th mat-sort-header="status">Status</th>
-            <th mat-sort-header="label">Label</th>
-          </tr>
-          <tr *ngFor="let inp of sortedData">
-            <td>{{inp.index}}</td>
-            <td>{{inp.status ? 'ON' : 'OFF'}}</td>
-            <td><input [(ngModel)]="inp.label"></td>
-          </tr>
-        </table>
-      </mat-card>
-    </div>
-  </mat-tab>
-  <mat-tab [label]="tmp2.value">
-    <div class="content">
-      <mat-form-field>
-        <input matInput placeholder="Custom View Description" value="Custom View 2" #tmp2>
-      </mat-form-field>
-      <mat-card>
-        Table should be here...
-      </mat-card>
+    <div style="margin-left: 12px;">
+      <mat-checkbox color="primary" [(ngModel)]="hex" (change)="onViewSelectionChange('all')">Hexadecimal Values</mat-checkbox>
     </div>
   </mat-tab>
 </mat-tab-group>

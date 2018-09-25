@@ -1,13 +1,29 @@
-.content { padding: 16px; }
-.io-table th, .io-table td {
-  border: 1px solid black;
-  min-width: 100px;
-  text-align: center;
+.content {
+  height: 100%;
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
 }
+.content-full{
+  width: 100%;
+}
+
+.mat-radio-group {
+  width: 100%;
+  text-align: justify;
+  text-align-last:justify;
+}
+
+.table-container {
+  height: 400px;
+  overflow: auto;
+}
+
 .io-table input {
   outline: 0;
-  border:0;
+  border: 0;
   margin: 8px;
+  text-align: center;
 }
 ::ng-deep .io-table .mat-sort-header-container {
   justify-content: center;
