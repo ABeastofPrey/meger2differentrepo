@@ -1,0 +1,24 @@
+<pallet-wizard *ngIf="wizardMode" (closed)="onWizardClose()"></pallet-wizard>
+<div class="wrapper" *ngIf="!wizardMode">
+  <div class="side-menu mat-elevation-z3">
+    <div style="margin-bottom: 24px;">{{data.palletLibVer}}</div>
+    <mat-form-field>
+      <mat-select placeholder="Selected Pallet" [(ngModel)]="data.selectedPallet" (selectionChange)="onPalletChange()">
+        <mat-option *ngFor="let p of data.pallets" [value]="p">{{ p.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" [disabled]="data.selectedPallet === null" (click)="editPallet()">EDIT</button>
+    <button mat-raised-button color="warn" [disabled]="data.selectedPallet === null" (click)="deletePallet()">DELETE</button>
+    <button mat-fab color="primary" class="menu-fab" (click)="addPallet()"><mat-icon>add</mat-icon></button>
+    <div class="zoom-box">
+      <button mat-fab color="accent" [disabled]="data.selectedPallet === null" (click)="scale(0.05)" style="margin-right: 16px;"><mat-icon>zoom_in</mat-icon></button>
+      <button mat-fab color="accent" [disabled]="data.selectedPallet === null" (click)="scale(-0.05)"><mat-icon>zoom_out</mat-icon></button>
+    </div>
+  </div>
+  <div class="canvas-wrapper" #palletContainer [style.background]="data.selectedPallet ? '#fff' : ''">
+    <canvas #palletPreview width="{{800}}" height="{{800}}"></canvas>
+    <div *ngIf="abnormalItemCount" class="error-message">
+      Invalid item count
+    </div>
+  </div>
+</div>

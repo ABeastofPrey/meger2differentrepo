@@ -135,13 +135,7 @@ export class ControlStudioComponent {
         title: 'Toolbar',
         content: "Use this toolbar to open, edit and execute your project.",
         enableBackdrop: true
-      },
-      {
-        anchorId: 'project-toolbar-2',
-        title: 'Toolbar',
-        content: "You can also use this toolbar for easier access while programming.",
-        enableBackdrop: true
-      },
+      }
     ]);
     this.tour.initialize(steps);
   }

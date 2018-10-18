@@ -23,7 +23,8 @@
             "styles": [
               "src/styles.css",
               "src/assets/styles/material-servotronix.scss",
-              "node_modules/ngx-draggable-widget/NgDraggableWidget.css"
+              "node_modules/ngx-draggable-widget/NgDraggableWidget.css",
+              "node_modules/jquery-ui-dist/jquery-ui.min.css"
             ],
             "scripts": [
               "src/assets/scripts/plotly-latest.min.js",
@@ -31,11 +32,13 @@
               "src/assets/scripts/threejs/three.min.js",
               "src/assets/scripts/threejs/OrbitControls.js",
               "src/assets/scripts/threejs/app.js",
+              "src/assets/scripts/isomer.min.js",
               "node_modules/ace-builds/src-min/ace.js",
               "node_modules/ace-builds/src-min/theme-eclipse.js",
-              "node_modules/ace-builds/src-min/theme-white.js",
               "node_modules/ace-builds/src-min/ext-searchbox.js",
-              "node_modules/ace-builds/src-min/ext-language_tools.js"
+              "node_modules/ace-builds/src-min/ext-language_tools.js",
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/jquery-ui-dist/jquery-ui.min.js"
             ]
           },
           "configurations": {

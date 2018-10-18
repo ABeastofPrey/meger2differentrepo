@@ -16,6 +16,8 @@
 }
 .name-wrapper {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-direction: column;
 }
-mat-radio-button { margin: 0 16px 16px 0; }
+.name-wrapper mat-form-field { width: 100%; }
+.values mat-form-field { width: 100px; }

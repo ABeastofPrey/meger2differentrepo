@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ProgramEditorService, TASKSTATE_NOTLOADED, TASKSTATE_RUNNING, TASKSTATE_STOPPED, TASKSTATE_ERROR, TASKSTATE_READY, TASKSTATE_KILLED} from '../../services/program-editor.service';
+import {DataService, ProjectManagerService} from '../../../core';
 
 @Component({
   selector: 'program-editor',
@@ -9,7 +10,9 @@ import {ProgramEditorService, TASKSTATE_NOTLOADED, TASKSTATE_RUNNING, TASKSTATE_
 export class ProgramEditorComponent implements OnInit {
 
   constructor(
-    public service : ProgramEditorService
+    public service : ProgramEditorService,
+    public data: DataService,
+    public prj: ProjectManagerService
   ) { }
 
   ngOnInit() {

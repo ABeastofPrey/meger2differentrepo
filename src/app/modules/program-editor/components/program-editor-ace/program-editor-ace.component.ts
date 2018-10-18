@@ -134,10 +134,10 @@ export class ProgramEditorAceComponent implements OnInit {
           if (i < line.length && i>0)
             line = line.substring(0,i);
           const trimmed = line.trim();
-          i = line.indexOf(' ');
-          const firstWord = i > 0 ? line.substring(0, i).toLowerCase().trim() : null;
+          i = trimmed.indexOf(' ');
+          const firstWord = i > 0 ? trimmed.substring(0, i).toLowerCase().trim() : trimmed;
           let params = [];
-          if (firstWord) {
+          if (firstWord.length > 0) {
             for (let options of OPTIONAL) {
               if (options.cmd === firstWord) {
                 params = options.params;

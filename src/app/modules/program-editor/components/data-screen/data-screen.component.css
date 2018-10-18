@@ -1,0 +1,72 @@
+.wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+}
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.5em;
+  overflow: hidden;
+}
+.data-table {
+  flex:1;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 0 1em;
+}
+.data-table .mat-cell, .data-table .mat-header-cell { padding: 0.5em; }
+.data-filter {
+  display: flex;
+  height: auto;
+  padding: 16px;
+  align-items: center;
+}
+.data-filter > * {
+  flex: 1;
+}
+.data-table .mat-column-select { overflow: initial; }
+.var-name-and-actions {
+  display: flex;
+  align-items: center;
+}
+.var-actions {
+  flex: 1;
+  text-align: right;
+  align-items: center;
+  text-align: center;
+  align-self: center;
+}
+.var-details {
+  margin-right: 1em;
+  display: flex;
+  align-items: center;
+}
+::ng-deep .var-details mat-form-field {
+  width: 112px;
+  margin-right: 8px;
+  margin-top: 12px;
+  margin-bottom: -24px;
+}
+.var-name {
+  font-weight: bold;
+  font-size: 24px;
+  margin-right: 36px;
+}
+.data-table mat-row { cursor: pointer; }
+.data-table mat-row:hover { background-color: #E0F2F1; }
+.highlighted { background-color: #B2DFDB!important; }
+.current { font-weight: bold; }
+.refreshing { background-color: #ebebeb; }
+.fixed-top-right {
+  position: absolute;
+  z-index: 5;
+  top: 8px;
+  right: 8px;
+}
+.real-device {
+  bottom: 24px;
+  right: 100px;
+}

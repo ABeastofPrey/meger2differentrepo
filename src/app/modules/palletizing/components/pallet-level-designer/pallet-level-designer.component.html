@@ -1,0 +1,30 @@
+<div class="wrapper">
+  <div class="toolbar">
+    <h2>Item:</h2>
+    <div class="item"
+      [style.height]="(rotation%180===0 ? pallet.item_size_y/normalizePreview : pallet.item_size_x/normalizePreview)+ 'px'"
+      [style.width]="(rotation%180===0 ? pallet.item_size_x/normalizePreview : pallet.item_size_y/normalizePreview) + 'px'">
+    </div>
+    <h2 style="margin-top: 8px;">Options</h2>
+    <div style="display: flex;">
+      <button mat-fab color="primary" (click)="rotate()"><mat-icon>rotate_right</mat-icon></button>
+      <button mat-fab color="primary" (click)="addItem()"><mat-icon>add</mat-icon></button>
+    </div>
+    <div style="display: flex;">
+      <button mat-fab color="accent" (click)="uploadFile()"><mat-icon>insert_drive_file</mat-icon></button>
+      <button mat-fab color="accent" (click)="download()"><mat-icon>save</mat-icon></button>
+    </div>
+    <input type="file" accept=".DAT, .dat" #upload (change)="onUploadFilesChange($event);" class="file-input" />
+  </div>
+  <div class="container" #container>
+    <div class="item item-preview"
+      *ngFor="let item of items" #customItem
+      [style.height]="(item.r%180===0 ? pallet.item_size_y/normalizeItem : pallet.item_size_x/normalizeItem)+ 'px'"
+      [style.width]="(item.r%180===0 ? pallet.item_size_x/normalizeItem : pallet.item_size_y/normalizeItem) + 'px'"
+      [draggableItem]="item" (shortclick)="showMenu(item)" (dragEnd)="validate(item)"
+      [class.itemError]="item.error" [class.item-untouched]="item.untouched"
+      >
+      {{item.order}}
+    </div>
+  </div>
+</div>

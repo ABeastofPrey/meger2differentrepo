@@ -1,0 +1,58 @@
+.wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.side-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  overflow: hidden;
+  min-width: 300px;
+  z-index: 1;
+}
+.gripper-data {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  padding: 24px;
+  overflow: hidden;
+}
+mat-tree, .content-wrapper { 
+  background: inherit;
+  flex: 1;
+  overflow: auto;
+}
+.mat-icon-button { width: auto; }
+.table-button {
+  flex: 1;
+  text-align: left;
+}
+.content-wrapper h1 { display: flex; }
+.content-wrapper h1 div { flex: 1; }
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.row {
+  display: flex;
+  align-items: center;
+}
+@media only screen and (max-width: 1000px) {
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid #888;
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+}
+.row > * { margin-right: 16px; }
+.new-node {
+  background: #fff;
+  margin-top: 8px;
+  border-radius: 6px;
+  padding: 8px;
+}
+.row mat-form-field { width: 100px; }

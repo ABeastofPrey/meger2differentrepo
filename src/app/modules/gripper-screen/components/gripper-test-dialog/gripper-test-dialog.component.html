@@ -1,0 +1,18 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">Test Gripper {{data.grp}}</div>
+    <div class="content">
+      <button mat-raised-button color="primary" (click)="open()">OPEN {{data.grp}}</button>
+      <button mat-raised-button color="primary" (click)="close()">CLOSE {{data.grp}}</button>
+      <h3 style="margin-top: 16px;">Cycle Test</h3>
+      <mat-form-field>
+        <input matInput placeholder="Cycle Time" type="number" [(ngModel)]="time">
+        <span matSuffix>ms.</span>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="cycle()">CYCLE</button>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" matDialogClose>CLOSE</button>
+  </div>
+</div>

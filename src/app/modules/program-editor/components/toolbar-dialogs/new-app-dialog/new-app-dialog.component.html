@@ -1,0 +1,14 @@
+<div class="mat-typography">
+  <div class="title mat-elevation-z1">
+    <mat-icon>add</mat-icon>&nbsp;&nbsp;New App
+  </div>
+  <div class="name-wrapper">
+    <mat-form-field>
+      <input matInput placeholder="App Name" [(ngModel)]="name">
+    </mat-form-field>
+  </div>
+  <div class="actions">
+    <button mat-button mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || submitting">CREATE APP</button>
+  </div>
+</div>

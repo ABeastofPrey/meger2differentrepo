@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
-import {MatTreeNestedDataSource, MatDialog, MatSnackBar} from '@angular/material';
-import {of as observableOf} from 'rxjs';
-import {NewProjectDialogComponent} from '../new-project-dialog/new-project-dialog.component';
-import {NewProjectFileDialogComponent} from '../new-project-file-dialog/new-project-file-dialog.component';
+import {MatTreeNestedDataSource, MatDialog} from '@angular/material';
+import {of as observableOf, Subscription} from 'rxjs';
 import {ProgramEditorService} from '../../services/program-editor.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
-import {MCFile, ProjectManagerService} from '../../../core';
-import {environment} from '../../../../../environments/environment';
+import {MCFile, ProjectManagerService, DataService, WebsocketService, MCQueryResponse} from '../../../core';
 import {MCProject} from '../../../core/models/project/mc-project.model';
+import {ElementRef} from '@angular/core';
+import {NewAppDialogComponent} from '../toolbar-dialogs/new-app-dialog/new-app-dialog.component';
+import {NewLibDialogComponent} from '../toolbar-dialogs/new-lib-dialog/new-lib-dialog.component';
+import {ApplicationRef} from '@angular/core';
+import {NgZone} from '@angular/core';
 
 const leafTypes = [
-  'File','Data','Library','Macros','Settings','Errors','Dependency'
+  'File','Data','Library','Macros','Settings','Errors','Dependency','Frames',
+  'Pallets','Grippers','Vision','Conveyor','IO','Payloads'
 ];
 
 @Component({
@@ -22,25 +25,68 @@ const leafTypes = [
 })
 export class ProgramEditorSideMenuComponent implements OnInit {
   
+  @ViewChild('menu') menu : ElementRef;
+  
   nestedTreeControl: NestedTreeControl<TreeNode>;
   nestedDataSource: MatTreeNestedDataSource<TreeNode>;
   lastSelectedNode: TreeNode = null;
   lastSelectedFile: MCFile = null;
+  currProject: MCProject = null;
+  menuVisible: boolean = false;
+  menuLeft: string = '0';
+  menuTop: string = '0';
   
+  private _modeToggle: string = 'prj';
   private _getChildren = (node: TreeNode) => {return observableOf(node.children); };
+  private subscriptions: Subscription[] = [];
+  
+  get modeToggle() { return this._modeToggle; }
+  set modeToggle(val:string) {
+    this._modeToggle = val;
+    if (val === 'mc')
+      this.service.mode = 'editor';
+  }
 
   constructor(
     public service : ProgramEditorService,
-    private api : ApiService,
     private dialog : MatDialog,
-    private snack: MatSnackBar,
-    private prj: ProjectManagerService
+    private prj: ProjectManagerService,
+    private data: DataService,
+    private ws: WebsocketService,
+    private zone: NgZone
   ) { }
 
   ngOnInit() {
     this.nestedTreeControl = new NestedTreeControl<TreeNode>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
-    this.refreshData();
+    this.subscriptions.push(this.prj.currProject.subscribe(proj=>{
+      if (proj) {
+        this.currProject = proj;
+        this.zone.run(()=>{
+          this.refreshData();
+        });
+      }
+    }));
+    this.subscriptions.push(this.prj.onExpand.subscribe(name=>{
+      const appsNode = this.nestedDataSource.data[0];
+      this.nestedTreeControl.expand(appsNode);
+    }));
+    this.subscriptions.push(this.prj.onExpandLib.subscribe((ret:{app:string,lib:string})=>{
+      const appsNode = this.nestedDataSource.data[0];
+      for (let app of appsNode.children) {
+        if (app.name === ret.app) {
+          this.nestedTreeControl.expand(appsNode);
+          this.nestedTreeControl.expandDescendants(app);
+          return;
+        }
+      }
+    }));
+  }
+  
+  ngOnDestroy() {
+    for (let sub of this.subscriptions) {
+      sub.unsubscribe();
+    }
   }
   
   selectNode(node: TreeNode) {
@@ -60,79 +106,132 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   }
   
   openFile(n:TreeNode) {
-    for (let f of this.service.files) {
-      if (f.fileName === n.name)
-        this.service.setFile(f);
+    const projName = this.currProject.name;
+    if (n.type !== 'File')
+      this.service.close();
+    if (n.type === 'Data') {
+      this.ws.query('?tp_set_application("' + n.parent.name + '")')
+      .then(()=>{
+        return this.data.refreshDomains();
+      }).then(()=>{
+        this.service.mode = 'data';
+      });
+      return;
+    }
+    if (n.type === 'Settings') {
+      this.service.mode = 'settings';
+      return;
+    }
+    if (n.type === 'Frames') {
+      this.service.mode = 'frames';
+      return;
+    }
+    if (n.type === 'Pallets') {
+      this.service.mode = 'pallets';
+      return;
+    }
+    if (n.type === 'Grippers') {
+      this.service.mode = 'grippers';
+      return;
+    }
+    if (n.type === 'Vision') {
+      this.service.mode = 'vision';
+      return;
+    }
+    if (n.type === 'Conveyor') {
+      this.service.mode = 'conveyor';
+      return;
+    }
+    if (n.type === 'Errors') {
+      this.service.mode = 'errors';
+      return;
+    }
+    if (n.type === 'Macros') {
+      this.service.mode = 'macros';
+      return;
+    }
+    if (n.type === 'IO') {
+      this.service.mode = 'io';
+      return;
+    }
+    if (n.type === 'Payloads') {
+      this.service.mode = 'payload';
+      return;
+    }
+    this.service.mode = 'editor';
+    setTimeout(()=>{
+      this.service.dragEnd.emit();
+    },200);
+    let path:string;
+    if (n.type === 'File') {
+      path = projName + '/' + n.parent.name + '/';
+      this.service.setFile(n.parent.name+'.UPG',path);
+    } else if (n.type === 'Library') {
+      const appName = n.parent.parent.name;
+      path = projName + '/' + appName + '/LIBS/';
+      this.service.setFile(n.name + '.ULB',path);
     }
   }
   
-  new() {
-    let ref = this.dialog.open(NewProjectDialogComponent);
-    ref.afterClosed().subscribe(projectName=>{
-      if (projectName) {
-        this.api.createProject(projectName).then((ret:number)=>{
-          if (ret === 0)
-            this.refreshData();
-          else
-            this.snack.open('Error ' + ret + ": Can't create Project.",'',{duration:1500});
-        });
-      }
+  newApp() {
+    this.menuVisible = false;
+    this.dialog.open(NewAppDialogComponent);
+  }
+  
+  newLib(appName?: string) {
+    const app = appName || this.lastSelectedNode.parent.name;
+    this.menuVisible = false;
+    this.dialog.open(NewLibDialogComponent,{
+      data: app
     });
   }
   
-  download(n:TreeNode) {
-    let files = [];
-    for (let node of n.children) {
-      for (let f of node.children) {
-        files.push(f.name);
-      }
-    }
-    this.api.downloadZip(files);
-  }
-  
-  deleteProject(n:TreeNode) {
-    let ref = this.dialog.open(YesNoDialogComponent,{
+  deleteApp(app:string) {
+    this.menuVisible = false;
+    this.dialog.open(YesNoDialogComponent,{
       data: {
+        title: 'DELETE ' + app + '?',
+        msg: 'This operation cannot be undone, and will remove this application with all its data and libraries. Are you sure you wish to delete it?',
         yes: 'DELETE',
-        no: 'CANCEL',
-        title: 'Delete Project ' + n.name + '?',
-        msg: 'The files associated with this project will NOT be deleted.'
-      }
-    });
-    ref.afterClosed().subscribe(ret=>{
+        no: 'CANCEL'
+      },
+      width: '500px'
+    }).afterClosed().subscribe(ret=>{
       if (ret) {
-        this.api.deleteProject(n.name).then(ret=>{
-          if (ret === 0)
-            this.refreshData();
+        const prj = this.prj.currProject.value.name;
+        this.ws.query('?prj_remove_app("' + prj + '","' + app + '")').then((ret:MCQueryResponse)=>{
+          if (ret.result === '0') {
+            this.data.refreshDomains().then(()=>this.prj.getCurrentProject())
+            .then(ret=>{
+              this.prj.onExpand.emit();
+            });
+          }
         });
       }
     });
   }
   
-  removeFileFromProject(n:TreeNode) {
-    let ref = this.dialog.open(YesNoDialogComponent,{
+  deleteLib() {
+    this.menuVisible = false;
+    const lib = this.lastSelectedNode.name;
+    this.dialog.open(YesNoDialogComponent,{
       data: {
-        yes: 'REMOVE FROM PROJECT',
-        no: 'CANCEL',
-        title: 'Remove File ' + n.name + ' from Project?',
-        msg: 'The file will be removed from THIS project only.'
-      }
-    });
-    ref.afterClosed().subscribe(ret=>{
+        title: 'Delete Library ' + lib + '?',
+        msg: 'This operation cannot be undone. Are you sure you wish to delete it?',
+        yes: 'DELETE',
+        no: 'CANCEL'
+      },
+      width: '500px'
+    }).afterClosed().subscribe(ret=>{
       if (ret) {
-        this.api.deleteFileFromProject(n.projectNameRef, n.name).then(ret=>{
-          if (ret === 0) {
-            this.refreshData().then(()=>{
-              for (let project of this.nestedDataSource.data) {
-                if (project.name !== n.projectNameRef)
-                  continue;
-                this.nestedTreeControl.expand(project);
-                for (let node of project.children) {
-                  if (n.parent && node.name === n.parent.name) {
-                    this.nestedTreeControl.expand(node);
-                  }
-                }
-              }
+        const prj = this.prj.currProject.value.name;
+        const app = this.lastSelectedNode.parent.parent.name;
+        const cmd = '?prj_remove_app_library("' + prj + '","' + app + '","' + 
+                    lib + '")';
+        this.ws.query(cmd).then((ret:MCQueryResponse)=>{
+          if (ret.result === '0') {
+            this.prj.getCurrentProject().then(ret=>{
+              this.prj.onExpandLib.emit({app: app, lib: null});
             });
           }
         });
@@ -140,66 +239,70 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     });
   }
   
-  addFileToProject(n:TreeNode) {
-    let ref = this.dialog.open(NewProjectFileDialogComponent,{
-      data: n.type
-    });
-    ref.afterClosed().subscribe((fileName:string)=>{
-      if (fileName) {
-        this.api.addToProject(n.projectNameRef, fileName).then(ret=>{
-          if (ret === 0) {
-            this.refreshData().then(()=>{
-              for (let project of this.nestedDataSource.data) {
-                if (project.name !== n.projectNameRef)
-                  continue;
-                this.nestedTreeControl.expand(project);
-                for (let node of project.children) {
-                  if (node.name === n.name) {
-                    this.nestedTreeControl.expand(node);
-                  }
-                }
-              }
-              this.service.refreshFiles();
-            });
-          } else {
-            this.snack.open('Error ' + ret + ": Can't add file to project");
-          }
-        });
-      }
-    });
+  openContextMenu(event:MouseEvent, node: TreeNode) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.selectNode(node);
+    switch (node.type) {
+      case 'Apps':
+      case 'App':
+      case 'Libraries':
+      case 'Library':
+        break;
+      default:
+        return;
+    }
+    this.menuLeft = event.pageX + 5 + 'px';
+    this.menuTop = event.pageY + 5 + 'px';
+    this.menuVisible = true;
+  }
+  
+  closeContextMenu() {
+    this.menuVisible = false;
   }
   
   refreshData() {
-    return this.prj.getMCProjects().then((ret:MCProject[])=>{
-      let data : TreeNode[] = [];
-      for (let p of ret) {
-        let apps = new TreeNode('Apps', 'Apps', p.name,null);
-        for (let app of p.apps) {
-          let appNode = new TreeNode(app.name, 'App', p.name,apps);
-          let libsNode = new TreeNode('Libraries','Libraries',p.name,appNode);
-          for (let lib of app.libs) {
-            libsNode.children.push(new TreeNode(lib,'Library',p.name,libsNode));
-          }
-          appNode.children.push(new TreeNode(app.name+'.UPG','File',p.name,appNode));
-          appNode.children.push(new TreeNode('App Data','Data',p.name,appNode));
-          appNode.children.push(libsNode);
-          apps.children.push(appNode);
-        }
-        let deps = new TreeNode('Dependencies', 'Dependencies', p.name,null);
-        for (let dep of p.dependencies) {
-          deps.children.push(new TreeNode(dep,'Dependency',p.name,deps));
-        }
-        let macros = new TreeNode('Macros', 'Macros', p.name,null);
-        let settings = new TreeNode('Settings', 'Settings', p.name,null);
-        let errors = new TreeNode('User Errors', 'Errors', p.name,null);
-        data.push(apps);
-        data.push(deps);
-        data.push(settings);
-        data.push(errors);
-        data.push(macros);
+    let data : TreeNode[] = [];
+    const p = this.currProject;
+    let apps = new TreeNode('Apps', 'Apps', p.name,null);
+    for (let app of p.apps) {
+      let appNode = new TreeNode(app.name, 'App', p.name,apps);
+      let libsNode = new TreeNode('Libraries','Libraries',p.name,appNode);
+      for (let lib of app.libs) {
+        libsNode.children.push(new TreeNode(lib,'Library',p.name,libsNode));
       }
-      this.nestedDataSource.data = data;
-    });
+      appNode.children.push(new TreeNode('Program','File',p.name,appNode));
+      appNode.children.push(new TreeNode('Data','Data',p.name,appNode));
+      appNode.children.push(libsNode);
+      apps.children.push(appNode);
+    }
+    let deps = new TreeNode('Dependencies', 'Dependencies', p.name,null);
+    for (let dep of p.dependencies) {
+      deps.children.push(new TreeNode(dep,'Dependency',p.name,deps));
+    }
+    let macros = new TreeNode('Macros', 'Macros', p.name,null);
+    let settings = new TreeNode('Settings', 'Settings', p.name,null);
+    let errors = new TreeNode('User Errors', 'Errors', p.name,null);
+    let frames = new TreeNode('Motion Frames', 'Frames', p.name,null);
+    let pallets = new TreeNode('Palletizing', 'Pallets', p.name,null);
+    let grippers = new TreeNode('Grippers', 'Grippers', p.name,null);
+    let io = new TreeNode('I/O', 'IO', p.name,null);
+    let vision = new TreeNode('Vision', 'Vision', p.name,null);
+    let conveyor = new TreeNode('Conveyor Tracking', 'Conveyor', p.name,null);
+    let payloads = new TreeNode('Payloads', 'Payloads', p.name,null);
+    data.push(apps);
+    data.push(deps);
+    data.push(settings);
+    data.push(frames);
+    data.push(pallets);
+    data.push(grippers);
+    data.push(io);
+    data.push(payloads);
+    data.push(errors);
+    data.push(macros);
+    data.push(vision);
+    data.push(conveyor);
+    this.nestedDataSource._data.next(data);
   }
   
   hasNestedChild = (_: number, nodeData: TreeNode) => {

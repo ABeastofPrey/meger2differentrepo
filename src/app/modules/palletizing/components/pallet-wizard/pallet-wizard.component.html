@@ -1,0 +1,285 @@
+<div class="mat-typography wizard">
+  <div class="header mat-toolbar mat-primary mat-elevation-z3">
+    <button mat-button (click)="closeDialog(true)"><mat-icon>close</mat-icon></button>
+    <div class="title">Pallet Wizard: {{dataService.selectedPallet.name}}</div>
+  </div>
+  <mat-horizontal-stepper #stepper="matHorizontalStepper" [linear]="true">
+    <mat-step [stepControl]="step1">
+      <form [formGroup]="step1">
+        <ng-template matStepLabel>General</ng-template>
+        <div class="step-wrapper">
+          <div class="step-content">
+            <div style="display: flex;">
+              <mat-form-field class="input-normal" style="margin-right: 16px;">
+                <mat-select value="{{dataService.selectedPallet.type}}" placeholder="Pallet Type" [disabled]="true">
+                  <mat-option value="{{dataService.selectedPallet.type}}">{{dataService.selectedPallet.type}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="input-normal" *ngIf="dataService.selectedPallet.type === 'GRID'">
+                <mat-select placeholder="Order" [(ngModel)]="dataService.selectedPallet.order" formControlName="order" required (selectionChange)="onWindowResize()">
+                  <mat-option *ngFor="let o of dataService.selectedPallet.orderList" value="{{o}}">{{o}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div *ngIf="dataService.selectedPallet.type === 'GRID'">
+              <h3>Number of items</h3>
+              <div style="display: flex;">
+                <mat-form-field class="input-small">
+                  <input matInput min="1" placeholder="nX" [(ngModel)]="dataService.selectedPallet.items_x" formControlName="itemsX" required (ngModelChange)="onWindowResize()">
+                </mat-form-field>
+                <mat-form-field class="input-small">
+                  <input matInput placeholder="nY" min="1" [(ngModel)]="dataService.selectedPallet.items_y" formControlName="itemsY" required (ngModelChange)="onWindowResize()">
+                </mat-form-field>
+                <mat-form-field class="input-small">
+                  <input matInput placeholder="nZ" min="1" [(ngModel)]="dataService.selectedPallet.items_z" formControlName="itemsZ" required (ngModelChange)="onWindowResize()">
+                </mat-form-field>
+              </div>
+            </div>
+            <div style="display: flex;">
+              <div>
+                <h3>Item Dimensions</h3>
+                <div style="display: flex;">
+                  <mat-form-field class="input-small">
+                    <input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.item_size_x" formControlName="itemSizeX" required (ngModelChange)="onWindowResize()">
+                  </mat-form-field>
+                  <mat-form-field class="input-small">
+                    <input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.item_size_y" formControlName="itemSizeY" required (ngModelChange)="onWindowResize()">
+                  </mat-form-field>
+                  <mat-form-field class="input-small">
+                    <input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.item_size_z" formControlName="itemSizeZ" required (ngModelChange)="onWindowResize()">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div style="margin-left: 24px;">
+                <h3>Pallet Dimensions</h3>
+                <div style="display: flex;">
+                  <mat-form-field class="input-small">
+                    <input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.pallet_size_x" formControlName="palletSizeX" required (ngModelChange)="onWindowResize()">
+                  </mat-form-field>
+                  <mat-form-field class="input-small">
+                    <input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.pallet_size_y" formControlName="palletSizeY" required (ngModelChange)="onWindowResize()">
+                  </mat-form-field>
+                  <mat-form-field class="input-small">
+                    <input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.pallet_size_z" formControlName="palletSizeZ" required (ngModelChange)="onWindowResize()">
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="dataService.selectedPallet.type === 'CUSTOM'">
+              <h3>Levels in Pallet:</h3>
+              <div style="display: flex; align-items: center;">
+                <mat-form-field class="input-normal">
+                  <input matInput placeholder="Levels" [(ngModel)]="dataService.selectedPallet.levels" formControlName="levels" required>
+                </mat-form-field>
+                <mat-checkbox color="primary" [(ngModel)]="dataService.selectedPallet.diffOddEven" formControlName="diffOddEven">Different Odd/Even levels</mat-checkbox>
+              </div>
+            </div>
+            <div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile">
+              <h3>Current item index:</h3><mat-error *ngIf="step1.controls['index'].hasError('invalidIndex')">Invalid value</mat-error>
+              <mat-radio-group [(ngModel)]="itemIndexMode" formControlName="index">
+                <mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'">Full ({{dataService.selectedPallet.items_x*dataService.selectedPallet.items_y*dataService.selectedPallet.items_z}})</mat-radio-button>
+                <mat-radio-button value="empty" style="margin: 0 16px;" color="primary">Empty (0)</mat-radio-button>
+                <mat-radio-button value="custom" color="primary">
+                  <mat-form-field class="input-normal">
+                    <input matInput placeholder="Custom" [(ngModel)]="dataService.selectedPallet.index" [disabled]="itemIndexMode !== 'custom'" [ngModelOptions]="{standalone: true}" (ngModelChange)="onIndexChange()">
+                  </mat-form-field>
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+          <div #palletContainer1 class="mat-elevation-z1 preview-container" *ngIf="dataService.selectedPallet.type === 'GRID'">
+            <img *ngIf="dataService.selectedPallet.order && !isPreview1Showing && itemIndexMode === null" src="assets/pics/pallet/{{dataService.selectedPallet.order.toLowerCase()}}.png">
+            <canvas #palletPreviewStep1 width="{{previewWidth}}" height="{{previewHeight}}"></canvas>
+            <div *ngIf="abnormalItemCount" class="error-message">
+              Too many items - 3D Preview is disabled
+            </div>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step *ngIf="dataService.selectedPallet.type === 'CUSTOM'" [stepControl]="stepCustom1">
+      <form [formGroup]="stepCustom1">
+        <ng-template matStepLabel>Level 1</ng-template>
+        <div class="step-wrapper">
+          <div class="step-content custom-level">
+            <pallet-level-designer [pallet]="dataService.selectedPallet" #designer (change)="onLevelChange(1,$event)"></pallet-level-designer>
+          </div>
+          <input type="hidden" [value]="designer.items.length" formControlName="levelExists">
+        </div>
+      </form>
+    </mat-step>
+    <mat-step *ngIf="dataService.selectedPallet.type === 'CUSTOM' && dataService.selectedPallet.diffOddEven" [stepControl]="stepCustom2">
+      <form [formGroup]="stepCustom2">
+        <ng-template matStepLabel>Level 2</ng-template>
+        <div class="step-wrapper">
+          <div class="step-content custom-level">
+            <pallet-level-designer [pallet]="dataService.selectedPallet" #designer2 (change)="onLevelChange(2,$event)"></pallet-level-designer>
+          </div>
+          <input type="hidden" [value]="designer.items.length" formControlName="levelExists">
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="step2">
+      <form [formGroup]="step2">
+        <ng-template matStepLabel>Origin</ng-template>
+        <div class="step-wrapper">
+          <div class="step-content">
+            <div class="origin-status">
+              <div>Origin Status:</div>
+              <div class="red" [ngClass]="{green:this.dataService.selectedPallet.isFrameCalibrated}">
+                {{this.dataService.selectedPallet.isFrameCalibrated ? 'Calibrated' : 'Not Calibrated'}}
+              </div>
+              <button mat-raised-button color="primary" (click)="calibrate()">CALIBRATE</button>
+            </div>
+            <img height="260" width="430" src="assets/pics/pallet/{{originPicName}}">
+          </div>
+          <div class="step-content" (mouseleave)="setOriginPic(0)">
+            <div (mouseenter)="setOriginPic(1)">
+              <div class="text-and-button">
+                <h3>Origin:</h3>
+                <span matTooltip="Incompatible Robot" [matTooltipDisabled]="isCurrentRobotCompatible">
+                  <button mat-raised-button color="primary" [disabled]="!isCurrentRobotCompatible" (click)="teachOrigin()">TEACH ORIGIN</button>
+                </span>
+              </div>
+              <div style="display: flex;">
+                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.origin.x" formControlName="originX" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.origin.y" formControlName="originY" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.origin.z" formControlName="originZ" required></mat-form-field>
+              </div>
+            </div>
+            <div (mouseenter)="setOriginPic(2)">
+              <div class="text-and-button">
+                <h3>Position X:</h3>
+                <span matTooltip="Incompatible Robot" [matTooltipDisabled]="isCurrentRobotCompatible">
+                  <button mat-raised-button color="primary" [disabled]="!isCurrentRobotCompatible" (click)="teachPosX()">TEACH POSITION X</button>
+                </span>
+              </div>
+              <div style="display: flex;">
+                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.posX.x" formControlName="posXX" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.posX.y" formControlName="posXY" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.posX.z" formControlName="posXZ" required></mat-form-field>
+              </div>
+            </div>
+            <div (mouseenter)="setOriginPic(3)">
+              <div class="text-and-button">
+                <h3>Position Y:</h3>
+                <span matTooltip="Incompatible Robot" [matTooltipDisabled]="isCurrentRobotCompatible">
+                  <button mat-raised-button color="primary" [disabled]="!isCurrentRobotCompatible" (click)="teachPosY()">TEACH POSITION Y</button>
+                </span>
+              </div>
+              <div style="display: flex;">
+                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.posY.x" formControlName="posYX" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.posY.y" formControlName="posYY" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.posY.z" formControlName="posYZ" required></mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="checkbox" [(ngModel)]="dataService.selectedPallet.isFrameCalibrated" formControlName="calibrated" style="visibility: hidden!important;">
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="step3">
+      <form [formGroup]="step3">
+        <ng-template matStepLabel>Entry</ng-template>
+        <div class="step-wrapper">
+          <div class="step-content">
+            <div style="display: flex; align-items: center;">
+              <h2>Entry Position</h2>
+              <mat-slide-toggle [(ngModel)]="dataService.selectedPallet.entryEnabled" color="primary" formControlName="entryEnable" (change)="toggleEntryEnable($event)">Enable</mat-slide-toggle>
+            </div>
+            <span matTooltip="Incompatible Robot" [matTooltipDisabled]="isCurrentRobotCompatible">
+              <button mat-raised-button color="primary" [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled" (click)="teachEntry()">TEACH ENTRY POSITION</button>
+            </span>
+            <h3>Current Position:</h3>
+            <div style="display: flex;">
+              <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.entry.x" formControlName="x" required></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.entry.y" formControlName="y" required></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.entry.z" formControlName="z" required></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="Yaw" [(ngModel)]="dataService.selectedPallet.entry.yaw" formControlName="yaw" required></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="Pitch" [(ngModel)]="dataService.selectedPallet.entry.pitch" formControlName="pitch" required></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="Roll" [(ngModel)]="dataService.selectedPallet.entry.roll" formControlName="roll" required></mat-form-field>
+            </div>
+          </div>
+          <img src="assets/pics/pallet/entry.png">
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="step4">
+      <form [formGroup]="step4">
+        <ng-template matStepLabel>Approach&Retract</ng-template>
+        <div class="step-wrapper">
+          <div class="step-content">
+            <div style="display: flex; align-items: center;">
+              <h2>Approach</h2>
+              <mat-slide-toggle [(ngModel)]="dataService.selectedPallet.appEnabled" color="primary" formControlName="appEnable" (change)="toggleAppEnable($event)">Enable</mat-slide-toggle>
+            </div>
+            <div style="display: flex">
+              <mat-form-field class="input-normal"><input matInput placeholder="Vertical Offset" [(ngModel)]="dataService.selectedPallet.approach_offset_vertical" formControlName="app_off_v"></mat-form-field>
+              <mat-form-field class="input-normal"><input matInput placeholder="Horizontal Offset" [(ngModel)]="dataService.selectedPallet.approach_offset_horizontal" formControlName="app_off_h"></mat-form-field>
+            </div>
+            <mat-checkbox [(ngModel)]="dataService.selectedPallet.appExceed" color="primary" formControlName="appExceed" (change)="toggleAppExceed($event)">Can exceed pallet bounds</mat-checkbox>
+            <h3>Approach Direction:</h3>
+            <div class="direction-picker">
+              <mat-radio-group [(ngModel)]="dataService.selectedPallet.approach_direction" formControlName="app_dir">
+                <mat-radio-button value="-X+Y+Z" style="left: 0; top: 0;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+Y+Z" style="left: 85px; top: 0;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+X+Y+Z" style="left: 180px; top: 0;" color="primary"></mat-radio-button>
+                <mat-radio-button value="-X+Z" style="left: 0; top: 56px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+Z" style="left: 85px; top: 56px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+X+Z" style="left: 180px; top: 56px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="-X-Y+Z" style="left: 0; top: 120px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="-Y+Z" style="left: 85px; top: 120px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+X-Y+Z" style="left: 180px; top: 120px;" color="primary"></mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+          <div class="step-content">
+            <div style="display: flex; align-items: center;">
+              <h2>Retract</h2>
+              <mat-slide-toggle [(ngModel)]="dataService.selectedPallet.retEnabled" color="primary" formControlName="retEnable" (change)="toggleRetEnable($event)">Enable</mat-slide-toggle>
+            </div>
+            <div style="display: flex">
+              <mat-form-field class="input-normal"><input matInput placeholder="Vertical Offset" [(ngModel)]="dataService.selectedPallet.retract_offset_vertical" formControlName="ret_off_v"></mat-form-field>
+              <mat-form-field class="input-normal"><input matInput placeholder="Horizontal Offset" [(ngModel)]="dataService.selectedPallet.retract_offset_horizontal" formControlName="ret_off_h"></mat-form-field>
+            </div>
+            <mat-checkbox [(ngModel)]="dataService.selectedPallet.retExceed" color="primary" formControlName="retExceed" (change)="toggleRetExceed($event)">Can exceed limits</mat-checkbox>
+            <h3>Retract Direction:</h3>
+            <div class="direction-picker">
+              <mat-radio-group [(ngModel)]="dataService.selectedPallet.retract_direction" formControlName="ret_dir">
+                <mat-radio-button value="-X+Y+Z" style="left: 0; top: 0;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+Y+Z" style="left: 85px; top: 0;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+X+Y+Z" style="left: 180px; top: 0;" color="primary"></mat-radio-button>
+                <mat-radio-button value="-X+Z" style="left: 0; top: 56px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+Z" style="left: 85px; top: 56px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+X+Z" style="left: 180px; top: 56px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="-X-Y+Z" style="left: 0; top: 120px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="-Y+Z" style="left: 85px; top: 120px;" color="primary"></mat-radio-button>
+                <mat-radio-button value="+X-Y+Z" style="left: 180px; top: 120px;" color="primary"></mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+          <img src="assets/pics/pallet/appret.png">
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+      <img *ngIf="dataService.selectedPallet.order" src="assets/pics/pallet/{{dataService.selectedPallet.order.toLowerCase()}}.png" class="mat-elevation-z1" style="border-radius: 2px; float: right;">
+      <h2>Pallet setup is done!</h2>
+      <h3>Here's a summary of {{dataService.selectedPallet.name}}:</h3>
+      <table class="summary">
+        <tr><td>Order:</td><td>{{dataService.selectedPallet.order}}</td></tr>
+        <tr><td>Number of items:</td><td>X:{{dataService.selectedPallet.items_x}}&nbsp;&nbsp;Y:{{dataService.selectedPallet.items_y}}&nbsp;&nbsp;Z:{{dataService.selectedPallet.items_z}}</td></tr>
+        <tr><td>Item Dimensions:</td><td>X:{{dataService.selectedPallet.item_size_x}}mm.&nbsp;&nbsp;Y:{{dataService.selectedPallet.item_size_y}}mm.&nbsp;&nbsp;Z:{{dataService.selectedPallet.item_size_z}}mm.</td></tr>
+        <tr><td>Origin:</td><td>{{dataService.selectedPallet.isFrameCalibrated ? 'Calibrated' : 'Not Calibrated'}}</td></tr>
+        <tr><td>Entry Position:</td><td>{{dataService.selectedPallet.entryEnabled ? dataService.selectedPallet.entry : 'Disabled'}}</td></tr>
+        <tr><td>Approach:</td><td>{{dataService.selectedPallet.appEnabled ? 'Vertical Offset' + ': ' + dataService.selectedPallet.approach_offset_vertical + ', ' + 'Horizontal Offset' + ': ' + dataService.selectedPallet.approach_offset_horizontal + ', ' + 'Direction: ' +  dataService.selectedPallet.approach_direction : 'Disabled'}}</td></tr>
+        <tr><td>Retract:</td><td>{{dataService.selectedPallet.retEnabled ? 'Vertical Offset' + ': ' + dataService.selectedPallet.retract_offset_vertical + ', ' + 'Horizontal Offset' + ': ' + dataService.selectedPallet.retract_offset_horizontal + ', ' + 'Direction: ' +  dataService.selectedPallet.retract_direction : 'Disabled'}}</td></tr>
+      </table>
+      <div style="display: flex; align-items: center;">
+        <button mat-raised-button color="primary" (click)="finish()" style="margin-right: 16px;">FINISH</button>
+        <div class="red" *ngIf="this.lastError">{{this.lastError}}</div>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

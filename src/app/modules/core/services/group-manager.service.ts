@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {EventEmitter} from '@angular/core';
 import {ApiService} from './api.service';
+import {ApplicationRef} from '@angular/core';
+import {NgZone} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -17,16 +19,20 @@ export class GroupManagerService {
 
   constructor(
     private ws: WebsocketService,
-    private api: ApiService
+    private api: ApiService,
+    private zone: NgZone,
+    private ref: ApplicationRef
   ) {
     this.ws.isConnected.subscribe(stat=>{
       if (stat) {
         this.api.getSysInfo().then((ret:SysInfo)=>{
           ret.ver = ret.ver.substring(0, ret.ver.indexOf(','));
           this.sysInfo = ret;
-          this.groupInterval = setInterval(()=>{
-            this.refreshGroupsAndInfo();
-          },2000);
+          this.zone.runOutsideAngular(()=>{
+            this.groupInterval = setInterval(()=>{
+              this.refreshGroupsAndInfo();
+            },2000);
+          });
           this.sysInfoLoaded.emit(true);
         });
       } else {
@@ -58,8 +64,10 @@ export class GroupManagerService {
       this.refreshSysInfo();
       this.lastGrouplist = grouplist.result;
       let elements : Group[] = [];
-      if (grouplist.result.indexOf('No groups') === 0)
+      if (grouplist.result.indexOf('No groups') === 0) {
+        this.ref.tick();
         return;
+      }
       let groups = grouplist.result.split('\n');
       for (let g of groups) {
         let parts = g.split(':');
@@ -69,6 +77,7 @@ export class GroupManagerService {
         });
       }
       this.groups = elements;
+      this.ref.tick();
     });
   }
 }

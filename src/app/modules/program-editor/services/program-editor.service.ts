@@ -18,7 +18,7 @@ export const TASKSTATE_KILLED = 10;
 export class ProgramEditorService {
   
   files : MCFile[] = [];
-  activeFile : MCFile = null;
+  activeFile : string = null;
   editorText : string = null;
   editorTextChange : EventEmitter<string> = new EventEmitter<string>();
   status : ProgramStatus = null;
@@ -29,8 +29,11 @@ export class ProgramEditorService {
   skipLineRequest : EventEmitter<number>=new EventEmitter();
   dragEnd : EventEmitter<any>=new EventEmitter();
   
+  mode: string = null;
+  
   private statusInterval : any = null;
   private oldStatString : string;
+  private activeFilePath: string = null;
   
   constructor(
     private ref : ApplicationRef,
@@ -39,16 +42,34 @@ export class ProgramEditorService {
     private snack : MatSnackBar,
     private api : ApiService) {
     this.refreshFiles();
+    this.ws.isConnected.subscribe(stat=>{
+      if (!stat) {
+        this.mode = null;
+        this.activeFile = null;
+      }
+    });
   }
 
-  setFile(f : MCFile) { // OPEN A FILE
+  setFile(f : string, path?:string) { // OPEN A FILE
+    if (f === this.activeFile)
+      return;
     this.close();
     this.activeFile = f;
-    this.api.getFile(f.fileName).then(ret=>{
-      this.editorText = ret;
-      this.editorTextChange.emit(ret);
-      this.refreshStatus(true);
-    });
+    if (!path) {
+      this.activeFilePath = null;
+      this.api.getFile(f).then(ret=>{
+        this.editorText = ret;
+        this.editorTextChange.emit(ret);
+        this.refreshStatus(true);
+      });
+    } else {
+      this.activeFilePath = path;
+      this.api.getPathFile(path+f).then(ret=>{
+        this.editorText = ret;
+        this.editorTextChange.emit(ret);
+        this.refreshStatus(true);
+      });
+    }
   }
   
   skipToLine(n:number) { // CALLED WHEN USER WANTS TO SKIP TO A SPECIFIC LINE
@@ -78,8 +99,9 @@ export class ProgramEditorService {
   save() {
     if (this.activeFile === null)
       return;
-    this.api.upload(
-      new File([new Blob([this.editorText])],this.activeFile.fileName),true)
+    const path = this.activeFilePath || '';
+    this.api.uploadToPath(
+      new File([new Blob([this.editorText])],this.activeFile),true,path)
     .then((ret:UploadResult)=>{
       if (ret.success)
         this.snack.open('Saved.','',{duration:1500});
@@ -91,11 +113,12 @@ export class ProgramEditorService {
   load() { // SAVES AND LOAD
     if (this.activeFile === null)
       return;
-    this.api.upload(
-      new File([new Blob([this.editorText])],this.activeFile.fileName),true)
+    const path = this.activeFilePath || '';
+    this.api.uploadToPath(
+      new File([new Blob([this.editorText])],this.activeFile),true,path)
     .then((ret:UploadResult)=>{
       if (ret.success) {
-        this.ws.query('Load ' + this.activeFile.fileName)
+        this.ws.query('Load ' + this.activeFile)
         .then((ret:MCQueryResponse)=>{
           if (ret.err)
             this.getTRNERR(ret.err.errMsg);
@@ -110,52 +133,52 @@ export class ProgramEditorService {
   run() {
     if (this.activeFile === null)
       return;
-    this.ws.query('KillTask ' + this.activeFile.fileName).then(()=>{
-      this.ws.query('StartTask ' + this.activeFile.fileName);
+    this.ws.query('KillTask ' + this.activeFile).then(()=>{
+      this.ws.query('StartTask ' + this.activeFile);
     });
   }
   
   jump() {
-    let prgName = this.activeFile.fileName;
+    let prgName = this.activeFile;
     this.ws.query('ContinueTask '+prgName+' programline = ' + this.editorLine);
   }
   
   kill() {
     if (this.activeFile === null)
       return;
-    this.ws.query('KillTask ' + this.activeFile.fileName);
+    this.ws.query('KillTask ' + this.activeFile);
   }
   
   idle() {
     if (this.activeFile === null)
       return;
-    this.ws.query('IdleTask ' + this.activeFile.fileName);
+    this.ws.query('IdleTask ' + this.activeFile);
   }
   
   unload() {
     if (this.activeFile === null)
       return;
-    this.ws.query('KillTask ' + this.activeFile.fileName).then(()=>{
-      this.ws.query('Unload ' + this.activeFile.fileName);
+    this.ws.query('KillTask ' + this.activeFile).then(()=>{
+      this.ws.query('Unload ' + this.activeFile);
     });
   }
   
   stepOver() {
     if (this.activeFile === null)
       return;
-    this.ws.query('StepOver ' + this.activeFile.fileName);
+    this.ws.query('StepOver ' + this.activeFile);
   }
   
   stepInto() {
     if (this.activeFile === null)
       return;
-    this.ws.query('StepIn ' + this.activeFile.fileName);
+    this.ws.query('StepIn ' + this.activeFile);
   }
   
   stepOut() {
     if (this.activeFile === null)
       return;
-    this.ws.query('StepOut ' + this.activeFile.fileName);
+    this.ws.query('StepOut ' + this.activeFile);
   }
   
   download() {
@@ -166,7 +189,7 @@ export class ProgramEditorService {
       'href',
       'data:text/plain;charset=utf-8,' + encodeURIComponent(this.editorText)
     );
-    element.setAttribute('download', this.activeFile.fileName);
+    element.setAttribute('download', this.activeFile);
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
@@ -183,7 +206,7 @@ export class ProgramEditorService {
             this.refreshFiles().then(()=>{
               for (let f of this.files) {
                 if (f.fileName === fileName)
-                  return this.setFile(f);
+                  return this.setFile(f.fileName);
               }
             });
           } else if (ret.err === -1) {
@@ -203,7 +226,7 @@ export class ProgramEditorService {
                     this.refreshFiles().then(()=>{
                       for (let f of this.files) {
                         if (f.fileName === fileName)
-                          return this.setFile(f);
+                          return this.setFile(f.fileName);
                       }
                     });
                   } else
@@ -225,7 +248,7 @@ export class ProgramEditorService {
       return this.ws.clearInterval(this.statusInterval);
     if (this.activeFile === null)
       return;
-    let cmd = '?'+this.activeFile.fileName+'.status';
+    let cmd = '?'+this.activeFile+'.status';
     this.oldStatString = null;
     this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
       if (ret !== this.oldStatString) {

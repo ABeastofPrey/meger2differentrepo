@@ -74,8 +74,10 @@ export class FileMngrComponent implements OnInit {
       for(let f of e.target.files) {
         this.api.upload(f, true).then((ret: UploadResult)=>{ // ON SUCCUESS
           count++;
-          if (count === targetCount)
+          if (count === targetCount) {
             this.snack.open('Success: All Files were uploaded!','',{duration:2000});
+            this.refreshFiles();
+          }
         },(ret:HttpErrorResponse)=>{ // ON ERROR
           switch (ret.error.err) {
             case -2:

@@ -7,6 +7,7 @@ import {TPVariable} from '../../core/models/tp/tp-variable.model';
 import {TPVariableType} from '../../core/models/tp/tp-variable-type.model';
 import {TpType} from '../../core/models/tp/tp-type.model';
 import {TpStatService} from './tp-stat.service';
+import {Pallet} from '../models/pallet.model';
 
 declare var Blockly:any;
 
@@ -115,7 +116,7 @@ export class DataService {
   set selectedDomain(val: string) {
     let oldDomain = this._selectedDomain;
     this._selectedDomain = val;
-    this.ws.query('?tp_set_namespace("' + val + '")').then((ret: MCQueryResponse)=>{
+    this.ws.query('?tp_set_application("' + val + '")').then((ret: MCQueryResponse)=>{
       if (ret.err || ret.result !== '0')
         this._selectedDomain = oldDomain;
       else {
@@ -159,14 +160,14 @@ export class DataService {
   // Pallets
   private _palletLibVer : string = null;
   get palletLibVer() {return this._palletLibVer; } 
-  /*private _pallets: Pallet[] = [];
-  private _selectedPallet: Pallet = null;*/
+  private _pallets: Pallet[] = [];
+  private _selectedPallet: Pallet = null;
   private _palletTypeOptions : string[] = [];
-  /*get pallets() {return this._pallets; }
+  get pallets() {return this._pallets; }
   get selectedPallet() {return this._selectedPallet; }
   set selectedPallet(p: Pallet) { 
     this._selectedPallet = p;
-  }*/
+  }
   get palletTypeOptions() {return this._palletTypeOptions;}
   
   // Grippers
@@ -280,7 +281,7 @@ export class DataService {
     });
   }
   
-  /*refreshPallets(selectedPallet? : string) : Promise<any> {
+  refreshPallets(selectedPallet? : string) : Promise<any> {
     return this.ws.query('?PLT_GET_PALLET_LIST').then((result: MCQueryResponse)=>{
       let pallets : string[] = result.result.length>0 ? result.result.split(','):[];
       var palletObjects = [];
@@ -299,7 +300,7 @@ export class DataService {
         this._pallets = palletObjects;
       });
     });
-  }*/
+  }
   
   /*refreshPayloads() {
     return this.ws.query('?PAY_GET_PAYLOAD_LIST').then((ret: MCQueryResponse)=>{
@@ -332,11 +333,14 @@ export class DataService {
   
   refreshDomains() : Promise<any> {
     var queries:Promise<any>[] = [
-      this.ws.query('?TP_GET_NAMESPACE_LIST'),
-      this.ws.query('?TP_GET_NAMESPACE')
+      this.ws.query('?TP_GET_APPLICATIONS_LIST'),
+      this.ws.query('?TP_GET_APPLICATION')
     ];
     return Promise.all(queries).then((result: MCQueryResponse[])=>{
-      this._domains = result[0].result.length>0 ? result[0].result.split(','):[];
+      let apps = result[0].result.length>0 ? result[0].result.split(';'):[];
+      for (let i=0; i<apps.length; i++)
+        apps[i] = apps[i].slice(0,-2);
+      this._domains = apps;
       if (this._selectedDomain !== result[1].result)
         this._selectedDomain = result[1].result;
     }).then(()=>{this.refreshVariables();});
@@ -442,7 +446,7 @@ export class DataService {
           .then(()=>{return this.refreshDomains();});
       }).then(()=>{
         if (this._palletLibVer) {
-          /*return this.refreshPallets().then(()=>{
+          return this.refreshPallets().then(()=>{
             return this.ws.query('?PLT_GET_PALLET_TYPE_LIST')
             .then((ret: MCQueryResponse)=>{
               if (ret.result.length === 0)
@@ -450,7 +454,7 @@ export class DataService {
               else
                 this._palletTypeOptions = ret.result.split(',');
             });
-          });*/
+          });
         }
       }).catch(()=>{});
     }).then(()=>{
@@ -498,7 +502,7 @@ export class DataService {
     .then((ret:MCQueryResponse)=>{
       if (ret.result !== 'A')
         this.stat.mode = 'A';
-      this.stat.deadman = false;
+      //this.stat.deadman = false;
       this.tpType = {
         name: 'EMULATOR',
         friendlyName: null

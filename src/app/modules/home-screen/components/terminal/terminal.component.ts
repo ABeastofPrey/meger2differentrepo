@@ -50,7 +50,7 @@ export class TerminalComponent implements OnInit {
       highlightActiveLine: false,
       printMargin: false,
       showGutter: false,
-      theme: "ace/theme/white",
+      theme: "ace/theme/eclipse",
       fontSize: "14px",
       enableBasicAutocompletion: true,
       enableLiveAutocompletion: true
@@ -136,14 +136,11 @@ export class TerminalComponent implements OnInit {
   onClick() {
     this.contextMenuShown = false;
     this.editor.focus();
-    // GO TO END OF LINE
-    const session = this.editor.getSession();
-    const count = session.getLength();
-    this.editor.gotoLine(count, session.getLine(count-1).length);
   }
   
   clear() {
     this.terminal.cmds = [];
+    this.cmd = '';
     this.contextMenuShown = false;
   }
   

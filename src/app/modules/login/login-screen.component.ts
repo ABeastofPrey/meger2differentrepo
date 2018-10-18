@@ -5,6 +5,8 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Errors} from '../core/models/errors.model';
 import {MatDialog} from '@angular/material';
 import {ServerDisconnectComponent} from '../../components/server-disconnect/server-disconnect.component';
+import {ApiService} from '../core';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'login-screen',
@@ -19,15 +21,25 @@ export class LoginScreenComponent implements OnInit {
   isSubmitting: boolean = false;
   authForm: FormGroup;
   errors: Errors = {error: null};
+  isVersionOK: boolean = true;
 
   constructor(
     public login: LoginService,
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private api: ApiService
   ) {
-    this.ver = window['wsver'] || '3.0.0 (Debug Mode)';
+    this.api.get('/cs/api/java-version').subscribe((ret:{ver:string})=>{
+      this.isVersionOK = ret.ver.startsWith(environment.compatible_webserver_ver);
+      if (!this.isVersionOK) {
+        this.errors.error =
+          'Please use web server v' + environment.compatible_webserver_ver +
+          ' (current is v' + ret.ver + ')';
+      }
+    });
+    this.ver = environment.gui_ver;
     this.authForm = this.fb.group({
       'username': ['', Validators.required],
       'password': ['', Validators.required]

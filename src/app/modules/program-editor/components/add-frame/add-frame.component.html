@@ -1,0 +1,31 @@
+<div class="mat-typography">
+  <div class="title mat-elevation-z1">
+    <mat-icon>add</mat-icon>&nbsp;&nbsp;Add {{frameType}}
+  </div>
+  <div class="name-wrapper">
+    <mat-form-field>
+      <input matInput placeholder="{{frameType}} Name" [(ngModel)]="name">
+    </mat-form-field>
+    <mat-checkbox color="primary" [(ngModel)]="isArray">Array</mat-checkbox>
+    <mat-form-field *ngIf="isArray" style="margin-top: 8px;">
+      <input matInput placeholder="Array Size" [(ngModel)]="arrSize">
+    </mat-form-field>
+    <div *ngIf="!isArray" style="margin-top: 8px;">
+      <div class="label">Values</div>
+      <div class="values">
+        <mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
+          <span matPrefix style='font-weight: bold;'>{{coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i]}}:&nbsp;&nbsp;</span>
+          <input
+            matInput
+            [placeholder]="coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i]"
+            [(ngModel)]="this.values[i]"
+          >
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="add()" [disabled]="!name" style="text-transform: uppercase;">CREATE {{frameType}}</button>
+  </div>
+</div>

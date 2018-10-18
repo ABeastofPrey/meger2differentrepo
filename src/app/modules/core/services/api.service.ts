@@ -46,37 +46,7 @@ export class ApiService {
   }
   
   private get token() {
-    return localStorage.getItem('token');
-  }
-  
-  addToProject(fileName:string,programName:string) {
-    let body = new HttpParams();
-    body = body.set('token', this.token);
-    body = body.set('fileName', fileName);
-    body = body.set('programName', programName);
-    return this.http.post(environment.api_url+'/cs/projects/addToProject',body).toPromise();
-  }
-  
-  createProject(fileName:string) {
-    let body = new HttpParams();
-    body = body.set('token',this.token);
-    body = body.set('fileName', fileName);
-    return this.http.post(environment.api_url+'/cs/projects/new',body).toPromise();
-  }
-  
-  deleteProject(name : string) {
-    let body = new HttpParams();
-    body = body.set('token', this.token);
-    return this.http.delete(environment.api_url + '/cs/projects/' + name, {params:body})
-      .toPromise();
-  }
-  
-  deleteFileFromProject(projectName : string, fileName:string) {
-    let body = new HttpParams();
-    body = body.set('token', this.token);
-    body = body.set('projectName', projectName);
-    body = body.set('fileName', fileName);
-    return this.http.delete(environment.api_url + '/cs/projects/file/',{params:body}).toPromise();
+    return localStorage.getItem('jwtToken');
   }
   
   upload(file : File, overwrite : boolean) {
@@ -87,6 +57,18 @@ export class ApiService {
     formData.append('token', this.token);
     formData.append('file', file);
     return this.http.post(url,formData).toPromise();
+  }
+  
+  uploadToPath(file:File, overwrite:boolean, path: string) {
+    const url = environment.api_url + '/cs/api/upload';
+    let formData = new FormData();
+    formData.append('file', file);
+    let body = new HttpParams();
+    body = body.set('token', this.token);
+    body = body.set('path', path);
+    if (overwrite)
+      body = body.set('overwrite', 'true');
+    return this.http.post(url,formData,{params: body}).toPromise();
   }
   
   uploadIPK(file: File) {
@@ -129,6 +111,17 @@ export class ApiService {
     }).toPromise();
   }
   
+  getPathFile(path: string) {
+    let body = new HttpParams();
+    body = body.set('token', this.token);
+    body = body.set('path', path);
+    console.log('get path:'+path+'....');
+    return this.http.get(environment.api_url+'/cs/path',{
+      responseType:'text',
+      params: body
+    }).toPromise();
+  }
+  
   downloadZip(files : string[]) {
     let body = new HttpParams();
     body = body.set('token', this.token);
@@ -139,6 +132,11 @@ export class ApiService {
       if (ret)
         window.location.href = 'http://' + environment.ip + '/MCFiles.zip';
     });
+  }
+  
+  downloadProjectZip(project: string) {
+    const url = environment.api_url + '/cs/api/zipProject/' + project.toUpperCase();
+    window.location.href = url;
   }
   
   deleteFile(name : string) {
@@ -215,6 +213,23 @@ export class ApiService {
     },()=>{
       return null;
     });
+  }
+  
+  createPalletFile(data:string, fileName:string) {
+    let body = new HttpParams();
+    body = body.set('palletData', data);
+    if (fileName) {
+      body = body.set('fileName', fileName);
+    }
+    return this.http.post(environment.api_url + '/tp/pallet/',body,{
+      responseType: 'text'
+    }).toPromise();
+  }
+  
+  updatePalletFile(name:string, data:string) {
+    let body = new HttpParams();
+    body = body.set('palletData', data);
+    return this.http.post(environment.api_url + '/tp/pallet/'+name,body).toPromise();
   }
 
 }

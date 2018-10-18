@@ -1,0 +1,64 @@
+<div class="mat-typography" style="margin: -24px;">
+  <div class="header mat-toolbar mat-primary mat-elevation-z3">
+    <button mat-button (click)="closeDialog()"><mat-icon>close</mat-icon></button>
+    <div class="title">{{'Calibrate' + ' ' + varName}}</div>
+  </div>
+  <div class="content">
+    <table>
+      <tr>
+        <td>Origin</td>
+        <td>
+          <button mat-raised-button color="primary" (click)="teach(1)" [disabled]="positionOK[0]">
+            TEACH
+          </button>
+        </td>
+        <td style="color:#00897b;" *ngIf="positionOK[0]">
+          <mat-icon>check_circle</mat-icon>
+        </td>
+        <td *ngIf="positionOK[0]">
+          <button mat-icon-button color="warn" (click)="resetPos(0)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Position X</td>
+        <td>
+          <button mat-raised-button color="primary" (click)="teach(2)" [disabled]="!positionOK[0] || positionOK[1]">
+            TEACH
+          </button>
+        </td>
+        <td style="color:#00897b;" *ngIf="positionOK[1]">
+          <mat-icon>check_circle</mat-icon>
+        </td>
+        <td *ngIf="positionOK[1]">
+          <button mat-icon-button color="warn" (click)="resetPos(1)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Position Y</td>
+        <td>
+          <button mat-raised-button color="primary" (click)="teach(3)" [disabled]="!positionOK[1] || positionOK[2]">
+            TEACH
+          </button>
+        </td>
+        <td style="color:#00897b;" *ngIf="positionOK[2]">
+          <mat-icon>check_circle</mat-icon>
+        </td>
+        <td *ngIf="positionOK[2]">
+          <button mat-icon-button color="warn" (click)="resetPos(2)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </table>
+    <mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{'Set as current' + ' ' + data.frameType}}</mat-checkbox>
+    <div style="width: 100%; text-align: center; margin-top: 16px;">
+      <button mat-raised-button color="primary" (click)="calibrate()" [disabled]="!positionOK[0] || !positionOK[1] || !positionOK[2]">
+        CALIBRATE
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="wrapper">
+  <div class="card mat-elevation-z1">
+    <h2>Applications</h2>
+    <h3 class="mat-subtitle-color">Select applications to run when the project starts.</h3>
+    <div class="app-list">
+      <mat-checkbox *ngFor="let app of prj.currProject.value.apps" color="primary" [checked]="app.active" (change)="toggleActiveApp(app)">{{app.name}}</mat-checkbox>
+    </div>
+  </div>
+  <div class="card mat-elevation-z1">
+    <h2>Motion Parameters</h2>
+    <h3 class="mat-subtitle-color">Select parameters for your motion commands.</h3>
+    <mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
+      <input matInput placeholder="VCruise" [(ngModel)]="prj.currProject.value.settings.vcruise" type="text">
+      <span matSuffix>mm/sec</span>
+    </mat-form-field>
+    <mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
+      <input matInput placeholder="VTran" [(ngModel)]="prj.currProject.value.settings.vtran" type="text">
+      <span matSuffix>deg/sec</span>
+    </mat-form-field>      
+    <h3>Blending Method</h3>
+    <mat-radio-group [(ngModel)]="prj.currProject.value.settings.blendingMethod" (change)="prj.onProgramSettingChanged('blendingMethod')" style="margin-bottom: 8px; display: block;">
+      <mat-radio-button color="primary" [value]="0">None</mat-radio-button>
+      <mat-radio-button color="primary" [value]="1">Continous Path</mat-radio-button>
+      <mat-radio-button color="primary" [value]="2">SuperPosition</mat-radio-button>
+    </mat-radio-group>
+    <mat-slide-toggle color="primary" [(ngModel)]="prj.currProject.value.settings.overlap" (change)="prj.onProgramSettingChanged('overlap')">Motion Overlap</mat-slide-toggle>
+  </div>
+  <div class="card mat-elevation-z1">
+    <h2>Motion Frames</h2>
+    <h3 class="mat-subtitle-color">Choose your project's motion frames.</h3>
+    <mat-form-field>
+      <mat-select placeholder="Tool" [(ngModel)]="prj.currProject.value.settings.tool" (selectionChange)="prj.onProgramSettingChanged('tool')">
+        <mat-option *ngFor="let item of dataService.tools" value="{{item}}">{{item}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="Base" [(ngModel)]="prj.currProject.value.settings.base" (selectionChange)="prj.onProgramSettingChanged('base')">
+        <mat-option *ngFor="let item of dataService.bases" value="{{item}}">{{item}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="MachineTable" [(ngModel)]="prj.currProject.value.settings.mtable" (selectionChange)="prj.onProgramSettingChanged('mtable')">
+        <mat-option *ngFor="let item of dataService.machineTables" value="{{item}}">{{item}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="WorkPiece" [(ngModel)]="prj.currProject.value.settings.wpiece" (selectionChange)="prj.onProgramSettingChanged('wpiece')">
+        <mat-option *ngFor="let item of dataService.workPieces" value="{{item}}">{{item}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
