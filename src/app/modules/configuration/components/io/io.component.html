@@ -1,5 +1,4 @@
-<mat-tab-group disableRipple='true' (selectedTabChange)="onSelectedTabChange($event)" [selectedIndex]="selected.value"
-  (selectedIndexChange)="selected.setValue($event)">
+<mat-tab-group>
   <mat-tab label="Standard View">
     <div class="center-vertical">
       <div class="content">
@@ -13,43 +12,37 @@
           </mat-form-field>
         </div>
         <div>
-          <mat-radio-group class="radio-option-group" [(ngModel)]="leftRadioOptions" (change)="onViewSelectionChange('left')">
-            <mat-radio-button color="primary" [value]="radioButtonOptions[0]">{{ioFormatOptionReference.Bit | titlecase
-              }}</mat-radio-button>
-            <mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[1]">{{ioFormatOptionReference.Byte
-              | titlecase }}</mat-radio-button>
-            <mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[2]">{{ioFormatOptionReference.Word
-              | titlecase }}</mat-radio-button>
+          <mat-radio-group class="mat-radio-group" [(ngModel)]="leftRadioOptions" (change)="onViewSelectionChange('left')">
+            <mat-radio-button color="primary" [value]="radioButtonOptions[0]">Bit</mat-radio-button>
+            <mat-radio-button color="primary" style="margin-left: 25%" [value]="radioButtonOptions[1]">Byte</mat-radio-button>
+            <mat-radio-button color="primary" style="margin-left: 25%" [value]="radioButtonOptions[2]">Word</mat-radio-button>
           </mat-radio-group>
         </div>
-        <div class="table-container">
+        <div class="table-container" style="margin-top: 12px;">
           <mat-table [dataSource]="leftDataSource" class="io-table" matSort>
-            <ng-container matColumnDef="{{IoTableColumnReference.Port}}">
+            <ng-container matColumnDef="index">
               <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ (leftRadioOptions === ioFormatOptionReference.Bit ? ioFormatOptionReference.Bit :
-                leftRadioOptions === ioFormatOptionReference.Byte ? ioFormatOptionReference.Byte :
-                ioFormatOptionReference.Word) | titlecase }}
+                {{leftRadioOptions === 'bit' ? 'Bit' : leftRadioOptions === 'byte' ? 'Byte' : 'Word'}}
               </mat-header-cell>
-              <mat-cell *matCellDef="let element"> {{element.port}} </mat-cell>
+              <mat-cell *matCellDef="let element"> {{element.index}} </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="{{IoTableColumnReference.Value}}">
+            <ng-container matColumnDef="value">
               <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ (leftRadioOptions === ioFormatOptionReference.Bit ? IoTableColumnReference.Status :
-                IoTableColumnReference.Value) | titlecase }}
+                {{leftRadioOptions === 'bit' ? 'Status' : 'Value'}}
               </mat-header-cell>
-              <ng-container *ngIf="leftRadioOptions === ioFormatOptionReference.Bit">
+              <ng-container *ngIf="leftRadioOptions === 'bit'">
                 <mat-cell color="primary" *matCellDef="let element">
-                  <input type="radio" name="LeftValue{{element.port}}" [checked]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'left')">
+                  <input type="radio" name="LeftValue{{element.index}}" [checked]="element.value === '1'" (click)="onClickRadioButton(element.index, 'left')">
                 </mat-cell>
               </ng-container>
-              <ng-container *ngIf="leftRadioOptions !== ioFormatOptionReference.Bit">
+              <ng-container *ngIf="leftRadioOptions !== 'bit'">
                 <mat-cell color="primary" *matCellDef="let element"> {{element.value}} </mat-cell>
               </ng-container>
             </ng-container>
 
-            <ng-container matColumnDef="{{IoTableColumnReference.Label}}">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> {{IoTableColumnReference.Label | titlecase}} </mat-header-cell>
+            <ng-container matColumnDef="label">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Label </mat-header-cell>
               <mat-cell *matCellDef="let element">
                 {{element.label}}
               </mat-cell>
@@ -71,44 +64,38 @@
           </mat-form-field>
         </div>
         <div>
-          <mat-radio-group class="radio-option-group" [(ngModel)]="rightRadioOptions" (change)="onViewSelectionChange('right')">
-            <mat-radio-button color="primary" [value]="radioButtonOptions[0]">{{ioFormatOptionReference.Bit | titlecase
-              }}</mat-radio-button>
-            <mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[1]">{{ioFormatOptionReference.Byte
-              | titlecase }}</mat-radio-button>
-            <mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[2]">{{ioFormatOptionReference.Word
-              | titlecase }}</mat-radio-button>
+          <mat-radio-group class="mat-radio-group" [(ngModel)]="rightRadioOptions" (change)="onViewSelectionChange('right')">
+            <mat-radio-button color="primary" [value]="radioButtonOptions[0]">Bit</mat-radio-button>
+            <mat-radio-button color="primary" style="margin-left: 25%" [value]="radioButtonOptions[1]">Byte</mat-radio-button>
+            <mat-radio-button color="primary" style="margin-left: 25%" [value]="radioButtonOptions[2]">Word</mat-radio-button>
           </mat-radio-group>
         </div>
 
-        <div class="table-container">
+        <div class="table-container" style="margin-top: 12px;">
           <mat-table [dataSource]="rightDataSource" class="io-table" matSort>
-            <ng-container matColumnDef="{{IoTableColumnReference.Port}}">
+            <ng-container matColumnDef="index">
               <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ (rightRadioOptions === ioFormatOptionReference.Bit ? ioFormatOptionReference.Bit :
-                rightRadioOptions === ioFormatOptionReference.Byte ? ioFormatOptionReference.Byte :
-                ioFormatOptionReference.Word) | titlecase }}
+                {{rightRadioOptions === 'bit' ? 'Bit' : rightRadioOptions === 'byte' ? 'Byte' : 'Word'}}
               </mat-header-cell>
-              <mat-cell *matCellDef="let element"> {{element.port}} </mat-cell>
+              <mat-cell *matCellDef="let element"> {{element.index}} </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="{{IoTableColumnReference.Value}}">
+            <ng-container matColumnDef="value">
               <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ (rightRadioOptions === ioFormatOptionReference.Bit ? IoTableColumnReference.Status :
-                IoTableColumnReference.Value) | titlecase }}
+                  {{rightRadioOptions === 'bit' ? 'Status' : 'Value'}}
               </mat-header-cell>
-              <ng-container *ngIf="rightRadioOptions === ioFormatOptionReference.Bit">
+              <ng-container *ngIf="rightRadioOptions === 'bit'">
                 <mat-cell color="primary" *matCellDef="let element">
-                  <input type="radio" name="RightValue{{element.port}}" [checked]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'right')">
+                  <input type="radio" name="RightValue{{element.index}}" [checked]="element.value === '1'" (click)="onClickRadioButton(element.index, 'right')">
                 </mat-cell>
               </ng-container>
-              <ng-container *ngIf="rightRadioOptions !== ioFormatOptionReference.Bit">
+              <ng-container *ngIf="rightRadioOptions !== 'bit'">
                 <mat-cell color="primary" *matCellDef="let element"> {{element.value}} </mat-cell>
               </ng-container>
             </ng-container>
 
-            <ng-container matColumnDef="{{IoTableColumnReference.Label}}">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> {{IoTableColumnReference.Label}} </mat-header-cell>
+            <ng-container matColumnDef="label">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Label </mat-header-cell>
               <mat-cell *matCellDef="let element">
                 {{element.label}}
               </mat-cell>
@@ -119,31 +106,8 @@
         </div>
       </div>
     </div>
-    <div class="hexadecimal-option">
+    <div style="margin-left: 12px;">
       <mat-checkbox color="primary" [(ngModel)]="hex" (change)="onViewSelectionChange('all')">Hexadecimal Values</mat-checkbox>
     </div>
   </mat-tab>
-  <mat-tab *ngFor="let tab of tabs; let index = index" [label]="tab" class="content">
-    <ng-template mat-tab-label>
-      <input matInput placeholder="" [value]="tab" (keydown)='tabLabelChange($event)' [formControl]="customViewFormControl"
-        required>
-      <mat-error *ngIf="customViewFormControl.hasError('required')">
-        <strong>Invalid</strong> tab name
-      </mat-error>
-    </ng-template>
-    <app-custom-io [tableIndex]="index + 1"></app-custom-io>
-   </mat-tab>
 </mat-tab-group>
-
-<div class='tab-button'>
-  <button mat-button class='mat-button-no-hover-background' [disabled]="tabs.length >= 3" (click)="addCustomTab()"
-    disableRipple='true'>
-    <mat-icon>add</mat-icon>
-    Add View
-  </button>
-  <button mat-button class='mat-button-no-hover-background' [disabled]="tabs.length === 0 ||  customTabDeleteIndex === 0"
-    (click)="deleteCustomTab()" disableRipple='true'>
-    <mat-icon>delete</mat-icon>
-    Del View
-  </button>
-</div>

@@ -11,7 +11,6 @@ import {UserMngrComponent} from './components/user-manager/user-mngr/user-mngr.c
 import {NewUserDialogComponent} from './components/user-manager/new-user-dialog/new-user-dialog.component';
 import {GraphComponent} from './components/graph/graph.component';
 import { IoService } from './services/io.service';
-import { CustomIOComponent } from './components/io/custom-io/custom-io.component';
 
 @NgModule({
   imports: [
@@ -27,8 +26,7 @@ import { CustomIOComponent } from './components/io/custom-io/custom-io.component
     GuiComponent,
     UserMngrComponent,
     NewUserDialogComponent,
-    GraphComponent,
-	CustomIOComponent
+    GraphComponent
   ],
   providers: [IoService],
   entryComponents: [
