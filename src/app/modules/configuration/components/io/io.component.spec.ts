@@ -1,12 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { SharedModule } from '../../../shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DebugElement } from '@angular/core';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+
+import { SharedModule } from '../../../shared/shared.module';
 
 import { IoComponent } from './io.component';
 
 import { IoService } from './../../services/io.service';
 import { WebsocketService } from '../../../core/services/websocket.service';
+import { IoFormatOption, IoOption } from '../../services/io.service.enum';
 
 /**
  * It contains all the test specs to IoComponent.
@@ -23,9 +25,9 @@ describe('IoComponent', () => {
   let fixture: ComponentFixture<IoComponent>;
 
   /**
-   * The WebSocketService spy instance.
+   * The IoService instance.
    */
-  let webSocketServiceSpy: jasmine.SpyObj<WebsocketService>;
+  let ioService: IoService;
 
   /**
    * The debug element for testing.
@@ -46,22 +48,15 @@ describe('IoComponent', () => {
     TestBed.configureTestingModule({
       imports: [SharedModule, BrowserAnimationsModule],
       providers: [IoService, { provide: WebsocketService, useValue: spyObj }],
-      declarations: [IoComponent]
+      declarations: [IoComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 
-    webSocketServiceSpy = TestBed.get(WebsocketService);
+    ioService = TestBed.get(IoService);
 
-    const spyValue = `[
-      {"index":0,"value":"0","label":"Omri"},
-      {"index":1,"value":"0","label":"Mirko"}
-    ]`;
+    spyIoServiceSetup();
 
-    const mcQueryResponse = { result: spyValue, cmd: '', err: null };
-
-    webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
   }));
 
   /**
@@ -69,20 +64,18 @@ describe('IoComponent', () => {
    */
   beforeEach((done) => {
     fixture = TestBed.createComponent(IoComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
     fixture.whenStable().then(() => {
-      component = fixture.componentInstance;
+      expect(component).toBeTruthy();
       done();
     });
-
   });
 
   /**
    * IoComponent constructor test.
    */
-  it('should create', () => {
-    expect(component).toBeTruthy();
-
+  it('should create', async(() => {
     expect(component.ioOptions.length).toBe(4, 'there are four io options');
     expect(component.ioOptions[0]).toEqual('All Inputs', 'the first one is all inputs');
     expect(component.ioOptions[1]).toEqual('All Outputs', 'the second one is all outputs');
@@ -91,7 +84,7 @@ describe('IoComponent', () => {
     expect(component.radioButtonOptions[0]).toEqual('bit', 'the first one is all inputs');
     expect(component.radioButtonOptions[1]).toEqual('byte', 'the second one is all outputs');
 
-  });
+    }));
 
   /**
    * The default io option test.
@@ -151,7 +144,7 @@ describe('IoComponent', () => {
    */
   it('the table header should be bit, value and label if the format is byte', () => {
     expect(component).toBeTruthy();
-    component.leftRadioOptions = 'byte';
+    component.leftRadioOptions = IoFormatOption.Byte;
     fixture.detectChanges();
 
     debugElement = fixture.debugElement;
@@ -170,14 +163,15 @@ describe('IoComponent', () => {
    */
   it('the io value can be changed in the left table if the option is output', () => {
     expect(component).toBeTruthy();
-    component.leftSelected = 'All Outputs';
-    component.onClickRadioButton(0, 'left');
+    component.leftSelected = IoOption.AllOutputs;
+    component.onClickRadioButtonInIO(0, 'left');
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
+      expect(component).toBeTruthy();
       checkRadioButton(fixture, 0, true, 'the radio button should be checked after click');
     }).then(() => {
-      component.onClickRadioButton(0, 'left');
+      component.onClickRadioButtonInIO(0, 'left');
       fixture.detectChanges();
 
       fixture.whenStable().then(() => {
@@ -192,14 +186,14 @@ describe('IoComponent', () => {
    */
   it('the io value can be changed in the right table if the option is output', () => {
     expect(component).toBeTruthy();
-    component.rightSelected = 'All Outputs';
-    component.onClickRadioButton(0, 'right');
+    component.rightSelected = IoOption.AllOutputs;
+    component.onClickRadioButtonInIO(0, 'right');
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
       checkRadioButton(fixture, 1, true, 'the radio button should be checked after click');
     }).then(() => {
-      component.onClickRadioButton(0, 'right');
+      component.onClickRadioButtonInIO(0, 'right');
       fixture.detectChanges();
 
       fixture.whenStable().then(() => {
@@ -214,7 +208,7 @@ describe('IoComponent', () => {
    */
   it('the io value cannot be changed if the option is input', () => {
     expect(component).toBeTruthy();
-    component.onClickRadioButton(0, 'left');
+    component.onClickRadioButtonInIO(0, 'left');
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
@@ -228,8 +222,8 @@ describe('IoComponent', () => {
    */
   it('the io status cannot be changed in the right table if the option is input', () => {
     expect(component).toBeTruthy();
-    component.rightSelected = 'All Inputs';
-    component.onClickRadioButton(0, 'right');
+    component.rightSelected = IoOption.AllInputs;
+    component.onClickRadioButtonInIO(0, 'right');
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
@@ -237,6 +231,25 @@ describe('IoComponent', () => {
     });
 
   });
+
+  /*********************************************************************************/
+
+  /**
+   * Create the mock custom tabs.
+   * @returns The mock custom tabs.
+   */
+  function createMockCustomTabs() {
+    return `["Custom View 1", "Custom View 2", " "]`;
+  }
+
+  /**
+   * Create the mock ios.
+   * @returns The mock io values.
+   */
+  function createMockIos() {
+    return `[{"port":0,"value":"0","label":"Omri"},
+      {"port":1,"value":"0","label":"Mirko"}]`;
+  }
 
   /**
    * Check the radio button to verify io value change.
@@ -257,7 +270,30 @@ describe('IoComponent', () => {
     let cell = row.children.item(1);
     let input = cell.children.item(0) as HTMLInputElement;
     expect(input.checked).toBe(expectValue, comment);
-    return null;
+  }
+
+  /**
+   * IoService spy setup.
+   */
+  function spyIoServiceSetup() {
+    spyOn(ioService, 'queryCustomTabs').and.callFake(() => {
+      return Promise.resolve();
+    });
+    spyOn(ioService, 'queryIos').and.callFake(() => {
+      return Promise.resolve();
+    });
+    spyOn(ioService, 'setIoByBit').and.callFake(() => {
+      return Promise.resolve();
+    });
+    spyOn(ioService, 'getCustomTabs').and.callFake(() => {
+      return JSON.parse(createMockCustomTabs());
+    });
+    spyOn(ioService, 'getIos').and.callFake(() => {
+      return JSON.parse(createMockIos());
+    });
   }
 
 });
+
+
+

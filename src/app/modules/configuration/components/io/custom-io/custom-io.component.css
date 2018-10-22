@@ -1,0 +1,72 @@
+.io-table input {
+  outline: 0;
+  border: 0;
+  margin: 8px;
+  text-align: center;
+}
+
+::ng-deep .io-table .mat-sort-header-container {
+  justify-content: center;
+}
+
+.hexadecimal-option {
+  margin-top: 20px;
+  margin-left: 12px;
+  height: 100px;
+}
+
+.custom-view {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-content-container {
+  display: flex;
+  flex: 1;
+}
+
+.custom-content-main {
+  flex-basis: calc(100% - 100px);
+
+}
+
+.custom-table-container {
+  height: 600px;
+  overflow: auto;
+}
+
+.custom-content-right {
+   flex-basis: 100px;
+}
+
+.custom-add-button {
+  margin-top: 50px;
+}
+
+.custom-add-button-disable {
+  margin-top: 50px;
+}
+
+.custom-del-button {
+  margin-top: 10px;
+}
+
+.custom-del-button-disable {
+  margin-top: 10px;
+}
+
+.custom-button:hover {
+  color: rgba(0, 136, 123, 0.87);
+}
+
+.mat-button-no-hover-background ::ng-deep .mat-button-focus-overlay {
+  background-color: transparent;
+}
+
+.mat-select-normal-place-holder ::ng-deep .mat-select-placeholder {
+   color: black;
+}
+
+.custom-selected-row {
+  background-color: rgba(0, 136, 123, 0.87);
+}

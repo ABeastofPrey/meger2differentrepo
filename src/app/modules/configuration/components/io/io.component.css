@@ -8,15 +8,31 @@
   width: 100%;
 }
 
-.mat-radio-group {
+.radio-option-group {
   width: 100%;
   text-align: justify;
   text-align-last:justify;
 }
 
+.radio-option-button {
+  margin-left: 25%
+}
+
 .table-container {
   height: 400px;
   overflow: auto;
+  margin-top: 12px;
+}
+
+.tab-button {
+  position: absolute;
+  top: 10px;
+  right: 30px;
+  z-index: 1;
+}
+
+.tab-view {
+  position: relative;
 }
 
 .io-table input {
@@ -25,6 +41,56 @@
   margin: 8px;
   text-align: center;
 }
+
 ::ng-deep .io-table .mat-sort-header-container {
   justify-content: center;
+}
+
+.hexadecimal-option {
+  margin-left: 12px;
+}
+
+.custom-view {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  min-height: 700px;
+}
+
+.custom-content {
+  width: 90%;
+}
+
+.custom-table-container {
+  height: 600px;
+  overflow: auto;
+}
+
+.custom-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-button {
+  margin-top: 10px;
+}
+
+.custom-button:hover {
+  color: rgba(0, 136, 123, 0.87);
+}
+
+.custom-button-disable {
+  margin-top: 10px;
+}
+
+.mat-button-no-hover-background ::ng-deep .mat-button-focus-overlay {
+  background-color: transparent;
+}
+
+.mat-select-normal-place-holder ::ng-deep .mat-select-placeholder {
+   color: black;
+}
+
+.custom-selected-row {
+  background-color: rgba(0, 136, 123, 0.87);
 }
