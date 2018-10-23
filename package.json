@@ -17,14 +17,16 @@
   "dependencies": {
     "@essetwide/material-walkthrough": "^2.1.4",
     "angular-split": "^1.0.0-rc.3",
+    "jquery": "^3.3.1",
+    "jquery-ui-dist": "^1.12.1",
     "ngx-tour-core": "^3.0.0",
     "ngx-tour-md-menu": "^3.1.0",
     "rxjs-compat": "^6.3.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.6.1",
-    "@angular/animations": "6.0.1",
-    "@angular/cdk": "^6.4.1",
+    "@angular/animations": "^6.0.1",
+    "@angular/cdk": "^6.4.7",
     "@angular/cli": "^6.0.1",
     "@angular/common": "6.0.1",
     "@angular/compiler": "6.0.1",
@@ -33,7 +35,7 @@
     "@angular/forms": "6.0.1",
     "@angular/http": "6.0.1",
     "@angular/language-service": "6.0.1",
-    "@angular/material": "^6.4.1",
+    "@angular/material": "^6.4.7",
     "@angular/platform-browser": "6.0.1",
     "@angular/platform-browser-dynamic": "6.0.1",
     "@angular/router": "6.0.1",

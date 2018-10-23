@@ -7,7 +7,7 @@
     <input type="file" accept=".UPG, .PRG, .ULB, .LIB, .DAT, .TXT, .VAR, .DEF, .BLK, .TPS, .OBJ, .LOG" #upload (change)="onUploadFilesChange($event)" multiple/>
   </div>
   <mat-progress-bar mode="indeterminate" *ngIf="!isInit"></mat-progress-bar>
-  <mat-table #table [dataSource]="dataSource" matSort>
+  <mat-table #table [dataSource]="dataSource" matSort class="file-table">
     <ng-container matColumnDef="select">
       <mat-header-cell *matHeaderCellDef>
         <mat-checkbox color="primary"

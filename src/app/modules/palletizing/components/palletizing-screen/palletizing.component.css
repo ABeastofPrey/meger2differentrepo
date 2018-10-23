@@ -1,0 +1,47 @@
+.wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.side-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  z-index: 1;
+}
+.canvas-wrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: url('../../../../../assets/pics/pallet/servotronix_pallet.jpg');
+  background-size: cover;
+}
+button { margin-top: 8px; }
+.menu-fab {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+}
+.zoom-box {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  z-index: 1;
+}
+.error-message {
+  background: #B71C1C;
+  color: #fff;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+pallet-wizard { 
+  overflow: auto;
+  flex: 1;
+}

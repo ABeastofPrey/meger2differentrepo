@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper" *ngIf="login.getCurrentUser().user">
   <div class="header">
     <div class="center-vertical">
       <div class="profile-pic" (click)="showUploadWindow()" [class.clickable]="login.getCurrentUser().user.username!=='admin'">

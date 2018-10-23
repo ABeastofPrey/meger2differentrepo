@@ -9,6 +9,6 @@
   </div>
   <div class="actions">
     <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="create()">CREATE PROJECT</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="!fileName || fileName.length === 0">CREATE PROJECT</button>
   </div>
 </div>

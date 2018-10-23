@@ -3,6 +3,7 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {ErrorDialogComponent} from '../../../components/error-dialog/error-dialog.component';
 import {BehaviorSubject} from 'rxjs';
+import {ApiService} from './api.service';
 
 class TPStatResponse {
   ENABLE : number;
@@ -183,12 +184,17 @@ export class TpStatService {
     private dialog : MatDialog,
     private ref : ApplicationRef,
     private zone : NgZone,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private api: ApiService
   ) {
     this.ws.isConnected.subscribe(stat=>{
       if (stat) {
         // CHECK FOR TP.LIB
-        this.startTpLibChecker();
+        this.api.get('/cs/api/license/softTP').subscribe(ret=>{
+          console.log('softTP License ....... ' + ret);
+          if (ret)
+            this.startTpLibChecker();
+        });
       } else if (this._online) {
         this.onlineStatus.next(false);
         this._online = false;
@@ -196,7 +202,9 @@ export class TpStatService {
     });
     this.onlineStatus.subscribe(stat=>{
       const msg = 'TP.LIB is ' + (stat?'ONLINE':'OFFLINE');
-      this.snack.open(msg,null,{duration:1500});
+      this.zone.run(()=>{
+        this.snack.open(msg,null,{duration:1500});
+      });
       if (stat) { // TP_VER is OK
         // START KEEPALIVE
         this.interval = this.ws.send('?tp_stat',(res,cmd,err)=>{

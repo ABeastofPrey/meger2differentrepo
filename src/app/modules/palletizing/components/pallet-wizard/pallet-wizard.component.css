@@ -1,0 +1,130 @@
+.wizard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+mat-horizontal-stepper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+::ng-deep .wizard .mat-horizontal-content-container {
+  padding: 0 24px;
+  flex: 1;
+}
+mat-form-field {
+  margin-right: 8px;
+  width: auto;
+}
+.input-large { max-width: 135px; }
+.input-normal { max-width: 90px; }
+.input-small {
+  max-width: 45px;
+  margin-top: 8px;
+  margin-bottom: -10px;
+}
+.input-large { font-size: 24px; }
+.header {
+  display: flex;
+  padding: 1em;
+  align-items: center;
+}
+.title {
+  font-size: 24px;
+  flex: 1;
+}
+.content { padding: 1em; }
+.label { 
+  color: rgba(0, 0, 0, 0.54); 
+  margin-top: 8px;
+}
+.step-wrapper  {
+  display: flex;
+  min-height: 305px;
+}
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 24px;
+}
+.step-content h2 {
+  margin-right: 24px;
+}
+.img-container img {
+  width: 100%;
+  height: 100%;
+  max-width: 250px;
+}
+
+h2, h3 {
+  margin:0;
+}
+
+.text-and-button {
+  display: flex;
+  align-items: center;
+}
+
+.text-and-button button {
+  margin-left: 24px;
+}
+
+.text-and-button h3 {
+  font-weight: bold;
+}
+
+.origin-status {
+  display: flex;
+  font-size: 16px;
+  align-items: center;
+}
+
+.red {
+  color: #AA0000;
+  font-weight: bold;
+  margin: 0 6px;
+}
+
+.green {
+  color: #008800!important;
+}
+
+.direction-picker {
+  background-image: url('../../../../../assets/pics/pallet/xy.png');
+  width: 200px;
+  height: 140px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.direction-picker .mat-radio-button {
+  position: absolute;
+}
+
+.summary tr td:first-child {
+  font-weight: bold;
+  padding-right: 16px;
+  line-height: 2;
+}
+pallet-level-designer { flex: 1; }
+.error-message {
+  background: #B71C1C;
+  color: #fff;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-container {
+  flex: 1;
+  overflow: hidden;
+  max-height: 285px;
+  margin: 2px;
+  position: relative;
+}

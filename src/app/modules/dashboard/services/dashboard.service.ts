@@ -7,6 +7,8 @@ import {ApiService} from '../../../modules/core/services/api.service';
 import {RecordGraphComponent} from '../components/record-graph/record-graph.component';
 import {RecordParams} from '../components/record-dialog/record-dialog.component';
 import {TourService} from 'ngx-tour-md-menu';
+import {ApplicationRef} from '@angular/core';
+import {NgZone} from '@angular/core';
 
 @Injectable()
 export class DashboardService {
@@ -55,7 +57,9 @@ export class DashboardService {
     private dialog : MatDialog,
     private api : ApiService,
     private snack: MatSnackBar,
-    private tour: TourService
+    private tour: TourService,
+    private zone: NgZone,
+    private ref: ApplicationRef
   ) {
     this.tour.start$.subscribe(start=>{
       localStorage.removeItem('dashboards');
@@ -80,28 +84,34 @@ export class DashboardService {
       this._windows = windows;
       this.resetWindows();
     }
-    setInterval(()=>{
-      if (this.mgr.screen.name !== 'Motion Dashboard')
-        return;
-      for (let w of this.windows) {
-        if (w.name === 'SCARA (Tour)')
-          continue;
-        let promises : Promise<any>[] = [];
-        promises.push(this.ws.query('?' + w.name + '.en'));
-        for (let p of w.params) {
-          promises.push(this.ws.query('?' + w.name + '.' + p.name));
-        }
-        Promise.all(promises).then((ret:MCQueryResponse[])=>{
-          if (ret[0].err)
-            return this.close(w.name);
-          w.enable = !(ret[0].result === '0' || ret[0].err);
-          for (let i = 0; i < w.params.length; i++) {
-            if (ret[i + 1] && w.params[i])
-              w.params[i].value = ret[i + 1].result;
+    this.zone.runOutsideAngular(()=>{
+      setInterval(()=>{
+        if (this.mgr.screen.name !== 'Motion Dashboard')
+          return;
+        for (let w of this.windows) {
+          if (w.name === 'SCARA (Tour)')
+            continue;
+          let promises : Promise<any>[] = [];
+          promises.push(this.ws.query('?' + w.name + '.en'));
+          for (let p of w.params) {
+            promises.push(this.ws.query('?' + w.name + '.' + p.name));
           }
-        });
-      }
-    },200);
+          Promise.all(promises).then((ret:MCQueryResponse[])=>{
+            if (ret[0].err) {
+              this.close(w.name);
+              this.ref.tick();
+              return;
+            }
+            w.enable = !(ret[0].result === '0' || ret[0].err);
+            for (let i = 0; i < w.params.length; i++) {
+              if (ret[i + 1] && w.params[i])
+                w.params[i].value = ret[i + 1].result;
+            }
+            this.ref.tick();
+          });
+        }
+      },200);        
+    });
   }
   
   resetWindows() {

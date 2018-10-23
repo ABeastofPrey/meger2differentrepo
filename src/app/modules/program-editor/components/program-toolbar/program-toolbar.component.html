@@ -1,38 +1,37 @@
-<div class="wrapper" (click)="toggleFocus()">
+<div class="wrapper mat-typography" (click)="toggleFocus()">
   <ul class="menu mat-elevation-z1">
     <li (mouseenter)="currMenu=1" [class.selected]="onFocus && currMenu===1">Project</li>
-    <li (mouseenter)="currMenu=2" [class.selected]="onFocus && currMenu===2">Edit</li>
-    <li (mouseenter)="currMenu=3" [class.selected]="onFocus && currMenu===3">Run</li>
+    <li (mouseenter)="currMenu=2" [class.selected]="onFocus && currMenu===2" [class.disabled]="this.prj.currProject.value === null">Create</li>
+    <li (mouseenter)="currMenu=3" [class.selected]="onFocus && currMenu===3 && prgService.mode === 'editor'" [class.disabled]="prgService.mode !== 'editor'">Edit</li>
+    <li (mouseenter)="currMenu=4" [class.selected]="onFocus && currMenu===4" [class.disabled]="this.prj.currProject.value === null">Run</li>
   </ul>
 </div>
-<div class="dropdown-container" *ngIf="onFocus" (click)="onFocus=false">
+<div class="dropdown-container mat-title-color" *ngIf="onFocus" (click)="onFocus=false">
   <ul class="dropdown-menu menu1" *ngIf="currMenu === 1">
-    <li><mat-icon>note_add</mat-icon>New...</li>
-    <li><mat-icon>create_new_folder</mat-icon>Open...</li>
-    <li><mat-icon>close</mat-icon>Close</li>
-    <li><mat-icon>save</mat-icon>Save...</li>
-    <li><mat-icon>get_app</mat-icon>Save Locally...</li>
+    <li (click)="new()"><mat-icon>note_add</mat-icon>New...</li>
+    <li (click)="open()"><mat-icon>create_new_folder</mat-icon>Open...</li>
     <div class="seperator"></div>
-    <li><mat-icon>file_copy</mat-icon>Save As...</li>
-    <li><mat-icon>edit</mat-icon>Rename...</li>
-    <li><mat-icon>delete</mat-icon>Delete...</li>
+    <li (click)="export()"><mat-icon>cloud_download</mat-icon>Export...</li>
+    <li (click)="import()"><mat-icon>cloud_upload</mat-icon>Import...</li>
+    <div class="seperator"></div>
+    <li (click)="saveAs()"><mat-icon>save</mat-icon>Save As...</li>
+    <li (click)="rename()"><mat-icon>edit</mat-icon>Rename...</li>
+    <li (click)="delete()" class="warn"><mat-icon>delete</mat-icon>Delete...</li>
   </ul>
-  <ul class="dropdown-menu menu2" *ngIf="currMenu === 2">
+  <ul class="dropdown-menu menu2" *ngIf="currMenu === 2 && this.prj.currProject.value">
+    <li (click)="newApp()"><mat-icon>add</mat-icon>App...</li>
+    <li (click)="newLib()"><mat-icon>add</mat-icon>Library...</li>
+    <li><mat-icon>add</mat-icon>Dependency...</li>
+  </ul>
+  <ul class="dropdown-menu menu3" *ngIf="currMenu === 3 && prgService.mode === 'editor'">
     <li><mat-icon>undo</mat-icon>Undo</li>
     <li><mat-icon>redo</mat-icon>Redo</li>
     <div class="seperator"></div>
     <li><mat-icon>find_in_page</mat-icon>Find...</li>
     <li><mat-icon>find_replace</mat-icon>Replace...</li>
   </ul>
-  <ul class="dropdown-menu menu3" *ngIf="currMenu === 3">
-    <li><img src="assets/pics/icons/load.png">Save and Load</li>
-    <li><img src="assets/pics/icons/unload.png">Unload</li>
-    <li><mat-icon>stop</mat-icon>Kill</li>
-    <li><mat-icon>play_arrow</mat-icon>Run</li>
-    <li><mat-icon>pause</mat-icon>Idle</li>
-    <div class="seperator"></div>
-    <li><img src="assets/pics/icons/step_over.png">Step Over</li>
-    <li><img src="assets/pics/icons/step_into.png">Step Into</li>
-    <li><img src="assets/pics/icons/step_out.png">Step Out</li>
+  <ul class="dropdown-menu menu4" *ngIf="currMenu === 4 && this.prj.currProject.value">
+    <li (click)="run()"><mat-icon>play_arrow</mat-icon>Run Project</li>
+    <li><mat-icon>stop</mat-icon>Stop Project</li>
   </ul>
 </div>

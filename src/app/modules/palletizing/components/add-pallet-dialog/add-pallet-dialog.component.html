@@ -1,0 +1,22 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">Create a new Pallet</div>
+    <div class="content">
+      <mat-form-field><input matInput placeholder="Pallet Name" [(ngModel)]="palletName"></mat-form-field>
+      <div>
+        <mat-form-field>
+          <mat-select placeholder="Pallet Type" [(ngModel)]="palletType">
+            <mat-option *ngFor="let t of dataService.palletTypeOptions" value="{{t}}">{{t}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-checkbox [(ngModel)]="showWizard" color="primary">Open pallet wizard</mat-checkbox>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" (click)="cancel()">CANCEL</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="palletName == null || palletName.length === 0 || palletType === null">CREATE</button>
+  </div>
+</div>

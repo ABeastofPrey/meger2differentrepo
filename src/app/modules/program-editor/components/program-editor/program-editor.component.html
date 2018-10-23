@@ -4,40 +4,44 @@
       <split-area size="20">
         <program-editor-side-menu class="mat-elevation-z1"></program-editor-side-menu>
       </split-area>
-      <split-area size="60">
+      <split-area [size]="service.mode === 'editor' ? 60 : 80">
         <split direction="vertical" (dragEnd)="onDragEnd()">
           <split-area size="70" class="right-side" style="position: relative;">
-            <div class="program-name center-vertical">
-              <span>{{service.activeFile ? service.activeFile.fileName : 'No File Selected'}}</span>
-              <button mat-button color="warn" (click)="service.close()" *ngIf="service.activeFile"><mat-icon>close</mat-icon></button>
+            <h1 class="program-name" *ngIf="service.mode === 'editor'">{{service.activeFile ? service.activeFile : 'No File Selected'}}</h1>
+            <div class="editor-wrapper" *ngIf="service.mode === 'editor'">
+              <div class="toolbar center-vertical" [class.disabled]="service.activeFile===null" tourAnchor="project-toolbar-2">
+                <mat-icon (click)="service.save()" matTooltip="Save" [matTooltipDisabled]="service.activeFile===null">save</mat-icon>
+                <!--<mat-icon (click)="service.download()" matTooltip="Download" [matTooltipDisabled]="service.activeFile===null">file_download</mat-icon>
+                <div class="separator"></div>
+                <img src="assets/pics/icons/load.png"  (click)="service.load()" matTooltip="Save and Load" [matTooltipDisabled]="service.activeFile===null">
+                <img src="assets/pics/icons/unload.png" (click)="service.unload()" matTooltip="Unload" [matTooltipDisabled]="service.activeFile===null">
+                <mat-icon (click)="service.kill()" matTooltip="Kill" [matTooltipDisabled]="service.activeFile===null">stop</mat-icon>
+                <mat-icon (click)="service.run()" matTooltip="Run" [matTooltipDisabled]="service.activeFile===null">play_arrow</mat-icon>
+                <mat-icon (click)="service.jump()" matTooltip="Jump to line" [matTooltipDisabled]="service.activeFile===null">skip_next</mat-icon>
+                <mat-icon (click)="service.idle()" matTooltip="Idle" [matTooltipDisabled]="service.activeFile===null">pause</mat-icon>
+                <div class="separator"></div>
+                <img src="assets/pics/icons/step_over.png" (click)="service.stepOver()" matTooltip="Step Over" [matTooltipDisabled]="service.activeFile===null">
+                <img src="assets/pics/icons/step_into.png" (click)="service.stepInto()" matTooltip="Step Into" [matTooltipDisabled]="service.activeFile===null">
+                <img src="assets/pics/icons/step_out.png" (click)="service.stepOut()" matTooltip="Step Out" [matTooltipDisabled]="service.activeFile===null">
+                <div class="separator"></div>
+                <div class="status" *ngIf="service.status">Status: <span [class.primary]="service.status.statusCode === taskStates[1]" [class.warn]="service.status.statusCode === taskStates[0] || service.status.statusCode === taskStates[3]">{{service.status.name}}</span></div>-->
+              </div>
+              <program-editor-ace></program-editor-ace>
             </div>
-            <div class="toolbar center-vertical" [class.disabled]="service.activeFile===null" tourAnchor="project-toolbar-2">
-              <mat-icon (click)="service.save()" matTooltip="Save" [matTooltipDisabled]="service.activeFile===null">save</mat-icon>
-              <mat-icon (click)="service.download()" matTooltip="Download" [matTooltipDisabled]="service.activeFile===null">file_download</mat-icon>
-              <div class="separator"></div>
-              <img src="assets/pics/icons/load.png"  (click)="service.load()" matTooltip="Save and Load" [matTooltipDisabled]="service.activeFile===null">
-              <img src="assets/pics/icons/unload.png" (click)="service.unload()" matTooltip="Unload" [matTooltipDisabled]="service.activeFile===null">
-              <mat-icon (click)="service.kill()" matTooltip="Kill" [matTooltipDisabled]="service.activeFile===null">stop</mat-icon>
-              <mat-icon (click)="service.run()" matTooltip="Run" [matTooltipDisabled]="service.activeFile===null">play_arrow</mat-icon>
-              <mat-icon (click)="service.jump()" matTooltip="Jump to line" [matTooltipDisabled]="service.activeFile===null">skip_next</mat-icon>
-              <mat-icon (click)="service.idle()" matTooltip="Idle" [matTooltipDisabled]="service.activeFile===null">pause</mat-icon>
-              <div class="separator"></div>
-              <img src="assets/pics/icons/step_over.png" (click)="service.stepOver()" matTooltip="Step Over" [matTooltipDisabled]="service.activeFile===null">
-              <img src="assets/pics/icons/step_into.png" (click)="service.stepInto()" matTooltip="Step Into" [matTooltipDisabled]="service.activeFile===null">
-              <img src="assets/pics/icons/step_out.png" (click)="service.stepOut()" matTooltip="Step Out" [matTooltipDisabled]="service.activeFile===null">
-              <div class="separator"></div>
-              <div class="status" *ngIf="service.status">Status: <span [class.primary]="service.status.statusCode === taskStates[1]" [class.warn]="service.status.statusCode === taskStates[0] || service.status.statusCode === taskStates[3]">{{service.status.name}}</span></div>
-            </div>
-            <program-editor-ace></program-editor-ace>
+            <data-screen *ngIf="service.mode === 'data'" style="overflow: auto; flex: 1;"></data-screen>
+            <program-settings *ngIf="service.mode === 'settings'" style="overflow: auto; flex: 1;"></program-settings>
+            <frames *ngIf="service.mode === 'frames'" style="overflow: auto; flex: 1;"></frames>
+            <pallet-screen *ngIf="service.mode === 'pallets'" style="flex: 1; display: flex;"></pallet-screen>
+            <gripper-screen *ngIf="service.mode === 'grippers'" style="flex: 1; display: flex;"></gripper-screen>
           </split-area>
-          <split-area size="30">
+          <split-area size="30" *ngIf="service.mode === 'editor'">
             <div *ngIf="service.errors.length > 0">Errors found in the following lines (click to jump there):</div>
             <div class="error-line" *ngFor="let e of service.errors" (click)="service.skipToLine(e.number)">{{e.number+':'+e.error}}</div>
             <div *ngIf="service.errors.length === 0">No Notifications</div>
           </split-area>
         </split>
       </split-area>
-      <split-area size="20" style="padding: 8px; box-sizing: border-box;">
+      <split-area size="20" style="padding: 8px; box-sizing: border-box;" *ngIf="service.mode === 'editor'">
         <program-edit-menu class="mat-elevation-z1"></program-edit-menu>
       </split-area>
   </split>

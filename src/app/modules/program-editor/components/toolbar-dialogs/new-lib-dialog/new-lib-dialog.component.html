@@ -1,0 +1,21 @@
+<div class="mat-typography">
+  <div class="title mat-elevation-z1">
+    <mat-icon>add</mat-icon>&nbsp;&nbsp;New Library
+  </div>
+  <div class="name-wrapper">
+    <mat-form-field>
+      <mat-select placeholder="App" [(ngModel)]="appName">
+        <mat-option *ngFor="let app of apps" [value]="app.name">
+          {{app.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Library Name" [(ngModel)]="name">
+    </mat-form-field>
+  </div>
+  <div class="actions">
+    <button mat-button mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || !appName || submitting">CREATE LIBRARY</button>
+  </div>
+</div>
