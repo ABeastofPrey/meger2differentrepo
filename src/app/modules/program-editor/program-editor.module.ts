@@ -24,6 +24,7 @@ import {NewLibDialogComponent} from './components/toolbar-dialogs/new-lib-dialog
 import {AddFrameComponent} from './components/add-frame/add-frame.component';
 import {FrameCalibrationDialogComponent} from './components/frame-calibration-dialog/frame-calibration-dialog.component';
 import {ToolCalibrationDialogComponent} from './components/tool-calibration-dialog/tool-calibration-dialog.component';
+import { ToolCalibrationResultDialogComponent } from './components/tool-calibration-result-dialog/tool-calibration-result-dialog.component';
 
 @NgModule({
   imports: [
@@ -51,7 +52,8 @@ import {ToolCalibrationDialogComponent} from './components/tool-calibration-dial
     RenameDialogComponent,
     AddFrameComponent,
     ToolCalibrationDialogComponent,
-    FrameCalibrationDialogComponent
+    FrameCalibrationDialogComponent,
+    ToolCalibrationResultDialogComponent
   ],
   entryComponents:[
     NewProjectDialogComponent,
@@ -63,7 +65,8 @@ import {ToolCalibrationDialogComponent} from './components/tool-calibration-dial
     NewLibDialogComponent,
     AddFrameComponent,
     ToolCalibrationDialogComponent,
-    FrameCalibrationDialogComponent
+    FrameCalibrationDialogComponent,
+    ToolCalibrationResultDialogComponent
   ],
   exports: [
     ProgramEditorComponent

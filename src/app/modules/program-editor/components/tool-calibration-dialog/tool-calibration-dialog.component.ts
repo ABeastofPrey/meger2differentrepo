@@ -1,6 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
+import {MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MatDialog} from '@angular/material';
+import {ComponentType} from '@angular/cdk/portal';
 import {WebsocketService, DataService, MCQueryResponse} from '../../../core';
+
+import { ToolCalibrationResultDialogComponent } from '../tool-calibration-result-dialog/tool-calibration-result-dialog.component';
 
 @Component({
   selector: 'app-tool-calibration-dialog',
@@ -8,15 +11,17 @@ import {WebsocketService, DataService, MCQueryResponse} from '../../../core';
   styleUrls: ['./tool-calibration-dialog.component.css']
 })
 export class ToolCalibrationDialogComponent implements OnInit {
-  
+
   varName : string;
   pointsAdded : number = 0;
   maxPoints: number = 4;
-  
+  isScara: boolean = false;
+
   private _singlePointStepTwo : boolean = false;
   get singlePointStepTwo() {return this._singlePointStepTwo;}
 
   constructor(
+    private dialog: MatDialog,
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private ws : WebsocketService,
@@ -34,12 +39,17 @@ export class ToolCalibrationDialogComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       this.maxPoints = Number(ret.result) || 4;
     });
+
+    this.ws.query('?TYPEOF').then((typeRes: MCQueryResponse) => {
+      this.isScara = typeRes.result === '4' ? true : false;
+    });
+
   }
-  
+
   closeDialog() {
     this.dialogRef.close();
   }
-  
+
   private _calibType : string = null;
   get calibType() {return this._calibType;}
   set calibType(newType : string) {
@@ -52,7 +62,7 @@ export class ToolCalibrationDialogComponent implements OnInit {
       }
     });
   }
-  
+
   addPoint() {
     this.ws.query("?TP_CALIBRATE_POINT(" + (this.pointsAdded+1) + ")")
     .then((ret:MCQueryResponse)=>{
@@ -61,7 +71,7 @@ export class ToolCalibrationDialogComponent implements OnInit {
       this.pointsAdded++;
     });
   }
-  
+
   removePoint() {
     this.ws.query("?TP_REMOVE_CALIBRATION_POINT(" + this.pointsAdded + ")")
     .then((ret:MCQueryResponse)=>{
@@ -71,32 +81,54 @@ export class ToolCalibrationDialogComponent implements OnInit {
         this.pointsAdded--;
     });
   }
-  
+
   clearCalibrationPoints() {
     this.ws.send('?TP_REMOVE_CALIBRATION_POINT(1)');
     this.pointsAdded = 0;
   }
-  
+
   calibrate(multi : boolean) {
-    let cmd =
-        '?TP_TOOL_CALIBRATION("' + this.varName + '")';
+    let cmd = '?TP_TOOL_CALIBRATION("' + this.varName + '")';
+
+    let dialog: ComponentType<any> = ToolCalibrationResultDialogComponent;
+
     if (multi || this._singlePointStepTwo) {
-      this.ws.query(cmd).then((ret:MCQueryResponse)=>{
-        if (ret.result === '0') {
-          this.dialogRef.close();
-          this.snack.open('Calibration Success!','',{duration: 2000});
-          this.dataService.selectedTool = this.varName;
-          this._singlePointStepTwo = false;
-          this.pointsAdded = 0;
+
+      this.ws.query(cmd).then((successRes: MCQueryResponse) => {
+
+        if (successRes.result === '0') {
+          let ref = this.dialog.open(dialog,
+            {
+              width: '500px',
+              minHeight: '500px',
+              data: {
+                toolName: this.varName
+              },
+              backdropClass: 'static',
+              disableClose: true
+            });
+
+            ref.afterClosed().subscribe(result => {
+              if (result && (successRes.result === '0')) {
+                this.dialogRef.close();
+                this.dataService.selectedTool = this.varName;
+                this._singlePointStepTwo = false;
+                this.pointsAdded = 0;
+              }
+            });
         }
       });
     } else if (!multi) { // SINGLE POINT CALIBRATION STEP 1
-      this.ws.query('?TP_SET_CALIBRATION_LOCATION').then((ret:MCQueryResponse)=>{
-        if (ret.err || ret.result !== '0')
+
+      this.ws.query('?TP_SET_CALIBRATION_LOCATION').then((ret: MCQueryResponse) => {
+        if (ret.err || ret.result !== '0') {
           return;
+        }
         this._singlePointStepTwo = true;
       });
     }
   }
 
 }
+
+

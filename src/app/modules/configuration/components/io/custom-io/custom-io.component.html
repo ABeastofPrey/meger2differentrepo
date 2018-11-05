@@ -57,12 +57,12 @@
 
       </div>
       <div class="custom-content-right">
-        <button mat-button class="custom-button mat-button-no-hover-background" [ngClass]="{'custom-add-button': isAddEnable,'custom-add-button-disable': !isAddEnable }"
+        <button mat-button class="custom-button mat-button-no-hover-background" [ngClass]="{'custom-add-button': isAddEnable,'custom-add-button-disable': !isAddEnable}"
         (click)="addRowInCustomTable()" [disabled]="!isAddEnable" disableRipple="true">
         <mat-icon>add</mat-icon>Add Row
       </button>
 
-      <button mat-button class="mat-button-no-hover-background" [ngClass]="{'custom-del-button': isDeleteEnable,'custom-del-button-disable': !isDeleteEnable }"
+      <button mat-button class="mat-button-no-hover-background" [ngClass]="{'custom-del-button': isDeleteEnable,'custom-del-button-disable': !isDeleteEnable}"
         (click)="deleteRowInCustomTable()" [disabled]="!isDeleteEnable" disableRipple="true">
         <mat-icon>delete</mat-icon>Del Row
       </button>

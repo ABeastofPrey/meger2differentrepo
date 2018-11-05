@@ -1,0 +1,75 @@
+<div class="mat-typography" style="margin: -24px;">
+  <div class="header mat-toolbar mat-primary mat-elevation-z3">
+      <div class="title">{{calibrationMessageReference.CalibrationResult + ' ' + toolName}}</div>
+  </div>
+
+  <div class="tooltip">
+    <div class="tooltip-icon">
+        <mat-icon>help</mat-icon>
+    </div>
+    <div class="tooltip-text">
+        <pre>{{calibrationMessageReference.IsApplyDataToTool + ' ' + toolName}}?</pre>
+    </div>
+  </div>
+  <div class="result-table">
+    <mat-table #resultTable  [dataSource]="calibrationResultSource">
+      <ng-container matColumnDef="{{CalibrationTableColumnReference.Axis}}">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <ng-container>
+          <mat-cell color="primary" *matCellDef="let element">
+            {{element.name}}
+          </mat-cell>
+        </ng-container>
+      </ng-container>
+
+      <ng-container matColumnDef="{{CalibrationTableColumnReference.Unit}}">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <ng-container>
+          <mat-cell color="primary" *matCellDef="let element">
+            {{element.unit}}
+          </mat-cell>
+        </ng-container>
+      </ng-container>
+
+      <ng-container matColumnDef="{{CalibrationTableColumnReference.Current}}">
+        <mat-header-cell *matHeaderCellDef>{{CalibrationTableColumnReference.Current | titlecase}}</mat-header-cell>
+        <mat-cell color="primary" *matCellDef="let element">
+          {{element.current | number: "1.0-4"}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="{{CalibrationTableColumnReference.New}}">
+        <mat-header-cell *matHeaderCellDef>{{CalibrationTableColumnReference.New | titlecase}}</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.new | number: "1.0-4"}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="{{CalibrationTableColumnReference.Delta}}">
+          <mat-header-cell *matHeaderCellDef>{{CalibrationTableColumnReference.Delta | titlecase}}</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.delta | number: "1.0-4"}} </mat-cell>
+        </ng-container>
+
+      <mat-header-row *matHeaderRowDef="resultDisplayedColumns; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: resultDisplayedColumns; let i = index;"></mat-row>
+    </mat-table>
+  </div>
+
+  <div class="warning">
+    <div class="warning-icon">
+      <mat-icon>warning</mat-icon>
+    </div>
+    <div class="warning-text">
+        <ng-container *ngIf="!calibrationOutOfScope">
+            <pre>{{calibrationMessageReference.CalibrationSuccess}}</pre>
+        </ng-container>
+        <ng-container *ngIf="calibrationOutOfScope">
+          <pre>{{calibrationMessageReference.ResultOutOfScope}}</pre>
+        </ng-container>
+    </div>
+  </div>
+
+  <div class="multiple-buttons">
+        <button mat-raised-button class="apply-button" color="primary" (click)="onApply()">Apply</button>
+        <button mat-raised-button class="cancel-button" color="primary" (click)="onCancel()">Cancel</button>
+  </div>
+
+</div>

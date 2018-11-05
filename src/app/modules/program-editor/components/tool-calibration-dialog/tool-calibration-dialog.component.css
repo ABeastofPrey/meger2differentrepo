@@ -28,8 +28,8 @@ mat-form-field {
   margin-top: 16px;
 }
 
-.label { 
-  color: rgba(0, 0, 0, 0.54); 
+.label {
+  color: rgba(0, 0, 0, 0.54);
   margin-top: 8px;
 }
 
@@ -45,6 +45,14 @@ mat-form-field {
 
 .points-button-container button {
   margin-right: 0.5em;
+}
+
+.radio-button-visible {
+  visibility: visible;
+}
+
+.radio-button-invisible {
+  visibility: hidden;
 }
 
 .good { color: #008800; }

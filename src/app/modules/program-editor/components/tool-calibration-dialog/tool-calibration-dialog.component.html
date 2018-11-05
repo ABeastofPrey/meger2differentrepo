@@ -5,8 +5,8 @@
   </div>
   <div class="content">
     <mat-radio-group [(ngModel)]="calibType" style='font-size: 1.5em;'>
-      <mat-radio-button value="MULTIPLE_POINTS" style='margin-right: 1em;'>Multi</mat-radio-button>
-      <mat-radio-button value="SINGLE_POINT">Single</mat-radio-button>
+      <mat-radio-button value="MULTIPLE_POINTS" style='margin-right: 1em;'>{{isScara ? "XYZ 3-Point" : "Multi"}}</mat-radio-button>
+      <mat-radio-button value="SINGLE_POINT" [ngClass]="{'radio-button-invisible': isScara,'radio-button-visible': !isScara}">Single</mat-radio-button>
     </mat-radio-group>
     <div class="inner-content--wrapper">
       <div *ngIf="calibType === 'MULTIPLE_POINTS'">
@@ -14,7 +14,7 @@
           <span [class.good]="pointsAdded >= maxPoints" [class.bad]="pointsAdded < maxPoints">{{pointsAdded}} </span><span *ngIf="pointsAdded < maxPoints">/ {{maxPoints}} </span>Points added
         </div>
         <div class='points-button-container'>
-          <button mat-fab color="primary" (click)="addPoint()" [disabled]="dataService.tools.length === 0">
+          <button mat-fab color="primary" (click)="addPoint()" [disabled]="dataService.tools.length === 0 || pointsAdded >= 3">
             <mat-icon>add</mat-icon>
           </button>
           <button mat-fab color="primary" (click)="removePoint()" [disabled]="dataService.tools.length === 0 || pointsAdded  === 0">
