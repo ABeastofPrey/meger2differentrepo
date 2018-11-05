@@ -9,7 +9,6 @@ import {SharedModule} from '../shared/shared.module';
 import {ProgramEditorRouterModule} from './program-editor-router.module';
 import {ProgramToolbarComponent} from './components/program-toolbar/program-toolbar.component';
 import {ProgramEditMenuComponent} from './components/program-edit-menu/program-edit-menu.component';
-import {LineParserService} from './services/line-parser.service';
 import {DataScreenComponent} from './components/data-screen/data-screen.component';
 import {AddVarComponent} from './components/add-var/add-var.component';
 import {ProgramSettingsComponent} from './components/program-settings/program-settings.component';
@@ -24,6 +23,23 @@ import {NewLibDialogComponent} from './components/toolbar-dialogs/new-lib-dialog
 import {AddFrameComponent} from './components/add-frame/add-frame.component';
 import {FrameCalibrationDialogComponent} from './components/frame-calibration-dialog/frame-calibration-dialog.component';
 import {ToolCalibrationDialogComponent} from './components/tool-calibration-dialog/tool-calibration-dialog.component';
+import {NewDependencyDialogComponent} from './components/toolbar-dialogs/new-dependency-dialog/new-dependency-dialog.component';
+import {PayloadsModule} from '../payloads/payloads.module';
+import {GripperSelectorComponent} from './components/dialogs/gripper-selector/gripper-selector.component';
+import {CallDialogComponent} from './components/dialogs/call-dialog/call-dialog.component';
+import {WhileDialogComponent} from './components/dialogs/while-dialog/while-dialog.component';
+import {SubDialogComponent} from './components/dialogs/sub-dialog/sub-dialog.component';
+import {SleepDialogComponent} from './components/dialogs/sleep-dialog/sleep-dialog.component';
+import {RobotSelectorDialogComponent} from './components/dialogs/robot-selector-dialog/robot-selector-dialog.component';
+import {PalletPickerDialogComponent} from './components/dialogs/pallet-picker-dialog/pallet-picker-dialog.component';
+import {PalletIndexDialogComponent} from './components/dialogs/pallet-index-dialog/pallet-index-dialog.component';
+import {MoveDialogComponent} from './components/dialogs/move-dialog/move-dialog.component';
+import {IoSelectorDialogComponent} from './components/dialogs/io-selector-dialog/io-selector-dialog.component';
+import {IfDialogComponent} from './components/dialogs/if-dialog/if-dialog.component';
+import {FunctionDialogComponent} from './components/dialogs/function-dialog/function-dialog.component';
+import {DimDialogComponent} from './components/dialogs/dim-dialog/dim-dialog.component';
+import {DelayDialogComponent} from './components/dialogs/delay-dialog/delay-dialog.component';
+import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-dialog.component';
 
 @NgModule({
   imports: [
@@ -31,7 +47,8 @@ import {ToolCalibrationDialogComponent} from './components/tool-calibration-dial
     SharedModule,
     ProgramEditorRouterModule,
     PalletizingModule,
-    GripperScreenModule
+    GripperScreenModule,
+    PayloadsModule
   ],
   declarations: [
     ProgramEditorComponent,
@@ -51,7 +68,23 @@ import {ToolCalibrationDialogComponent} from './components/tool-calibration-dial
     RenameDialogComponent,
     AddFrameComponent,
     ToolCalibrationDialogComponent,
-    FrameCalibrationDialogComponent
+    FrameCalibrationDialogComponent,
+    NewDependencyDialogComponent,
+    GripperSelectorComponent,
+    CallDialogComponent,
+    CircleDialogComponent,
+    DelayDialogComponent,
+    DimDialogComponent,
+    FunctionDialogComponent,
+    IfDialogComponent,
+    IoSelectorDialogComponent,
+    MoveDialogComponent,
+    PalletIndexDialogComponent,
+    PalletPickerDialogComponent,
+    RobotSelectorDialogComponent,
+    SleepDialogComponent,
+    SubDialogComponent,
+    WhileDialogComponent
   ],
   entryComponents:[
     NewProjectDialogComponent,
@@ -63,14 +96,29 @@ import {ToolCalibrationDialogComponent} from './components/tool-calibration-dial
     NewLibDialogComponent,
     AddFrameComponent,
     ToolCalibrationDialogComponent,
-    FrameCalibrationDialogComponent
+    FrameCalibrationDialogComponent,
+    NewDependencyDialogComponent,
+    GripperSelectorComponent,
+    CallDialogComponent,
+    CircleDialogComponent,
+    DelayDialogComponent,
+    DimDialogComponent,
+    FunctionDialogComponent,
+    IfDialogComponent,
+    IoSelectorDialogComponent,
+    MoveDialogComponent,
+    PalletIndexDialogComponent,
+    PalletPickerDialogComponent,
+    RobotSelectorDialogComponent,
+    SleepDialogComponent,
+    SubDialogComponent,
+    WhileDialogComponent
   ],
   exports: [
     ProgramEditorComponent
   ],
   providers: [
-    ProgramEditorService,
-    LineParserService
+    ProgramEditorService
   ]
 })
 export class ProgramEditorModule { }

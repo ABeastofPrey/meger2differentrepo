@@ -17,6 +17,7 @@ export class MainComponent implements OnInit {
   mouseDownIndex : number = 0;
   screenWidth: number;
   tpOnline: boolean = false;
+  terminalOpen: boolean = false;
   
   @ViewChild('drawer') drawer : MatSidenav;
   
@@ -131,6 +132,10 @@ export class MainComponent implements OnInit {
   
   onJogEnableChange(e: MatSlideToggleChange) {
     this.stat.mode = (e.checked ? 'T1' : 'A');
+  }
+  
+  toggleTerminal() {
+    this.terminalOpen = !this.terminalOpen;
   }
 
 }

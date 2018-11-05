@@ -6,17 +6,21 @@ import {NotificationWindowComponent} from './components/notification-window/noti
 import {WatchWindowComponent} from './components/watch-window/watch-window.component';
 import {MainRoutingModule} from './main-routing.module';
 import {MainAuthResolver} from './main-auth-resolver.service';
+import { TerminalWindowComponent } from './components/terminal-window/terminal-window.component';
+import {HomeScreenModule} from '../home-screen/home-screen.module';
 
 @NgModule({
   imports: [
     SharedModule,
-    MainRoutingModule
+    MainRoutingModule,
+    HomeScreenModule
   ],
   declarations: [
     MainComponent,
     MainMenuComponent,
     NotificationWindowComponent,
-    WatchWindowComponent
+    WatchWindowComponent,
+    TerminalWindowComponent
   ],
   providers: [MainAuthResolver]
 })

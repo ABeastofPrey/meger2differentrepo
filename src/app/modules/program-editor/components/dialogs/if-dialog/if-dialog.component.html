@@ -1,0 +1,15 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">Insert If Command</div>
+    <div class="content">
+      <mat-form-field>
+        <input matInput placeholder="Condition" [(ngModel)]="expression" type="text">
+      </mat-form-field>
+      <mat-checkbox color="primary" [(ngModel)]="elseFlag">Also add "Else" statement</mat-checkbox>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="expression === null || expression.length === 0">INSERT</button>
+  </div>
+</div>

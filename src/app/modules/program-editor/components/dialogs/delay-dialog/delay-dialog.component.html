@@ -1,0 +1,20 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">Insert Delay Command</div>
+    <div class="content">
+      <mat-form-field>
+        <input matInput placeholder="Time [ms.]" [(ngModel)]="delay" type="number">
+      </mat-form-field>
+      <mat-slide-toggle [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary">Advanced</mat-slide-toggle>
+      <mat-form-field *ngIf="advancedMode">
+        <mat-select placeholder="Motion Element" [(ngModel)]="motionElement">
+          <mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{e}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" (click)="cancel()">CANCEL</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="delay <= 0">INSERT</button>
+  </div>
+</div>

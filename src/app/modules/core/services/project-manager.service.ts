@@ -13,6 +13,10 @@ export class ProjectManagerService {
   currProject: BehaviorSubject<MCProject> = new BehaviorSubject(null);
   onExpand: EventEmitter<string> = new EventEmitter();
   onExpandLib: EventEmitter<{app:string,lib:string}> = new EventEmitter();
+  onAppStatusChange: BehaviorSubject<any> = new BehaviorSubject(null);
+  
+  private interval: any;
+  private oldStat: string = null;
 
   constructor(
     private ws: WebsocketService,
@@ -21,9 +25,36 @@ export class ProjectManagerService {
     private snack: MatSnackBar
   ) {
     this.stat.onlineStatus.subscribe(ret=>{
-      if (ret)
-        this.getCurrentProject();
+      if (ret) {
+        this.getCurrentProject().then(()=>{
+          this.getProjectStatus();
+        });
+      } else {
+        clearInterval(this.interval);
+      }
     });
+  }
+  
+  getProjectStatus() {
+    if (this.interval)
+      clearInterval(this.interval);
+    this.interval = setInterval(()=>{
+      if (this.currProject.value) {
+        this.ws.query('?prj_get_status("' + this.currProject.value.name + '")')
+        .then((ret: MCQueryResponse)=>{
+          if (this.oldStat === ret.result)
+            return;
+          this.oldStat = ret.result;
+          const status = ret.result.split(',');
+          for (let i = 0; i < this.currProject.value.apps.length; i++) {
+            this.currProject.value.apps[i].status = Number(status[i]);
+          }
+          this.onAppStatusChange.next(null);
+        });
+      } else {
+        clearInterval(this.interval);
+      }
+    },200);
   }
   
   getCurrentProject() : Promise<any> {
@@ -56,14 +87,14 @@ export class ProjectManagerService {
   
   private loadProgramSettings(proj: MCProject) : Promise<any> {
     let promises: Promise<any>[] = [
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("vcruise")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("vtran")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("blendingmethod")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("tool")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("base")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("machinetable")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("workpiece")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("MOTIONOVERLAP")'),
+      this.ws.query('?TP_GET_PROJECT_PARAMETER("vcruise","")'),
+      this.ws.query('?TP_GET_PROJECT_PARAMETER("vtran","")'),
+      this.ws.query('?TP_GET_PROJECT_PARAMETER("blendingmethod","")'),
+      this.ws.query('?TP_GET_PROJECT_PARAMETER("tool","")'),
+      this.ws.query('?TP_GET_PROJECT_PARAMETER("base","")'),
+      this.ws.query('?TP_GET_PROJECT_PARAMETER("machinetable","")'),
+      this.ws.query('?TP_GET_PROJECT_PARAMETER("workpiece","")'),
+      this.ws.query('?TP_GET_PROJECT_PARAMETER("MOTIONOVERLAP","")'),
     ];
     return Promise.all(promises).then((results:MCQueryResponse[])=>{
       if (results[0].err === null && results[0].result.length > 0) {
@@ -102,29 +133,29 @@ export class ProjectManagerService {
     const settings = this.currProject.value.settings;
     switch (setting) {
       case 'tool':
-        cmd += '"tool","' + settings.tool + '")';
+        cmd += '"tool","","' + settings.tool + '")';
         break;
       case 'vcruise':
-        cmd += '"vcruise","' + settings.vcruise + '")';
+        cmd += '"vcruise","","' + settings.vcruise + '")';
         break;
       case 'vtran':
-        cmd += '"vtran","' + settings.vtran + '")';
+        cmd += '"vtran","","' + settings.vtran + '")';
         break;
       case 'blendingMethod':
-        cmd += '"blendingmethod","' + settings.blendingMethod + '")';
+        cmd += '"blendingmethod","","' + settings.blendingMethod + '")';
         break;
       case 'base':
-        cmd += '"base","' + settings.base + '")';
+        cmd += '"base","","' + settings.base + '")';
         break;
       case 'mtable':
-        cmd += '"machinetable","' + settings.mtable + '")';
+        cmd += '"machinetable","","' + settings.mtable + '")';
         break;
       case 'wpiece':
-        cmd += '"workpiece","' + settings.wpiece + '")';
+        cmd += '"workpiece","","' + settings.wpiece + '")';
         break;
       case 'overlap':
         const val = settings.overlap ? '1' : '0';
-        cmd += '"MOTIONOVERLAP","' + val + '")';
+        cmd += '"MOTIONOVERLAP","","' + val + '")';
         break;
       default:
         return;

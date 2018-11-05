@@ -7,14 +7,12 @@
   <button mat-raised-button color="primary" [matMenuTriggerFor]="variables" [disabled]="prg.activeFile==null">VARIABLES</button>
   <button mat-raised-button color="primary" [matMenuTriggerFor]="pallets" *ngIf="this.data.palletLibVer !== null" [disabled]="prg.activeFile==null">PALLETS</button>
   <button mat-raised-button color="primary" [matMenuTriggerFor]="grippers" *ngIf="this.data.gripperLibVer !== null" [disabled]="prg.activeFile==null">GRIPPERS</button>
-  <!--<button mat-raised-button color="primary" [matMenuTriggerFor]="teach" [disabled]="parser.variablesInLine.length === 0">TEACH...</button>
-  <button mat-raised-button color="primary" (click)="menu_edit_line()" [disabled]="parser.lineParams === null"><mat-icon>mode_edit</mat-icon> EDIT...</button>-->
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="teach" [disabled]="prg.variablesInLine.length === 0">TEACH...</button>
+  <button mat-raised-button color="primary" (click)="menu_edit_line()" [disabled]="prg.lineParams === null"><mat-icon>mode_edit</mat-icon> EDIT...</button>
   <mat-menu #teach="matMenu">
     <button mat-menu-item *ngFor="let v of this.prg.variablesInLine" (click)="prg.teachVariable(v)">{{v.name}}<span *ngIf="v.selectedIndex > -1">[{{v.selectedIndex}}]</span></button>
   </mat-menu>
   <mat-menu #program="matMenu">
-    <button mat-menu-item (click)="menu_sub()">Sub</button>
-    <button mat-menu-item (click)="menu_function()">Function</button>
     <button mat-menu-item (click)="menu_program()">Program</button>
     <button mat-menu-item (click)="menu_call()">Call</button>
   </mat-menu>

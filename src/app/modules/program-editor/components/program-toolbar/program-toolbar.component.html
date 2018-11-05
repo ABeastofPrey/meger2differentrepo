@@ -32,6 +32,6 @@
   </ul>
   <ul class="dropdown-menu menu4" *ngIf="currMenu === 4 && this.prj.currProject.value">
     <li (click)="run()"><mat-icon>play_arrow</mat-icon>Run Project</li>
-    <li><mat-icon>stop</mat-icon>Stop Project</li>
+    <li (click)="stop()"><mat-icon>stop</mat-icon>Stop Project</li>
   </ul>
 </div>

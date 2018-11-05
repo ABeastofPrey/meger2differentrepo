@@ -1,0 +1,95 @@
+.wizard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.menu {
+  padding: 24px 16px 0 16px;
+  z-index: 1;
+  background: #FAFAFA;
+  flex: 0;
+}
+mat-horizontal-stepper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.menu-fab {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+}
+::ng-deep .wizard .mat-horizontal-content-container {
+  padding: 0 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+mat-form-field {
+  margin-right: 8px;
+  width: auto;
+  margin-bottom: -16px;
+}
+.input-large {
+  max-width: 300px;
+  font-size: 24px;
+}
+.input-normal { max-width: 90px; }
+.input-wide { max-width: 195px!important; }
+.input-small {
+  max-width: 45px;
+  margin-top: 8px;
+  margin-bottom: -10px;
+}
+.header {
+  display: flex;
+  padding: 1em;
+  align-items: center;
+  z-index: 2;
+}
+.title {
+  font-size: 24px;
+  flex: 1;
+}
+.content { padding: 1em; }
+.label { 
+  color: rgba(0, 0, 0, 0.54); 
+  margin-top: 8px;
+}
+.step-wrapper  {
+  display: flex;
+  min-height: 305px;
+}
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 24px;
+}
+.step-content h2 {
+  margin-right: 24px;
+}
+.img-container img {
+  width: 100%;
+  height: 100%;
+  max-width: 250px;
+}
+h2, h3 { margin:0; }
+.inline {
+  display: flex;
+  align-items: center;
+}
+.inline > * {
+  margin-right: 16px;
+}
+.result {
+  border: 1px solid black;
+  padding: 16px;
+  flex: 1;
+}
+.sbs {
+  flex: 1;
+  display: flex;
+}

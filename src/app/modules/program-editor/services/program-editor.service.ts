@@ -2,7 +2,12 @@ import { Injectable, EventEmitter, ApplicationRef } from '@angular/core';
 import {MatSnackBar, MatDialog} from '@angular/material';
 import {MCFile, ApiService, UploadResult} from '../../../modules/core/services/api.service';
 import {WebsocketService, MCQueryResponse, ErrorFrame} from '../../../modules/core/services/websocket.service';
-import {NewFileDialogComponent} from '../../../components/new-file-dialog/new-file-dialog.component';
+import {ProjectManagerService, DataService} from '../../core';
+import {Backtrace} from '../../core/models/backtrace.model';
+import {Subject} from 'rxjs';
+import {TPVariable} from '../../core/models/tp/tp-variable.model';
+import {LineParser} from '../../core/models/line-parser.model';
+import {Pallet} from '../../core/models/pallet.model';
 import {YesNoDialogComponent} from '../../../components/yes-no-dialog/yes-no-dialog.component';
 
 export const TASKSTATE_NOTLOADED = -1;
@@ -13,67 +18,129 @@ export const TASKSTATE_TERMINATED = 5;
 export const TASKSTATE_READY = 7;
 export const TASKSTATE_KILLSTART = 9;
 export const TASKSTATE_KILLED = 10;
+export const TASKSTATE_LIB_LOADED = 11;
 
 @Injectable()
 export class ProgramEditorService {
   
   files : MCFile[] = [];
-  activeFile : string = null;
+  activeFile : string = null; // The currently opened context in the editor
+  displayedFile: string = null; // The file that's actually displayed in the editor
   editorText : string = null;
-  editorTextChange : EventEmitter<string> = new EventEmitter<string>();
   status : ProgramStatus = null;
-  statusChange : EventEmitter<ProgramStatus>=new EventEmitter<ProgramStatus>();
-  errLinesChange : EventEmitter<TRNERRLine[]>=new EventEmitter<TRNERRLine[]>();
   errors : TRNERRLine[] = [];
   editorLine : number = -1;
+  isDirty: boolean = false;
+  mode: string = null;
+  fileRef: any = null; // A reference to the project file which is active
+  backtrace: Backtrace = null; // The last backtrace
+  
+  // EVENTS
   skipLineRequest : EventEmitter<number>=new EventEmitter();
   dragEnd : EventEmitter<any>=new EventEmitter();
-  
-  mode: string = null;
+  onReplaceRange: EventEmitter<any> = new EventEmitter();
+  editorTextChange : EventEmitter<string> = new EventEmitter<string>();
+  statusChange : EventEmitter<ProgramStatus>=new EventEmitter<ProgramStatus>();
+  errLinesChange : EventEmitter<TRNERRLine[]>=new EventEmitter<TRNERRLine[]>();
+  onInsertAndJump : EventEmitter<any> = new EventEmitter();
+  onReplaceLine : EventEmitter<any> = new EventEmitter();
+  fileChange: Subject<string>=new Subject<string>();
   
   private statusInterval : any = null;
   private oldStatString : string;
   private activeFilePath: string = null;
+  private stepMode: boolean = false; // True when the user clicks on STEP button
+  
+  // LINE PARSING
+  parser: LineParser = new LineParser(this.data);
+  variablesInLine: TPVariable[] = [];
+  lineParams : any = null;
+  disableStepOver : boolean = false;
+  
+  // FLOW REMEMBERING
+  lastVar : TPVariable;
+  lastVarIndex : number;
+  lastPallet : Pallet;
+  rangeStart: number;
+  rangeEnd: number;
+  rangeText: string;
   
   constructor(
     private ref : ApplicationRef,
     private dialog : MatDialog,
+    private prj: ProjectManagerService,
     private ws: WebsocketService,
     private snack : MatSnackBar,
+    private data: DataService,
     private api : ApiService) {
     this.refreshFiles();
     this.ws.isConnected.subscribe(stat=>{
       if (!stat) {
         this.mode = null;
         this.activeFile = null;
+        this.displayedFile = null;
       }
     });
   }
 
-  setFile(f : string, path?:string) { // OPEN A FILE
-    if (f === this.activeFile)
+  setFile(f : string, path:string, ref: any, bt?:Backtrace) { // OPEN A FILE
+    this.fileRef = ref;
+    if (f === this.activeFile && bt) {
+      this.backtrace = null;
+      this.fileChange.next(this.activeFile);
       return;
-    this.close();
-    this.activeFile = f;
-    if (!path) {
-      this.activeFilePath = null;
-      this.api.getFile(f).then(ret=>{
-        this.editorText = ret;
-        this.editorTextChange.emit(ret);
-        this.refreshStatus(true);
-      });
-    } else {
-      this.activeFilePath = path;
-      this.api.getPathFile(path+f).then(ret=>{
-        this.editorText = ret;
-        this.editorTextChange.emit(ret);
-        this.refreshStatus(true);
-      });
     }
+    this.backtrace = bt;
+    this.close();
+    this.activeFile = bt ? bt.taskName : f;
+    this.displayedFile = f;
+    const finalPath = path || '';
+    this.activeFilePath = path ? path : null;
+    this.api.getPathFile(finalPath+f).then(ret=>{
+      this.editorText = ret;
+      this.editorTextChange.emit(ret);
+      this.refreshStatus(true);
+      this.isDirty = false;
+      this.fileChange.next(this.activeFile);
+    });
   }
   
   skipToLine(n:number) { // CALLED WHEN USER WANTS TO SKIP TO A SPECIFIC LINE
     this.skipLineRequest.emit(n);
+  }
+  
+  replaceRange(cmd: string) { this.onReplaceRange.emit(cmd); }
+  replaceLine(index:number ,cmd: string) {
+    this.onReplaceLine.emit({index:index,cmd:cmd});
+  }
+  
+  onAceEditorCursorChange(rowIndex:number, row:string) {
+    this.rangeStart = NaN;
+    this.rangeEnd = NaN;
+    this.rangeText = null;
+    let lineType = this.parser.getLineType(row);
+    if (
+      lineType === this.parser.LineType.MOVE ||
+      lineType === this.parser.LineType.CIRCLE
+    ) {
+      this.variablesInLine = this.parser.getVariablesFromLine(row);
+      this.lineParams = this.parser.getLineParameters(row, lineType, rowIndex);
+    } else {
+      this.variablesInLine = [];
+      this.lineParams = null;
+    }
+    if (lineType === this.parser.LineType.PROGRAM)
+      this.disableStepOver = true;
+    else
+      this.disableStepOver = false;
+  }
+  
+  onAceEditorRangeChange(start: number, end: number, text: string) {
+    this.variablesInLine = [];
+    this.lineParams = null;
+    this.rangeStart = start;
+    this.rangeEnd = end;
+    this.rangeText = text;
   }
   
   refreshFiles() {
@@ -89,28 +156,31 @@ export class ProgramEditorService {
   close() {
     this.refreshStatus(false);
     this.activeFile = null;
+    this.displayedFile = null;
     this.editorText = null;
     this.editorTextChange.emit(null);
     this.status = null;
     this.errors = [];
     this.editorLine = -1;
+    this.isDirty = false;
   }
   
-  save() {
+  save() : Promise<any> {
     if (this.activeFile === null)
-      return;
+      return Promise.resolve();
     const path = this.activeFilePath || '';
-    this.api.uploadToPath(
+    return this.api.uploadToPath(
       new File([new Blob([this.editorText])],this.activeFile),true,path)
     .then((ret:UploadResult)=>{
-      if (ret.success)
+      if (ret.success) {
         this.snack.open('Saved.','',{duration:1500});
-      else
+        this.isDirty = false;
+      } else
         this.snack.open('Error ' + ret.err,'',{duration:2000});
     });
   }
   
-  load() { // SAVES AND LOAD
+  load() {
     if (this.activeFile === null)
       return;
     const path = this.activeFilePath || '';
@@ -118,7 +188,18 @@ export class ProgramEditorService {
       new File([new Blob([this.editorText])],this.activeFile),true,path)
     .then((ret:UploadResult)=>{
       if (ret.success) {
-        this.ws.query('Load ' + this.activeFile)
+        if (this.fileRef) {
+          const prj = this.prj.currProject.value.name;
+          const file = this.activeFile.substring(0,this.activeFile.indexOf('.'));
+          this.ws.query('?tp_load_app("' + prj + '","' + file + '")').then((ret: MCQueryResponse)=>{
+            if (ret.result !== '0')
+              this.getTRNERR(null);
+            else
+              this.errors = [];
+          });
+          return;
+        }
+        this.ws.query('Load$ "/FFS0/SSMC/' + path + this.activeFile + '"')
         .then((ret:MCQueryResponse)=>{
           if (ret.err)
             this.getTRNERR(ret.err.errMsg);
@@ -133,6 +214,12 @@ export class ProgramEditorService {
   run() {
     if (this.activeFile === null)
       return;
+    if (this.fileRef) {
+      const prj = this.prj.currProject.value.name;
+      const file = this.activeFile.substring(0,this.activeFile.indexOf('.'));
+      this.ws.query('?tp_run_app("' + prj + '","' + file + '")');
+      return;
+    }
     this.ws.query('KillTask ' + this.activeFile).then(()=>{
       this.ws.query('StartTask ' + this.activeFile);
     });
@@ -146,6 +233,12 @@ export class ProgramEditorService {
   kill() {
     if (this.activeFile === null)
       return;
+    if (this.fileRef) {
+      const prj = this.prj.currProject.value.name;
+      const file = this.activeFile.substring(0,this.activeFile.indexOf('.'));
+      this.ws.query('?tp_stop_app("' + prj + '","' + file + '")');
+      return;
+    }
     this.ws.query('KillTask ' + this.activeFile);
   }
   
@@ -166,18 +259,38 @@ export class ProgramEditorService {
   stepOver() {
     if (this.activeFile === null)
       return;
+    if (this.fileRef) {
+      const prj = this.prj.currProject.value.name;
+      const file = this.activeFile.substring(0,this.activeFile.indexOf('.'));
+      this.ws.query('?tp_step_over_app("' + prj + '","' + file + '")');
+      return;
+    }
     this.ws.query('StepOver ' + this.activeFile);
   }
   
   stepInto() {
     if (this.activeFile === null)
       return;
+    this.stepMode = true;
+    if (this.fileRef) {
+      const prj = this.prj.currProject.value.name;
+      const file = this.activeFile.substring(0,this.activeFile.indexOf('.'));
+      this.ws.query('?tp_step_in_app("' + prj + '","' + file + '")');
+      return;
+    }
     this.ws.query('StepIn ' + this.activeFile);
   }
   
   stepOut() {
     if (this.activeFile === null)
       return;
+    this.stepMode = true;
+    if (this.fileRef) {
+      const prj = this.prj.currProject.value.name;
+      const file = this.activeFile.substring(0,this.activeFile.indexOf('.'));
+      this.ws.query('?tp_step_out_app("' + prj + '","' + file + '")');
+      return;
+    }
     this.ws.query('StepOut ' + this.activeFile);
   }
   
@@ -196,68 +309,122 @@ export class ProgramEditorService {
     document.body.removeChild(element);
   }
   
-  newFile() {
-    let ref = this.dialog.open(NewFileDialogComponent);
-    ref.afterClosed().subscribe((fileName:string)=>{
-      if (fileName) {
-        this.api.upload(new File([new Blob([''])], fileName), false)
-        .then((ret: UploadResult)=>{
-          if (ret.success) {
-            this.refreshFiles().then(()=>{
-              for (let f of this.files) {
-                if (f.fileName === fileName)
-                  return this.setFile(f.fileName);
-              }
+  refreshStatus(on : boolean) {
+    if (!on)
+      return this.ws.clearInterval(this.statusInterval);
+    if (this.activeFile === null)
+      return;
+    const file = this.activeFile;
+    const isLib = file.endsWith('.LIB') || file.endsWith('.ULB');
+    const cmd = '?'+file+(!isLib?'.status':'.dummyVariable');
+    this.oldStatString = null;
+    this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
+      if (ret !== this.oldStatString) {
+        this.oldStatString = ret;
+        if (isLib) {
+          let tmpStatus = new ProgramStatus(null);
+          tmpStatus.statusCode = err.errCode === '8020' ? TASKSTATE_LIB_LOADED : TASKSTATE_NOTLOADED;
+          tmpStatus.name = err.errCode === '8020' ? 'Loaded' : 'Not Loaded';
+          this.status = tmpStatus;
+          this.statusChange.emit(this.status);
+          this.ref.tick();
+        } else {
+          this.status = new ProgramStatus(err ? null : ret);
+          if (this.stepMode) {
+            this.getBackTrace().then((bt:Backtrace)=>{
+              this.backtrace = bt;
+              if (this.backtrace.files[0].name !== this.activeFile)
+                this.setFile(bt.files[0].name, null, null, bt);
+              this.stepMode = false;
             });
-          } else if (ret.err === -1) {
-            let ref = this.dialog.open(YesNoDialogComponent,{
-              data: {
-                yes: 'OVERWRITE',
-                no: 'CANCEL',
-                title: 'File Already Exists',
-                msg: 'Would you like to OVERWRITE the existing file?'
-              }
-            });
-            ref.afterClosed().subscribe(ret=>{
-              if (ret) {
-                this.api.upload(new File([new Blob([''])], fileName), true)
-                .then((ret: UploadResult)=>{
-                  if (ret.success) {
-                    this.refreshFiles().then(()=>{
-                      for (let f of this.files) {
-                        if (f.fileName === fileName)
-                          return this.setFile(f.fileName);
-                      }
-                    });
-                  } else
-                    this.snack.open('Error uploading file','DISMISS',{duration: 3000});
-                });
+          } else if (this.backtrace) {
+            this.status.programLine = this.status.sourceLine;
+            this.statusChange.emit(this.status);
+            this.ref.tick();
+          } else if (this.status.statusCode === TASKSTATE_ERROR || this.status.statusCode === TASKSTATE_STOPPED) {
+            this.getBackTrace().then((bt:Backtrace)=>{
+              if (bt.files[0].name === file) {
+                this.backtrace = null;
+                this.status.programLine = bt.files[0].line;
+                this.statusChange.emit(this.status);
+                this.ref.tick();
+              } else {
+                this.setFile(bt.files[0].name, null, null, bt);
               }
             });
           } else {
-            this.snack.open('Error uploading file','DISMISS',{duration: 3000});
+            this.statusChange.emit(this.status);
+            this.ref.tick();
+          }
+        }
+      }
+    },200);
+  }
+  
+  insertAndJump(cmd:string, lines:number) {
+    this.onInsertAndJump.emit({cmd:cmd,lines:lines});
+  }
+  
+  getBackTrace() {
+    return this.ws.query('BackTrace ' + this.activeFile).then((ret: MCQueryResponse)=>{
+      return new Backtrace(ret.result);
+    });
+  }
+  
+  getCurrentLineType() {
+    if (this.lineParams === null)
+      return null;
+    return this.lineParams['lineType'];
+  }
+  
+  teachVariable(v: TPVariable) {
+    let fullName = v.name;
+    if (v.isArr)
+      fullName += '[' + v.selectedIndex + ']';
+    let ref = this.dialog.open(YesNoDialogComponent,{
+      data: {
+        title: 'Teach' + ' ' + fullName + '?',
+        msg: '',
+        yes: 'TEACH',
+        no: 'CANCEL'
+      }
+    });
+    ref.afterClosed().subscribe(ret=>{
+      if (ret) {
+        var cmd_teach = '?tp_teach("' + fullName + '","' + v.typeStr + '")';
+        this.ws.query(cmd_teach).then((ret:MCQueryResponse)=>{
+          if (ret.result === '0') {
+            this.snack.open('Success','',{duration:2000});
+          } else {
+            this.snack.open('Error ' + ret.result,'',{duration:2000});
           }
         });
       }
     });
   }
   
-  
-  refreshStatus(on : boolean) {
-    if (!on)
-      return this.ws.clearInterval(this.statusInterval);
-    if (this.activeFile === null)
-      return;
-    let cmd = '?'+this.activeFile+'.status';
-    this.oldStatString = null;
-    this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
-      if (ret !== this.oldStatString) {
-        this.oldStatString = ret;
-        this.status = new ProgramStatus(err ? null : ret);
-        this.statusChange.emit(this.status);
-        this.ref.tick();
+  teachVariableByName(fullName: string) {
+    // search for TP Variable
+    let index = fullName.indexOf('[');
+    const searchName = index > -1 ? fullName.substring(0,index) : fullName;
+    let varType: string = null;
+    for (let v of this.data.joints.concat(this.data.locations)) {
+      if (v.name === searchName) {
+        varType = v.typeStr;
+        break;
       }
-    },200);
+    }
+    if (varType === null) {
+      return this.snack.open('Error','',{duration:2000});
+    }
+    const cmd_teach = '?tp_teach("' + fullName + '","' + varType + '")';
+    this.ws.query(cmd_teach).then((ret:MCQueryResponse)=>{
+      if (ret.result === '0') {
+        this.snack.open(fullName + ': ' + 'Success!','',{duration:2000});
+      } else {
+        this.snack.open('Error','',{duration:2000});
+      }
+    });
   }
   
   getTRNERR(defaultErrorMessage:string) {
@@ -266,6 +433,23 @@ export class ProgramEditorService {
       this.errors = trnerr.errorLines;
       this.errLinesChange.emit(trnerr.errorLines);
     });
+  }
+}
+
+export function getStatusString(stat:number) : string {
+  switch (stat) {
+    case TASKSTATE_RUNNING:
+      return 'Running';
+    case TASKSTATE_STOPPED:
+      return 'Stopped';
+    case TASKSTATE_ERROR:
+      return 'Error';
+    case TASKSTATE_READY:
+      return 'Ready';
+    case TASKSTATE_KILLED:
+      return 'Killed';
+    default:
+      return 'UNKNOWN STATE (' + stat + ')';
   }
 }
 
@@ -282,32 +466,13 @@ export class ProgramStatus {
       return;
     }
     let index = status.indexOf(":");
-    this.statusCode = Number(status.substring(6,index).trim());
+    this.statusCode = Number(status.substring(6,index).trim()) % 256;
     index = status.indexOf("Source");
     status = status.substr(index+7);
     let parts = status.split(" ");
     this.sourceLine = Number(parts[0])-1;
     this.programLine = Number(parts[3])-1;
-    switch (this.statusCode) {
-      case TASKSTATE_RUNNING:
-        this.name = 'Running';
-        break;
-      case TASKSTATE_STOPPED:
-        this.name = 'Stopped';
-        break;
-      case TASKSTATE_ERROR:
-        this.name = 'Error';
-        break;
-      case TASKSTATE_READY:
-        this.name = 'Ready';
-        break;
-      case TASKSTATE_KILLED:
-        this.name = 'Killed';
-        break;
-      default:
-        this.name = 'UNKNOWN STATE (' + this.statusCode + ')';
-        break;
-    }
+    this.name = getStatusString(this.statusCode);
   }
   
 }

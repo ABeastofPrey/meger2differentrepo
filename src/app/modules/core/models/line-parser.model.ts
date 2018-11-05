@@ -1,23 +1,26 @@
-import { Injectable } from '@angular/core';
-import {TPVariable} from '../../core/models/tp/tp-variable.model';
-import {DataService} from '../../core';
+import {DataService} from "..";
+import {TPVariable} from "./tp/tp-variable.model";
 
 enum LineType {MOVE,CIRCLE,PROGRAM,OTHER};
 
-@Injectable()
-export class LineParserService {
+export class LineParser {
   
-  constructor(
-    private data : DataService
-  ) {}
+  LineType = LineType;
+  
+  constructor(private data : DataService) {
+    
+  }
   
   getLineType(row: string): LineType {
     row = row.toUpperCase().trim();
-    if (row.startsWith('MOVE'))
+    let i = row.indexOf('MOVE');
+    if (i===0)
       return LineType.MOVE;
-    if (row.startsWith('CIRCLE'))
+    i = row.indexOf('CIRCLE');
+    if (i===0)
       return LineType.CIRCLE;
-    if (row.startsWith('PROGRAM'))
+    i = row.indexOf('PROGRAM');
+    if (i===0)
       return LineType.PROGRAM;
     return LineType.OTHER;
   }
@@ -27,7 +30,7 @@ export class LineParserService {
     let result : TPVariable[] = [];
     let tmp = row.split(' ');
     if (tmp.length <= 1)
-      return result;
+      return [];
     let varList = this.data.joints.concat(this.data.locations);
     for (let i = 1; i < tmp.length; i++) {
       if (tmp[i].length === 0 || i === 1 && this.data.robots.includes(tmp[i]))
@@ -182,12 +185,5 @@ export class LineParserService {
     }
     return params;
   }
-}
-
-export interface LineData {
-  index: number;
-  line: string;
-  lineType: LineType;
-  vars: TPVariable[];
-  params: any[];
+  
 }

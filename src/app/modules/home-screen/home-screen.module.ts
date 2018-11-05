@@ -18,7 +18,8 @@ import {HomeScreenRoutingModule} from './home-screen-routing.module';
   ],
   providers: [TerminalService],
   exports: [
-    HomeScreenComponent
+    HomeScreenComponent,
+    TerminalComponent
   ]
 })
 export class HomeScreenModule { }

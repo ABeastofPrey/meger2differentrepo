@@ -1,0 +1,14 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">New Payload</div>
+    <div class="content">
+      <mat-form-field>
+        <input matInput placeholder="Payload Name" [(ngModel)]="name">
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" matDialogClose>CANCEL</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="name == null || name.length === 0">CREATE PAYLOAD</button>
+  </div>
+</div>

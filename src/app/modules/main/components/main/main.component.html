@@ -13,6 +13,7 @@
       <mat-icon>notifications</mat-icon>
       <div class="badge warn-bg mat-elevation-z3" *ngIf="notification.count > 0">{{notification.count}}</div>
     </button>
+    <button mat-mini-fab matTooltip="Terminal" (click)="toggleTerminal()"><mat-icon>featured_play_list</mat-icon></button>
     <button mat-raised-button color="warn" (click)="login.logout()">LOGOUT</button>
   </mat-toolbar>
   <mat-sidenav-container class="mat-typography">
@@ -74,4 +75,10 @@
     ngDraggable
     [bounds]="container"
     inBounds="true"></watch-window>
+   <terminal-window
+    *ngIf="terminalOpen"
+    ngDraggable
+    (onClose)="terminalOpen = false"
+    [bounds]="container"
+    inBounds="true"></terminal-window>
 </div>

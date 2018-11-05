@@ -3,10 +3,7 @@ import {TPVariable} from "../tp/tp-variable.model";
 export class MCProject {
   name : string;
   dependencies: string[] = [];
-  macros: {
-    key:string,
-    app:string
-  }[] = [];
+  macros: Macro[] = [];
   settings: ProjectSettings;
   errors: {
     id: number,
@@ -32,7 +29,8 @@ export class MCProject {
         name: parts[0],
         libs: [],
         active: parts[1] === '1',
-        data: []
+        data: [],
+        status: -1
       });
     }
   }
@@ -43,6 +41,7 @@ export class App {
   libs: string[];
   active: boolean;
   data: TPVariable[];
+  status: number;
 }
 
 export class ProjectSettings {
@@ -54,4 +53,9 @@ export class ProjectSettings {
   mtable: string;
   wpiece: string;
   overlap: boolean;
+}
+
+export class Macro {
+  key:string;
+  app:string;
 }

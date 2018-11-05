@@ -86,8 +86,10 @@ export class LoginService {
   logout(serverDisconnected?: boolean) {
     if (!this.jwtService.getToken())
       return;
-    if (!serverDisconnected)
+    if (!serverDisconnected) {
+      this.ws.send('?tp_exit');
       this.ws.reset();
+    }
     const params = serverDisconnected ? {serverDisconnected:'true'} : {};
     this.router.navigate(['/login'], {queryParams: params});
     this.purgeAuth();

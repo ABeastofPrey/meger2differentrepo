@@ -7,6 +7,7 @@ import { IoComponent } from './io.component';
 
 import { IoService } from './../../services/io.service';
 import { WebsocketService } from '../../../core/services/websocket.service';
+import { IoFormatOption, IoOption } from '../../services/io.service.enum';
 
 /**
  * It contains all the test specs to IoComponent.
@@ -151,7 +152,7 @@ describe('IoComponent', () => {
    */
   it('the table header should be bit, value and label if the format is byte', () => {
     expect(component).toBeTruthy();
-    component.leftRadioOptions = 'byte';
+    component.leftRadioOptions = IoFormatOption.Byte;
     fixture.detectChanges();
 
     debugElement = fixture.debugElement;
@@ -170,14 +171,14 @@ describe('IoComponent', () => {
    */
   it('the io value can be changed in the left table if the option is output', () => {
     expect(component).toBeTruthy();
-    component.leftSelected = 'All Outputs';
-    component.onClickRadioButton(0, 'left');
+    component.leftSelected = IoOption.AllOutputs;
+    component.onClickRadioButtonInIO(0, 'left');
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
       checkRadioButton(fixture, 0, true, 'the radio button should be checked after click');
     }).then(() => {
-      component.onClickRadioButton(0, 'left');
+      component.onClickRadioButtonInIO(0, 'left');
       fixture.detectChanges();
 
       fixture.whenStable().then(() => {
@@ -192,14 +193,14 @@ describe('IoComponent', () => {
    */
   it('the io value can be changed in the right table if the option is output', () => {
     expect(component).toBeTruthy();
-    component.rightSelected = 'All Outputs';
-    component.onClickRadioButton(0, 'right');
+    component.rightSelected = IoOption.AllOutputs;
+    component.onClickRadioButtonInIO(0, 'right');
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
       checkRadioButton(fixture, 1, true, 'the radio button should be checked after click');
     }).then(() => {
-      component.onClickRadioButton(0, 'right');
+      component.onClickRadioButtonInIO(0, 'right');
       fixture.detectChanges();
 
       fixture.whenStable().then(() => {
@@ -214,7 +215,7 @@ describe('IoComponent', () => {
    */
   it('the io value cannot be changed if the option is input', () => {
     expect(component).toBeTruthy();
-    component.onClickRadioButton(0, 'left');
+    component.onClickRadioButtonInIO(0, 'left');
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
@@ -228,8 +229,8 @@ describe('IoComponent', () => {
    */
   it('the io status cannot be changed in the right table if the option is input', () => {
     expect(component).toBeTruthy();
-    component.rightSelected = 'All Inputs';
-    component.onClickRadioButton(0, 'right');
+    component.rightSelected = IoOption.AllInputs;
+    component.onClickRadioButtonInIO(0, 'right');
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {

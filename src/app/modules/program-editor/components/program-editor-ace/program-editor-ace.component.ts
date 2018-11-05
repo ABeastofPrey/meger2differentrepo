@@ -4,7 +4,8 @@ import {ApiService} from '../../../../modules/core/services/api.service';
 import {MCCommand} from '../../../home-screen/components/terminal/terminal.component';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Subscription} from 'rxjs';
-import {DataService, TaskService, MCFile} from '../../../core';
+import {DataService, TaskService, MCFile, ProjectManagerService, WebsocketService, MCQueryResponse} from '../../../core';
+import {MatSnackBar} from '@angular/material';
 
 declare var ace;
 
@@ -59,7 +60,10 @@ export class ProgramEditorAceComponent implements OnInit {
     private groups: GroupManagerService,
     private zone: NgZone,
     private data: DataService,
-    private task: TaskService
+    private task: TaskService,
+    private prj: ProjectManagerService,
+    private ws: WebsocketService,
+    private snack: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -67,7 +71,7 @@ export class ProgramEditorAceComponent implements OnInit {
     this.subs = this.service.editorTextChange.subscribe(text=>{
       this.removeAllMarkers();
       if (this.editor)
-        this.editor.setValue(text ? text : '',-1);
+        this.editor.setValue((text || ''),-1);
     });
     this.subs.add(this.service.statusChange.subscribe((stat:ProgramStatus)=>{
       this.removeAllMarkers();
@@ -78,14 +82,37 @@ export class ProgramEditorAceComponent implements OnInit {
         this.highlightLine(stat.programLine);
         this.editor.scrollToLine(stat.programLine,true, true,null);
       }
+      if (stat.statusCode === TASKSTATE_NOTLOADED)
+        this.setBreakpoints('');
     }));
     this.subs.add(this.service.errLinesChange.subscribe(lines=>{
       this.highlightErrors(lines);
+    }));
+    this.subs.add(this.service.onInsertAndJump.subscribe(ret=>{
+      if (ret)
+        this.insertAndJump(ret.cmd,ret.lines);
+    }));
+    this.subs.add(this.service.onReplaceRange.subscribe(ret=>{
+      if (ret)
+        this.replaceRange(ret);
+    }));
+    this.subs.add(this.service.onReplaceLine.subscribe(ret=>{
+      if (ret)
+        this.replaceLine(ret.index,ret.cmd);
     }));
     this.subs.add(this.service.skipLineRequest.subscribe((line:number)=>{
       if (line) {
         this.editor.scrollToLine(line,true, true,null);
       }
+    }));
+    this.subs.add(this.service.fileChange.subscribe((fileName)=>{
+      if (fileName.endsWith('B'))
+        return this.setBreakpoints('');
+      const app = fileName.substring(0, fileName.indexOf('.'));
+      const prjAndApp = '"' + this.prj.currProject.value.name + '","' + app + '"';
+      this.ws.query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')').then((ret: MCQueryResponse)=>{
+        this.setBreakpoints(ret.result);
+      });
     }));
     this.subs.add(this.service.dragEnd.subscribe(()=>{
       if (this.editor)
@@ -104,10 +131,89 @@ export class ProgramEditorAceComponent implements OnInit {
     this.task.stop();
   }
   
+  private replaceLine(index : number, newLine : string) {
+    let editor = this.editor;
+    let line : string = editor.session.getLine(index);
+    let tabs = Array(this.numberOfTabs(line) + 1).join('\t');
+    let txtLines = newLine.split('\n');
+    for (let i = 0; i < txtLines.length; i++)
+      txtLines[i] = tabs + txtLines[i];
+    newLine = txtLines.join('\n');
+    editor.session.replace(
+      new this.Range(index, 0, index, Number.MAX_VALUE),
+      newLine
+    );
+  }
+  
+  private replaceRange(txt: string) {
+    let editor = this.editor;
+    var position = editor.getCursorPosition();
+    var row = position.row; // current row
+    var line : string = editor.session.getLine(row);
+    // get current indentation
+    let tabs = Array(this.numberOfTabs(line) + 1).join('\t');
+    let txtLines = txt.split('\n');
+    for (let i = 1; i < txtLines.length; i++)
+      txtLines[i] = tabs + txtLines[i];
+    txt = txtLines.join('\n');
+    this.editor.session.replace(
+      this.editor.selection.getRange(),
+      txt
+    );
+  }
+  
+  private numberOfTabs(text : string) {
+    let count = 0;
+    let index = 0;
+    let spaceIndex = 0;
+    if (text === null || text.length === 0)
+      return 0;
+    for (let i = 0; i < text.length; i++) {
+      if (text.charCodeAt(i)===32)
+        spaceIndex++;
+      else
+        break;
+      if (spaceIndex%4 === 0)
+        count++;
+    }
+    while (text.charAt(index++) === "\t") {
+      count++;
+    }
+    return count;
+  }
+  
+  private insertAndJump(txt : string, lines : number) {
+    let editor = this.editor;
+    var position = editor.getCursorPosition();
+    var row = position.row; // current row
+    var line : string = editor.session.getLine(row);
+    var column = line.length; // end of line
+    editor.gotoLine(row + 1, column);
+    // get current indentation
+    let tabs = Array(this.numberOfTabs(line) + 1).join('\t');
+    let txtLines = txt.split('\n');
+    for (let i = 1; i < txtLines.length; i++)
+      txtLines[i] = tabs + txtLines[i];
+    txt = txtLines.join('\n');
+    if (line.trim().length > 0) {
+      txt = '\n' + tabs + txt;
+    } else {
+      lines--;
+    }
+    editor.insert(txt + "\n" + tabs);
+    if (lines <= 0)
+      return editor.focus();
+    position = editor.getCursorPosition();
+    row += lines;
+    column = editor.session.getLine(row).length; // end of line
+    editor.gotoLine(row + 1, column);
+    editor.focus();
+  }
+  
   private initEditor() {
     this.editor = ace.edit(this.editorDiv.nativeElement);
     this.editor.setOptions({
-      fontSize: '16px',
+      fontSize: '14px',
       showPrintMargin: false,
       theme: "ace/theme/eclipse",
       enableBasicAutocompletion: true,
@@ -271,6 +377,42 @@ export class ProgramEditorAceComponent implements OnInit {
     else 
       this.editor.setReadOnly(true);
     this.editor.getSession().on('change',e=>{
+      this.service.isDirty = true;
+      var breakpointsArray = Object.keys(this.editor.session.getBreakpoints());
+      var breakpoint;
+      var prevBreakpoint = -1;
+      if(breakpointsArray.length > 0){
+        if(e.lines.length>1){
+          var lines = e.lines.length -1;
+          var start = e.start.row;
+          var end = e.end.row;
+          if (e.action === 'insert'){
+            for (var i=0; i<breakpointsArray.length; i++) {
+              breakpoint = parseInt(breakpointsArray[i]);
+              if (i>0)
+                prevBreakpoint = parseInt(breakpointsArray[i-1]);
+              else
+                prevBreakpoint = -1;
+              if(breakpoint>start){
+                if (prevBreakpoint === -1 || prevBreakpoint !== breakpoint - 1)
+                  this.editor.session.clearBreakpoint(breakpoint);
+                this.editor.session.setBreakpoint(breakpoint + lines);
+              }
+            }
+          } else if(e.action==='remove'){
+            for (var i=0; i<breakpointsArray.length; i++) {
+              breakpoint = parseInt(breakpointsArray[i]);
+              if(breakpoint>start && breakpoint<end ){
+                this.editor.session.clearBreakpoint(breakpoint);
+              }
+              if(breakpoint>=end ){
+                this.editor.session.clearBreakpoint(breakpoint);
+                this.editor.session.setBreakpoint(breakpoint - lines);
+              }
+            }
+          }
+        }
+      }
       if (e.action === 'remove') {
         const line = this.editor.getSelectionRange().start.row;
         this.service.editorLine = line + 1;
@@ -278,9 +420,82 @@ export class ProgramEditorAceComponent implements OnInit {
       this.service.editorText = this.editor.getValue();
     });
     this.editor.getSession().getSelection().on('changeCursor', (e)=>{
+      const range = this.editor.session.getSelection().getRange();
+      let rowIndex : number = this.editor.session.getSelection().getSelectionAnchor().row;
+      let row : string = this.editor.session.getLine(rowIndex);
+      this.zone.run(()=>{
+        if (this.editor.getSelectedText().length === 0)
+          this.service.onAceEditorCursorChange(rowIndex,row);
+        else {
+          this.service.onAceEditorRangeChange(
+            range.start.row,
+            range.end.row,
+            this.editor.getSelectedText()
+          );
+        }
+      });
       const line = this.editor.getSelectionRange().start.row;
       this.service.editorLine = line + 1;
     });
+    this.editor.on("guttermousedown", this.editor.$breakpointListener = (e)=>{
+      if (this.service.activeFile.endsWith('B') || this.service.backtrace) {
+        this.zone.run(()=>{
+          this.snack.open('Library breakpoints are not supported yet','DISMISS');
+        });
+        return;
+      }
+      if (this.service.status === null || this.service.status.statusCode === TASKSTATE_NOTLOADED) {// PROGRAM NOT LOADED OR IS LIBRARY
+        this.zone.run(()=>{
+          this.snack.open('Breakpoints can only be inserted on a loaded file','DISMISS');
+        });
+        return;
+      }
+      const app = this.service.activeFile.substring(0, this.service.activeFile.indexOf('.'));
+      const prjAndApp = '"' + this.prj.currProject.value.name + '","' + app + '"';
+      let changedFlag = false;
+      e.stop();
+      const line = e.getDocumentPosition().row;
+      const bpts = Object.keys(this.editor.getSession().getBreakpoints());
+      for (let i=0; i<bpts.length && !changedFlag; i++) {
+        if (line == bpts[i]) {
+          changedFlag = true;
+          this.ws.query('?TP_TOGGLE_APP_BREAKPOINT(' + prjAndApp + ',' + (line + 1) + ')').then((ret: MCQueryResponse)=>{
+            if (ret.err)
+              return;
+            this.ws.query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')').then((ret: MCQueryResponse)=>{
+              this.setBreakpoints(ret.result);
+            });
+          });
+        }
+      }
+      if (!changedFlag) {
+        this.ws.query('?TP_TOGGLE_APP_BREAKPOINT(' + prjAndApp + ',' + (line + 1) + ')').then((ret: MCQueryResponse)=>{
+          if (ret.err)
+            return;
+          this.ws.query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')').then((ret: MCQueryResponse)=>{
+            this.setBreakpoints(ret.result);
+          });
+        });
+      }
+    });
+    if (this.service.activeFile) {
+      const app = this.service.activeFile.substring(0, this.service.activeFile.indexOf('.'));
+      const prjAndApp = '"' + this.prj.currProject.value.name + '","' + app + '"';
+      this.ws.query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')').then((ret: MCQueryResponse)=>{
+        this.setBreakpoints(ret.result);
+      });
+    }
+  }
+  
+  private setBreakpoints(bptsString:string){
+    this.editor.getSession().clearBreakpoints();
+    let bpts = bptsString.split(',');
+    for (let bp of bpts) {
+      let n = Number(bp);
+      if (isNaN(n))
+        continue;
+      this.editor.getSession().setBreakpoint(n-1, "ace_breakpoint");
+    }
   }
   
   highlightLine (line:number) {

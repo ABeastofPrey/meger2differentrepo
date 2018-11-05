@@ -1,0 +1,26 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">Set Pallet Index</div>
+    <div class="content">
+      <mat-form-field>
+        <mat-select placeholder="Pallet" [(ngModel)]="pallet">
+          <mat-option *ngFor="let p of dataService.pallets" [value]="p">{{ p.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-radio-group [(ngModel)]="option">
+        <mat-radio-button value="full" color="primary">Full</mat-radio-button>
+        <mat-radio-button value="empty" color="primary">Empty</mat-radio-button>
+        <mat-radio-button value="custom" color="primary">
+          <span *ngIf="pallet === null || option !== 'custom'">Custom</span>
+          <mat-form-field class="input-normal" *ngIf="pallet !== null && option === 'custom'">
+            <input matInput placeholder="Custom" [(ngModel)]="pallet.index">
+          </mat-form-field>
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="option === null || pallet === null || (option === 'custom' && (pallet.index < 0 || isNumberInvalid(pallet.index)))">INSERT</button>
+  </div>
+</div>

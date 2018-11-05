@@ -45,7 +45,7 @@ login-screen { flex: 1; }
   justify-content: center;
   font-weight: bold;
 }
-notification-window {
+notification-window, terminal-window {
   position: absolute;
   z-index: 5;
   overflow: hidden;
