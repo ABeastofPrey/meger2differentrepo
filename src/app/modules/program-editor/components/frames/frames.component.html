@@ -7,56 +7,62 @@
     <mat-tab label="Work Pieces"></mat-tab>
   </mat-tab-group>
   <div class="table-wrapper">
-    <mat-table #table [dataSource]="dataSource" class="data-table mat-elevation-z3">
-      <ng-container matColumnDef="select">
-        <mat-header-cell *matHeaderCellDef>
-          <mat-checkbox color="primary"
-                        (change)="$event ? masterToggle() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()">
-          </mat-checkbox>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          <mat-checkbox color="primary"
-                        (click)="$event.stopPropagation()"
-                        (change)="$event ? selection.toggle(row) : null"
-                        [checked]="selection.isSelected(row)">
-          </mat-checkbox>
-        </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.name}}<span *ngIf="element.isArr"> [...]</span></mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="arrIndex">
-        <mat-header-cell *matHeaderCellDef>Index</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          <mat-form-field *ngIf="element.isArr" style="min-width: 0;">
-            <mat-select placeholder="Index" [(ngModel)]="element.selectedIndex" (selectionChange)="rowClick(element,true)">
-              <mat-option *ngFor="let data of element.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </mat-cell>
-      </ng-container>
-      <mat-header-row *matHeaderRowDef="['select','name', 'arrIndex']"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: ['select','name', 'arrIndex']; let element;" (click)="rowClick(element)" [class.highlighted]="selectedVar && element.name === selectedVar.name" [class.current]="isElementCurrent(element.name)"></mat-row>
-    </mat-table>
-    <mat-card class="mat-elevation-z3 data-card">
-      <div class="var-name" *ngIf="selectedVar">
-        {{selectedVar.name}}{{selectedVar.isArr ? '['+selectedVar.selectedIndex+']':''}}
-      </div>
-      <div class="buttons" *ngIf="selectedVar || selection.selected.length > 0">
-        <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="primary" style="margin-right: 24px;" (click)="showCalibrationDialog()">CALIBRATE</button>
-        <button *ngIf="selectedVar" mat-raised-button color="primary" style="margin-right: 24px;" (click)="setAsCurrent()">SET AS CURRENT</button>
-        <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="warn" style="margin-right: 24px;" (click)="deleteSelected()">{{'DELETE ' + selectedVar.name}}</button>
-        <button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">DELETE SELECTED</button>
-      </div>
-      <div class="var-details" *ngIf="selectedVar">
-        <mat-form-field *ngFor="let val of this._value; let i = index" floatLabel="never">
-          <span matPrefix style='font-weight: bold;'>{{this._legend[i]}}:&nbsp;&nbsp;</span>
-          <input matInput [placeholder]="this._legend[i]" [(ngModel)]="this._value[i].value" (change)="onKeyboardClose()">
-        </mat-form-field>
-      </div>
-    </mat-card>
+    <split direction="horizontal">
+      <split-area size="30">
+        <mat-table #table [dataSource]="dataSource" class="data-table mat-elevation-z3">
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef class="dont-flex">
+              <mat-checkbox color="primary"
+                            (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="dont-flex">
+              <mat-checkbox color="primary"
+                            (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.name}}<span *ngIf="element.isArr"> [...]</span></mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="arrIndex">
+            <mat-header-cell *matHeaderCellDef>Index</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <mat-form-field *ngIf="element.isArr" style="min-width: 0;">
+                <mat-select placeholder="Index" [(ngModel)]="element.selectedIndex" (selectionChange)="rowClick(element,true)">
+                  <mat-option *ngFor="let data of element.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="['select','name', 'arrIndex']"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['select','name', 'arrIndex']; let element;" (click)="rowClick(element)" [class.highlighted]="selectedVar && element.name === selectedVar.name" [class.current]="isElementCurrent(element.name)"></mat-row>
+        </mat-table>
+      </split-area>
+      <split-area size="70">
+        <mat-card class="mat-elevation-z3 data-card">
+          <div class="var-name" *ngIf="selectedVar">
+            {{selectedVar.name}}{{selectedVar.isArr ? '['+selectedVar.selectedIndex+']':''}}
+          </div>
+          <div class="buttons" *ngIf="selectedVar || selection.selected.length > 0">
+            <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="primary" (click)="showCalibrationDialog()">CALIBRATE</button>
+            <button *ngIf="selectedVar" mat-raised-button color="primary" (click)="setAsCurrent()">SET AS CURRENT</button>
+            <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="warn" (click)="deleteSelected()">{{'DELETE ' + selectedVar.name}}</button>
+            <button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">DELETE SELECTED</button>
+          </div>
+          <div class="var-details" *ngIf="selectedVar">
+            <mat-form-field *ngFor="let val of this._value; let i = index" floatLabel="never">
+              <span matPrefix style='font-weight: bold;'>{{this._legend[i]}}:&nbsp;&nbsp;</span>
+              <input matInput [placeholder]="this._legend[i]" [(ngModel)]="this._value[i].value" (change)="onKeyboardClose()">
+            </mat-form-field>
+          </div>
+        </mat-card>
+      </split-area>
+    </split>
   </div>
 </div>

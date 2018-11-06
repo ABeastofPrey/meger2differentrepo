@@ -31,6 +31,7 @@ export class ProjectManagerService {
         });
       } else {
         clearInterval(this.interval);
+        this.currProject.next(null);
       }
     });
   }

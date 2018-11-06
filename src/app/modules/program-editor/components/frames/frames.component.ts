@@ -74,23 +74,24 @@ export class FramesComponent implements OnInit {
   }
   
   onKeyboardClose() {
-    /*let fullname = this.selectedVar.name;
+    let fullname = this.selectedVar.name;
     if (this.selectedVar.isArr)
       fullname += '[' + this.selectedVar.selectedIndex + ']';
-    var value = '';
+    let value = '';
     for (var i=0; i<this._value.length; i++) {
       value += this._value[i].value;
       if (i<this._value.length-1)
         value += ',';
     }
-    var cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
+    const cmd = '?TP_EDIT_FRAME("' + this.currFrameType + '","' + fullname +
+                '","' + value + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       this.rowClick(this.selectedVar,true); // REFRESH DATA
       if (ret.result === '0')
         this.snack.open('Changes saved',null,{duration: 2000});
       else
         console.log(ret.cmd + '>>>' + ret.result);
-    });*/
+    });
   }
   
   isElementCurrent(name : string) {
