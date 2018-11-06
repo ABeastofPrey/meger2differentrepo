@@ -9,8 +9,6 @@ import {SharedModule} from '../shared/shared.module';
 import {ProgramEditorRouterModule} from './program-editor-router.module';
 import {ProgramToolbarComponent} from './components/program-toolbar/program-toolbar.component';
 import {ProgramEditMenuComponent} from './components/program-edit-menu/program-edit-menu.component';
-
-import {LineParserService} from './services/line-parser.service';
 import { ToolCalibrationResultDialogComponent } from './components/tool-calibration-result-dialog/tool-calibration-result-dialog.component';
 import {DataScreenComponent} from './components/data-screen/data-screen.component';
 import {AddVarComponent} from './components/add-var/add-var.component';
@@ -90,7 +88,7 @@ import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-d
     SubDialogComponent,
     WhileDialogComponent
   ],
-  entryComponents:[
+  entryComponents: [
     NewProjectDialogComponent,
     ToolCalibrationResultDialogComponent,
     AddVarComponent,
@@ -123,8 +121,7 @@ import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-d
     ProgramEditorComponent
   ],
   providers: [
-    ProgramEditorService,
-    LineParserService
+    ProgramEditorService
   ]
 })
 export class ProgramEditorModule { }
