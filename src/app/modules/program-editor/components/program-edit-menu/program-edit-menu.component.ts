@@ -2,7 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {DataService} from '../../../core';
 import {ProgramEditorService} from '../../services/program-editor.service';
-import {LineParserService} from '../../services/line-parser.service';
+import {GripperSelectorComponent} from '../dialogs/gripper-selector/gripper-selector.component';
+import {Gripper} from '../../../core/models/gripper.model';
+import {PalletPickerDialogComponent} from '../dialogs/pallet-picker-dialog/pallet-picker-dialog.component';
+import {PalletIndexDialogComponent} from '../dialogs/pallet-index-dialog/pallet-index-dialog.component';
+import {SubDialogComponent} from '../dialogs/sub-dialog/sub-dialog.component';
+import {FunctionDialogComponent} from '../dialogs/function-dialog/function-dialog.component';
+import {CallDialogComponent} from '../dialogs/call-dialog/call-dialog.component';
+import {IfDialogComponent} from '../dialogs/if-dialog/if-dialog.component';
+import {WhileDialogComponent} from '../dialogs/while-dialog/while-dialog.component';
+import {SleepDialogComponent} from '../dialogs/sleep-dialog/sleep-dialog.component';
+import {MoveDialogComponent} from '../dialogs/move-dialog/move-dialog.component';
+import {CircleDialogComponent} from '../dialogs/circle-dialog/circle-dialog.component';
+import {RobotSelectorDialogComponent} from '../dialogs/robot-selector-dialog/robot-selector-dialog.component';
+import {DelayDialogComponent} from '../dialogs/delay-dialog/delay-dialog.component';
+import {IoSelectorDialogComponent} from '../dialogs/io-selector-dialog/io-selector-dialog.component';
+import {DimDialogComponent} from '../dialogs/dim-dialog/dim-dialog.component';
+import {LineParser} from '../../../core/models/line-parser.model';
 
 @Component({
   selector: 'program-edit-menu',
@@ -10,18 +26,20 @@ import {LineParserService} from '../../services/line-parser.service';
   styleUrls: ['./program-edit-menu.component.css']
 })
 export class ProgramEditMenuComponent implements OnInit {
+  
+  parser: LineParser;
 
   constructor(
     public prg : ProgramEditorService,
-    public parser: LineParserService,
     public data : DataService,
     private dialog : MatDialog
   ) { }
 
   ngOnInit() {
+    this.parser = this.prg.parser;
   }
   
-  /*menu_grp_use() {
+  menu_grp_use() {
     let ref = this.dialog.open(GripperSelectorComponent,{
       data: 'Set Active Gripper'
     });
@@ -60,7 +78,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_plt_pick() {
     let ref = this.dialog.open(PalletPickerDialogComponent,{
       data: {
-        title: this.lang.get('insert_cmd_plt_pick'),
+        title: 'Insert Pick Command',
         pickRobot: true
       }
     });
@@ -74,7 +92,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_plt_place() {
     let ref = this.dialog.open(PalletPickerDialogComponent,{
       data: {
-        title: this.lang.get('insert_cmd_plt_place'),
+        title: 'Insert Place Command',
         pickRobot: true
       }
     });
@@ -88,7 +106,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_plt_home() {
     let ref = this.dialog.open(PalletPickerDialogComponent,{
       data: {
-        title: this.lang.get('insert_cmd_plt_home'),
+        title: 'Insert Home Command',
         pickRobot: true
       }
     });
@@ -120,32 +138,25 @@ export class ProgramEditMenuComponent implements OnInit {
     }
   }
   menu_sub() {
-    let ref = this.dialog.open(SubDialogComponent);
+    /*let ref = this.dialog.open(SubDialogComponent);
     ref.afterClosed().subscribe(name=>{
       if (name) {
         let cmd = '\n\npublic sub ' + name + '\n\n\t\n\nend sub';
         this.prg.insertFunction(cmd);
       }
-    });
+    });*/
   }
   menu_function() {
-    let ref = this.dialog.open(FunctionDialogComponent);
+    /*let ref = this.dialog.open(FunctionDialogComponent);
     ref.afterClosed().subscribe(ret=>{
       if (ret) {
         let cmd = '\n\npublic function ' +
                   ret.name + ' as ' + ret.type + '\n\n\t\n\nend function';
         this.prg.insertFunction(cmd);
       }
-    });
+    });*/
   }
   menu_program() { this.prg.insertAndJump('program\n\n\t\n\nend program',3); }
-  menu_program_settings() {
-    let ref = this.dialog.open(ProgramSettingsDialogComponent);
-    ref.afterClosed().subscribe(result=>{
-      if (result)
-        this.prg.insertAndJump(result,0);
-    });
-  }
   menu_call() {
     let ref = this.dialog.open(CallDialogComponent);
     ref.afterClosed().subscribe(expression=>{
@@ -239,7 +250,7 @@ export class ProgramEditMenuComponent implements OnInit {
       {
         width: '400px',
         data: {
-          title:this.lang.get('insert_cmd_dopass'),
+          title:'Insert DoPass Command',
           must: false
         }
       }
@@ -258,7 +269,7 @@ export class ProgramEditMenuComponent implements OnInit {
       RobotSelectorDialogComponent,
       {
         width: '400px',
-        data: {title:this.lang.get('insert_cmd_stop'), must: false}
+        data: {title:'Insert Stop Command', must: false}
       }
     );
     ref.afterClosed().subscribe((robot:string)=>{
@@ -275,7 +286,7 @@ export class ProgramEditMenuComponent implements OnInit {
       RobotSelectorDialogComponent,
       {
         width: '400px',
-        data: {title:this.lang.get('insert_cmd_waitForMotion'), must: false}
+        data: {title:'Insert WaitForMotion Command', must: false}
       }
     );
     ref.afterClosed().subscribe((robot:string)=>{
@@ -292,7 +303,7 @@ export class ProgramEditMenuComponent implements OnInit {
       DelayDialogComponent,
       {
         width: '400px',
-        data: {title:this.lang.get('insert_cmd_delay')}
+        data: {title:'Insert Delay Command'}
       }
     );
     ref.afterClosed().subscribe((cmd:string)=>{
@@ -306,7 +317,7 @@ export class ProgramEditMenuComponent implements OnInit {
       RobotSelectorDialogComponent,
       {
         width: '400px',
-        data: {title:this.lang.get('insert_cmd_enable'), must: false}
+        data: {title:'Insert Enable Command', must: false}
       }
     );
     ref.afterClosed().subscribe((robot:string)=>{
@@ -323,7 +334,7 @@ export class ProgramEditMenuComponent implements OnInit {
       RobotSelectorDialogComponent,
       {
         width: '400px',
-        data: {title:this.lang.get('insert_cmd_disable'), must: false}
+        data: {title:'Insert Disable Command', must: false}
       }
     );
     ref.afterClosed().subscribe((robot:string)=>{
@@ -341,7 +352,7 @@ export class ProgramEditMenuComponent implements OnInit {
       {
         width: '400px',
         data: {
-          title: this.lang.get('insert_cmd_input'),
+          title: 'Insert an Input Reference',
           inputs: true,
           outputs: false
         }
@@ -359,7 +370,7 @@ export class ProgramEditMenuComponent implements OnInit {
       {
         width: '400px',
         data: {
-          title: this.lang.get('insert_cmd_output'),
+          title: 'Insert an Output Reference',
           inputs: false,
           outputs: true
         }
@@ -383,6 +394,6 @@ export class ProgramEditMenuComponent implements OnInit {
         this.prg.insertAndJump(cmd,0);
       }
     });
-  }*/
+  }
 
 }

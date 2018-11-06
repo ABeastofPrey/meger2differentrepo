@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import {TerminalService} from '../../services/terminal.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
+import {Input} from '@angular/core';
 
 declare var ace;
 
@@ -20,9 +21,14 @@ export class TerminalComponent implements OnInit {
   @ViewChild('upload') uploadInput: ElementRef;
   @ViewChild('editorLine') editorLine : ElementRef;
   
+  @Input('offsetX') offsetX: number;
+  @Input('offsetY') offsetY: number;
+  
   private changeFlag : boolean = false;
   private lastCmdIndex : number = -1;
   private editor : any;
+  
+  private downTime: number; // last time mouse was holded down on terminal
   
   get cmd() {
     return this._cmd;
@@ -124,24 +130,37 @@ export class TerminalComponent implements OnInit {
     });
     editor.commands.bindKey("up",()=>{ this.onKeyUp(); });
     editor.commands.bindKey("down",()=>{ this.onKeyUp(); });
+    editor.focus();
   }
   
   onContextMenu(e:MouseEvent) {
     e.preventDefault();
-    this.contextMenuX = e.layerX;
-    this.contextMenuY = e.layerY;
+    let x: number = e.layerX;
+    let y: number = e.layerY;
+    console.log(x, y, this.offsetX, this.offsetY);
+    if (!isNaN(this.offsetX))
+      x -= this.offsetX;
+    if (!isNaN(this.offsetY))
+      y -= this.offsetY;
+    this.contextMenuX = x;
+    this.contextMenuY = y;
     this.contextMenuShown = true;
   }
   
-  onClick() {
+  onClick(state:number) { // 0 - down, 1 - up
     this.contextMenuShown = false;
-    this.editor.focus();
+    if (state === 0)
+      this.downTime = new Date().getTime();
+    else if (new Date().getTime() - this.downTime < 200)
+      this.editor.focus();
   }
   
-  clear() {
+  clear(e: MouseEvent) {
+    e.stopImmediatePropagation();
     this.terminal.cmds = [];
     this.cmd = '';
     this.contextMenuShown = false;
+    this.editor.focus();
   }
   
   private send() {
@@ -150,9 +169,9 @@ export class TerminalComponent implements OnInit {
       this.cmd = '';
       this.lastCmdIndex = -1;
       setTimeout(()=>{
-        let element = this.wrapper.nativeElement.parentElement;
-        element.scrollTop = element.scrollHeight;
-      },100);
+        const height = this.wrapper.nativeElement.scrollHeight;
+        this.wrapper.nativeElement.scrollTop = height;
+      },0);
     });
   }
   

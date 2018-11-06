@@ -24,7 +24,7 @@
             mat-raised-button
             color="primary"
             type="submit"
-            [disabled]="!authForm.valid || !isVersionOK"
+            [disabled]="!authForm.valid || !isVersionOK || isSubmitting"
           >
             LOGIN
           </button>

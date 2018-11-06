@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {DataService, WebsocketService, MCQueryResponse} from '../../../core';
 import {TPVariable} from '../../../core/models/tp/tp-variable.model';
-import {MatTableDataSource, MatDialog} from '@angular/material';
+import {MatTableDataSource, MatDialog, MatSnackBar} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
 import {TPVariableType} from '../../../core/models/tp/tp-variable-type.model';
 import {AddFrameComponent} from '../add-frame/add-frame.component';
@@ -30,7 +30,8 @@ export class FramesComponent implements OnInit {
   constructor(
     private data: DataService,
     private dialog: MatDialog,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    private snack: MatSnackBar
   ) { }
   ngOnInit() {
     this.dataSource.data = this.getData();
@@ -70,6 +71,26 @@ export class FramesComponent implements OnInit {
     this.currTabIndex = newTab;
     this.dataSource.data = this.getData();
     this.selection.clear();
+  }
+  
+  onKeyboardClose() {
+    /*let fullname = this.selectedVar.name;
+    if (this.selectedVar.isArr)
+      fullname += '[' + this.selectedVar.selectedIndex + ']';
+    var value = '';
+    for (var i=0; i<this._value.length; i++) {
+      value += this._value[i].value;
+      if (i<this._value.length-1)
+        value += ',';
+    }
+    var cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
+    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+      this.rowClick(this.selectedVar,true); // REFRESH DATA
+      if (ret.result === '0')
+        this.snack.open('Changes saved',null,{duration: 2000});
+      else
+        console.log(ret.cmd + '>>>' + ret.result);
+    });*/
   }
   
   isElementCurrent(name : string) {

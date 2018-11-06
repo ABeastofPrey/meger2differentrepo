@@ -37,7 +37,7 @@
             <mat-icon *ngIf="node.type!=='Project'" class="primary-light">
               {{nestedTreeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
             </mat-icon>
-            {{node.name}}
+            {{node.name}}<span class="status" *ngIf="node.ref && node.ref.status !== -1" [class.status-running]="node.ref && node.ref.status === 1"> ({{getStatusString(node.ref.status)}})</span>
           </div>
           <ul [class.invisible]="!nestedTreeControl.isExpanded(node)">
             <ng-container matTreeNodeOutlet></ng-container>
@@ -49,7 +49,7 @@
   <div *ngIf="modeToggle === 'mc'">
     <div class="title">Controller Files</div>
     <div class="file-list">
-      <div *ngFor="let f of service.files" (click)="service.setFile(f.fileName);selectFile(f)" class="center-vertical" [class.selected]="lastSelectedFile === f">
+      <div *ngFor="let f of service.files" (click)="service.setFile(f.fileName,'',null);selectFile(f)" class="center-vertical" [class.selected]="lastSelectedFile === f">
         <mat-icon style="margin-right: 4px;" class="primary-light">insert_drive_file</mat-icon>
         <span class="mat-title-color">{{f.fileName}}</span>
       </div>
@@ -63,6 +63,7 @@
         <button mat-button (click)="newApp()"><mat-icon>add</mat-icon>New App...</button>
       </div>
       <div *ngIf="lastSelectedNode && lastSelectedNode.type === 'App'">
+        <button mat-button (click)="runApp(lastSelectedNode.name)" *ngIf="lastSelectedNode.ref && lastSelectedNode.ref.status !== 2"><mat-icon>play_arrow</mat-icon>Run {{lastSelectedNode.name}}</button>
         <button mat-button (click)="newLib(lastSelectedNode.name)"><mat-icon>add</mat-icon>New Library...</button>
         <mat-divider></mat-divider>
         <button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name)"><mat-icon>delete</mat-icon>Delete {{lastSelectedNode.name}}</button>

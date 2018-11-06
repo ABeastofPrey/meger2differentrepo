@@ -83,6 +83,10 @@ export class ProgramToolbarComponent implements OnInit {
     });
   }
   
+  stop() {
+    this.ws.query('?prj_stop("' + this.prj.currProject.value.name + '")');
+  }
+  
   newApp() { this.dialog.open(NewAppDialogComponent); }
   newLib() { this.dialog.open(NewLibDialogComponent); }
   export() { this.api.downloadProjectZip(this.prj.currProject.value.name); }

@@ -1,0 +1,14 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">Create a new Subroutine</div>
+    <div class="content">
+      <mat-form-field>
+        <input matInput placeholder="Subroutine Name" [(ngModel)]="name" type="text">
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="name === null || name.length === 0">INSERT</button>
+  </div>
+</div>

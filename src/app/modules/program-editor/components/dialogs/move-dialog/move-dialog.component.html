@@ -1,0 +1,50 @@
+<div class="mat-typography">
+  <div class="wrapper">
+    <div class="title">{{data.moveS ? 'Insert Moves Command' : 'Insert Move Command'}}</div>
+    <div class="content">
+      <mat-form-field>
+        <mat-select placeholder="Move To..." [(ngModel)]="location" (selectionChange)="resetIndex()">
+          <mat-optgroup label="Joints" *ngIf="this.dataService.joints.length > 0"><mat-option *ngFor="let data of this.dataService.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="Locations" *ngIf="this.dataService.locations.length > 0"><mat-option *ngFor="let data of this.dataService.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="location && location.isArr && !rangeMode">
+        <mat-select placeholder="Index" [(ngModel)]="locationIndex">
+          <mat-option *ngFor="let data of location.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="rangeSelector" *ngIf="rangeMode">
+        <mat-form-field>
+          <mat-select placeholder="From Index" [(ngModel)]="indexFrom">
+            <mat-option *ngFor="let data of location.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="To Index" [(ngModel)]="indexTo">
+            <mat-option *ngFor="let data of location.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <mat-slide-toggle [(ngModel)]="rangeMode" style="margin-bottom: 8px; margin-right: 16px;" color="primary" *ngIf="location && location.isArr">Array Range</mat-slide-toggle>
+      <mat-slide-toggle [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary">Advanced</mat-slide-toggle>
+      <div *ngIf="advancedMode">
+        <mat-form-field>
+          <mat-select placeholder="Motion Element" [(ngModel)]="motionElement">
+            <mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{e}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [placeholder]="data.moveS ? 'VTran [mm/s]' : 'VCruise [deg/s]'" [(ngModel)]="vcruise">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Blending Percentage" [(ngModel)]="blending">
+          <span matSuffix>%</span>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button color="primary" (click)="cancel()">CANCEL</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="this.location == null || (this.location.isArr && !this.rangeMode && this.locationIndex < 0) || (this.rangeMode && (this.indexFrom < 0 || this.indexTo < 0 || this.indexFrom >= this.indexTo)) || invalidBlending()">{{!this.withParams ? 'INSERT' : 'EDIT'}}</button>
+  </div>
+</div>

@@ -20,11 +20,11 @@
       <td>State</td>
       <td>Priority</td>
     </tr>
-    <tr
+    <tr 
       *ngFor="let t of task.tasks | taskFilter:[filterPrograms,filterLibs,filterGlobalLibs]; let i=index;"
       class="mat-title-color"
-      (mousedown)="onSelectionStart(i)"
-      (mouseenter)="onSelection(i)"
+      (mousedown)="onSelectionStart(i)" 
+      (mouseenter)="onSelection(i)" 
       (mouseup)="onSelectionEnd()"
       [class.primary-bg]="isSelected(i)"
     >

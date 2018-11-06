@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource, MatDialog} from '@angular/material';
 import {of as observableOf, Subscription} from 'rxjs';
-import {ProgramEditorService} from '../../services/program-editor.service';
+import {ProgramEditorService, getStatusString} from '../../services/program-editor.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {MCFile, ProjectManagerService, DataService, WebsocketService, MCQueryResponse} from '../../../core';
@@ -89,6 +89,10 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     }
   }
   
+  getStatusString(stat: number) {
+    return getStatusString(stat);
+  }
+  
   selectNode(node: TreeNode) {
     this.lastSelectedNode = node;
     this.lastSelectedFile = null;
@@ -105,7 +109,32 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       this.nestedTreeControl.collapseDescendants(node);
   }
   
+  runApp(app:string) {
+    this.ws.query('?tp_run_app("' + this.currProject.name + '","' + app + '")');
+  }
+  
   openFile(n:TreeNode) {
+    if (this.service.isDirty) {
+      this.dialog.open(YesNoDialogComponent,{
+        data: {
+          title: 'File has changed',
+          msg: 'Do you want to save your changes to "' + this.service.activeFile + '"?',
+          yes: 'SAVE',
+          no: 'DISCARD'
+        },
+        width: '500px'
+      }).afterClosed().subscribe(ret=>{
+        if (ret) {
+          this.service.save().then(()=>{
+            this.openFile(n);
+          });
+        } else {
+          this.service.isDirty = false;
+          this.openFile(n);
+        }
+      });
+      return;
+    }
     const projName = this.currProject.name;
     if (n.type !== 'File')
       this.service.close();
@@ -155,7 +184,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       return;
     }
     if (n.type === 'Payloads') {
-      this.service.mode = 'payload';
+      this.service.mode = 'payloads';
       return;
     }
     this.service.mode = 'editor';
@@ -165,11 +194,11 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     let path:string;
     if (n.type === 'File') {
       path = projName + '/' + n.parent.name + '/';
-      this.service.setFile(n.parent.name+'.UPG',path);
+      this.service.setFile(n.parent.name + '.UPG', path, n.ref);
     } else if (n.type === 'Library') {
       const appName = n.parent.parent.name;
       path = projName + '/' + appName + '/LIBS/';
-      this.service.setFile(n.name + '.ULB',path);
+      this.service.setFile(n.name + '.ULB',path, n.ref);
     }
   }
   
@@ -267,11 +296,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     let apps = new TreeNode('Apps', 'Apps', p.name,null);
     for (let app of p.apps) {
       let appNode = new TreeNode(app.name, 'App', p.name,apps);
+      appNode.ref = app;
       let libsNode = new TreeNode('Libraries','Libraries',p.name,appNode);
       for (let lib of app.libs) {
         libsNode.children.push(new TreeNode(lib,'Library',p.name,libsNode));
       }
-      appNode.children.push(new TreeNode('Program','File',p.name,appNode));
+      let prgNode = new TreeNode('Program','File',p.name,appNode);
+      prgNode.ref = app;
+      appNode.children.push(prgNode);
       appNode.children.push(new TreeNode('Data','Data',p.name,appNode));
       appNode.children.push(libsNode);
       apps.children.push(appNode);
@@ -286,7 +318,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     let frames = new TreeNode('Motion Frames', 'Frames', p.name,null);
     let pallets = new TreeNode('Palletizing', 'Pallets', p.name,null);
     let grippers = new TreeNode('Grippers', 'Grippers', p.name,null);
-    let io = new TreeNode('I/O', 'IO', p.name,null);
+    let io = new TreeNode('I/O Mapping', 'IO', p.name,null);
     let vision = new TreeNode('Vision', 'Vision', p.name,null);
     let conveyor = new TreeNode('Conveyor Tracking', 'Conveyor', p.name,null);
     let payloads = new TreeNode('Payloads', 'Payloads', p.name,null);
@@ -317,6 +349,7 @@ class TreeNode {
   children: TreeNode[] = [];
   projectNameRef : string;
   parent : TreeNode;
+  ref: any = null; /* REFERENCE TO AN APP, LIB, ETC... */
   
   constructor(name:string,typeStr:string,projectNameRef:string, parent:TreeNode) {
     this.name = name;

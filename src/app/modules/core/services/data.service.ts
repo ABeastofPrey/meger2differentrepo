@@ -8,6 +8,7 @@ import {TPVariableType} from '../../core/models/tp/tp-variable-type.model';
 import {TpType} from '../../core/models/tp/tp-type.model';
 import {TpStatService} from './tp-stat.service';
 import {Pallet} from '../models/pallet.model';
+import {Payload} from '../models/payload.model';
 
 declare var Blockly:any;
 
@@ -177,8 +178,8 @@ export class DataService {
   // Payload
   private _payloadLibVer : string = null;
   get payloadLibVer() {return this._payloadLibVer; } 
-  /*private _payloads: Payload[] = [];
-  get payloads() {return this._payloads; }*/
+  private _payloads: Payload[] = [];
+  get payloads() {return this._payloads; }
   
   // Lead By Nose
   private _lbnVer : string = null;
@@ -302,7 +303,7 @@ export class DataService {
     });
   }
   
-  /*refreshPayloads() {
+  refreshPayloads() {
     return this.ws.query('?PAY_GET_PAYLOAD_LIST').then((ret: MCQueryResponse)=>{
       if (ret.err)
         return;
@@ -314,7 +315,7 @@ export class DataService {
       }
       this._payloads = payloads;
     });
-  }*/
+  }
   
   refreshBases() : Promise<any> {
     if (!this.isRobotType) {
@@ -459,7 +460,7 @@ export class DataService {
       }).catch(()=>{});
     }).then(()=>{
       if (this._payloadLibVer) {
-        //return this.refreshPayloads();
+        return this.refreshPayloads();
       }
     });
   }

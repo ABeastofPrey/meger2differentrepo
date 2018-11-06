@@ -22,6 +22,8 @@ export class LoginScreenComponent implements OnInit {
   authForm: FormGroup;
   errors: Errors = {error: null};
   isVersionOK: boolean = true;
+  
+  private timeout: any;
 
   constructor(
     public login: LoginService,
@@ -50,14 +52,23 @@ export class LoginScreenComponent implements OnInit {
     this.isSubmitting = true;
     this.errors = {error: null};
     const credentials = this.authForm.value;
+    this.timeout = setTimeout(()=>{
+      this.errors.error = 'Trying to connect to softMC...';
+    },2000);
     this.login
     .attemptAuth(credentials)
     .subscribe(
       data => {
+        clearTimeout(this.timeout);
         this.router.navigateByUrl('/')
       },
       err => {
-        this.errors = err;
+        clearTimeout(this.timeout);
+        console.log(err);
+        if (err.type === 'error')
+          this.errors.error = "Can't connect to softMC";
+        else
+          this.errors = err;
         this.isSubmitting = false;
       }
     );

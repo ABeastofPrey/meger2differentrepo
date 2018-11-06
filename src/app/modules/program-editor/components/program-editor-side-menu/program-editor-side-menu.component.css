@@ -82,3 +82,12 @@ mat-icon { margin-right: 4px;}
   width: 100%;
   height: 100%;
 }
+.status {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-left: 6px;
+}
+.status-running {
+  color: #43A047;
+}
