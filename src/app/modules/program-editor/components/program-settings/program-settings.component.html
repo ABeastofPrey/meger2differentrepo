@@ -1,52 +1,211 @@
 <div class="wrapper">
-  <div class="card mat-elevation-z1">
-    <h2>Applications</h2>
-    <h3 class="mat-subtitle-color">Select applications to run when the project starts.</h3>
-    <div class="app-list">
-      <mat-checkbox *ngFor="let app of prj.currProject.value.apps" color="primary" [checked]="app.active" (change)="toggleActiveApp(app)">{{app.name}}</mat-checkbox>
-    </div>
-  </div>
-  <div class="card mat-elevation-z1">
-    <h2>Motion Parameters</h2>
-    <h3 class="mat-subtitle-color">Select parameters for your motion commands.</h3>
-    <mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
-      <input matInput placeholder="VCruise" [(ngModel)]="prj.currProject.value.settings.vcruise" type="text">
-      <span matSuffix>mm/sec</span>
-    </mat-form-field>
-    <mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
-      <input matInput placeholder="VTran" [(ngModel)]="prj.currProject.value.settings.vtran" type="text">
-      <span matSuffix>deg/sec</span>
-    </mat-form-field>      
-    <h3>Blending Method</h3>
-    <mat-radio-group [(ngModel)]="prj.currProject.value.settings.blendingMethod" (change)="prj.onProgramSettingChanged('blendingMethod')" style="margin-bottom: 8px; display: block;">
-      <mat-radio-button color="primary" [value]="0">None</mat-radio-button>
-      <mat-radio-button color="primary" [value]="1">Continous Path</mat-radio-button>
-      <mat-radio-button color="primary" [value]="2">SuperPosition</mat-radio-button>
-    </mat-radio-group>
-    <mat-slide-toggle color="primary" [(ngModel)]="prj.currProject.value.settings.overlap" (change)="prj.onProgramSettingChanged('overlap')">Motion Overlap</mat-slide-toggle>
-  </div>
-  <div class="card mat-elevation-z1">
-    <h2>Motion Frames</h2>
-    <h3 class="mat-subtitle-color">Choose your project's motion frames.</h3>
-    <mat-form-field>
-      <mat-select placeholder="Tool" [(ngModel)]="prj.currProject.value.settings.tool" (selectionChange)="prj.onProgramSettingChanged('tool')">
-        <mat-option *ngFor="let item of dataService.tools" value="{{item}}">{{item}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-select placeholder="Base" [(ngModel)]="prj.currProject.value.settings.base" (selectionChange)="prj.onProgramSettingChanged('base')">
-        <mat-option *ngFor="let item of dataService.bases" value="{{item}}">{{item}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-select placeholder="MachineTable" [(ngModel)]="prj.currProject.value.settings.mtable" (selectionChange)="prj.onProgramSettingChanged('mtable')">
-        <mat-option *ngFor="let item of dataService.machineTables" value="{{item}}">{{item}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-select placeholder="WorkPiece" [(ngModel)]="prj.currProject.value.settings.wpiece" (selectionChange)="prj.onProgramSettingChanged('wpiece')">
-        <mat-option *ngFor="let item of dataService.workPieces" value="{{item}}">{{item}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Applications</mat-panel-title>
+        <mat-panel-description>Choose which applications to run when the project starts</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <div class="app-list">
+          <mat-checkbox *ngFor="let app of prj.currProject.value.apps" color="primary" [checked]="app.active" (change)="toggleActiveApp(app)">{{app.name}}</mat-checkbox>
+        </div>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Motion Parameters</mat-panel-title>
+        <mat-panel-description>Select parameters for your motion commands</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
+          <input matInput placeholder="VCruise" [(ngModel)]="prj.currProject.value.settings.vcruise" type="text">
+          <span matSuffix>mm/sec</span>
+        </mat-form-field>
+        <mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
+          <input matInput placeholder="VTran" [(ngModel)]="prj.currProject.value.settings.vtran" type="text">
+          <span matSuffix>deg/sec</span>
+        </mat-form-field>      
+        <h3>Blending Method</h3>
+        <mat-radio-group [(ngModel)]="prj.currProject.value.settings.blendingMethod" (change)="prj.onProgramSettingChanged('blendingMethod')" style="margin-bottom: 8px; display: block;">
+          <mat-radio-button color="primary" [value]="0">None</mat-radio-button>
+          <mat-radio-button color="primary" [value]="1">Continous Path</mat-radio-button>
+          <mat-radio-button color="primary" [value]="2">SuperPosition</mat-radio-button>
+        </mat-radio-group>
+        <mat-slide-toggle color="primary" [(ngModel)]="prj.currProject.value.settings.overlap" (change)="prj.onProgramSettingChanged('overlap')">Motion Overlap</mat-slide-toggle>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Motion Frames</mat-panel-title>
+        <mat-panel-description>Select the project's motion frames</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <mat-form-field>
+          <mat-select placeholder="Tool" [(ngModel)]="prj.currProject.value.settings.tool" (selectionChange)="prj.onProgramSettingChanged('tool')">
+            <mat-option *ngFor="let item of dataService.tools" value="{{item}}">{{item}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Base" [(ngModel)]="prj.currProject.value.settings.base" (selectionChange)="prj.onProgramSettingChanged('base')">
+            <mat-option *ngFor="let item of dataService.bases" value="{{item}}">{{item}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="MachineTable" [(ngModel)]="prj.currProject.value.settings.mtable" (selectionChange)="prj.onProgramSettingChanged('mtable')">
+            <mat-option *ngFor="let item of dataService.machineTables" value="{{item}}">{{item}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="WorkPiece" [(ngModel)]="prj.currProject.value.settings.wpiece" (selectionChange)="prj.onProgramSettingChanged('wpiece')">
+            <mat-option *ngFor="let item of dataService.workPieces" value="{{item}}">{{item}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Position Limits</mat-panel-title>
+        <mat-panel-description>Define your robot's position limits</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <table class="limits">
+          <tr *ngFor="let p of prj.currProject.value.settings.limits.position; let i=index;">
+            <td>J{{i+1}}</td>
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'J'+(i+1),p.min)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'J'+(i+1),p.max)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>World Limits</mat-panel-title>
+        <mat-panel-description>Define your world's limits</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <table class="limits">
+          <tr *ngFor="let p of prj.currProject.value.settings.limits.world">
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'world',p.min)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'world',p.max)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Tool Limits</mat-panel-title>
+        <mat-panel-description>Define your tool's limits</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <table class="limits">
+          <tr *ngFor="let p of prj.currProject.value.settings.limits.tool">
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'tool',p.min)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'tool',p.max)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Base Limits</mat-panel-title>
+        <mat-panel-description>Define your base's limits</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <table class="limits">
+          <tr *ngFor="let p of prj.currProject.value.settings.limits.base">
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'base',p.min)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'base',p.max)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Machine Table Limits</mat-panel-title>
+        <mat-panel-description>Define your machine table's limits</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <table class="limits">
+          <tr *ngFor="let p of prj.currProject.value.settings.limits.mt">
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'machinetable',p.min)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'machinetable',p.max)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Work piece Limits</mat-panel-title>
+        <mat-panel-description>Define your work piece's limits</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="content">
+        <table class="limits">
+          <tr *ngFor="let p of prj.currProject.value.settings.limits.wp">
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'workpiece',p.min)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'workpiece',p.max)">
+                <div matSuffix>{{p.unit}}</div>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>

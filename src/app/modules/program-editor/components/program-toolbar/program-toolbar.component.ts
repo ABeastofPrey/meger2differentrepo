@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {NewProjectDialogComponent} from '../new-project-dialog/new-project-dialog.component';
-import {WebsocketService, MCQueryResponse, ProjectManagerService, ApiService} from '../../../core';
+import {WebsocketService, MCQueryResponse, ProjectManagerService, ApiService, UploadResult} from '../../../core';
 import {OpenProjectDialogComponent} from '../open-project-dialog/open-project-dialog.component';
 import {ProgramEditorService} from '../../services/program-editor.service';
 import {NewAppDialogComponent} from '../toolbar-dialogs/new-app-dialog/new-app-dialog.component';
@@ -9,6 +9,9 @@ import {SaveAsDialogComponent} from '../toolbar-dialogs/save-as-dialog/save-as-d
 import {RenameDialogComponent} from '../toolbar-dialogs/rename-dialog/rename-dialog.component';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {NewLibDialogComponent} from '../toolbar-dialogs/new-lib-dialog/new-lib-dialog.component';
+import {ViewChild} from '@angular/core';
+import {ElementRef} from '@angular/core';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'program-toolbar',
@@ -20,7 +23,10 @@ export class ProgramToolbarComponent implements OnInit {
   onFocus: boolean = false;
   currMenu: number = -1;
   
+  @ViewChild('upload') uploadInput: ElementRef;
+  
   toggleFocus() { this.onFocus = !this.onFocus; }
+  doImport() { this.uploadInput.nativeElement.click(); }
 
   constructor(
     private dialog: MatDialog,
@@ -112,6 +118,29 @@ export class ProgramToolbarComponent implements OnInit {
         });
       }
     });
+  }
+  
+  onUploadFilesChange(e:any) {
+    for(let f of e.target.files) {
+      this.api.importProject(f).then((ret: UploadResult)=>{
+        if (ret.success) {
+          this.snack.open('INFORM ERAN THAT A NEW PROJECT WAS CREATED: ' + f.name);
+        }
+      },(ret:HttpErrorResponse)=>{ // ON ERROR
+        switch (ret.error.err) {
+          case -2:
+            this.snack.open('ERROR UPLOADING ' + f.name,'DISMISS');
+            break;
+          case -3:
+            this.snack.open('INVALID EXTENSION IN ' + f.name,'DISMISS');
+            break;
+          case -3:
+            this.snack.open('PERMISSION DENIED','DISMISS');
+            break;
+        }
+      });
+    }
+    e.target.value = null;
   }
 
 }

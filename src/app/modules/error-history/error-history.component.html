@@ -1,3 +1,8 @@
+<div class="buttons center-vertical-horizontal">
+  <button mat-raised-button color="primary" (click)="clearErrors()">CLEAR ERROR HISTORY</button>
+  <button mat-raised-button color="primary" (click)="clearDrive()">CLEAR DRIVE FAULT</button>
+  <button mat-raised-button color="primary" (click)="acknowledge()">ACKNOWLEDGE</button>
+</div>
 <mat-accordion>
   <mat-expansion-panel *ngFor="let e of errors" class="error-panel">
     <mat-expansion-panel-header>

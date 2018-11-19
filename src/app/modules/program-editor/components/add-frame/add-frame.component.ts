@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {FOUR_AXES_LOCATION, SIX_AXES_LOCATION} from '../../../core/models/tp/location-format.model';
-import {MatDialogRef, MatSnackBar, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {WebsocketService, CoordinatesService, DataService, MCQueryResponse} from '../../../core';
 
 @Component({
@@ -22,7 +22,6 @@ export class AddFrameComponent implements OnInit {
     public dialogRef: MatDialogRef<AddFrameComponent>,
     public coos : CoordinatesService,
     private ws : WebsocketService,
-    private snackbar : MatSnackBar,
     private dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: number,
   ) {
@@ -77,9 +76,7 @@ export class AddFrameComponent implements OnInit {
       if (ret.err || ret.result !== '0') {
         console.log(ret);
       } else {
-        console.log(ret);
         this.closeDialog(true);
-        //this.snackbar.open('Success!','',{duration:2000});
       }
     });
     

@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, ApplicationRef } from '@angular/core';
+import { Injectable, EventEmitter, ApplicationRef, NgZone } from '@angular/core';
 import {MatSnackBar, MatDialog} from '@angular/material';
 import {MCFile, ApiService, UploadResult} from '../../../modules/core/services/api.service';
 import {WebsocketService, MCQueryResponse, ErrorFrame} from '../../../modules/core/services/websocket.service';
@@ -67,6 +67,7 @@ export class ProgramEditorService {
   
   constructor(
     private ref : ApplicationRef,
+    private zone: NgZone,
     private dialog : MatDialog,
     private prj: ProjectManagerService,
     private ws: WebsocketService,
@@ -102,6 +103,7 @@ export class ProgramEditorService {
       this.refreshStatus(true);
       this.isDirty = false;
       this.fileChange.next(this.activeFile);
+      this.dragEnd.emit();
     });
   }
   
@@ -316,47 +318,56 @@ export class ProgramEditorService {
       return;
     const file = this.activeFile;
     const isLib = file.endsWith('.LIB') || file.endsWith('.ULB');
+    if (!isLib && !file.endsWith('.UPG') && !file.endsWith('.PRG')) {
+      let tmpStatus = new ProgramStatus(null);
+      tmpStatus.statusCode = TASKSTATE_NOTLOADED;
+      tmpStatus.name = 'Not Loadable';
+      this.status = tmpStatus;
+      this.statusChange.emit(this.status);
+      return;
+    }
     const cmd = '?'+file+(!isLib?'.status':'.dummyVariable');
     this.oldStatString = null;
     this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
       if (ret !== this.oldStatString) {
         this.oldStatString = ret;
-        if (isLib) {
-          let tmpStatus = new ProgramStatus(null);
-          tmpStatus.statusCode = err.errCode === '8020' ? TASKSTATE_LIB_LOADED : TASKSTATE_NOTLOADED;
-          tmpStatus.name = err.errCode === '8020' ? 'Loaded' : 'Not Loaded';
-          this.status = tmpStatus;
-          this.statusChange.emit(this.status);
-          this.ref.tick();
-        } else {
-          this.status = new ProgramStatus(err ? null : ret);
-          if (this.stepMode) {
-            this.getBackTrace().then((bt:Backtrace)=>{
-              this.backtrace = bt;
-              if (this.backtrace.files[0].name !== this.activeFile)
-                this.setFile(bt.files[0].name, null, null, bt);
-              this.stepMode = false;
-            });
-          } else if (this.backtrace) {
-            this.status.programLine = this.status.sourceLine;
+        this.zone.run(()=>{
+          if (isLib) {
+            let tmpStatus = new ProgramStatus(null);
+            tmpStatus.statusCode = err.errCode === '8020' ? TASKSTATE_LIB_LOADED : TASKSTATE_NOTLOADED;
+            tmpStatus.name = err.errCode === '8020' ? 'Loaded' : 'Not Loaded';
+            this.status = tmpStatus;
             this.statusChange.emit(this.status);
-            this.ref.tick();
-          } else if (this.status.statusCode === TASKSTATE_ERROR || this.status.statusCode === TASKSTATE_STOPPED) {
-            this.getBackTrace().then((bt:Backtrace)=>{
-              if (bt.files[0].name === file) {
-                this.backtrace = null;
-                this.status.programLine = bt.files[0].line;
-                this.statusChange.emit(this.status);
-                this.ref.tick();
-              } else {
-                this.setFile(bt.files[0].name, null, null, bt);
-              }
-            });
           } else {
-            this.statusChange.emit(this.status);
-            this.ref.tick();
+            this.status = new ProgramStatus(err ? null : ret);
+            if (this.stepMode || this.backtrace) {
+              this.getBackTrace().then((bt:Backtrace)=>{
+                this.backtrace = bt;
+                if (bt.files[0].name !== this.displayedFile) {
+                  this.setFile(bt.files[0].name, null, null, bt);
+                }
+                if (this.backtrace && this.status) {
+                  this.status.programLine = this.status.sourceLine;
+                  this.statusChange.emit(this.status);
+                }
+                this.stepMode = false;
+              });
+            } else if (this.status.statusCode === TASKSTATE_ERROR || this.status.statusCode === TASKSTATE_STOPPED) {
+              this.getBackTrace().then((bt:Backtrace)=>{
+                if (bt.files[0].name === file) {
+                  this.backtrace = null;
+                  this.status.programLine = bt.files[0].line;
+                  this.statusChange.emit(this.status);
+                } else {
+                  this.setFile(bt.files[0].name, null, null, bt);
+                }
+              });
+            } else {
+              this.statusChange.emit(this.status);
+ 
+            }
           }
-        }
+        });
       }
     },200);
   }

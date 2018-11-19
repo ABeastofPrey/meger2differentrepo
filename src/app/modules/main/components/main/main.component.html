@@ -5,9 +5,9 @@
   <mat-toolbar color="primary">
     <button mat-icon-button (click)="drawer.toggle()" tourAnchor="menu"><mat-icon>menu</mat-icon></button>
     <span class='center-vertical'>
-      RoboStudio
+      {{appName}}
     </span>
-    <button mat-mini-fab matTooltip="Toggle Jog Controls" (click)="screenManager.toggleControls()" [disabled]="!tpOnline" tourAnchor="jog-controls"><mat-icon>touch_app</mat-icon></button>
+    <button mat-mini-fab matTooltip="Toggle Jog Controls" (click)="screenManager.toggleControls()" [disabled]="!tpOnline || prj.activeProject" tourAnchor="jog-controls"><mat-icon>touch_app</mat-icon></button>
     <button mat-mini-fab matTooltip="Watch" (click)="watch.toggleWindow()" tourAnchor="watch"><mat-icon>update</mat-icon></button>
     <button mat-mini-fab matTooltip="Message Log" (click)="notification.toggleWindow()" tourAnchor="message-log-button">
       <mat-icon>notifications</mat-icon>
@@ -35,17 +35,13 @@
               <mat-icon>close</mat-icon>
             </button>
           </div>
-          <b>Selected Robot:</b> {{data.selectedRobot}}
+          <div class="center-vertical" *ngIf="data.selectedRobot">
+            <button mat-mini-fab color="primary" (click)="stat.toggleEnabled()"><mat-icon [ngClass]="{'indicator-on' : stat.enabled }">power_settings_new</mat-icon></button>
+            {{data.selectedRobot}}
+          </div>
+          <div *ngIf="data.selectedRobot === null">No robot is selected</div>
           <mat-card-content>
-            <!--<mat-form-field>
-              <mat-select placeholder="Mode Selector" [(value)]="stat.mode" [disabled]="stat.mode == null">
-                <mat-option value="T1">T1</mat-option>
-                <mat-option value="T2">T2</mat-option>
-                <mat-option value="A">A</mat-option>
-              </mat-select>
-            </mat-form-field>-->
             <mat-slide-toggle color="primary" [checked]="stat.jogEnabled" (change)="onJogEnableChange($event)">Enable Jogging</mat-slide-toggle>
-            <mat-slide-toggle color="primary" [(ngModel)]="stat.deadman" [disabled]="stat.mode==='A'">Deadman</mat-slide-toggle>
             <div class="jog-table-container mat-elevation-z5">
               <table class="jog-table" *ngIf="cooService.axisCoordinate === null && cooService.jointKeys || cooService.locationKeys">
                 <tr *ngFor="let legend of (data.selectedFrame === 'JOINT') ? cooService.jointKeys.split(',') : cooService.locationKeys.split(','); let i = index">

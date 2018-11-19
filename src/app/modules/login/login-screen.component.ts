@@ -22,6 +22,7 @@ export class LoginScreenComponent implements OnInit {
   authForm: FormGroup;
   errors: Errors = {error: null};
   isVersionOK: boolean = true;
+  appName: string = environment.appName;
   
   private timeout: any;
 

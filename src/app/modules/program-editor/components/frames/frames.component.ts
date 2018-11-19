@@ -222,16 +222,19 @@ export class FramesComponent implements OnInit {
     });
     ref.afterClosed().subscribe(ret=>{
       if (ret) {
-        let cmd = '?TP_DELETEVAR("' + this.selectedVar.name + '")';
+        let cmd = '?TP_REMOVE_FRAME("' + this.currFrameType + '","' + 
+                  this.selectedVar.name + '")';
         this.ws.query(cmd).then((ret: MCQueryResponse)=>{
           if (ret.result === '0') {
             this.selectedVar = null;
             var queries = [
               this.data.refreshBases(),
-              this.data.refreshTools()
+              this.data.refreshTools(),
+              this.data.refreshMachineTables(),
+              this.data.refreshWorkPieces()
             ];
             Promise.all(queries).then(()=>{
-              this.data.refreshVariables();
+              this.dataSource.data = this.getData();
             });
           }
         });

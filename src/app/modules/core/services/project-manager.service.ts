@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {MCProject, ProjectSettings} from '../models/project/mc-project.model';
+import {MCProject, Limit} from '../models/project/mc-project.model';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
-import {TpStatService} from './tp-stat.service';
 import {BehaviorSubject} from 'rxjs';
 import {EventEmitter} from '@angular/core';
 import {DataService} from './data.service';
 import {MatSnackBar} from '@angular/material';
+import {ScreenManagerService} from './screen-manager.service';
 
 @Injectable()
 export class ProjectManagerService {
@@ -14,17 +14,18 @@ export class ProjectManagerService {
   onExpand: EventEmitter<string> = new EventEmitter();
   onExpandLib: EventEmitter<{app:string,lib:string}> = new EventEmitter();
   onAppStatusChange: BehaviorSubject<any> = new BehaviorSubject(null);
+  activeProject: boolean = false; // TRUE IF ONE APP IS LOADED AND NOT KILLED
   
   private interval: any;
   private oldStat: string = null;
 
   constructor(
     private ws: WebsocketService,
-    private stat: TpStatService,
     private data: DataService,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private mgr: ScreenManagerService
   ) {
-    this.stat.onlineStatus.subscribe(ret=>{
+    this.data.dataLoaded.subscribe(ret=>{
       if (ret) {
         this.getCurrentProject().then(()=>{
           this.getProjectStatus();
@@ -46,10 +47,23 @@ export class ProjectManagerService {
           if (this.oldStat === ret.result)
             return;
           this.oldStat = ret.result;
-          const status = ret.result.split(',');
-          for (let i = 0; i < this.currProject.value.apps.length; i++) {
-            this.currProject.value.apps[i].status = Number(status[i]);
+          let status = ret.result.split(',');
+          let i=0;
+          let activeProject = false;
+          while (status.length > 0 || i < this.currProject.value.apps.length) {
+            if (!this.currProject.value.apps[i].active) {
+              i++;
+              continue;
+            }
+            const code = Number(status.shift());
+            this.currProject.value.apps[i].status = code;
+            if (code !== -1 && code !== 2)
+              activeProject = true;
+            i++;
           }
+          this.activeProject = activeProject;
+          if (this.activeProject)
+            this.mgr.closeControls();
           this.onAppStatusChange.next(null);
         });
       } else {
@@ -126,7 +140,109 @@ export class ProjectManagerService {
         proj.settings.wpiece = results[6].result;
       }
       proj.settings.overlap = results[7].result === '1';
+      let posArr : Limit[] = [];
+      let promises : Promise<any>[] = [];
+      for (let j = 1; j <= this.data.locationDescriptions.length; j++) {
+        const unit = (j === 3 && this.data.robotType === 'SCARA') ? 'mm' : 'deg';
+        posArr.push(new Limit('P',unit));
+        promises.push(this.ws.query('?TP_GET_PROJECT_PARAMETER("PMIN","'+j+'")'));
+        promises.push(this.ws.query('?TP_GET_PROJECT_PARAMETER("PMAX","'+j+'")'));
+      }
+      proj.settings.limits.position = posArr;
+      return Promise.all(promises);
+    }).then((ret: MCQueryResponse[])=>{
+      for (let j = 0; j < ret.length; j++) {
+        const i = Math.floor(j/2);
+        if (j%2 === 0)
+          proj.settings.limits.position[i].min = Number(ret[j].result);
+        else
+          proj.settings.limits.position[i].max = Number(ret[j].result);
+      }
+      const promises = [
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","BASE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","BASE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","BASE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","BASE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","BASE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","BASE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","TOOL")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","TOOL")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","TOOL")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","TOOL")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","TOOL")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","TOOL")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","WORKPIECE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","WORKPIECE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","WORKPIECE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","WORKPIECE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","WORKPIECE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","WORKPIECE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","MACHINETABLE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","MACHINETABLE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","MACHINETABLE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","MACHINETABLE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","MACHINETABLE")'),
+        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","MACHINETABLE")')
+      ];
+      return Promise.all(promises).then((ret:MCQueryResponse[])=>{
+        // WORLD
+        proj.settings.limits.world[0].min = Number(ret[0].result);
+        proj.settings.limits.world[0].max = Number(ret[1].result);
+        proj.settings.limits.world[1].min = Number(ret[2].result);
+        proj.settings.limits.world[1].max = Number(ret[3].result);
+        proj.settings.limits.world[2].min = Number(ret[4].result);
+        proj.settings.limits.world[2].max = Number(ret[5].result);
+        // BASE
+        proj.settings.limits.base[0].min = Number(ret[6].result);
+        proj.settings.limits.base[0].max = Number(ret[7].result);
+        proj.settings.limits.base[1].min = Number(ret[8].result);
+        proj.settings.limits.base[1].max = Number(ret[9].result);
+        proj.settings.limits.base[2].min = Number(ret[10].result);
+        proj.settings.limits.base[2].max = Number(ret[11].result);
+        // TOOL
+        proj.settings.limits.tool[0].min = Number(ret[12].result);
+        proj.settings.limits.tool[0].max = Number(ret[13].result);
+        proj.settings.limits.tool[1].min = Number(ret[14].result);
+        proj.settings.limits.tool[1].max = Number(ret[15].result);
+        proj.settings.limits.tool[2].min = Number(ret[16].result);
+        proj.settings.limits.tool[2].max = Number(ret[17].result);
+        // WORKPIECE
+        proj.settings.limits.wp[0].min = Number(ret[18].result);
+        proj.settings.limits.wp[0].max = Number(ret[19].result);
+        proj.settings.limits.wp[1].min = Number(ret[20].result);
+        proj.settings.limits.wp[1].max = Number(ret[21].result);
+        proj.settings.limits.wp[2].min = Number(ret[22].result);
+        proj.settings.limits.wp[2].max = Number(ret[23].result);
+        // MACHINETABLE
+        proj.settings.limits.mt[0].min = Number(ret[24].result);
+        proj.settings.limits.mt[0].max = Number(ret[25].result);
+        proj.settings.limits.mt[1].min = Number(ret[26].result);
+        proj.settings.limits.mt[1].max = Number(ret[27].result);
+        proj.settings.limits.mt[2].min = Number(ret[28].result);
+        proj.settings.limits.mt[2].max = Number(ret[29].result);
+      });
     });
+  }
+  
+  onLimitChanged(name:string,e:Event,paramType:string,prevValue:number) {
+    const target: any = e.target;
+    const cmd = '?TP_SET_PROJECT_PARAMETER("' + name + '","' + paramType + '","' +
+        target.value + '")';
+    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+      if (ret.result === '0') {
+        this.snack.open('Changes Saved.','',{duration:1500});
+      } else {
+        target.value = prevValue;
+      }
+    });
+      
+    
   }
   
   onProgramSettingChanged(setting:string) {

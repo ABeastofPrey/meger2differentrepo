@@ -53,11 +53,22 @@ export class ErrorHistoryComponent implements OnInit {
     this.ws.query('errorhistoryclear').then(()=>{this.refreshErrors();});
   }
   
+  clearDrive() {
+    this.ws.query('?TP_CLRFAULT').then(()=>{
+      this.ws.query('?TP_CONFIRM_ERROR')
+    });
+  }
+  
+  acknowledge() {
+    this.ws.send('?TP_CONFIRM_ERROR');
+  }
+  
   refreshErrors() { // ONCE, NOT INTERVAL
     this.ws.query('?errorhistory').then((result:MCQueryResponse)=>{
       if (result.err)
         return;
       this.update(result.result);
+      this.ws.query('?TP_CONFIRM_ERROR');
     });
   }
 

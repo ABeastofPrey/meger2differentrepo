@@ -23,7 +23,8 @@ const routes: Routes = [
       },
       {
         path: 'projects',
-        loadChildren: '../program-editor/program-editor.module#ProgramEditorModule'
+        loadChildren: '../program-editor/program-editor.module#ProgramEditorModule',
+        data: {preload: true}
       },
       {
         path: 'simulator',

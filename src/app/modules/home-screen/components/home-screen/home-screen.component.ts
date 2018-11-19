@@ -123,6 +123,9 @@ export class HomeScreenComponent implements OnInit {
         this.afterSysInfoLoaded();
       }
     });
+    window.addEventListener('resize',()=>{
+      this.updateCharts();
+    });
   }
   
   ngOnDestroy() {

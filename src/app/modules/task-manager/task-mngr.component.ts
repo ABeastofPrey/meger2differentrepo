@@ -13,9 +13,10 @@ export class TaskMngrComponent implements OnInit {
   private mouseDown : boolean = false;
   private selected : number[] = [];
   
-  filterPrograms: boolean = true;
-  filterLibs: boolean = true;
-  filterGlobalLibs: boolean = true;
+  filterPrograms: boolean = false;
+  filterLibs: boolean = false;
+  filterGlobalLibs: boolean = false;
+  filterUser: boolean = true;
 
   constructor(
     public task : TaskService,

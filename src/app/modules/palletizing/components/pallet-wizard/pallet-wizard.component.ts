@@ -169,13 +169,31 @@ export class PalletWizardComponent implements OnInit {
     if (loc === '#{}')
       return result;
     loc = loc.substring(2).slice(0, -1).trim();
-    var parts = loc.split(',');
+    const parts = loc.split(',');
     result.x = Number(parts[0]);
     result.y = Number(parts[1]);
     result.z = Number(parts[2]);
-    result.yaw = Number(parts[3]);
-    result.pitch = Number(parts[4]);
-    result.roll = Number(parts[5]);
+    if (this.dataService.robotType === 'SCARA') {
+      result.roll = Number(parts[3]);
+    } else {
+      result.yaw = Number(parts[3]);
+      result.pitch = Number(parts[4]);
+      result.roll = Number(parts[5]);
+    }
+    return result;
+  }
+  
+  /*
+   * Takes a pallet location and converts it into a user-readable string
+   */
+  locToString(loc: PalletLocation) : string {
+    var result = '#{' + loc.x + ',' + loc.y + ',' + loc.z + ',';
+    if (this.dataService.robotType === 'SCARA') {
+      result += loc.roll;
+    } else {
+      result += loc.yaw + ',' + loc.pitch + ',' + loc.roll;
+    }
+    result += '}';
     return result;
   }
   
@@ -264,8 +282,10 @@ export class PalletWizardComponent implements OnInit {
       '?PLT_TEACH_ENTRY_POSITION("' + pallet.name + '",' + robot + ')'
     ).then((ret: MCQueryResponse)=>{
       if (ret.result === '0') {
+        console.log(ret);
         this.ws.query('?PLT_GET_ENTRY_POSITION("' + pallet.name + '")')
         .then((ret: MCQueryResponse)=>{
+          console.log(ret);
           this.dataService.selectedPallet.entry = 
             this.parseLocation(ret.result);
         });
@@ -548,15 +568,6 @@ export class PalletWizardComponent implements OnInit {
         return Promise.resolve({invalidDataFile:true});
       let file = this.dataService.selectedPallet.dataFile;
       return this.api.createPalletFile(data, file).then(fileName=>{
-        if (fileName) {
-          let cmd = '?PLT_SET_CUSTOM_PALLET_DATA_FILE("' +
-                    this.dataService.selectedPallet.name +
-                    '","' + fileName + '")';
-          this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-            if (ret.result === '0')
-              this.dataService.selectedPallet.dataFile = fileName;
-          });
-        }
         return fileName.length > 0 ? null : {invalidDataFile:true};
       },()=>{
         return {invalidDataFile:true};
@@ -776,9 +787,15 @@ export class PalletWizardComponent implements OnInit {
     let pitch = (changed === 'pitch') ? control.value : pos.pitch;
     let roll = (changed === 'roll') ? control.value : pos.roll;
     if (x !== null && y !== null && z !== null &&
-        yaw !== null && pitch !== null && roll !== null) {
-      var loc = 'castpoint(#{' + x +','+ y +','+ z + ',' +
-        yaw + ',' + pitch + ',' + roll + '},' + 
+        roll !== null) {
+      let loc = 'castpoint(#{' + x +','+ y +','+ z + ',';
+      if (this.dataService.robotType === 'PUMA') {
+        if (yaw !== null && pitch !== null)
+          loc += yaw + ',' + pitch + ',';
+        else
+          return Promise.resolve(null);
+      }
+      loc += roll + '},' + 
         'robottype(' + this.dataService.selectedRobot + '.Here))';
       var cmd =
         '?PLT_SET_ENTRY_POSITION("' + 
@@ -791,6 +808,7 @@ export class PalletWizardComponent implements OnInit {
           this.step3.controls['yaw'].setErrors({invalidEntry: true});
           this.step3.controls['pitch'].setErrors({invalidEntry: true});
           this.step3.controls['roll'].setErrors({invalidEntry: true});
+          this.getError();
           return {invalidEntry : true};
         } 
         this.step3.controls['x'].setErrors(null);
@@ -803,6 +821,12 @@ export class PalletWizardComponent implements OnInit {
       });
     }
     return Promise.resolve(null);
+  }
+  
+  private getError() :Promise<any> {
+    return this.ws.query('?PLT_GET_ERROR').then((ret: MCQueryResponse)=>{
+      this.snack.open(ret.result, 'DISMISS',{duration:2000});
+    });
   }
   
   private validateAppOffsetV(control: AbstractControl) {

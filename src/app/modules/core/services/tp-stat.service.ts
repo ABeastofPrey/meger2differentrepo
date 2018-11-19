@@ -4,6 +4,7 @@ import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {ErrorDialogComponent} from '../../../components/error-dialog/error-dialog.component';
 import {BehaviorSubject} from 'rxjs';
 import {ApiService} from './api.service';
+import {environment} from '../../../../environments/environment';
 
 class TPStatResponse {
   ENABLE : number;
@@ -79,7 +80,7 @@ export class TpStatService {
           let ref = this.dialog.open(ErrorDialogComponent,{
             data: {
               title: 'Critical Error',
-              message: "Can't set TP MODE to A... RoboStudio will now logout."
+              message: "Can't set TP MODE to A..." + environment.appName + " will now logout."
             }
           });
           ref.afterClosed().subscribe(()=>{
@@ -157,16 +158,15 @@ export class TpStatService {
   startTpLibChecker() {
     if (this.tpInterval !== null)
       this.ws.clearInterval(this.tpInterval);
-    this.tpInterval = this.ws.send('?tp_ver',(res,cmd,err)=>{
-      if (err && this._online) {
+    this.tpInterval = this.ws.send('? UTL_GET_SYS_INIT_DONE',(res,cmd,err)=>{
+      const offline = err || res === '0';
+      if (offline && this._online) {
         this.onlineStatus.next(false);
         this._online = false;
-      } else if (!err && !this._online) {
+      } else if (!offline && !this._online) {
         this._online = true;
         this.ws.clearInterval(this.tpInterval);
-        setTimeout(()=>{
-          this.onlineStatus.next(true);
-        },5000);
+        this.onlineStatus.next(true);
       }
     }, refreshRate);
   }

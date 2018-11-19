@@ -244,6 +244,26 @@ export class ProgramEditMenuComponent implements OnInit {
       }
     });
   }
+  menu_attach(attach:boolean) {
+    let cmd = attach ? 'Attach' : 'Detach';
+    let ref = this.dialog.open(
+      RobotSelectorDialogComponent,
+      {
+        width: '400px',
+        data: {
+          title:'Insert Attach Command',
+          must: false
+        }
+      }
+    );
+    ref.afterClosed().subscribe((robot:string)=>{
+      if (robot) {
+        if (robot !== 'NULL')
+          cmd += ' ' + robot;
+        this.prg.insertAndJump(cmd,0);
+      }
+    });
+  }
   menu_dopass() {
     let ref = this.dialog.open(
       RobotSelectorDialogComponent,

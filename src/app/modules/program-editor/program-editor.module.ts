@@ -40,6 +40,7 @@ import {FunctionDialogComponent} from './components/dialogs/function-dialog/func
 import {DimDialogComponent} from './components/dialogs/dim-dialog/dim-dialog.component';
 import {DelayDialogComponent} from './components/dialogs/delay-dialog/delay-dialog.component';
 import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-dialog.component';
+import {IoMappingModule} from './modules/io-mapping/io-mapping.module';
 
 @NgModule({
   imports: [
@@ -48,7 +49,8 @@ import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-d
     ProgramEditorRouterModule,
     PalletizingModule,
     GripperScreenModule,
-    PayloadsModule
+    PayloadsModule,
+    IoMappingModule
   ],
   declarations: [
     ProgramEditorComponent,

@@ -79,6 +79,14 @@ export class ApiService {
     return this.http.post(url,formData).toPromise();
   }
   
+  importProject(file: File) {
+    const url = environment.api_url + '/cs/api/unzipProject';
+    let formData = new FormData();
+    formData.append('token', this.token);
+    formData.append('file', file);
+    return this.http.post(url,formData).toPromise();
+  }
+  
   uploadProfilePic(file:File, username: string) {
     let url = environment.api_url + '/cs/api/' + username + '/pic?token='
       + localStorage.getItem('jwtToken');

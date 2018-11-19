@@ -66,6 +66,16 @@ export class ScreenManagerService {
       this.controlsAnimating.emit(false);
     },300);
   }
+  
+  closeControls() {
+    if (!this.openedControls)
+      return;
+    this.controlsAnimating.emit(true);
+    this.openedControls = false;
+    setTimeout(()=>{
+      this.controlsAnimating.emit(false);
+    },300);
+  }
 
   constructor(
     private login : LoginService,
