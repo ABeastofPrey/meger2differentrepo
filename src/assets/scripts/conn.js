@@ -45,16 +45,16 @@ function timer(id, interval, msg) {
 }
 
 function MCConnection() {
-  
+
   var conn = this;
-  
+
   // Private Variables
   var ws = null;
   var MCPORT = 3010;
   var IP = self.location.hostname;
   //var IP = '10.4.20.23';
   var reset = true;
-  
+
   this.connect = function(){
     //Initiate a websocket connection
     try {
@@ -100,7 +100,7 @@ function MCConnection() {
       }
     }
   };
-  
+
   this.reset = function() {
     if (reset)
       return;
@@ -114,9 +114,9 @@ function MCConnection() {
     ws = null;
     reset = true;
   };
-  
+
   this.startLBN = function() {
-    
+
   };
 
 }

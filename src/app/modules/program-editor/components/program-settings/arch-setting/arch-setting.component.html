@@ -1,0 +1,48 @@
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Arch Table
+      </mat-panel-title>
+      <!-- <mat-panel-description>
+        Type your name and age
+      </mat-panel-description> -->
+    </mat-expansion-panel-header>
+
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <!-- Arch Column -->
+      <ng-container matColumnDef="{{displayedColumns[0]}}">
+        <mat-header-cell *matHeaderCellDef> Arch </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.index}} </mat-cell>
+      </ng-container>
+      <!-- DepartZ Column -->
+      <ng-container matColumnDef="{{displayedColumns[1]}}">
+        <mat-header-cell *matHeaderCellDef> DepartZ </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-form-field>
+            <input matInput type="text" [(ngModel)]="element.depart" (focus)="onFocus($event)" (blur)="onBlur($event, element.index, element.depart, 1)" (keyup)="onKeyup($event)">
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <!-- Approach Column -->
+      <ng-container matColumnDef="{{displayedColumns[2]}}">
+        <mat-header-cell *matHeaderCellDef> ApproachZ </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-form-field>
+            <input matInput type="text" [(ngModel)]="element.approach" (focus)="onFocus($event)" (blur)="onBlur($event, element.index, element.approach, 2)" (keyup)="onKeyup($event)">
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="footerColumn">
+        <mat-footer-cell *matFooterCellDef class="arch-setting-footer">
+            <button mat-raised-button (click)="onReset($event)" class="reset-btn">Reset</button>
+        </mat-footer-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-footer-row *matFooterRowDef="['footerColumn']"></mat-footer-row>
+    </mat-table>
+  </mat-expansion-panel>
+</mat-accordion>

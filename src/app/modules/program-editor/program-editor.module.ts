@@ -41,6 +41,10 @@ import {FunctionDialogComponent} from './components/dialogs/function-dialog/func
 import {DimDialogComponent} from './components/dialogs/dim-dialog/dim-dialog.component';
 import {DelayDialogComponent} from './components/dialogs/delay-dialog/delay-dialog.component';
 import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-dialog.component';
+import { ArchSettingComponent } from './components/program-settings/arch-setting/arch-setting.component';
+import { ArchSettingService } from './services/arch-setting.service';
+import { JumpDialogComponent } from './components/dialogs/jump-dialog/jump-dialog.component';
+import { DataNotArrayPipe } from './components/dialogs/jump-dialog/jump-dialog.pipe';
 
 @NgModule({
   imports: [
@@ -86,7 +90,10 @@ import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-d
     RobotSelectorDialogComponent,
     SleepDialogComponent,
     SubDialogComponent,
-    WhileDialogComponent
+    ArchSettingComponent,
+    WhileDialogComponent,
+    JumpDialogComponent,
+    DataNotArrayPipe
   ],
   entryComponents: [
     NewProjectDialogComponent,
@@ -115,13 +122,15 @@ import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-d
     RobotSelectorDialogComponent,
     SleepDialogComponent,
     SubDialogComponent,
-    WhileDialogComponent
+    WhileDialogComponent,
+    JumpDialogComponent
   ],
   exports: [
     ProgramEditorComponent
   ],
   providers: [
-    ProgramEditorService
+    ProgramEditorService,
+    ArchSettingService
   ]
 })
 export class ProgramEditorModule { }

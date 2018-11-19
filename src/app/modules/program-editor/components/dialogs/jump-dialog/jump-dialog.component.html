@@ -1,0 +1,81 @@
+<div class="mat-typography">
+    <div class="wrapper">
+      <div class="title">Insert Jump Command</div>
+      <div class="content">
+        <mat-form-field>
+            <mat-select placeholder="Motion Element" [(ngModel)]="motionRobot" [formControl]="requiredFormControls[jumpParameterReference.MotionElement]"
+            [errorStateMatcher]="errorMatcher" (selectionChange)="onMotionElementChanged()">
+              <mat-option *ngFor="let robot of motionRobots" [value]="robot">{{robot}}</mat-option>
+            </mat-select>
+            <mat-error>
+                {{getErrors(requiredFormControls[jumpParameterReference.MotionElement])}}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select placeholder="Destination Frame..." [(ngModel)]="location" [formControl]="requiredFormControls[jumpParameterReference.DestinationFrame]"
+          [errorStateMatcher]="errorMatcher" (selectionChange)="reset()">
+            <mat-optgroup label="Locations" *ngIf="this.dataService.locations.length > 0">
+              <mat-option *ngFor="let data of (this.dataService.locations | dataNotArray)" [value]="data">
+                {{ data.name }}
+              </mat-option>
+            </mat-optgroup>
+          </mat-select>
+          <mat-error>
+              {{getErrors(requiredFormControls[jumpParameterReference.DestinationFrame])}}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-slide-toggle [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary" [disabled]="isAdancedModeDisable()" (change)="onAdvancedModeChanged()">Advanced</mat-slide-toggle>
+
+        <div *ngIf="advancedMode">
+          <mat-form-field>
+              <input matInput placeholder="Arc Number" name="arcNumber" [(ngModel)]="arcNumber" [formControl]="advancedFormControls[jumpParameterReference.ArcNumber]"
+              [errorStateMatcher]="errorMatcher">
+              <mat-error>
+                {{getErrors(advancedFormControls[jumpParameterReference.ArcNumber])}}
+              </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput placeholder="Limit Z" name="limitZ" [(ngModel)]="limitZ" [formControl]="advancedFormControls[jumpParameterReference.LimitZ]"
+              [errorStateMatcher]="errorMatcher">
+              <mat-error>
+                {{getErrors(advancedFormControls[jumpParameterReference.LimitZ])}}
+              </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Blending Percentage" name="blending" [(ngModel)]="blending" [formControl]="advancedFormControls[jumpParameterReference.Blending]"
+            [errorStateMatcher]="errorMatcher">
+            <span matSuffix>%</span>
+            <mat-error>
+              {{getErrors(advancedFormControls[jumpParameterReference.Blending])}}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput placeholder="Speed" name="speed" [(ngModel)]="speed" [formControl]="advancedFormControls[jumpParameterReference.Speed]"
+              [errorStateMatcher]="errorMatcher">
+              <span matSuffix>deg/s</span>
+              <mat-error>
+                {{getErrors(advancedFormControls[jumpParameterReference.Speed])}}
+              </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput placeholder="Acceleration" name="acceleration" [(ngModel)]="acceleration" [formControl]="advancedFormControls[jumpParameterReference.Acceleration]"
+              [errorStateMatcher]="errorMatcher">
+              <span matSuffix>deg/s<sup>2</sup></span>
+              <mat-error>
+                {{getErrors(advancedFormControls[jumpParameterReference.Acceleration])}}
+              </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button mat-button color="primary" (click)="cancel()">CANCEL</button>
+      <button mat-button color="primary" (click)="insert()" >INSERT</button>
+    </div>
+  </div>

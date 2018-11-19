@@ -7,7 +7,9 @@ import { WebsocketService } from '../../../core/services';
 import { ToolCalibrationResultDialogComponent } from './tool-calibration-result-dialog.component';
 import { CalibrationMessage } from './tool-calibration-result-dialog.enum';
 
-
+/**
+ * It contains all the test specs to ToolCalibrationResultDialogComponent.
+ */
 describe('ToolCalibrationResultDialogComponent', () => {
 
   /**

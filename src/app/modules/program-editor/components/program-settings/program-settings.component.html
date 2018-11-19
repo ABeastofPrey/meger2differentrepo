@@ -16,7 +16,7 @@
     <mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
       <input matInput placeholder="VTran" [(ngModel)]="prj.currProject.value.settings.vtran" type="text">
       <span matSuffix>deg/sec</span>
-    </mat-form-field>      
+    </mat-form-field>
     <h3>Blending Method</h3>
     <mat-radio-group [(ngModel)]="prj.currProject.value.settings.blendingMethod" (change)="prj.onProgramSettingChanged('blendingMethod')" style="margin-bottom: 8px; display: block;">
       <mat-radio-button color="primary" [value]="0">None</mat-radio-button>
@@ -48,5 +48,8 @@
         <mat-option *ngFor="let item of dataService.workPieces" value="{{item}}">{{item}}</mat-option>
       </mat-select>
     </mat-form-field>
+  </div>
+  <div class="card mat-elevation-z1 arch-setting-wrapper">
+    <app-arch-setting></app-arch-setting>
   </div>
 </div>

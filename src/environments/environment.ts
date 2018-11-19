@@ -5,9 +5,9 @@
 
 export const environment = {
   production: false,
-  api_url: 'http://10.4.20.23:1207',
-  ip: '10.4.20.23',
-  tp_ver: '1.3.0.1',
   gui_ver: '1.0.0 (Development Mode)',
-  compatible_webserver_ver: '3.0.2'
+  compatible_webserver_ver: '3.0.2',
+  api_url: 'http://192.168.245.87:1207',
+  ip: '192.168.245.87',
+  tp_ver: '1.3.0.1'
 };

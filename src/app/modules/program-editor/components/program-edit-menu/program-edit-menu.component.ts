@@ -1,6 +1,7 @@
+import { JumpDialogComponent } from './../dialogs/jump-dialog/jump-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import {MatDialog} from '@angular/material';
-import {DataService} from '../../../core';
+import {DataService, MCQueryResponse, WebsocketService} from '../../../core';
 import {ProgramEditorService} from '../../services/program-editor.service';
 import {GripperSelectorComponent} from '../dialogs/gripper-selector/gripper-selector.component';
 import {Gripper} from '../../../core/models/gripper.model';
@@ -26,19 +27,25 @@ import {LineParser} from '../../../core/models/line-parser.model';
   styleUrls: ['./program-edit-menu.component.css']
 })
 export class ProgramEditMenuComponent implements OnInit {
-  
+
   parser: LineParser;
+  isScara: boolean = false;
 
   constructor(
     public prg : ProgramEditorService,
     public data : DataService,
-    private dialog : MatDialog
+    private dialog : MatDialog,
+    private ws: WebsocketService
   ) { }
 
   ngOnInit() {
     this.parser = this.prg.parser;
+
+    this.ws.query('?TYPEOF').then((typeRes: MCQueryResponse) => {
+      this.isScara = typeRes.result === '4' ? true : false;
+    });
   }
-  
+
   menu_grp_use() {
     let ref = this.dialog.open(GripperSelectorComponent,{
       data: 'Set Active Gripper'
@@ -50,7 +57,7 @@ export class ProgramEditMenuComponent implements OnInit {
       }
     });
   }
-  
+
   menu_grp_open() {
     let ref = this.dialog.open(GripperSelectorComponent,{
       data: 'Open Gripper'
@@ -62,7 +69,7 @@ export class ProgramEditMenuComponent implements OnInit {
       }
     });
   }
-  
+
   menu_grp_close() {
     let ref = this.dialog.open(GripperSelectorComponent,{
       data: 'Close Gripper'
@@ -74,7 +81,7 @@ export class ProgramEditMenuComponent implements OnInit {
       }
     });
   }
-  
+
   menu_plt_pick() {
     let ref = this.dialog.open(PalletPickerDialogComponent,{
       data: {
@@ -261,6 +268,21 @@ export class ProgramEditMenuComponent implements OnInit {
         if (robot !== 'NULL')
           cmd += ' ' + robot;
         this.prg.insertAndJump(cmd,0);
+      }
+    });
+  }
+  menu_jump() {
+    let ref = this.dialog.open(
+      JumpDialogComponent,
+      {
+        width: '400px',
+        backdropClass: 'static',
+        disableClose: true
+      }
+    );
+    ref.afterClosed().subscribe((cmd: string) => {
+      if (cmd) {
+        this.prg.insertAndJump(cmd, 0);
       }
     });
   }

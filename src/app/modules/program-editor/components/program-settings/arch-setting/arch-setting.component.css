@@ -1,0 +1,12 @@
+.arch-setting-container {
+  /* width: 100%; */
+  position: relative;
+}
+.arch-setting-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.reset-btn:hover {
+  color: #00897b;
+}

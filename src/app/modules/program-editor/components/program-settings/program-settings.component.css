@@ -4,7 +4,7 @@ h2 {
   margin: 0;
 }
 h3 { margin: 0}
-.card { 
+.card {
   background: #fff;
   padding: 8px;
   border-radius: 2px;
@@ -19,4 +19,7 @@ h3 { margin: 0}
 }
 .card mat-radio-button {
   margin-right: 16px;
+}
+.arch-setting-wrapper {
+  align-items: stretch;
 }
