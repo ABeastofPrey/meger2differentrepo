@@ -497,7 +497,7 @@ export class DataService {
     // NOTE: CALLING THIS OUTSIDE OF ANGULAR CAUSES TABS TO STOP WORKING...
     
     const promises = [
-      this.ws.query("?TP_ENTER"),
+      this.ws.query('?TP_ENTER("CS+")'),
       this.ws.query("?TP_SET_STAT_FORMAT(2)"),
       //this.ws.query("?TP_JOGSCREEN")
     ];

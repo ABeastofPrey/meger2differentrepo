@@ -24,7 +24,7 @@ const routes: Routes = [
       {
         path: 'projects',
         loadChildren: '../program-editor/program-editor.module#ProgramEditorModule',
-        data: {preload: true}
+        data: {preload: false}
       },
       {
         path: 'simulator',

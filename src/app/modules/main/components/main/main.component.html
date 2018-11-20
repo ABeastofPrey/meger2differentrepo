@@ -36,11 +36,13 @@
             </button>
           </div>
           <div class="center-vertical" *ngIf="data.selectedRobot">
-            <button mat-mini-fab color="primary" (click)="stat.toggleEnabled()"><mat-icon [ngClass]="{'indicator-on' : stat.enabled }">power_settings_new</mat-icon></button>
+            <button mat-mini-fab color="primary" (click)="stat.toggleEnabled()" style="margin-right: 16px;">
+              <mat-icon [ngClass]="{'indicator-on' : stat.enabled }">power_settings_new</mat-icon>
+            </button>
             {{data.selectedRobot}}
           </div>
           <div *ngIf="data.selectedRobot === null">No robot is selected</div>
-          <mat-card-content>
+          <mat-card-content style="margin-top: 8px;">
             <mat-slide-toggle color="primary" [checked]="stat.jogEnabled" (change)="onJogEnableChange($event)">Enable Jogging</mat-slide-toggle>
             <div class="jog-table-container mat-elevation-z5">
               <table class="jog-table" *ngIf="cooService.axisCoordinate === null && cooService.jointKeys || cooService.locationKeys">

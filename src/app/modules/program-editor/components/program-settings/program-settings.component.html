@@ -73,13 +73,13 @@
             <td>J{{i+1}}</td>
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'J'+(i+1),p.min)">
+                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'J'+(i+1),p.min)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'J'+(i+1),p.max)">
+                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'J'+(i+1),p.max)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -97,13 +97,13 @@
           <tr *ngFor="let p of prj.currProject.value.settings.limits.world">
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'world',p.min)">
+                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'world',p.min)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'world',p.max)">
+                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'world',p.max)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -121,13 +121,13 @@
           <tr *ngFor="let p of prj.currProject.value.settings.limits.tool">
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'tool',p.min)">
+                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'tool',p.min)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'tool',p.max)">
+                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'tool',p.max)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -145,13 +145,13 @@
           <tr *ngFor="let p of prj.currProject.value.settings.limits.base">
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'base',p.min)">
+                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'base',p.min)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'base',p.max)">
+                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'base',p.max)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -169,13 +169,13 @@
           <tr *ngFor="let p of prj.currProject.value.settings.limits.mt">
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'machinetable',p.min)">
+                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'machinetable',p.min)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'machinetable',p.max)">
+                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'machinetable',p.max)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -193,13 +193,13 @@
           <tr *ngFor="let p of prj.currProject.value.settings.limits.wp">
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'workpiece',p.min)">
+                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'workpiece',p.min)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
-                <input matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'workpiece',p.max)">
+                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'workpiece',p.max)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
