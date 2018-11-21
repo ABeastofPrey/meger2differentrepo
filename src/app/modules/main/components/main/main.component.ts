@@ -1,10 +1,11 @@
 import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
-import {NotificationService, LoginService, WatchService, DataService, TpStatService, CoordinatesService, ScreenManagerService, WebsocketService} from '../../../core';
+import {NotificationService, LoginService, WatchService, DataService, TpStatService, CoordinatesService, ScreenManagerService, WebsocketService, ProjectManagerService} from '../../../core';
 import {Router, RouteConfigLoadStart, RouteConfigLoadEnd} from '@angular/router';
 import {JogSettingsDialogComponent} from '../../../../components/jog-settings-dialog/jog-settings-dialog.component';
 import {MatDialog, MatSidenav, MatSlideToggleChange} from '@angular/material';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {TourService} from 'ngx-tour-md-menu';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-main',
@@ -18,6 +19,7 @@ export class MainComponent implements OnInit {
   screenWidth: number;
   tpOnline: boolean = false;
   terminalOpen: boolean = false;
+  appName: string = environment.appName;
   
   @ViewChild('drawer') drawer : MatSidenav;
   
@@ -38,7 +40,8 @@ export class MainComponent implements OnInit {
     private _zone: NgZone,
     private ws: WebsocketService,
     private dialog: MatDialog,
-    private tour: TourService
+    private tour: TourService,
+    public prj: ProjectManagerService
   ) { }
 
   ngOnInit() {
@@ -70,7 +73,7 @@ export class MainComponent implements OnInit {
           this.dialog.open(YesNoDialogComponent,{
             data: {
               title: 'Welcome!',
-              msg: 'Welcome to RoboStudio! Since this is your first time here, would you like a quick tour?',
+              msg: 'Welcome to ' + this.appName + '! Since this is your first time here, would you like a quick tour?',
               yes: 'YES, LET\'S GO!',
               no: 'NO, THANKS'
             }

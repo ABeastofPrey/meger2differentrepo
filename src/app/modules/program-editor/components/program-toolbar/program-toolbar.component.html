@@ -12,7 +12,7 @@
     <li (click)="open()"><mat-icon>create_new_folder</mat-icon>Open...</li>
     <div class="seperator"></div>
     <li (click)="export()"><mat-icon>cloud_download</mat-icon>Export...</li>
-    <li (click)="import()"><mat-icon>cloud_upload</mat-icon>Import...</li>
+    <li (click)="doImport()"><mat-icon>cloud_upload</mat-icon>Import...</li>
     <div class="seperator"></div>
     <li (click)="saveAs()"><mat-icon>save</mat-icon>Save As...</li>
     <li (click)="rename()"><mat-icon>edit</mat-icon>Rename...</li>
@@ -35,3 +35,4 @@
     <li (click)="stop()"><mat-icon>stop</mat-icon>Stop Project</li>
   </ul>
 </div>
+<input type="file" accept=".zip, .ZIP" #upload (change)="onUploadFilesChange($event)" class="file-input" />

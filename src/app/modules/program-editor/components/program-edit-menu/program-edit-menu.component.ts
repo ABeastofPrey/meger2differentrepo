@@ -27,6 +27,8 @@ import {LineParser} from '../../../core/models/line-parser.model';
   styleUrls: ['./program-edit-menu.component.css']
 })
 export class ProgramEditMenuComponent implements OnInit {
+  
+  parser: LineParser;
 
   parser: LineParser;
   isScara: boolean = false;
@@ -248,6 +250,26 @@ export class ProgramEditMenuComponent implements OnInit {
         } else {
           this.prg.insertAndJump(cmd,0);
         }
+      }
+    });
+  }
+  menu_attach(attach:boolean) {
+    let cmd = attach ? 'Attach' : 'Detach';
+    let ref = this.dialog.open(
+      RobotSelectorDialogComponent,
+      {
+        width: '400px',
+        data: {
+          title:'Insert Attach Command',
+          must: false
+        }
+      }
+    );
+    ref.afterClosed().subscribe((robot:string)=>{
+      if (robot) {
+        if (robot !== 'NULL')
+          cmd += ' ' + robot;
+        this.prg.insertAndJump(cmd,0);
       }
     });
   }

@@ -35,7 +35,7 @@ header {
 .main mat-icon {
   margin-right: 24px;
 }
-@media (max-height: 650px) {
+@media (max-height: 550px) {
   header { height: 50px; }
   header img {height: 50px; width: 50px;}
   .title { font-size: 24px;}

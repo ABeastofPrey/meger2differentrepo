@@ -23,6 +23,11 @@
 .buttons {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+}
+.buttons button {
+  margin-right: 24px;
+  margin-bottom: 16px;
 }
 .var-actions {
   flex: 1;
@@ -35,6 +40,7 @@
   margin-right: 1em;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 .var-details mat-form-field {
   width: 112px;
@@ -55,4 +61,7 @@
 .data-card {
   flex:1;
   height: auto;
+}
+.dont-flex {
+  flex-grow: 0;
 }

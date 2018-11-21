@@ -270,5 +270,25 @@ export class DataScreenComponent implements OnInit {
       }
     });
   }
+  
+  onKeyboardClose() {
+    let fullname = this.selectedVar.name;
+    if (this.selectedVar.isArr)
+      fullname += '[' + this.selectedVar.selectedIndex + ']';
+    let value = '';
+    for (var i=0; i<this._value.length; i++) {
+      value += this._value[i].value;
+      if (i<this._value.length-1)
+        value += ',';
+    }
+    const cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
+    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+      this.rowClick(this.selectedVar,true); // REFRESH DATA
+      if (ret.result === '0')
+        this.snackBar.open('Changes saved',null,{duration: 2000});
+      else
+        console.log(ret.cmd + '>>>' + ret.result);
+    });
+  }
 
 }

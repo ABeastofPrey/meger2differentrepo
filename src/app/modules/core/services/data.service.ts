@@ -9,6 +9,7 @@ import {TpType} from '../../core/models/tp/tp-type.model';
 import {TpStatService} from './tp-stat.service';
 import {Pallet} from '../models/pallet.model';
 import {Payload} from '../models/payload.model';
+import {IoModule} from '../models/io/io-module.model';
 
 declare var Blockly:any;
 
@@ -184,6 +185,10 @@ export class DataService {
   // Lead By Nose
   private _lbnVer : string = null;
   get LeadByNoseLibVer() {return this._lbnVer; }
+  
+  // IOs
+  private _ioModules: IoModule[];
+  get ioModules() {return this._ioModules;}
   
   // Settings
   private _isEmulator = false;
@@ -462,6 +467,8 @@ export class DataService {
       if (this._payloadLibVer) {
         return this.refreshPayloads();
       }
+    }).then(()=>{
+      return this.refreshIos();
     });
   }
 
@@ -490,9 +497,9 @@ export class DataService {
     // NOTE: CALLING THIS OUTSIDE OF ANGULAR CAUSES TABS TO STOP WORKING...
     
     const promises = [
-      this.ws.query("?TP_ENTER"),
+      this.ws.query('?TP_ENTER("CS+")'),
       this.ws.query("?TP_SET_STAT_FORMAT(2)"),
-      this.ws.query("?TP_JOGSCREEN")
+      //this.ws.query("?TP_JOGSCREEN")
     ];
     
     this.teach.reset();
@@ -570,6 +577,19 @@ export class DataService {
     this.ws.send('?tp_set_mc_timeout(' + this._softMCTimeout + ')',null);
     this.ws.send('?tp_set_refresh_rate(' + this._refreshCycle + ')',null);
     this.snack.open('SETTINGS CHANGED','',{duration: 2000});
+  }
+  
+  refreshIos() {
+    this.ws.query('?iomap_get_init_info').then((ret:MCQueryResponse)=>{
+      let modules : IoModule[] = [];
+      const parts = ret.result.split(';');
+      for (let p of parts) {
+        if (p.length > 0) {
+          modules.push(new IoModule(p));
+        }
+      }
+      this._ioModules = modules;
+    });
   }
   
   refreshVariables() {

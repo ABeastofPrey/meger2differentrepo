@@ -74,23 +74,24 @@ export class FramesComponent implements OnInit {
   }
   
   onKeyboardClose() {
-    /*let fullname = this.selectedVar.name;
+    let fullname = this.selectedVar.name;
     if (this.selectedVar.isArr)
       fullname += '[' + this.selectedVar.selectedIndex + ']';
-    var value = '';
+    let value = '';
     for (var i=0; i<this._value.length; i++) {
       value += this._value[i].value;
       if (i<this._value.length-1)
         value += ',';
     }
-    var cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
+    const cmd = '?TP_EDIT_FRAME("' + this.currFrameType + '","' + fullname +
+                '","' + value + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       this.rowClick(this.selectedVar,true); // REFRESH DATA
       if (ret.result === '0')
         this.snack.open('Changes saved',null,{duration: 2000});
       else
         console.log(ret.cmd + '>>>' + ret.result);
-    });*/
+    });
   }
   
   isElementCurrent(name : string) {
@@ -221,16 +222,19 @@ export class FramesComponent implements OnInit {
     });
     ref.afterClosed().subscribe(ret=>{
       if (ret) {
-        let cmd = '?TP_DELETEVAR("' + this.selectedVar.name + '")';
+        let cmd = '?TP_REMOVE_FRAME("' + this.currFrameType + '","' + 
+                  this.selectedVar.name + '")';
         this.ws.query(cmd).then((ret: MCQueryResponse)=>{
           if (ret.result === '0') {
             this.selectedVar = null;
             var queries = [
               this.data.refreshBases(),
-              this.data.refreshTools()
+              this.data.refreshTools(),
+              this.data.refreshMachineTables(),
+              this.data.refreshWorkPieces()
             ];
             Promise.all(queries).then(()=>{
-              this.data.refreshVariables();
+              this.dataSource.data = this.getData();
             });
           }
         });

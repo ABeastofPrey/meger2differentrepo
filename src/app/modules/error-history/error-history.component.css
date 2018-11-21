@@ -1,6 +1,4 @@
-mat-expansion-panel {
-  margin: 0 auto;
-}
+mat-expansion-panel { margin: 0 auto; }
 .mat-accordion { overflow: auto; }
 .icon {
   display: flex;
@@ -35,3 +33,6 @@ mat-expansion-panel {
 .severity-error {color: #B71C1C;}
 .severity-note {color: #9E9D24;}
 .severity-info {color: #039BE5;}
+
+.buttons { padding: 16px; }
+.buttons button { margin-right: 8px;}

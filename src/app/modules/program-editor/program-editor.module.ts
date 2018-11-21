@@ -41,6 +41,7 @@ import {FunctionDialogComponent} from './components/dialogs/function-dialog/func
 import {DimDialogComponent} from './components/dialogs/dim-dialog/dim-dialog.component';
 import {DelayDialogComponent} from './components/dialogs/delay-dialog/delay-dialog.component';
 import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-dialog.component';
+import {IoMappingModule} from './modules/io-mapping/io-mapping.module';
 import { ArchSettingComponent } from './components/program-settings/arch-setting/arch-setting.component';
 import { ArchSettingService } from './services/arch-setting.service';
 import { JumpDialogComponent } from './components/dialogs/jump-dialog/jump-dialog.component';
@@ -53,7 +54,8 @@ import { DataNotArrayPipe } from './components/dialogs/jump-dialog/jump-dialog.p
     ProgramEditorRouterModule,
     PalletizingModule,
     GripperScreenModule,
-    PayloadsModule
+    PayloadsModule,
+    IoMappingModule
   ],
   declarations: [
     ProgramEditorComponent,

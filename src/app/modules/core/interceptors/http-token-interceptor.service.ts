@@ -12,10 +12,10 @@ export class HttpTokenInterceptor implements HttpInterceptor {
     const fileUpload = req.url.indexOf('/upload') > 0 && req.method === 'POST';
     const trnErr = req.url.indexOf('/trnerr') > 0 && req.method === 'GET';
     const ipkUpload = req.url.indexOf('/firmware') > 0 && req.method === 'POST';
-    const zipDownload = req.url.indexOf('zip') > 0 && req.method === 'GET';
+    const zipOperation = req.url.indexOf('zip') > 0;
     const palletUpload = req.url.indexOf('/pallet/') > 0 && req.method === 'POST';
     const headersConfig = (
-      picUpload || fileUpload || trnErr || ipkUpload || zipDownload || 
+      picUpload || fileUpload || trnErr || ipkUpload || zipOperation || 
       palletUpload
     ) ? {} : {
       'Content-Type': 'application/json',

@@ -6,6 +6,8 @@ import {ApiService} from '../../../core';
 
 declare var $;
 
+const epsilon = 0.1;
+
 @Component({
   selector: 'pallet-level-designer',
   templateUrl: './pallet-level-designer.component.html',
@@ -110,8 +112,11 @@ export class PalletLevelDesignerComponent implements OnInit {
       let otherWidth = other.element.getBoundingClientRect().width;
       let otherHeight = other.element.getBoundingClientRect().height;
       if (((otherTop+otherHeight>top && otherTop <= top) || (top+height > otherTop && top <= otherTop))) {
-        if (otherLeft === left || (otherLeft < left && otherLeft + otherWidth > left) || (otherLeft > left && left + width > otherLeft))
+        if (otherLeft === left || (otherLeft < left && otherLeft + otherWidth > left + epsilon) || (otherLeft > left && left + width > otherLeft + epsilon)) {
           error = true;
+          console.log(otherTop,otherHeight,top,height);
+          console.log(otherLeft,left,otherWidth,width);
+        }
       }
     }
     item.error = error;

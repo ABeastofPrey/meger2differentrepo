@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {TourService} from 'ngx-tour-md-menu';
 import {TpStatService} from '../core';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'help-screen',
@@ -10,6 +11,7 @@ import {TpStatService} from '../core';
 export class HelpComponent implements OnInit {
   
   online: boolean = false;
+  appName: string = environment.appName;
 
   constructor(private tour: TourService, private stat: TpStatService) {
   }

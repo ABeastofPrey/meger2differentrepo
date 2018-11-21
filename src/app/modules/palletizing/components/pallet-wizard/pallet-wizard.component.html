@@ -195,8 +195,8 @@
               <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.entry.x" formControlName="x" required></mat-form-field>
               <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.entry.y" formControlName="y" required></mat-form-field>
               <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.entry.z" formControlName="z" required></mat-form-field>
-              <mat-form-field class="input-small"><input matInput placeholder="Yaw" [(ngModel)]="dataService.selectedPallet.entry.yaw" formControlName="yaw" required></mat-form-field>
-              <mat-form-field class="input-small"><input matInput placeholder="Pitch" [(ngModel)]="dataService.selectedPallet.entry.pitch" formControlName="pitch" required></mat-form-field>
+              <mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"><input matInput placeholder="Yaw" [(ngModel)]="dataService.selectedPallet.entry.yaw" formControlName="yaw" required></mat-form-field>
+              <mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"><input matInput placeholder="Pitch" [(ngModel)]="dataService.selectedPallet.entry.pitch" formControlName="pitch" required></mat-form-field>
               <mat-form-field class="input-small"><input matInput placeholder="Roll" [(ngModel)]="dataService.selectedPallet.entry.roll" formControlName="roll" required></mat-form-field>
             </div>
           </div>
@@ -272,7 +272,7 @@
         <tr><td>Number of items:</td><td>X:{{dataService.selectedPallet.items_x}}&nbsp;&nbsp;Y:{{dataService.selectedPallet.items_y}}&nbsp;&nbsp;Z:{{dataService.selectedPallet.items_z}}</td></tr>
         <tr><td>Item Dimensions:</td><td>X:{{dataService.selectedPallet.item_size_x}}mm.&nbsp;&nbsp;Y:{{dataService.selectedPallet.item_size_y}}mm.&nbsp;&nbsp;Z:{{dataService.selectedPallet.item_size_z}}mm.</td></tr>
         <tr><td>Origin:</td><td>{{dataService.selectedPallet.isFrameCalibrated ? 'Calibrated' : 'Not Calibrated'}}</td></tr>
-        <tr><td>Entry Position:</td><td>{{dataService.selectedPallet.entryEnabled ? dataService.selectedPallet.entry : 'Disabled'}}</td></tr>
+        <tr><td>Entry Position:</td><td>{{dataService.selectedPallet.entryEnabled ? locToString(dataService.selectedPallet.entry) : 'Disabled'}}</td></tr>
         <tr><td>Approach:</td><td>{{dataService.selectedPallet.appEnabled ? 'Vertical Offset' + ': ' + dataService.selectedPallet.approach_offset_vertical + ', ' + 'Horizontal Offset' + ': ' + dataService.selectedPallet.approach_offset_horizontal + ', ' + 'Direction: ' +  dataService.selectedPallet.approach_direction : 'Disabled'}}</td></tr>
         <tr><td>Retract:</td><td>{{dataService.selectedPallet.retEnabled ? 'Vertical Offset' + ': ' + dataService.selectedPallet.retract_offset_vertical + ', ' + 'Horizontal Offset' + ': ' + dataService.selectedPallet.retract_offset_horizontal + ', ' + 'Direction: ' +  dataService.selectedPallet.retract_direction : 'Disabled'}}</td></tr>
       </table>

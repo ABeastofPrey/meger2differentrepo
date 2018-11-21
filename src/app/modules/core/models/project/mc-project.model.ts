@@ -53,9 +53,31 @@ export class ProjectSettings {
   mtable: string;
   wpiece: string;
   overlap: boolean;
+  limits: LimitsObject = new LimitsObject();
+}
+
+class LimitsObject {
+  position: Limit[];
+  world: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];
+  tool: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];;
+  base: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];;
+  mt: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];;
+  wp: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];;
 }
 
 export class Macro {
   key:string;
   app:string;
+}
+
+export class Limit {
+  name: string;
+  min: number;
+  max: number;
+  units: string;
+  
+  constructor(name, units) {
+    this.name = name;
+    this.units = units;
+  }
 }

@@ -33,9 +33,7 @@
   top: -6px;
   font-size: 13px;
 }
-.disabled {
-  color: #ccc;
-}
+.disabled { color: #ccc; }
 .dropdown-menu li {
   padding: 4px 8px;
   margin: 4px 0;
@@ -53,6 +51,12 @@
 .seperator {
   width: 100%;
   border-bottom: 1px solid #ccc;
+}
+.file-input {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 .menu1 { left: 18px; }
 .menu2 { left: 84px; }
