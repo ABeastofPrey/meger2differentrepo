@@ -27,8 +27,6 @@ import {LineParser} from '../../../core/models/line-parser.model';
   styleUrls: ['./program-edit-menu.component.css']
 })
 export class ProgramEditMenuComponent implements OnInit {
-  
-  parser: LineParser;
 
   parser: LineParser;
   isScara: boolean = false;
