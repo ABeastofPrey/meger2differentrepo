@@ -111,7 +111,7 @@ export class CoordinatesService {
                 result = null;
               },0);
             });
-          },100);
+          },200);
         });
       }
     });

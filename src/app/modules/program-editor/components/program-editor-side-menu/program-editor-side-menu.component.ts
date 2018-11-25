@@ -114,7 +114,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   }
   
   openFile(n:TreeNode) {
-    if (this.service.isDirty) {
+    if (this.service.isDirty && this.service.activeFile) {
       this.dialog.open(YesNoDialogComponent,{
         data: {
           title: 'File has changed',

@@ -90,6 +90,7 @@ export class WebsocketService {
                   clearTimeout(this.timeout);
                   this.timeout = null;
                 }
+                this.dialog.closeAll();
                 this._isConnected.next(false);
                 this.reset();
                 break;
