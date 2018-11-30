@@ -1,7 +1,8 @@
+import { Jump3DialogComponent } from './../dialogs/jump3-dialog/jump3-dialog.component';
 import { JumpDialogComponent } from './../dialogs/jump-dialog/jump-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import {MatDialog} from '@angular/material';
-import {DataService, MCQueryResponse, WebsocketService} from '../../../core';
+import {DataService, WebsocketService} from '../../../core';
 import {ProgramEditorService} from '../../services/program-editor.service';
 import {GripperSelectorComponent} from '../dialogs/gripper-selector/gripper-selector.component';
 import {Gripper} from '../../../core/models/gripper.model';
@@ -41,9 +42,7 @@ export class ProgramEditMenuComponent implements OnInit {
   ngOnInit() {
     this.parser = this.prg.parser;
 
-    this.ws.query('?TYPEOF').then((typeRes: MCQueryResponse) => {
-      this.isScara = typeRes.result === '4' ? true : false;
-    });
+    this.isScara = this.data.robotType === 'SCARA';
   }
 
   menu_grp_use() {
@@ -303,6 +302,22 @@ export class ProgramEditMenuComponent implements OnInit {
     ref.afterClosed().subscribe((cmd: string) => {
       if (cmd) {
         this.prg.insertAndJump(cmd, 0);
+      }
+    });
+  }
+  menu_jump3(commandType: string) {
+    const type = commandType === 'jump3' ? 'Jump3' : 'Jump3cp';
+    this.dialog.open(
+      Jump3DialogComponent,
+      {
+        width: '400px',
+        backdropClass: 'static',
+        disableClose: true,
+        data: { type: type }
+      }
+    ).afterClosed().subscribe((cmd: string) => {
+      if (cmd) {
+        this.prg.insertAndJump(commandType + cmd, 0);
       }
     });
   }

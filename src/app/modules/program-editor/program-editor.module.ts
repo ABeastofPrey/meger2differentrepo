@@ -46,6 +46,8 @@ import { ArchSettingComponent } from './components/program-settings/arch-setting
 import { ArchSettingService } from './services/arch-setting.service';
 import { JumpDialogComponent } from './components/dialogs/jump-dialog/jump-dialog.component';
 import { DataNotArrayPipe } from './components/dialogs/jump-dialog/jump-dialog.pipe';
+import { Jump3DialogComponent } from './components/dialogs/jump3-dialog/jump3-dialog.component';
+import { Jump3DialogService } from './services/jump3-dialog.service';
 
 @NgModule({
   imports: [
@@ -95,6 +97,10 @@ import { DataNotArrayPipe } from './components/dialogs/jump-dialog/jump-dialog.p
     ArchSettingComponent,
     WhileDialogComponent,
     JumpDialogComponent,
+    DataNotArrayPipe,
+    WhileDialogComponent,
+    JumpDialogComponent,
+    Jump3DialogComponent,
     DataNotArrayPipe
   ],
   entryComponents: [
@@ -125,14 +131,16 @@ import { DataNotArrayPipe } from './components/dialogs/jump-dialog/jump-dialog.p
     SleepDialogComponent,
     SubDialogComponent,
     WhileDialogComponent,
-    JumpDialogComponent
+    JumpDialogComponent,
+    Jump3DialogComponent
   ],
   exports: [
     ProgramEditorComponent
   ],
   providers: [
     ProgramEditorService,
-    ArchSettingService
+    ArchSettingService,
+    Jump3DialogService
   ]
 })
 export class ProgramEditorModule { }

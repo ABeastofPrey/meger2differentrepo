@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { IoService, CustomIOPort } from './io.service';
+import { IoService } from './io.service';
 import { WebsocketService } from '../../core';
 import { IoOption, CustomIOType } from './io.service.enum';
 

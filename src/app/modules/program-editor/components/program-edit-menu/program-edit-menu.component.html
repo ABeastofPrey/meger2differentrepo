@@ -32,6 +32,8 @@
     <button mat-menu-item (click)="menu_dopass()">DoPass...</button>
     <ng-container *ngIf="isScara">
       <button mat-menu-item (click)="menu_jump()">Jump...</button>
+      <button mat-menu-item (click)="menu_jump3('jump3')">Jump3...</button>
+      <button mat-menu-item (click)="menu_jump3('jump3cp')">Jump3cp...</button>
     </ng-container>
   </mat-menu>
   <mat-menu #circle="matMenu">

@@ -40,9 +40,7 @@ export class ToolCalibrationDialogComponent implements OnInit {
       this.maxPoints = Number(ret.result) || 4;
     });
 
-    this.ws.query('?TYPEOF').then((typeRes: MCQueryResponse) => {
-      this.isScara = typeRes.result === '4' ? true : false;
-    });
+    this.isScara = this.dataService.robotType === 'SCARA';
 
   }
 

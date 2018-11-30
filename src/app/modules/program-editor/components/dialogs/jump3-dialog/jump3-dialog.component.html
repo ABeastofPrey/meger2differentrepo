@@ -1,0 +1,32 @@
+<div class="mat-typography">
+  <h1 class="title">Insert {{data.type}} Command</h1>
+  <div mat-dialog-content>
+    <!-- Required command parameters -->
+    <mat-form-field *ngFor="let requirePar of requiredPars">
+      <mat-select placeholder="{{requirePar.placeholder}}" [(ngModel)]="requirePar.selected" (selectionChange)="requirePar.change($event)"
+      [errorStateMatcher]="requirePar.matcher" [formControl]="requirePar.control">
+        <mat-option *ngFor="let option of requirePar.options" [value]="option">{{option}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="requirePar.control.hasError('required')">
+          {{errorMessage(requirePar.control)}}
+      </mat-error>
+    </mat-form-field>
+    <!-- Toggle slide for set optional parameters-->
+    <mat-slide-toggle [(ngModel)]="isAdvanced" style="margin-bottom: 8px;" color="primary" [disabled]="!enableAdvanced" >Advanced</mat-slide-toggle>
+    <!-- Optional command parameters -->
+    <ng-container *ngIf="isAdvanced">
+      <mat-form-field *ngFor="let optionalPar of optionalPars">
+          <input matInput placeholder="{{optionalPar.placeholder}}" [(ngModel)]="optionalPar.selected"
+          [formControl]="optionalPar.control" [errorStateMatcher]="optionalPar.matcher">
+          <span matSuffix>{{optionalPar.suffix}}<sup>{{optionalPar.sup}}</sup></span>
+          <mat-error>
+            {{errorMessage(optionalPar.control)}}
+          </mat-error>
+      </mat-form-field>
+    </ng-container>
+  </div>
+  <div mat-dialog-actions class="actions">
+    <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>CANCEL</button>
+    <button mat-button color="primary" [disabled]="!enableAdvanced || hasInvalidOptional" (click)="emitCmd()">INSERT</button>
+  </div>
+</div>

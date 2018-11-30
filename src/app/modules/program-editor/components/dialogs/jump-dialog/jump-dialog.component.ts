@@ -55,8 +55,8 @@ export class JumpDialogComponent implements OnInit {
    * The error messages for the value validation.
    */
   private errorMessages = {
-    [JumpParameterErrorKey.InValidArcNumber]: 'Please enter between 1-7.',
-    [JumpParameterErrorKey.InValidBlending]: 'Please enter between 0-100.'
+    [JumpParameterErrorKey.InValidArcNumber]: 'Please enter a number in [1, 7].',
+    [JumpParameterErrorKey.InValidBlending]: 'Please enter a number in [0, 100].'
   };
 
   /**
@@ -294,7 +294,7 @@ ${this.acceleration ? this.acceleration : -1})`;
         return;
       }
       this.accelerationMax = Math.floor(Number(ret.result));
-      this.errorMessages[JumpParameterErrorKey.InValidAcceleration] = `Please enter between 0-${this.accelerationMax}`;
+      this.errorMessages[JumpParameterErrorKey.InValidAcceleration] = `Please enter a number in (0, ${this.accelerationMax})`;
       this.advancedFormControls[JumpParameter.Acceleration] = new FormControl('', [
         this.createValidator(0, this.accelerationMax, JumpParameterErrorKey.InValidAcceleration,
           (value: Number, min: Number, max: Number): boolean => {
@@ -313,7 +313,7 @@ ${this.acceleration ? this.acceleration : -1})`;
         return;
       }
       this.speedMax = Math.floor(Number(ret.result));
-      this.errorMessages[JumpParameterErrorKey.InValidSpeed] = `Please enter between 0-${this.speedMax}`;
+      this.errorMessages[JumpParameterErrorKey.InValidSpeed] = `Please enter a number in (0, ${this.speedMax})`;
       this.advancedFormControls[JumpParameter.Speed] = new FormControl('', [
         this.createValidator(0, this.speedMax, JumpParameterErrorKey.InValidSpeed,
           (value: Number, min: Number, max: Number): boolean => {
@@ -341,7 +341,7 @@ ${this.acceleration ? this.acceleration : -1})`;
         }
         this.limitZMin = Math.floor(Number(zMinRet.result));
         this.errorMessages[JumpParameterErrorKey.InValidLimitZ] =
-          `Please enter between ${this.limitZMin}-${this.limitZMax}`;
+          `Please enter a number in [${this.limitZMin}, ${this.limitZMax}]`;
 
         this.advancedFormControls[JumpParameter.LimitZ] = new FormControl('', [
           this.createValidator(this.limitZMin, this.limitZMax, JumpParameterErrorKey.InValidLimitZ,

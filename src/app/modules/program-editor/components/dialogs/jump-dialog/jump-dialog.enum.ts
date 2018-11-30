@@ -2,6 +2,7 @@
  * The key of jump command parameter error.
  */
 export enum JumpParameterErrorKey {
+  Required = 'required',
   InValidLimitZ = 'inValidLimitZ',
   InValidSpeed = 'inValidSpeed',
   InValidAcceleration = 'inValidAcceleration',

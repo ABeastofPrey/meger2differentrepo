@@ -13,7 +13,7 @@
         </mat-form-field>
 
         <mat-form-field>
-          <mat-select placeholder="Destination Frame..." [(ngModel)]="location" [formControl]="requiredFormControls[jumpParameterReference.DestinationFrame]"
+          <mat-select placeholder="Dest Frame" [(ngModel)]="location" [formControl]="requiredFormControls[jumpParameterReference.DestinationFrame]"
           [errorStateMatcher]="errorMatcher" (selectionChange)="reset()">
             <mat-optgroup label="Locations" *ngIf="this.dataService.locations.length > 0">
               <mat-option *ngFor="let data of (this.dataService.locations | dataNotArray)" [value]="data">
