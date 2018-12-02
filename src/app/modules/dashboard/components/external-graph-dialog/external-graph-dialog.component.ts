@@ -10,6 +10,7 @@ import {DashboardService} from '../../services/dashboard.service';
 export class ExternalGraphDialogComponent implements OnInit {
   
   name : string = null;
+  is3D: boolean = false;
 
   constructor(
     private ref : MatDialogRef<any>,
@@ -21,7 +22,7 @@ export class ExternalGraphDialogComponent implements OnInit {
   
   show() {
     this.ref.close();
-    this.dashboard.showGraphDialog(null,null,this.name);
+    this.dashboard.showGraphDialog(this.is3D,null,this.name);
   }
 
 }

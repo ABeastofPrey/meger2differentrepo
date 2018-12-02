@@ -6,9 +6,9 @@
 export const environment = {
   production: false,
   appName: 'ControlStudio+',
-  api_url: 'http://10.4.20.22:1207',
-  ip: '10.4.20.22',
+  api_url: 'http://10.4.20.41:1207',
+  ip: '10.4.20.41',
   tp_ver: '1.3.0.1',
-  gui_ver: '1.0.2.b1',
-  compatible_webserver_ver: '3.0.4'
+  gui_ver: '1.0.3',
+  compatible_webserver_ver: '3.0.5'
 };
