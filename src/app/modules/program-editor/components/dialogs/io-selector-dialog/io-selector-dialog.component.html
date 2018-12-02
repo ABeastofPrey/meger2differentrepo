@@ -4,12 +4,7 @@
     <div class="content">
       <mat-form-field>
         <mat-select placeholder="Select..." [(ngModel)]="io">
-          <mat-optgroup *ngIf="this.data.inputs" label="Inputs">
-            <mat-option *ngFor="let io of this.inputs" [value]="io">{{ io.id }}</mat-option>
-          </mat-optgroup>
-          <mat-optgroup *ngIf="this.data.outputs" label="Outputs">
-            <mat-option *ngFor="let io of this.outputs" [value]="io">{{ io.id }}</mat-option>
-          </mat-optgroup>
+          <mat-option *ngFor="let io of this.list" [value]="io">{{io}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>

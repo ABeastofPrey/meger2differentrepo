@@ -5,7 +5,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Errors} from '../core/models/errors.model';
 import {MatDialog} from '@angular/material';
 import {ServerDisconnectComponent} from '../../components/server-disconnect/server-disconnect.component';
-import {ApiService} from '../core';
+import {ApiService, WebsocketService} from '../core';
 import {environment} from '../../../environments/environment';
 
 @Component({
@@ -32,7 +32,8 @@ export class LoginScreenComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private api: ApiService
+    private api: ApiService,
+    private ws: WebsocketService
   ) {
     this.api.get('/cs/api/java-version').subscribe((ret:{ver:string})=>{
       this.isVersionOK = ret.ver.startsWith(environment.compatible_webserver_ver);
@@ -55,17 +56,27 @@ export class LoginScreenComponent implements OnInit {
     const credentials = this.authForm.value;
     this.timeout = setTimeout(()=>{
       this.errors.error = 'Trying to connect to softMC...';
-    },2000);
+    },3000);
     this.login
     .attemptAuth(credentials)
     .subscribe(
       data => {
         clearTimeout(this.timeout);
-        this.router.navigateByUrl('/')
+        // TIMEOUT FOR WEBSOCKET CONNECTION
+        setInterval(()=>{
+          if (!this.ws.connected) {
+            this.errors.error = "Can't establish a websocket connection.";
+            this.isSubmitting = false;
+          }
+        },2000);
+        this.ws.isConnected.subscribe(stat=>{
+          if (stat) {
+            this.router.navigateByUrl('/')
+          }
+        });
       },
       err => {
         clearTimeout(this.timeout);
-        console.log(err);
         if (err.type === 'error')
           this.errors.error = "Can't connect to softMC";
         else

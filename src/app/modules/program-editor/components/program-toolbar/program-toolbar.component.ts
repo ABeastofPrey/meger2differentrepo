@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {NewProjectDialogComponent} from '../new-project-dialog/new-project-dialog.component';
-import {WebsocketService, MCQueryResponse, ProjectManagerService, ApiService, UploadResult} from '../../../core';
+import {WebsocketService, MCQueryResponse, ProjectManagerService, ApiService, UploadResult, ProjectVerificationResult} from '../../../core';
 import {OpenProjectDialogComponent} from '../open-project-dialog/open-project-dialog.component';
 import {ProgramEditorService} from '../../services/program-editor.service';
 import {NewAppDialogComponent} from '../toolbar-dialogs/new-app-dialog/new-app-dialog.component';
@@ -120,11 +120,60 @@ export class ProgramToolbarComponent implements OnInit {
     });
   }
   
+  private importProject(fileName: string, projectName: string) {
+    return this.api.importProject(fileName).then((ret: UploadResult)=>{
+      if (ret.success) {
+        this.snack.open('SUCCESS!','',{duration:1500});
+        if (projectName === this.prj.currProject.value.name)
+          return this.prj.getCurrentProject();
+      } else {
+        this.snack.open('IMPORT FAILED!','DISMISS');
+      }
+    });
+  }
+  
   onUploadFilesChange(e:any) {
     for(let f of e.target.files) {
-      this.api.importProject(f).then((ret: UploadResult)=>{
-        if (ret.success) {
-          this.snack.open('INFORM ERAN THAT A NEW PROJECT WAS CREATED: ' + f.name);
+      this.api.verifyProject(f).then((verification: ProjectVerificationResult)=>{
+        if (verification.success) {
+          // ZIP FILE IS UPLOADED AND VERIFIED
+          const projectName = verification.project;            
+          // TRY TO IMPORT WITHOUT OVERWRITING
+          let cmd = '?prj_import_project("' + projectName + '",0)';
+          this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+            if (ret.result === '0') {
+              // PROJECT IMPORT IS OK - TELL WEB SERVER TO UNZIP THE FILE
+              this.importProject(verification.file, projectName);
+            } else { // PROJECT EXISTS, ASK USER IF HE WANTS TO OVERWRITE
+              this.dialog.open(YesNoDialogComponent,{
+                data: {
+                  title: 'Overwrite existing project?',
+                  msg: 'Project ' + projectName + ' already exists. Do you want to overwrite it with the imported project?',
+                  yes: 'OVERWRITE',
+                  no: 'CANCEL'
+                }
+              }).afterClosed().subscribe(overwrite=>{
+                if (overwrite) {
+                  // TRY TO IMPORT WITH OVERWRITING
+                  cmd = '?prj_import_project("' + projectName + '",1)';
+                  this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+                    if (ret.result === '0') {
+                      // PROJECT IMPORT IS OK - TELL WEB SERVER TO UNZIP THE FILE
+                      this.importProject(verification.file, projectName);
+                    } else { // SOMETHING WENT WRONG, TELL SERVER TO DELETE THE FILE
+                      this.api.deleteProjectZip(verification.file);
+                      this.snack.open('IMPORT FAILED!','DISMISS');
+                    }
+                  });
+                } else {  // USER CANCELED, TELL SERVER TO DELETE THE FILE
+                  this.api.deleteProjectZip(verification.file);
+                }
+              });
+            }
+          });
+        } else {
+          // ZIP FILE IS INVALID
+          this.snack.open('Invalid project file!','DISMISS');
         }
       },(ret:HttpErrorResponse)=>{ // ON ERROR
         switch (ret.error.err) {
@@ -142,5 +191,10 @@ export class ProgramToolbarComponent implements OnInit {
     }
     e.target.value = null;
   }
+  
+  undo() {this.prgService.onUndo.emit(); }
+  redo() { this.prgService.onRedo.emit(); }
+  find() { this.prgService.onFind.emit(); }
+  replace() { this.prgService.onReplace.emit(); }
 
 }

@@ -21,14 +21,14 @@
   <ul class="dropdown-menu menu2" *ngIf="currMenu === 2 && this.prj.currProject.value">
     <li (click)="newApp()"><mat-icon>add</mat-icon>App...</li>
     <li (click)="newLib()"><mat-icon>add</mat-icon>Library...</li>
-    <li><mat-icon>add</mat-icon>Dependency...</li>
+    <li style="cursor: not-allowed;"><mat-icon>add</mat-icon>Dependency...</li>
   </ul>
   <ul class="dropdown-menu menu3" *ngIf="currMenu === 3 && prgService.mode === 'editor'">
-    <li><mat-icon>undo</mat-icon>Undo</li>
-    <li><mat-icon>redo</mat-icon>Redo</li>
+    <li (click)="undo()"><mat-icon>undo</mat-icon>Undo</li>
+    <li (click)="redo()"><mat-icon>redo</mat-icon>Redo</li>
     <div class="seperator"></div>
-    <li><mat-icon>find_in_page</mat-icon>Find...</li>
-    <li><mat-icon>find_replace</mat-icon>Replace...</li>
+    <li (click)="find()"><mat-icon>find_in_page</mat-icon>Find...</li>
+    <li (click)="replace()"><mat-icon>find_replace</mat-icon>Replace...</li>
   </ul>
   <ul class="dropdown-menu menu4" *ngIf="currMenu === 4 && this.prj.currProject.value">
     <li (click)="run()"><mat-icon>play_arrow</mat-icon>Run Project</li>

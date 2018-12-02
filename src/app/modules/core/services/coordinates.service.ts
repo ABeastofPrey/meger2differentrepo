@@ -2,6 +2,7 @@ import { Injectable, NgZone, ApplicationRef } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {DataService} from './data.service';
+import {ScreenManagerService} from './screen-manager.service';
 
 export class Coordinate {
   key:  string;
@@ -22,7 +23,7 @@ export class CoordinatesService {
   private _locations : Coordinate[] = [];
   private _axis : Coordinate = null;
   private oldString : string = null;
-  private interval : any;
+  private interval : any = null;
   private _locationKeysString : string;
   private _jointKeysString : string;
   
@@ -94,12 +95,15 @@ export class CoordinatesService {
     private ws: WebsocketService,
     private _zone: NgZone,
     private ref : ApplicationRef,
-    private data: DataService
+    private data: DataService,
+    private mgr: ScreenManagerService
   ) { 
     this.data.dataLoaded.subscribe(stat=>{
-      if (stat) {  //LOADED
+      if (stat && this.interval === null) {  //LOADED and INTERVAL ISN'T SET
         this._zone.runOutsideAngular(() => {
           this.interval = setInterval(()=>{
+            if (!this.mgr.openedControls && this.mgr.screen.url !== 'simulator' && this.mgr.screen.url !== 'teach')
+              return;
             this.ws.query('?tp_get_coordinates').then((result:MCQueryResponse)=>{
               if (result.err) {
                 clearInterval(this.interval);

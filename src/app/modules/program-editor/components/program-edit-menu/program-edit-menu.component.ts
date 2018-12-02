@@ -8,8 +8,6 @@ import {GripperSelectorComponent} from '../dialogs/gripper-selector/gripper-sele
 import {Gripper} from '../../../core/models/gripper.model';
 import {PalletPickerDialogComponent} from '../dialogs/pallet-picker-dialog/pallet-picker-dialog.component';
 import {PalletIndexDialogComponent} from '../dialogs/pallet-index-dialog/pallet-index-dialog.component';
-import {SubDialogComponent} from '../dialogs/sub-dialog/sub-dialog.component';
-import {FunctionDialogComponent} from '../dialogs/function-dialog/function-dialog.component';
 import {CallDialogComponent} from '../dialogs/call-dialog/call-dialog.component';
 import {IfDialogComponent} from '../dialogs/if-dialog/if-dialog.component';
 import {WhileDialogComponent} from '../dialogs/while-dialog/while-dialog.component';
@@ -417,7 +415,7 @@ export class ProgramEditMenuComponent implements OnInit {
     );
     ref.afterClosed().subscribe((io:string)=>{
       if (io) {
-        this.prg.insertAndJump('Sys.din.' + io,0);
+        this.prg.insertAndJump('Sys.din[din::' + io + ']',0);
       }
     });
   }
@@ -435,7 +433,7 @@ export class ProgramEditMenuComponent implements OnInit {
     );
     ref.afterClosed().subscribe((io:string)=>{
       if (io) {
-        this.prg.insertAndJump('Sys.dout.' + io,0);
+        this.prg.insertAndJump('Sys.dout[dout::' + io + ']',0);
       }
     });
   }

@@ -16,7 +16,14 @@ export class ProgramEditorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    
+    this.prj.currProject.subscribe(prj=>{
+      if (prj)
+        this.prj.getProjectStatus();
+    });
+  }
+  
+  ngOnDestroy() {
+    this.prj.stopStatusRefresh();
   }
   
   onDragEnd() { this.service.onDragEnd(); }

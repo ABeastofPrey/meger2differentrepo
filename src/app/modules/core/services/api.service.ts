@@ -79,12 +79,24 @@ export class ApiService {
     return this.http.post(url,formData).toPromise();
   }
   
-  importProject(file: File) {
-    const url = environment.api_url + '/cs/api/unzipProject';
+  verifyProject(file: File) {
+    const url = environment.api_url + '/cs/api/verifyProject';
     let formData = new FormData();
     formData.append('token', this.token);
     formData.append('file', file);
     return this.http.post(url,formData).toPromise();
+  }
+  
+  importProject(fileName: string) {
+    const url = environment.api_url + '/cs/api/importProject';
+    const body = new HttpParams().set('fileName', fileName);
+    return this.http.get(url, {params: body}).toPromise();
+  }
+  
+  deleteProjectZip(fileName: string) {
+    const url = environment.api_url + '/cs/api/projectZip';
+    const body = new HttpParams().set('fileName', fileName);
+    return this.http.delete(url, {params: body}).toPromise();
   }
   
   uploadProfilePic(file:File, username: string) {
@@ -123,7 +135,6 @@ export class ApiService {
     let body = new HttpParams();
     body = body.set('token', this.token);
     body = body.set('path', path);
-    console.log('get path:'+path+'....');
     return this.http.get(environment.api_url+'/cs/path',{
       responseType:'text',
       params: body
@@ -259,4 +270,10 @@ export interface Log {
   username: string;
   time: number;
   msg : string;
+}
+
+export interface ProjectVerificationResult {
+  success: boolean;
+  project: string;
+  file: string;
 }

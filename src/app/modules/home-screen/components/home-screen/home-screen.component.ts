@@ -61,6 +61,8 @@ export class HomeScreenComponent implements OnInit {
   
   private updateCharts() {
     const sysInfo = this.groupManager.sysInfo;
+    if (sysInfo === null)
+      return;
     let layout = {
       title: 'Disk',
       height: 230,
@@ -115,9 +117,6 @@ export class HomeScreenComponent implements OnInit {
       const objDiv = this.msgContainer.nativeElement;
       objDiv.scrollTop = objDiv.scrollHeight;
     });
-    if (this.groupManager.sysInfo) {
-      this.afterSysInfoLoaded();
-    }
     this.sub = this.groupManager.sysInfoLoaded.subscribe((loaded)=>{
       if (loaded) {
         this.afterSysInfoLoaded();

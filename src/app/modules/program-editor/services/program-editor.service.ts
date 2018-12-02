@@ -44,6 +44,10 @@ export class ProgramEditorService {
   errLinesChange : EventEmitter<TRNERRLine[]>=new EventEmitter<TRNERRLine[]>();
   onInsertAndJump : EventEmitter<any> = new EventEmitter();
   onReplaceLine : EventEmitter<any> = new EventEmitter();
+  onUndo : EventEmitter<any> = new EventEmitter();
+  onRedo : EventEmitter<any> = new EventEmitter();
+  onFind : EventEmitter<any> = new EventEmitter();
+  onReplace : EventEmitter<any> = new EventEmitter();
   fileChange: Subject<string>=new Subject<string>();
   
   private statusInterval : any = null;
@@ -312,10 +316,10 @@ export class ProgramEditorService {
   }
   
   refreshStatus(on : boolean) {
-    if (!on)
-      return this.ws.clearInterval(this.statusInterval);
-    if (this.activeFile === null)
+    this.ws.clearInterval(this.statusInterval);
+    if (!on || this.activeFile === null) {
       return;
+    }
     const file = this.activeFile;
     const isLib = file.endsWith('.LIB') || file.endsWith('.ULB');
     if (!isLib && !file.endsWith('.UPG') && !file.endsWith('.PRG')) {
@@ -328,6 +332,7 @@ export class ProgramEditorService {
     }
     const cmd = '?'+file+(!isLib?'.status':'.dummyVariable');
     this.oldStatString = null;
+    console.log('START INTERVAL FOR: ' + cmd);
     this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
       if (ret !== this.oldStatString) {
         this.oldStatString = ret;

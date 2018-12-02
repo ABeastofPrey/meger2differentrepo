@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {WebsocketService, MCQueryResponse} from '../../../../core';
-import {IO} from '../../../../core/models/io.model';
 
 @Component({
   selector: 'app-io-selector-dialog',
@@ -10,9 +9,8 @@ import {IO} from '../../../../core/models/io.model';
 })
 export class IoSelectorDialogComponent implements OnInit {
   
-  private outputs : IO[] = [];
-  private inputs : IO[] = [];
-  public io : IO;
+  list : string[] = [];
+  io : string = null;
 
   constructor(
     private ws : WebsocketService,
@@ -24,25 +22,13 @@ export class IoSelectorDialogComponent implements OnInit {
     this.refresh();
   }
   
-  refresh() { // takes about 50ms
-    let queries:Promise<any>[] = [];
-    queries.push(this.ws.query('?tp_out_list'));
-    queries.push(this.ws.query('?tp_in_list'));
-    Promise.all(queries).then((results : MCQueryResponse[])=>{
-      if (results[0].err || results[1].err) {
+  refresh() {
+    const cmd = this.data.inputs ? '?IOMAP_GET_All_SYS_IOS(1)' : '?IOMAP_GET_All_SYS_IOS(0)';
+    this.ws.query(cmd).then((ret : MCQueryResponse)=>{
+      if (ret.err) {
         return;
       }
-      let ioStrings : string[] = results[0].result.slice(1,-1).split(';').slice(0,-1);
-      let inputs : IO[] = [], outputs : IO[] = [];
-      for (var i=0; i<ioStrings.length; i++) {
-        outputs.push(new IO(ioStrings[i]));
-      }
-      ioStrings = results[1].result.slice(1,-1).split(';').slice(0,-1);
-      for (var i=0; i<ioStrings.length; i++) {
-        inputs.push(new IO(ioStrings[i]));
-      }
-      this.outputs = outputs;
-      this.inputs = inputs;
+      this.list = ret.result.split(',');
     });
   }
   
@@ -52,7 +38,7 @@ export class IoSelectorDialogComponent implements OnInit {
   
   insert() {
     if (this.io)
-      this.dialogRef.close(this.io.id);
+      this.dialogRef.close(this.io);
   }
 
 }

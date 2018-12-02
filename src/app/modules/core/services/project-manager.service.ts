@@ -27,14 +27,27 @@ export class ProjectManagerService {
   ) {
     this.data.dataLoaded.subscribe(ret=>{
       if (ret) {
-        this.getCurrentProject().then(()=>{
-          this.getProjectStatus();
-        });
+        this.getCurrentProject();
       } else {
         clearInterval(this.interval);
         this.currProject.next(null);
       }
     });
+    this.ws.isConnected.subscribe(stat=>{
+      if (!stat) {
+        this.reset();
+      }
+    });
+  }
+  
+  reset() {
+    this.stopStatusRefresh();
+    this.currProject.next(null);
+  }
+  
+  stopStatusRefresh() {
+    if (this.interval)
+      clearInterval(this.interval);
   }
   
   getProjectStatus() {
@@ -51,12 +64,13 @@ export class ProjectManagerService {
           let i=0;
           let activeProject = false;
           while (status.length > 0 || i < this.currProject.value.apps.length) {
-            if (!this.currProject.value.apps[i].active) {
+            if (this.currProject.value.apps[i] && !this.currProject.value.apps[i].active) {
               i++;
               continue;
             }
             const code = Number(status.shift());
-            this.currProject.value.apps[i].status = code;
+            if (this.currProject.value.apps[i])
+              this.currProject.value.apps[i].status = code;
             if (code !== -1 && code !== 2)
               activeProject = true;
             i++;

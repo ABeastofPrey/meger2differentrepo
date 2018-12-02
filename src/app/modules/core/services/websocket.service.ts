@@ -20,12 +20,12 @@ export interface MCQueryResponse {
 @Injectable()
 export class WebsocketService {
 
-    private socketQueueId : number = 0;
+  private socketQueueId : number = 0;
   private socketQueue : Function[] = [];
   private socketQueueIntervals : boolean[] = [];
   private _isConnected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _isTimeout: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-  private timeout;
+  private timeout: any;
   private worker = new Worker('assets/scripts/conn.js');
   
   updateFirmwareMode: boolean = false;
@@ -71,7 +71,6 @@ export class WebsocketService {
           this._zone.run(()=>{
             switch (e.data.msg) {
               case 0: // ONOPEN
-                console.log('ON OPEN');
                 //this.initLanguage().then(()=>{
                   this._isConnected.next(true);
                 //});
@@ -126,7 +125,9 @@ export class WebsocketService {
   
   query(query){
     return new Promise((resolve,reject)=>{
+      //const start = new Date().getTime();
       this.send(query,function(result,cmd,err){
+        //console.log(cmd, (new Date().getTime() - start));
         resolve({result:result,cmd:cmd,err:err});
       });
     }).catch(reason=>{

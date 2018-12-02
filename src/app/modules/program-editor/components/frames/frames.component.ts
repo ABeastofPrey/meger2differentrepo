@@ -26,6 +26,7 @@ export class FramesComponent implements OnInit {
   private _legend : string[] = [];
   private _value : any[] = [];
   private currFrameType: string = 'tool';
+  private _calibrationDialogShowing: boolean = false;
 
   constructor(
     private data: DataService,
@@ -271,6 +272,9 @@ export class FramesComponent implements OnInit {
   }
   
   showCalibrationDialog() {
+    if (this._calibrationDialogShowing)
+      return;
+    this._calibrationDialogShowing = true;
     let dialog: ComponentType<any> = this.currTabIndex === 0 ? 
       ToolCalibrationDialogComponent : FrameCalibrationDialogComponent;
     let ref = this.dialog.open(dialog,{
@@ -282,6 +286,7 @@ export class FramesComponent implements OnInit {
       hasBackdrop: false
     });
     ref.afterClosed().subscribe(()=>{
+      this._calibrationDialogShowing = false;
       this.rowClick(this.selectedVar,true); // REFRESH SELECTED VAR DATA
     });
   }

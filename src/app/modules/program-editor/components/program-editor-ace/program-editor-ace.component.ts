@@ -53,12 +53,21 @@ export class ProgramEditorAceComponent implements OnInit {
   private subs: Subscription;
   private commands: Command[];
   private files: MCFile[];
+  
+  // HANDLE MOUSE HOVER TOOLTIPS
+  private tooltipTimeout: any;
+  lastWord: string;
+  tooltipValue: string;
+  tooltipVisible: boolean = false;
+  tooltipX: number;
+  tooltipY: number;
 
   constructor(
     private service : ProgramEditorService,
     private api : ApiService,
     private groups: GroupManagerService,
     private zone: NgZone,
+    private ref: ApplicationRef,
     private data: DataService,
     private task: TaskService,
     private prj: ProjectManagerService,
@@ -68,6 +77,7 @@ export class ProgramEditorAceComponent implements OnInit {
 
   ngOnInit() {
     this.task.start();
+    this.service.refreshStatus(true);
     this.subs = this.service.editorTextChange.subscribe(text=>{
       this.removeAllMarkers();
       if (this.editor)
@@ -113,10 +123,27 @@ export class ProgramEditorAceComponent implements OnInit {
       this.ws.query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')').then((ret: MCQueryResponse)=>{
         this.setBreakpoints(ret.result);
       });
+      this.editor.getSession().setUndoManager(new ace.UndoManager());
     }));
     this.subs.add(this.service.dragEnd.subscribe(()=>{
       if (this.editor)
         this.editor.resize();
+    }));
+    this.subs.add(this.service.onUndo.subscribe(()=>{
+      if (this.editor)
+        this.editor.undo();
+    }));
+    this.subs.add(this.service.onRedo.subscribe(()=>{
+      if (this.editor)
+        this.editor.redo();
+    }));
+    this.subs.add(this.service.onFind.subscribe(()=>{
+      if (this.editor)
+        this.editor.execCommand("find");
+    }));
+    this.subs.add(this.service.onReplace.subscribe(()=>{
+      if (this.editor)
+        this.editor.execCommand("replace");
     }));
   }
   
@@ -129,6 +156,7 @@ export class ProgramEditorAceComponent implements OnInit {
   ngOnDestroy() {
     this.subs.unsubscribe();
     this.task.stop();
+    this.service.refreshStatus(false);
   }
   
   private replaceLine(index : number, newLine : string) {
@@ -478,6 +506,48 @@ export class ProgramEditorAceComponent implements OnInit {
         });
       }
     });
+    // HANDLE MOUSE HOVER OVER WORDS
+    this.editor.on('mousemove', (e)=> {
+      if (this.service.status === null || this.service.status.statusCode !== 2)
+        return this.hideTooltip();
+      const position = e.getDocumentPosition();
+      const token = this.editor.session.getTokenAt(position.row,position.column);
+      if (token === null)
+        return this.hideTooltip();
+      if (token.value === this.lastWord)
+        return;
+      this.hideTooltip();
+      if (this.tooltipTimeout) {
+        clearTimeout(this.tooltipTimeout);
+      }
+      this.lastWord = token.value;
+      if (this.lastWord.trim().length === 0 || this.lastWord === ' ')
+        return;
+      const cmd1 = 'watch ' + this.service.activeFile + ' ' + token.value;
+      const cmd2 = 'watch ' + token.value;
+      this.tooltipTimeout = setTimeout(()=>{
+        this.ws.query(cmd1).then((ret: MCQueryResponse)=>{
+          if (ret.err) {
+            return this.ws.query(cmd2).then((ret: MCQueryResponse)=>{
+              if (ret.err)
+                return;
+              this.tooltipX = e.domEvent.offsetX + 50;
+              this.tooltipY = e.domEvent.offsetY + 120;
+              this.tooltipVisible = true;
+              this.tooltipValue = ret.result;
+              this.ref.tick();
+            });
+          }
+          this.tooltipX = e.domEvent.offsetX + 50;
+          this.tooltipY = e.domEvent.offsetY + 120;
+          this.tooltipVisible = true;
+          this.tooltipValue = ret.result;
+          this.ref.tick();
+        });
+      },500);
+      
+      
+    });
     if (this.service.activeFile) {
       const app = this.service.activeFile.substring(0, this.service.activeFile.indexOf('.'));
       const prjAndApp = '"' + this.prj.currProject.value.name + '","' + app + '"';
@@ -485,6 +555,10 @@ export class ProgramEditorAceComponent implements OnInit {
         this.setBreakpoints(ret.result);
       });
     }
+  }
+  
+  private hideTooltip() {
+    this.tooltipVisible = false;
   }
   
   private setBreakpoints(bptsString:string){

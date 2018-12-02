@@ -60,6 +60,11 @@ export class IoMappingScreenComponent implements OnInit {
     this.dataSource.data = this.buildTree();
   }
   
+  ngOnDestroy() {
+    if (this.interval)
+      clearInterval(this.interval);
+  }
+  
   private buildTree() : TreeNode[] {
     let data : TreeNode[] = [];
     const modules = this.data.ioModules;
