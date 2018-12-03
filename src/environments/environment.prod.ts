@@ -5,5 +5,5 @@ export const environment = {
   ip: window.location.hostname,
   tp_ver: '1.3.0.1',
   gui_ver: '1.0.3',
-  compatible_webserver_ver: '3.0.5'
+  compatible_webserver_ver: '3.0.4'
 };
