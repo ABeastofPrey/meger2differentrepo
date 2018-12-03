@@ -2,7 +2,7 @@ import { ErrorFrame } from './../../core/services/websocket.service';
 import { Injectable } from '@angular/core';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { DataService, MCQueryResponse } from '../../core/services';
-import { map, filter } from 'lodash';
+import { map, filter } from 'ramda';
 
 
 @Injectable()
@@ -23,7 +23,7 @@ export class Jump3DialogService {
   }
 
   public retriveDestFrames(): string[] {
-    return map(filter(this.dataService.locations, x => !x.isArr), x => x.name);
+    return map(x => x.name, filter(x => !x.isArr, this.dataService.locations));
   }
 
   public retriveVolocityMax(motionElement: string): Promise<number> {

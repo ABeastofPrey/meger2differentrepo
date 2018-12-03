@@ -10,7 +10,7 @@ import { By } from '@angular/platform-browser';
 
 import { ArchElement } from './arch-setting.component';
 import * as Faker from 'faker';
-import { range, map } from 'lodash';
+import { range, map } from 'ramda';
 
 describe('ArchSettingComponent', () => {
     let fixture: ComponentFixture<ArchSettingComponent>;
@@ -19,13 +19,13 @@ describe('ArchSettingComponent', () => {
     let inputs: HTMLInputElement[];
 
     // Initial fake data with randomly.
-    const fakeData: ArchElement[] = map(range(1, 8), n => {
+    const fakeData: ArchElement[] = map(n => {
       return {
         index: n,
         depart: Faker.random.number({ min: 0, max: 100 }),
         approach: Faker.random.number({ min: 0, max: 100 })
-      };
-    });
+      } as ArchElement;
+    }, range(1, 8));
     const archSettingService = jasmine.createSpyObj('ArchSettingService', ['getInitTable', 'resetTable', 'setArch']);
     const getInitTableSpy = archSettingService.getInitTable.and.returnValue(fakeData);
     const setArchSpy = archSettingService.setArch;
@@ -59,8 +59,8 @@ describe('ArchSettingComponent', () => {
     it('should display the correct fake values.', async(() => {
       fixture.whenStable().then(() => {
         inputs = map(
-          fixture.debugElement.queryAll(By.css('input')),
-          (input: DebugElement) => input.nativeElement
+          (input: DebugElement) => input.nativeElement,
+          fixture.debugElement.queryAll(By.css('input'))
         );
         expect(inputs.length).toEqual(fakeData.length * 2);
         expect(inputs[0].value).toEqual(fakeData[0].depart.toString());

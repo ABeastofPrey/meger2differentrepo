@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, ErrorStateMatcher, MatSelectChange } from '@angular/material';
 import { FormControl, Validators, FormGroupDirective, NgForm, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Jump3DialogService } from '../../../services/jump3-dialog.service';
-import { map, range, every, find } from 'lodash';
+import { map, range, all, find } from 'ramda';
 
 interface IParameter {
   placeholder: string;
@@ -54,11 +54,11 @@ export class Jump3DialogComponent implements OnInit {
   }
 
   get enableAdvanced(): boolean {
-    return (this.requiredPars && every(this.requiredPars, x => x.control.invalid === false)) ? true : false;
+    return (this.requiredPars && all(x => x.control.invalid === false, this.requiredPars)) ? true : false;
   }
 
   get hasInvalidOptional(): boolean {
-    return (this.optionalPars && find(this.optionalPars, x => x.control.invalid === true)) ? true : false;
+    return (this.optionalPars && find(x => x.control.invalid === true, this.optionalPars)) ? true : false;
   }
 
   public emitCmd(): void {
@@ -78,7 +78,7 @@ export class Jump3DialogComponent implements OnInit {
       motionElements = await this.service.retriveMotionElements(),
       destFrames = this.service.retriveDestFrames(),
       options = [motionElements, destFrames, destFrames, destFrames];
-    return map(range(4), n => {
+    return map(n => {
       return {
         placeholder: placeholders[n],
         control: new FormControl('', [Validators.required]),
@@ -87,14 +87,14 @@ export class Jump3DialogComponent implements OnInit {
         options: options[n],
         selected: null
       } as IRequiredPar;
-    });
+    }, range(0, 4));
   }
 
   private assemblingOptionalPars(): IOptionalPar[] {
     const placeholders = ['Arch Number', 'Blending Percentage', 'Speed', 'Acceleration'];
-    const suffixs = [, '%', 'deg/s', 'deg/s'], sups = [, , , 2];
+    const suffixs = [, '%', 'mm/s', 'mm/s'], sups = [, , , 2];
     this.limits = [{min: 1, max: 7}, {min: 0, max: 100}, {min: 0, max: this.vMax}, {min: 0, max: this.aMax}];
-    return map(range(4), n => {
+    return map(n => {
       return {
         placeholder: placeholders[n],
         control: new FormControl('', [this.limitValidator(this.limits[n].min, this.limits[n].max, n)]),
@@ -103,7 +103,7 @@ export class Jump3DialogComponent implements OnInit {
         suffix: suffixs[n],
         sup: sups[n]
       } as IOptionalPar;
-    });
+    }, range(0, 4));
   }
 
   private async retriveLimits(motionElement: string): Promise<void> {
