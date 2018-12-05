@@ -128,6 +128,12 @@ export class Jump3DialogComponent implements OnInit {
       if (!!control.value === false) { return null; }
       let msg = `Please enter a number in [${min}, ${max}].`;
       let forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) > max || Number(control.value) < min;
+      if (index === 0 && !forbidden) {
+        if (Number(control.value) % 1 !== 0) { // Shouldn't input decimal number for Arch number.
+          msg = `Please enter an integer in [${min}, ${max}].`;
+          forbidden = true;
+        }
+      }
       if (index === 2 || index === 3) {
         msg = `Please enter a number in (${min}, ${max}).`;
         forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) >= max || Number(control.value) <= min;
@@ -136,6 +142,14 @@ export class Jump3DialogComponent implements OnInit {
         index: index, min: min, max: max, value: control.value,
         msg: msg
       }} : null;
+    };
+  }
+
+  private limitValidator1(min: number, max: number, index: number): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      if (!!control.value === false) { return null; }
+      const forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) >= max || Number(control.value) <= min;
+      return forbidden ? {'limit1': {index: index, min: min, max: max, value: control.value}} : null;
     };
   }
 }

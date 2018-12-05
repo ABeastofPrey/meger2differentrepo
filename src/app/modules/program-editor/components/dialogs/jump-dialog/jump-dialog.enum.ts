@@ -6,6 +6,7 @@ export enum JumpParameterErrorKey {
   InValidLimitZ = 'inValidLimitZ',
   InValidSpeed = 'inValidSpeed',
   InValidAcceleration = 'inValidAcceleration',
+  NotIntegerArcNumber = 'notIntegerArcNumber',
   InValidArcNumber = 'inValidArcNumber',
   InValidBlending = 'inValidBlending'
 }

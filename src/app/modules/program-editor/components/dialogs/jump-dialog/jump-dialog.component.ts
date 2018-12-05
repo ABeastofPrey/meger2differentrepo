@@ -55,7 +55,8 @@ export class JumpDialogComponent implements OnInit {
    * The error messages for the value validation.
    */
   private errorMessages = {
-    [JumpParameterErrorKey.InValidArcNumber]: 'Please enter a number in [1, 7].',
+    [JumpParameterErrorKey.NotIntegerArcNumber]: 'Please enter a integer in [1, 7].',
+    [JumpParameterErrorKey.InValidArcNumber]: 'Please enter a integer in [1, 7].',
     [JumpParameterErrorKey.InValidBlending]: 'Please enter a number in [0, 100].'
   };
 
@@ -117,6 +118,10 @@ export class JumpDialogComponent implements OnInit {
    */
   advancedFormControls = {
     [JumpParameter.ArcNumber]: new FormControl('', [
+      this.createValidator(1, 7, JumpParameterErrorKey.NotIntegerArcNumber,
+        (value: Number, min: Number, max: Number): boolean => {
+          return Number(value) % 1 === 0 ? true : false;
+        }),
       this.createValidator(1, 7, JumpParameterErrorKey.InValidArcNumber,
         (value: Number, min: Number, max: Number): boolean => {
           return value >= min && value <= max ? true : false;
