@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
-import {EventEmitter} from '@angular/core';
 import {ApiService} from './api.service';
 import {ApplicationRef} from '@angular/core';
 import {NgZone} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class GroupManagerService {
   
   sysInfo : SysInfo = null;
   groups : Group[] = [];
-  sysInfoLoaded: EventEmitter<any> = new EventEmitter();
+  sysInfoLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   
   private groupInterval : any;
   private lastGrouplist : string = null;
@@ -33,7 +33,7 @@ export class GroupManagerService {
               this.refreshGroupsAndInfo();
             },2000);
           });
-          this.sysInfoLoaded.emit(true);
+          this.sysInfoLoaded.next(true);
         });
       } else {
         clearInterval(this.groupInterval);
@@ -65,6 +65,7 @@ export class GroupManagerService {
       this.lastGrouplist = grouplist.result;
       let elements : Group[] = [];
       if (grouplist.result.indexOf('No groups') === 0) {
+        this.groups = [];
         this.ref.tick();
         return;
       }

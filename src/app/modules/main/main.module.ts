@@ -8,6 +8,7 @@ import {MainRoutingModule} from './main-routing.module';
 import {MainAuthResolver} from './main-auth-resolver.service';
 import { TerminalWindowComponent } from './components/terminal-window/terminal-window.component';
 import {HomeScreenModule} from '../home-screen/home-screen.module';
+import { CoordinatesComponent } from './components/coordinates/coordinates.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import {HomeScreenModule} from '../home-screen/home-screen.module';
     MainMenuComponent,
     NotificationWindowComponent,
     WatchWindowComponent,
-    TerminalWindowComponent
+    TerminalWindowComponent,
+    CoordinatesComponent
   ],
   providers: [MainAuthResolver]
 })

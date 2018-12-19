@@ -20,6 +20,7 @@ import {WorkPieceSelectorComponent} from '../tp/components/selectors/work-piece-
 import {TeachVariableEditorComponent} from '../tp/components/teach-variable-editor/teach-variable-editor.component';
 import {CoordinatesDisplayComponent} from '../tp/components/coordinates-display/coordinates-display.component';
 import {TourMatMenuModule} from 'ngx-tour-md-menu';
+import {UpdateDialogComponent} from '../../components/update-dialog/update-dialog.component';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import {TourMatMenuModule} from 'ngx-tour-md-menu';
     WorkPieceSelectorComponent,
     TeachVariableEditorComponent,
     CoordinatesDisplayComponent,
+    UpdateDialogComponent,
     TourMatMenuModule
   ],
   declarations: [
@@ -69,9 +71,10 @@ import {TourMatMenuModule} from 'ngx-tour-md-menu';
     ToolSelectorComponent,
     WorkPieceSelectorComponent,
     TeachVariableEditorComponent,
-    CoordinatesDisplayComponent
+    CoordinatesDisplayComponent,
+    UpdateDialogComponent
   ],
-  entryComponents: [YesNoDialogComponent, NewFileDialogComponent, JogSettingsDialogComponent],
+  entryComponents: [YesNoDialogComponent, NewFileDialogComponent, JogSettingsDialogComponent, UpdateDialogComponent],
   schemas:[NO_ERRORS_SCHEMA]
 })
 export class SharedModule { }

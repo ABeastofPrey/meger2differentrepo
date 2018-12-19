@@ -1,5 +1,11 @@
-<div class="wrapper center-vertical-horizontal mat-typography">
-  <div class="login-card mat-elevation-z3">
+<div class="wrapper center-vertical-horizontal mat-typography" [@login]="ws.connected ? 'in' : 'out'">
+  <div class="login-card mat-elevation-z3" [@cardIsToolbar]="ws.connected ? 'toolbar' : 'card'">
+    <div class="primary-bg toolbar center-vertical-horizontal" @fade *ngIf="ws.connected || isSubmitting">
+      <div *ngIf="!ws.connected" @fade>
+        <mat-spinner color="accent"></mat-spinner>
+        <h2>Connecting...</h2>
+      </div>
+    </div>
     <header>
       <div class="center-vertical">
         <img src="assets/pics/logo_cs.png" height="100" width="100">

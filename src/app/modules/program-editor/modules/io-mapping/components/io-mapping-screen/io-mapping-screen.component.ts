@@ -141,7 +141,7 @@ export class IoMappingScreenComponent implements OnInit {
         e.target.value = io.description;
         this.snack.open('An error occured, changes not saved','',{duration:2000});
       } else {
-        io.name = newVal;
+        io.description = newVal;
         this.snack.open('Changed saved','',{duration:1000});
       }
     });

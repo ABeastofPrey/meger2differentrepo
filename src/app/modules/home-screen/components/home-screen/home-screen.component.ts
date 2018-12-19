@@ -4,6 +4,7 @@ import {NotificationService} from '../../../../modules/core/services/notificatio
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Subscription} from 'rxjs';
+import {trigger, transition, style, animate} from '@angular/animations';
 
 declare var Plotly;
 
@@ -12,7 +13,25 @@ const colors = ['#ffa726', 'rgb(0, 150, 150)'];
 @Component({
   selector: 'home-screen',
   templateUrl: './home-screen.component.html',
-  styleUrls: ['./home-screen.component.css']
+  styleUrls: ['./home-screen.component.css'],
+  animations: [
+    trigger('scaleIn',[
+      transition(':enter', [
+        style({ transform: 'scale(0)' }),
+        animate('1s ease-out', style({ transform: 'scale(1)' }))
+      ]),
+    ]),
+    trigger('fade',[
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('150ms', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('150ms', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class HomeScreenComponent implements OnInit {
   
@@ -27,7 +46,7 @@ export class HomeScreenComponent implements OnInit {
   contextMenuY : number = 0;
   mcImage: string = '';
   simulated: boolean = false;
-  
+  viewInit: boolean = false;
   profileSrc: string = this.api.getProfilePic(this.login.getCurrentUser().user.username);
   
   private sub : Subscription = null;
@@ -125,6 +144,10 @@ export class HomeScreenComponent implements OnInit {
     window.addEventListener('resize',()=>{
       this.updateCharts();
     });
+  }
+  
+  ngAfterViewInit() {
+    setTimeout(()=>{this.viewInit = true;},0);
   }
   
   ngOnDestroy() {

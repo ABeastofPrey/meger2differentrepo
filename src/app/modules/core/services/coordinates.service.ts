@@ -40,6 +40,8 @@ export class CoordinatesService {
   get locationKeys(): string {return this._locationKeysString;}
   get jointKeys(): string {return this._jointKeysString;}
   
+  public coosLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  
   private update(coordinates : string) {
     if (this.oldString === coordinates) {
       coordinates = null;
@@ -102,15 +104,18 @@ export class CoordinatesService {
       if (stat && this.interval === null) {  //LOADED and INTERVAL ISN'T SET
         this._zone.runOutsideAngular(() => {
           this.interval = setInterval(()=>{
-            if (!this.mgr.openedControls && this.mgr.screen.url !== 'simulator' && this.mgr.screen.url !== 'teach')
+            if (this.coosLoaded.value && !this.mgr.openedControls && this.mgr.screen.url !== 'simulator' && this.mgr.screen.url !== 'teach')
               return;
             this.ws.query('?tp_get_coordinates').then((result:MCQueryResponse)=>{
               if (result.err) {
                 clearInterval(this.interval);
                 return;
               }
+              if (result.result.length === 0)
+                return;
               setTimeout(()=>{
                 this.update(result.result);
+                this.coosLoaded.next(true);
                 result.result = null;
                 result = null;
               },0);
@@ -121,8 +126,10 @@ export class CoordinatesService {
     });
     
     this.ws.isConnected.subscribe(stat=>{
-      if (!stat)
+      if (!stat) {
         clearInterval(this.interval);
+        this.coosLoaded.next(false);
+      }
     });
     
   }

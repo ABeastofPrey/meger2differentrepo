@@ -9,7 +9,7 @@ export class ConfigurationComponent implements OnInit {
   
   tabs = [
     { path: 'diagnostics', label: 'Diagnostics', icon: 'dvr'},
-    { path: 'robots', label: 'Robots & Axes', icon: 'group_work'},
+    { path: 'robots', label: 'Robots', icon: 'group_work'},
     { path: 'io', label: 'I/O', icon: 'compare_arrows'},
     { path: 'gui-settings', label: 'User Interface', icon: 'settings_applications'},
     { path: 'users', label: 'User Manager', icon: 'security'}

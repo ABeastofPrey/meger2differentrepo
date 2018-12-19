@@ -18,7 +18,7 @@ import {TourMatMenuModule} from 'ngx-tour-md-menu';
     PageNotFoundComponent,
     ServerDisconnectComponent,
     ErrorDialogComponent,
-    SuccessDialogComponent,
+    SuccessDialogComponent
   ],
   imports: [
     BrowserModule,

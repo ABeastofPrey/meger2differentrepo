@@ -7,11 +7,45 @@ import {MatDialog} from '@angular/material';
 import {ServerDisconnectComponent} from '../../components/server-disconnect/server-disconnect.component';
 import {ApiService, WebsocketService} from '../core';
 import {environment} from '../../../environments/environment';
+import {trigger, state, style, transition, animate, animateChild, group, query} from '@angular/animations';
 
 @Component({
   selector: 'login-screen',
   templateUrl: './login-screen.component.html',
-  styleUrls: ['./login-screen.component.css']
+  styleUrls: ['./login-screen.component.css'],
+  animations: [
+    trigger('login',[
+      state('out',style({backgroundColor: '#eee'})),
+      state('in',style({backgroundColor: '#FAFAFA'})),
+      transition('out => in',group([query('*',[animateChild()]),animate('1s')])),
+    ]),
+    trigger('fade',[
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('1s ease-out', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('0.5s ease-out', style({ opacity: 0 }))
+      ])
+    ]),
+    trigger('cardIsToolbar',[
+      state('card',style({
+        width: '50%',
+        height: '75%'
+      })),
+      state('toolbar',style({
+        width: '100%',
+        maxWidth: '100%',
+        height: '64px',
+        top: 0,
+        left: 0,
+        transform: 'translate(0)',
+        boxShadow: 'none'
+      })),
+      transition('card => toolbar',[animate('1s ease-in-out')])
+    ])
+  ]
 })
 export class LoginScreenComponent implements OnInit {
   
@@ -23,8 +57,6 @@ export class LoginScreenComponent implements OnInit {
   errors: Errors = {error: null};
   isVersionOK: boolean = true;
   appName: string = environment.appName;
-  
-  private timeout: any;
 
   constructor(
     public login: LoginService,
@@ -54,14 +86,10 @@ export class LoginScreenComponent implements OnInit {
     this.isSubmitting = true;
     this.errors = {error: null};
     const credentials = this.authForm.value;
-    this.timeout = setTimeout(()=>{
-      this.errors.error = 'Trying to connect to softMC...';
-    },3000);
     this.login
     .attemptAuth(credentials)
     .subscribe(
       data => {
-        clearTimeout(this.timeout);
         // TIMEOUT FOR WEBSOCKET CONNECTION
         setInterval(()=>{
           if (!this.ws.connected) {
@@ -71,12 +99,13 @@ export class LoginScreenComponent implements OnInit {
         },2000);
         this.ws.isConnected.subscribe(stat=>{
           if (stat) {
-            this.router.navigateByUrl('/')
+            setTimeout(()=>{
+              this.router.navigateByUrl('/')
+            },1200);
           }
         });
       },
       err => {
-        clearTimeout(this.timeout);
         if (err.type === 'error')
           this.errors.error = "Can't connect to softMC";
         else

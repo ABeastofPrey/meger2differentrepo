@@ -7,7 +7,7 @@
           <mat-card-title><b>Welcome, {{login.fName}}!</b></mat-card-title>
           <mat-card-subtitle>{{login.permission}}</mat-card-subtitle>
         </mat-card-header>
-        <div mat-card-image class="center-vertical-horizontal" [style.background-image]="'url(' + mcImage + ')'">
+        <div mat-card-image *ngIf="mcImage !== '' && viewInit" class="center-vertical-horizontal" [style.background-image]="'url(' + mcImage + ')'" @scaleIn>
           <div *ngIf="simulated" class="primary-bg mat-elevation-z3 simulated" matTooltip="This controller runs on VirtualBox">
             VIRTUAL CONTROLLER
           </div>
@@ -16,12 +16,12 @@
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="6" rowspan="1">
-      <mat-card class="mat-elevation-z3">
+      <mat-card>
         <terminal tourAnchor="terminal"></terminal>
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="2" rowspan="2">
-      <mat-card class="info-card mat-elevation-z3" *ngIf="groupManager.sysInfo">
+      <mat-card class="info-card" *ngIf="groupManager.sysInfo" @fade>
         <div class="center-vertical title title-3">
           <mat-icon>perm_device_information</mat-icon>System
         </div>
@@ -37,15 +37,20 @@
     </mat-grid-tile>
     <mat-grid-tile colspan="6" rowspan="1">
       <mat-card style="white-space: pre-wrap;" (contextmenu)="onContextMenu($event)" (click)="onMessageLogClick()" tourAnchor="message-log">
-        <mat-card-header>Message Log</mat-card-header>
+        Message Log
         <mat-card-content #msgLogContainer>{{notification.notifications}}</mat-card-content>
-        <ul class="context-menu mat-elevation-z10" *ngIf="contextMenuShown" [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">
-          <button mat-button color="primary" (click)="clear()"><mat-icon>clear</mat-icon>Clear Messages</button>
+        <ul class="context-menu mat-title-color mat-elevation-z3" *ngIf="contextMenuShown" @fade [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">
+          <button mat-button (click)="clear()">
+            <div class="center-vertical">
+              <mat-icon>clear</mat-icon>
+              <span class="button-text">Clear messages</span>
+            </div>
+          </button>
         </ul>
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="2" rowspan="1" tourAnchor="sys-info">
-      <mat-card class="info-card mat-elevation-z3" *ngIf="groupManager.sysInfo">
+      <mat-card class="info-card" *ngIf="groupManager.sysInfo" @fade>
         <div class="center-vertical title title-1">
           <mat-icon>info</mat-icon>Software
         </div>
@@ -70,7 +75,7 @@
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="2" rowspan="1">
-      <mat-card class="info-card mat-elevation-z3" *ngIf="groupManager.sysInfo">
+      <mat-card class="info-card" *ngIf="groupManager.sysInfo">
         <div class="center-vertical title title-2">
           <mat-icon>touch_app</mat-icon>Features
         </div>
@@ -83,7 +88,7 @@
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="2" rowspan="1">
-      <mat-card class="info-card mat-elevation-z3">
+      <mat-card class="info-card">
         <div class="center-vertical title title-4">
           <mat-icon>group_work</mat-icon>Groups Configuration
         </div>

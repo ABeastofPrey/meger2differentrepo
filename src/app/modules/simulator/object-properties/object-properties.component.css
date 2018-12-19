@@ -1,0 +1,13 @@
+.full {
+  border-collapse: collapse;
+  text-align: center;
+}
+.full thead {
+  font-weight: 500;
+}
+.full input {
+  border: 0;
+  outline: 0;
+  border-bottom: 1px solid #ccc;
+  max-width: 75px;
+}

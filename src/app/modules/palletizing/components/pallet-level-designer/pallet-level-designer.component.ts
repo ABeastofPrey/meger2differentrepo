@@ -230,7 +230,7 @@ export class PalletLevelDesignerComponent implements OnInit {
     for(let f of e.target.files) {
       reader.readAsText(f, "UTF-8");
       reader.onload = (evt)=>{
-        this.setDataFromString(reader.result);
+        this.setDataFromString(<string>reader.result);
       }
       reader.onerror = (evt)=>{
         console.log('error:');

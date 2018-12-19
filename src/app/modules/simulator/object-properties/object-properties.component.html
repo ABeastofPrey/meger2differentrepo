@@ -1,0 +1,35 @@
+<div *ngIf="lastSelectedNode" style="margin: 8px;">
+  <h2>{{lastSelectedNode.name}}</h2>
+  <table class="full">
+    <thead>
+      <tr>
+        <td>Property</td>
+        <td>Value</td>
+      </tr>
+    </thead>
+    <tr>
+      <td>POS_X</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.position.x" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'pos_x')"></td>
+    </tr>
+    <tr>
+      <td>POS_Y</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.position.y" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'pos_y')"></td>
+    </tr>
+    <tr>
+      <td>POS_Z</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.position.z" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'pos_z')"></td>
+    </tr>
+    <tr>
+      <td>ROT_X</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.x" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'rot_x')"></td>
+    </tr>
+    <tr>
+      <td>ROT_Y</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.y" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'rot_y')"></td>
+    </tr>
+    <tr>
+      <td>ROT_Z</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.z" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'rot_z')"></td>
+    </tr>
+  </table>
+</div>

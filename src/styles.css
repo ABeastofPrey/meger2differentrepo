@@ -114,10 +114,8 @@ html, body {
   align-items: center;
   justify-content: center;
 }
-
-mat-slide-toggle {
-  display: block!important;
-}
+.mat-tab-label-active { opacity: 1!important; }
+mat-slide-toggle { display: block!important; }
 
 /* DOCS TOOLTIP FOR ACE EDITOR */
 .docs {

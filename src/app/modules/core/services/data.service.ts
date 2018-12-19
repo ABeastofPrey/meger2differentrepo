@@ -1,6 +1,6 @@
 import { Injectable, ApplicationRef } from '@angular/core';
 import {MatSnackBar} from '@angular/material';
-import {BehaviorSubject, ReplaySubject} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {TeachService} from './teach.service';
 import {TPVariable} from '../../core/models/tp/tp-variable.model';
@@ -23,7 +23,7 @@ export class DataService {
   private _varRefreshInProgress : boolean;
   get varRefreshInProgress() { return this._varRefreshInProgress; }
   
-  public dataRefreshed : ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+  public dataRefreshed : BehaviorSubject <boolean> = new BehaviorSubject <boolean>(false);
   
   // Robots
   private _robots: string[] = [];

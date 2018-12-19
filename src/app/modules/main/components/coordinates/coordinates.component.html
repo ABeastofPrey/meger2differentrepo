@@ -1,0 +1,14 @@
+<div class="center-vertical">
+  <div class="card">
+    <div class="row" *ngFor="let coo of service.joints; trackBy: service.trackByValue; let i = index">
+      <div>{{service.locations[i].key}}</div>
+      <div>{{service.locations[i].value}}</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="row" *ngFor="let coo of service.joints; trackBy: service.trackByValue; let i = index">
+      <div>{{coo.key}}</div>
+      <div>{{coo.value}}</div>
+    </div>
+  </div>
+</div>

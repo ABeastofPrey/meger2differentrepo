@@ -7,10 +7,10 @@ mat-grid-list { height: calc(100% * 1.5); }
 }
 mat-card {
   flex: 1;
-  margin: 8px;
+  margin: 0 4px;
   box-sizing: border-box;
-  height: calc(100% - 24px);
-  width: calc(100% - 24px);
+  height: calc(100% - 16px);
+  width: calc(100% - 16px);
   display: flex;
   flex-direction: column;
 }
@@ -43,7 +43,7 @@ mat-card-title {
 }
 terminal { flex: 1; overflow: hidden;}
 .title, .welcome {
-  margin: -24px -24px 16px -24px !important;
+  margin: -16px -16px 16px -16px !important;
 }
 .title {
   padding: 8px;
@@ -71,12 +71,18 @@ mat-card-content {
 }
 .context-menu { 
   position: absolute;
-  width: 200px;
   background: #fff;
   z-index: 2;
 }
-.context-menu button {
-  width: 100%;
+.context-menu mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+.context-menu .button-text { font-size: 13px; }
+.context-menu button { 
+  padding: 0 32px 0 8px;
 }
 ::ng-deep .context-menu .mat-button-wrapper {
   display: flex;

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FirmwareUpdateComponent } from './firmware-update.component';
+import { ObjectsListComponent } from './objects-list.component';
 
-describe('FirmwareUpdateComponent', () => {
-  let component: FirmwareUpdateComponent;
-  let fixture: ComponentFixture<FirmwareUpdateComponent>;
+describe('ObjectsListComponent', () => {
+  let component: ObjectsListComponent;
+  let fixture: ComponentFixture<ObjectsListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FirmwareUpdateComponent ]
+      declarations: [ ObjectsListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FirmwareUpdateComponent);
+    fixture = TestBed.createComponent(ObjectsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

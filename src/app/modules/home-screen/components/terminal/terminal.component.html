@@ -1,7 +1,7 @@
-<div class="wrapper" (contextmenu)="onContextMenu($event)" (mousedown)="onClick(0)" (mouseup)="onClick(1)" #wrapper>
-  <!--<button mat-fab class="fab" (click)="openScriptDialog()" color="primary"><mat-icon>description</mat-icon></button>-->
-  <input type="file" accept=".trm, .TRM" #upload (change)="onUploadFilesChange($event)" class="file-input" />
-  <div>
+<div class="wrapper mat-typography" (contextmenu)="onContextMenu($event)" (mousedown)="onClick(0)" (mouseup)="onClick(1)" #wrapper>
+  <!--<button mat-fab class="fab" (click)="openScriptDialog()" color="primary"><mat-icon>description</mat-icon></button>
+  <input type="file" accept=".trm, .TRM" #upload (change)="onUploadFilesChange($event)" class="file-input" />-->
+  <div class="terminal">
     <div class="terminal-row" *ngFor="let row of terminal.cmds">
       <div class="center-vertical">
         <div style="margin-right: 8px;">--></div>
@@ -14,7 +14,12 @@
       <div class="editor" #editorLine></div>
     </div>
   </div>
-  <ul class="context-menu mat-elevation-z10" *ngIf="contextMenuShown" [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">
-    <button mat-button color="primary" (mousedown)="clear($event)"><mat-icon>clear</mat-icon>Clear Terminal</button>
+  <ul class="context-menu mat-title-color mat-elevation-z3" *ngIf="contextMenuShown" @fade [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">
+    <button mat-button (mousedown)="clear($event)">
+      <div class="center-vertical">
+        <mat-icon>clear</mat-icon>
+        <span class="button-text">Clear messages</span>
+      </div>
+    </button>
   </ul>
 </div>

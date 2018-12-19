@@ -92,6 +92,11 @@ export class DiagnosticsComponent implements OnInit {
     this.ws.query(cmd + '(1)').then(()=>{
       return this.ws.query(cmd + '(2)');
     }).then((ret: MCQueryResponse)=>{
+      if (ret.err) {
+        this.content = 'Data not available. Please load TP libraries and try again.';
+        this.isRefreshing = false;
+        return;
+      }
       if (ret.result !== 'Not Ready') {
         this.content = ret.result;
         this.getGraphsFromText();

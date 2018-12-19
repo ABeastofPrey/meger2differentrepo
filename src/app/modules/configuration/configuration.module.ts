@@ -12,6 +12,7 @@ import {NewUserDialogComponent} from './components/user-manager/new-user-dialog/
 import {GraphComponent} from './components/graph/graph.component';
 import { IoService } from './services/io.service';
 import { CustomIOComponent } from './components/io/custom-io/custom-io.component';
+import { RobotSelectionComponent } from './components/robot-selection/robot-selection.component';
 
 @NgModule({
   imports: [
@@ -28,12 +29,14 @@ import { CustomIOComponent } from './components/io/custom-io/custom-io.component
     UserMngrComponent,
     NewUserDialogComponent,
     GraphComponent,
-    CustomIOComponent
+    CustomIOComponent,
+    RobotSelectionComponent
   ],
   providers: [IoService],
   entryComponents: [
     NewUserDialogComponent,
-    GraphComponent
+    GraphComponent,
+    RobotSelectionComponent
   ]
 })
 export class ConfigurationModule { }

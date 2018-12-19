@@ -104,3 +104,9 @@ watch-window {
   box-shadow: 0px 0px 128px 16px rgba(0,255,0,1);
 }
 .indicator-on { color: lime; }
+coordinates {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  z-index: 1;
+}

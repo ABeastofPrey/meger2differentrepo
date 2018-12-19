@@ -89,7 +89,10 @@ export class WebsocketService {
                   clearTimeout(this.timeout);
                   this.timeout = null;
                 }
-                this.dialog.closeAll();
+                for (let ref of this.dialog.openDialogs) {
+                  if (ref.id !== 'update')
+                    ref.close();
+                }
                 this._isConnected.next(false);
                 this.reset();
                 break;

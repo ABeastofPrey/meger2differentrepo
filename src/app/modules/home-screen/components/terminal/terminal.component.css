@@ -3,7 +3,7 @@
   width: 100%;
   overflow: auto;
 }
-div, input {
+.terminal > div, .terminal > input {
   user-select: text;
   font-family: monospace;
 }
@@ -26,13 +26,17 @@ input {
 }
 .context-menu { 
   position: absolute;
-  width: 200px;
   background: #fff;
   z-index: 2;
 }
-.context-menu button {
-  width: 100%;
+.context-menu mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
 }
+.context-menu .button-text { font-size: 13px; }
+.context-menu button { padding: 0 32px 0 8px; }
 ::ng-deep .context-menu .mat-button-wrapper {
   display: flex;
   align-items: center;

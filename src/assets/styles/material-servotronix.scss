@@ -14,7 +14,7 @@ $material-servotronix-warn:    mat-palette($mat-red);
 
 $servotronix-theme: mat-light-theme($material-servotronix-primary, $material-servotronix-accent, $material-servotronix-warn);
 
-$material-black: rgba(0,0,0,0.87);
+$material-black: rgb(0.51,0.51,0.51);
 $material-semi-black: rgba(0,0,0,0.54);
 
 @include angular-material-theme($servotronix-theme);
@@ -31,7 +31,7 @@ $material-semi-black: rgba(0,0,0,0.54);
 }
 .primary-bg, .mat-button-toggle-checked {
   background-color: mat-color($material-servotronix-primary, 600);
-  color: #fff;
+  color: #fff!important;
 }
 .warn-bg {
   background-color: mat-color($material-servotronix-warn);

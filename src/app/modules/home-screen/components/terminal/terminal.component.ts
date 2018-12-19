@@ -3,13 +3,26 @@ import {TerminalService} from '../../services/terminal.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Input} from '@angular/core';
+import {trigger, transition, style, animate} from '@angular/animations';
 
 declare var ace;
 
 @Component({
   selector: 'terminal',
   templateUrl: './terminal.component.html',
-  styleUrls: ['./terminal.component.css']
+  styleUrls: ['./terminal.component.css'],
+  animations: [
+    trigger('fade',[
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('150ms', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('150ms', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class TerminalComponent implements OnInit {
   
@@ -214,7 +227,7 @@ export class TerminalComponent implements OnInit {
     }
   }
   
-  onUploadFilesChange(e:any) {
+  /*onUploadFilesChange(e:any) {
     let reader = new FileReader();
     for(let f of e.target.files) {
       reader.readAsText(f, "UTF-8");
@@ -231,7 +244,7 @@ export class TerminalComponent implements OnInit {
         console.log(evt);
       }
     }
-  }
+  }*/
 
   ngOnInit() {
   }

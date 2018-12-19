@@ -43,7 +43,7 @@ export class ScreenManagerService {
   }
   set screen(s:ControlStudioScreen) {
     if (s.requiresTpLib && !this.tpOnline) {
-      this.screen = this.screens[0];
+      this._screen = this.screens[0];
       this.router.navigateByUrl('/');
     } else 
       this._screen = s;
@@ -52,6 +52,7 @@ export class ScreenManagerService {
   toggleControls() {
     this.controlsAnimating.emit(true);
     this.openedControls = !this.openedControls;
+    this.stat.mode = this.openedControls ? 'T1' : 'A';
     setTimeout(()=>{
       this.controlsAnimating.emit(false);
     },300);
@@ -62,6 +63,7 @@ export class ScreenManagerService {
       return;
     this.controlsAnimating.emit(true);
     this.openedControls = true;
+    this.stat.mode = 'T1';
     setTimeout(()=>{
       this.controlsAnimating.emit(false);
     },300);
@@ -72,6 +74,7 @@ export class ScreenManagerService {
       return;
     this.controlsAnimating.emit(true);
     this.openedControls = false;
+    this.stat.mode = 'A';
     setTimeout(()=>{
       this.controlsAnimating.emit(false);
     },300);
@@ -88,6 +91,14 @@ export class ScreenManagerService {
     if (fromPath && fromPath === 'firmware') {
       this.dialog.open(SuccessDialogComponent,{
         data: 'Firmware update was done succesfully!'
+      });
+      this.router.navigate(['.'],{
+        relativeTo: this.route,
+        queryParams: {}
+      });
+    } else if (fromPath && fromPath === 'robot') {
+      this.dialog.open(SuccessDialogComponent,{
+        data: 'Robot configuration was changed succesfully!'
       });
       this.router.navigate(['.'],{
         relativeTo: this.route,

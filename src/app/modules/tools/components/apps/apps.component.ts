@@ -5,7 +5,7 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {HttpErrorResponse} from '@angular/common/http';
 import {WebsocketService} from '../../../../modules/core/services/websocket.service';
-import {FirmwareUpdateComponent} from '../firmware-update/firmware-update.component';
+import {UpdateDialogComponent} from '../../../../components/update-dialog/update-dialog.component';
 
 @Component({
   selector: 'apps',
@@ -44,12 +44,14 @@ export class AppsComponent implements OnInit {
         e.target.value = null;
         return;
       }
-      let dialog = this.dialog.open(FirmwareUpdateComponent,{
+      let dialog = this.dialog.open(UpdateDialogComponent,{
         disableClose: true,
         width: '100%',
         height: '100%',
         maxWidth: '100%',
-        closeOnNavigation: false
+        closeOnNavigation: false,
+        data: 'Updating Firmware',
+        id: 'update'
       });
       for(let f of e.target.files) {
         this.api.uploadIPK(f).then((ret: UploadResult)=>{

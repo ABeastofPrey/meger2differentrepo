@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import {AppsComponent} from './components/apps/apps.component';
 import {SharedModule} from '../shared/shared.module';
 import {ToolsRoutingModule} from './tools-routing.module';
-import {FirmwareUpdateComponent} from './components/firmware-update/firmware-update.component';
 
 @NgModule({
   imports: [
@@ -11,8 +10,7 @@ import {FirmwareUpdateComponent} from './components/firmware-update/firmware-upd
     SharedModule,
     ToolsRoutingModule
   ],
-  declarations: [AppsComponent, FirmwareUpdateComponent],
-  exports: [AppsComponent],
-  entryComponents: [FirmwareUpdateComponent]
+  declarations: [AppsComponent],
+  exports: [AppsComponent]
 })
 export class ToolsModule { }
