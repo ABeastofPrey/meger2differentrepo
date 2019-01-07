@@ -21,6 +21,7 @@ import {TeachVariableEditorComponent} from '../tp/components/teach-variable-edit
 import {CoordinatesDisplayComponent} from '../tp/components/coordinates-display/coordinates-display.component';
 import {TourMatMenuModule} from 'ngx-tour-md-menu';
 import {UpdateDialogComponent} from '../../components/update-dialog/update-dialog.component';
+import { ClickOutsideModule } from 'ng-click-outside';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import {UpdateDialogComponent} from '../../components/update-dialog/update-dialo
     HttpClientModule,
     ResizableModule,
     AngularSplitModule,
-    TourMatMenuModule
+    TourMatMenuModule,
+    ClickOutsideModule
   ],
   exports: [
     CommonModule,
@@ -56,7 +58,8 @@ import {UpdateDialogComponent} from '../../components/update-dialog/update-dialo
     TeachVariableEditorComponent,
     CoordinatesDisplayComponent,
     UpdateDialogComponent,
-    TourMatMenuModule
+    TourMatMenuModule,
+    ClickOutsideModule
   ],
   declarations: [
     YesNoDialogComponent,

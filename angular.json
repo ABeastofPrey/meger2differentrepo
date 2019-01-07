@@ -23,7 +23,7 @@
             "styles": [
               "src/styles.css",
               "src/assets/styles/material-servotronix.scss",
-              "node_modules/ngx-draggable-widget/NgDraggableWidget.css",
+              "node_modules/angular2-draggable/css/resizable.min.css",
               "node_modules/jquery-ui-dist/jquery-ui.min.css"
             ],
             "scripts": [

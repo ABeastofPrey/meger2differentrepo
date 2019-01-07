@@ -8,6 +8,7 @@ import {ServerDisconnectComponent} from '../../components/server-disconnect/serv
 import {ApiService, WebsocketService} from '../core';
 import {environment} from '../../../environments/environment';
 import {trigger, state, style, transition, animate, animateChild, group, query} from '@angular/animations';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'login-screen',
@@ -57,6 +58,8 @@ export class LoginScreenComponent implements OnInit {
   errors: Errors = {error: null};
   isVersionOK: boolean = true;
   appName: string = environment.appName;
+  
+  private subs: Subscription[] = [];
 
   constructor(
     public login: LoginService,
@@ -65,7 +68,7 @@ export class LoginScreenComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private api: ApiService,
-    private ws: WebsocketService
+    public ws: WebsocketService
   ) {
     this.api.get('/cs/api/java-version').subscribe((ret:{ver:string})=>{
       this.isVersionOK = ret.ver.startsWith(environment.compatible_webserver_ver);
@@ -91,16 +94,19 @@ export class LoginScreenComponent implements OnInit {
     .subscribe(
       data => {
         // TIMEOUT FOR WEBSOCKET CONNECTION
-        setInterval(()=>{
+        setTimeout(()=>{
           if (!this.ws.connected) {
+            this.ws.reset();
             this.errors.error = "Can't establish a websocket connection.";
             this.isSubmitting = false;
+            console.log('WS TIMEOUT');
           }
-        },2000);
+        },3000);
         this.ws.isConnected.subscribe(stat=>{
           if (stat) {
             setTimeout(()=>{
-              this.router.navigateByUrl('/')
+              this.router.navigateByUrl('/');
+              this.isSubmitting = false;
             },1200);
           }
         });
@@ -116,12 +122,31 @@ export class LoginScreenComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+    let init = false;
+    this.subs.push(this.login.isAuthenticated.subscribe(auth=>{
+      if (!init && !this.isSubmitting && auth && this.ws.connected) {
+        this.router.navigateByUrl('/');
+        init = true;
+      }
+    }));
+    this.subs.push(this.ws.isConnected.subscribe(conn=>{
+      if (!init && !this.isSubmitting && conn && this.login.getCurrentUser()) {
+        this.router.navigateByUrl('/');
+        init = true;
+      }
+    }));
+  }
+  
+  ngOnDestroy() {
+    for (let sub of this.subs) {
+      sub.unsubscribe();
+    }
   }
   
   ngAfterViewInit() {
     this.route.queryParams.subscribe(params=>{
       if (params['serverDisconnected']) {
+        console.log('show server disconnect dialog');
         this.router.navigate(this.route.snapshot.url,{queryParams:{}});
         setTimeout(()=>{ // TO FINISH THE ANIMATION TRANSITION
           this.dialog.open(ServerDisconnectComponent);

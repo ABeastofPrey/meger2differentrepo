@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {TourService} from 'ngx-tour-md-menu';
 import {TpStatService} from '../core';
 import {environment} from '../../../environments/environment';
+import {MatDialog} from '@angular/material';
+import {ShortcutsComponent} from './components/shortcuts/shortcuts.component';
 
 @Component({
   selector: 'help-screen',
@@ -13,7 +15,11 @@ export class HelpComponent implements OnInit {
   online: boolean = false;
   appName: string = environment.appName;
 
-  constructor(private tour: TourService, private stat: TpStatService) {
+  constructor(
+    private tour: TourService,
+    private stat: TpStatService,
+    private dialog: MatDialog
+  ) {
   }
   
   startTour() {
@@ -25,6 +31,10 @@ export class HelpComponent implements OnInit {
     this.stat.onlineStatus.subscribe(stat=>{
       this.online = stat;
     });
+  }
+  
+  showShortcuts() {
+    this.dialog.open(ShortcutsComponent);
   }
 
 }

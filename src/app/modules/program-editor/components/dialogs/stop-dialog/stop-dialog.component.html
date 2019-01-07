@@ -1,0 +1,28 @@
+<div class="main mat-typography">
+  <div class="wrapper">
+    <div class="title">Insert STOP Command</div>
+    <div class="content">
+      <mat-slide-toggle #advanced style="margin-bottom: 8px;" color="primary">Advanced</mat-slide-toggle>
+      <div *ngIf="advanced.checked">
+        <mat-form-field>
+          <mat-select placeholder="Motion Element" [(ngModel)]="motionElement">
+            <mat-option *ngFor="let e of dataService.robots" [value]="e">{{e}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Stop Type" [(ngModel)]="stopType">
+            <mat-option value="Immediate">Immediate</mat-option>
+            <mat-option value="OnPath">OnPath</mat-option>
+            <mat-option value="EndMotion">EndMotion</mat-option>
+            <mat-option value="Abort">Abort</mat-option>
+            <mat-option value="DecStopOnPath">DecStopOnPath</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="actions">
+      <button mat-button color="primary" matDialogClose>CANCEL</button>
+      <button mat-button color="primary" (click)="insert()" [disabled]="">INSERT</button>
+    </div>
+  </div>
+</div>

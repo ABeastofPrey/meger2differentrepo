@@ -12,6 +12,7 @@ import {NewLibDialogComponent} from '../toolbar-dialogs/new-lib-dialog/new-lib-d
 import {ViewChild} from '@angular/core';
 import {ElementRef} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
+import {UtilsService} from '../../../core/services/utils.service';
 
 @Component({
   selector: 'program-toolbar',
@@ -34,7 +35,8 @@ export class ProgramToolbarComponent implements OnInit {
     public prj: ProjectManagerService,
     private snack: MatSnackBar,
     public prgService: ProgramEditorService,
-    private api: ApiService
+    private api: ApiService,
+    private utl: UtilsService
   ) { }
 
   ngOnInit() { }
@@ -44,8 +46,10 @@ export class ProgramToolbarComponent implements OnInit {
     ref.afterClosed().subscribe(projectName=>{
       if (projectName) {
         this.ws.query('?prj_new_project("' + projectName + '")').then((ret:MCQueryResponse)=>{
-          if (ret.result === '0')
-            this.prj.getCurrentProject();
+          if (ret.result === '0') {
+            this.prj.currProject.next(null);
+            this.utl.resetAllDialog('Changing project...');
+          }
           else
             this.snack.open('Error ' + ret + ": Can't create Project.",'',{duration:1500});
         });
@@ -58,10 +62,11 @@ export class ProgramToolbarComponent implements OnInit {
     ref.afterClosed().subscribe(projectName=>{
       if (projectName) {
         this.ws.query('?prj_set_current_project("' + projectName + '")').then((ret:MCQueryResponse)=>{
-          if (ret.result === '0')
-            this.prj.getCurrentProject();
-          else
-            this.snack.open('Error ' + ret + ": Can't change current project.",'',{duration:1500});
+          if (ret.result === '0') {
+            this.prj.currProject.next(null);
+            this.utl.resetAllDialog('Changing project...');
+          } else
+            this.snack.open('Error ' + ret.result + ": Can't change current project.",'',{duration:1500});
         });
       }
     });
@@ -71,7 +76,6 @@ export class ProgramToolbarComponent implements OnInit {
     const cmd = '?tp_run_project("' + this.prj.currProject.value.name + '",';
     this.ws.query(cmd + '0)')
     .then((ret: MCQueryResponse)=>{
-      console.log(ret);
       if (ret.result !== '0') {
         this.dialog.open(YesNoDialogComponent,{
           data: {
@@ -93,9 +97,13 @@ export class ProgramToolbarComponent implements OnInit {
     this.ws.query('?prj_stop("' + this.prj.currProject.value.name + '")');
   }
   
+  export() {
+    this.prj.isLoading = true;
+    this.api.downloadProjectZip(this.prj.currProject.value.name);
+    this.prj.isLoading = false;
+  }
   newApp() { this.dialog.open(NewAppDialogComponent); }
   newLib() { this.dialog.open(NewLibDialogComponent); }
-  export() { this.api.downloadProjectZip(this.prj.currProject.value.name); }
   saveAs() { this.dialog.open(SaveAsDialogComponent); }
   rename() { this.dialog.open(RenameDialogComponent); }
   delete() {
@@ -123,6 +131,8 @@ export class ProgramToolbarComponent implements OnInit {
   private importProject(fileName: string, projectName: string) {
     return this.api.importProject(fileName).then((ret: UploadResult)=>{
       if (ret.success) {
+        this.prgService.close();
+        this.prgService.mode = 'editor';
         this.snack.open('SUCCESS!','',{duration:1500});
         if (projectName === this.prj.currProject.value.name)
           return this.prj.getCurrentProject();

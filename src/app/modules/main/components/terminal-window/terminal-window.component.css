@@ -1,40 +1,5 @@
-.title { 
-  display: flex;
-  align-items: center;
-  font-size: 24px;
-  padding: 16px;
-  margin: -24px;
-  cursor: move;
-  box-sizing: border-box;
-  min-height: 60px;
-}
-.title span { flex: 1; }
-mat-card {
-  position: fixed;
-  top: 50%;
-  left: 100px;
-  width: 50%;
-  height: 30%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-.content {
-  white-space: pre;
-  overflow: auto;
-  flex: 1;
-  margin-top: 40px;
-}
-mwlResizable {
-  box-sizing: border-box;
-}
-.wrapper {
-  height: 100%;
-  width: 100%;
-}
 terminal {
-  margin-top: 32px;
   overflow: hidden;
   flex: 1;
+  margin: 16px;
 }

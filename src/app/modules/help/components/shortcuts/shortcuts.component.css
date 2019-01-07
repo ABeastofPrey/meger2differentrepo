@@ -1,0 +1,8 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+table { margin: -8px 16px 8px 16px; }
+td { padding-right: 16px }
+tr td:first-child { font-weight: bold; }

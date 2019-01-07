@@ -2,9 +2,10 @@ import { Injectable, EventEmitter, ApplicationRef } from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {MCFile, ApiService, UploadResult} from '../../../modules/core/services/api.service';
 import {ProgramStatus, TRNERRLine, TRNERR} from '../../program-editor/services/program-editor.service';
-import {WebsocketService, MCQueryResponse, ErrorFrame} from '../../../modules/core/services/websocket.service';
+import {WebsocketService, MCQueryResponse} from '../../../modules/core/services/websocket.service';
 import {NewFileDialogComponent} from '../../../components/new-file-dialog/new-file-dialog.component';
 import {YesNoDialogComponent} from '../../../components/yes-no-dialog/yes-no-dialog.component';
+import {ErrorFrame} from '../../core/models/error-frame.model';
 
 @Injectable()
 export class BlocklyService {

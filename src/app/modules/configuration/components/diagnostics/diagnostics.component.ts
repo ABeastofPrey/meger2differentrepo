@@ -12,6 +12,7 @@ export class DiagnosticsComponent implements OnInit {
   content : string;
   state : string = '1';
   isRefreshing : boolean = false;
+  interval: any;
   
   @ViewChild('container', {read: ViewContainerRef}) ref: ViewContainerRef;
 
@@ -30,8 +31,6 @@ export class DiagnosticsComponent implements OnInit {
     let graphs : GraphData[] = [];
     let index: number = text.indexOf('<GRAPH');
     try {
-      
-      // TODO: GET GRAPH TITLE AND TYPE!
       
       while (index > -1) {
         let index2 = text.indexOf('</GRAPH>');
@@ -85,6 +84,8 @@ export class DiagnosticsComponent implements OnInit {
   }
   
   refresh() {
+    if (this.interval)
+      clearInterval(this.interval);
     this.ref.clear();
     this.isRefreshing = true;
     this.content = null;
@@ -103,10 +104,10 @@ export class DiagnosticsComponent implements OnInit {
         this.isRefreshing = false;
         return;
       }
-      let interval = setInterval(()=>{
+      this.interval = setInterval(()=>{
         this.ws.query(cmd + '(2)').then((ret: MCQueryResponse)=>{
           if (ret.result !== 'Not Ready') {
-            clearInterval(interval);
+            clearInterval(this.interval);
             this.content = ret.result;
             this.getGraphsFromText();
             this.isRefreshing = false;

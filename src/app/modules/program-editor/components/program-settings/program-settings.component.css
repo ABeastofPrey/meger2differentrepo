@@ -12,6 +12,25 @@ h3 { margin: 0}
 .app-list {
   display: flex;
   flex-direction: column;
+  text-align: center;
+}
+.app-list mat-form-field {
+  margin-left: 16px;
+  width: 75px;
+}
+.app-list thead { 
+  font-weight: bold;
+  font-size: 13px;
+}
+.app-list table {
+  text-align: left;
+  min-width: 200px;
+}
+.app-list mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-left: 4px;
 }
 .content .mat-radio-button { margin-right: 16px; }
 mat-panel-title, mat-panel-description { flex-basis: 0; }

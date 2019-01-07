@@ -2,12 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Omri/Scara-Apps-GUI/src/app/modules/configuration/components/configuration/configuration.component.ts</file>
-            <file>file:/C:/Omri/Scara-Apps-GUI/src/app/modules/configuration/components/diagnostics/diagnostics.component.ts</file>
-            <file>file:/C:/Omri/Scara-Apps-GUI/src/app/modules/configuration/components/robots/robots.component.ts</file>
-            <file>file:/C:/Omri/Scara-Apps-GUI/src/app/modules/configuration/components/robots/robots.component.html</file>
-            <file>file:/C:/Omri/Scara-Apps-GUI/src/app/modules/configuration/components/configuration/configuration.component.html</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {fadeAnimation} from './fade.animation';
 import {LoginService} from './modules/core';
 import {TourService} from 'ngx-tour-md-menu';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'control-studio',
@@ -11,8 +12,8 @@ import {TourService} from 'ngx-tour-md-menu';
 })
 export class ControlStudioComponent {
   
-  public getRouterOutletState(outlet) {
-    return outlet.isActivated ? outlet.activatedRoute : '';
+  public getRouterOutletState(outlet: RouterOutlet) {
+    return outlet.isActivated ? outlet.activatedRouteData : '';
   }
   
   constructor(private login: LoginService, private tour: TourService) {

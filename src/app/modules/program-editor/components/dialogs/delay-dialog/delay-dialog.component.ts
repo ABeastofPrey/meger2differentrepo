@@ -10,7 +10,7 @@ import {DataService} from '../../../../core';
 export class DelayDialogComponent implements OnInit {
   
   motionElement : string;
-  delay : number = 0;
+  delay : number = 4;
   advancedMode : boolean = false;
 
   constructor(

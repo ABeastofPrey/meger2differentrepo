@@ -3,6 +3,7 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {NewPayloadDialogComponent} from '../new-payload-dialog/new-payload-dialog.component';
 import {DataService, WebsocketService, MCQueryResponse} from '../../../core';
 import {Payload, position} from '../../../core/models/payload.model';
+import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 
 @Component({
   selector: 'app-payload-wizard',
@@ -12,6 +13,7 @@ import {Payload, position} from '../../../core/models/payload.model';
 export class PayloadWizardComponent implements OnInit {
   
   selectedPayload: Payload = null;
+  currPayloadString: string = null;
 
   constructor(
     public data: DataService,
@@ -21,6 +23,19 @@ export class PayloadWizardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.ws.query('?pay_get_current_values(' + this.data.selectedRobot + ')')
+    .then((ret: MCQueryResponse)=>{
+      if (ret.err)
+        return;
+      const parts = ret.result.split(',');
+      if (parts.length !== 3)
+        return;
+      this.currPayloadString =  'Current values (' +
+                          this.data.selectedRobot + '):<br>' + 
+                          '<b>Mass:</b> ' + parts[0] + '<br>' +
+                          '<b>Inertia:</b> ' + parts[1] + '<br>' +
+                          '<b>Offset X:</b> ' + parts[2];
+    });
   }
   
   newPayload() {
@@ -46,47 +61,71 @@ export class PayloadWizardComponent implements OnInit {
   }
   
   delete() {
-    this.ws.query('?pay_reset_payload("' + this.selectedPayload.name + '")')
-    .then((ret: MCQueryResponse)=>{
-      if (ret.result === '0') {
-        this.selectedPayload = null;
-        this.data.refreshPayloads();
+    this.dialog.open(YesNoDialogComponent,{
+      data: {
+        title: 'Delete ' + this.selectedPayload.name + '?',
+        msg: 'This cannot be undone.',
+        yes: 'DELETE',
+        no: 'CANCEL'
       }
+    }).afterClosed().subscribe(ret=>{
+      if (!ret) return;
+      this.ws.query('?pay_reset_payload("' + this.selectedPayload.name + '")')
+      .then((ret: MCQueryResponse)=>{
+        if (ret.result === '0') {
+          this.selectedPayload = null;
+          this.data.refreshPayloads();
+        }
+      });
     });
   }
   
   onPayloadChange() {
     let name = this.selectedPayload.name;
     /* GET PAYLOAD INFO */
+    // FOR SCARA
     const promises : Promise<any>[] = [
-      this.ws.query('?PAY_GET_REF_POSITION("'+name+'")'),
       this.ws.query('?PAY_GET_MASS("'+name+'")'),
-      this.ws.query('?PAY_GET_IDENT_MAXPOS(5)'),
-      this.ws.query('?PAY_GET_IDENT_MAXPOS(6)'),
-      this.ws.query('?PAY_GET_IDENT_MINPOS(5)'),
-      this.ws.query('?PAY_GET_IDENT_MINPOS(6)'),
-      this.ws.query('?PAY_GET_IDENT_OVRDVEL(5)'),
-      this.ws.query('?PAY_GET_IDENT_OVRDVEL(6)'),
-      this.ws.query('?PAY_GET_IDENT_TIME(5)'),
-      this.ws.query('?PAY_GET_IDENT_TIME(6)'),
+      this.ws.query('?PAY_GET_INERTIA("'+name+'")'),
+      this.ws.query('?PAY_GET_LX("'+name+'")'),
     ];
+    
+    
+    // FOR PUMA
+    /*const promises : Promise<any>[] = [
+        this.ws.query('?PAY_GET_REF_POSITION("'+name+'")'),
+        this.ws.query('?PAY_GET_MASS("'+name+'")'),
+        this.ws.query('?PAY_GET_IDENT_MAXPOS(5)'),
+        this.ws.query('?PAY_GET_IDENT_MAXPOS(6)'),
+        this.ws.query('?PAY_GET_IDENT_MINPOS(5)'),
+        this.ws.query('?PAY_GET_IDENT_MINPOS(6)'),
+        this.ws.query('?PAY_GET_IDENT_OVRDVEL(5)'),
+        this.ws.query('?PAY_GET_IDENT_OVRDVEL(6)'),
+        this.ws.query('?PAY_GET_IDENT_TIME(5)'),
+        this.ws.query('?PAY_GET_IDENT_TIME(6)'),
+        this.ws.query('?PAY_GET_INERTIA("'+name+'")'),
+        this.ws.query('?PAY_GET_LX("'+name+'")'),
+      ];*/
     Promise.all(promises).then((results: MCQueryResponse[])=>{
+      /*
       // PARSE REF POS
-      const refString = results[0].result.substring(1, results[0].result.length-1);
-      let refPos : position[] = [];
-      for (let pos of refString.split(',')) {
-        refPos.push({value: Number(pos)});
-      }
-      this.selectedPayload.refPos = refPos;
-      this.selectedPayload.mass = Number(results[1].result);
-      this.selectedPayload.j5_max = Number(results[2].result);
-      this.selectedPayload.j6_max = Number(results[3].result);
-      this.selectedPayload.j5_min = Number(results[4].result);
-      this.selectedPayload.j6_min = Number(results[5].result);
-      this.selectedPayload.j5_ident_vel = Number(results[6].result);
-      this.selectedPayload.j6_ident_vel = Number(results[7].result);
-      this.selectedPayload.j5_ident_time = Number(results[8].result);
-      this.selectedPayload.j6_ident_time = Number(results[9].result);
+        const refString = results[0].result.substring(1, results[0].result.length-1);
+        let refPos : position[] = [];
+        for (let pos of refString.split(',')) {
+          refPos.push({value: Number(pos)});
+        }
+        this.selectedPayload.refPos = refPos;*/
+      this.selectedPayload.mass = Number(results[0].result);
+      /*this.selectedPayload.j5_max = Number(results[2].result);
+        this.selectedPayload.j6_max = Number(results[3].result);
+        this.selectedPayload.j5_min = Number(results[4].result);
+        this.selectedPayload.j6_min = Number(results[5].result);
+        this.selectedPayload.j5_ident_vel = Number(results[6].result);
+        this.selectedPayload.j6_ident_vel = Number(results[7].result);
+        this.selectedPayload.j5_ident_time = Number(results[8].result);
+        this.selectedPayload.j6_ident_time = Number(results[9].result);*/
+      this.selectedPayload.inertia = Number(results[1].result);
+      this.selectedPayload.Lx = Number(results[2].result);
     });
   }
   
@@ -99,11 +138,44 @@ export class PayloadWizardComponent implements OnInit {
     });
   }
   
-  onMassChange() {
+  onMassChange(e:any) {
+    const newVal = e.target.value;
+    const oldVal = this.selectedPayload.mass;
     const cmd = '?PAY_SET_MASS("' + this.selectedPayload.name + '",' +
-                this.selectedPayload.mass + ')';
+                newVal + ')';
+    this.selectedPayload.mass = newVal;
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-      if (ret.result === '0')
+      if (ret.result !== '0' || ret.err)
+        this.selectedPayload.mass = oldVal;
+      else
+        this.snack.open('Changes Saved','',{duration:1500});
+    });
+  }
+  
+  onInertiaChange(e:any) {
+    const newVal = e.target.value;
+    const oldVal = this.selectedPayload.inertia;
+    const cmd = '?PAY_SET_INERTIA("' + this.selectedPayload.name + '",' +
+                newVal + ')';
+    this.selectedPayload.inertia = newVal;
+    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+      if (ret.result !== '0' || ret.err)
+        this.selectedPayload.inertia = oldVal;
+      else
+        this.snack.open('Changes Saved','',{duration:1500});
+    });
+  }
+  
+  onXOffsetChange(e:any) {
+    const newVal = e.target.value;
+    const oldVal = this.selectedPayload.Lx;
+    const cmd = '?PAY_SET_LX("' + this.selectedPayload.name + '",' +
+                newVal + ')';
+    this.selectedPayload.Lx = newVal;
+    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+      if (ret.result !== '0' || ret.err)
+        this.selectedPayload.Lx = oldVal;
+      else
         this.snack.open('Changes Saved','',{duration:1500});
     });
   }

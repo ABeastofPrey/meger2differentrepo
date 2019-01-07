@@ -1,7 +1,4 @@
-<div class="mat-typography wizard">
-  <div class="header mat-toolbar mat-primary mat-elevation-z3">
-    <div class="title">Payload Wizard</div>
-  </div>
+<div class="mat-typography wizard">  
   <div class="sbs" style="flex: 1;">
     <div class="menu mat-elevation-z3">
       <div>{{data.payloadLibVer}}</div>
@@ -15,11 +12,26 @@
       <button mat-raised-button color="warn" *ngIf="selectedPayload" (click)="delete()">
         DELETE
       </button>
+      <div *ngIf="currPayloadString" [innerHTML]="currPayloadString" style="margin-top: 16px;"></div>
       <button mat-fab color="primary" class="menu-fab" (click)="newPayload()">
         <mat-icon>add</mat-icon>
       </button>
     </div>
-    <mat-horizontal-stepper #stepper="matHorizontalStepper" [linear]="true" *ngIf="selectedPayload">
+    <div *ngIf="selectedPayload" class="temp-scara-wizard">
+      <mat-form-field>
+        <input matInput type="number" min="0" placeholder="Mass" [value]="selectedPayload.mass" (change)="onMassChange($event)">
+        <span matSuffix>[Kg]</span>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" min="0" placeholder="Inertia" [value]="selectedPayload.inertia" (change)="onInertiaChange($event)">
+        <span matSuffix>[Kg * m<sup>2</sup>]</span>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" min="0" placeholder="X Offset" [value]="selectedPayload.Lx" (change)="onXOffsetChange($event)">
+        <span matSuffix>[m]</span>
+      </mat-form-field>
+    </div>
+    <!--<mat-horizontal-stepper #stepper="matHorizontalStepper" [linear]="true" *ngIf="selectedPayload">
       <mat-step>
         <ng-template matStepLabel>Ref Pos</ng-template>
         <div class="step-wrapper">
@@ -122,6 +134,6 @@
           </div>
         </form>
       </mat-step>
-    </mat-horizontal-stepper>
+    </mat-horizontal-stepper>-->
   </div>
 </div>

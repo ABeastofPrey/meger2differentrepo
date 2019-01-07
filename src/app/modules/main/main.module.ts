@@ -9,12 +9,14 @@ import {MainAuthResolver} from './main-auth-resolver.service';
 import { TerminalWindowComponent } from './components/terminal-window/terminal-window.component';
 import {HomeScreenModule} from '../home-screen/home-screen.module';
 import { CoordinatesComponent } from './components/coordinates/coordinates.component';
+import {ProgramEditorModule} from '../program-editor/program-editor.module';
 
 @NgModule({
   imports: [
     SharedModule,
     MainRoutingModule,
-    HomeScreenModule
+    HomeScreenModule,
+    ProgramEditorModule
   ],
   declarations: [
     MainComponent,

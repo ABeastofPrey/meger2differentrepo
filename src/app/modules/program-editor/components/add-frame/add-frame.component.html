@@ -4,7 +4,7 @@
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="{{frameType}} Name" [(ngModel)]="name">
+      <input matInput placeholder="{{frameType}} Name" [(ngModel)]="name" maxlength="32">
     </mat-form-field>
     <mat-checkbox color="primary" [(ngModel)]="isArray">Array</mat-checkbox>
     <mat-form-field *ngIf="isArray" style="margin-top: 8px;">

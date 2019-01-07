@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ElementRef } from '@angular/core';
 import {NotificationService, LoginService, WatchService, DataService, TpStatService, CoordinatesService, ScreenManagerService, WebsocketService, ProjectManagerService} from '../../../core';
 import {Router, RouteConfigLoadStart, RouteConfigLoadEnd} from '@angular/router';
 import {JogSettingsDialogComponent} from '../../../../components/jog-settings-dialog/jog-settings-dialog.component';
@@ -52,6 +52,7 @@ export class MainComponent implements OnInit {
   tpOnline: boolean = false;
   terminalOpen: boolean = false;
   appName: string = environment.appName;
+  lastWindowsZindex = 5;
   
   @ViewChild('drawer') drawer : MatSidenav;
   
@@ -85,10 +86,6 @@ export class MainComponent implements OnInit {
     this.drawer.openedChange.subscribe(()=>{
       window.dispatchEvent(new Event('resize'));
     });
-    this.login.isAuthenticated.subscribe(auth=>{
-      if (!auth)
-        this.router.navigateByUrl('/login');
-    });
     this.router.events.subscribe(event => {
       if (event instanceof RouteConfigLoadStart) {
           this.isRouterLoading = true;
@@ -119,6 +116,15 @@ export class MainComponent implements OnInit {
         }
       }
     });
+    this.login.isAuthenticated.subscribe(auth=>{
+      if (!auth)
+        this.router.navigateByUrl('/login');
+    });
+  }
+  
+  onWindowMoving(el: any) {
+    this.lastWindowsZindex++;
+    el.style.zIndex = this.lastWindowsZindex;
   }
   
   mouseDown(i : number, e? : Event) {
@@ -173,6 +179,16 @@ export class MainComponent implements OnInit {
   
   toggleTerminal() {
     this.terminalOpen = !this.terminalOpen;
+  }
+  
+  get jogTooltip() : string {
+    if (!this.tpOnline)
+      return "Can't JOG while TP.LIB is OFFLINE";
+    if (this.prj.activeProject)
+      return "Can't JOG while project app is loaded";
+    if (!this.cooService.coosLoaded.value)
+      return "Coordinates service is OFFLINE";
+    return 'Toggle Jog Controls';
   }
 
 }

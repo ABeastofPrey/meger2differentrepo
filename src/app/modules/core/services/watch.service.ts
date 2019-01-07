@@ -29,7 +29,7 @@ export class WatchService {
   
   toggleWindow() {
     this._windowOpen = !this._windowOpen;
-    if (this.windowOpen)
+    if (this._windowOpen)
       this.start();
     else
       this.stop();
@@ -57,12 +57,12 @@ export class WatchService {
       let promises : Promise<any>[] = [];
       for (let i = 0; i < this.vars.length; i++) {
         let v = this.vars[i];
-        let context = v.context === GLOBAL ? '' : v.context + ' ';
-        promises.push(this.ws.query('watch ' + context + v.name));
+        let context = v.context === GLOBAL ? '' : v.context + '.';
+        promises.push(this.ws.query('?' + context + v.name));
       }
       Promise.all(promises).then((results:MCQueryResponse[])=>{
         for (let i = 0; i < results.length; i++) {
-          if (this.vars[i] && results[i].cmd.indexOf(' '+this.vars[i].name)>-1){
+          if (this.vars[i] && results[i].cmd.indexOf(this.vars[i].name)>-1){
             this.vars[i].value = 
               results[i].err ? results[i].err.errMsg : results[i].result;
           }

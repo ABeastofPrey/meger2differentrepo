@@ -6,6 +6,7 @@ import {RobotsComponent} from './components/robots/robots.component';
 import {IoComponent} from './components/io/io.component';
 import {GuiComponent} from './components/gui/gui.component';
 import {UserMngrComponent} from './components/user-manager/user-mngr/user-mngr.component';
+import {AboutComponent} from './components/about/about.component';
 
 const routes: Routes = [
   {
@@ -14,7 +15,11 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'diagnostics'
+        redirectTo: 'about'
+      },
+      {
+        path: 'about',
+        component: AboutComponent
       },
       {
         path: 'diagnostics',

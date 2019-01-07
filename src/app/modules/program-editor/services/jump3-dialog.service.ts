@@ -1,4 +1,3 @@
-import { ErrorFrame } from './../../core/services/websocket.service';
 import { Injectable } from '@angular/core';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { DataService, MCQueryResponse } from '../../core/services';

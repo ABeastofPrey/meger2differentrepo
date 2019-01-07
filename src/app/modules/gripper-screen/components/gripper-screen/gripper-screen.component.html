@@ -10,13 +10,6 @@
         </button>
         <button mat-icon-button color="warn" (click)="deleteNode(node)" style="width: 40px;"><mat-icon>delete</mat-icon></button>
       </mat-tree-node>
-      <mat-tree-node *matTreeNodeDef="let node; when: hasNoContent" matTreeNodePadding class="new-node">
-        <mat-form-field>
-          <input matInput #itemValue placeholder="Name...">
-        </mat-form-field>
-        <button mat-icon-button color="primary" (click)="saveNode(node, itemValue.value)" style="width: 40px;"><mat-icon>save</mat-icon></button>
-        <button mat-icon-button color="warn" (click)="deleteNode(node)" style="width: 40px;"><mat-icon>delete</mat-icon></button>
-      </mat-tree-node>
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
         <button mat-icon-button matTreeNodeToggle class="table-button" (click)="setContent(node)">
           <mat-icon class="mat-icon-rtl-mirror">

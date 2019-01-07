@@ -25,16 +25,17 @@ const refreshRate = 200;
 export class TpStatService {
   
   modeChanged : EventEmitter<any> = new EventEmitter();
-  
   onlineStatus: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  private _online: boolean = false;
+  get jogEnabled() { return this.mode !== 'A'; }
   
+  private _online: boolean = false;
   private interval: any = null;
   private tpInterval: any = null;
-  
-  get jogEnabled() {
-    return this.mode !== 'A';
-  }
+  private _systemErrorCode : number = 0;
+  private lastStatString : string = null;
+  private lastErrString: string = null;
+  private _virtualDeadman : boolean = false;
+  private _virtualModeSelector : string = 'A';
   
   _enabled : boolean;
   _isMoving : boolean;
@@ -47,11 +48,9 @@ export class TpStatService {
   _deadman: boolean;
   _switch: string;
   _cart_reach: boolean;
-
-  private lastStatString : string = null;
-  private lastErrString: string = null;
   
-  private _virtualDeadman : boolean = false;
+  get systemErrorCode() { return this._systemErrorCode; }
+  
   get deadman() : boolean {return this._deadman; }
   set deadman(active:boolean) {
     let oldStat = this._deadman;
@@ -66,7 +65,6 @@ export class TpStatService {
     });
   }
   
-  private _virtualModeSelector : string = 'A';
   get mode() : string {return this._switch; }
   set mode(mode:string) {
     let oldStat = this.mode;
@@ -138,10 +136,11 @@ export class TpStatService {
           this.lastErrString = this.errorString;
           if (this.errorString.length > 0) {
             this.zone.run(()=>{
-              let ref = this.snack.open(this.errorString,'ACKNOWLEDGE');
-              ref.afterDismissed().subscribe(()=>{
-                this.ws.send('?TP_CONFIRM_ERROR');
-              });
+              setTimeout(()=>{
+                this.snack.open(this.errorString,'ACKNOWLEDGE').afterDismissed().subscribe(()=>{
+                  this.ws.send('?TP_CONFIRM_ERROR');
+                });
+              },0);
             });
           }
         }
@@ -158,22 +157,41 @@ export class TpStatService {
   startTpLibChecker() {
     if (this.tpInterval !== null)
       this.ws.clearInterval(this.tpInterval);
-    this.tpInterval = this.ws.send('? UTL_GET_SYS_INIT_DONE',(res,cmd,err)=>{
-      const offline = err || res === '0';
-      if (offline && this._online) {
+    this.tpInterval = this.ws.send('?system_state',(res,cmd,err)=>{
+      const offline = err || res !== '1000';
+      if (offline && this._online) { // WAS ONLINE BEFORE
         this.onlineStatus.next(false);
         this._online = false;
-      } else if (!offline && !this._online) {
+        this._systemErrorCode = Number(res);
+      } else if (!offline && !this._online) { // BECAME ONLINE NOW
         this._online = true;
         this.ws.clearInterval(this.tpInterval);
         this.onlineStatus.next(true);
+        this._systemErrorCode = Number(res);
+      } else if (err === null) { // was offline and still is offline
+        const result = Number(res);
+        if (!isNaN(result) && result < 0 && this._systemErrorCode >= 0) {
+          this._systemErrorCode = result;
+          this.zone.run(()=>{
+            this.dialog.open(ErrorDialogComponent,{
+              data: {
+                title: 'System Initialization Error',
+                message: "Init error #" + result + ' - please contact support for help.'
+              }
+            });
+          });
+        } else if (!isNaN(result) && result >= 0) {
+          this._systemErrorCode = result;
+        }
       }
     }, refreshRate);
   }
   
   resetAll() {
     this.ws.clearInterval(this.interval);
-    return this.ws.query('call TP_setKeepAliveBreakable(1)').then(()=>{
+    return this.ws.query('?tp_exit').then(()=>{
+      return this.ws.query('call TP_setKeepAliveBreakable(1)');
+    }).then(()=>{
       this.onlineStatus.next(false);
       this._online = false;
     });

@@ -59,6 +59,14 @@ export class ApiService {
     return this.http.post(url,formData).toPromise();
   }
   
+  uploadToDrive(file : File, ip : string) {
+    let url = environment.api_url + '/drive/api/upload';
+    let formData = new FormData();
+    formData.append('file', file);
+    formData.append('ip', ip);
+    return this.http.post(url,formData).toPromise();
+  }
+  
   uploadToPath(file:File, overwrite:boolean, path: string) {
     const url = environment.api_url + '/cs/api/upload';
     let formData = new FormData();
@@ -108,8 +116,9 @@ export class ApiService {
   }
   
   getProfilePic(username: string) {   
-    return environment.api_url + '/cs/api/' + username + '/pic?token='
-      + localStorage.getItem('jwtToken');
+    return 'assets/pics/logo_cs.png';
+    /*return environment.api_url + '/cs/api/' + username + '/pic?token='
+      + localStorage.getItem('jwtToken');*/
   }
   
   getFiles(extensions?:string) {
@@ -156,6 +165,16 @@ export class ApiService {
   downloadProjectZip(project: string) {
     const url = environment.api_url + '/cs/api/zipProject/' + project.toUpperCase();
     window.location.href = url;
+    /*return this.http.get(url,{
+        responseType: 'blob'
+      }).toPromise().then(data=>{
+        var blob = new Blob([data], { type: 'application/zip'});
+        var url = window.URL.createObjectURL(blob);
+        var pwa = window.open(url);
+        if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
+          alert('Please disable your Pop-up blocker and try again.');
+        }
+      });*/
   }
   
   deleteFile(name : string) {

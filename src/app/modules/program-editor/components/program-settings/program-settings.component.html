@@ -7,7 +7,36 @@
       </mat-expansion-panel-header>
       <div class="content">
         <div class="app-list">
-          <mat-checkbox *ngFor="let app of prj.currProject.value.apps" color="primary" [checked]="app.active" (change)="toggleActiveApp(app)">{{app.name}}</mat-checkbox>
+          <table>
+            <thead class="mat-subtitle-color">
+              <tr>
+                <td>Enable App</td>
+                <td class="center-vertical">Remote Id <mat-icon matTooltip="This ID can be used to start/pause/stop applications from remote I/O">help</mat-icon></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let app of prj.currProject.value.apps">
+                <td>
+                  <mat-checkbox color="primary" [checked]="app.active" (change)="toggleActiveApp(app)">{{app.name}}</mat-checkbox>
+                </td>
+                <td>
+                  <mat-form-field>
+                    <mat-select [value]="app.id" (selectionChange)="updateAppId(app,$event)">
+                      <mat-option [value]="-1">None</mat-option>
+                      <mat-option [value]="0">0 (0,0,0)</mat-option>
+                      <mat-option [value]="1">1 (0,0,1)</mat-option>
+                      <mat-option [value]="2">2 (0,1,0)</mat-option>
+                      <mat-option [value]="3">3 (0,1,1)</mat-option>
+                      <mat-option [value]="4">4 (1,0,0)</mat-option>
+                      <mat-option [value]="5">5 (1,0,1)</mat-option>
+                      <mat-option [value]="6">6 (1,1,0)</mat-option>
+                      <mat-option [value]="7">7 (1,1,1)</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </mat-expansion-panel>
@@ -19,11 +48,11 @@
       <div class="content">
         <mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
           <input matInput placeholder="VCruise" [(ngModel)]="prj.currProject.value.settings.vcruise" type="text">
-          <span matSuffix>mm/sec</span>
+          <span matSuffix>deg/sec</span>
         </mat-form-field>
         <mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
           <input matInput placeholder="VTran" [(ngModel)]="prj.currProject.value.settings.vtran" type="text">
-          <span matSuffix>deg/sec</span>
+          <span matSuffix>mm/sec</span>
         </mat-form-field>      
         <h3>Blending Method</h3>
         <mat-radio-group [(ngModel)]="prj.currProject.value.settings.blendingMethod" (change)="prj.onProgramSettingChanged('blendingMethod')" style="margin-bottom: 8px; display: block;">

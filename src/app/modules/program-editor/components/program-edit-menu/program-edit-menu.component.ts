@@ -19,6 +19,9 @@ import {DelayDialogComponent} from '../dialogs/delay-dialog/delay-dialog.compone
 import {IoSelectorDialogComponent} from '../dialogs/io-selector-dialog/io-selector-dialog.component';
 import {DimDialogComponent} from '../dialogs/dim-dialog/dim-dialog.component';
 import {LineParser} from '../../../core/models/line-parser.model';
+import {StopDialogComponent} from '../dialogs/stop-dialog/stop-dialog.component';
+import {Payload} from '../../../core/models/payload.model';
+import {PayloadSelectorComponent} from '../dialogs/payload-selector/payload-selector.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -78,6 +81,17 @@ export class ProgramEditMenuComponent implements OnInit {
       }
     });
   }
+  
+  menu_pay_use() {
+    this.dialog.open(PayloadSelectorComponent,{
+      data: 'Use Payload'
+    }).afterClosed().subscribe((pay:Payload)=>{
+      if (pay) {
+        const cmd = '?PAY_SET_PAYLOAD("' + pay.name + '")';
+        this.prg.insertAndJump(cmd,0);
+      }
+    });
+  }
 
   menu_plt_pick() {
     let ref = this.dialog.open(PalletPickerDialogComponent,{
@@ -116,7 +130,8 @@ export class ProgramEditMenuComponent implements OnInit {
     });
     ref.afterClosed().subscribe(plt=>{
       if (plt) {
-        let cmd = 'PLT_MOVE_TO_HOME_POSITION('+plt.robot+',"'+plt.pallet+'")';
+        const cmd = 'PLT_MOVE_TO_ENTRY_POSITION(' + plt.robot + ',"' + 
+                  plt.pallet + '")';
         this.prg.insertAndJump(cmd,0);
       }
     });
@@ -126,6 +141,28 @@ export class ProgramEditMenuComponent implements OnInit {
     ref.afterClosed().subscribe(cmd=>{
       if (cmd)
         this.prg.insertAndJump(cmd,0);
+    });
+  }
+  menu_plt_get_index() {
+    this.dialog.open(PalletPickerDialogComponent,{
+      data: {
+        title: 'Insert Get Pallet Index Command',
+        pickRobot: false
+      }
+    }).afterClosed().subscribe(plt=>{
+      if (plt)
+        this.prg.insertAndJump('?PLT_GET_INDEX_STATUS("'+plt.pallet+'")',0);
+    });
+  }
+  menu_plt_status() {
+    this.dialog.open(PalletPickerDialogComponent,{
+      data: {
+        title: 'Insert Get Pallet Status Command',
+        pickRobot: false
+      }
+    }).afterClosed().subscribe(plt=>{
+      if (plt)
+        this.prg.insertAndJump('?PLT_GET_STATUS("' + plt.pallet + '")',0);
     });
   }
   menu_edit_line() {
@@ -248,24 +285,26 @@ export class ProgramEditMenuComponent implements OnInit {
       }
     });
   }
-  menu_attach(attach:boolean) {
-    let cmd = attach ? 'Attach' : 'Detach';
+  menu_attach() {
+    let cmd = 'Attach';
     let ref = this.dialog.open(
       RobotSelectorDialogComponent,
       {
         width: '400px',
         data: {
-          title:'Insert Attach Command',
+          title:'Insert Attach/Detach Command',
           must: false
         }
       }
     );
     ref.afterClosed().subscribe((robot:string)=>{
-      if (robot) {
-        if (robot !== 'NULL')
-          cmd += ' ' + robot;
-        this.prg.insertAndJump(cmd,0);
-      }
+      if (!robot)
+        return;
+      if (robot !== 'NULL')
+        cmd += ' ' + robot + '\n\nDetach ' + robot;
+      else
+        cmd += '\n\nDetach';
+      this.prg.insertAndJump(cmd,2);
     });
   }
   menu_dopass() {
@@ -320,20 +359,10 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_stop() {
-    let ref = this.dialog.open(
-      RobotSelectorDialogComponent,
-      {
-        width: '400px',
-        data: {title:'Insert Stop Command', must: false}
-      }
-    );
-    ref.afterClosed().subscribe((robot:string)=>{
-      if (robot) {
-        let cmd = 'Stop';
-        if (robot !== 'NULL')
-          cmd += ' ' + robot;
+    let ref = this.dialog.open(StopDialogComponent,{width: '400px'});
+    ref.afterClosed().subscribe(cmd=>{
+      if (cmd)
         this.prg.insertAndJump(cmd,0);
-      }
     });
   }
   menu_waitForMotion() {

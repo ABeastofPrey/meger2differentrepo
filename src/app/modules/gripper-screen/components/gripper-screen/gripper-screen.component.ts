@@ -5,6 +5,7 @@ import {of as ofObservable, Observable, BehaviorSubject} from 'rxjs';
 import {GripperTestDialogComponent} from '../gripper-test-dialog/gripper-test-dialog.component';
 import {WebsocketService, MCQueryResponse, DataService} from '../../../core';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
+import {SingleInputDialogComponent} from '../../../../components/single-input-dialog/single-input-dialog.component';
 
 /**
  * Node for to-do item
@@ -83,11 +84,6 @@ export class ChecklistDatabase {
     } else {
       this.data.unshift(child);
     }
-    this.dataChange.next(this.data);
-  }
-
-  updateItem(node: GripperTableNode, name: string) {
-    node.item = name;
     this.dataChange.next(this.data);
   }
   
@@ -178,40 +174,35 @@ export class GripperScreenComponent implements OnInit {
     return flatNode;
   }
   
-  /** Select the category so we can insert the new item. */
   addNewItem(node: GripperTableFlatNode) {
-    const parentNode = this.flatNodeMap.get(node);
-    this.database.insertItem(parentNode!, '');
-    if (node)
-      this.treeControl.expand(node);
-  }
-
-  /** Save the node to database */
-  saveNode(node: GripperTableFlatNode, itemValue: string) {
-    if (itemValue.trim().length === 0)
-      return this.snack.open(
-        'Error: Invalid name',null,{duration:1500}
-      );
-    itemValue = itemValue.toUpperCase();
-    const nestedNode = this.flatNodeMap.get(node);
-    if (nestedNode.nodeType === 'ef') {
-      this.ws.query('?grp_end_effector_new("' + itemValue + '")')
-      .then((ret: MCQueryResponse)=>{
-        if (ret.result === '0')
-          this.database.updateItem(nestedNode!, itemValue);
-        else
-          this.database.deleteItem(nestedNode);
-      });
-    } else {
-      const ef = nestedNode.parent.item;
-      this.ws.query('?GRP_ADD_GRIPPER("' + ef + '","' + itemValue + '")')
-      .then((ret: MCQueryResponse)=>{
-        if (ret.result === '0')
-          this.database.updateItem(nestedNode!, itemValue);
-        else
-          this.database.deleteItem(nestedNode);
-      });
-    }
+    const title = 'Add ' + (node ? 'Gripper' : 'End Effector');
+    this.dialog.open(SingleInputDialogComponent,{
+      data: {
+        icon: 'add',
+        title: title,
+        placeholder: 'Name',
+        accept: title
+      }
+    }).afterClosed().subscribe((name:string)=>{
+      if (name) {
+        name = name.toUpperCase();
+        if (node === null) { // ADD AN EF
+          this.ws.query('?grp_end_effector_new("' + name + '")')
+          .then((ret: MCQueryResponse)=>{
+            if (ret.result === '0')
+              this.database.insertItem(null,name);
+          });
+        } else {
+          const ef = node.item;
+          const parent = this.flatNodeMap.get(node);
+          this.ws.query('?GRP_ADD_GRIPPER("' + ef + '","' + name + '")')
+          .then((ret: MCQueryResponse)=>{
+            if (ret.result === '0')
+              this.database.insertItem(parent, name);
+          });
+        }
+      }
+    });
   }
   
   deleteNode(node: GripperTableFlatNode) {

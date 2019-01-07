@@ -1,13 +1,16 @@
-<div class="wrapper mat-typography" #container>
+<div class="wrapper mat-typography" #container id="container">
   <div [class.hidden]="!isRouterLoading" class="spinner mat-elevation-z6">
     <img src="assets/pics/logo_only.gif">
   </div>
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="stat.systemErrorCode < 0 ? 'warn' : 'primary'">
     <button mat-icon-button (click)="drawer.toggle()" tourAnchor="menu"><mat-icon>menu</mat-icon></button>
     <span class='center-vertical'>
       {{appName}}
     </span>
-    <button mat-mini-fab matTooltip="Toggle Jog Controls" (click)="screenManager.toggleControls()" [disabled]="!tpOnline || prj.activeProject || !cooService.coosLoaded.value" tourAnchor="jog-controls"><mat-icon>touch_app</mat-icon></button>
+    <mat-icon *ngIf="stat.systemErrorCode < 0" [matTooltip]="'Error ' + stat.systemErrorCode">warning</mat-icon>
+    <div [matTooltip]="jogTooltip">
+      <button mat-mini-fab (click)="screenManager.toggleControls()" [disabled]="!tpOnline || prj.activeProject || !cooService.coosLoaded.value" tourAnchor="jog-controls"><mat-icon>touch_app</mat-icon></button>
+    </div>
     <button mat-mini-fab matTooltip="Watch" (click)="watch.toggleWindow()" tourAnchor="watch"><mat-icon>update</mat-icon></button>
     <button mat-mini-fab matTooltip="Message Log" (click)="notification.toggleWindow()" tourAnchor="message-log-button">
       <mat-icon>notifications</mat-icon>
@@ -65,18 +68,56 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
   <coordinates @fade *ngIf="screenManager.openedControls"></coordinates>
-  <notification-window
+  <div 
+    #notificationWindow
     *ngIf="notification.windowOpen"
-  ></notification-window>
-  <watch-window
+    class="window window-large mat-elevation-z6"
+    ngDraggable
+    ngResizable
+    rzContainment="#container"
+    [bounds]="container"
+    inBounds="true"
+    [handle]="handleNotifications"
+    (started)="onWindowMoving(notificationWindow)"
+  >
+    <div class="title primary-bg" #handleNotifications>
+      <span>Notifications</span>
+      <button mat-icon-button color="accent" (click)="notification.toggleWindow()"><mat-icon>close</mat-icon></button>
+    </div>
+    <notification-window></notification-window>
+  </div>
+  <div 
+    #watchWindow
+    (started)="onWindowMoving(watchWindow)"
     *ngIf="watch.windowOpen"
+    class="window mat-elevation-z6"
     ngDraggable
     [bounds]="container"
-    inBounds="true"></watch-window>
-   <terminal-window
+      inBounds="true"
+      [handle]="handleWatch"
+  >
+    <div class="title primary-bg" #handleWatch>
+      <span>Watch</span>
+      <button mat-icon-button color="accent" (click)="watch.toggleWindow()"><mat-icon>close</mat-icon></button>
+    </div>
+    <watch-window></watch-window>
+  </div>
+  <div 
+    #terminalWindow
+    (started)="onWindowMoving(terminalWindow)"
     *ngIf="terminalOpen"
+    class="window window-large mat-elevation-z6"
     ngDraggable
-    (onClose)="terminalOpen = false"
+    ngResizable
+    rzContainment="#container"
     [bounds]="container"
-    inBounds="true"></terminal-window>
+    inBounds="true"
+    [handle]="handleTerminal"
+  >
+    <div class="title primary-bg" #handleTerminal>
+      <span>Terminal</span>
+      <button mat-icon-button color="accent" (click)="terminalOpen = false"><mat-icon>close</mat-icon></button>
+    </div>
+    <terminal-window></terminal-window>
+  </div>
 </div>

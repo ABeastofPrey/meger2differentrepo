@@ -50,7 +50,7 @@ export class TerminalComponent implements OnInit {
   set cmd(val:string) {
     this._cmd = val;
     if (this.editor) {
-      this.editor.setValue(val,-1);
+      this.editor.setValue(val,1);
     }
   }
 
@@ -61,6 +61,10 @@ export class TerminalComponent implements OnInit {
   ) {}
   
   ngAfterViewInit() {
+    setTimeout(()=>{
+      const height = this.wrapper.nativeElement.scrollHeight;
+      this.wrapper.nativeElement.scrollTop = height;
+    },0);
     this.editor = ace.edit(this.editorLine.nativeElement);
     let editor = this.editor;
     editor.setOptions({
@@ -159,11 +163,10 @@ export class TerminalComponent implements OnInit {
     this.contextMenuShown = true;
   }
   
-  onClick(state:number) { // 0 - down, 1 - up
-    this.contextMenuShown = false;
-    if (state === 0)
-      this.downTime = new Date().getTime();
-    else if (new Date().getTime() - this.downTime < 200)
+  onClick(e:MouseEvent) { // 0 - down, 1 - up
+    const mouseY = e.clientY;
+    const editorLineY = this.editorLine.nativeElement.getBoundingClientRect().y;
+    if (mouseY > editorLineY)
       this.editor.focus();
   }
   
@@ -227,24 +230,11 @@ export class TerminalComponent implements OnInit {
     }
   }
   
-  /*onUploadFilesChange(e:any) {
-    let reader = new FileReader();
+  onUploadFilesChange(e:any) {
     for(let f of e.target.files) {
-      reader.readAsText(f, "UTF-8");
-      reader.onload = (evt)=>{
-        let lines: string[] = reader.result.split('\n');
-        for (let line of lines) {
-          line = line.trim();
-          if (line.length > 0)
-            this.terminal.send(line);
-        }
-      }
-      reader.onerror = (evt)=>{
-        console.log('error:');
-        console.log(evt);
-      }
+      
     }
-  }*/
+  }
 
   ngOnInit() {
   }

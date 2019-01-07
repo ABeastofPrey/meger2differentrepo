@@ -1,12 +1,13 @@
 import { Injectable, ApplicationRef } from '@angular/core';
 import {EventEmitter} from '@angular/core';
+import {CSNotification} from '../notification.model';
 
 @Injectable()
 export class NotificationService {
   
   private _notificationWindowOpen : boolean = false;
   private _unread : number = 0;
-  private _notifications : string[] = [];
+  private _notifications : CSNotification[] = [];
   
   newMessage: EventEmitter<any> = new EventEmitter();
   
@@ -19,7 +20,14 @@ export class NotificationService {
   }
   
   get notifications() {
-    return this._notifications.join('');
+    let str = '';
+    for (let n of this._notifications)
+      str += (n.err ? n.err.msg  + '\n' : n.msg);
+    return str;
+  }
+  
+  get notificationsAsArray() {
+    return this._notifications;
   }
   
   toggleWindow() {
@@ -28,7 +36,7 @@ export class NotificationService {
   }
   
   onAsyncMessage(msg:string) {
-    this._notifications.push(msg);
+    this._notifications.push(new CSNotification(msg));
     if (!this.windowOpen)
       this._unread++;
     this.ref.tick();

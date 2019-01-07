@@ -227,7 +227,15 @@ export class DataService {
   private _tpTypes : TpType[];
   get tpTypes() { return this._tpTypes; }
   set tpTypes(val: TpType[]) { this._tpTypes = val; }
-  
+  private _jogIncrements: number;
+  get jogIncrements() { return this._jogIncrements; }
+  set jogIncrements(val: number) {
+    const oldVal = this._jogIncrements;
+    this.ws.query('?TP_SET_JOG_INCREMENT_SIZE('+val+')')
+    .then((ret:MCQueryResponse)=>{
+      this._jogIncrements = ret.result === '0' ? val : oldVal;
+    });
+  }
   _refreshCycle : number = 200;
   private _tpVersion : string = null;
   _inactivityTimeout : number = null;
@@ -481,11 +489,12 @@ export class DataService {
   ) {
     this.stat.onlineStatus.subscribe(stat=>{
       if (stat) {
-        // TODO: REMOVE THIS TIMEOUT AND REPLACE WITH IS_INIT_DONE FUNCTION
-        //setTimeout(()=>{
-          this.init();
-        //},10000);
+        this.init();
       }
+    });
+    this.ws.isConnected.subscribe(stat=>{
+      if (!stat)
+        this.dataLoaded.next(false);
     });
   }
   
@@ -530,7 +539,8 @@ export class DataService {
       this.ws.query("?TP_GET_KEYBOARD_TYPES_LIST"),
       this.ws.query("?TP_GET_KEYBOARD_FORMAT"),
       this.ws.query('?ver'),
-      this.ws.query('java_ver')
+      this.ws.query('java_ver'),
+      this.ws.query('?TP_GET_JOG_INCREMENT_SIZE')
     ];
     return Promise.all(promises).then((results: MCQueryResponse[])=>{
       this._tpVersion = results[0].result;
@@ -541,6 +551,7 @@ export class DataService {
       this._softTPTypes = results[5].result.split(",");
       this._MCVersion = results[7].result;
       this._JavaVersion = results[8].result;
+      this._jogIncrements = Number(results[9].result);
       try {
         this._keyboardFormat = JSON.parse(results[6].result);
       } catch (err) {

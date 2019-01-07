@@ -1,4 +1,4 @@
-<div class="wrapper mat-typography" (contextmenu)="onContextMenu($event)" (mousedown)="onClick(0)" (mouseup)="onClick(1)" #wrapper>
+<div class="wrapper mat-typography" (contextmenu)="onContextMenu($event)" #wrapper (click)="onClick($event)">
   <!--<button mat-fab class="fab" (click)="openScriptDialog()" color="primary"><mat-icon>description</mat-icon></button>
   <input type="file" accept=".trm, .TRM" #upload (change)="onUploadFilesChange($event)" class="file-input" />-->
   <div class="terminal">
@@ -14,7 +14,7 @@
       <div class="editor" #editorLine></div>
     </div>
   </div>
-  <ul class="context-menu mat-title-color mat-elevation-z3" *ngIf="contextMenuShown" @fade [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">
+  <ul class="context-menu mat-title-color mat-elevation-z3" *ngIf="contextMenuShown" @fade [style.top.px]="contextMenuY" [style.left.px]="contextMenuX" (clickOutside)="contextMenuShown=false">
     <button mat-button (mousedown)="clear($event)">
       <div class="center-vertical">
         <mat-icon>clear</mat-icon>

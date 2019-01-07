@@ -2,6 +2,8 @@ export class Payload {
   name: string;
   refPos: position[];
   mass: number;
+  inertia: number;
+  Lx: number;
   j5_max: number;
   j5_min: number;
   j5_ident_vel: number;

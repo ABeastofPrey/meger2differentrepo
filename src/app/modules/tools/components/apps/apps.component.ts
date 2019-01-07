@@ -29,6 +29,46 @@ export class AppsComponent implements OnInit {
   
   uploadIPK() { this.uploadInput.nativeElement.click(); }
   
+  reboot() {
+    let ref = this.dialog.open(YesNoDialogComponent,{
+      width: '400px',
+      data: {
+        title: 'Reboot softMC?',
+        msg: "softMC Will reboot. Please make sure you've saved all changes before proceeding.",
+        yes: 'REBOOT',
+        no: 'CANCEL'
+      }
+    });
+    ref.afterClosed().subscribe(ret=>{
+      if (ret) {
+        this.dialog.open(UpdateDialogComponent,{
+          disableClose: true,
+          width: '100%',
+          height: '100%',
+          maxWidth: '100%',
+          closeOnNavigation: false,
+          data: 'Rebooting softMC...',
+          id: 'update'
+        });
+        this.ws.updateFirmwareMode = true;
+        this.ws.query('?user sys_reboot(0,0,0)');
+        setTimeout(()=>{
+          let ok = false;
+          let interval = setInterval(()=>{
+            if (ok)
+              return;
+            this.api.getFile("isWebServerAlive.HTML").then(ret=>{
+              ok = true;
+              clearInterval(interval);
+              location.reload(true);
+            }).catch(err=>{
+            });
+          },2000);
+        },10000);
+      }
+    });
+  }
+  
   onUploadFilesChange(e:any) {
     let ref = this.dialog.open(YesNoDialogComponent,{
       width: '400px',

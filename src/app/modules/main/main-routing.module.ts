@@ -3,7 +3,8 @@ import {Routes} from '@angular/router';
 import {MainComponent} from './components/main/main.component';
 import {RouterModule} from '@angular/router';
 import {MainAuthResolver} from './main-auth-resolver.service';
-import {AuthGuard} from '../core';
+import {ProgramEditorComponent} from '../program-editor/components/program-editor/program-editor.component';
+import {HomeScreenComponent} from '../home-screen/components/home-screen/home-screen.component';
 
 const routes: Routes = [
   {
@@ -15,7 +16,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: '../home-screen/home-screen.module#HomeScreenModule'
+        component: HomeScreenComponent
       },
       {
         path: 'dashboard',
@@ -23,8 +24,7 @@ const routes: Routes = [
       },
       {
         path: 'projects',
-        loadChildren: '../program-editor/program-editor.module#ProgramEditorModule',
-        data: {preload: false}
+        component: ProgramEditorComponent
       },
       {
         path: 'simulator',

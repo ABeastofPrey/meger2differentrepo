@@ -1,5 +1,7 @@
 import { Injectable, ApplicationRef } from '@angular/core';
-import {WebsocketService, MCQueryResponse, ErrorFrame} from './websocket.service';
+import {WebsocketService, MCQueryResponse} from './websocket.service';
+import {ErrorFrame} from '../models/error-frame.model';
+import {MatSnackBar} from '@angular/material';
 
 @Injectable()
 export class TaskService {
@@ -11,6 +13,7 @@ export class TaskService {
 
   constructor(
     private ws : WebsocketService,
+    private snack: MatSnackBar,
     private ref : ApplicationRef) {
   }
   
@@ -21,11 +24,13 @@ export class TaskService {
     let lines = list.split('\n');
     for (let line of lines) {
       const parts : string[] = line.split(',');
-      let name:string, state:string, priority: number;
+      let name:string, state:string, priority: number, path: string = null;
       if (line.indexOf("Task")===0) {
         name = parts[0].substring(9).trim();
         state = parts[1].substring(6).trim();
         priority = Number(parts[2].substring(9));
+        if (parts[3])
+          path = parts[3].substring(20);
       } else if (line.indexOf("Global")===0) {
         name = parts[0].substring(18).trim();
         state = 'Loaded Globally',
@@ -38,7 +43,8 @@ export class TaskService {
       tasks.push({
         name: name,
         state: state,
-        priority: priority
+        priority: priority,
+        filePath: path
       });
     }
     return tasks;
@@ -109,18 +115,20 @@ export class TaskService {
   
   resetAll() {
     let promises = [];
-    for (let task of this.tasks) {
+    const tasksCopy = this.tasks.slice();
+    for (let task of tasksCopy) {
       const promise = (task.priority == null) ?
-          Promise.resolve(null) : this.ws.query('KillTask ' + task.name);
-      promises.push(promise.then(()=>{
-        if (task.priority || task.state.indexOf('Global')===-1)
-          this.ws.query('Unload ' + task.name);
-      }));
+        Promise.resolve(null) : this.ws.query('KillTask ' + task.name);
+      promises.push(promise);
     }
-    return Promise.all(promises).then(()=>{
-      return this.ws.query('sys.en = 0');
-    }).then(()=>{
-      return this.ws.query('reset all');
+    return Promise.all(promises).then((ret)=>{
+      promises = [];
+      for (let i = 0; i < tasksCopy.length; i++) {
+        const task = tasksCopy[i];
+        if (task.priority || task.state.indexOf('Global')===-1)
+          promises.push(this.ws.query('Unload ' + task.name));
+      }
+      return Promise.all(promises);
     });
   }
 
@@ -130,4 +138,5 @@ export interface MCTask {
   name : string;
   state : string;
   priority : number;
+  filePath: string;
 }

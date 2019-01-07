@@ -7,6 +7,7 @@
   <button mat-raised-button color="primary" [matMenuTriggerFor]="variables" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">VARIABLES</button>
   <button mat-raised-button color="primary" [matMenuTriggerFor]="pallets" *ngIf="this.data.palletLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">PALLETS</button>
   <button mat-raised-button color="primary" [matMenuTriggerFor]="grippers" *ngIf="this.data.gripperLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">GRIPPERS</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="payloads" *ngIf="this.data.payloadLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">PAYLOADS</button>
   <button mat-raised-button color="primary" [matMenuTriggerFor]="teach" [disabled]="prg.variablesInLine.length === 0 || prg.status.statusCode !== -1">TEACH...</button>
   <button mat-raised-button color="primary" (click)="menu_edit_line()" [disabled]="prg.lineParams === null || prg.status.statusCode !== -1"><mat-icon>mode_edit</mat-icon> EDIT...</button>
   <mat-menu #teach="matMenu">
@@ -15,8 +16,7 @@
   <mat-menu #program="matMenu">
     <button mat-menu-item (click)="menu_program()">Program</button>
     <button mat-menu-item (click)="menu_call()">Call</button>
-    <button mat-menu-item (click)="menu_attach(true)">Attach</button>
-    <button mat-menu-item (click)="menu_attach(false)">Detach</button>
+    <button mat-menu-item (click)="menu_attach()">Attach/Detach</button>
   </mat-menu>
   <mat-menu #flow="matMenu">
     <button mat-menu-item (click)="menu_if_else()">If...Else...</button>
@@ -59,10 +59,15 @@
     <button mat-menu-item (click)="menu_plt_place()">Place...</button>
     <button mat-menu-item (click)="menu_plt_home()">Home...</button>
     <button mat-menu-item (click)="menu_plt_index()">Set Index...</button>
+    <button mat-menu-item (click)="menu_plt_get_index()">Get Index...</button>
+    <button mat-menu-item (click)="menu_plt_status()">Get Status...</button>
   </mat-menu>
   <mat-menu #grippers="matMenu">
     <button mat-menu-item (click)="menu_grp_use()">Use Gripper...</button>
     <button mat-menu-item (click)="menu_grp_open()">Open...</button>
     <button mat-menu-item (click)="menu_grp_close()">Close...</button>
+  </mat-menu>
+  <mat-menu #payloads="matMenu">
+    <button mat-menu-item (click)="menu_pay_use()">Set Payload...</button>
   </mat-menu>
 </div>

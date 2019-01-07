@@ -4,7 +4,7 @@
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="Variable Name" [(ngModel)]="name">
+      <input matInput placeholder="Variable Name" [(ngModel)]="name" maxlength="32">
     </mat-form-field>
     <mat-form-field *ngIf="!data.domainIsFrame">
       <mat-select placeholder="Variable Type" [(ngModel)]="varType" (selectionChange)="onTypeChange()">

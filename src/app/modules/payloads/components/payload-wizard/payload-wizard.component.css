@@ -93,3 +93,8 @@ h2, h3 { margin:0; }
   flex: 1;
   display: flex;
 }
+.temp-scara-wizard {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}

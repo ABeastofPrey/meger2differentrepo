@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {DataService, WebsocketService, MCQueryResponse} from '../../../../../core';
+import {DataService, WebsocketService, MCQueryResponse, ProjectManagerService} from '../../../../../core';
 import {IoModule} from '../../../../../core/models/io/io-module.model';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource, MatSlideToggleChange, MatSnackBar} from '@angular/material';
@@ -50,7 +50,8 @@ export class IoMappingScreenComponent implements OnInit {
     private ws: WebsocketService,
     private snack: MatSnackBar,
     private zone: NgZone,
-    private ref: ApplicationRef
+    private ref: ApplicationRef,
+    public prj: ProjectManagerService,
   ) {
     this.treeControl = new NestedTreeControl<TreeNode>(this._getChildren);
     this.dataSource = new MatTreeNestedDataSource();

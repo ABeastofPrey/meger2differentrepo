@@ -1,46 +1,32 @@
-.title { 
-  display: flex;
-  align-items: center;
-  font-size: 24px;
-  padding: 16px;
-  margin: -24px;
-  cursor: move;
-}
-.title span { flex: 1; }
-mat-card {
-  position: fixed;
-  top: 50%;
-  left: 100px;
-  width: 50%;
-  height: 30%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
 .content {
   white-space: pre;
   overflow: auto;
   flex: 1;
-  margin-top: 40px;
-}
-mwlResizable {
+  background: #fff;
+  padding: 16px;
   box-sizing: border-box;
 }
-.wrapper {
-  height: 100%;
-  width: 100%;
-}
+.content div, .content span { user-select: text; }
 .context-menu { 
   position: absolute;
-  width: 200px;
   background: #fff;
   z-index: 2;
 }
-.context-menu button {
-  width: 100%;
+.context-menu mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
 }
+.context-menu .button-text { font-size: 13px; }
+.context-menu button { padding: 0 32px 0 8px; }
 ::ng-deep .context-menu .mat-button-wrapper {
   display: flex;
   align-items: center;
+}
+.link {
+  color: blue;
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
 }

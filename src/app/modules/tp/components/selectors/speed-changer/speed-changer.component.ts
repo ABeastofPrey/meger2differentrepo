@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import {MatSliderChange} from '@angular/material';
-import {WebsocketService, TpStatService} from '../../../../core';
+import {WebsocketService, TpStatService, DataService} from '../../../../core';
 
 @Component({
   selector: 'speed-changer',
@@ -13,7 +13,8 @@ export class SpeedChangerComponent implements OnInit {
 
   constructor(
     private stat : TpStatService,
-    private ws : WebsocketService
+    private ws : WebsocketService,
+    public data: DataService
   ) { }
 
   ngOnInit() { }

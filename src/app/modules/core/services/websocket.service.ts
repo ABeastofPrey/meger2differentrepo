@@ -4,6 +4,9 @@ import {MatDialog} from '@angular/material';
 import {NotificationService} from './notification.service';
 import {environment} from '../../../../environments/environment';
 import {JwtService} from './jwt.service';
+import {ErrorFrame} from '../models/error-frame.model';
+import {ErrorDialogComponent} from '../../../components/error-dialog/error-dialog.component';
+import {Router} from '@angular/router';
 
 interface MCResponse {
   msg:  string;
@@ -27,8 +30,11 @@ export class WebsocketService {
   private _isTimeout: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private timeout: any;
   private worker = new Worker('assets/scripts/conn.js');
+  private _port: string = null;
   
+  get port() { return this._port; }
   updateFirmwareMode: boolean = false;
+  
   
   get connected(): boolean {
     return this._isConnected.value;
@@ -57,28 +63,32 @@ export class WebsocketService {
     this.socketQueueId = 0;
     this.socketQueue = [];
     this._isTimeout.next(false);
+    this._isConnected.next(false);
   }
   
   constructor(
     public dialog: MatDialog,
     private _zone: NgZone,
     private notification : NotificationService,
-    private jwt: JwtService
+    private jwt: JwtService,
+    private router: Router
   ) {
     this._zone.runOutsideAngular(()=>{
       this.worker.onmessage = (e)=>{
         if (e.data.serverMsg) {
           this._zone.run(()=>{
             switch (e.data.msg) {
-              case 0: // ONOPEN
-                //this.initLanguage().then(()=>{
+              case 0: // ONOPEN - Websocket connected, Testing connection...
+                this.query('java_port').then((ret:MCQueryResponse)=>{
+                  this._port = ret.result;
                   this._isConnected.next(true);
-                //});
-                clearTimeout(this.timeout);
-                this.timeout = null;
+                  clearTimeout(this.timeout);
+                  this.timeout = null;
+                },err=>{
+                  console.log('error!');
+                });
                 break;
               case 1: // ONERROR
-                this._isConnected.next(false);
                 this.reset();
                 if (this.timeout) {
                   clearTimeout(this.timeout);
@@ -90,10 +100,9 @@ export class WebsocketService {
                   this.timeout = null;
                 }
                 for (let ref of this.dialog.openDialogs) {
-                  if (ref.id !== 'update')
+                  if (ref.id !== 'update' && ref.id !== 'system')
                     ref.close();
                 }
-                this._isConnected.next(false);
                 this.reset();
                 break;
               case 3: // TIMEOUT
@@ -159,10 +168,6 @@ export class WebsocketService {
       if (errFrame.errType !== "NOTE" &&
           errFrame.errType !== "INFO" &&
           typeof(this.socketQueue['i_'+data['cmd_id']]) !== 'function') {
-        /*let dialogRef = this.dialog.open(ErrorDialogComponent, {
-          width: '250px',
-          data: {err: errFrame.errMsg}
-        });*/
         alert(errFrame.errMsg);
       }
     } else if (typeof(data['cmd_id']) !== 'undefined' &&
@@ -171,6 +176,21 @@ export class WebsocketService {
         // TP DIALOG MSG
       } else { // Other Server announcements
         this.notification.onAsyncMessage(data['msg']);
+        if (data['msg'] === 'No avilable ports') {
+          this.reset();
+          this._zone.run(()=>{
+            this.dialog.open(ErrorDialogComponent, {
+              width: '250px',
+              data: {
+                title: 'Connection Failed',
+                message:'All available entry stations are busy.'
+              },
+              id: 'system'
+            }).afterClosed().subscribe(()=>{
+              this.router.navigateByUrl('/login');
+            });
+          });
+        }
       }
     }
     if (typeof(data['cmd_id']) !== 'undefined' &&
@@ -203,33 +223,5 @@ export class WebsocketService {
       }
     }
     return "";
-  }
-}
-
-export class ErrorFrame {
-  
-  errType : string;
-  errCode : string;
-  errMsg: string;
-  errTask : string;
-  errLine : string;
-  errModule : string;
-  
-  constructor(private errString: string) {
-    var i = errString.indexOf(":");
-    this.errType = errString.substr(0,i).trim().toUpperCase();
-    errString = errString.substr(i+1); 
-    i = errString.indexOf(",");
-    this.errCode = errString.substr(0,i).trim();
-    i = errString.indexOf("\"");
-    errString = errString.substr(i+1);
-    i = errString.indexOf("\"");
-    this.errMsg = errString.substr(0,i);
-    errString = errString.substr(i+2);
-    var parts = errString.split(",");
-    i = parts[0].indexOf("\"");
-    this.errTask = parts[0].substr(parts[0].indexOf(":")+1).trim();
-    this.errLine = parts[2].substr(parts[2].indexOf(":")+1).trim();
-    this.errModule = parts[3].substr(parts[3].indexOf(":")+1).trim();
   }
 }

@@ -29,7 +29,8 @@ import {
   MatListModule,
   MatDividerModule,
   MatAutocompleteModule,
-  MatTreeModule
+  MatTreeModule,
+  MatRippleModule
 } from '@angular/material';
 
 @NgModule({
@@ -63,7 +64,8 @@ import {
     MatListModule,
     MatDividerModule,
     MatAutocompleteModule,
-    MatTreeModule
+    MatTreeModule,
+    MatRippleModule
   ],
   exports: [
     MatButtonModule,
@@ -94,7 +96,8 @@ import {
     MatListModule,
     MatDividerModule,
     MatAutocompleteModule,
-    MatTreeModule
+    MatTreeModule,
+    MatRippleModule
   ],
   declarations: []
 })

@@ -1,7 +1,9 @@
 import { Component, OnInit, ApplicationRef } from '@angular/core';
 import {TaskService} from '../../modules/core/services/task.service';
-import {TpStatService} from '../core';
-import {MatSnackBar} from '@angular/material';
+import {UtilsService} from '../core/services/utils.service';
+import {MCTask, ScreenManagerService, LoginService} from '../core';
+import {Router} from '@angular/router';
+import {ProgramEditorService} from '../program-editor/services/program-editor.service';
 
 @Component({
   selector: 'task-mngr',
@@ -21,8 +23,11 @@ export class TaskMngrComponent implements OnInit {
   constructor(
     public task : TaskService,
     private ref:ApplicationRef,
-    private stat: TpStatService,
-    private snack: MatSnackBar
+    private utils: UtilsService,
+    private mgr: ScreenManagerService,
+    private router: Router,
+    private prg: ProgramEditorService,
+    private login: LoginService
   ) {
     this.task.start();
   }
@@ -32,6 +37,18 @@ export class TaskMngrComponent implements OnInit {
   
   ngOnDestroy() {
     this.task.stop();
+  }
+  
+  openFile(task: MCTask) {
+    if (this.login.getCurrentUser().user.permission > 0)
+      return;
+    let path = task.filePath;
+    if (path)
+      path = path.substring(0, path.lastIndexOf('/')) + '/';
+    this.mgr.screen = this.mgr.screens[2];
+    this.router.navigateByUrl('/projects');
+    this.prg.setFile(task.name,path,null);
+    this.prg.mode = 'editor';
   }
   
   onSelectionStart(index) {
@@ -72,12 +89,7 @@ export class TaskMngrComponent implements OnInit {
     this.selected = [];
   }
   resetAll() {
-    this.stat.resetAll().then(()=>{
-      return this.task.resetAll();
-    }).then(()=>{
-      this.stat.startTpLibChecker();
-      this.snack.open('System Reset Success',null,{duration:1500});
-    });
+    this.utils.resetAll();
   }
 
 }

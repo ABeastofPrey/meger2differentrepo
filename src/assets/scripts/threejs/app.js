@@ -1,12 +1,11 @@
 var PREVIEW3D = {
   Player: function (container, service) {
     var loader = new THREE.ObjectLoader();
-    var camera, scene, renderer, controls;
+    var camera, scene, renderer, controls, raycaster;
+    var mouse = new THREE.Vector2(), INTERSECTED;
     var events = {};
     var dom = document.createElement( 'div' );
     this.dom = dom;
-    this.width = 500;
-    this.height = 500;
     this.load = function ( json ) {
       renderer = new THREE.WebGLRenderer( { antialias: true } );
       renderer.setClearColor( 0x000000 );
@@ -19,6 +18,7 @@ var PREVIEW3D = {
       dom.appendChild( renderer.domElement );
       this.setScene( loader.parse( json.scene ) );
       this.setCamera( loader.parse( json.camera ) );
+      raycaster = new THREE.Raycaster();
       events = {
         init: [],
         start: [],
@@ -72,13 +72,22 @@ var PREVIEW3D = {
       //controls.addEventListener( 'change', render );
       dispatch( events.init, arguments );
     };
+    this.getSelectedObject = function() {
+      return INTERSECTED;
+    };
+    this.addKeyListener = function(f) {
+      events.keydown.push(f);
+    };
     this.setCamera = function ( value ) {
       camera = value;
-      camera.aspect = this.width / this.height;
+      camera.aspect = dom.offsetWidth / dom.offsetHeight;
       camera.updateProjectionMatrix();
       if ( renderer.vr.enabled ) {
         dom.appendChild( WEBVR.createButton( renderer ) );
       }
+    };
+    this.getCamera = function() {
+      return camera;
     };
     this.setScene = function ( value ) {
       scene = value;
@@ -122,6 +131,32 @@ var PREVIEW3D = {
       prevTime = time;
     }
     function render() {
+      // find intersections
+      raycaster.setFromCamera(mouse,camera);
+      var intersects = raycaster.intersectObjects( scene.children );
+      if ( intersects.length > 0 ) {
+        var candidate = null;
+        for (var i=0; i<intersects.length && candidate === null; i++) {
+          if (intersects[i].object.name !== 'Plane') {
+            candidate = intersects[i].object;
+          }
+        }
+        if (candidate === null) {
+          if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+          INTERSECTED = null;
+          renderer.render( scene, camera );
+          return;
+        }
+        if ( INTERSECTED != candidate ) {
+          if (INTERSECTED) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+          INTERSECTED = candidate;
+          INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+          INTERSECTED.material.emissive.setHex( 0x007700 );
+        }
+      } else {
+        if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+        INTERSECTED = null;
+      }
       renderer.render( scene, camera );
     }
     function update() {
@@ -174,6 +209,8 @@ var PREVIEW3D = {
       dispatch( events.mouseup, event );
     }
     function onDocumentMouseMove( event ) {
+      mouse.x = ( event.offsetX / dom.offsetWidth ) * 2 - 1;
+      mouse.y = - ( event.offsetY / dom.offsetHeight ) * 2 + 1;
       dispatch( events.mousemove, event );
     }
     function onDocumentTouchStart( event ) {

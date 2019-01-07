@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ProjectManagerService, WebsocketService, MCQueryResponse, DataService} from '../../../core';
 import {App} from '../../../core/models/project/mc-project.model';
+import {MatSelectChange} from '@angular/material';
 
 @Component({
   selector: 'program-settings',
@@ -26,6 +27,16 @@ export class ProgramSettingsComponent implements OnInit {
       if (ret.result !== '0' || ret.err)
         return;
       app.active = !app.active;
+    });
+  }
+  
+  updateAppId(app: App,e:MatSelectChange) {
+    const old = app.id;
+    app.id = e.value;
+    this.ws.query('?tp_set_app_name(' + e.value + ',"' + app.name + '")')
+    .then((ret: MCQueryResponse)=>{
+      if (ret.result !== '0')
+        app.id = old;
     });
   }
 

@@ -31,5 +31,17 @@
       <td>ROT_Z</td>
       <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.z" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'rot_z')"></td>
     </tr>
+    <tr>
+      <td>SCALE_X</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.scale.x" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'scale_x')"></td>
+    </tr>
+    <tr>
+      <td>SCALE_Y</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.scale.y" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'scale_y')"></td>
+    </tr>
+    <tr>
+      <td>SCALE_Z</td>
+      <td><input type="number" [(ngModel)]="lastSelectedNode.scale.z" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'scale_z')"></td>
+    </tr>
   </table>
 </div>

@@ -3,7 +3,7 @@
   width: 100%;
   overflow: auto;
 }
-.terminal > div, .terminal > input {
+.terminal div, .terminal input {
   user-select: text;
   font-family: monospace;
 }

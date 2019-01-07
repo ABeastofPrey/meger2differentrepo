@@ -1,7 +1,8 @@
 import { ArchApi } from './arch-setting.constants';
 import { Injectable } from '@angular/core';
-import { WebsocketService, MCQueryResponse, ErrorFrame } from '../../../modules/core/services/websocket.service';
+import { WebsocketService, MCQueryResponse } from '../../../modules/core/services/websocket.service';
 import { ArchElement } from '../components/program-settings/arch-setting/arch-setting.component';
+import {ErrorFrame} from '../../core/models/error-frame.model';
 
 @Injectable()
 export class ArchSettingService {

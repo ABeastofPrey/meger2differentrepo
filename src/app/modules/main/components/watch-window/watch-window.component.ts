@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {WatchService} from '../../../../modules/core/services/watch.service';
 
 @Component({
@@ -7,10 +7,18 @@ import {WatchService} from '../../../../modules/core/services/watch.service';
   styleUrls: ['./watch-window.component.css']
 })
 export class WatchWindowComponent implements OnInit {
+  
+  @ViewChild('context') context: ElementRef;
 
   constructor(public watch:WatchService) { }
 
   ngOnInit() {
+  }
+  
+  onBlur() {
+    if (document.activeElement === this.context.nativeElement)
+      return;
+    this.watch.addVar();
   }
 
 }

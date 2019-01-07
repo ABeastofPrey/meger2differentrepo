@@ -124,7 +124,7 @@ export class RobotsComponent implements OnInit {
         this.snack.open('changes_saved','',{duration:1500});
       } else {
         this.ws.query('?tp_set_robot_dh(' + this.data.selectedRobot +
-          ',"A' + (index + 1) + '",' + this.dh[index].value + ')')
+          ',"' + this.dh[index].name + '",' + this.dh[index].value + ')')
         .then((ret: MCQueryResponse)=>{
           if (ret.result === '0') {
             this.snack.open('DH Parameters save','DISMISS');
@@ -146,7 +146,8 @@ export class RobotsComponent implements OnInit {
           data: 'Updating Robot Configuration',
           id: 'update'
         });
-        this.ws.query('?ROB_SELECT_ROBOT_CONFIGURATION("' + ret['part number'] + '",0)').then((ret:MCQueryResponse)=>{
+        this.ws.query('?ROB_SELECT_ROBOT_CONFIGURATION("' + ret.part_number + '",0)').then((ret:MCQueryResponse)=>{
+          console.log(ret);
           if (ret.result === '0') {
             this.ws.updateFirmwareMode = true;
             this.ws.query('?user sys_reboot(0,0,0)');

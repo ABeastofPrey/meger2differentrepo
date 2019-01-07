@@ -3,12 +3,15 @@
     <mat-button-toggle value="prj">Project</mat-button-toggle>
     <mat-button-toggle value="mc">Controller</mat-button-toggle>
   </mat-button-toggle-group>
+  <div class="center-vertical-horizontal">
+    <img src="assets/pics/logo_only.gif" *ngIf="prj.isLoading">
+  </div>
   <div class="project-tree" *ngIf="currProject && modeToggle === 'prj'">
     <div class="title">{{currProject.name}}</div>
     <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" tourAnchor="project-tree">
-      <mat-tree-node *matTreeNodeDef="let node">
+      <mat-tree-node *matTreeNodeDef="let node" [class.disabled]="isNodeDisabled(node)">
         <li class="leaf" (contextmenu)="openContextMenu($event,node)">
-          <div (click)="openFile(node)" (click)="selectNode(node)" [class.selected]="lastSelectedNode === node">
+          <div (click)="openFile(node)" (click)="selectNode(node)" [class.selected]="lastSelectedNode === node" [class.disabled]="isNodeDisabled(node)">
             <mat-icon class="leaf" color="primary" *ngIf="node.type==='File'">insert_drive_file</mat-icon>
             <mat-icon class='leaf' color="primary" *ngIf="node.type==='Data'">format_list_numbered</mat-icon>
             <mat-icon class="leaf library" *ngIf="node.type==='Library'">insert_drive_file</mat-icon>

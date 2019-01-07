@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
 import {TourService} from 'ngx-tour-md-menu';
 import {PreloadSelectedModulesList} from './modules/core/strategies/preload.strategy';
+import {AuthGuard} from './modules/core';
 
 const routes: Routes = [
   {
@@ -11,7 +12,8 @@ const routes: Routes = [
   },
   {
     path: '',
-    loadChildren: './modules/main/main.module#MainModule'
+    loadChildren: './modules/main/main.module#MainModule',
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter, ApplicationRef, NgZone } from '@angular/core';
 import {MatSnackBar, MatDialog} from '@angular/material';
 import {MCFile, ApiService, UploadResult} from '../../../modules/core/services/api.service';
-import {WebsocketService, MCQueryResponse, ErrorFrame} from '../../../modules/core/services/websocket.service';
+import {WebsocketService, MCQueryResponse} from '../../../modules/core/services/websocket.service';
 import {ProjectManagerService, DataService} from '../../core';
 import {Backtrace} from '../../core/models/backtrace.model';
 import {Subject} from 'rxjs';
@@ -9,6 +9,7 @@ import {TPVariable} from '../../core/models/tp/tp-variable.model';
 import {LineParser} from '../../core/models/line-parser.model';
 import {Pallet} from '../../core/models/pallet.model';
 import {YesNoDialogComponent} from '../../../components/yes-no-dialog/yes-no-dialog.component';
+import {ErrorFrame} from '../../core/models/error-frame.model';
 
 export const TASKSTATE_NOTLOADED = -1;
 export const TASKSTATE_RUNNING = 1;
@@ -84,6 +85,8 @@ export class ProgramEditorService {
         this.mode = null;
         this.activeFile = null;
         this.displayedFile = null;
+        this.editorText = '';
+        this.editorTextChange.emit('');
       }
     });
   }
@@ -242,7 +245,7 @@ export class ProgramEditorService {
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0,this.activeFile.indexOf('.'));
-      this.ws.query('?tp_stop_app("' + prj + '","' + file + '")');
+      this.ws.query('?tp_reset_app("' + prj + '","' + file + '")');
       return;
     }
     this.ws.query('KillTask ' + this.activeFile);
@@ -332,7 +335,6 @@ export class ProgramEditorService {
     }
     const cmd = '?'+file+(!isLib?'.status':'.dummyVariable');
     this.oldStatString = null;
-    console.log('START INTERVAL FOR: ' + cmd);
     this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
       if (ret !== this.oldStatString) {
         this.oldStatString = ret;

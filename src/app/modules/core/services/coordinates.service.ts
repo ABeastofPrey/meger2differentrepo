@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {DataService} from './data.service';
 import {ScreenManagerService} from './screen-manager.service';
+import {ProjectManagerService} from './project-manager.service';
 
 export class Coordinate {
   key:  string;
@@ -98,13 +99,14 @@ export class CoordinatesService {
     private _zone: NgZone,
     private ref : ApplicationRef,
     private data: DataService,
-    private mgr: ScreenManagerService
+    private mgr: ScreenManagerService,
+    private prj: ProjectManagerService
   ) { 
     this.data.dataLoaded.subscribe(stat=>{
       if (stat && this.interval === null) {  //LOADED and INTERVAL ISN'T SET
         this._zone.runOutsideAngular(() => {
           this.interval = setInterval(()=>{
-            if (this.coosLoaded.value && !this.mgr.openedControls && this.mgr.screen.url !== 'simulator' && this.mgr.screen.url !== 'teach')
+            if (this.coosLoaded.value && !this.mgr.openedControls && this.mgr.screen.url !== 'simulator' && this.mgr.screen.url !== 'teach' && !this.prj.activeProject)
               return;
             this.ws.query('?tp_get_coordinates').then((result:MCQueryResponse)=>{
               if (result.err) {
@@ -115,7 +117,8 @@ export class CoordinatesService {
                 return;
               setTimeout(()=>{
                 this.update(result.result);
-                this.coosLoaded.next(true);
+                if (!this.coosLoaded.value)
+                  this._zone.run(()=>{this.coosLoaded.next(true);});
                 result.result = null;
                 result = null;
               },0);
@@ -128,6 +131,7 @@ export class CoordinatesService {
     this.ws.isConnected.subscribe(stat=>{
       if (!stat) {
         clearInterval(this.interval);
+        this.interval = null;
         this.coosLoaded.next(false);
       }
     });

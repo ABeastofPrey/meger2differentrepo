@@ -6,11 +6,24 @@ import {DashboardService} from '../../services/dashboard.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {TourService} from 'ngx-tour-md-menu';
 import {Subscription} from 'rxjs';
+import {trigger, transition, style, animate, animateChild, group, query} from '@angular/animations';
 
 @Component({
   selector: 'dashboard-screen',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: '0' }),
+        animate('.2s', style({ opacity: '1' })),
+      ]),
+      transition(':leave', [
+        style({ opacity: '1' }),
+        animate('.2s', style({ opacity: '0' })),
+      ]),
+    ]),
+  ]
 })
 export class DashboardComponent implements OnInit {
   

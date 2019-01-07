@@ -1,0 +1,29 @@
+.main {
+  height: 100%;
+}
+
+.wrapper {
+  height: calc(100% - 36px);
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  margin: -24px -24px 24px -24px;
+  padding: 16px;
+  background-color: #00897b;
+  color: #fff;
+  font-size: 18px;
+}
+
+.actions {
+  text-align: right;
+  margin-top: 8px;
+}
+
+.content {
+  overflow: auto;
+  min-height: 100px;
+}

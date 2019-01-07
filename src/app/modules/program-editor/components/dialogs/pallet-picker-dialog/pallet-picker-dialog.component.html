@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="title">{{this.data.title}}</div>
     <div class="content">
-      <mat-form-field>
+      <mat-form-field *ngIf="this.data.pickRobot">
         <mat-select placeholder="Motion Element" [(ngModel)]="robot">
           <mat-option *ngFor="let r of robots" [value]="r">{{r}}</mat-option>
         </mat-select>
@@ -16,6 +16,6 @@
   </div>
   <div class="actions">
     <button mat-button color="primary" mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="robot === null || pallet === null">INSERT</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="(this.data.pickRobot && robot === null) || pallet === null">INSERT</button>
   </div>
 </div>

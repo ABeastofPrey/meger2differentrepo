@@ -3,7 +3,7 @@ export interface RobotModel {
   name: string;
   bus: string;
   payload: number;
-  'part number': string;
+  part_number: string;
 }
 
 export interface RobotSeries {

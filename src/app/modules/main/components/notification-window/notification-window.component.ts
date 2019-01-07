@@ -1,11 +1,27 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {NotificationService} from '../../../../modules/core/services/notification.service';
-import {ResizeEvent} from 'angular-resizable-element';
+import {LoginService, ScreenManagerService} from '../../../core';
+import {ErrorFrame} from '../../../core/models/error-frame.model';
+import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
+import {Router} from '@angular/router';
+import {trigger, transition, style, animate} from '@angular/animations';
 
 @Component({
   selector: 'notification-window',
   templateUrl: './notification-window.component.html',
-  styleUrls: ['./notification-window.component.css']
+  styleUrls: ['./notification-window.component.css'],
+  animations: [
+    trigger('fade',[
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('150ms', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('150ms', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class NotificationWindowComponent implements OnInit {
   
@@ -16,7 +32,13 @@ export class NotificationWindowComponent implements OnInit {
   contextMenuX : number = 0;
   contextMenuY : number = 0;
 
-  constructor(public notification:NotificationService) { }
+  constructor(
+    public notification:NotificationService,
+    public login: LoginService,
+    private mgr: ScreenManagerService,
+    private prg: ProgramEditorService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.notification.newMessage.subscribe(()=>{
@@ -25,34 +47,10 @@ export class NotificationWindowComponent implements OnInit {
     });
   }
   
-  validate(event: ResizeEvent): boolean {
-    const MIN_WIDTH: number = 250;
-    const MIN_HEIGHT: number = 200;
-    if (
-      event.rectangle.width &&
-      event.rectangle.height &&
-      (event.rectangle.width < MIN_WIDTH ||
-        event.rectangle.height < MIN_HEIGHT)
-    ) {
-      return false;
-    }
-    return true;
-  }
-  
-  onResizeEnd(event: ResizeEvent): void {
-    this.style = {
-      position: 'fixed',
-      left: `${event.rectangle.left}px`,
-      top: `${event.rectangle.top}px`,
-      width: `${event.rectangle.width}px`,
-      height: `${event.rectangle.height}px`
-    };
-  }
-  
   onContextMenu(e:MouseEvent) {
     e.preventDefault();
-    this.contextMenuX = e.offsetX + 16;
-    this.contextMenuY = e.offsetY + 56;
+    this.contextMenuX = e.offsetX;
+    this.contextMenuY = e.offsetY + 72;
     this.contextMenuShown = true;
   }
   
@@ -63,6 +61,17 @@ export class NotificationWindowComponent implements OnInit {
   clear() {
     this.notification.clear();
     this.contextMenuShown = false;
+  }
+  
+  goToError(err: ErrorFrame) {
+    let path = err.errTask.substring(11);
+    path = path.substring(0, path.lastIndexOf('/')) + '/';
+    const fileName = err.errTask.substring(err.errTask.lastIndexOf('/')+1);
+    this.mgr.screen = this.mgr.screens[2];
+    this.router.navigateByUrl('/projects');
+    this.prg.setFile(fileName,path,null);
+    this.prg.mode = 'editor';
+    this.notification.toggleWindow();
   }
 
 }

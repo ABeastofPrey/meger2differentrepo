@@ -15,6 +15,7 @@ export class ProjectManagerService {
   onExpandLib: EventEmitter<{app:string,lib:string}> = new EventEmitter();
   onAppStatusChange: BehaviorSubject<any> = new BehaviorSubject(null);
   activeProject: boolean = false; // TRUE IF ONE APP IS LOADED AND NOT KILLED
+  isLoading: boolean = false;
   
   private interval: any;
   private oldStat: string = null;
@@ -60,6 +61,14 @@ export class ProjectManagerService {
           if (this.oldStat === ret.result)
             return;
           this.oldStat = ret.result;
+          if (ret.result.length === 0) {
+            this.activeProject = false;
+            for (let app of this.currProject.value.apps) {
+              app.status = -1;
+            }
+            this.onAppStatusChange.next(null);
+            return;
+          }
           let status = ret.result.split(',');
           let i=0;
           let activeProject = false;
@@ -71,7 +80,7 @@ export class ProjectManagerService {
             const code = Number(status.shift());
             if (this.currProject.value.apps[i])
               this.currProject.value.apps[i].status = code;
-            if (code !== -1 && code !== 2)
+            if (code !== -1)
               activeProject = true;
             i++;
           }
@@ -90,6 +99,7 @@ export class ProjectManagerService {
     return this.ws.query('?prj_get_current_project').then((ret:MCQueryResponse)=>{
       if (ret.err)
         return Promise.reject(null);
+      this.isLoading = true;
       const projName = ret.result;
       let proj = new MCProject(projName);
       return this.ws.query('?prj_get_app_list("' + projName + '")')
@@ -109,6 +119,7 @@ export class ProjectManagerService {
         }
         return this.loadProgramSettings(proj);
         }).then(()=>{
+          this.isLoading = false;
           this.currProject.next(proj);
         });
     });
@@ -125,6 +136,9 @@ export class ProjectManagerService {
       this.ws.query('?TP_GET_PROJECT_PARAMETER("workpiece","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("MOTIONOVERLAP","")'),
     ];
+    for (let app of proj.apps) {
+      promises.push(this.ws.query('?TP_GET_APP_ID("' + app.name + '")'));
+    }
     return Promise.all(promises).then((results:MCQueryResponse[])=>{
       if (results[0].err === null && results[0].result.length > 0) {
         let n = Number(results[0].result);
@@ -154,6 +168,9 @@ export class ProjectManagerService {
         proj.settings.wpiece = results[6].result;
       }
       proj.settings.overlap = results[7].result === '1';
+      for (let i = 0; i < proj.apps.length; i++) {
+        proj.apps[i].id = Number(results[i + 8].result);
+      }
       let posArr : Limit[] = [];
       let promises : Promise<any>[] = [];
       for (let j = 1; j <= this.data.locationDescriptions.length; j++) {
@@ -245,6 +262,7 @@ export class ProjectManagerService {
   }
   
   onLimitChanged(name:string,e:Event,paramType:string,prevValue:number) {
+    console.log(name,paramType,prevValue);
     const target: any = e.target;
     const cmd = '?TP_SET_PROJECT_PARAMETER("' + name + '","' + paramType + '","' +
         target.value + '")';

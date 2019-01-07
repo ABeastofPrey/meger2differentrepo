@@ -11,13 +11,12 @@ export class RecordDialogComponent implements OnInit {
   
   duration: number = null;
   override : boolean = false;
-  is3D: boolean = false;
   x : string = 'setPoint{1}';
   y : string = 'setPoint{2}';
   z : string = 'setPoint{3}';
   x2D : string = null;
   y2D : string = null;
-  advanced : boolean = false;
+  recMode: string = '1';
   
 
   constructor(
@@ -26,17 +25,21 @@ export class RecordDialogComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const storedDuration = Number(localStorage.getItem('recDuration'));
+    if (!isNaN(storedDuration))
+      this.duration = storedDuration;
   }
   
   record() {
+    localStorage.setItem('recDuration', '' + this.duration);
     this.ref.close({
       duration: this.duration,
       override: this.override,
-      is3D: this.is3D,
-      x: this.advanced ? this.x2D : this.x,
-      y: this.advanced ? this.y2D : this.y,
+      is3D: this.recMode === '3',
+      x: this.recMode === '2' ? this.x2D : this.x,
+      y: this.recMode === '2' ? this.y2D : this.y,
       z: this.z,
-      advanced: this.advanced
+      advanced: this.recMode === '2'
     });
   }
 

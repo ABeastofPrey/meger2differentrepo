@@ -5,7 +5,7 @@
     <button mat-icon-button color="primary" matTooltip="Show external graph" (click)="showExternalGraph()"><mat-icon>insert_chart</mat-icon></button>
   </div>
   <div class="container" #container>
-    <dashboard-window [container]="container" *ngFor="let w of dashboard.windows" [params]="w"></dashboard-window>
+    <dashboard-window [container]="container" *ngFor="let w of dashboard.windows" [params]="w" @fadeIn></dashboard-window>
   </div>
   <button mat-fab color="primary" class="fab" (click)="add()" tourAnchor="dashboard-fab"><mat-icon>add</mat-icon></button>
 </div>

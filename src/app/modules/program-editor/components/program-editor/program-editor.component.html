@@ -10,7 +10,7 @@
             <h1 class="program-name" *ngIf="service.mode === 'editor'">{{service.activeFile ? service.activeFile : 'No File Selected'}}</h1>
             <div class="editor-wrapper" *ngIf="service.mode === 'editor'">
               <div class="toolbar center-vertical" tourAnchor="project-toolbar-2" *ngIf="service.status">
-                <mat-icon (click)="service.save()" matTooltip="Save" [class.disabled]="service.status.statusCode !== taskStates[0]">save</mat-icon>
+                <mat-icon (click)="service.save()" matRipple matTooltip="Save" [class.disabled]="service.status.statusCode !== taskStates[0]">save</mat-icon>
                 <mat-icon (click)="service.download()" matTooltip="Download">file_download</mat-icon>
                 <div class="separator"></div>
                 <img src="assets/pics/icons/load.png" (click)="service.load()" matTooltip="Save and Load" [class.disabled]="service.status.statusCode !== taskStates[0]">

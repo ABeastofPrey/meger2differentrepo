@@ -13,6 +13,8 @@ import {GraphComponent} from './components/graph/graph.component';
 import { IoService } from './services/io.service';
 import { CustomIOComponent } from './components/io/custom-io/custom-io.component';
 import { RobotSelectionComponent } from './components/robot-selection/robot-selection.component';
+import { IoButtonComponent } from './components/io/io-button/io-button.component';
+import { AboutComponent } from './components/about/about.component';
 
 @NgModule({
   imports: [
@@ -30,7 +32,9 @@ import { RobotSelectionComponent } from './components/robot-selection/robot-sele
     NewUserDialogComponent,
     GraphComponent,
     CustomIOComponent,
-    RobotSelectionComponent
+    RobotSelectionComponent,
+    IoButtonComponent,
+    AboutComponent
   ],
   providers: [IoService],
   entryComponents: [

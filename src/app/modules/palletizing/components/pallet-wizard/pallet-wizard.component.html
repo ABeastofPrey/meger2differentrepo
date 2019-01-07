@@ -242,7 +242,7 @@
               <mat-form-field class="input-normal"><input matInput placeholder="Vertical Offset" [(ngModel)]="dataService.selectedPallet.retract_offset_vertical" formControlName="ret_off_v"></mat-form-field>
               <mat-form-field class="input-normal"><input matInput placeholder="Horizontal Offset" [(ngModel)]="dataService.selectedPallet.retract_offset_horizontal" formControlName="ret_off_h"></mat-form-field>
             </div>
-            <mat-checkbox [(ngModel)]="dataService.selectedPallet.retExceed" color="primary" formControlName="retExceed" (change)="toggleRetExceed($event)">Can exceed limits</mat-checkbox>
+            <mat-checkbox [(ngModel)]="dataService.selectedPallet.retExceed" color="primary" formControlName="retExceed" (change)="toggleRetExceed($event)">Can exceed pallet bounds</mat-checkbox>
             <h3>Retract Direction:</h3>
             <div class="direction-picker">
               <mat-radio-group [(ngModel)]="dataService.selectedPallet.retract_direction" formControlName="ret_dir">

@@ -526,10 +526,11 @@ export class ProgramEditorAceComponent implements OnInit {
         clearTimeout(this.tooltipTimeout);
       }
       this.lastWord = token.value;
-      if (this.lastWord.trim().length === 0 || this.lastWord === ' ')
+      const tokenNoSpaces = token.value.replace(/\s/g, "X");
+      if (tokenNoSpaces.length === 0)
         return;
-      const cmd1 = 'watch ' + this.service.activeFile + ' ' + token.value;
-      const cmd2 = 'watch ' + token.value;
+      const cmd1 = 'watch ' + this.service.activeFile + ' ' + tokenNoSpaces;
+      const cmd2 = 'watch ' + tokenNoSpaces;
       this.tooltipTimeout = setTimeout(()=>{
         this.ws.query(cmd1).then((ret: MCQueryResponse)=>{
           if (ret.err) {

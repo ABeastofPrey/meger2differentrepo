@@ -30,7 +30,8 @@ export class MCProject {
         libs: [],
         active: parts[1] === '1',
         data: [],
-        status: -1
+        status: -1,
+        id: -1
       });
     }
   }
@@ -42,6 +43,7 @@ export class App {
   active: boolean;
   data: TPVariable[];
   status: number;
+  id: number;
 }
 
 export class ProjectSettings {

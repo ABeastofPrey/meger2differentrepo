@@ -1,22 +1,6 @@
-.title { 
-  display: flex;
-  align-items: center;
-  font-size: 24px;
-  padding: 16px;
-  margin: -24px;
-  cursor: move;
-}
-.title span { flex: 1; }
-mat-card {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
 .content {
   overflow: auto;
   flex: 1;
-  margin-top: 40px;
 }
 .content table { width: 100%; }
 thead td { padding: 8px; font-weight: 500; }

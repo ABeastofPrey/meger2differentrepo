@@ -10,5 +10,9 @@
       <mat-icon>system_update</mat-icon>
       <div>Update Firmware...</div>
     </a>
+    <a (click)="reboot()" *ngIf="login.permission === 'Administrator'">
+      <mat-icon>power_settings_new</mat-icon>
+      <div>Reboot softMC</div>
+    </a>
   </mat-card>
 </div>

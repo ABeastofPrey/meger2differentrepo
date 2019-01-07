@@ -11,6 +11,7 @@ import { ServerDisconnectComponent } from './components/server-disconnect/server
 import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component';
 import { SuccessDialogComponent } from './components/success-dialog/success-dialog.component';
 import {TourMatMenuModule} from 'ngx-tour-md-menu';
+import { SingleInputDialogComponent } from './components/single-input-dialog/single-input-dialog.component';
   
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {TourMatMenuModule} from 'ngx-tour-md-menu';
     PageNotFoundComponent,
     ServerDisconnectComponent,
     ErrorDialogComponent,
-    SuccessDialogComponent
+    SuccessDialogComponent,
+    SingleInputDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -31,6 +33,11 @@ import {TourMatMenuModule} from 'ngx-tour-md-menu';
   ],
   providers: [],
   bootstrap: [ControlStudioComponent],
-  entryComponents: [ServerDisconnectComponent, ErrorDialogComponent, SuccessDialogComponent]
+  entryComponents: [
+    ServerDisconnectComponent,
+    ErrorDialogComponent,
+    SuccessDialogComponent,
+    SingleInputDialogComponent
+  ]
 })
 export class AppModule { }

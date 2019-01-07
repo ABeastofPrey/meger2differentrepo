@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import {MatSnackBar, MatDialog} from '@angular/material';
+import {MatSnackBar} from '@angular/material';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ApiService, LoginService, UploadResult, ScreenManagerService, TpStatService, ControlStudioScreen} from '../../../core';
 import {Router} from '@angular/router';
-import {TourService} from 'ngx-tour-md-menu';
-import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 
 @Component({
   selector: 'main-menu',

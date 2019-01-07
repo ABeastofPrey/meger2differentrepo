@@ -88,3 +88,8 @@ mat-card-content {
   display: flex;
   align-items: center;
 }
+.graphs {
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 -16px 0 -16px
+}

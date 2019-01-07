@@ -81,8 +81,16 @@ export class SimulatorService {
         case 'rot_z':
           obj.rotation.z = val * Math.PI / 180;
           break;
+        case 'scale_x':
+          obj.scale.x = val;
+          break;
+        case 'scale_y':
+          obj.scale.y = val;
+          break;
+        case 'scale_z':
+          obj.scale.z = val;
+          break;
       }
     }
   }
-  
 }

@@ -4,8 +4,12 @@
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="Project Name" [(ngModel)]="fileName">
+      <input matInput placeholder="Project Name" [(ngModel)]="fileName" maxlength="32">
     </mat-form-field>
+    <div class="center-vertical" style="color:red;">
+      <mat-icon>warning</mat-icon>
+      This will kill all tasks and libraries currently running.
+    </div>
   </div>
   <div class="actions">
     <button mat-button mat-dialog-close>CANCEL</button>

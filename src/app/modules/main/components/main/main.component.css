@@ -16,7 +16,7 @@
 }
 mat-toolbar { z-index: 2; }
 mat-toolbar span { flex: 1; }
-mat-toolbar button { margin-right: 16px; }
+mat-toolbar button, mat-toolbar > mat-icon { margin-right: 16px; }
 mat-sidenav-container {
   -webkit-box-flex: 1;
   -ms-flex: 1;
@@ -45,26 +45,41 @@ login-screen { flex: 1; }
   justify-content: center;
   font-weight: bold;
 }
-notification-window, terminal-window {
-  position: absolute;
-  z-index: 5;
-  overflow: hidden;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.window .title { 
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  padding: 16px;
+  cursor: move;
+  box-sizing: border-box;
+  min-height: 60px;
+}
+.window .title span { flex: 1; }
+watch-window, notification-window, terminal-window {
+  flex: 1;
+  display: flex;
 }
 watch-window {
+  max-width: 450px;
+  min-height: 0;
+  width: auto;
+}
+.window {
   position: absolute;
   z-index: 5;
-  width: 50%;
   overflow: hidden;
-  padding: 16px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  max-width: 450px;
   max-height: 100%;
+  top: 25%;
+  left: 25%;
+  background: #fff;
+  min-height: 100px;
+}
+.window-large {
+  width: 50%;
+  height: 250px;
 }
 .hidden { visibility: hidden; }
 .emulator-settings { 
@@ -73,6 +88,7 @@ watch-window {
   max-width: 0;
   padding: 0;
   overflow: hidden;
+  z-index: 11;
 }
 .emulator-settings.open {
   padding: 16px 24px;

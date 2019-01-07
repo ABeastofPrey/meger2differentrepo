@@ -1,6 +1,8 @@
 import { Component, OnInit} from '@angular/core';
 import {WebsocketService, MCQueryResponse} from '../../modules/core/services/websocket.service';
-import {ScreenManagerService} from '../core';
+import {ScreenManagerService, LoginService} from '../core';
+import {Router} from '@angular/router';
+import {ProgramEditorService} from '../program-editor/services/program-editor.service';
 
 @Component({
   selector: 'error-history',
@@ -16,7 +18,11 @@ export class ErrorHistoryComponent implements OnInit {
   private lastErrString : string = null;
 
   constructor(
-    private ws : WebsocketService
+    private ws : WebsocketService,
+    private mgr: ScreenManagerService,
+    private router: Router,
+    private prg: ProgramEditorService,
+    public login: LoginService
   ) { }
 
   ngOnInit() {
@@ -70,6 +76,16 @@ export class ErrorHistoryComponent implements OnInit {
       this.update(result.result);
       this.ws.query('?TP_CONFIRM_ERROR');
     });
+  }
+  
+  goToError(err: string) {
+    let path = err.substring(11);
+    path = path.substring(0, path.lastIndexOf('/')) + '/';
+    const fileName = err.substring(err.lastIndexOf('/')+1);
+    this.mgr.screen = this.mgr.screens[2];
+    this.router.navigateByUrl('/projects');
+    this.prg.setFile(fileName,path,null);
+    this.prg.mode = 'editor';
   }
 
 }

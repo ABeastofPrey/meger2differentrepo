@@ -15,7 +15,7 @@
       </div>
     </mat-expansion-panel-header>
     <div><b>Task:</b>&nbsp;{{e.task}}</div>
-    <div><b>File:</b>&nbsp;{{e.file}}</div>
+    <div><b>File:</b>&nbsp;<span *ngIf="login.getCurrentUser().user.permission === 0 && e.file.indexOf('.')>0" matRipple [matRippleRadius]="16" class="link" (mousedown)="goToError(e.file)">{{e.file}}</span><span *ngIf="login.getCurrentUser().user.permission === 1 || e.file.indexOf('.')===-1">{{e.file}}</span></div>
     <div><b>Line:</b>&nbsp;{{e.line}}</div>
     <div><b>Module:</b>&nbsp;{{e.module}}</div>
   </mat-expansion-panel>

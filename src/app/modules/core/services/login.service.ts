@@ -16,11 +16,6 @@ export class LoginService {
   private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
   
-  private _port: string = null;
-  get port() {
-    return this._port;
-  }
-
   get fName() : string {
     if (this.getCurrentUser().user) {
       const fullName = this.getCurrentUser().user.fullName;
@@ -90,9 +85,9 @@ export class LoginService {
       this.ws.send('?tp_exit');
       this.ws.reset();
     }
+    this.purgeAuth();
     const params = serverDisconnected ? {serverDisconnected:'true'} : {};
     this.router.navigate(['/login'], {queryParams: params});
-    this.purgeAuth();
   }
 
   constructor(
@@ -102,11 +97,7 @@ export class LoginService {
     private jwtService: JwtService
   ) {
     this.ws.isConnected.subscribe(stat=>{
-      if (stat) {
-          this.ws.query('java_port').then((ret:MCQueryResponse)=>{
-            this._port = ret.result;
-          });
-      } else if (this.port && !this.ws.updateFirmwareMode) {
+      if (!stat && this.ws.port && !this.ws.updateFirmwareMode) {
         this.logout(true);
       }
     });

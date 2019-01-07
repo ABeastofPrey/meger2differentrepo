@@ -5,6 +5,7 @@ import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Subscription} from 'rxjs';
 import {trigger, transition, style, animate} from '@angular/animations';
+import {ScreenManagerService, WebsocketService} from '../../../core';
 
 declare var Plotly;
 
@@ -56,7 +57,9 @@ export class HomeScreenComponent implements OnInit {
     public login : LoginService,
     public notification : NotificationService,
     public groupManager : GroupManagerService,
-    private api : ApiService
+    public ws: WebsocketService,
+    private api : ApiService,
+    private screenMngr: ScreenManagerService
   ) {
 
   }
@@ -125,8 +128,8 @@ export class HomeScreenComponent implements OnInit {
       }
     }];
     setTimeout(()=>{
-      Plotly.plot(this.gDisk.nativeElement, data, layout, {staticPlot: true});
-      Plotly.plot(this.gMem.nativeElement, data2, layout2, {staticPlot: true});
+      Plotly.newPlot(this.gDisk.nativeElement, data, layout, {staticPlot: true});
+      Plotly.newPlot(this.gMem.nativeElement, data2, layout2, {staticPlot: true});
       this.chartInit = true;
     },200);
   }
@@ -143,6 +146,10 @@ export class HomeScreenComponent implements OnInit {
     });
     window.addEventListener('resize',()=>{
       this.updateCharts();
+    });
+    this.screenMngr.controlsAnimating.subscribe(stat=>{
+      if (!stat)
+        this.updateCharts();
     });
   }
   

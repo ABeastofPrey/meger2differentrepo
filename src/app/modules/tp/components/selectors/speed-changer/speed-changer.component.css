@@ -1,9 +1,11 @@
 mat-slider { width: 95%; display: block;}
-
 @media screen and (min-width: 780px) {
   mat-slider { width: 50%; display: inline-block;}
 }
-
 @media screen and (min-width: 1152px) {
   mat-slider { width: 75%;}
+}
+.short {
+  width: 100px;
+  margin-left: 16px;
 }

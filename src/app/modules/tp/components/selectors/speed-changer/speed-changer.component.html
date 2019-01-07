@@ -3,4 +3,14 @@
   (change)="onChange($event)"
   >
 </mat-slider>
-<div *ngIf="val===0.1">Incremental</div>
+<div *ngIf="val===0.1" class="center-vertical">
+  <span>Incremental</span>
+  <mat-form-field class="short">
+    <mat-select placeholder="Percision" [value]="data.jogIncrements" (selectionChange)="data.jogIncrements = $event.value">
+      <mat-option [value]="1">Small</mat-option>
+      <mat-option [value]="2">Medium</mat-option>
+      <mat-option [value]="3">Large</mat-option>
+      <mat-option [value]="4">Huge</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

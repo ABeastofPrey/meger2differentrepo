@@ -3,19 +3,20 @@ import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource, MatDialog} from '@angular/material';
 import {of as observableOf, Subscription} from 'rxjs';
 import {ProgramEditorService, getStatusString} from '../../services/program-editor.service';
-import {ApiService} from '../../../../modules/core/services/api.service';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {MCFile, ProjectManagerService, DataService, WebsocketService, MCQueryResponse} from '../../../core';
 import {MCProject} from '../../../core/models/project/mc-project.model';
 import {ElementRef} from '@angular/core';
 import {NewAppDialogComponent} from '../toolbar-dialogs/new-app-dialog/new-app-dialog.component';
 import {NewLibDialogComponent} from '../toolbar-dialogs/new-lib-dialog/new-lib-dialog.component';
-import {ApplicationRef} from '@angular/core';
 import {NgZone} from '@angular/core';
 
 const leafTypes = [
   'File','Data','Library','Macros','Settings','Errors','Dependency','Frames',
   'Pallets','Grippers','Vision','Conveyor','IO','Payloads'
+];
+const disableWhenProjectActive = [
+ 'DATA','MACROS','SETTINGS','ERRORS','FRAMES','PALLETS','GRIPPERS','PAYLOADS'
 ];
 
 @Component({
@@ -50,7 +51,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   constructor(
     public service : ProgramEditorService,
     private dialog : MatDialog,
-    private prj: ProjectManagerService,
+    public prj: ProjectManagerService,
     private data: DataService,
     private ws: WebsocketService,
     private zone: NgZone
@@ -65,7 +66,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         this.zone.run(()=>{
           this.refreshData();
         });
+      } else {
+        this.nestedDataSource._data.next(null);
+        this.nestedTreeControl.dataNodes = [];
       }
+    }));
+    this.subscriptions.push(this.prj.onAppStatusChange.subscribe(stat=>{
+      if (this.service.mode === null || this.prj.activeProject && disableWhenProjectActive.includes(this.service.mode.toUpperCase()))
+        this.service.mode = 'editor';
     }));
     this.subscriptions.push(this.prj.onExpand.subscribe(name=>{
       const appsNode = this.nestedDataSource.data[0];
@@ -87,6 +95,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     for (let sub of this.subscriptions) {
       sub.unsubscribe();
     }
+  }
+  
+  isNodeDisabled(node:TreeNode) {
+    if (!this.prj.activeProject)
+      return false;
+    if (disableWhenProjectActive.includes(node.type.toUpperCase()))
+      return true;
+    return false;
   }
   
   getStatusString(stat: number) {
@@ -114,6 +130,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   }
   
   openFile(n:TreeNode) {
+    if (this.isNodeDisabled(n))
+      return;
     if (this.service.isDirty && this.service.activeFile) {
       this.dialog.open(YesNoDialogComponent,{
         data: {

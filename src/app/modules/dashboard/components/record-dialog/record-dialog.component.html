@@ -3,18 +3,20 @@
     <div class="title primary-bg">Start a New Recording</div>
     <div class="content">
       <mat-form-field>
-        <input type="number" placeholder="Duration [m/s]" matInput [(ngModel)]="duration">
+        <input type="number" placeholder="Duration" matInput [(ngModel)]="duration">
+        <span matSuffix>ms.</span>
       </mat-form-field>
-      <div class="align-vertical">
-        <mat-checkbox *ngIf="data.isGroup" [(ngModel)]="is3D" color="primary" [disabled]="advanced">3D Recording</mat-checkbox>
-        <mat-checkbox *ngIf="data.isGroup" [(ngModel)]="advanced" color="primary" style="margin-left: 16px;">Advanced 2D</mat-checkbox>
-      </div>
-      <div style="margin-top: 16px;" *ngIf="is3D && !advanced">
+      <mat-radio-group *ngIf="data.isGroup" [(ngModel)]="recMode">
+        <mat-radio-button value="1">Dashboard 2D</mat-radio-button>
+        <mat-radio-button value="2" style="margin-left: 16px;">Advanced 2D</mat-radio-button>
+        <mat-radio-button value="3" style="margin-left: 16px;">3D</mat-radio-button>
+      </mat-radio-group>
+      <div style="margin-top: 16px;" *ngIf="recMode === '3'">
         <mat-form-field><input placeholder="X" matInput [(ngModel)]="x"></mat-form-field>
         <mat-form-field><input placeholder="Y" matInput [(ngModel)]="y"></mat-form-field>
         <mat-form-field><input placeholder="Z" matInput [(ngModel)]="z"></mat-form-field>
       </div>
-      <div style="margin-top: 16px;" *ngIf="advanced">
+      <div style="margin-top: 16px;" *ngIf="recMode === '2'">
         <mat-form-field><input placeholder="X" matInput [(ngModel)]="x2D"></mat-form-field>
         <mat-form-field><input placeholder="Y" matInput [(ngModel)]="y2D"></mat-form-field>
       </div>
@@ -26,7 +28,7 @@
       mat-button
       color="primary"
       (click)="record()"
-      [disabled]="(data.params.length === 0 && !is3D && !advanced) || duration === null || duration < 10 || (!advanced && is3D && (x===null || y===null || z===null || x.length===0 || y.length===0 || z.length===0)) || (advanced && (x2D===null || y2D===null || x2D.length===0 || y2D.length===0))">
+      [disabled]="(data.params.length === 0 && recMode === '1') || duration === null || duration < 10 || (recMode === '3' && (x===null || y===null || z===null || x.length===0 || y.length===0 || z.length===0)) || (recMode === '2' && (x2D===null || y2D===null || x2D.length===0 || y2D.length===0))">
         START RECORDING
     </button>
   </div>

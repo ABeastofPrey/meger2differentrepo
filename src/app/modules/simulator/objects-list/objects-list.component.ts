@@ -17,7 +17,7 @@ export class ObjectsListComponent implements OnInit {
   draggedNode: TreeNode = null;
 
   constructor(private sim: SimulatorService) { }
-
+  
   ngOnInit() {
     this.nestedTreeControl = new NestedTreeControl<TreeNode>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();

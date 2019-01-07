@@ -41,7 +41,7 @@ export class RobotService {
       for (let axes of rType) {
         for (let series of axes.series) {
           for (let m of series.models) {
-            this.stringToModelMapper.set(m['part number'],m);
+            this.stringToModelMapper.set(m.part_number,m);
           }
         }
       }

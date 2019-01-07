@@ -12,12 +12,20 @@
         {{robot.selectedRobot.name}}
       </div>
       <div>
+        <span class="mat-subtitle-color">Type </span>
+        {{robot.selectedRobot.type}}
+      </div>
+      <div>
         <span class="mat-subtitle-color">Bus Type: </span>
         {{robot.selectedRobot.bus}}
       </div>
       <div>
         <span class="mat-subtitle-color">Max Payload: </span>
         {{robot.selectedRobot.payload}} [Kg.]
+      </div>
+      <div>
+        <span class="mat-subtitle-color">Part Number: </span>
+        {{robot.selectedRobot.part_number}}
       </div>
     </div>
     <div *ngIf="robot.selectedRobot === null">N/A</div>

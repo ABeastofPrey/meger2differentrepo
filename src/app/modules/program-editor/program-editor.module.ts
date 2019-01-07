@@ -48,6 +48,8 @@ import { JumpDialogComponent } from './components/dialogs/jump-dialog/jump-dialo
 import { DataNotArrayPipe } from './components/dialogs/jump-dialog/jump-dialog.pipe';
 import { Jump3DialogComponent } from './components/dialogs/jump3-dialog/jump3-dialog.component';
 import { Jump3DialogService } from './services/jump3-dialog.service';
+import {StopDialogComponent} from './components/dialogs/stop-dialog/stop-dialog.component';
+import {PayloadSelectorComponent} from './components/dialogs/payload-selector/payload-selector.component';
 
 @NgModule({
   imports: [
@@ -101,7 +103,9 @@ import { Jump3DialogService } from './services/jump3-dialog.service';
     WhileDialogComponent,
     JumpDialogComponent,
     Jump3DialogComponent,
-    DataNotArrayPipe
+    DataNotArrayPipe,
+    StopDialogComponent,
+    PayloadSelectorComponent
   ],
   entryComponents: [
     NewProjectDialogComponent,
@@ -132,7 +136,9 @@ import { Jump3DialogService } from './services/jump3-dialog.service';
     SubDialogComponent,
     WhileDialogComponent,
     JumpDialogComponent,
-    Jump3DialogComponent
+    Jump3DialogComponent,
+    StopDialogComponent,
+    PayloadSelectorComponent
   ],
   exports: [
     ProgramEditorComponent

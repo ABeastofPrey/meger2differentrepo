@@ -1,13 +1,13 @@
 <div class="wrapper mat-typography" (click)="toggleFocus()">
   <ul class="menu mat-elevation-z1">
-    <li (mouseenter)="currMenu=1" [class.selected]="onFocus && currMenu===1">Project</li>
-    <li (mouseenter)="currMenu=2" [class.selected]="onFocus && currMenu===2" [class.disabled]="this.prj.currProject.value === null">Create</li>
-    <li (mouseenter)="currMenu=3" [class.selected]="onFocus && currMenu===3 && prgService.mode === 'editor'" [class.disabled]="prgService.mode !== 'editor'">Edit</li>
+    <li (mouseenter)="currMenu=1" [class.selected]="onFocus && currMenu===1" [class.disabled]="this.prj.currProject.value === null || prj.activeProject">Project</li>
+    <li (mouseenter)="currMenu=2" [class.selected]="onFocus && currMenu===2" [class.disabled]="this.prj.currProject.value === null || prj.activeProject">Create</li>
+    <li (mouseenter)="currMenu=3" [class.selected]="onFocus && currMenu===3 && prgService.mode === 'editor'" [class.disabled]="prgService.mode !== 'editor' || prj.activeProject">Edit</li>
     <li (mouseenter)="currMenu=4" [class.selected]="onFocus && currMenu===4" [class.disabled]="this.prj.currProject.value === null">Run</li>
   </ul>
 </div>
-<div class="dropdown-container mat-title-color" *ngIf="onFocus" (click)="onFocus=false">
-  <ul class="dropdown-menu menu1" *ngIf="currMenu === 1">
+<div class="dropdown-container mat-title-color" *ngIf="onFocus && this.prj.currProject.value" (click)="onFocus=false">
+  <ul class="dropdown-menu menu1" *ngIf="currMenu === 1 && !prj.activeProject">
     <li (click)="new()"><mat-icon>note_add</mat-icon>New...</li>
     <li (click)="open()"><mat-icon>create_new_folder</mat-icon>Open...</li>
     <div class="seperator"></div>
@@ -18,12 +18,12 @@
     <li (click)="rename()"><mat-icon>edit</mat-icon>Rename...</li>
     <li (click)="delete()" class="warn"><mat-icon>delete</mat-icon>Delete...</li>
   </ul>
-  <ul class="dropdown-menu menu2" *ngIf="currMenu === 2 && this.prj.currProject.value">
+  <ul class="dropdown-menu menu2" *ngIf="currMenu === 2 && this.prj.currProject.value && !prj.activeProject">
     <li (click)="newApp()"><mat-icon>add</mat-icon>App...</li>
     <li (click)="newLib()"><mat-icon>add</mat-icon>Library...</li>
     <li style="cursor: not-allowed;"><mat-icon>add</mat-icon>Dependency...</li>
   </ul>
-  <ul class="dropdown-menu menu3" *ngIf="currMenu === 3 && prgService.mode === 'editor'">
+  <ul class="dropdown-menu menu3" *ngIf="currMenu === 3 && prgService.mode === 'editor' && !prj.activeProject">
     <li (click)="undo()"><mat-icon>undo</mat-icon>Undo</li>
     <li (click)="redo()"><mat-icon>redo</mat-icon>Redo</li>
     <div class="seperator"></div>

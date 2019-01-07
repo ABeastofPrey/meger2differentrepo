@@ -76,7 +76,7 @@ export class DashboardWindowComponent implements OnInit {
       '{' + this.params.target.join(',') + '}' : this.params.target[0];
     if (this.params.cartesian)
       target = '#' + target;
-    cmd += target;
+    cmd += ' ' + target;
     if (this.params.vel)
       cmd += ' VCruise=' + this.params.vel;
     if (this.params.acc)

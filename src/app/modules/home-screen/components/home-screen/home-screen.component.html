@@ -12,7 +12,7 @@
             VIRTUAL CONTROLLER
           </div>
         </div>
-        <p>Connected on port <b>{{login.port}}</b>.</p>
+        <p>Connected on port <b>{{ws.port}}</b>.</p>
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="6" rowspan="1">
@@ -36,10 +36,10 @@
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="6" rowspan="1">
-      <mat-card style="white-space: pre-wrap;" (contextmenu)="onContextMenu($event)" (click)="onMessageLogClick()" tourAnchor="message-log">
+      <mat-card style="white-space: pre-wrap;" (contextmenu)="onContextMenu($event)" tourAnchor="message-log">
         Message Log
-        <mat-card-content #msgLogContainer>{{notification.notifications}}</mat-card-content>
-        <ul class="context-menu mat-title-color mat-elevation-z3" *ngIf="contextMenuShown" @fade [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">
+        <mat-card-content #msgLogContainer style="user-select: text;">{{notification.notifications}}</mat-card-content>
+        <ul class="context-menu mat-title-color mat-elevation-z3" *ngIf="contextMenuShown" @fade [style.top.px]="contextMenuY" [style.left.px]="contextMenuX" (clickOutside)="onMessageLogClick()">
           <button mat-button (click)="clear()">
             <div class="center-vertical">
               <mat-icon>clear</mat-icon>
