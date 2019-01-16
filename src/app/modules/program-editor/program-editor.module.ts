@@ -48,6 +48,9 @@ import { JumpDialogComponent } from './components/dialogs/jump-dialog/jump-dialo
 import { DataNotArrayPipe } from './components/dialogs/jump-dialog/jump-dialog.pipe';
 import { Jump3DialogComponent } from './components/dialogs/jump3-dialog/jump3-dialog.component';
 import { Jump3DialogService } from './services/jump3-dialog.service';
+import { PositionTriggerComponent } from './components/program-settings/position-trigger/position-trigger.component';
+import { NewPositionTriggerComponent } from './components/program-settings/new-position-trigger/new-position-trigger.component';
+import { PositionTriggerService } from './services/position-trigger.service';
 import {StopDialogComponent} from './components/dialogs/stop-dialog/stop-dialog.component';
 import {PayloadSelectorComponent} from './components/dialogs/payload-selector/payload-selector.component';
 
@@ -103,6 +106,8 @@ import {PayloadSelectorComponent} from './components/dialogs/payload-selector/pa
     WhileDialogComponent,
     JumpDialogComponent,
     Jump3DialogComponent,
+    PositionTriggerComponent,
+    NewPositionTriggerComponent,
     DataNotArrayPipe,
     StopDialogComponent,
     PayloadSelectorComponent
@@ -137,6 +142,8 @@ import {PayloadSelectorComponent} from './components/dialogs/payload-selector/pa
     WhileDialogComponent,
     JumpDialogComponent,
     Jump3DialogComponent,
+    PositionTriggerComponent,
+    NewPositionTriggerComponent,
     StopDialogComponent,
     PayloadSelectorComponent
   ],
@@ -146,7 +153,8 @@ import {PayloadSelectorComponent} from './components/dialogs/payload-selector/pa
   providers: [
     ProgramEditorService,
     ArchSettingService,
-    Jump3DialogService
+    Jump3DialogService,
+    PositionTriggerService
   ]
 })
 export class ProgramEditorModule { }

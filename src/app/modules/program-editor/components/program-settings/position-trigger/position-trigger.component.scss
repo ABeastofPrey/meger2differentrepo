@@ -1,0 +1,25 @@
+.position-trigger-container {
+    position: relative;
+    .add-new-btn {
+        position: absolute;
+        right: 20px;
+        z-index: 101;
+    }
+    .position-trigger-table {
+        max-height: 400px;
+        overflow-y: auto;
+        mat-header-cell:nth-child(1), mat-cell:nth-child(1) {
+            flex: 0;
+            min-width: 60px;
+        };
+        mat-cell:nth-child(2) {
+            display: inline-block;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-height: auto;
+        }
+    }
+    .delete-btn {
+        margin-top: 10px;
+    }
+}

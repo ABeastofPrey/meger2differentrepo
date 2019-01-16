@@ -7,7 +7,7 @@ import { Jump3DialogComponent } from './jump3-dialog.component';
 import { range, curry, compose, map } from 'ramda';
 import * as Faker from 'faker';
 
-describe('JumpDialogComponent', () => {
+describe('Jump3DialogComponent', () => {
   let component: Jump3DialogComponent;
   let fixture: ComponentFixture<Jump3DialogComponent>;
   const jump3DialogService = jasmine.createSpyObj('Jump3DialogService',
@@ -40,35 +40,35 @@ describe('JumpDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should call retriveMotionElements to retrive motion elements.', async () => {
+  it('should call retriveMotionElements to retrive motion elements.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(motionElemSyp.calls.any()).toBe(true);
     });
-  });
+  }));
 
-  it('should call retriveDestFrames to retrive dest frames.', async () => {
+  it('should call retriveDestFrames to retrive dest frames.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(destFramesSyp.calls.any()).toBe(true);
     });
-  });
+  }));
 
-  it('should call retriveVolocityMax to retrive volocity max.', async () => {
+  it('should call retriveVolocityMax to retrive volocity max.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(volocityMxSyp.calls.any()).toBe(true);
     });
-  });
+  }));
 
-  it('should call retriveAccelearationMax to retrive accelearation max.', async () => {
+  it('should call retriveAccelearationMax to retrive accelearation max.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(accelearMxSyp.calls.any()).toBe(true);
     });
-  });
+  }));
 
-  it('should successfully assemble required parameters.', async () => {
+  it('should successfully assemble required parameters.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(component.requiredPars.length).toBeGreaterThanOrEqual(4);
@@ -77,30 +77,30 @@ describe('JumpDialogComponent', () => {
       expect(component.requiredPars[2].options).toBe(fakeDestFra);
       expect(component.requiredPars[3].options).toBe(fakeDestFra);
     });
-  });
+  }));
 
-  it('should successfully assemble optional parameters.', async () => {
+  it('should successfully assemble optional parameters.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(component.optionalPars.length).toBeGreaterThanOrEqual(4);
     });
-  });
+  }));
 
-  it('should disable advanced before selected required parameters.', async () => {
+  it('should disable advanced before selected required parameters.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(component.enableAdvanced).toBe(false);
     });
-  });
+  }));
 
-  it('should have no invalid validator for optional parameter at beginning.', async () => {
+  it('should have no invalid validator for optional parameter at beginning.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(component.hasInvalidOptional).toBe(false);
     });
-  });
+  }));
 
-  it('should have invalid validator for require paramter when user un-selected.', async () => {
+  it('should have invalid validator for require paramter when user un-selected.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       const requiredControl = component.requiredPars[0].control;
@@ -108,9 +108,9 @@ describe('JumpDialogComponent', () => {
       expect(component.enableAdvanced).toBe(false);
       expect(component.errorMessage(requiredControl)).toBe('This field is required');
     });
-  });
+  }));
 
-  it('should have invalid validator for optional paramter when user enter invalid value.', async () => {
+  it('should have invalid validator for optional paramter when user enter invalid value.', async(() => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       const volocityPar = component.optionalPars[2];
@@ -121,6 +121,6 @@ describe('JumpDialogComponent', () => {
       // expect(component.hasInvalidOptional).toBe(true);
       // expect(component.errorMessage(volocityCtl)).toBe(`Please enter a number in (0, ${fakeVMax}).`);
     });
-  });
+  }));
 
 });

@@ -41,6 +41,11 @@
           <input matInput placeholder="Blending Percentage" [(ngModel)]="blending">
           <span matSuffix>%</span>
         </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Postion Trigger" [(ngModel)]="pts" multiple>
+            <mat-option *ngFor="let pt of ptList" [value]="pt">{{pt}}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>
   </div>

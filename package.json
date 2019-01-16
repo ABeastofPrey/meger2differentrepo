@@ -25,6 +25,8 @@
     "ngx-tour-core": "^4.0.1",
     "ngx-tour-md-menu": "^4.0.1",
     "ramda": "^0.26.0",
+    "ramda-adjunct": "^2.13.0",
+    "ramda-fantasy": "^0.8.0",
     "rxjs-compat": "^6.3.3"
   },
   "devDependencies": {

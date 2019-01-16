@@ -2,6 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {TPVariable} from '../../../../core/models/tp/tp-variable.model';
 import {DataService} from '../../../../core';
+import { PositionTriggerService } from '../../../services/position-trigger.service';
+import { reduce, isEmpty, complement } from 'ramda';
 
 @Component({
   selector: 'circle-dialog',
@@ -20,13 +22,16 @@ export class CircleDialogComponent implements OnInit {
   angle : string = '';
   withParams : boolean = false;
   blending : string = null;
+  ptList: string[] = [];
+  pts: string[] = [];
   
   resetIndexCirclePoint() { this.circlePointIndex = -1; }
   resetIndexTargetPoint() { this.targetPointIndex = -1; }
 
   constructor(
-    public dataService : DataService,
+    public dataService: DataService,
     public dialogRef: MatDialogRef<any>,
+    private mtService: PositionTriggerService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.withParams = typeof(this.data.params) !== 'undefined';
@@ -82,6 +87,9 @@ export class CircleDialogComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.mtService.plsNameList().then(nameList => {
+      this.ptList = nameList;
+    });
   }
   
   cancel() {
@@ -108,6 +116,11 @@ export class CircleDialogComponent implements OnInit {
       blendingString = ' BlendingPercentage=' + this.blending;
     cmd += 
       robot + circlePoint + targetPoint + vtranString + blendingString;
+      // add pls to cmds.
+    if (complement(isEmpty(this.pts.length))) {
+      cmd += ' ';
+      cmd += reduce((acc, pt) => acc + 'withpls=' + pt + ' ', '', this.pts);
+    }
     this.dialogRef.close(cmd);
   }
 

@@ -1,0 +1,14 @@
+<div>
+    <div mat-dialog-content>
+        <mat-form-field>
+            <span matPrefix>{{namePrefix}} &nbsp;</span>
+            <input matInput placeholder="Name" [(ngModel)]="name" [formControl]="nameControl" [errorStateMatcher]="nameMatcher"
+            (keydown)="onKeyDown($event.keyCode)" (keyup)="onKeyUp($event.keyCode)">
+            <mat-error>Name is required.</mat-error>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions class="actions">
+        <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>CANCEL</button>
+        <button mat-button color="primary" [disabled]="canNotCreate" (click)="close()">CREATE</button>
+    </div>
+</div>
