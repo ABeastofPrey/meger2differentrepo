@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ArchSettingService } from '../../../services/arch-setting.service';
 import { MatSnackBar } from '@angular/material';
+import { TerminalService } from '../../../../home-screen/services/terminal.service';
 
 export interface ArchElement {
   index: number;
@@ -15,20 +16,26 @@ const columns = ['archCol', 'departZCol', 'approachZCol'];
   templateUrl: 'arch-setting.component.html',
   styleUrls: ['arch-setting.component.css']
 })
-export class ArchSettingComponent implements OnInit {
+export class ArchSettingComponent implements OnInit, OnDestroy {
   public displayedColumns: string[] = columns;
   public dataSource: ArchElement[] = null;
 
   private previousValue: string;
   private currentValue: string;
+  private subscription: any;
 
   constructor(
     private asService: ArchSettingService,
-    public snackBar: MatSnackBar) { }
+    private terminalService: TerminalService,
+    public snackBar: MatSnackBar) {
+      this.subscription = this.terminalService.sentCommandEmitter.subscribe(cmd => {
+        this.getTableData();
+      });
+    }
 
-  ngOnInit() {
-    this.getTableData();
-  }
+  ngOnInit() { this.getTableData(); }
+
+  ngOnDestroy(): void { this.subscription.unsubscribe(); }
 
   public onFocus(event: any): void {
     this.previousValue = event.target.value;

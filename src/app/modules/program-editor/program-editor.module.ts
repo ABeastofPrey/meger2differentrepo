@@ -51,8 +51,12 @@ import { Jump3DialogService } from './services/jump3-dialog.service';
 import { PositionTriggerComponent } from './components/program-settings/position-trigger/position-trigger.component';
 import { NewPositionTriggerComponent } from './components/program-settings/new-position-trigger/new-position-trigger.component';
 import { PositionTriggerService } from './services/position-trigger.service';
-import {StopDialogComponent} from './components/dialogs/stop-dialog/stop-dialog.component';
-import {PayloadSelectorComponent} from './components/dialogs/payload-selector/payload-selector.component';
+import { StopDialogComponent } from './components/dialogs/stop-dialog/stop-dialog.component';
+import { PayloadSelectorComponent } from './components/dialogs/payload-selector/payload-selector.component';
+import { HomeSettingComponent } from './components/program-settings/home-setting/home-setting.component';
+import { HomeSettingService } from './services/home-setting.service';
+import { HomeDialogComponent } from './components/dialogs/home-dialog/home-dialog.component';
+import { HomeDialogService } from './services/home-dialog.service';
 
 @NgModule({
   imports: [
@@ -106,11 +110,13 @@ import {PayloadSelectorComponent} from './components/dialogs/payload-selector/pa
     WhileDialogComponent,
     JumpDialogComponent,
     Jump3DialogComponent,
+    HomeDialogComponent,
     PositionTriggerComponent,
     NewPositionTriggerComponent,
     DataNotArrayPipe,
     StopDialogComponent,
-    PayloadSelectorComponent
+    PayloadSelectorComponent,
+    HomeSettingComponent
   ],
   entryComponents: [
     NewProjectDialogComponent,
@@ -142,6 +148,7 @@ import {PayloadSelectorComponent} from './components/dialogs/payload-selector/pa
     WhileDialogComponent,
     JumpDialogComponent,
     Jump3DialogComponent,
+    HomeDialogComponent,
     PositionTriggerComponent,
     NewPositionTriggerComponent,
     StopDialogComponent,
@@ -154,7 +161,9 @@ import {PayloadSelectorComponent} from './components/dialogs/payload-selector/pa
     ProgramEditorService,
     ArchSettingService,
     Jump3DialogService,
-    PositionTriggerService
+    HomeDialogService,
+    PositionTriggerService,
+    HomeSettingService
   ]
 })
 export class ProgramEditorModule { }

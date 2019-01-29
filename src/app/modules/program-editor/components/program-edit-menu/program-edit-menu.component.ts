@@ -22,6 +22,7 @@ import {LineParser} from '../../../core/models/line-parser.model';
 import {StopDialogComponent} from '../dialogs/stop-dialog/stop-dialog.component';
 import {Payload} from '../../../core/models/payload.model';
 import {PayloadSelectorComponent} from '../dialogs/payload-selector/payload-selector.component';
+import { HomeDialogComponent } from '../dialogs/home-dialog/home-dialog.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -355,6 +356,21 @@ export class ProgramEditMenuComponent implements OnInit {
     ).afterClosed().subscribe((cmd: string) => {
       if (cmd) {
         this.prg.insertAndJump(commandType + cmd, 0);
+      }
+    });
+  }
+  menu_gohome() {
+    this.dialog.open(
+      HomeDialogComponent,
+      {
+        width: '400px',
+        backdropClass: 'static',
+        disableClose: true,
+        data: 'nothing'
+      }
+    ).afterClosed().subscribe((cmd: string) => {
+      if (cmd) {
+        this.prg.insertAndJump(cmd, 0);
       }
     });
   }

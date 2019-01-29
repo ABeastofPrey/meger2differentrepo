@@ -1,0 +1,31 @@
+<div class="home-config">
+    <!-- home position -->
+    <div class="home-position">
+        <span class="group-head">Home Position</span>
+        <span>Values are in degree</span>
+        <div class="items-container">
+            <mat-form-field *ngFor="let p of positionList; let i=index">
+                <span matPrefix >J{{i+1}}: &nbsp;</span>
+                <input matInput [(ngModel)]="p"
+                (focus)="onFocus($event.target.value)" (blur)="updatePosition(i+1, $event.target)"
+                (keyup)="onKeyup($event)"/>
+            </mat-form-field>
+        </div>
+        <button mat-raised-button class="read-btn" (click)="readCurrentPosition()">Read Current Position</button>
+    </div>
+    <!-- home order -->
+    <div class="home-order">
+        <span class="group-head">Home Order</span>
+        <div class="items-container">
+            <mat-form-field *ngFor="let o of orderList; let i=index">
+                <span matPrefix >J{{i+1}}: &nbsp;</span>
+                <mat-select [(value)]="o"
+                (selectionChange)="updateOrder(i+1, $event.value)">
+                    <mat-option *ngFor="let op of orderOptions" [value]="op">
+                        Step {{op}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+</div>

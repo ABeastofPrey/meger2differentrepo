@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import {MCQueryResponse, WebsocketService} from '../../../modules/core/services/websocket.service';
 
 @Injectable()
 export class TerminalService {
   
   cmds: TerminalCommand[] = [];
+
+  public sentCommandEmitter: EventEmitter<string> = new EventEmitter<string>();
   
   send(cmd : string) {
     return this.ws.query(cmd).then((ret:MCQueryResponse)=>{

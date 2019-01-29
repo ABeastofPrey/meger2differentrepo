@@ -3,6 +3,7 @@ import { WebsocketService, MCQueryResponse } from '../../core/services/websocket
 
 import { complement, compose, equals, toLower, map, prop, always, dropLast, split } from 'ramda';
 import { Either } from 'ramda-fantasy';
+import { hasError, hasNoError } from './service-adjunct';
 
 export interface IResPLS {
     index: number;
@@ -14,9 +15,6 @@ export interface IResPLS {
     Output: number[];
 }
 const { Left, Right } = Either;
-const first5Letter = x => x.substring(0, 5);
-const hasError = compose(equals('error'), toLower, first5Letter);
-const hasNoError = complement(hasError);
 
 @Injectable()
 export class PositionTriggerService {

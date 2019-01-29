@@ -1,9 +1,11 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import {TerminalService} from '../../services/terminal.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
-import {Input} from '@angular/core';
 import {trigger, transition, style, animate} from '@angular/animations';
+import { trim, equals, complement, compose } from 'ramda';
+
+const isNotEmptyStr = complement(compose(equals(''), trim));
 
 declare var ace;
 
@@ -169,7 +171,7 @@ export class TerminalComponent implements OnInit {
     if (mouseY > editorLineY)
       this.editor.focus();
   }
-  
+
   clear(e: MouseEvent) {
     e.stopImmediatePropagation();
     this.terminal.cmds = [];
@@ -177,23 +179,26 @@ export class TerminalComponent implements OnInit {
     this.contextMenuShown = false;
     this.editor.focus();
   }
-  
+
   private send() {
     this.changeFlag = true;
-    this.terminal.send(this.cmd).then(()=>{
+    this.terminal.send(this.cmd).then(() => {
+      // tslint:disable-next-line
+      isNotEmptyStr(this.cmd) && this.terminal.sentCommandEmitter.emit(this.cmd);
+
       this.cmd = '';
       this.lastCmdIndex = -1;
-      setTimeout(()=>{
+      setTimeout(() => {
         const height = this.wrapper.nativeElement.scrollHeight;
         this.wrapper.nativeElement.scrollTop = height;
-      },0);
+      }, 0);
     });
   }
-  
+
   openScriptDialog() {
     this.uploadInput.nativeElement.click();
   }
-  
+
   onKeyDown() {
     if (this.terminal.cmds.length > 0) {
       this.lastCmdIndex++;

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { NewPositionTriggerComponent } from '../new-position-trigger/new-position-trigger.component';
 import { PositionTriggerService, IResPLS } from '../../../services/position-trigger.service';
-import { T, F, ifElse, always, range, map, compose, converge, propEq, equals, filter, bind, forEach,
+import { T, F, ifElse, always, map, compose, converge, propEq, equals, filter, bind, forEach,
     all, any, not, and, lensProp, set, or, isNil, isEmpty, gt, __, prop, reduce, complement } from 'ramda';
 import { Either, Maybe } from 'ramda-fantasy';
+import { TerminalService } from '../../../../home-screen/services/terminal.service';
 
 export interface IPositionTrigger {
     name: string; checked: boolean; distance: number;
@@ -76,19 +77,28 @@ export const combineNames: (x: IPositionTrigger[]) => string = compose(insertCom
     templateUrl: './position-trigger.component.html',
     styleUrls: ['./position-trigger.component.scss']
 })
-export class PositionTriggerComponent implements OnInit {
+export class PositionTriggerComponent implements OnInit, OnDestroy {
     private preDistance: number;
+    private subscription: any;
     public data: IPositionTrigger[] = [];  // table data source.
     public get columns(): ReadonlyArray<string> { return initColumns(); }
     public get isAllChecked(): boolean { return isAllChecked(this.data); }
     public get hasChecked(): boolean { return hasChecked(this.data); }
     public get partialChecked(): boolean { return partialChecked(this.data); }
 
-    constructor(public snackBar: MatSnackBar, public dialog: MatDialog, private service: PositionTriggerService) {
+    constructor(
+        public snackBar: MatSnackBar, public dialog: MatDialog,
+        private terminalService: TerminalService,
+        private service: PositionTriggerService) {
         this.service.broadcaster.subscribe(this.assembleData.bind(this));
+        this.subscription = this.terminalService.sentCommandEmitter.subscribe(cmd => {
+            this.assembleData();
+        });
     }
 
     ngOnInit(): void { this.assembleData(); }
+
+    ngOnDestroy(): void { this.subscription.unsubscribe(); }
 
     public toggleAll(event: any): void { this.data = toggleAll(event)(this.data); }
 
