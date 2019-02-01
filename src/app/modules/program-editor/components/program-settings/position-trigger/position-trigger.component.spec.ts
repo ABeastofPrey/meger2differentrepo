@@ -12,6 +12,8 @@ import { NO_ERRORS_SCHEMA, EventEmitter } from '@angular/core';
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { range, map, has, view, set, compose, not, all, always, equals, match } from 'ramda';
 import { Either } from 'ramda-fantasy';
+import { TerminalService } from '../../../../home-screen/services/terminal.service';
+
 const { Left, Right } = Either;
 
 describe('PositionTriggerComponent', () => {
@@ -45,7 +47,8 @@ describe('PositionTriggerComponent', () => {
     const openSpy = fakeMatSnackBar.open;
     const fakeMatDialog = jasmine.createSpyObj('MatDialog', ['']);
     fakeMatDialog.open = (com, op) => Object({afterClosed: () => new EventEmitter<string>()});
-
+    const terminalService = jasmine.createSpyObj('TerminalService', ['']);
+    terminalService.sentCommandEmitter = new EventEmitter();
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -54,7 +57,8 @@ describe('PositionTriggerComponent', () => {
             providers: [
                 {provide: PositionTriggerService, useValue: fakeService},
                 {provide: MatSnackBar, useValue: fakeMatSnackBar},
-                {provide: MatDialog, useValue: fakeMatDialog}
+                {provide: MatDialog, useValue: fakeMatDialog},
+                {provide: TerminalService, useValue: terminalService}
             ],
             schemas: [NO_ERRORS_SCHEMA]
         });

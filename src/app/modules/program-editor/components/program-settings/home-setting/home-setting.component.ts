@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HomeSettingService } from '../../../services/home-setting.service';
-import { range, equals, converge, __, and, gt, lt, complement, isEmpty, map, always } from 'ramda';
+import { range, equals, converge, __, and, gt, lt, complement, isEmpty, identity, ifElse } from 'ramda';
 import { isNotValidNumber } from 'ramda-adjunct';
 import { Either } from 'ramda-fantasy';
 import { MatSnackBar } from '@angular/material';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
 
-const defaultList = map(always(''), range(0, 5));
+const transferNum = ifElse(isEmpty, identity, Number);
 
 @Component({
     selector: 'app-home-setting',
@@ -15,8 +15,8 @@ const defaultList = map(always(''), range(0, 5));
 })
 export class HomeSettingComponent implements OnInit, OnDestroy {
     public orderOptions: number[] = range(1, 10);
-    public orderList: number[] = defaultList;
-    public positionList: number[] = defaultList;
+    public orderList: number[] = [];
+    public positionList: number[] = [];
     private preValue: number | string;
     private preIndex: number;
     private min: number;
@@ -56,7 +56,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
         )(await this.service.getHomeOrder());
     }
 
-    public onFocus(value: string): void { this.preValue = isEmpty(value) ? value : Number(value); }
+    public onFocus(value: string): void { this.preValue = transferNum(value); }
 
     public onKeyup(event: any): void {
         const isPressEnter = equals(13);
@@ -65,7 +65,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
     }
 
     public async updatePosition(index: number, target: any): Promise<void> {
-        const value = isEmpty(target.value) ? target.value : Number(target.value);
+        const value = transferNum(target.value);
         const isEqualsToPrevious = equals(this.preValue);
         if (isEmpty(value)) {
             if (isEqualsToPrevious(value)) { return; } else {
@@ -109,7 +109,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
     }
 
     public async readCurrentPosition(): Promise<void> {
-        this.positionList = range(0, this.positionList.length);
+        this.positionList = [];
         Either.either(
             err => console.warn('Read current position failed: ' + err),
             res => this.positionList = res

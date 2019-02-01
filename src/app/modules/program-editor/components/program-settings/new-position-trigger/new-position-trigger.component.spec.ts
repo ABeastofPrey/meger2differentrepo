@@ -4,6 +4,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogRef } from '@angular/material';
 import { NewPositionTriggerComponent } from './new-position-trigger.component';
 import { map, range, always } from 'ramda';
+import { TerminalService } from '../../../../home-screen/services/terminal.service';
+import { EventEmitter } from '@angular/core';
 
 describe('NewPositionTriggerComponent', () => {
   let component: NewPositionTriggerComponent;
@@ -11,12 +13,16 @@ describe('NewPositionTriggerComponent', () => {
 
   const fakeMatDialog = jasmine.createSpyObj('MatDialogRef', ['close']);
   const closeSpy = fakeMatDialog.close;
+  const terminalService = jasmine.createSpyObj('TerminalService', ['']);
+  terminalService.sentCommandEmitter = new EventEmitter();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ NewPositionTriggerComponent ],
       imports: [SharedModule, BrowserAnimationsModule],
-      providers: [{provide: MatDialogRef, useValue: fakeMatDialog}]
+      providers: [
+          {provide: MatDialogRef, useValue: fakeMatDialog},
+          {provide: TerminalService, useValue: terminalService}]
     })
     .compileComponents();
   }));

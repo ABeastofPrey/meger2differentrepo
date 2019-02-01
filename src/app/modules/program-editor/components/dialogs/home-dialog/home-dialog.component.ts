@@ -16,8 +16,8 @@ class ParameterErrorStateMatcher implements ErrorStateMatcher {
 const limitValidator = (min: number, max: Number): ValidatorFn => {
     return (control: AbstractControl): {[key: string]: any} | null => {
         if (!!control.value === false) { return null; }
-        const msg = `Please enter a number in [${min}, ${max}].`;
-        let forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) > max || Number(control.value) < min;
+        const msg = `Please enter a number in (${min}, ${max}].`;
+        let forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) > max || Number(control.value) <= min;
         return forbidden ? {'limit': { msg: msg }} : null;
     };
 };

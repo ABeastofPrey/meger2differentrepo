@@ -1,16 +1,16 @@
-import { element } from 'protractor';
 import { ArchSettingComponent } from './arch-setting.component';
 import { SharedModule } from '../../../../shared/shared.module';
 import { ArchSettingService } from '../../../services/arch-setting.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { NO_ERRORS_SCHEMA, DebugElement } from '@angular/core';
+import { NO_ERRORS_SCHEMA, DebugElement, EventEmitter } from '@angular/core';
 import { TestBed, async, ComponentFixture, ComponentFixtureAutoDetect } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { ArchElement } from './arch-setting.component';
 import * as Faker from 'faker';
 import { range, map } from 'ramda';
+import { TerminalService } from '../../../../home-screen/services/terminal.service';
 
 describe('ArchSettingComponent', () => {
     let fixture: ComponentFixture<ArchSettingComponent>;
@@ -31,12 +31,18 @@ describe('ArchSettingComponent', () => {
     const setArchSpy = archSettingService.setArch;
     const resetTableSpy = archSettingService.resetTable;
 
+    const terminalService = jasmine.createSpyObj('TerminalService', ['']);
+    terminalService.sentCommandEmitter = new EventEmitter();
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [ArchSettingComponent],
             imports: [SharedModule, BrowserAnimationsModule],
-            providers: [{ provide: ArchSettingService, useValue: archSettingService },
-              { provide: ComponentFixtureAutoDetect, useValue: true }],
+            providers: [
+              { provide: ArchSettingService, useValue: archSettingService },
+              { provide: ComponentFixtureAutoDetect, useValue: true },
+              { provide: TerminalService, useValue: terminalService }
+            ],
             schemas: [NO_ERRORS_SCHEMA]
         });
     });

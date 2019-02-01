@@ -2,7 +2,7 @@
     <!-- home position -->
     <div class="home-position">
         <span class="group-head">Home Position</span>
-        <span>Values are in degree</span>
+        <span *ngIf="positionList.length !== 0" >Values are in degree</span>
         <div class="items-container">
             <mat-form-field *ngFor="let p of positionList; let i=index">
                 <span matPrefix >J{{i+1}}: &nbsp;</span>
@@ -11,7 +11,7 @@
                 (keyup)="onKeyup($event)"/>
             </mat-form-field>
         </div>
-        <button mat-raised-button class="read-btn" (click)="readCurrentPosition()">Read Current Position</button>
+        <button *ngIf="positionList.length !== 0" mat-raised-button class="read-btn" (click)="readCurrentPosition()">Read Current Position</button>
     </div>
     <!-- home order -->
     <div class="home-order">
