@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { IoButtonComponent } from './io-button.component';
+
 
 describe('IoButtonComponent', () => {
   let component: IoButtonComponent;
@@ -8,6 +10,7 @@ describe('IoButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [BrowserAnimationsModule],
       declarations: [ IoButtonComponent ]
     })
     .compileComponents();

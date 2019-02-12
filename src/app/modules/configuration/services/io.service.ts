@@ -48,8 +48,10 @@ export class IoService {
   private ioOptions: IoOption[] = [
     IoOption.AllInputs,
     IoOption.AllOutputs,
-    IoOption.StandardInputs,
-    IoOption.StandardOutputs
+    IoOption.DriveIoInputs,
+    IoOption.DriveIoOutputs,
+    IoOption.UserIoInputs,
+    IoOption.UserIoOutputs
   ];
 
   /**
@@ -65,10 +67,12 @@ export class IoService {
    * The map between io option and query command parameters.
    */
   private ioOptionMap = new Map([
-    [IoOption.AllInputs, { dio: IoDirection.Din, stdAll: IoScope.All }],
-    [IoOption.AllOutputs, { dio: IoDirection.Dout, stdAll: IoScope.All }],
-    [IoOption.StandardInputs, { dio: IoDirection.Din, stdAll: IoScope.Std }],
-    [IoOption.StandardOutputs, { dio: IoDirection.Dout, stdAll: IoScope.Std }]
+    [IoOption.AllInputs, { dio: IoDirection.Din, ioScope: IoScope.All }],
+    [IoOption.AllOutputs, { dio: IoDirection.Dout, ioScope: IoScope.All }],
+    [IoOption.DriveIoInputs, { dio: IoDirection.Din, ioScope: IoScope.Drv }],
+    [IoOption.DriveIoOutputs, { dio: IoDirection.Dout, ioScope: IoScope.Drv }],
+    [IoOption.UserIoInputs, { dio: IoDirection.Din, ioScope: IoScope.Usr }],
+    [IoOption.UserIoOutputs, { dio: IoDirection.Dout, ioScope: IoScope.Usr }],
   ]);
 
   /**
@@ -350,15 +354,15 @@ export class IoService {
    */
   private getQueryIOCommand(option: IoOption, bitSize: string, hex: boolean): string {
     let dio = IoDirection.Din;
-    let stdall = IoScope.All;
+    let ioScope = IoScope.All;
 
     if (this.ioOptionMap.has(option)) {
       dio = this.ioOptionMap.get(option).dio;
-      stdall = this.ioOptionMap.get(option).stdAll;
+      ioScope = this.ioOptionMap.get(option).ioScope;
     }
 
     let hexValue = hex ? HexValue.Hex : HexValue.Dec;
 
-    return `${IoServiceCommand.QueryIO}("${dio}", "${stdall}", "${bitSize}", "${hexValue}")`;
+    return `${IoServiceCommand.QueryIO}("${dio}", "${ioScope}", "${bitSize}", "${hexValue}")`;
   }
 }

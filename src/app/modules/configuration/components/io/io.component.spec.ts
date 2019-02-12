@@ -1,3 +1,4 @@
+import { IoButtonComponent } from './io-button/io-button.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -76,7 +77,7 @@ describe('IoComponent', () => {
    * IoComponent constructor test.
    */
   it('should create', async(() => {
-    expect(component.ioOptions.length).toBe(4, 'there are four io options');
+    expect(component.ioOptions.length).toBe(6, 'there are six io options');
     expect(component.ioOptions[0]).toEqual('All Inputs', 'the first one is all inputs');
     expect(component.ioOptions[1]).toEqual('All Outputs', 'the second one is all outputs');
 
@@ -170,7 +171,8 @@ describe('IoComponent', () => {
     fixture.whenStable().then(() => {
       expect(component).toBeTruthy();
       checkRadioButton(fixture, 0, true, 'the radio button should be checked after click');
-    }).then(() => {
+
+      spyIoServiceSetup();
       component.onClickRadioButtonInIO(0, 'left');
       fixture.detectChanges();
 
@@ -178,7 +180,6 @@ describe('IoComponent', () => {
         checkRadioButton(fixture, 0, false, 'the radio button should be unchecked after click');
       });
     });
-
   });
 
   /**
@@ -192,7 +193,8 @@ describe('IoComponent', () => {
 
     fixture.whenStable().then(() => {
       checkRadioButton(fixture, 1, true, 'the radio button should be checked after click');
-    }).then(() => {
+
+      spyIoServiceSetup();
       component.onClickRadioButtonInIO(0, 'right');
       fixture.detectChanges();
 
@@ -268,8 +270,8 @@ describe('IoComponent', () => {
 
     let row = tableList.item(tableIndex).children.item(1);
     let cell = row.children.item(1);
-    let input = cell.children.item(0) as HTMLInputElement;
-    expect(input.checked).toBe(expectValue, comment);
+    let input = <IoButtonComponent> <unknown> cell.children.item(0);
+    expect(input.status).toBe(expectValue, comment);
   }
 
   /**
@@ -294,6 +296,3 @@ describe('IoComponent', () => {
   }
 
 });
-
-
-

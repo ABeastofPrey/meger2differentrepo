@@ -340,7 +340,7 @@ export class IoComponent implements OnInit, AfterViewInit {
    * @returns if it is output, return true.
    */
   private changeIoValue(port: number, flag: string, ioOption: string, dataSource: MatTableDataSource<IO>): boolean {
-    if ((ioOption === IoOption.AllInputs) || (ioOption === IoOption.StandardInputs)) {
+    if ((ioOption === IoOption.AllInputs) || (ioOption === IoOption.DriveIoInputs) || (ioOption === IoOption.UserIoInputs)) {
       return false;
     }
 

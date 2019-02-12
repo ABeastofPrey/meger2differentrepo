@@ -4,8 +4,10 @@
 export enum IoOption {
   AllInputs = 'All Inputs',
   AllOutputs = 'All Outputs',
-  StandardInputs = 'Standard Inputs',
-  StandardOutputs = 'Standard Outputs'
+  DriveIoInputs = 'Drive IO Inputs',
+  DriveIoOutputs = 'Drive IO Outputs',
+  UserIoInputs = 'User IO Inputs',
+  UserIoOutputs = 'User IO Outputs'
 }
 
 /**
@@ -66,7 +68,8 @@ export enum IoDirection {
  */
 export enum IoScope {
   All = 'all',
-  Std = 'std'
+  Drv = 'drv',
+  Usr = 'usr'
 }
 
 /**
