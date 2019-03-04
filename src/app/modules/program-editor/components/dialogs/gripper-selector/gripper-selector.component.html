@@ -1,21 +1,21 @@
 <div class="main mat-typography">
   <div class="wrapper">
-    <div class="title">{{this.data}}</div>
+    <div class="title">{{this.data|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <mat-select placeholder="End Effector" [(ngModel)]="ef" (selectionChange)="resetGrp()">
+        <mat-select placeholder="{{'grippers.ef'|translate}}" [(ngModel)]="ef" (selectionChange)="resetGrp()">
           <mat-option *ngFor="let endEffector of endEffectors" [value]="endEffector">{{endEffector.name}}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field *ngIf="ef">
-        <mat-select placeholder="Gripper" [(ngModel)]="grp">
+        <mat-select placeholder="{{'grippers.grp'|translate}}" [(ngModel)]="grp">
           <mat-option *ngFor="let g of ef.grippers" [value]="g">{{ g }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
   </div>
   <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="grp===null">INSERT</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="grp===null">{{'button.insert'|translate}}</button>
   </div>
 </div>

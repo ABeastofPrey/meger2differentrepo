@@ -1,16 +1,16 @@
 <div class="main mat-typography">
   <div class="wrapper">
-    <div class="title">{{this.data.title}}</div>
+    <div class="title">{{this.data.title|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <mat-select placeholder="Select..." [(ngModel)]="io">
+        <mat-select placeholder="{{'select'|translate}}..." [(ngModel)]="io">
           <mat-option *ngFor="let io of this.list" [value]="io">{{io}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
   </div>
   <div class="actions">
-    <button mat-button color="primary" (click)="cancel()">CANCEL</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="this.io == null">INSERT</button>
+    <button mat-button (click)="cancel()">{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="this.io == null">{{'button.insert'|translate}}</button>
   </div>
 </div>

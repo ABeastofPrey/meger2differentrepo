@@ -3,14 +3,14 @@
     <div class="title">{{this.data}}</div>
     <div class="content">
       <mat-form-field>
-        <mat-select placeholder="Payload" [(ngModel)]="pay">
+        <mat-select placeholder="{{'payloads.payload'|translate}}" [(ngModel)]="pay">
           <mat-option *ngFor="let p of service.payloads" [value]="p">{{p.name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
   </div>
   <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="pay===null">INSERT</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="pay===null">{{'button.insert'|translate}}</button>
   </div>
 </div>

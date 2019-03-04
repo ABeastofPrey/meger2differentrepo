@@ -21,13 +21,14 @@ export class NewAppDialogComponent implements OnInit {
   
   create() {
     const name = this.name.toUpperCase();
-    const proj = this.prj.currProject.value.name;
+    const proj = this.prj.currProject.value;
     this.submitting = true;
-    this.ws.query('?prj_add_app("' + proj + '","' + name + '")').then((ret:MCQueryResponse)=>{
+    this.ws.query('?prj_add_app("' + proj.name + '","' + name + '")')
+    .then((ret:MCQueryResponse)=>{
       if (ret.result !== '0' || ret.err)
         this.submitting = false;
       else {
-        this.data.refreshDomains().then(()=>this.prj.getCurrentProject())
+        this.data.refreshDomains().then(()=>this.prj.refreshAppList(proj,true))
         .then(()=>{ this.prj.onExpand.emit(name); });
         this.dialogRef.close();
       }

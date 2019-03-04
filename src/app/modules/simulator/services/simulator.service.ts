@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {TreeNode} from '../models/tree-node.model';
 import {BehaviorSubject} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +11,15 @@ export class SimulatorService {
   customObjectsMapper : Map<TreeNode,any> = new Map();
   data: BehaviorSubject<TreeNode[]> = new BehaviorSubject([]);
   lastSelectedNode: BehaviorSubject<TreeNode> = new BehaviorSubject(null);
+  
+  private words: any;
 
-  constructor() {
+  constructor(private trn: TranslateService) {
+    this.trn.get('simulator_screen').subscribe(words=>{
+      this.words = words;
+    });
     let data : TreeNode[] = [];
-    let node = new TreeNode('Robot','Robot',null);
+    let node = new TreeNode(this.words['robot'],'Robot',null);
     data.push(node);
     this.data.next(data);
   }

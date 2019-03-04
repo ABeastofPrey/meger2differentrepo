@@ -1,14 +1,14 @@
 <div class="main mat-typography">
   <div class="wrapper">
-    <div class="title">New Payload</div>
+    <div class="title">{{'payloads.new'|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <input matInput placeholder="Payload Name" [(ngModel)]="name">
+        <input matInput placeholder="{{'payloads.name'|translate}}" [(ngModel)]="name">
       </mat-form-field>
     </div>
   </div>
   <div class="actions">
-    <button mat-button color="primary" matDialogClose>CANCEL</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="name == null || name.length === 0">CREATE PAYLOAD</button>
+    <button mat-button color="primary" matDialogClose>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="name == null || name.length === 0">{{'payloads.btn_create'|translate}}</button>
   </div>
 </div>

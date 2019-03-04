@@ -5,6 +5,7 @@ import {ErrorDialogComponent} from '../../../components/error-dialog/error-dialo
 import {BehaviorSubject} from 'rxjs';
 import {ApiService} from './api.service';
 import {environment} from '../../../../environments/environment';
+import {TranslateService} from '@ngx-translate/core';
 
 class TPStatResponse {
   ENABLE : number;
@@ -36,6 +37,8 @@ export class TpStatService {
   private lastErrString: string = null;
   private _virtualDeadman : boolean = false;
   private _virtualModeSelector : string = 'A';
+  
+  private words: any;
   
   _enabled : boolean;
   _isMoving : boolean;
@@ -72,19 +75,22 @@ export class TpStatService {
       if (ret.result !== '0') {
         this._virtualModeSelector = oldStat;
         this._switch = this._virtualModeSelector;
-        let err = ret.err ? ret.err.errCode : ret.result;
         if (this._switch == null) {
           // CAN'T SET MODE ON INIT - THIS IS CRITICAL...
-          let ref = this.dialog.open(ErrorDialogComponent,{
-            data: {
-              title: 'Critical Error',
-              message: "Can't set TP MODE to A..." + environment.appName + " will now logout."
-            }
-          });
-          ref.afterClosed().subscribe(()=>{
-            this.ws.reset();
+          this.trn.get(['stat.err_critical.title','stat.err_critical.message'], {appName: environment.appName})
+          .subscribe(words=>{
+            let ref = this.dialog.open(ErrorDialogComponent,{
+              data: {
+                title: words['stat.err_critical.title'],
+                message: words['stat.err_critical.message']
+              }
+            });
+            ref.afterClosed().subscribe(()=>{
+              this.ws.reset();
+            });
           });
         }
+        this.mode = oldStat;
       } else {
         this._virtualModeSelector = mode;
         this._switch = this._virtualModeSelector;
@@ -135,9 +141,10 @@ export class TpStatService {
         if (this.lastErrString !== this.errorString) {
           this.lastErrString = this.errorString;
           if (this.errorString.length > 0) {
+            const err = this.errorString;
             this.zone.run(()=>{
               setTimeout(()=>{
-                this.snack.open(this.errorString,'ACKNOWLEDGE').afterDismissed().subscribe(()=>{
+                this.snack.open(err,this.words['acknowledge']).afterDismissed().subscribe(()=>{
                   this.ws.send('?TP_CONFIRM_ERROR');
                 });
               },0);
@@ -173,11 +180,13 @@ export class TpStatService {
         if (!isNaN(result) && result < 0 && this._systemErrorCode >= 0) {
           this._systemErrorCode = result;
           this.zone.run(()=>{
-            this.dialog.open(ErrorDialogComponent,{
-              data: {
-                title: 'System Initialization Error',
-                message: "Init error #" + result + ' - please contact support for help.'
-              }
+            this.trn.get(['stat.err_init.title', 'stat.err_init.msg'], {result: result}).subscribe(words=>{
+              this.dialog.open(ErrorDialogComponent,{
+                data: {
+                  title: words['stat.err_init.title'],
+                  message: words['stat.err_init.msg']
+                }
+              });
             });
           });
         } else if (!isNaN(result) && result >= 0) {
@@ -203,8 +212,27 @@ export class TpStatService {
     private ref : ApplicationRef,
     private zone : NgZone,
     private snack: MatSnackBar,
-    private api: ApiService
+    private api: ApiService,
+    private trn: TranslateService
   ) {
+    this.onlineStatus.subscribe(stat=>{
+      if (stat) { // TP ONLINE
+        const cmd = '?tp_set_language("' +
+                  this.trn.currentLang + '")';
+        this.ws.query(cmd).then((ret:MCQueryResponse)=>{
+          if (ret.err || ret.result !== '0')
+            console.log('LANG ERR',ret.result);
+        });
+      }
+    });
+    this.trn.get(['acknowledge', 'offline', 'online']).toPromise().then(words=>{
+      this.words = words;
+    }).then(()=>{
+      this.init();
+    });
+  }
+  
+  private init() {
     this.ws.isConnected.subscribe(stat=>{
       if (stat) {
         // CHECK FOR TP.LIB
@@ -219,7 +247,7 @@ export class TpStatService {
       }
     });
     this.onlineStatus.subscribe(stat=>{
-      const msg = 'TP.LIB is ' + (stat?'ONLINE':'OFFLINE');
+      const msg = 'TP.LIB is ' + (stat ? this.words['online']:this.words['offline']);
       this.zone.run(()=>{
         this.snack.open(msg,null,{duration:1500});
       });

@@ -1,7 +1,7 @@
 <div class="wrapper">
   <mat-card>
-    <mat-card-title>About</mat-card-title>
-    <mat-card-subtitle>Version information for this softMC controller</mat-card-subtitle>
+    <mat-card-title>{{'about.title'|translate}}</mat-card-title>
+    <mat-card-subtitle>{{'about.subtitle'|translate}}</mat-card-subtitle>
     <mat-card-content>
       <mat-list>
         <mat-list-item>
@@ -43,6 +43,11 @@
           <mat-icon mat-list-icon>assignment</mat-icon>
           <h4 mat-line>Lead By Nose Library</h4>
           <p mat-line>{{data.LeadByNoseLibVer}}</p>
+        </mat-list-item>
+        <mat-list-item *ngIf="data.iomapVer">
+          <mat-icon mat-list-icon>assignment</mat-icon>
+          <h4 mat-line>I/O Mapping Library</h4>
+          <p mat-line>{{data.iomapVer}}</p>
         </mat-list-item>
       </mat-list>
     </mat-card-content>

@@ -10,6 +10,7 @@ import {LineParser} from '../../core/models/line-parser.model';
 import {Pallet} from '../../core/models/pallet.model';
 import {YesNoDialogComponent} from '../../../components/yes-no-dialog/yes-no-dialog.component';
 import {ErrorFrame} from '../../core/models/error-frame.model';
+import {TranslateService} from '@ngx-translate/core';
 
 export const TASKSTATE_NOTLOADED = -1;
 export const TASKSTATE_RUNNING = 1;
@@ -54,7 +55,8 @@ export class ProgramEditorService {
   private statusInterval : any = null;
   private oldStatString : string;
   private activeFilePath: string = null;
-  private stepMode: boolean = false; // True when the user clicks on STEP button
+  private _modeToggle: string = 'prj';
+  private stepMode: boolean = false; // True when user clicks on STEP button
   
   // LINE PARSING
   parser: LineParser = new LineParser(this.data);
@@ -70,6 +72,9 @@ export class ProgramEditorService {
   rangeEnd: number;
   rangeText: string;
   
+  // i18
+  private words: any;
+  
   constructor(
     private ref : ApplicationRef,
     private zone: NgZone,
@@ -78,6 +83,7 @@ export class ProgramEditorService {
     private ws: WebsocketService,
     private snack : MatSnackBar,
     private data: DataService,
+    private trn: TranslateService,
     private api : ApiService) {
     this.refreshFiles();
     this.ws.isConnected.subscribe(stat=>{
@@ -89,6 +95,20 @@ export class ProgramEditorService {
         this.editorTextChange.emit('');
       }
     });
+    const words = [
+      'projects','button.teach','button.cancel','error.err','success'
+    ];
+    this.trn.get(words).subscribe(words=>{
+      this.words = words;
+    });
+  }
+  
+  get modeToggle() { return this._modeToggle; }
+  set modeToggle(val:string) {
+    this._modeToggle = val;
+    this.close();
+    if (val === 'mc')
+      this.mode = 'editor';
   }
 
   setFile(f : string, path:string, ref: any, bt?:Backtrace) { // OPEN A FILE
@@ -182,10 +202,26 @@ export class ProgramEditorService {
       new File([new Blob([this.editorText])],this.activeFile),true,path)
     .then((ret:UploadResult)=>{
       if (ret.success) {
-        this.snack.open('Saved.','',{duration:1500});
+        this.snack.open(this.words['projects']['saved'],'',{duration:1500});
         this.isDirty = false;
-      } else
-        this.snack.open('Error ' + ret.err,'',{duration:2000});
+      } else {
+        const words = [
+          'files.err_upload','files.err_ext','files.err_permission'
+        ];
+        this.trn.get(words, {name: this.activeFile}).subscribe(words=>{
+          switch (ret.err) {
+            case -2:
+              this.snack.open(words['files.err_upload'],this.words['dismiss']);
+              break;
+            case -3:
+              this.snack.open(words['files.err_ext'],this.words['dismiss']);
+              break;
+            case -4:
+              this.snack.open(words['files.err_permission'],this.words['dismiss']);
+              break;
+          }
+        });
+      }
     });
   }
   
@@ -215,8 +251,24 @@ export class ProgramEditorService {
           else
             this.errors = [];
         });
-      } else
-        this.snack.open('Error ' + ret.err,'',{duration:2000});
+      } else {
+        const words = [
+          'files.err_upload','files.err_ext','files.err_permission'
+        ];
+        this.trn.get(words, {name: this.activeFile}).subscribe(words=>{
+          switch (ret.err) {
+            case -2:
+              this.snack.open(words['files.err_upload'],this.words['dismiss']);
+              break;
+            case -3:
+              this.snack.open(words['files.err_ext'],this.words['dismiss']);
+              break;
+            case -4:
+              this.snack.open(words['files.err_permission'],this.words['dismiss']);
+              break;
+          }
+        });
+      }
     });
   }
   
@@ -399,25 +451,27 @@ export class ProgramEditorService {
     let fullName = v.name;
     if (v.isArr)
       fullName += '[' + v.selectedIndex + ']';
-    let ref = this.dialog.open(YesNoDialogComponent,{
-      data: {
-        title: 'Teach' + ' ' + fullName + '?',
-        msg: '',
-        yes: 'TEACH',
-        no: 'CANCEL'
-      }
-    });
-    ref.afterClosed().subscribe(ret=>{
-      if (ret) {
-        var cmd_teach = '?tp_teach("' + fullName + '","' + v.typeStr + '")';
-        this.ws.query(cmd_teach).then((ret:MCQueryResponse)=>{
-          if (ret.result === '0') {
-            this.snack.open('Success','',{duration:2000});
-          } else {
-            this.snack.open('Error ' + ret.result,'',{duration:2000});
-          }
-        });
-      }
+    this.trn.get('teach_var', {name: fullName}).subscribe(word=>{
+      this.dialog.open(YesNoDialogComponent,{
+        data: {
+          title: word,
+          msg: '',
+          yes: this.words['button.teach'],
+          no: this.words['button.cancel']
+        }
+      }).afterClosed().subscribe(ret=>{
+        if (ret) {
+          var cmd_teach = '?tp_teach("' + fullName + '","' + v.typeStr + '")';
+          this.ws.query(cmd_teach).then((ret:MCQueryResponse)=>{
+            if (ret.result === '0') {
+              this.snack.open(this.words['success'],'',{duration:2000});
+            } else {
+              const err = this.words['error.err'] + ' ' + ret.result;
+              this.snack.open(err,'',{duration:2000});
+            }
+          });
+        }
+      });
     });
   }
   
@@ -433,14 +487,14 @@ export class ProgramEditorService {
       }
     }
     if (varType === null) {
-      return this.snack.open('Error','',{duration:2000});
+      return this.snack.open(this.words['error.err'],'',{duration:2000});
     }
     const cmd_teach = '?tp_teach("' + fullName + '","' + varType + '")';
     this.ws.query(cmd_teach).then((ret:MCQueryResponse)=>{
       if (ret.result === '0') {
-        this.snack.open(fullName + ': ' + 'Success!','',{duration:2000});
+        this.snack.open(this.words['success'],'',{duration:2000});
       } else {
-        this.snack.open('Error','',{duration:2000});
+        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }

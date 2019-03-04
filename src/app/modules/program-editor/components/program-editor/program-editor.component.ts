@@ -28,6 +28,12 @@ export class ProgramEditorComponent implements OnInit {
   
   onDragEnd() { this.service.onDragEnd(); }
   
+  get isStepDisabled() {
+    const code = this.service.status.statusCode;
+    return code === this.taskStates[0] || code === this.taskStates[1] ||
+          code === this.taskStates[5];
+  }
+  
   taskStates = [
     TASKSTATE_NOTLOADED,
     TASKSTATE_RUNNING,

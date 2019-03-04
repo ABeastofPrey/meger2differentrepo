@@ -3,9 +3,10 @@ import {RobotService} from '../../../core/services/robot.service';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {RobotSelectionComponent} from '../robot-selection/robot-selection.component';
 import {UpdateDialogComponent} from '../../../../components/update-dialog/update-dialog.component';
-import {WebsocketService, MCQueryResponse, ApiService, DataService} from '../../../core';
+import {WebsocketService, MCQueryResponse, ApiService, DataService, TpStatService, GroupManagerService} from '../../../core';
 import {RobotModel} from '../../../core/models/robot.model';
 import {trigger, transition, style, animate} from '@angular/animations';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-robots',
@@ -27,9 +28,13 @@ import {trigger, transition, style, animate} from '@angular/animations';
 export class RobotsComponent implements OnInit {
   
   disp : number[];
+  units: string[];
   dh: DH[];
   dh_img_path_1: string;
   dh_img_path_2: string;
+  
+  private word_ok: string;
+  private word_updating: string;
 
   constructor(
     public robot: RobotService,
@@ -37,10 +42,18 @@ export class RobotsComponent implements OnInit {
     private ws: WebsocketService,
     private api: ApiService,
     private data: DataService,
-    private snack: MatSnackBar
-  ) { }
+    private snack: MatSnackBar,
+    private trn: TranslateService,
+    public stat: TpStatService,
+    private grp: GroupManagerService
+  ) {
+  }
 
   ngOnInit() {
+    this.trn.get(['changeOK','robots.updating']).subscribe(words=>{
+      this.word_ok = words['changeOK'];
+      this.word_updating = words['robots.updating'];
+    });
     this.data.dataLoaded.subscribe(stat=>{
       if (stat) {
         switch(this.data.robotType) {
@@ -73,6 +86,20 @@ export class RobotsComponent implements OnInit {
       }
       if (values.length === nValues.length)
         this.disp = nValues;
+      let promises = [];
+      const g = this.grp.getGroup(this.data.selectedRobot);
+      if (g === null)
+        return;
+      for (let a of g.axes) {
+        promises.push(this.ws.query('?' + a + '.axisType'));
+      }
+      return Promise.all(promises);
+    }).then((ret: MCQueryResponse[])=>{
+      let units: string[] = [];
+      for (let result of ret) {
+        units.push(result.result === '0' ? 'mm' : 'deg');
+      }
+      this.units = units;
     });
   }
   
@@ -121,14 +148,13 @@ export class RobotsComponent implements OnInit {
               values + '")';
     this.ws.query(cmd).then(()=>{
       if (index === undefined) {
-        this.snack.open('changes_saved','',{duration:1500});
+        this.snack.open(this.word_ok,'',{duration:1500});
       } else {
         this.ws.query('?tp_set_robot_dh(' + this.data.selectedRobot +
           ',"' + this.dh[index].name + '",' + this.dh[index].value + ')')
         .then((ret: MCQueryResponse)=>{
-          if (ret.result === '0') {
-            this.snack.open('DH Parameters save','DISMISS');
-          }
+          if (ret.result === '0')
+            this.snack.open(this.word_ok,'',{duration:1500});
         });
       }
     });
@@ -143,7 +169,7 @@ export class RobotsComponent implements OnInit {
           height: '100%',
           maxWidth: '100%',
           closeOnNavigation: false,
-          data: 'Updating Robot Configuration',
+          data: this.word_updating,
           id: 'update'
         });
         this.ws.query('?ROB_SELECT_ROBOT_CONFIGURATION("' + ret.part_number + '",0)').then((ret:MCQueryResponse)=>{

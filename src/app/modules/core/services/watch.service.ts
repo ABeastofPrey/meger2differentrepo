@@ -36,7 +36,7 @@ export class WatchService {
   }
   
   addVar() {
-    if (this.newVarName === null || this.newVarName.length === 0)
+    if (typeof this.newVarName==='undefined' || this.newVarName.length===0)
       return;
     this.vars.push(new WatchVar(this.newVarName, this.newVarContext));
     this.newVarName = null;

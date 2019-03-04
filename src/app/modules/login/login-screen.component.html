@@ -3,7 +3,7 @@
     <div class="primary-bg toolbar center-vertical-horizontal" @fade *ngIf="ws.connected || isSubmitting">
       <div *ngIf="!ws.connected" @fade>
         <mat-spinner color="accent"></mat-spinner>
-        <h2>Connecting...</h2>
+        <h2>{{'connecting'|translate}}...</h2>
       </div>
     </div>
     <header>
@@ -20,11 +20,11 @@
         <fieldset [disabled]="isSubmitting">
           <mat-form-field>
             <mat-icon matPrefix>person</mat-icon>
-            <input matInput placeholder="Username" formControlName="username">
+            <input matInput placeholder="{{'userManager.username'|translate}}" formControlName="username">
           </mat-form-field>
           <mat-form-field>
             <mat-icon matPrefix>security</mat-icon>
-            <input matInput placeholder="Password" type="password" formControlName="password">
+            <input matInput placeholder="{{'password'|translate}}" type="password" formControlName="password">
           </mat-form-field>
           <button
             mat-raised-button
@@ -32,7 +32,7 @@
             type="submit"
             [disabled]="!authForm.valid || !isVersionOK || isSubmitting"
           >
-            LOGIN
+            {{'button.login'|translate}}
           </button>
           <div class="error" *ngIf="errors.error">{{errors.error}}</div>
         </fieldset>

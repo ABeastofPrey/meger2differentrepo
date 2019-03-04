@@ -1,14 +1,14 @@
 <div class="main mat-typography">
   <div class="wrapper">
-    <div class="title">Insert Call Command</div>
+    <div class="title">{{'projectCommands.call.title'|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <input matInput placeholder="Sub Name" [(ngModel)]="expression" type="text">
+        <input matInput placeholder="{{'projectCommands.call.name'|translate}}" [(ngModel)]="expression" type="text">
       </mat-form-field>
     </div>
   </div>
   <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="expression === null || expression.length === 0">INSERT</button>
+    <button mat-button color="primary" mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="expression === null || expression.length === 0">{{'button.insert'|translate}}</button>
   </div>
 </div>

@@ -3,7 +3,6 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {MCFile, ApiService, UploadResult} from '../../../modules/core/services/api.service';
 import {ProgramStatus, TRNERRLine, TRNERR} from '../../program-editor/services/program-editor.service';
 import {WebsocketService, MCQueryResponse} from '../../../modules/core/services/websocket.service';
-import {NewFileDialogComponent} from '../../../components/new-file-dialog/new-file-dialog.component';
 import {YesNoDialogComponent} from '../../../components/yes-no-dialog/yes-no-dialog.component';
 import {ErrorFrame} from '../../core/models/error-frame.model';
 
@@ -176,57 +175,6 @@ export class BlocklyService {
     element.click();
     document.body.removeChild(element);
   }
-  
-  newFile() {
-    let ref = this.dialog.open(NewFileDialogComponent,{
-      data: {
-        ext: 'BLK'
-      }
-    });
-    ref.afterClosed().subscribe((fileName:string)=>{
-      if (fileName) {
-        this.api.upload(new File([new Blob([''])], fileName), false)
-        .then((ret: UploadResult)=>{
-          if (ret.success) {
-            this.refreshFiles().then(()=>{
-              for (let f of this.files) {
-                if (f.fileName === fileName)
-                  return this.setFile(f);
-              }
-            });
-          } else if (ret.err === -1) {
-            let ref = this.dialog.open(YesNoDialogComponent,{
-              data: {
-                yes: 'OVERWRITE',
-                no: 'CANCEL',
-                title: 'File Already Exists',
-                msg: 'Would you like to OVERWRITE the existing file?'
-              }
-            });
-            ref.afterClosed().subscribe(ret=>{
-              if (ret) {
-                this.api.upload(new File([new Blob([''])], fileName), true)
-                .then((ret: UploadResult)=>{
-                  if (ret.success) {
-                    this.refreshFiles().then(()=>{
-                      for (let f of this.files) {
-                        if (f.fileName === fileName)
-                          return this.setFile(f);
-                      }
-                    });
-                  } else
-                    this.snack.open('Error uploading file','DISMISS',{duration: 3000});
-                });
-              }
-            });
-          } else {
-            this.snack.open('Error uploading file','DISMISS',{duration: 3000});
-          }
-        });
-      }
-    });
-  }
-  
   
   refreshStatus(on : boolean) {
     if (!on) {

@@ -20,6 +20,7 @@ export class MCProject {
    * STRING IS IN FORMAT: APP1,0;APP2,1;...
    */
   initAppsFromString(str:string) {
+    this.apps = [];
     if (str.length === 0)
       return;
     const apps = str.split(';');

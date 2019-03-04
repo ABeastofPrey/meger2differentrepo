@@ -25,6 +25,8 @@ export class RobotService {
         this.reset();
         return;
       }
+      if (this.interval)
+        clearInterval(this.interval);
       this.interval = setInterval(()=>{
         this.ws.query('?rob_ver').then((ret: MCQueryResponse)=>{
           if (ret.err)

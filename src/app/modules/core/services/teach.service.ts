@@ -4,6 +4,7 @@ import {TPVariable} from '../../core/models/tp/tp-variable.model';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {TPVariableType} from '../../core/models/tp/tp-variable-type.model';
 import {FOUR_AXES_LOCATION, SIX_AXES_LOCATION} from '../../core/models/tp/location-format.model';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class TeachService {
@@ -13,6 +14,8 @@ export class TeachService {
   private _value : any = [];
   private _legend : string[];
   private _fullName : string;
+  
+  private words: any;
   
   get legend() { return this._legend; }  
   get fullName() {return this._fullName;}
@@ -40,12 +43,6 @@ export class TeachService {
         this._value = [];
         this._fullName = name;
       }
-      /*if (this.mgr.currScreen === this.lang.get('tab_lbn')) {
-        this.ws.query('?tp_set_position_name_to_teach("' + name + '")')
-        .then((ret: MCQueryResponse)=>{
-          
-        });
-      }*/
       this.ws.query('?tp_get_value_namespace("' + this._fullName + '")')
       .then((ret:MCQueryResponse)=>{
         if (ret.err) {
@@ -55,7 +52,7 @@ export class TeachService {
         if (valuesString.indexOf("#") === 0)
           valuesString = valuesString.substr(1);
         if (valuesString.indexOf(",") === -1) {
-          this._legend = ['Value'];
+          this._legend = ['value'];
           this._value = [{value:valuesString.trim()}];
           return;
         }
@@ -73,7 +70,7 @@ export class TeachService {
                 FOUR_AXES_LOCATION : SIX_AXES_LOCATION;
               break;
             default:
-              newLegend.push('Value');
+              newLegend.push('value');
           }
         }
         this._legend = newLegend;
@@ -113,9 +110,12 @@ export class TeachService {
   constructor(
     private ws : WebsocketService,
     private snackBar: MatSnackBar,
-    /*private mgr : ScreenManagerService,
-    private lang : LanguageService*/
-  ) { }
+    private trn: TranslateService
+  ) {
+    this.trn.get(['changeOK']).subscribe(words=>{
+      this.words = words;
+    });
+  }
   
   onKeyboardClose() {
     try {
@@ -130,7 +130,7 @@ export class TeachService {
       this.ws.query(cmd_set).then((ret: MCQueryResponse)=>{
         this.selectedTeachVariable = this.selectedTeachVariable;
         if (ret.result === '0')
-          this.snackBar.open('Changes Saved.',null,{duration: 2000});
+          this.snackBar.open(this.words['changeOK'],null,{duration: 2000});
         else
           console.log(ret.cmd + '>>>' + ret.result);
       });

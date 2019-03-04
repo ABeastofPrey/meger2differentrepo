@@ -4,6 +4,7 @@ import {TpStatService} from "./tp-stat.service";
 import {TaskService, MCQueryResponse} from ".";
 import {MatSnackBar, MatDialog} from "@angular/material";
 import {UpdateDialogComponent} from "../../../components/update-dialog/update-dialog.component";
+import {TranslateService} from "@ngx-translate/core";
 
 /* 
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
@@ -13,13 +14,19 @@ import {UpdateDialogComponent} from "../../../components/update-dialog/update-di
 })
 export class UtilsService {
   
+  private words: any;
+  
   constructor(
     private ws: WebsocketService,
     private stat: TpStatService,
     private task: TaskService,
     private snack: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private trn: TranslateService
   ){
+    this.trn.get(['utils.success', 'acknowledge']).subscribe(words=>{
+      this.words = words;
+    });
   }
   
   resetAllDialog(title: string) {
@@ -53,10 +60,12 @@ export class UtilsService {
       return this.ws.query('reset all');
     }).then((ret: MCQueryResponse)=>{
       if (ret.err) {
-        this.snack.open('System Reset FAILED:' + ret.result,'ACKNOWLEDGE');
+        this.trn.get('utils.err_reset', {result: ret.result}).subscribe(err=>{
+          this.snack.open(err, this.words['acknowledge']);
+        });
         return false;
       }
-      this.snack.open('System Reset Success',null,{duration:1500});
+      this.snack.open(this.words['utils.success'],null,{duration:1500});
       this.stat.startTpLibChecker();
       if (loadautoexec)
         this.ws.query('load autoexec.prg');

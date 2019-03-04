@@ -5,7 +5,7 @@
         <img [src]="profileSrc">
       </div>
       <div class="user-info">
-        <div class="name primary">Hello, {{login.fName}}!</div>
+        <div class="name primary">{{'hello'|translate}}, {{login.fName}}!</div>
         <div class="mat-body-1">{{login.permission}}</div>
       </div>
     </div>
@@ -16,8 +16,9 @@
       [tourAnchor]="'screen-'+s.name"
       (click)="onClick(s)"
       [ngClass]="{
+        'primary': mgr.screen === s,
         'selected':mgr.screen === s,
-        'disabled':s.requiresTpLib && !tpOnline
+        'disabled':(s.requiresTpLib && !tpOnline) || (s.autoModeOnly && stat.mode !== 'A')
       }">
       <mat-icon>{{s.icon}}</mat-icon>
       <span>{{s.name}}</span>

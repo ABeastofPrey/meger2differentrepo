@@ -8,6 +8,7 @@ import {TourService} from 'ngx-tour-md-menu';
 import {environment} from '../../../../../environments/environment';
 import {trigger, transition, style, animate, query, stagger} from '@angular/animations';
 import {RobotService} from '../../../core/services/robot.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-main',
@@ -60,6 +61,9 @@ export class MainComponent implements OnInit {
   private lastKeyDownTime : number = -1;
   private jogInterval : any;
   private motionFlag : boolean = false;
+  private words: any;
+  
+  public env = environment;
 
   constructor(
     public notification: NotificationService,
@@ -75,8 +79,13 @@ export class MainComponent implements OnInit {
     private dialog: MatDialog,
     private tour: TourService,
     public prj: ProjectManagerService,
-    private robot: RobotService
-  ) { }
+    private robot: RobotService,
+    private trn: TranslateService
+  ) {
+    this.trn.get(['main.errJog','main.jogControlsToggle']).subscribe(words=>{
+      this.words = words;
+    });
+  }
 
   ngOnInit() {
     this.screenWidth = window.innerWidth;
@@ -101,17 +110,14 @@ export class MainComponent implements OnInit {
       } else {
         if (localStorage.getItem('tourQuestion') === null) {
           localStorage.setItem('tourQuestion','true');
-          this.dialog.open(YesNoDialogComponent,{
-            data: {
-              title: 'Welcome!',
-              msg: 'Welcome to ' + this.appName + '! Since this is your first time here, would you like a quick tour?',
-              yes: 'YES, LET\'S GO!',
-              no: 'NO, THANKS'
-            }
-          }).afterClosed().subscribe(ret=>{
-            if (ret) {
-              this.tour.start();
-            }
+          this.trn.get('main.tour').subscribe(data=>{
+            this.dialog.open(YesNoDialogComponent,{
+              data: data
+            }).afterClosed().subscribe(ret=>{
+              if (ret) {
+                this.tour.start();
+              }
+            });
           });
         }
       }
@@ -182,13 +188,15 @@ export class MainComponent implements OnInit {
   }
   
   get jogTooltip() : string {
+    if (typeof this.words === 'undefined')
+      return null;
     if (!this.tpOnline)
-      return "Can't JOG while TP.LIB is OFFLINE";
+      return this.words['main.errJog']['lib'];
     if (this.prj.activeProject)
-      return "Can't JOG while project app is loaded";
+      return this.words['main.errJog']['project'];
     if (!this.cooService.coosLoaded.value)
-      return "Coordinates service is OFFLINE";
-    return 'Toggle Jog Controls';
+      return this.words['main.errJog']['coos'];
+    return this.words['main.jogControlsToggle'];
   }
 
 }

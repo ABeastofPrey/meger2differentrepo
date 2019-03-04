@@ -1,8 +1,8 @@
 <div class="wrapper">
   <div class="toolbar center-vertical mat-elevation-z3">
-    <button mat-icon-button color="primary" matTooltip="Show/Hide Chart window" [disabled]="dashboard.lastChartData === null" (click)="dashboard.showGraphDialog(null,null)"><mat-icon>show_chart</mat-icon></button>
-    <button mat-icon-button color="primary" matTooltip="Download Chart data as CSV" [disabled]="dashboard.lastChartData === null" (click)="downloadCSV()"><mat-icon>file_download</mat-icon></button>
-    <button mat-icon-button color="primary" matTooltip="Show external graph" (click)="showExternalGraph()"><mat-icon>insert_chart</mat-icon></button>
+    <button mat-icon-button color="primary" matTooltip="{{'dashboard.tooltip.chart'|translate}}" [disabled]="dashboard.lastChartData === null" (click)="dashboard.showGraphDialog(null,null)"><mat-icon>show_chart</mat-icon></button>
+    <button mat-icon-button color="primary" matTooltip="{{'dashboard.tooltip.csv'|translate}}" [disabled]="dashboard.lastChartData === null" (click)="downloadCSV()"><mat-icon>file_download</mat-icon></button>
+    <button mat-icon-button color="primary" matTooltip="{{'dashboard.tooltip.external'|translate}}" (click)="showExternalGraph()"><mat-icon>insert_chart</mat-icon></button>
   </div>
   <div class="container" #container>
     <dashboard-window [container]="container" *ngFor="let w of dashboard.windows" [params]="w" @fadeIn></dashboard-window>

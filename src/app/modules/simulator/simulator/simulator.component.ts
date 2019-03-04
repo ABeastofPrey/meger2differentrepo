@@ -4,6 +4,8 @@ import {TreeNode} from '../models/tree-node.model';
 import {SimulatorService} from '../services/simulator.service';
 import 'rxjs/add/operator/take';
 import {RobotService} from '../../core/services/robot.service';
+import {TranslateService} from '@ngx-translate/core';
+import {environment} from '../../../../environments/environment';
 
 declare var THREE, PREVIEW3D;
 
@@ -18,13 +20,20 @@ export class SimulatorComponent implements OnInit {
 
   isLoading: boolean = true;
   player: any;
+  env = environment;
+  
+  private words: any;
 
   constructor(
     private mgr: ScreenManagerService,
     private coo: CoordinatesService,
     public sim: SimulatorService,
-    private robot: RobotService
+    private robot: RobotService,
+    private trn: TranslateService
   ) {
+    this.trn.get('simulator_screen').subscribe(words=>{
+      this.words = words;
+    });
     this.mgr.controlsAnimating.subscribe(stat=>{
       if (stat) {
         this.player.setSize(0,0);
@@ -142,7 +151,7 @@ export class SimulatorComponent implements OnInit {
       obj.position.y = 50;
     }
     this.player.getScene().add(obj);
-    const name = this.sim.getAvailableName(objType);
+    const name = this.sim.getAvailableName(this.words[objType.toLowerCase()]);
     let node: TreeNode = new TreeNode(name,objType,null);
     this.sim.customObjectsMapper.set(node,obj);
     this.sim.addNode(node);

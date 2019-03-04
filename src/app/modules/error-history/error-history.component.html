@@ -1,7 +1,7 @@
 <div class="buttons center-vertical-horizontal">
-  <button mat-raised-button color="primary" (click)="clearErrors()">CLEAR ERROR HISTORY</button>
-  <button mat-raised-button color="primary" (click)="clearDrive()">CLEAR DRIVE FAULT</button>
-  <button mat-raised-button color="primary" (click)="acknowledge()">ACKNOWLEDGE</button>
+  <button mat-raised-button color="primary" (click)="clearErrors()">{{'errorHistory.button.clear'|translate}}</button>
+  <button mat-raised-button color="primary" (click)="clearDrive()">{{'errorHistory.button.clear_drive'|translate}}</button>
+  <button mat-raised-button color="primary" (click)="acknowledge()">{{'acknowledge'|translate}}</button>
 </div>
 <mat-accordion>
   <mat-expansion-panel *ngFor="let e of errors" class="error-panel">

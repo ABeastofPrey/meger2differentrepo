@@ -6,6 +6,7 @@ import {GripperTestDialogComponent} from '../gripper-test-dialog/gripper-test-di
 import {WebsocketService, MCQueryResponse, DataService} from '../../../core';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {SingleInputDialogComponent} from '../../../../components/single-input-dialog/single-input-dialog.component';
+import {TranslateService} from '@ngx-translate/core';
 
 /**
  * Node for to-do item
@@ -113,31 +114,31 @@ export class ChecklistDatabase {
 })
 export class GripperScreenComponent implements OnInit {
   
-  /** Map from flat node to nested node. This helps us finding the nested node to be modified */
   flatNodeMap: Map<GripperTableFlatNode, GripperTableNode> = new Map<GripperTableFlatNode, GripperTableNode>();
-
-  /** Map from nested node to flattened node. This helps us to keep the same object for selection */
   nestedNodeMap: Map<GripperTableNode, GripperTableFlatNode> = new Map<GripperTableNode, GripperTableFlatNode>();
-
-  /** A selected parent node to be inserted */
   selectedParent: GripperTableFlatNode | null = null;
-
-  /** The new item's name */
   newItemName: string = '';
-
   treeControl: FlatTreeControl<GripperTableFlatNode>;
   treeFlattener: MatTreeFlattener<GripperTableNode, GripperTableFlatNode>;
   dataSource: MatTreeFlatDataSource<GripperTableNode, GripperTableFlatNode>;
-  
   selectedNode : GripperTableNode = null;
+  
+  private words: any;
 
   constructor(
     public data : DataService,
     private database: ChecklistDatabase,
     private ws: WebsocketService,
     private dialog: MatDialog,
-    private snack: MatSnackBar
+    private trn: TranslateService
   ) {
+    const words = [
+     'add','grippers.ef','grippers.grp','delete','name','button.delete',
+     'button.cancel'
+    ];
+    this.trn.get(words).subscribe(words=>{
+      this.words = words;
+    });
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<GripperTableFlatNode>(this.getLevel, this.isExpandable);
@@ -175,12 +176,14 @@ export class GripperScreenComponent implements OnInit {
   }
   
   addNewItem(node: GripperTableFlatNode) {
-    const title = 'Add ' + (node ? 'Gripper' : 'End Effector');
+    const title = 
+      this.words['add'] + 
+      (node ? this.words['grippers.grp'] : this.words['grippers.ef']);
     this.dialog.open(SingleInputDialogComponent,{
       data: {
         icon: 'add',
         title: title,
-        placeholder: 'Name',
+        placeholder: this.words['name'],
         accept: title
       }
     }).afterClosed().subscribe((name:string)=>{
@@ -211,10 +214,10 @@ export class GripperScreenComponent implements OnInit {
       return this.database.deleteItem(fnode);
     let ref = this.dialog.open(YesNoDialogComponent,{
       data: {
-        title: 'Delete' + ' ' + fnode.item + '?',
+        title: this.words['delete'] + ' ' + fnode.item + '?',
         msg: '',
-        yes: 'DELETE',
-        no: 'CANCEL'
+        yes: this.words['button.delete'],
+        no: this.words['button.cancel']
       }
     });
     ref.afterClosed().subscribe(ret=>{

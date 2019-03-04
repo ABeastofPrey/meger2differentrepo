@@ -26,15 +26,15 @@ export class NewLibDialogComponent implements OnInit {
   
   create() {
     const name = this.name.toUpperCase();
-    const proj = this.prj.currProject.value.name;
-    const cmd = '?prj_add_app_library("' + proj + '","' + this.appName + '","' +
+    const proj = this.prj.currProject.value;
+    const cmd = '?prj_add_app_library("' + proj.name + '","' + this.appName + '","' +
                 name + '")';
     this.submitting = true;
     this.ws.query(cmd).then((ret:MCQueryResponse)=>{
       if (ret.result !== '0' || ret.err)
         this.submitting = false;
       else {
-        this.prj.getCurrentProject().then(()=>{
+        this.prj.refreshAppList(proj,true).then(()=>{
           this.prj.onExpandLib.emit({app: this.appName, lib: name});
         });
         this.dialogRef.close();

@@ -53,6 +53,16 @@ export class GroupManagerService {
     });
   }
   
+  getGroup(name: string) {
+    if (!name)
+      return null;
+    for (let g of this.groups) {
+      if (g.name.toLowerCase() === name.toLowerCase())
+        return g;
+    }
+    return null;
+  }
+  
   private refreshGroupsAndInfo() {
     let promises = [
       this.ws.query('?grouplist'),

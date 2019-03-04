@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {trigger,state,style,animate,transition} from '@angular/animations';
-import {WebsocketService, DataService, TeachService} from '../../../core';
+import {DataService, TeachService} from '../../../core';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'jog-screen',
@@ -29,21 +30,24 @@ import {WebsocketService, DataService, TeachService} from '../../../core';
 })
 export class JogScreenComponent implements OnInit {
   
-  public menuTypes: MenuType[] = [];
+  public menuTypes: MenuType[];
   public selectedMenuTypeIndex : number = 0;
   public isTeachMenuOpen : boolean = false;
 
   constructor(
     public data : DataService,
     public teach : TeachService,
-    private ws : WebsocketService,
+    private trn : TranslateService
   ) {
-    this.menuTypes.push(new MenuType('Teach','touch_app'));
-    this.menuTypes.push(new MenuType('Tool Align','vertical_align_bottom'));
+    this.trn.get('jogScreen.menu').subscribe(words=>{
+      this.menuTypes = [];
+      this.menuTypes.push(new MenuType('Tool Align','touch_app',words[0]));
+      this.menuTypes.push(new MenuType('Teach','vertical_align_bottom',words[1]));
+    });
   }
   
   ngOnInit(): void {
-    //this.data.refreshTools();
+    
   }
   
   onChange(index : number) {
@@ -55,20 +59,22 @@ export class JogScreenComponent implements OnInit {
   }
   
   align() {
-    //this.ws.send('?TP_Align("PITCH")');
+    
   }
   
   stop() {
-    //this.ws.send('?TP_STOP');
+    
   }
 }
 
 class MenuType {
   name: string;
   icon: string;
+  i18: string;
   
-  constructor(name,icon) {
+  constructor(name:string, icon:string, i18:string) {
     this.name = name;
     this.icon = icon;
+    this.i18 = i18;
   }
 }

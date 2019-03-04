@@ -52,7 +52,7 @@ function MCConnection() {
   var ws = null;
   var MCPORT = 3010;
   var IP = self.location.hostname;
-  //var IP = '10.4.20.50';
+  //var IP = '10.4.20.85';
   var reset = true;
   
   this.connect = function(){
@@ -76,6 +76,7 @@ function MCConnection() {
         console.log("WEBSOCKET CLOSED");
       };
       ws.onmessage = function (msg) {
+        //console.log(JSON.parse(msg.data)['cmd']);
         worker.postMessage({serverMsg:false,msg:msg.data});
       };
       setTimeout(function(){
@@ -93,6 +94,7 @@ function MCConnection() {
     if (ws && ws.readyState === ws.OPEN) {
       try {
         ws.send(jsonData);
+        //console.log(jsonData);
       } catch (err) {
         console.log(err);
         alert('MC Connection terminated unexpectedly, trying to reconnect...');

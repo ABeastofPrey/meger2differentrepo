@@ -1,17 +1,17 @@
 <div class="wrapper">
-  <mat-accordion>
+  <mat-accordion *ngIf="prj.currProject.value">
     <mat-expansion-panel #applicationsPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Applications</mat-panel-title>
-        <mat-panel-description>Choose which applications to run when the project starts</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.apps.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.apps.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="applicationsPanel.expanded">
         <div class="app-list">
           <table>
             <thead class="mat-subtitle-color">
               <tr>
-                <td>Enable App</td>
-                <td class="center-vertical">Remote Id <mat-icon matTooltip="This ID can be used to start/pause/stop applications from remote I/O">help</mat-icon></td>
+                <td>{{'projectSettings.apps.en'|translate}}</td>
+                <td class="center-vertical">{{'projectSettings.apps.id'|translate}} <mat-icon matTooltip="{{'projectSettings.apps.id_tooltip'|translate}}">help</mat-icon></td>
               </tr>
             </thead>
             <tbody>
@@ -42,8 +42,8 @@
     </mat-expansion-panel>
     <mat-expansion-panel #motionParametersPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Motion Parameters</mat-panel-title>
-        <mat-panel-description>Select parameters for your motion commands</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.motion_params.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.motion_params.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="motionParametersPanel.expanded">
         <mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
@@ -65,27 +65,27 @@
     </mat-expansion-panel>
     <mat-expansion-panel #motionFramesPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Motion Frames</mat-panel-title>
-        <mat-panel-description>Select the project's motion frames</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.motion_frames.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.motion_frames.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="motionFramesPanel.expanded">
         <mat-form-field>
-          <mat-select placeholder="Tool" [(ngModel)]="prj.currProject.value.settings.tool" (selectionChange)="prj.onProgramSettingChanged('tool')">
+          <mat-select placeholder="{{'tool'|translate}}" [(ngModel)]="prj.currProject.value.settings.tool" (selectionChange)="prj.onProgramSettingChanged('tool')">
             <mat-option *ngFor="let item of dataService.tools" value="{{item}}">{{item}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-select placeholder="Base" [(ngModel)]="prj.currProject.value.settings.base" (selectionChange)="prj.onProgramSettingChanged('base')">
+          <mat-select placeholder="{{'base'|translate}}" [(ngModel)]="prj.currProject.value.settings.base" (selectionChange)="prj.onProgramSettingChanged('base')">
             <mat-option *ngFor="let item of dataService.bases" value="{{item}}">{{item}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-select placeholder="MachineTable" [(ngModel)]="prj.currProject.value.settings.mtable" (selectionChange)="prj.onProgramSettingChanged('mtable')">
+          <mat-select placeholder="{{'mt'|translate}}" [(ngModel)]="prj.currProject.value.settings.mtable" (selectionChange)="prj.onProgramSettingChanged('mtable')">
             <mat-option *ngFor="let item of dataService.machineTables" value="{{item}}">{{item}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-select placeholder="WorkPiece" [(ngModel)]="prj.currProject.value.settings.wpiece" (selectionChange)="prj.onProgramSettingChanged('wpiece')">
+          <mat-select placeholder="{{'wp'|translate}}" [(ngModel)]="prj.currProject.value.settings.wpiece" (selectionChange)="prj.onProgramSettingChanged('wpiece')">
             <mat-option *ngFor="let item of dataService.workPieces" value="{{item}}">{{item}}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -93,8 +93,8 @@
     </mat-expansion-panel>
     <mat-expansion-panel #positionLimitsPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Position Limits</mat-panel-title>
-        <mat-panel-description>Define your robot's position limits</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.pos.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.pos.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="positionLimitsPanel.expanded">
         <table class="limits">
@@ -118,8 +118,8 @@
     </mat-expansion-panel>
     <mat-expansion-panel #wordLimitsPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>World Limits</mat-panel-title>
-        <mat-panel-description>Define your world's limits</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.world.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.world.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="wordLimitsPanel.expanded">
         <table class="limits">
@@ -142,8 +142,8 @@
     </mat-expansion-panel>
     <mat-expansion-panel #toolLimitsPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Tool Limits</mat-panel-title>
-        <mat-panel-description>Define your tool's limits</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.tool.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.tool.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="toolLimitsPanel.expanded">
         <table class="limits">
@@ -166,8 +166,8 @@
     </mat-expansion-panel>
     <mat-expansion-panel #baseLimitsPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Base Limits</mat-panel-title>
-        <mat-panel-description>Define your base's limits</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.base.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.base.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="baseLimitsPanel.expanded">
         <table class="limits">
@@ -190,8 +190,8 @@
     </mat-expansion-panel>
     <mat-expansion-panel #machineTableLimitsPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Machine Table Limits</mat-panel-title>
-        <mat-panel-description>Define your machine table's limits</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.mt.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.mt.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="machineTableLimitsPanel.expanded">
         <table class="limits">
@@ -214,8 +214,8 @@
     </mat-expansion-panel>
     <mat-expansion-panel #wordPieceLimitsPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Work piece Limits</mat-panel-title>
-        <mat-panel-description>Define your work piece's limits</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.wp.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.wp.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="content" *ngIf="wordPieceLimitsPanel.expanded">
         <table class="limits">
@@ -239,8 +239,8 @@
 
 	  <mat-expansion-panel #archSettingsPanel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Arch Settings</mat-panel-title>
-        <mat-panel-description>Define parameters for Arch command</mat-panel-description>
+        <mat-panel-title>{{'projectSettings.arch.title'|translate}}</mat-panel-title>
+        <mat-panel-description>{{'projectSettings.arch.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
       <div *ngIf="archSettingsPanel.expanded">
         <app-arch-setting></app-arch-setting>

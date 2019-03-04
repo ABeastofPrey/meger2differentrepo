@@ -9,45 +9,45 @@ export class ShortcutsComponent implements OnInit {
   
   shortcuts: Section[] = [
     {
-      name: 'Terminal',
+      name: 'help.shortcuts.terminal',
       shortcuts: [
         {
           keys: 'ARROW UP',
-          desc: 'Go to previous command'
+          desc: 'help.shortcuts.desc_terminal_up'
         },
         {
           keys: 'ARROW DOWN',
-          desc: 'Go to next command'
+          desc: 'help.shortcuts.desc_terminal_down'
         }
       ]
     },
     {
-      name: 'Program Editor',
+      name: 'help.shortcuts.editor',
       shortcuts: [
         {
           keys: 'CTRL + F',
-          desc: 'Find'
+          desc: 'help.shortcuts.desc_find'
         },
         {
           keys: 'CTRL + H',
-          desc: 'Replace'
+          desc: 'help.shortcuts.desc_replace'
         },
         {
           keys: 'CTRL + SPACE',
-          desc: 'Show Autocomplete options'
+          desc: 'help.shortcuts.desc_autocomplete'
         }
       ]
     },
     {
-      name: 'Simulator',
+      name: 'simulator',
       shortcuts: [
         {
           keys: 'DEL',
-          desc: 'Delete selected object'
+          desc: 'help.shortcuts.desc_delete'
         },
         {
           keys: 'CTRL + D',
-          desc: 'Duplicate selected object'
+          desc: 'help.shortcuts.desc_duplicate'
         }
       ]
     }

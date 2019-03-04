@@ -16,7 +16,6 @@ export class AddFrameComponent implements OnInit {
   SIX_AXES: string[] = SIX_AXES_LOCATION;
   isArray : boolean = false;
   arrSize : number = 0;
-  frameType: string;
 
   constructor(
     public dialogRef: MatDialogRef<AddFrameComponent>,
@@ -29,20 +28,6 @@ export class AddFrameComponent implements OnInit {
 
   ngOnInit() {
     this.values = ['0','0','0','0','0','0'];
-    switch(this.data) {
-      case 0:
-        this.frameType = 'Tool';
-        break;
-      case 1:
-        this.frameType = 'Base';
-        break;
-      case 2:
-        this.frameType = 'Machine Table';
-        break;
-      case 3:
-        this.frameType = 'Workpiece';
-        break;
-    }
   }
   
   closeDialog(result?: boolean) {

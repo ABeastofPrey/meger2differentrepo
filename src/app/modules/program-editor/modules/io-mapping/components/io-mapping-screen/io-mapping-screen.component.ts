@@ -6,6 +6,7 @@ import {MatTreeNestedDataSource, MatSlideToggleChange, MatSnackBar} from '@angul
 import {Io} from '../../../../../core/models/io/io.model';
 import {NgZone} from '@angular/core';
 import {ApplicationRef} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 
 export class TreeNode {
   
@@ -19,8 +20,8 @@ export class TreeNode {
     this.module = io;
     if (isModule) {
       this.children = [
-        new TreeNode('Inputs',io,false),
-        new TreeNode('Outputs',io,false)
+        new TreeNode('ios.inputs',io,false),
+        new TreeNode('ios.outputs',io,false)
       ];
     }
   }
@@ -44,6 +45,8 @@ export class IoMappingScreenComponent implements OnInit {
   
   /* Data interval */
   private interval: any = null;
+  
+  private words: any;
 
   constructor(
     private data: DataService,
@@ -52,9 +55,13 @@ export class IoMappingScreenComponent implements OnInit {
     private zone: NgZone,
     private ref: ApplicationRef,
     public prj: ProjectManagerService,
+    private trn: TranslateService
   ) {
     this.treeControl = new NestedTreeControl<TreeNode>(this._getChildren);
     this.dataSource = new MatTreeNestedDataSource();
+    this.trn.get(['changeOK','changeError']).subscribe(words=>{
+      this.words = words;
+    });
   }
 
   ngOnInit() {
@@ -78,7 +85,7 @@ export class IoMappingScreenComponent implements OnInit {
   selectNode(n: TreeNode) {
     this.activeModule = {
       io: n.module,
-      showInputs: n.name === 'Inputs'
+      showInputs: n.name === 'ios.inputs'
     };
     // GET INITIAL RANGE INFO
     this.getRangeInfo().then(()=>{
@@ -125,10 +132,10 @@ export class IoMappingScreenComponent implements OnInit {
     .then((ret: MCQueryResponse)=>{
       if (ret.result !== '0') {
         e.target.value = io.name;
-        this.snack.open('An error occured, changes not saved','',{duration:2000});
+        this.snack.open(this.words['changeError'],'',{duration:2000});
       } else {
         io.name = newVal;
-        this.snack.open('Changed saved','',{duration:1000});
+        this.snack.open(this.words['changeOK'],'',{duration:1000});
       }
     });
   }
@@ -140,10 +147,10 @@ export class IoMappingScreenComponent implements OnInit {
     .then((ret: MCQueryResponse)=>{
       if (ret.result !== '0') {
         e.target.value = io.description;
-        this.snack.open('An error occured, changes not saved','',{duration:2000});
+        this.snack.open(this.words['changeError'],'',{duration:2000});
       } else {
         io.description = newVal;
-        this.snack.open('Changed saved','',{duration:1000});
+        this.snack.open(this.words['changeOK'],'',{duration:1000});
       }
     });
   }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-page-not-found',
@@ -9,6 +10,8 @@ import { Location } from '@angular/common';
 export class PageNotFoundComponent implements OnInit {
 
   constructor(private _location: Location) { }
+  
+  public env = environment;
   
   back() {
     this._location.back();

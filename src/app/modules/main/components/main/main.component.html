@@ -1,23 +1,28 @@
 <div class="wrapper mat-typography" #container id="container">
   <div [class.hidden]="!isRouterLoading" class="spinner mat-elevation-z6">
-    <img src="assets/pics/logo_only.gif">
+    <img src="assets/pics/{{env.theme.spinner}}">
   </div>
-  <mat-toolbar [color]="stat.systemErrorCode < 0 ? 'warn' : 'primary'">
+  <mat-toolbar [color]="stat.systemErrorCode < 0 ? 'warn' : 'primary'" [class.primary-bg-dark]="stat.systemErrorCode >= 0">
     <button mat-icon-button (click)="drawer.toggle()" tourAnchor="menu"><mat-icon>menu</mat-icon></button>
     <span class='center-vertical'>
+      <img src="assets/pics/{{env.theme.logo}}" class="img-logo">
       {{appName}}
     </span>
     <mat-icon *ngIf="stat.systemErrorCode < 0" [matTooltip]="'Error ' + stat.systemErrorCode">warning</mat-icon>
+    <div class="remote" *ngIf="stat.mode === 'R'">
+      <mat-icon>settings_remote</mat-icon>
+      REMOTE MODE
+    </div>
     <div [matTooltip]="jogTooltip">
       <button mat-mini-fab (click)="screenManager.toggleControls()" [disabled]="!tpOnline || prj.activeProject || !cooService.coosLoaded.value" tourAnchor="jog-controls"><mat-icon>touch_app</mat-icon></button>
     </div>
-    <button mat-mini-fab matTooltip="Watch" (click)="watch.toggleWindow()" tourAnchor="watch"><mat-icon>update</mat-icon></button>
-    <button mat-mini-fab matTooltip="Message Log" (click)="notification.toggleWindow()" tourAnchor="message-log-button">
+    <button mat-mini-fab matTooltip="{{'watch.title'|translate}}" (click)="watch.toggleWindow()" tourAnchor="watch"><mat-icon>update</mat-icon></button>
+    <button mat-mini-fab matTooltip="{{'message_log'|translate}}" (click)="notification.toggleWindow()" tourAnchor="message-log-button">
       <mat-icon>notifications</mat-icon>
       <div class="badge warn-bg mat-elevation-z3" *ngIf="notification.count > 0">{{notification.count}}</div>
     </button>
-    <button mat-mini-fab matTooltip="Terminal" (click)="toggleTerminal()"><mat-icon>featured_play_list</mat-icon></button>
-    <button mat-raised-button color="warn" (click)="login.logout()">LOGOUT</button>
+    <button mat-mini-fab matTooltip="{{'terminal'|translate}}" (click)="toggleTerminal()"><mat-icon>featured_play_list</mat-icon></button>
+    <button mat-raised-button color="warn" (click)="login.logout()">{{'button.logout'|translate}}</button>
   </mat-toolbar>
   <mat-sidenav-container class="mat-typography">
     <mat-sidenav #drawer [mode]="screenWidth >= 1024 ? 'side' : 'over'" [opened]="screenWidth >= 1024" class="mat-elevation-z6">
@@ -30,10 +35,10 @@
         </div>
         <mat-card class='emulator-settings' [class.open]="screenManager.openedControls" style="flex:1;">
           <div class="center-vertical" style="margin-bottom: 8px;">
-            <button mat-mini-fab color="primary" (click)="openJogSettings()" matTooltip="Jog Settings">
+            <button mat-mini-fab color="primary" (click)="openJogSettings()" matTooltip="{{'dialogs.jogSettings'|translate}}">
               <mat-icon>settings</mat-icon>
             </button>
-            <h2>Jog Controls</h2>
+            <h2>{{'main.jogControls'|translate}}</h2>
             <button mat-icon-button (click)="screenManager.toggleControls()" color="primary">
               <mat-icon>close</mat-icon>
             </button>
@@ -44,7 +49,7 @@
             </button>
             {{data.selectedRobot}}
           </div>
-          <div *ngIf="data.selectedRobot === null">No robot is selected</div>
+          <div *ngIf="data.selectedRobot === null">{{'main.no_robot'|translate}}</div>
           <mat-card-content style="margin-top: 8px;" *ngIf="stat.enabled" @fadeSimple>
             <div class="jog-table-container mat-elevation-z5">
               <table class="jog-table" *ngIf="cooService.axisCoordinate === null && cooService.jointKeys || cooService.locationKeys">
@@ -67,7 +72,7 @@
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
-  <coordinates @fade *ngIf="screenManager.openedControls"></coordinates>
+  <coordinates @fade *ngIf="screenManager.openedControls && screenManager.screen.url !== 'teach'"></coordinates>
   <div 
     #notificationWindow
     *ngIf="notification.windowOpen"
@@ -81,7 +86,7 @@
     (started)="onWindowMoving(notificationWindow)"
   >
     <div class="title primary-bg" #handleNotifications>
-      <span>Notifications</span>
+      <span>{{'message_log'|translate}}</span>
       <button mat-icon-button color="accent" (click)="notification.toggleWindow()"><mat-icon>close</mat-icon></button>
     </div>
     <notification-window></notification-window>
@@ -97,7 +102,7 @@
       [handle]="handleWatch"
   >
     <div class="title primary-bg" #handleWatch>
-      <span>Watch</span>
+      <span>{{'watch.title'|translate}}</span>
       <button mat-icon-button color="accent" (click)="watch.toggleWindow()"><mat-icon>close</mat-icon></button>
     </div>
     <watch-window></watch-window>
@@ -115,7 +120,7 @@
     [handle]="handleTerminal"
   >
     <div class="title primary-bg" #handleTerminal>
-      <span>Terminal</span>
+      <span>{{'terminal'|translate}}</span>
       <button mat-icon-button color="accent" (click)="terminalOpen = false"><mat-icon>close</mat-icon></button>
     </div>
     <terminal-window></terminal-window>

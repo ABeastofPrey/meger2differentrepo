@@ -1,24 +1,24 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    <mat-icon>person_add</mat-icon>&nbsp;&nbsp;New User
+    <mat-icon>person_add</mat-icon>&nbsp;&nbsp;{{'userManager.new'|translate}}
   </div>
   <mat-form-field>
-    <input matInput placeholder="UserName" [(ngModel)]="username">
+    <input matInput placeholder="{{'userManager.username'|translate}}" [(ngModel)]="username">
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Full Name" [(ngModel)]="fullName">
+    <input matInput placeholder="{{'userManager.full'|translate}}" [(ngModel)]="fullName">
   </mat-form-field>
   <mat-form-field>
-    <input matInput type="password" placeholder="Password" [(ngModel)]="password">
+    <input matInput type="password" placeholder="{{'password'|translate}}" [(ngModel)]="password">
   </mat-form-field>
   <mat-form-field>
-    <mat-select placeholder="Permission" [(ngModel)]="permission">
+    <mat-select placeholder="{{'userManager.permission'|translate}}" [(ngModel)]="permission">
       <mat-option [value]="0">Administrator</mat-option>
       <mat-option [value]="1">Normal User</mat-option>
     </mat-select>
   </mat-form-field>
   <div class="actions">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="create()" [disabled]="username.length===0 || password.length===0 || fullName.length===0 || fullName.indexOf(' ')===-1 || permission === -1">CREATE USER</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="username.length===0 || password.length===0 || fullName.length===0 || fullName.indexOf(' ')===-1 || permission === -1">{{'userManager.btnCreate'|translate}}</button>
   </div>
 </div>

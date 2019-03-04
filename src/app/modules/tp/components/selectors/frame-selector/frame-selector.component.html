@@ -1,5 +1,5 @@
 <mat-form-field>
-  <mat-select placeholder="Motion Frame" [(ngModel)]="dataService.selectedFrame">
+  <mat-select placeholder="{{'frame'|translate}}" [(ngModel)]="dataService.selectedFrame">
     <mat-option *ngFor="let item of dataService.frames" value="{{item}}">{{item}}</mat-option>
   </mat-select>
 </mat-form-field>

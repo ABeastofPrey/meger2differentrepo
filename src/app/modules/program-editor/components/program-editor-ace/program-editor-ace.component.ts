@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, ApplicationRef, NgZone} from '@angular/core';
 import {ProgramEditorService, ProgramStatus, TASKSTATE_NOTLOADED, TRNERRLine} from '../../services/program-editor.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
-import {MCCommand} from '../../../home-screen/components/terminal/terminal.component';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Subscription} from 'rxjs';
-import {DataService, TaskService, MCFile, ProjectManagerService, WebsocketService, MCQueryResponse} from '../../../core';
+import {DataService, TaskService, MCFile, ProjectManagerService, WebsocketService, MCQueryResponse, KeywordService} from '../../../core';
 import {MatSnackBar} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 
 declare var ace;
 
@@ -53,6 +53,7 @@ export class ProgramEditorAceComponent implements OnInit {
   private subs: Subscription;
   private commands: Command[];
   private files: MCFile[];
+  private words: any;
   
   // HANDLE MOUSE HOVER TOOLTIPS
   private tooltipTimeout: any;
@@ -72,8 +73,14 @@ export class ProgramEditorAceComponent implements OnInit {
     private task: TaskService,
     private prj: ProjectManagerService,
     private ws: WebsocketService,
-    private snack: MatSnackBar
-  ) { }
+    private snack: MatSnackBar,
+    private trn: TranslateService,
+    private keywords: KeywordService
+  ) {
+    this.trn.get(['projects.ace', 'dismiss']).subscribe(words=>{
+      this.words = words;
+    })
+  }
 
   ngOnInit() {
     this.task.start();
@@ -253,153 +260,147 @@ export class ProgramEditorAceComponent implements OnInit {
       this.commands = result;
     }).then(() => {return this.api.getFiles();}).then(files=>{
       this.files = files;
-    }).then(()=>{return this.api.getMCKeywords();}).then(keywords=>{
-      ace.define("ace/mode/mcbasic_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"],function(e,t,n){"use strict";var r=e("../lib/oop"),i=e("./text_highlight_rules").TextHighlightRules,s=function(){
-	var e=this.createKeywordMapper({"keyword.control.asp":keywords+"|common|shared|try|catch|long|double|sys|din|dout|Program|TargetPoint|If|Then|Else|ElseIf|End|While|Wend|For|To|Each|Case|Select|Return|Continue|Do|Until|Loop|Next|With|Exit|Function|Property|Type|Enum|Sub|IIf",
-	"storage.type.asp":"Dim|Call|Class|Const|Dim|Redim|Set|Let|Get|New|Randomize|Option|Explicit","storage.modifier.asp":"Private|Public|Default","keyword.operator.asp":"Mod|And|Not|Or|Xor|as","constant.language.asp":"Empty|False|Nothing|Null|True","support.class.asp":"Application|ObjectContext|Request|Response|Server|Session","support.class.collection.asp":"Contents|StaticObjects|ClientCertificate|Cookies|Form|QueryString|ServerVariables","support.constant.asp":"TotalBytes|Buffer|CacheControl|Charset|ContentType|Expires|ExpiresAbsolute|IsClientConnected|PICS|Status|ScriptTimeout|CodePage|LCID|SessionID|Timeout","support.function.asp":"Lock|Unlock|SetAbort|SetComplete|BinaryRead|AddHeader|AppendToLog|BinaryWrite|Clear|Flush|Redirect|Write|CreateObject|HTMLEncode|MapPath|URLEncode|Abandon|Convert|Regex","support.function.event.asp":"Application_OnEnd|Application_OnStart|OnTransactionAbort|OnTransactionCommit|Session_OnEnd|Session_OnStart","support.function.vb.asp":"Array|Add|Asc|Atn|CBool|CByte|CCur|CDate|CDbl|Chr|CInt|CLng|Conversions|Cos|CreateObject|CSng|CStr|Date|DateAdd|DateDiff|DatePart|DateSerial|DateValue|Day|Derived|Math|Escape|Eval|Exists|Exp|Filter|FormatCurrency|FormatDateTime|FormatNumber|FormatPercent|GetLocale|GetObject|GetRef|Hex|Hour|InputBox|InStr|InStrRev|Int|Fix|IsArray|IsDate|IsEmpty|IsNull|IsNumeric|IsObject|Item|Items|Join|Keys|LBound|LCase|Left|Len|LoadPicture|Log|LTrim|RTrim|Trim|Maths|Mid|Minute|Month|MonthName|MsgBox|Now|Oct|Remove|RemoveAll|Replace|RGB|Right|Rnd|Round|ScriptEngine|ScriptEngineBuildVersion|ScriptEngineMajorVersion|ScriptEngineMinorVersion|Second|SetLocale|Sgn|Sin|Space|Split|Sqr|StrComp|String|StrReverse|Tan|Time|Timer|TimeSerial|TimeValue|TypeName|UBound|UCase|Unescape|VarType|Weekday|WeekdayName|Year","support.type.vb.asp":"vbtrue|vbfalse|vbcr|vbcrlf|vbformfeed|vblf|vbnewline|vbnullchar|vbnullstring|int32|vbtab|vbverticaltab|vbbinarycompare|vbtextcomparevbsunday|vbmonday|vbtuesday|vbwednesday|vbthursday|vbfriday|vbsaturday|vbusesystemdayofweek|vbfirstjan1|vbfirstfourdays|vbfirstfullweek|vbgeneraldate|vblongdate|vbshortdate|vblongtime|vbshorttime|vbobjecterror|vbEmpty|vbNull|vbInteger|vbLong|vbSingle|vbDouble|vbCurrency|vbDate|vbString|vbObject|vbError|vbBoolean|vbVariant|vbDataObject|vbDecimal|vbByte|vbArray"},"identifier",!0);this.$rules={start:[{token:["meta.ending-space"],regex:"$"},{token:[null],regex:"^(?=\\t)",next:"state_3"},{token:[null],regex:"^(?= )",next:"state_4"},{token:["text","storage.type.function.asp","text","entity.name.function.asp","text","punctuation.definition.parameters.asp","variable.parameter.function.asp","punctuation.definition.parameters.asp"],regex:"^(\\s*)(Function|Sub)(\\s+)([a-zA-Z_]\\w*)(\\s*)(\\()([^)]*)(\\))"},{token:"punctuation.definition.comment.asp",regex:"'$|REM(?=\\s|$)$",next:"start",caseInsensitive:!0},{token:"punctuation.definition.comment.asp",regex:"'|REM(?=\\s|$)",next:"comment",caseInsensitive:!0},{token:"storage.type.asp",regex:"On Error Resume Next|On Error GoTo",caseInsensitive:!0},{token:"punctuation.definition.string.begin.asp",regex:'"',next:"string"},{token:["punctuation.definition.variable.asp"],regex:"(\\$)[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*?\\b\\s*"},{regex:"\\w+",token:e},{token:["entity.name.function.asp"],regex:"(?:(\\b[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*?\\b)(?=\\(\\)?))"},{token:["keyword.operator.asp"],regex:"\\-|\\+|\\*\\/|\\>|\\<|\\=|\\&"}],state_3:[{token:["meta.odd-tab.tabs","meta.even-tab.tabs"],regex:"(\\t)(\\t)?"},{token:"meta.leading-space",regex:"(?=[^\\t])",next:"start"},{token:"meta.leading-space",regex:".",next:"state_3"}],state_4:[{token:["meta.odd-tab.spaces","meta.even-tab.spaces"],regex:"(  )(  )?"},{token:"meta.leading-space",regex:"(?=[^ ])",next:"start"},{defaultToken:"meta.leading-space"}],comment:[{token:"comment.line.apostrophe.asp",regex:"$|(?=(?:%>))",next:"start"},{defaultToken:"comment.line.apostrophe.asp"}],string:[{token:"constant.character.escape.apostrophe.asp",regex:'""'},{token:"string.quoted.double.asp",regex:'"',next:"start"},{defaultToken:"string.quoted.double.asp"}]}};r.inherits(s,i),t.VBScriptHighlightRules=s}),ace.define("ace/mode/mcbasic",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/mcbasic_highlight_rules"],function(e,t,n){"use strict";var r=e("../lib/oop"),i=e("./text").Mode,s=e("./mcbasic_highlight_rules").VBScriptHighlightRules,o=function(){this.HighlightRules=s};r.inherits(o,i),function(){this.lineCommentStart=["'","REM"],this.$id="ace/mode/mcbasic"}.call(o.prototype),t.Mode=o});
-      return this.api.getMCProperties();
-    }).then((cmds:MCCommand[])=>{
-      let wordList : string[] = [];
-      for (let cmd of cmds) {
-        wordList.push(cmd.text);
-      }
-      const staticWordCompleter = {
-        getCompletions: (editor, session, pos, prefix:string, callback:Function)=>{
-          let line: string = session.getLine(pos.row);
-          let i = pos.column;
-          if (i < line.length && i>0)
-            line = line.substring(0,i);
-          const trimmed = line.trim();
-          i = trimmed.indexOf(' ');
-          const firstWord = i > 0 ? trimmed.substring(0, i).toLowerCase().trim() : trimmed;
-          let params = [];
-          if (firstWord.length > 0) {
-            for (let options of OPTIONAL) {
-              if (options.cmd === firstWord) {
-                params = options.params;
-                break;
-              }
-            }
-          }
-          if (line.charAt(line.length - prefix.length - 1) === '.') {
-            const index = line.lastIndexOf(' ');
-            let candidate = line.substring(index+1, line.length - 1).toLowerCase();
-            if (candidate.charAt(candidate.length-1)==='.')
-              candidate = candidate.substring(0, candidate.length-1);
-            let found = false;
-            // COMPARE WITH GROUPS AND AXES
-            for (let g of this.groups.groups) {
-              if (g.name.toLowerCase() === candidate) {
-                found = true;
-                break;
-              }
-              for (let a of g.axes) {
-                if (a.toLowerCase() === candidate) {
-                  found = true;
+      this.keywords.initDone.subscribe(done=>{
+        if (!done)
+          return;
+        const staticWordCompleter = {
+          getCompletions: (editor, session, pos, prefix:string, callback:Function)=>{
+            let line: string = session.getLine(pos.row);
+            let i = pos.column;
+            if (i < line.length && i>0)
+              line = line.substring(0,i);
+            const trimmed = line.trim();
+            i = trimmed.indexOf(' ');
+            const firstWord = i > 0 ? trimmed.substring(0, i).toLowerCase().trim() : trimmed;
+            let params = [];
+            if (firstWord.length > 0) {
+              for (let options of OPTIONAL) {
+                if (options.cmd === firstWord) {
+                  params = options.params;
                   break;
                 }
               }
             }
-            callback(null, wordList.map(function(word) {
-              return {
-                caption: word,
-                value: word,
-                meta: "parameter",
-                type: 'parameter'
-              };
-            }));
-          } else if (trimmed.charAt(trimmed.length - prefix.length - 1) === '=') {
-            let candidate;
-            if (trimmed.charAt(trimmed.length - prefix.length - 2) === ' ') {
-              const parts = trimmed.split(' ');
-              candidate = parts[parts.length - 2].toLowerCase();
-            } else {
-              const index = trimmed.lastIndexOf(' ');
-              candidate = trimmed.substring(index+1, trimmed.length - 1).toLowerCase();              
-            }
-            let values: Values = null;
-            for (let val of VALUES) {
-              if (val.attr === candidate) {
-                values = val;
-                break;
+            if (line.charAt(line.length - prefix.length - 1) === '.') {
+              const index = line.lastIndexOf(' ');
+              let candidate = line.substring(index+1, line.length - 1).toLowerCase();
+              if (candidate.charAt(candidate.length-1)==='.')
+                candidate = candidate.substring(0, candidate.length-1);
+              let found = false;
+              // COMPARE WITH GROUPS AND AXES
+              for (let g of this.groups.groups) {
+                if (g.name.toLowerCase() === candidate) {
+                  found = true;
+                  break;
+                }
+                for (let a of g.axes) {
+                  if (a.toLowerCase() === candidate) {
+                    found = true;
+                    break;
+                  }
+                }
               }
+              callback(null, this.keywords.wordList.map(function(word) {
+                return {
+                  caption: word,
+                  value: word,
+                  meta: "parameter",
+                  type: 'parameter'
+                };
+              }));
+            } else if (trimmed.charAt(trimmed.length - prefix.length - 1) === '=') {
+              let candidate;
+              if (trimmed.charAt(trimmed.length - prefix.length - 2) === ' ') {
+                const parts = trimmed.split(' ');
+                candidate = parts[parts.length - 2].toLowerCase();
+              } else {
+                const index = trimmed.lastIndexOf(' ');
+                candidate = trimmed.substring(index+1, trimmed.length - 1).toLowerCase();              
+              }
+              let values: Values = null;
+              for (let val of VALUES) {
+                if (val.attr === candidate) {
+                  values = val;
+                  break;
+                }
+              }
+              if (values === null)
+                return;
+              callback(null, values.values.map(function(val) {
+                return {
+                  caption: val.val,
+                  value: val.val,
+                  meta: "Value",
+                  type: 'Value',
+                  docHTML: '<div class="docs">' + val.doc + '</div>'
+                };
+              }));
+            } else if (MOTION_COMMANDS.includes(firstWord)) {
+              callback(null, this.data.robots.map(function(robot) {
+                return {
+                  caption: robot,
+                  value: robot,
+                  meta: "Motion Element",
+                  type: 'Motion Element'
+                };
+              }).concat(this.data.locations.concat(this.data.joints).map(function(pos) {
+                return {
+                  caption: pos.name,
+                  value: pos.name,
+                  meta: "Position",
+                  type: 'Position'
+                };
+              }).concat(params.map(function(param){
+                return {
+                  caption: param,
+                  value: param,
+                  meta: "Optional",
+                  type: 'Optional'
+                };
+              }))));
+            } else if (TASK_COMMANDS.includes(firstWord)) {
+              callback(null, this.task.tasks.map(function(task) {
+                return {
+                  caption: task.name,
+                  value: task.name,
+                  meta: "Task",
+                  type: 'Task'
+                };
+              }));
+            } else if (PROGRAM_COMMANDS.includes(firstWord)) {
+              callback(null, this.files.map(function(file) {
+                return {
+                  caption: file.fileName,
+                  value: file.fileName,
+                  meta: "File",
+                  type: 'File'
+                };
+              }));
+            } else if (params.length > 0) {
+              callback(null, params.map(function(param) {
+                return {
+                  caption: param,
+                  value: param,
+                  meta: "Command Parameter",
+                  type: 'Command Parameter'
+                };
+              }));
+            } else {
+              callback(null, this.commands.map(function(cmd) {
+                return {
+                  caption: cmd.name,
+                  value: cmd.name,
+                  meta: "command",
+                  type: 'command',
+                  docHTML: '<div class="docs"><b>' + cmd.name + '<br><br>Syntax: </b>' + cmd.syntax + '<br><b>Description:</b><br>' + cmd.description + '</div>'
+                };
+              }));
             }
-            if (values === null)
-              return;
-            callback(null, values.values.map(function(val) {
-              return {
-                caption: val.val,
-                value: val.val,
-                meta: "Value",
-                type: 'Value',
-                docHTML: '<div class="docs">' + val.doc + '</div>'
-              };
-            }));
-          } else if (MOTION_COMMANDS.includes(firstWord)) {
-            callback(null, this.data.robots.map(function(robot) {
-              return {
-                caption: robot,
-                value: robot,
-                meta: "Motion Element",
-                type: 'Motion Element'
-              };
-            }).concat(this.data.locations.concat(this.data.joints).map(function(pos) {
-              return {
-                caption: pos.name,
-                value: pos.name,
-                meta: "Position",
-                type: 'Position'
-              };
-            }).concat(params.map(function(param){
-              return {
-                caption: param,
-                value: param,
-                meta: "Optional",
-                type: 'Optional'
-              };
-            }))));
-          } else if (TASK_COMMANDS.includes(firstWord)) {
-            callback(null, this.task.tasks.map(function(task) {
-              return {
-                caption: task.name,
-                value: task.name,
-                meta: "Task",
-                type: 'Task'
-              };
-            }));
-          } else if (PROGRAM_COMMANDS.includes(firstWord)) {
-            callback(null, this.files.map(function(file) {
-              return {
-                caption: file.fileName,
-                value: file.fileName,
-                meta: "File",
-                type: 'File'
-              };
-            }));
-          } else if (params.length > 0) {
-            callback(null, params.map(function(param) {
-              return {
-                caption: param,
-                value: param,
-                meta: "Command Parameter",
-                type: 'Command Parameter'
-              };
-            }));
-          } else {
-            callback(null, this.commands.map(function(cmd) {
-              return {
-                caption: cmd.name,
-                value: cmd.name,
-                meta: "command",
-                type: 'command',
-                docHTML: '<div class="docs"><b>' + cmd.name + '<br><br>Syntax: </b>' + cmd.syntax + '<br><b>Description:</b><br>' + cmd.description + '</div>'
-              };
-            }));
           }
         }
-      }
-      this.editor.completers = [staticWordCompleter];
-      this.editor.getSession().setMode("ace/mode/mcbasic");
+        this.editor.completers = [staticWordCompleter];
+        this.editor.getSession().setMode("ace/mode/mcbasic");
+      });
     });
     this.editor.$blockScrolling = Infinity;
     if (this.service.editorText)
@@ -470,13 +471,13 @@ export class ProgramEditorAceComponent implements OnInit {
     this.editor.on("guttermousedown", this.editor.$breakpointListener = (e)=>{
       if (this.service.activeFile.endsWith('B') || this.service.backtrace) {
         this.zone.run(()=>{
-          this.snack.open('Library breakpoints are not supported yet','DISMISS');
+          this.snack.open(this.words['projects.ace']['bp_lib'],this.words['dismiss']);
         });
         return;
       }
       if (this.service.status === null || this.service.status.statusCode === TASKSTATE_NOTLOADED) {// PROGRAM NOT LOADED OR IS LIBRARY
         this.zone.run(()=>{
-          this.snack.open('Breakpoints can only be inserted on a loaded file','DISMISS');
+          this.snack.open(this.words['projects.ace']['bp_err'],this.words['dismiss']);
         });
         return;
       }
@@ -551,8 +552,15 @@ export class ProgramEditorAceComponent implements OnInit {
           this.ref.tick();
         });
       },500);
-      
-      
+    });
+    this.editor.commands.addCommand({
+      name: "save",
+      bindKey: {win: "Ctrl-S", mac: "Command-Option-S"},
+      exec: ()=>{
+        this.zone.run(()=>{
+          this.service.save();
+        });
+      }
     });
     if (this.service.activeFile) {
       const app = this.service.activeFile.substring(0, this.service.activeFile.indexOf('.'));

@@ -7,7 +7,6 @@
   color: #fff;
   font-size: 18px;
 }
-
 .actions {
   height: 52px;
   display: flex;
@@ -15,7 +14,6 @@
   justify-content: flex-end;
   margin: 0 -24px -24px 0;
 }
-
 .name-wrapper {
   display: flex;
   align-items: center;

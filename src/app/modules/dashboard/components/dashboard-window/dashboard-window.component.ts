@@ -5,6 +5,7 @@ import {RecordDialogComponent, RecordParams} from '../record-dialog/record-dialo
 import {DashboardWindow, DashboardService, DashboardParam} from '../../services/dashboard.service';
 import {WebsocketService, MCQueryResponse} from '../../../../modules/core/services/websocket.service';
 import {TourService} from 'ngx-tour-md-menu';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'dashboard-window',
@@ -17,15 +18,20 @@ export class DashboardWindowComponent implements OnInit {
   @Input() params : DashboardWindow;
   
   @ViewChild('window') window : ElementRef;
+  
+  private words: any;
 
   constructor(
     private dashboard: DashboardService,
     private ws : WebsocketService,
     private snack : MatSnackBar,
     private dialog : MatDialog,
-    private tour : TourService
+    private tour : TourService,
+    private trn: TranslateService
   ) {
-    
+    this.trn.get(['dashboard.err_target','dismiss','dashboard.move_sent']).subscribe(words=>{
+      this.words = words;
+    });
   }
 
   ngOnInit() {
@@ -69,7 +75,7 @@ export class DashboardWindowComponent implements OnInit {
   move() {
     for (let t of this.params.target) {
       if (isNaN(t) || t === null)
-        return this.snack.open('INVALID TARGET','',{duration:1500});
+        return this.snack.open(this.words['dashboard.err_target'],'',{duration:1500});
     }
     let cmd = 'move ' + this.params.name;
     let target = this.params.isGroup ?
@@ -86,9 +92,13 @@ export class DashboardWindowComponent implements OnInit {
     if (this.params.jerk)
       cmd += ' Jerk=' + this.params.jerk;
     this.ws.query(cmd).then((ret:MCQueryResponse)=>{
-      if (ret.err)
-        return this.snack.open('Error ' + ret.err.errCode + ': ' + ret.err.errMsg,'DISMISS');
-      this.snack.open('MOTION COMMAND SENT','',{duration:1500});
+      if (ret.err) {
+        this.trn.get('dashboard.err_move', {code: ret.err.errCode, msg: ret.err.errMsg}).subscribe(word=>{
+          this.snack.open(word, this.words['dismiss']);
+        });
+        return;
+      }
+      this.snack.open(this.words['dashboard.move_sent'],'',{duration:1500});
     });
   }
   

@@ -4,6 +4,7 @@ import {PalletWizardComponent} from '../pallet-wizard/pallet-wizard.component';
 import {DataService, WebsocketService, MCQueryResponse} from '../../../core';
 import {NewPalletOptions, AddPalletDialogComponent} from '../add-pallet-dialog/add-pallet-dialog.component';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
+import {TranslateService} from '@ngx-translate/core';
 
 declare var Isomer:any
 
@@ -32,6 +33,7 @@ export class PalletizingComponent implements OnInit {
   private iso : any = null;
   private adjustedMaxSize : number;
   private scaleFactor : number = 1;
+  private words: any;
   
   abnormalItemCount : boolean = false;
   wizardMode: boolean = false;
@@ -39,8 +41,14 @@ export class PalletizingComponent implements OnInit {
   constructor(
     public data : DataService,
     private dialog : MatDialog,
-    private ws : WebsocketService
-  ) { }
+    private ws : WebsocketService,
+    private trn: TranslateService
+  ) {
+    this.trn.get(['button.delete', 'button.cancel','pallets.delete.msg'])
+    .subscribe(words=>{
+      this.words = words;
+    });
+  }
 
   ngOnInit() {
     
@@ -135,24 +143,27 @@ export class PalletizingComponent implements OnInit {
   }
   
   deletePallet() {
-    let ref = this.dialog.open(YesNoDialogComponent,{
-      data: {
-        title: 'Delete ' + this.data.selectedPallet.name + '?',
-        msg: 'This cannot be undone.',
-        yes: 'DELETE',
-        no: 'CANCEL'
-      }
-    });
-    ref.afterClosed().subscribe(ret=>{
-      if (ret) {
-        this.ws.query('?PLT_RESET_PALLET("' + this.data.selectedPallet.name + '")').then((response:MCQueryResponse)=>{
-          if (response.err || response.result !== '0')
-            return;
-          this.data.selectedPallet = null;
-          this.data.refreshPallets();
-          this.drawPreview();
-        });
-      }
+    this.trn.get('pallets.delete.title',{name:this.data.selectedPallet.name})
+    .subscribe(word=>{
+      let ref = this.dialog.open(YesNoDialogComponent,{
+        data: {
+          title: word,
+          msg: this.words['pallets.delete.msg'],
+          yes: this.words['button.delete'],
+          no: this.words['button.cancel']
+        }
+      });
+      ref.afterClosed().subscribe(ret=>{
+        if (ret) {
+          this.ws.query('?PLT_RESET_PALLET("' + this.data.selectedPallet.name + '")').then((response:MCQueryResponse)=>{
+            if (response.err || response.result !== '0')
+              return;
+            this.data.selectedPallet = null;
+            this.data.refreshPallets();
+            this.drawPreview();
+          });
+        }
+      });
     });
   }
   

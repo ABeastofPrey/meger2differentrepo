@@ -14,3 +14,4 @@ export * from './lead-by-nose-service.service';
 export * from './tp-stat.service';
 export * from './teach.service';
 export * from './project-manager.service';
+export * from './keywords.service';

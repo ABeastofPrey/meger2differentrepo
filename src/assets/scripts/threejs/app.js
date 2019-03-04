@@ -113,7 +113,7 @@ var PREVIEW3D = {
     }
     var time, prevTime;
     function animate() {
-      if (service && service.joints[0]) {
+      if (service && service.joints[0] && service.joints.length === 4) {
         scene.J1.rotation.z = service.joints[0].value * Math.PI / 180;
         scene.J2.rotation.z = service.joints[1].value * Math.PI / 180;
         scene.J3.position.z = service.joints[2].value / 10;

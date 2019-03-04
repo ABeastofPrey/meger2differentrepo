@@ -31,6 +31,7 @@ export class NotificationWindowComponent implements OnInit {
   contextMenuShown : boolean = false;
   contextMenuX : number = 0;
   contextMenuY : number = 0;
+  contextSelection: string = null;
 
   constructor(
     public notification:NotificationService,
@@ -52,6 +53,23 @@ export class NotificationWindowComponent implements OnInit {
     this.contextMenuX = e.offsetX;
     this.contextMenuY = e.offsetY + 72;
     this.contextMenuShown = true;
+    this.contextSelection = this.getSelection();
+  }
+  
+  private getSelection(): string {
+    let t: string = null;
+    if (window.getSelection) {
+      t = window.getSelection().toString();
+    } else if (document.getSelection && document.getSelection().type !== 'Control') {
+      t = document.getSelection().toString();
+    }
+    return t && t.trim().length > 0 ? t : null;
+  }
+  
+  copy() {
+    document.execCommand('copy');
+    this.contextMenuShown = false;
+    this.contextSelection = null;
   }
   
   onClick() {

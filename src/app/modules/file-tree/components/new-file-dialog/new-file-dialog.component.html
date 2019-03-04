@@ -1,0 +1,31 @@
+<div class="mat-typography">
+  <div class="title mat-elevation-z1">
+    <mat-icon>note_add</mat-icon>&nbsp;&nbsp;{{'projects.toolbar.new_file'|translate}}
+  </div>
+  <div class="name-wrapper">
+    <mat-form-field>
+      <input matInput placeholder="{{'files.name'|translate}}" [(ngModel)]="newFile.name">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="{{'files.ext'|translate}}" [(ngModel)]="newFile.ext">
+        <mat-optgroup label="{{'projects.toolbar.prg'|translate}}">
+          <mat-option value="PRG">PRG</mat-option>
+          <mat-option value="UPG">UPG</mat-option>
+        </mat-optgroup>
+        <mat-optgroup label="{{'projects.toolbar.lib'|translate}}">
+          <mat-option value="LIB">LIB</mat-option>
+          <mat-option value="ULB">ULB</mat-option>
+        </mat-optgroup>
+        <mat-optgroup label="{{'other'|translate}}">
+          <mat-option value="DAT">DAT</mat-option>
+          <mat-option value="DEF">DEF</mat-option>
+          <mat-option value="VAR">VAR</mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="actions">
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="newFile.name.length === 0">{{'button.create'|translate}}</button>
+  </div>
+</div>

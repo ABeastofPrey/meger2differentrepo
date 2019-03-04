@@ -6,26 +6,42 @@ import {EventEmitter} from '@angular/core';
 import {DataService} from './data.service';
 import {MatSnackBar} from '@angular/material';
 import {ScreenManagerService} from './screen-manager.service';
+import {TranslateService} from '@ngx-translate/core';
+import {SelectionModel} from '@angular/cdk/collections';
+import {TreeNode} from '../../file-tree/components/mc-file-tree/mc-file-tree.component';
 
+/*
+ * THIS SERVICE MANAGES THE PROJECTS IN THE PROJECT EDITOR, BUT ALSO MANAGES
+ * SOME FUNCTIONALITY OF THE CONTROLLER FILES, BECAUSE IT'S ON THE SAME
+ * SCREEN.
+ */
 @Injectable()
 export class ProjectManagerService {
   
   currProject: BehaviorSubject<MCProject> = new BehaviorSubject(null);
   onExpand: EventEmitter<string> = new EventEmitter();
   onExpandLib: EventEmitter<{app:string,lib:string}> = new EventEmitter();
+  fileRefreshNeeded: EventEmitter<any> = new EventEmitter();
   onAppStatusChange: BehaviorSubject<any> = new BehaviorSubject(null);
   activeProject: boolean = false; // TRUE IF ONE APP IS LOADED AND NOT KILLED
   isLoading: boolean = false;
+  checklistSelection = new SelectionModel<TreeNode>(true /* multiple */);
   
   private interval: any;
   private oldStat: string = null;
+  
+  private words: any;
 
   constructor(
     private ws: WebsocketService,
     private data: DataService,
     private snack: MatSnackBar,
-    private mgr: ScreenManagerService
+    private mgr: ScreenManagerService,
+    private trn: TranslateService
   ) {
+    this.trn.get('changeOK').subscribe(words=>{
+      this.words = words;
+    });
     this.data.dataLoaded.subscribe(ret=>{
       if (ret) {
         this.getCurrentProject();
@@ -54,6 +70,7 @@ export class ProjectManagerService {
   getProjectStatus() {
     if (this.interval)
       clearInterval(this.interval);
+    this.activeProject = false;
     this.interval = setInterval(()=>{
       if (this.currProject.value) {
         this.ws.query('?prj_get_status("' + this.currProject.value.name + '")')
@@ -95,6 +112,42 @@ export class ProjectManagerService {
     },200);
   }
   
+  
+  /* Refreshes the app list and lib list for the given project.
+   *  Params: MCPRoject   - project to refresh
+   *          existing  - TRUE if refresh is done for an existing project
+   */
+  refreshAppList(proj: MCProject, existing: boolean) : Promise<any> {
+    const projName = proj.name;
+    if (existing) {
+      this.isLoading = true;
+      this.stopStatusRefresh();
+    }
+    return this.ws.query('?prj_get_app_list("' + projName + '")')
+    .then((ret:MCQueryResponse)=>{
+      proj.initAppsFromString(ret.result);
+      let promises : Promise<any>[] = [];
+      const cmd = '?prj_get_app_libraries_list("' + projName + '","';
+      for (let app of proj.apps) {
+        promises.push(this.ws.query(cmd + app.name + '")'));
+      }
+      return Promise.all(promises);
+    }).then((ret:MCQueryResponse[])=>{
+      for (let i = 0; i < proj.apps.length; i++) {
+        if (ret[i].result.length > 0) {
+          proj.apps[i].libs = ret[i].result.split(',');
+        }
+      }
+      return this.refreshAppIds(proj);
+    }).then(()=>{
+      if (existing) {
+        this.getProjectStatus(); // RESTART PROJECT STATUS QUERY
+        this.isLoading = false;
+        this.currProject.next(proj);
+      }
+    });
+  }
+  
   getCurrentProject() : Promise<any> {
     return this.ws.query('?prj_get_current_project').then((ret:MCQueryResponse)=>{
       if (ret.err)
@@ -102,26 +155,24 @@ export class ProjectManagerService {
       this.isLoading = true;
       const projName = ret.result;
       let proj = new MCProject(projName);
-      return this.ws.query('?prj_get_app_list("' + projName + '")')
-      .then((ret:MCQueryResponse)=>{
-        proj.initAppsFromString(ret.result);
-        let promises : Promise<any>[] = [];
-        const cmd = '?prj_get_app_libraries_list("' + projName + '","';
-        for (let app of proj.apps) {
-          promises.push(this.ws.query(cmd + app.name + '")'));
-        }
-        return Promise.all(promises);
-      }).then((ret:MCQueryResponse[])=>{
-        for (let i = 0; i < proj.apps.length; i++) {
-          if (ret[i].result.length > 0) {
-            proj.apps[i].libs = ret[i].result.split(',');
-          }
-        }
+      return this.refreshAppList(proj, false).then(()=>{
         return this.loadProgramSettings(proj);
-        }).then(()=>{
-          this.isLoading = false;
-          this.currProject.next(proj);
-        });
+      }).then(()=>{
+        this.isLoading = false;
+        this.currProject.next(proj);
+      });
+    });
+  }
+  
+  private refreshAppIds(proj: MCProject): Promise<any> {
+    let promises: Promise<any>[] = [];
+    for (let app of proj.apps) {
+      promises.push(this.ws.query('?TP_GET_APP_ID("' + app.name + '")'));
+    }
+    return Promise.all(promises).then((results:MCQueryResponse[])=>{
+      for (let i = 0; i < results.length; i++) {
+        proj.apps[i].id = Number(results[i].result);
+      }
     });
   }
   
@@ -136,9 +187,6 @@ export class ProjectManagerService {
       this.ws.query('?TP_GET_PROJECT_PARAMETER("workpiece","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("MOTIONOVERLAP","")'),
     ];
-    for (let app of proj.apps) {
-      promises.push(this.ws.query('?TP_GET_APP_ID("' + app.name + '")'));
-    }
     return Promise.all(promises).then((results:MCQueryResponse[])=>{
       if (results[0].err === null && results[0].result.length > 0) {
         let n = Number(results[0].result);
@@ -168,9 +216,6 @@ export class ProjectManagerService {
         proj.settings.wpiece = results[6].result;
       }
       proj.settings.overlap = results[7].result === '1';
-      for (let i = 0; i < proj.apps.length; i++) {
-        proj.apps[i].id = Number(results[i + 8].result);
-      }
       let posArr : Limit[] = [];
       let promises : Promise<any>[] = [];
       for (let j = 1; j <= this.data.locationDescriptions.length; j++) {
@@ -262,13 +307,12 @@ export class ProjectManagerService {
   }
   
   onLimitChanged(name:string,e:Event,paramType:string,prevValue:number) {
-    console.log(name,paramType,prevValue);
     const target: any = e.target;
     const cmd = '?TP_SET_PROJECT_PARAMETER("' + name + '","' + paramType + '","' +
         target.value + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       if (ret.result === '0') {
-        this.snack.open('Changes Saved.','',{duration:1500});
+        this.snack.open(this.words,'',{duration:1500});
       } else {
         target.value = prevValue;
       }
@@ -310,7 +354,7 @@ export class ProjectManagerService {
         return;
     }
     this.ws.query(cmd).then(()=>{
-      this.snack.open('Changes Saved.','',{duration:1500});
+      this.snack.open(this.words,'',{duration:1500});
       switch (setting) {
         case 'tool':
           this.data.refreshTools();

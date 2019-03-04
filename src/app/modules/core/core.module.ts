@@ -19,6 +19,8 @@ import {LeadByNoseServiceService} from './services/lead-by-nose-service.service'
 import {TeachService} from './services/teach.service';
 import {ProjectManagerService} from './services/project-manager.service';
 import {UtilsService} from './services/utils.service';
+import {LangService} from './services/lang.service';
+import {KeywordService} from './services/keywords.service';
 
 @NgModule({
   imports: [
@@ -42,7 +44,9 @@ import {UtilsService} from './services/utils.service';
     LeadByNoseServiceService,
     TeachService,
     ProjectManagerService,
-    UtilsService
+    UtilsService,
+    LangService,
+    KeywordService
   ]
 })
 export class CoreModule { }

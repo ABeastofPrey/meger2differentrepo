@@ -10,18 +10,18 @@
 >
   <div class="title primary-bg center-vertical" #handle>
     <div style="flex: 1; cursor: move;">{{params.name}}</div>
-    <button mat-icon-button *ngIf="params.name === 'SCARA (Tour)'" (click)="record()" matTooltip="Record" [disabled]="params.params.length === 0 && !params.isGroup" tourAnchor="dashboard-rec"><mat-icon>{{params.isRecording ? 'stop' : 'fiber_manual_record'}}</mat-icon></button>
-    <button mat-icon-button *ngIf="params.name !== 'SCARA (Tour)'" (click)="record()" matTooltip="Record" [disabled]="params.params.length === 0 && !params.isGroup"><mat-icon>{{params.isRecording ? 'stop' : 'fiber_manual_record'}}</mat-icon></button>
-    <button mat-icon-button (click)="close()" matTooltip="Close"><mat-icon>close</mat-icon></button>
+    <button mat-icon-button *ngIf="params.name === 'SCARA (Tour)'" (click)="record()" matTooltip="{{'record'|translate}}" [disabled]="params.params.length === 0 && !params.isGroup" tourAnchor="dashboard-rec"><mat-icon>{{params.isRecording ? 'stop' : 'fiber_manual_record'}}</mat-icon></button>
+    <button mat-icon-button *ngIf="params.name !== 'SCARA (Tour)'" (click)="record()" matTooltip="{{'record'|translate}}" [disabled]="params.params.length === 0 && !params.isGroup"><mat-icon>{{params.isRecording ? 'stop' : 'fiber_manual_record'}}</mat-icon></button>
+    <button mat-icon-button (click)="close()" matTooltip="{{'close'|translate}}"><mat-icon>close</mat-icon></button>
   </div>
   <mat-progress-bar color="accent" [value]="params.recordingTime"></mat-progress-bar>
   <div class="content">
     <div style="flex: 1;">
-      <mat-slide-toggle *ngIf="params.name === 'SCARA (Tour)'" color="primary" style="margin-bottom: 8px;" [checked]="params.enable" (change)="toggleEnable()" tourAnchor="dashboard-enable">Enable</mat-slide-toggle>
-      <mat-slide-toggle *ngIf="params.name !== 'SCARA (Tour)'" color="primary" style="margin-bottom: 8px;" [checked]="params.enable" (change)="toggleEnable()">Enable</mat-slide-toggle>
+      <mat-slide-toggle *ngIf="params.name === 'SCARA (Tour)'" color="primary" style="margin-bottom: 8px;" [checked]="params.enable" (change)="toggleEnable()" tourAnchor="dashboard-enable">{{'enable'|translate}}</mat-slide-toggle>
+      <mat-slide-toggle *ngIf="params.name !== 'SCARA (Tour)'" color="primary" style="margin-bottom: 8px;" [checked]="params.enable" (change)="toggleEnable()">{{'enable'|translate}}</mat-slide-toggle>
       <div class="params-container">
         <div class="params-title center-vertical">
-          <span style="flex: 1;">Parameters</span>
+          <span style="flex: 1;">{{'parameters'|translate}}</span>
           <button mat-icon-button color="primary" (click)="addParam()"><mat-icon>add</mat-icon></button>
         </div>
         <table class="params-list">
@@ -42,8 +42,8 @@
     </div>
     <div style="flex: 1;" *ngIf="params.isExpanded">
       <div class="move-content" tourAnchor="dashboard-move">
-        <button mat-raised-button color="primary" (click)="move()">MOVE</button>
-        <mat-slide-toggle color="primary" style="margin-bottom: 8px;" *ngIf="params.isGroup" [(ngModel)]="params.cartesian">Cartesian</mat-slide-toggle>
+        <button mat-raised-button color="primary" (click)="move()">{{'button.move'|translate}}</button>
+        <mat-slide-toggle color="primary" style="margin-bottom: 8px;" *ngIf="params.isGroup" [(ngModel)]="params.cartesian">{{'cartesian'|translate}}</mat-slide-toggle>
         <table>
           <tr *ngFor="let a of params.axes; let i=index;">
             <td>{{a}}</td><td><mat-form-field><input matInput [(ngModel)]="params.target[i]" type="number"></mat-form-field></td>

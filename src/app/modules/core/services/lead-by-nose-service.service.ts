@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {MatSnackBar} from '@angular/material';
 import {MCQueryResponse, WebsocketService} from './websocket.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class LeadByNoseServiceService {
@@ -13,6 +14,8 @@ export class LeadByNoseServiceService {
   private _joint : number = null;
   private _lbnStatus : boolean = false;
   private keepAlive : number = null;
+  
+  private word_errTimeout: string;
   
   get status() {return this._lbnStatus;}
   set status(val) {
@@ -86,11 +89,15 @@ export class LeadByNoseServiceService {
   constructor(
     private ws : WebsocketService,
     private snackbar : MatSnackBar,
+    private trn: TranslateService
   ) {
       this.ws.isConnected.subscribe(stat=>{
         if (!stat) {
           this.reset();
         }
+      });
+      this.trn.get('lbn.err_timeout').subscribe(ret=>{
+        this.word_errTimeout = ret;
       });
     }
   
@@ -135,7 +142,7 @@ export class LeadByNoseServiceService {
           }
           if (counter === 10) {
             clearInterval(initInterval);
-            this.snackbar.open('Error: Timeout Reached','',{duration:2000});
+            this.snackbar.open(this.word_errTimeout,'',{duration:2000});
             //this.mgr.mode = this.mgr.ScreenMode.TP;
             this.ws.clearInterval(this.keepAlive);
             this.ws.send('?LBN_EXECUTE(0)');

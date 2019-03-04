@@ -1,26 +1,26 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    <mat-icon>add</mat-icon>&nbsp;&nbsp;Add Variable
+    <mat-icon>add</mat-icon>&nbsp;&nbsp;{{'variables.new'|translate}}
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="Variable Name" [(ngModel)]="name" maxlength="32">
+      <input matInput placeholder="{{'variables.name'|translate}}" [(ngModel)]="name" maxlength="32">
     </mat-form-field>
     <mat-form-field *ngIf="!data.domainIsFrame">
-      <mat-select placeholder="Variable Type" [(ngModel)]="varType" (selectionChange)="onTypeChange()">
-        <mat-option value="JOINT" *ngIf="data.isRobotType">Joint</mat-option>
-        <mat-option value="LOCATION" *ngIf="data.isRobotType">Location</mat-option>
-        <mat-option value="LONG">Long</mat-option>
-        <mat-option value="DOUBLE">Double</mat-option>
-        <mat-option value="STRING">String</mat-option>
+      <mat-select placeholder="{{'variables.type'|translate}}" [(ngModel)]="varType" (selectionChange)="onTypeChange()">
+        <mat-option value="JOINT" *ngIf="data.isRobotType">{{'joint'|translate}}</mat-option>
+        <mat-option value="LOCATION" *ngIf="data.isRobotType">{{'location'|translate}}</mat-option>
+        <mat-option value="LONG">{{'long'|translate}}</mat-option>
+        <mat-option value="DOUBLE">{{'double'|translate}}</mat-option>
+        <mat-option value="STRING">{{'string'|translate}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-checkbox color="primary" [(ngModel)]="isArray">Array</mat-checkbox>
+    <mat-checkbox color="primary" [(ngModel)]="isArray">{{'arr'|translate}}</mat-checkbox>
     <mat-form-field *ngIf="isArray" style="margin-top: 8px;">
-      <input matInput placeholder="Array Size" [(ngModel)]="arrSize">
+      <input matInput placeholder="{{'arr_size'|translate}}" [(ngModel)]="arrSize">
     </mat-form-field>
     <div *ngIf="!isArray && varType" style="margin-top: 8px;">
-      <div class="label">Values</div>
+      <div class="label">{{'values'|translate}}</div>
       <div *ngIf="varType === 'JOINT'" class="values">
         <mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
           <span matPrefix style='font-weight: bold;'>J{{i+1}}:&nbsp;&nbsp;</span>
@@ -43,7 +43,7 @@
       </div>
       <div *ngIf="varType && varType !== 'LOCATION' && varType !== 'JOINT'" class="values">
         <mat-form-field floatLabel="never" style="width: inherit;">
-          <span matPrefix style='font-weight: bold;'>Value:&nbsp;&nbsp;</span>
+          <span matPrefix style='font-weight: bold;'>{{'value'|translate}}:&nbsp;&nbsp;</span>
           <input *ngIf="varType !== 'STRING'"
             matInput
             [placeholder]="Value"
@@ -59,7 +59,7 @@
     </div>
   </div>
   <div class="actions">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="add()" [disabled]="!name || !varType">CREATE VARIABLE</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="add()" [disabled]="!name || !varType">{{'variables.btn_create'|translate}}</button>
   </div>
 </div>

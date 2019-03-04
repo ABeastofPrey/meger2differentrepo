@@ -1,11 +1,11 @@
 <div class='background wrapper'>
   <button mat-fab color="primary" class="fixed-top-right mat-elevation-z5" [ngClass]="{'real-device':!data.isEmulator}" (click)="showAddDialog()"><mat-icon>add</mat-icon></button>
   <mat-card class="data-filter mat-elevation-z3">
-    <mat-checkbox color="primary" [(ngModel)]="showJoints" [disabled]="!data.isRobotType">Joints</mat-checkbox>
-    <mat-checkbox color="primary" [(ngModel)]="showLocations" [disabled]="!data.isRobotType">Locations</mat-checkbox>
-    <mat-checkbox color="primary" [(ngModel)]="showLongs">Longs</mat-checkbox>
-    <mat-checkbox color="primary" [(ngModel)]="showDoubles">Doubles</mat-checkbox>
-    <mat-checkbox color="primary" [(ngModel)]="showStrings">Strings</mat-checkbox>
+    <mat-checkbox color="primary" [(ngModel)]="showJoints" [disabled]="!data.isRobotType">{{'joints'|translate}}</mat-checkbox>
+    <mat-checkbox color="primary" [(ngModel)]="showLocations" [disabled]="!data.isRobotType">{{'locations'|translate}}</mat-checkbox>
+    <mat-checkbox color="primary" [(ngModel)]="showLongs">{{'longs'|translate}}</mat-checkbox>
+    <mat-checkbox color="primary" [(ngModel)]="showDoubles">{{'doubles'|translate}}</mat-checkbox>
+    <mat-checkbox color="primary" [(ngModel)]="showStrings">{{'strings'|translate}}</mat-checkbox>
   </mat-card>
   <mat-table #table [dataSource]="dataSource" matSort class="data-table mat-elevation-z3" [style.background-color]="data.varRefreshInProgress ? '#ebebeb' : '#fff'">
     <ng-container matColumnDef="select">
@@ -25,18 +25,18 @@
       </mat-cell>
     </ng-container>
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header="name">Name</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header="name">{{'name'|translate}}</mat-header-cell>
       <mat-cell *matCellDef="let element">{{element.name}}<span *ngIf="element.isArr"> [...]</span></mat-cell>
     </ng-container>
     <ng-container matColumnDef="typeStr">
-      <mat-header-cell *matHeaderCellDef mat-sort-header="typeStr">Type</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header="typeStr">{{'type'|translate}}</mat-header-cell>
       <mat-cell *matCellDef="let element">{{element.typeStr}}</mat-cell>
     </ng-container>
     <ng-container matColumnDef="arrIndex">
-      <mat-header-cell *matHeaderCellDef>Index</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{'index'|translate}}</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <mat-form-field *ngIf="element.isArr">
-          <mat-select placeholder="Index" [(ngModel)]="element.selectedIndex" (selectionChange)="rowClick(element,true)">
+          <mat-select placeholder="{{'index'|translate}}" [(ngModel)]="element.selectedIndex" (selectionChange)="rowClick(element,true)">
             <mat-option *ngFor="let data of element.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -51,9 +51,9 @@
       <div class="var-name" *ngIf="selectedVar">
         {{selectedVar.name}}{{selectedVar.isArr ? '['+selectedVar.selectedIndex+']':''}}
       </div>
-      <button *ngIf="selectedVar && selectedVar.isPosition" mat-raised-button color="primary" style="margin-right: 24px;" (click)="teach()">TEACH</button>
-      <button *ngIf="selectedVar" mat-raised-button color="warn" style="margin-right: 24px;" (click)="deleteSelected()">{{'DELETE ' + selectedVar.name}}</button>
-      <button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">DELETE SELECTED</button>
+      <button *ngIf="selectedVar && selectedVar.isPosition" mat-raised-button color="primary" style="margin-right: 24px;" (click)="teach()">{{'button.teach'|translate}}</button>
+      <button *ngIf="selectedVar" mat-raised-button color="warn" style="margin-right: 24px;" (click)="deleteSelected()">{{'dataScreen.del'|translate:selectedVar}}</button>
+      <button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">{{'button.delete_selected'|translate}}</button>
       <div style="flex: 1; text-align: right;">
         <button mat-mini-fab (click)="selectedVar=null" color="primary"><mat-icon>expand_more</mat-icon></button>
       </div>

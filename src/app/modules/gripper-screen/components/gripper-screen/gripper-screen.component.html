@@ -1,7 +1,7 @@
 <div class="wrapper">
   <div class="side-menu mat-elevation-z3">
     <div style="margin-bottom: 16px;">{{data.gripperLibVer}}</div>
-    <button mat-raised-button color="primary" (click)="addNewItem(null)"><mat-icon>add</mat-icon>New End Effector</button>
+    <button mat-raised-button color="primary" (click)="addNewItem(null)"><mat-icon>add</mat-icon>{{'grippers.new_ef'|translate}}</button>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
         <button mat-icon-button class="table-button" (click)="setContent(node)">
@@ -18,7 +18,7 @@
           <mat-icon style="margin-right: 16px;" color="primary">settings_input_component</mat-icon>
           <span style="margin-right: 16px;">{{node.item}}</span>
         </button>
-        <button mat-raised-button color="primary" (click)="addNewItem(node)"><mat-icon>add</mat-icon>New Gripper</button>
+        <button mat-raised-button color="primary" (click)="addNewItem(node)"><mat-icon>add</mat-icon>{{'grippers.new_grp'|translate}}</button>
         <button mat-icon-button color="warn" (click)="deleteNode(node)" style="width: 40px;"><mat-icon>delete</mat-icon></button>
       </mat-tree-node>
     </mat-tree>
@@ -27,11 +27,11 @@
     <div *ngIf="selectedNode" class="content-wrapper">
       <h1>
         <div>
-          {{selectedNode.nodeType==='ef' ? 'End Effector: ' : 'Gripper: '}}
+          {{(selectedNode.nodeType==='ef' ? 'grippers.ef' : 'grippers.grp')|translate}}:&nbsp;
           {{selectedNode.item}}
         </div>
         <button *ngIf="selectedNode.nodeType==='grp'" mat-raised-button color="primary" (click)="test()">
-          <mat-icon>build</mat-icon> TEST
+          <mat-icon>build</mat-icon> {{'grippers.btnTest'|translate}}
         </button>
       </h1>
       <div *ngIf="selectedNode.nodeType==='ef'" class="content">
@@ -40,7 +40,7 @@
             <input matInput placeholder="dInput" [(ngModel)]="selectedNode.dInput" type="number" (change)="updateEfInput()">
           </mat-form-field>
         </div>
-        <div class="row">
+        <!--<div class="row">
           <span>Input Mask: </span>
           <mat-checkbox color="primary" [(ngModel)]="selectedNode.invert[0]" (change)="updateEfInput()"></mat-checkbox>
           <mat-checkbox color="primary" [(ngModel)]="selectedNode.invert[1]" (change)="updateEfInput()"></mat-checkbox>
@@ -50,9 +50,9 @@
           <mat-checkbox color="primary" [(ngModel)]="selectedNode.invert[5]" (change)="updateEfInput()"></mat-checkbox>
           <mat-checkbox color="primary" [(ngModel)]="selectedNode.invert[6]" (change)="updateEfInput()"></mat-checkbox>
           <mat-checkbox color="primary" [(ngModel)]="selectedNode.invert[7]" (change)="updateEfInput()"></mat-checkbox>
-        </div>
+        </div>-->
         <mat-form-field style="width: 180px;">
-          <mat-select placeholder="Tool" [(ngModel)]="selectedNode.tool" (selectionChange)="updateEfTool($event)">
+          <mat-select placeholder="{{'tool'|translate}}" [(ngModel)]="selectedNode.tool" (selectionChange)="updateEfTool($event)">
             <mat-option *ngFor="let t of data.tools" value="{{t}}">{{t}}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -63,48 +63,48 @@
           <mat-form-field>
             <input matInput placeholder="dOut Command 1" [(ngModel)]="selectedNode.cmd1" type="number" (change)="updateGripperCmd(1)">
           </mat-form-field>
-          <mat-checkbox color="primary" [(ngModel)]="selectedNode.cmd1_invert" (change)="updateGripperCmd(1)">Invert</mat-checkbox>
+          <mat-checkbox color="primary" [(ngModel)]="selectedNode.cmd1_invert" (change)="updateGripperCmd(1)">{{'invert'|translate}}</mat-checkbox>
         </div>
         <h2>Sleep Time:</h2>
         <div class="row">
           <mat-form-field>
-            <input matInput placeholder="Open" [(ngModel)]="selectedNode.sleep_open" type="number" (change)="updateGripperSleep('OPEN')">
+            <input matInput placeholder="{{'open'|translate}}" [(ngModel)]="selectedNode.sleep_open" type="number" (change)="updateGripperSleep('OPEN')">
             <span matSuffix>ms.</span>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Close" [(ngModel)]="selectedNode.sleep_close" type="number" (change)="updateGripperSleep('CLOSE')">
+            <input matInput placeholder="{{'close'|translate}}" [(ngModel)]="selectedNode.sleep_close" type="number" (change)="updateGripperSleep('CLOSE')">
             <span matSuffix>ms.</span>
           </mat-form-field>
         </div>
-        <h2>Optional:</h2>
+        <h2>{{'optional'|translate}}:</h2>
         <div class="row">
           <mat-form-field>
             <input matInput placeholder="dOut Command 2" type="number" [(ngModel)]="selectedNode.cmd2" [disabled]="!selectedNode.cmd2_enabled" (change)="updateGripperCmd(2)">
           </mat-form-field>
-          <mat-checkbox color="primary" [(ngModel)]="selectedNode.cmd2_invert" (change)="updateGripperCmd(2)" [disabled]="!selectedNode.cmd2_enabled">Invert</mat-checkbox>
-          <mat-slide-toggle color="primary" [(ngModel)]="selectedNode.cmd2_enabled">Enable</mat-slide-toggle>
+          <mat-checkbox color="primary" [(ngModel)]="selectedNode.cmd2_invert" (change)="updateGripperCmd(2)" [disabled]="!selectedNode.cmd2_enabled">{{'invert'|translate}}</mat-checkbox>
+          <mat-slide-toggle color="primary" [(ngModel)]="selectedNode.cmd2_enabled">{{'enable'|translate}}</mat-slide-toggle>
         </div>
         <div class="row">
           <mat-form-field>
             <input matInput placeholder="dIn Feedback 1" type="number" [(ngModel)]="selectedNode.fb1" [disabled]="!selectedNode.fb1_enabled" (change)="updateGripperFb(1)">
           </mat-form-field>
-          <mat-checkbox color="primary" [(ngModel)]="selectedNode.fb1_invert" [disabled]="!selectedNode.fb1_enabled" (change)="updateGripperFb(1)">Invert</mat-checkbox>
-          <mat-slide-toggle color="primary" [(ngModel)]="selectedNode.fb1_enabled">Enable</mat-slide-toggle>
+          <mat-checkbox color="primary" [(ngModel)]="selectedNode.fb1_invert" [disabled]="!selectedNode.fb1_enabled" (change)="updateGripperFb(1)">{{'invert'|translate}}</mat-checkbox>
+          <mat-slide-toggle color="primary" [(ngModel)]="selectedNode.fb1_enabled">{{'enable'|translate}}</mat-slide-toggle>
         </div> 
         <div class="row">
           <mat-form-field>
             <input matInput placeholder="dIn Feedback 2" type="number" [(ngModel)]="selectedNode.fb2" [disabled]="!selectedNode.fb2_enabled" (change)="updateGripperFb(2)">
           </mat-form-field>
-          <mat-checkbox color="primary" [(ngModel)]="selectedNode.fb2_invert" [disabled]="!selectedNode.fb2_enabled" (change)="updateGripperFb(2)">Invert</mat-checkbox>
-          <mat-slide-toggle color="primary" [(ngModel)]="selectedNode.fb2_enabled">Enable</mat-slide-toggle>
+          <mat-checkbox color="primary" [(ngModel)]="selectedNode.fb2_invert" [disabled]="!selectedNode.fb2_enabled" (change)="updateGripperFb(2)">{{'invert'|translate}}</mat-checkbox>
+          <mat-slide-toggle color="primary" [(ngModel)]="selectedNode.fb2_enabled">{{'enable'|translate}}</mat-slide-toggle>
         </div>
         <div class="row">
           <mat-form-field>
-            <mat-select placeholder="Tool" [(ngModel)]="selectedNode.tool" [disabled]="!selectedNode.useTool" (selectionChange)="updateGripperTool($event)">
+            <mat-select placeholder="{{'tool'|translate}}" [(ngModel)]="selectedNode.tool" [disabled]="!selectedNode.useTool" (selectionChange)="updateGripperTool($event)">
               <mat-option *ngFor="let t of data.tools" value="{{t}}">{{t}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-slide-toggle color="primary" [(ngModel)]="selectedNode.useTool" (change)="updateGripperUseTool($event)">Use Tool</mat-slide-toggle>
+          <mat-slide-toggle color="primary" [(ngModel)]="selectedNode.useTool" (change)="updateGripperUseTool($event)">{{'grippers.use_tool'|translate}}</mat-slide-toggle>
         </div>
       </div>
     </div>

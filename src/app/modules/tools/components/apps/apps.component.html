@@ -1,18 +1,18 @@
 <div class="wrapper">
-  <div class="title">softMC Tools</div>
+  <div class="title">{{'apps.title'|translate}}</div>
   <input type="file" accept=".ipk, .rpm, .IPK, .RPM, .zip, .ZIP" #upload (change)="onUploadFilesChange($event)" class="file-input" />
   <mat-card class="main">
     <a href="/modbus/" target="_blank">
       <mat-icon>perm_data_setting</mat-icon>
-      <div>Modbus Configurator</div>
+      <div>{{'apps.modbus'|translate}}</div>
     </a>
     <a (click)="uploadIPK()" *ngIf="login.permission === 'Administrator'">
       <mat-icon>system_update</mat-icon>
-      <div>Update Firmware...</div>
+      <div>{{'apps.firmware'|translate}}...</div>
     </a>
     <a (click)="reboot()" *ngIf="login.permission === 'Administrator'">
       <mat-icon>power_settings_new</mat-icon>
-      <div>Reboot softMC</div>
+      <div>{{'apps.reboot'|translate}}</div>
     </a>
   </mat-card>
 </div>

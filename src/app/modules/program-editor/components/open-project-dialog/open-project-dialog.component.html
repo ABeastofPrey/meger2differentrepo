@@ -1,10 +1,10 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    <mat-icon>create_new_folder</mat-icon>&nbsp;&nbsp;Open a Project
+    <mat-icon>create_new_folder</mat-icon>&nbsp;&nbsp;{{'projects.open'|translate}}
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <mat-select placeholder="Select a Project" [(ngModel)]="project">
+      <mat-select placeholder="{{'projects.select'|translate}}" [(ngModel)]="project">
         <mat-option *ngFor="let p of projects" [value]="p">
           {{p}}
         </mat-option>
@@ -12,11 +12,11 @@
     </mat-form-field>
     <div class="center-vertical" style="color:red;">
       <mat-icon>warning</mat-icon>
-      This will kill all tasks and libraries currently running.
+      {{'projects.warning'|translate}}
     </div>
   </div>
   <div class="actions">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="open()" [disabled]="!project">OPEN</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="open()" [disabled]="!project">{{'button.open'|translate}}</button>
   </div>
 </div>

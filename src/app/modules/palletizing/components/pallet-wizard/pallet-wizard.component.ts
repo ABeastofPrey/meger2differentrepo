@@ -6,6 +6,7 @@ import {DataService, WebsocketService, ApiService, MCQueryResponse} from '../../
 import {PalletLocation} from '../../../core/models/pallet.model';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {EventEmitter} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 
 declare var Isomer:any
 
@@ -54,6 +55,7 @@ export class PalletWizardComponent implements OnInit {
   
   private iso : any = null;
   private isPreview1Init : boolean = false;
+  private words: any;
 
   constructor(
     public dataService : DataService,
@@ -61,9 +63,14 @@ export class PalletWizardComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private snack : MatSnackBar,
     private dialog : MatDialog,
-    private api: ApiService
+    private api: ApiService,
+    private trn: TranslateService
   ) {
-  
+    this.trn.get([
+      'error.err','dismiss','button.save','button.discard'
+    ]).subscribe(words=>{
+        this.words = words;  
+    });
   }
   
   setOriginPic(i:number) {
@@ -99,9 +106,9 @@ export class PalletWizardComponent implements OnInit {
       this.ws.query('?PLT_GET_ITEM_DIMENSION("' + name + '","Y")'),
       this.ws.query('?PLT_GET_ITEM_DIMENSION("' + name + '","Z")'),
       this.ws.query('?PLT_GET_PALLETIZING_ORDER("' + name + '")'),
-      this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '",1)'),
-      this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '",2)'),
-      this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '",3)'),
+      this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '","o")'),
+      this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '","x")'),
+      this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '","xy")'),
       this.checkCalibrationStatus(),
       this.ws.query('?PLT_IS_ROBOT_TYPE_FIT("' +
         name + '",' + this.dataService.selectedRobot + ')'),
@@ -225,16 +232,16 @@ export class PalletWizardComponent implements OnInit {
     var pallet = this.dataService.selectedPallet;
     var robot = this.dataService.selectedRobot;
     this.ws.query(
-      '?PLT_FRAME_CALIBRATION_TEACH("' + pallet.name + '",1,' + robot + ')'
+      '?PLT_FRAME_CALIBRATION_TEACH("' + pallet.name + '","o",' + robot + ')'
     ).then((ret: MCQueryResponse)=>{
       if (ret.result === '0') {
-        this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + pallet.name + '",1)')
+        this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","o")')
         .then((ret: MCQueryResponse)=>{
           this.dataService.selectedPallet.origin = 
             this.parseLocation(ret.result);
         });
       } else {
-        this.snack.open('Error','',{duration:2000});
+        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }
@@ -243,16 +250,16 @@ export class PalletWizardComponent implements OnInit {
     var pallet = this.dataService.selectedPallet;
     var robot = this.dataService.selectedRobot;
     this.ws.query(
-      '?PLT_FRAME_CALIBRATION_TEACH("' + pallet.name + '",2,' + robot + ')'
+      '?PLT_FRAME_CALIBRATION_TEACH("' + pallet.name + '","x",' + robot + ')'
     ).then((ret: MCQueryResponse)=>{
       if (ret.result === '0') {
-        this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + pallet.name + '",2)')
+        this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","x")')
         .then((ret: MCQueryResponse)=>{
           this.dataService.selectedPallet.posX = 
             this.parseLocation(ret.result);
         });
       } else {
-        this.snack.open('Error','',{duration:2000});
+        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }
@@ -261,16 +268,16 @@ export class PalletWizardComponent implements OnInit {
     var pallet = this.dataService.selectedPallet;
     var robot = this.dataService.selectedRobot;
     this.ws.query(
-      '?PLT_FRAME_CALIBRATION_TEACH("' + pallet.name + '",3,' + robot + ')'
+      '?PLT_FRAME_CALIBRATION_TEACH("' + pallet.name + '","xy",' + robot + ')'
     ).then((ret: MCQueryResponse)=>{
       if (ret.result === '0') {
-        this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + pallet.name + '",3)')
+        this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","xy")')
         .then((ret: MCQueryResponse)=>{
           this.dataService.selectedPallet.posY = 
             this.parseLocation(ret.result);
         });
       } else {
-        this.snack.open('Error','',{duration:2000});
+        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }
@@ -290,7 +297,7 @@ export class PalletWizardComponent implements OnInit {
             this.parseLocation(ret.result);
         });
       } else {
-        this.snack.open('Error','',{duration:2000});
+        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }
@@ -706,7 +713,7 @@ export class PalletWizardComponent implements OnInit {
       if (!control.touched && !control.dirty)
         return Promise.resolve(null);
       const cmd = '?PLT_FRAME_CALIBRATION_SET("' +  
-        this.dataService.selectedPallet.name + '",1,' +x+','+y+','+z+')';
+        this.dataService.selectedPallet.name + '","o",' +x+','+y+','+z+')';
       return this.ws.query(cmd).then((ret: MCQueryResponse)=>{
         if (ret.err || ret.result !== '0') {
           this.step2.controls['originX'].setErrors({invalidOrigin: true});
@@ -733,7 +740,7 @@ export class PalletWizardComponent implements OnInit {
       if (!control.touched && !control.dirty)
         return Promise.resolve(null);
       const cmd = '?PLT_FRAME_CALIBRATION_SET("' +  
-        this.dataService.selectedPallet.name + '",2,' +x+','+y+','+z+')';
+        this.dataService.selectedPallet.name + '","x",' +x+','+y+','+z+')';
       return this.ws.query(cmd).then((ret: MCQueryResponse)=>{
         if (ret.err || ret.result !== '0') {
           this.step2.controls['posXX'].setErrors({invalidPosX: true});
@@ -760,7 +767,7 @@ export class PalletWizardComponent implements OnInit {
       if (!control.touched && !control.dirty)
         return Promise.resolve(null);
       const cmd = '?PLT_FRAME_CALIBRATION_SET("' +  
-        this.dataService.selectedPallet.name + '",3,' +x+','+y+','+z+')';
+        this.dataService.selectedPallet.name + '","xy",' +x+','+y+','+z+')';
       return this.ws.query(cmd).then((ret: MCQueryResponse)=>{
         if (ret.err || ret.result !== '0') {
           this.step2.controls['posYX'].setErrors({invalidPosY: true});
@@ -825,7 +832,7 @@ export class PalletWizardComponent implements OnInit {
   
   private getError() :Promise<any> {
     return this.ws.query('?PLT_GET_ERROR').then((ret: MCQueryResponse)=>{
-      this.snack.open(ret.result, 'DISMISS',{duration:2000});
+      this.snack.open(ret.result,this.words['dismiss'],{duration:2000});
     });
   }
   
@@ -1216,18 +1223,20 @@ export class PalletWizardComponent implements OnInit {
   closeDialog(prompt:boolean) {
     if (prompt) {
       let name = this.dataService.selectedPallet.name;
-      let ref = this.dialog.open(YesNoDialogComponent,{
-        data: {
-          title: 'Save changes to ' + name + '?',
-          msg: '',
-          yes: 'SAVE',
-          no: 'DISCARD'
-        }
-      });
-      ref.afterClosed().subscribe(ret=>{
-        if (ret)
-          this.ws.query('?PLT_STORE_PALLET_DATA("' + name + '")');
-        this.closed.emit();
+      this.trn.get('pallets.wizard.save', {name: name}).subscribe(str=>{
+        let ref = this.dialog.open(YesNoDialogComponent,{
+          data: {
+            title: str,
+            msg: '',
+            yes: this.words['button.save'],
+            no: this.words['button.discard']
+          }
+        });
+        ref.afterClosed().subscribe(ret=>{
+          if (ret)
+            this.ws.query('?PLT_STORE_PALLET_DATA("' + name + '")');
+          this.closed.emit();
+        });
       });
     } else {
       this.closed.emit();

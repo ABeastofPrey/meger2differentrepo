@@ -7,6 +7,8 @@ import {JwtService} from './jwt.service';
 import {ErrorFrame} from '../models/error-frame.model';
 import {ErrorDialogComponent} from '../../../components/error-dialog/error-dialog.component';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {LangService} from './lang.service';
 
 interface MCResponse {
   msg:  string;
@@ -31,6 +33,8 @@ export class WebsocketService {
   private timeout: any;
   private worker = new Worker('assets/scripts/conn.js');
   private _port: string = null;
+  
+  private words: any;
   
   get port() { return this._port; }
   updateFirmwareMode: boolean = false;
@@ -71,10 +75,17 @@ export class WebsocketService {
     private _zone: NgZone,
     private notification : NotificationService,
     private jwt: JwtService,
-    private router: Router
+    private router: Router,
+    private lang: LangService,
+    private trn: TranslateService
   ) {
+    this.lang.init();
+    this.trn.get('websocket.err_es_busy').subscribe(words=>{
+      this.words = words;
+    });
     this._zone.runOutsideAngular(()=>{
       this.worker.onmessage = (e)=>{
+        //console.log(JSON.parse(e.data.msg)['cmd']);
         if (e.data.serverMsg) {
           this._zone.run(()=>{
             switch (e.data.msg) {
@@ -137,7 +148,7 @@ export class WebsocketService {
   
   query(query){
     return new Promise((resolve,reject)=>{
-      //const start = new Date().getTime();
+      const start = new Date().getTime();
       this.send(query,function(result,cmd,err){
         //console.log(cmd, (new Date().getTime() - start));
         resolve({result:result,cmd:cmd,err:err});
@@ -181,10 +192,7 @@ export class WebsocketService {
           this._zone.run(()=>{
             this.dialog.open(ErrorDialogComponent, {
               width: '250px',
-              data: {
-                title: 'Connection Failed',
-                message:'All available entry stations are busy.'
-              },
+              data: this.words,
               id: 'system'
             }).afterClosed().subscribe(()=>{
               this.router.navigateByUrl('/login');

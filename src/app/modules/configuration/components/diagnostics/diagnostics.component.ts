@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import {WebsocketService, MCQueryResponse} from '../../../core';
 import {GraphComponent, GraphData} from '../graph/graph.component';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-diagnostics',
@@ -13,6 +14,7 @@ export class DiagnosticsComponent implements OnInit {
   state : string = '1';
   isRefreshing : boolean = false;
   interval: any;
+  sub: Subscription;
   
   @ViewChild('container', {read: ViewContainerRef}) ref: ViewContainerRef;
 
@@ -22,7 +24,14 @@ export class DiagnosticsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.refresh();
+    this.sub = this.ws.isConnected.subscribe(stat=>{
+      if (stat) 
+        this.refresh();
+    });
+  }
+  
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
   
   private getGraphsFromText() {
@@ -94,7 +103,7 @@ export class DiagnosticsComponent implements OnInit {
       return this.ws.query(cmd + '(2)');
     }).then((ret: MCQueryResponse)=>{
       if (ret.err) {
-        this.content = 'Data not available. Please load TP libraries and try again.';
+        this.content = 'diagnostics.no-data';
         this.isRefreshing = false;
         return;
       }

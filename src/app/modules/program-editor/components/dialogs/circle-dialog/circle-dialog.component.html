@@ -1,15 +1,15 @@
 <div class="main mat-typography">
   <div class="wrapper">
-    <div class="title">Insert Circle Command</div>
+    <div class="title">{{'projectCommands.circle.title'|translate}}</div>
     <div class="content">
       <mat-form-field>
         <mat-select placeholder="CirclePoint" [(ngModel)]="circlePoint" (selectionChange)="resetIndexCirclePoint()">
-          <mat-optgroup label="JOINTS" *ngIf="this.dataService.joints.length > 0"><mat-option *ngFor="let data of this.dataService.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
-          <mat-optgroup label="LOCATIONS" *ngIf="this.dataService.locations.length > 0"><mat-option *ngFor="let data of this.dataService.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="{{'joints'|translate}}" *ngIf="this.dataService.joints.length > 0"><mat-option *ngFor="let data of this.dataService.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="{{'locations'|translate}}" *ngIf="this.dataService.locations.length > 0"><mat-option *ngFor="let data of this.dataService.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
         </mat-select>
       </mat-form-field>
       <mat-form-field *ngIf="circlePoint && circlePoint.isArr">
-        <mat-select placeholder="Index" [(ngModel)]="circlePointIndex">
+        <mat-select placeholder="{{'index'|translate}}" [(ngModel)]="circlePointIndex">
           <mat-option *ngFor="let data of circlePoint.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -18,19 +18,19 @@
       </mat-form-field>
       <mat-form-field *ngIf="!data.angle">
         <mat-select placeholder="TargetPoint" [(ngModel)]="targetPoint" (selectionChange)="resetIndexTargetPoint()">
-          <mat-optgroup label="Joints" *ngIf="this.dataService.joints.length > 0"><mat-option *ngFor="let data of this.dataService.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
-          <mat-optgroup label="Locations" *ngIf="this.dataService.locations.length > 0"><mat-option *ngFor="let data of this.dataService.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="{{'joints'|translate}}" *ngIf="this.dataService.joints.length > 0"><mat-option *ngFor="let data of this.dataService.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="{{'locations'|translate}}" *ngIf="this.dataService.locations.length > 0"><mat-option *ngFor="let data of this.dataService.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
         </mat-select>
       </mat-form-field>
       <mat-form-field *ngIf="targetPoint && targetPoint.isArr && !data.angle">
-        <mat-select placeholder="Index" [(ngModel)]="targetPointIndex">
+        <mat-select placeholder="{{'index'|translate}}" [(ngModel)]="targetPointIndex">
           <mat-option *ngFor="let data of targetPoint.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-slide-toggle [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary">Advanced</mat-slide-toggle>
+      <mat-slide-toggle [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary">{{'advanced'|translate}}</mat-slide-toggle>
       <div *ngIf="advancedMode">
         <mat-form-field>
-          <mat-select placeholder="Motion Element" [(ngModel)]="motionElement">
+          <mat-select placeholder="{{'motion_element'|translate}}" [(ngModel)]="motionElement">
             <mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{e}}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -50,7 +50,7 @@
     </div>
   </div>
   <div class="actions">
-    <button mat-button color="primary" (click)="cancel()">CANCEL</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="this.circlePoint == null || (!this.data.angle && this.targetPoint == null) || (this.data.angle && this.angle.length === 0) || (this.circlePoint.isArr && this.circlePointIndex < 0) || (this.targetPoint && this.targetPoint.isArr && this.targetPointIndex < 0) || invalidBlending()">{{!this.withParams ? 'INSERT' : 'EDIT'}}</button>
+    <button mat-button (click)="cancel()">{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="this.circlePoint == null || (!this.data.angle && this.targetPoint == null) || (this.data.angle && this.angle.length === 0) || (this.circlePoint.isArr && this.circlePointIndex < 0) || (this.targetPoint && this.targetPoint.isArr && this.targetPointIndex < 0) || invalidBlending()">{{!this.withParams ? 'button.insert' : 'button.edit' | translate}}</button>
   </div>
 </div>

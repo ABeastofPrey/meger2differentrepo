@@ -1,20 +1,20 @@
 <mat-card style="margin: -24px;">
   <img mat-card-image src="assets/pics/industries_h_img.png">
   <mat-card-content>
-    <mat-card-title>Add an Axis/Group Dashboard</mat-card-title>
-    <mat-card-subtitle>Monitor, record and move groups & axes.</mat-card-subtitle>
+    <mat-card-title>{{'dashboard.new.title'|translate}}</mat-card-title>
+    <mat-card-subtitle>{{'dashboard.new.subtitle'|translate}}</mat-card-subtitle>
     <div>
-      select an axis or a group:
+      {{'dashboard.new.select'|translate}}:
       <mat-form-field>
-        <mat-select placeholder="Motion Elements" [(ngModel)]="selectedElement">
-          <mat-option *ngIf="!motionElements || motionElements.length === 0" disabled>No motion elements</mat-option>
+        <mat-select placeholder="{{'motion_elements'|translate}}" [(ngModel)]="selectedElement">
+          <mat-option *ngIf="!motionElements || motionElements.length === 0" disabled>{{'motion_elements_empty'|translate}}</mat-option>
           <mat-option *ngFor="let element of motionElements" [value]="element">{{element.name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
   </mat-card-content>
   <mat-card-actions style="text-align: right;">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="add()" [disabled]="selectedElement===null">ADD</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="add()" [disabled]="selectedElement===null">{{'button.add'|translate}}</button>
   </mat-card-actions>
 </mat-card>

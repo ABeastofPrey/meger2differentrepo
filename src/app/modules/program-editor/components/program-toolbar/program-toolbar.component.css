@@ -1,9 +1,14 @@
+.wrapper {
+  display: flex;
+  flex-direction: row;
+}
 .menu { 
   display: flex;
   background: #fff;
   font-size: 14px;
   align-items: center;
   padding-left: 16px;
+  flex: 1;
 }
 .menu li {
   margin: 2px;
@@ -33,7 +38,10 @@
   top: -6px;
   font-size: 13px;
 }
-.disabled { color: #ccc; }
+.disabled, .item-disabled { color: #ccc; }
+.item-disabled {
+  cursor: not-allowed!important;
+}
 .dropdown-menu li {
   padding: 4px 8px;
   margin: 4px 0;
@@ -58,7 +66,8 @@
   right: 0;
   bottom: 0;
 }
-.menu1 { left: 18px; }
+.menu1, .menu5 { left: 18px; }
 .menu2 { left: 84px; }
 .menu3 { left: 147px; }
 .menu4 { left: 192px; }
+.menu6 { left: 62px; }

@@ -39,10 +39,6 @@ const routes: Routes = [
         loadChildren: '../configuration/configuration.module#ConfigurationModule'
       },
       {
-        path: 'files',
-        loadChildren: '../file-manager/file-manager.module#FileManagerModule'
-      },
-      {
         path: 'tasks',
         loadChildren: '../task-manager/task-manager.module#TaskManagerModule'
       },

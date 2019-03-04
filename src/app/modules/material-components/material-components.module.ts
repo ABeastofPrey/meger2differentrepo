@@ -30,8 +30,9 @@ import {
   MatDividerModule,
   MatAutocompleteModule,
   MatTreeModule,
-  MatRippleModule
+  MatRippleModule,
 } from '@angular/material';
+  import {DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   imports: [
@@ -65,7 +66,8 @@ import {
     MatDividerModule,
     MatAutocompleteModule,
     MatTreeModule,
-    MatRippleModule
+    MatRippleModule,
+    DragDropModule
   ],
   exports: [
     MatButtonModule,
@@ -97,7 +99,8 @@ import {
     MatDividerModule,
     MatAutocompleteModule,
     MatTreeModule,
-    MatRippleModule
+    MatRippleModule,
+    DragDropModule
   ],
   declarations: []
 })

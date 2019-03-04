@@ -5,7 +5,7 @@
     <div class="terminal-row" *ngFor="let row of terminal.cmds">
       <div class="center-vertical">
         <div style="margin-right: 8px;">--></div>
-        <div>{{row.cmd}}</div>
+        <div class="row">{{row.cmd}}</div>
       </div>
       <div style="white-space: pre-wrap;">{{row.result}}</div>
     </div>
@@ -18,7 +18,26 @@
     <button mat-button (mousedown)="clear($event)">
       <div class="center-vertical">
         <mat-icon>clear</mat-icon>
-        <span class="button-text">Clear messages</span>
+        <span class="button-text">{{'clear_msgs'|translate}}</span>
+      </div>
+    </button>
+    <button mat-button (mousedown)="copy($event)" *ngIf="contextSelection && contextSelection.length > 0">
+      <div class="center-vertical">
+        <img src="assets/pics/icons/content-copy.png">
+        <span class="button-text">{{'copy'|translate}}</span>
+      </div>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-button (mousedown)="cut($event)" *ngIf="editor && editor.getSelectedText() && editor.getSelectedText().length > 0">
+      <div class="center-vertical">
+        <img src="assets/pics/icons/content-cut.png">
+        <span class="button-text">{{'cut'|translate}}</span>
+      </div>
+    </button>
+    <button mat-button (mousedown)="paste($event)">
+      <div class="center-vertical">
+        <img src="assets/pics/icons/content-paste.png">
+        <span class="button-text">{{'paste'|translate}}</span>
       </div>
     </button>
   </ul>

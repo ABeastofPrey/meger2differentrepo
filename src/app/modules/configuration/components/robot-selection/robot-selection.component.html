@@ -1,10 +1,10 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    Select a Robot
+    {{'robots.select'|translate}}
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <mat-select placeholder="Robot Type" #rtype>
+      <mat-select placeholder="{{'robots.type'|translate}}" #rtype>
         <mat-option *ngIf="robot.types.SCARA" [value]="robot.types.SCARA">SCARA</mat-option>
         <mat-option *ngIf="robot.types.PUMA" [value]="robot.types.PUMA">PUMA</mat-option>
         <mat-option *ngIf="robot.types.DELTA" [value]="robot.types.DELTA">DELTA</mat-option>
@@ -12,30 +12,30 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field>
-      <mat-select placeholder="Robot Axes" #axes [disabled]="!rtype.value">
+      <mat-select placeholder="{{'robots.axes'|translate}}" #axes [disabled]="!rtype.value">
         <mat-option *ngFor="let ax of rtype.value" [value]="ax">{{ax.axes}}</mat-option>
-        <mat-option *ngIf="rtype.value && rtype.value.length === 0">No Axes Found</mat-option>
+        <mat-option *ngIf="rtype.value && rtype.value.length === 0">{{'robots.no-axes'|translate}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field>
-      <mat-select placeholder="Series" [disabled]="!axes.value" #series>
+      <mat-select placeholder="{{'robots.series'|translate}}" [disabled]="!axes.value" #series>
         <div *ngIf="axes.value">
           <mat-option *ngFor="let s of axes.value.series" [value]="s">{{s.name}}</mat-option>
-          <mat-option *ngIf="axes.value.series && axes.value.series.length === 0">No Series Found</mat-option>
+          <mat-option *ngIf="axes.value.series && axes.value.series.length === 0">{{'robots.no-series'|translate}}</mat-option>
         </div>
       </mat-select>
     </mat-form-field>
     <mat-form-field>
-      <mat-select placeholder="Model" [disabled]="!series.value" #model>
+      <mat-select placeholder="{{'robots.model'|translate}}" [disabled]="!series.value" #model>
         <div *ngIf="series.value">
           <mat-option *ngFor="let m of series.value.models" [value]="m">{{m.name}} ({{m.bus}})</mat-option>
-          <mat-option *ngIf="series.value.models && series.value.models.length === 0">No Models Found</mat-option>
+          <mat-option *ngIf="series.value.models && series.value.models.length === 0">{{'robots.no-models'|translate}}</mat-option>
         </div>
       </mat-select>
     </mat-form-field>
   </div>
   <div class="actions">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="update()" [disabled]="!model.value">CHANGE ROBOT</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="update()" [disabled]="!model.value">{{'robots.btnChange'|translate}}</button>
   </div>
 </div>

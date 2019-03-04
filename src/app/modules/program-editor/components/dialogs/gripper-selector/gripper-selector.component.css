@@ -20,4 +20,6 @@
 .content {
   overflow: auto;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
 }

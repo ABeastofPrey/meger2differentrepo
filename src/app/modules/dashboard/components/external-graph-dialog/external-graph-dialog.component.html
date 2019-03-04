@@ -1,16 +1,16 @@
 <div class="main mat-typography">
   <div class="wrapper">
-    <div class="title primary-bg">Show an External Recording</div>
+    <div class="title primary-bg">{{'dashboard.external.title'|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <input type="text" placeholder="Record Name" matInput [(ngModel)]="name">
+        <input type="text" placeholder="{{'dashboard.external.name'|translate}}" matInput [(ngModel)]="name">
         <span matSuffix>.REC</span>
       </mat-form-field>
-      <mat-checkbox color="primary" [(ngModel)]="is3D">3D Graph</mat-checkbox>
+      <mat-checkbox color="primary" [(ngModel)]="is3D">{{'dashboard.external.3d'|translate}}</mat-checkbox>
     </div>
   </div>
   <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="show()" [disabled]="name === null || name.length === 0">SHOW</button>
+    <button mat-button color="primary" mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="show()" [disabled]="name === null || name.length === 0">{{'dashboard.external.btnShow'|translate}}</button>
   </div>
 </div>

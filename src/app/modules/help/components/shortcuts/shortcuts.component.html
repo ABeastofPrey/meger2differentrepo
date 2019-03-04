@@ -1,15 +1,15 @@
 <div class="wrapper">
   <mat-list>
     <div *ngFor="let section of shortcuts">
-      <h3 mat-subheader>{{section.name}}</h3>
+      <h3 mat-subheader>{{section.name | translate}}</h3>
       <table class="mat-typography">
         <tr *ngFor="let shortcut of section.shortcuts">
           <td>{{shortcut.keys}}</td>
-          <td>{{shortcut.desc}}</td>
+          <td>{{shortcut.desc | translate}}</td>
         </tr>
       </table>
       <mat-divider></mat-divider>
     </div>
   </mat-list>
-  <button mat-raised-button color="primary" matDialogClose>CLOSE</button>
+  <button mat-raised-button color="primary" matDialogClose>{{'button.close'|translate}}</button>
 </div>

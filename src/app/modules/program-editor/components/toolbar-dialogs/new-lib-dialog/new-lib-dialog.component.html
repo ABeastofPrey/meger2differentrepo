@@ -1,21 +1,21 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    <mat-icon>add</mat-icon>&nbsp;&nbsp;New Library
+    <mat-icon>add</mat-icon>&nbsp;&nbsp;{{'projects.toolbar.new_lib'|translate}}
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <mat-select placeholder="App" [(ngModel)]="appName">
+      <mat-select placeholder="{{'projects.toolbar.app'|translate}}" [(ngModel)]="appName">
         <mat-option *ngFor="let app of apps" [value]="app.name">
           {{app.name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field>
-      <input matInput placeholder="Library Name" [(ngModel)]="name">
+      <input matInput placeholder="{{'projects.toolbar.lib_name'|translate}}" [(ngModel)]="name">
     </mat-form-field>
   </div>
   <div class="actions">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || !appName || submitting">CREATE LIBRARY</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || !appName || submitting">{{'projects.toolbar.lib_create'|translate}}</button>
   </div>
 </div>

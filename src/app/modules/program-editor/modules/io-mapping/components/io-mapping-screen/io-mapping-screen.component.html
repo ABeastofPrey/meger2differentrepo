@@ -1,11 +1,11 @@
 <div class="wrapper">
-  <h1>I/O Mapping</h1>
-  <split direction="horizontal">
-    <split-area size="15">
+  <h1>{{'ios.mapping'|translate}}</h1>
+  <as-split direction="horizontal">
+    <as-split-area size="15">
       <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node">
           <li class="mat-tree-node child-node" (click)="selectNode(node)">
-            {{node.name}}
+            {{node.name | translate}}
           </li>
         </mat-tree-node>
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
@@ -14,7 +14,7 @@
               <mat-icon>
                 {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
               </mat-icon>
-              {{node.name}}
+              {{node.name|translate}}
             </div>
             <ul [class.invisible]="!treeControl.isExpanded(node)">
               <ng-container matTreeNodeOutlet></ng-container>
@@ -22,19 +22,19 @@
           </li>
         </mat-nested-tree-node>
       </mat-tree>
-    </split-area>
-    <split-area size="85" style="display: flex;">
+    </as-split-area>
+    <as-split-area size="85" style="display: flex;">
       <div *ngIf="activeModule" class="io-table-wrapper">
-        <h2>{{activeModule.io.name + ' > ' + (activeModule.showInputs ? 'Inputs' : 'Outputs')}}</h2>
+        <h2>{{activeModule.io.name}} > {{(activeModule.showInputs ? 'ios.inputs' : 'ios.outputs') | translate}}</h2>
         <div class="io-table mat-elevation-z3">
           <table>
             <thead class="mat-subtitle-color">
               <tr>
-                <td>Id</td>
-                <td>Value</td>
-                <td>Name</td>
-                <td>Description</td>
-                <td>Simulated</td>
+                <td>{{'ios.table.0'|translate}}</td>
+                <td>{{'ios.table.1'|translate}}</td>
+                <td>{{'ios.table.2'|translate}}</td>
+                <td>{{'ios.table.3'|translate}}</td>
+                <td>{{'ios.table.4'|translate}}</td>
               </tr>
             </thead>
             <tbody *ngIf="activeModule.showInputs">
@@ -54,7 +54,7 @@
                   </mat-form-field>
                 </td>
                 <td style="text-align: center;">
-                  <mat-checkbox color="accent" [checked]="io.simulated" [disabled]="io.id<24" (change)="toggleSimulated($event,io)" matTooltip="System IOs are always simulated" [matTooltipDisabled]="io.id>23"></mat-checkbox>
+                  <mat-checkbox color="accent" [checked]="io.simulated" [disabled]="io.id<24" (change)="toggleSimulated($event,io)" matTooltip="{{'ios.sim_tooltip'|translate}}" [matTooltipDisabled]="io.id>23"></mat-checkbox>
                 </td>
               </tr>
             </tbody>
@@ -75,13 +75,13 @@
                   </mat-form-field>
                 </td>
                 <td style="text-align: center;">
-                  <mat-checkbox color="accent" [checked]="io.simulated" [disabled]="io.id<24" (change)="toggleSimulated($event,io)" matTooltip="System IOs are always simulated" [matTooltipDisabled]="io.id>23"></mat-checkbox>
+                  <mat-checkbox color="accent" [checked]="io.simulated" [disabled]="io.id<24" (change)="toggleSimulated($event,io)" matTooltip="{{'ios.sim_tooltip'|translate}}" [matTooltipDisabled]="io.id>23"></mat-checkbox>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-    </split-area>
-  </split>
+    </as-split-area>
+  </as-split>
 </div>

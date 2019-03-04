@@ -6,6 +6,7 @@ import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-
 import {HttpErrorResponse} from '@angular/common/http';
 import {WebsocketService} from '../../../../modules/core/services/websocket.service';
 import {UpdateDialogComponent} from '../../../../components/update-dialog/update-dialog.component';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'apps',
@@ -15,14 +16,21 @@ import {UpdateDialogComponent} from '../../../../components/update-dialog/update
 export class AppsComponent implements OnInit {
   
   @ViewChild('upload') uploadInput: ElementRef;
+  
+  private words: any;
 
   constructor(
     public login: LoginService,
     private api: ApiService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
-    private ws: WebsocketService
-  ) { }
+    private ws: WebsocketService,
+    private trn: TranslateService
+  ) {
+    this.trn.get('apps').subscribe(words=>{
+      this.words = words;
+    });
+  }
 
   ngOnInit() {
   }
@@ -32,12 +40,7 @@ export class AppsComponent implements OnInit {
   reboot() {
     let ref = this.dialog.open(YesNoDialogComponent,{
       width: '400px',
-      data: {
-        title: 'Reboot softMC?',
-        msg: "softMC Will reboot. Please make sure you've saved all changes before proceeding.",
-        yes: 'REBOOT',
-        no: 'CANCEL'
-      }
+      data: this.words['reboot_confirm']
     });
     ref.afterClosed().subscribe(ret=>{
       if (ret) {
@@ -47,7 +50,7 @@ export class AppsComponent implements OnInit {
           height: '100%',
           maxWidth: '100%',
           closeOnNavigation: false,
-          data: 'Rebooting softMC...',
+          data: this.words['rebooting'],
           id: 'update'
         });
         this.ws.updateFirmwareMode = true;
@@ -72,12 +75,7 @@ export class AppsComponent implements OnInit {
   onUploadFilesChange(e:any) {
     let ref = this.dialog.open(YesNoDialogComponent,{
       width: '400px',
-      data: {
-        title: 'Update softMC Firmware',
-        msg: "softMC Will disconnect in the process. Please make sure you've saved all changes before proceeding.",
-        yes: 'UPDATE FIRMWARE',
-        no: 'CANCEL'
-      }
+      data: this.words['firmware_confirm']
     });
     ref.afterClosed().subscribe(ret=>{
       if (!ret) {
@@ -90,7 +88,7 @@ export class AppsComponent implements OnInit {
         height: '100%',
         maxWidth: '100%',
         closeOnNavigation: false,
-        data: 'Updating Firmware',
+        data: this.words['updating'],
         id: 'update'
       });
       for(let f of e.target.files) {
@@ -117,13 +115,22 @@ export class AppsComponent implements OnInit {
           dialog.close();
           switch (ret.error.err) {
             case -2:
-              this.snack.open('ERROR UPLOADING ' + f.name,'DISMISS');
+              this.trn.get(['files.err_upload','dismiss'],{name:f.name})
+              .subscribe(words=>{
+                this.snack.open(words['files.err_upload'],words['dismiss']);
+              });
               break;
             case -3:
-              this.snack.open('INVALID EXTENSION IN ' + f.name,'DISMISS');
+              this.trn.get(['files.err_ext','dismiss'],{name:f.name})
+              .subscribe(words=>{
+                this.snack.open(words['files.err_ext'],words['dismiss']);
+              });
               break;
             case -3:
-              this.snack.open('PERMISSION DENIED','DISMISS');
+              this.trn.get(['files.err_permission','dismiss'])
+              .subscribe(words=>{
+                this.snack.open(words['files.err_upload'],words['dismiss']);
+              });
               break;
           }
         });

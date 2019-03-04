@@ -1,15 +1,15 @@
 <div class="mat-typography" style="margin: -24px;">
   <div class="header mat-toolbar mat-primary mat-elevation-z3">
     <button mat-button (click)="closeDialog()"><mat-icon>close</mat-icon></button>
-    <div class="title">{{'Calibrate' + ' ' + varName}}</div>
+    <div class="title">{{('frames.calibration.title'|translate) + ' ' + varName}}</div>
   </div>
   <div class="content">
     <table>
       <tr>
-        <td>Origin</td>
+        <td>{{'frames.calibration.origin'|translate}}</td>
         <td>
           <button mat-raised-button color="primary" (click)="teach(1)" [disabled]="positionOK[0]">
-            TEACH
+            {{'button.teach'|translate}}
           </button>
         </td>
         <td style="color:#00897b;" *ngIf="positionOK[0]">
@@ -22,10 +22,10 @@
         </td>
       </tr>
       <tr>
-        <td>Position X</td>
+        <td>{{'frames.calibration.posX'|translate}}</td>
         <td>
           <button mat-raised-button color="primary" (click)="teach(2)" [disabled]="!positionOK[0] || positionOK[1]">
-            TEACH
+            {{'button.teach'|translate}}
           </button>
         </td>
         <td style="color:#00897b;" *ngIf="positionOK[1]">
@@ -38,10 +38,10 @@
         </td>
       </tr>
       <tr>
-        <td>Position Y</td>
+        <td>{{'frames.calibration.posY'|translate}}</td>
         <td>
           <button mat-raised-button color="primary" (click)="teach(3)" [disabled]="!positionOK[1] || positionOK[2]">
-            TEACH
+            {{'button.teach'|translate}}
           </button>
         </td>
         <td style="color:#00897b;" *ngIf="positionOK[2]">
@@ -54,10 +54,10 @@
         </td>
       </tr>
     </table>
-    <mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{'Set as current' + ' ' + data.frameType}}</mat-checkbox>
+    <mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{'frames.calibration.set'|translate}}</mat-checkbox>
     <div style="width: 100%; text-align: center; margin-top: 16px;">
       <button mat-raised-button color="primary" (click)="calibrate()" [disabled]="!positionOK[0] || !positionOK[1] || !positionOK[2]">
-        CALIBRATE
+        {{'button.calibrate'|translate}}
       </button>
     </div>
   </div>

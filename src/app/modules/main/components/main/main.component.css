@@ -15,7 +15,11 @@
   border-radius: 6px;
 }
 mat-toolbar { z-index: 2; }
-mat-toolbar span { flex: 1; }
+mat-toolbar span { 
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+}
 mat-toolbar button, mat-toolbar > mat-icon { margin-right: 16px; }
 mat-sidenav-container {
   -webkit-box-flex: 1;
@@ -126,3 +130,17 @@ coordinates {
   left: 8px;
   z-index: 1;
 }
+.img-logo {
+  height: 24px;
+  margin-right: 16px;
+}
+.remote {
+  flex: 1;
+  border: 1px solid;
+  border-radius: 16px;
+  margin: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.remote mat-icon { margin-right: 8px; }

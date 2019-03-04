@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatDialogRef, MatSnackBar, MatInput} from '@angular/material';
 import {FOUR_AXES_LOCATION, SIX_AXES_LOCATION} from '../../../core/models/tp/location-format.model';
 import {DataService, WebsocketService, CoordinatesService, MCQueryResponse} from '../../../core';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'add-var',
@@ -17,16 +18,22 @@ export class AddVarComponent implements OnInit {
    SIX_AXES: string[] = SIX_AXES_LOCATION;
    isArray : boolean = false;
    arrSize : number = 0;
+   
+   private words: any;
 
   constructor(
     public dialogRef: MatDialogRef<AddVarComponent>,
     public data : DataService,
     private ws : WebsocketService,
     public coos : CoordinatesService,
-    private snackbar : MatSnackBar
+    private snackbar : MatSnackBar,
+    private trn: TranslateService
   ) { 
     if (this.data.domainIsFrame)
       this.varType = 'LOCATION';
+    this.trn.get(['success']).subscribe(words=>{
+      this.words = words;
+    });
   }
 
   ngOnInit() {
@@ -63,7 +70,7 @@ export class AddVarComponent implements OnInit {
         console.log(ret);
       } else {
         this.closeDialog();
-        this.snackbar.open('Success!','',{duration:2000});
+        this.snackbar.open(this.words['success'],'',{duration:2000});
         var queries = [
           this.data.refreshBases(),
           this.data.refreshTools(),

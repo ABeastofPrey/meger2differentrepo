@@ -3,14 +3,14 @@
     <div class="menu mat-elevation-z3">
       <div>{{data.payloadLibVer}}</div>
       <mat-form-field>
-        <mat-select placeholder="Payload" [(ngModel)]="selectedPayload" (ngModelChange)="onPayloadChange()">
+        <mat-select placeholder="{{'payloads.payload'|translate}}" [(ngModel)]="selectedPayload" (ngModelChange)="onPayloadChange()">
           <mat-option *ngFor="let p of data.payloads" [value]="p">
             {{ p.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
       <button mat-raised-button color="warn" *ngIf="selectedPayload" (click)="delete()">
-        DELETE
+        {{'button.delete'|translate}}
       </button>
       <div *ngIf="currPayloadString" [innerHTML]="currPayloadString" style="margin-top: 16px;"></div>
       <button mat-fab color="primary" class="menu-fab" (click)="newPayload()">
@@ -19,15 +19,15 @@
     </div>
     <div *ngIf="selectedPayload" class="temp-scara-wizard">
       <mat-form-field>
-        <input matInput type="number" min="0" placeholder="Mass" [value]="selectedPayload.mass" (change)="onMassChange($event)">
+        <input matInput type="number" min="0" placeholder="{{'payloads.mass'|translate}}" [value]="selectedPayload.mass" (change)="onMassChange($event)">
         <span matSuffix>[Kg]</span>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="number" min="0" placeholder="Inertia" [value]="selectedPayload.inertia" (change)="onInertiaChange($event)">
+        <input matInput type="number" min="0" placeholder="{{'payloads.inertia'|translate}}" [value]="selectedPayload.inertia" (change)="onInertiaChange($event)">
         <span matSuffix>[Kg * m<sup>2</sup>]</span>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="number" min="0" placeholder="X Offset" [value]="selectedPayload.Lx" (change)="onXOffsetChange($event)">
+        <input matInput type="number" min="0" placeholder="{{'payloads.offX'|translate}}" [value]="selectedPayload.Lx" (change)="onXOffsetChange($event)">
         <span matSuffix>[m]</span>
       </mat-form-field>
     </div>

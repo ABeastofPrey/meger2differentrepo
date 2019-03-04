@@ -29,7 +29,6 @@ import {PayloadsModule} from '../payloads/payloads.module';
 import {GripperSelectorComponent} from './components/dialogs/gripper-selector/gripper-selector.component';
 import {CallDialogComponent} from './components/dialogs/call-dialog/call-dialog.component';
 import {WhileDialogComponent} from './components/dialogs/while-dialog/while-dialog.component';
-import {SubDialogComponent} from './components/dialogs/sub-dialog/sub-dialog.component';
 import {SleepDialogComponent} from './components/dialogs/sleep-dialog/sleep-dialog.component';
 import {RobotSelectorDialogComponent} from './components/dialogs/robot-selector-dialog/robot-selector-dialog.component';
 import {PalletPickerDialogComponent} from './components/dialogs/pallet-picker-dialog/pallet-picker-dialog.component';
@@ -37,7 +36,6 @@ import {PalletIndexDialogComponent} from './components/dialogs/pallet-index-dial
 import {MoveDialogComponent} from './components/dialogs/move-dialog/move-dialog.component';
 import {IoSelectorDialogComponent} from './components/dialogs/io-selector-dialog/io-selector-dialog.component';
 import {IfDialogComponent} from './components/dialogs/if-dialog/if-dialog.component';
-import {FunctionDialogComponent} from './components/dialogs/function-dialog/function-dialog.component';
 import {DimDialogComponent} from './components/dialogs/dim-dialog/dim-dialog.component';
 import {DelayDialogComponent} from './components/dialogs/delay-dialog/delay-dialog.component';
 import {CircleDialogComponent} from './components/dialogs/circle-dialog/circle-dialog.component';
@@ -57,6 +55,7 @@ import { HomeSettingComponent } from './components/program-settings/home-setting
 import { HomeSettingService } from './services/home-setting.service';
 import { HomeDialogComponent } from './components/dialogs/home-dialog/home-dialog.component';
 import { HomeDialogService } from './services/home-dialog.service';
+import {FileTreeModule} from '../file-tree/file-tree.module';
 
 @NgModule({
   imports: [
@@ -66,7 +65,8 @@ import { HomeDialogService } from './services/home-dialog.service';
     PalletizingModule,
     GripperScreenModule,
     PayloadsModule,
-    IoMappingModule
+    IoMappingModule,
+    FileTreeModule
   ],
   declarations: [
     ProgramEditorComponent,
@@ -94,7 +94,6 @@ import { HomeDialogService } from './services/home-dialog.service';
     CircleDialogComponent,
     DelayDialogComponent,
     DimDialogComponent,
-    FunctionDialogComponent,
     IfDialogComponent,
     IoSelectorDialogComponent,
     MoveDialogComponent,
@@ -102,7 +101,6 @@ import { HomeDialogService } from './services/home-dialog.service';
     PalletPickerDialogComponent,
     RobotSelectorDialogComponent,
     SleepDialogComponent,
-    SubDialogComponent,
     ArchSettingComponent,
     WhileDialogComponent,
     JumpDialogComponent,
@@ -136,7 +134,6 @@ import { HomeDialogService } from './services/home-dialog.service';
     CircleDialogComponent,
     DelayDialogComponent,
     DimDialogComponent,
-    FunctionDialogComponent,
     IfDialogComponent,
     IoSelectorDialogComponent,
     MoveDialogComponent,
@@ -144,7 +141,6 @@ import { HomeDialogService } from './services/home-dialog.service';
     PalletPickerDialogComponent,
     RobotSelectorDialogComponent,
     SleepDialogComponent,
-    SubDialogComponent,
     WhileDialogComponent,
     JumpDialogComponent,
     Jump3DialogComponent,

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+
+const TABS = ['jog','lbn'];
 
 @Component({
   selector: 'app-tp',
@@ -7,14 +10,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TpComponent implements OnInit {
   
-  tabs = [
-    {path: 'jog', label: 'Jog'},
-    {path: 'lbn', label: 'Lead By Nose'}
-  ];
+  tabs : Tab[];
 
-  constructor() { }
+  constructor(private trn: TranslateService) {
+    this.trn.get('jogScreen.tabs').subscribe(words=>{
+      let tabs: Tab[] = [];
+      for (let t of TABS) {
+        tabs.push({
+          path: t,
+          label: words[t]
+        });
+      }
+      this.tabs = tabs;
+    });
+  }
 
   ngOnInit() {
   }
 
+}
+
+interface Tab {
+  path: string;
+  label: string;
 }

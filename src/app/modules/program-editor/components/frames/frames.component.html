@@ -1,14 +1,14 @@
 <div class='background wrapper'>
   <button mat-fab color="primary" class="fixed-top-right mat-elevation-z5" (click)="create()"><mat-icon>add</mat-icon></button>
   <mat-tab-group [selectedIndex]="currTabIndex" (selectedIndexChange)="onTabChange($event)">
-    <mat-tab label="Tools"></mat-tab>
-    <mat-tab label="Bases"></mat-tab>
-    <mat-tab label="Machine Tables"></mat-tab>
-    <mat-tab label="Work Pieces"></mat-tab>
+    <mat-tab label="{{'tools'|translate}}"></mat-tab>
+    <mat-tab label="{{'bases'|translate}}"></mat-tab>
+    <mat-tab label="{{'mts'|translate}}"></mat-tab>
+    <mat-tab label="{{'wps'|translate}}"></mat-tab>
   </mat-tab-group>
   <div class="table-wrapper">
-    <split direction="horizontal">
-      <split-area size="30">
+    <as-split direction="horizontal">
+      <as-split-area size="30">
         <mat-table #table [dataSource]="dataSource" class="data-table mat-elevation-z3">
           <ng-container matColumnDef="select">
             <mat-header-cell *matHeaderCellDef class="dont-flex">
@@ -27,14 +27,14 @@
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>{{'name'|translate}}</mat-header-cell>
             <mat-cell *matCellDef="let element">{{element.name}}<span *ngIf="element.isArr"> [...]</span></mat-cell>
           </ng-container>
           <ng-container matColumnDef="arrIndex">
-            <mat-header-cell *matHeaderCellDef>Index</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>{{'index'|translate}}</mat-header-cell>
             <mat-cell *matCellDef="let element">
               <mat-form-field *ngIf="element.isArr" style="min-width: 0;">
-                <mat-select placeholder="Index" [(ngModel)]="element.selectedIndex" (selectionChange)="rowClick(element,true)">
+                <mat-select placeholder="{{'index'|translate}}" [(ngModel)]="element.selectedIndex" (selectionChange)="rowClick(element,true)">
                   <mat-option *ngFor="let data of element.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
                 </mat-select>
               </mat-form-field>
@@ -43,17 +43,17 @@
           <mat-header-row *matHeaderRowDef="['select','name', 'arrIndex']"></mat-header-row>
           <mat-row *matRowDef="let row; columns: ['select','name', 'arrIndex']; let element;" (click)="rowClick(element)" [class.highlighted]="selectedVar && element.name === selectedVar.name" [class.current]="isElementCurrent(element.name)"></mat-row>
         </mat-table>
-      </split-area>
-      <split-area size="70">
+      </as-split-area>
+      <as-split-area size="70">
         <mat-card class="mat-elevation-z3 data-card">
           <div class="var-name" *ngIf="selectedVar">
             {{selectedVar.name}}{{selectedVar.isArr ? '['+selectedVar.selectedIndex+']':''}}
           </div>
           <div class="buttons" *ngIf="selectedVar || selection.selected.length > 0">
-            <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="primary" (click)="showCalibrationDialog()">CALIBRATE</button>
-            <button *ngIf="selectedVar" mat-raised-button color="primary" (click)="setAsCurrent()">SET AS CURRENT</button>
-            <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="warn" (click)="deleteSelected()">{{'DELETE ' + selectedVar.name}}</button>
-            <button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">DELETE SELECTED</button>
+            <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="primary" (click)="showCalibrationDialog()">{{'button.calibrate'|translate}}</button>
+            <button *ngIf="selectedVar" mat-raised-button color="primary" (click)="setAsCurrent()">{{'button.set_current'|translate}}</button>
+            <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="warn" (click)="deleteSelected()">{{'dataScreen.del'|translate:selectedVar}}</button>
+            <button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">{{'button.delete_selected'|translate}}</button>
           </div>
           <div class="var-details" *ngIf="selectedVar">
             <mat-form-field *ngFor="let val of this._value; let i = index" floatLabel="never">
@@ -62,7 +62,7 @@
             </mat-form-field>
           </div>
         </mat-card>
-      </split-area>
-    </split>
+      </as-split-area>
+    </as-split>
   </div>
 </div>

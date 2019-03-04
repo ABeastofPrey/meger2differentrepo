@@ -1,5 +1,5 @@
 <mat-form-field>
-  <mat-select placeholder="Machine Table" [(ngModel)]="dataService.selectedMachineTable">
+  <mat-select placeholder="{{'mt'|translate}}" [(ngModel)]="dataService.selectedMachineTable">
     <mat-option *ngFor="let item of dataService.machineTables" value="{{item}}">{{item}}</mat-option>
   </mat-select>
 </mat-form-field>

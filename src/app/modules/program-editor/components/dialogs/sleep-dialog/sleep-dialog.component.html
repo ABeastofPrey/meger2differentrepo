@@ -1,15 +1,15 @@
 <div class="main mat-typography">
   <div class="wrapper">
-    <div class="title">Insert Sleep Command</div>
+    <div class="title">{{'projectCommands.sleep.title'|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <input matInput placeholder="Sleep Time" [(ngModel)]="time" type="number">
+        <input matInput placeholder="{{'projectCommands.sleep.time'|translate}}" [(ngModel)]="time" type="number">
         <span matSuffix>ms.</span>
       </mat-form-field>
     </div>
   </div>
   <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="time < 1">INSERT</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="time < 1">{{'button.insert'|translate}}</button>
   </div>
 </div>

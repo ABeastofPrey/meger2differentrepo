@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 
 declare var Plotly;
 
@@ -11,17 +12,23 @@ declare var Plotly;
 export class RecordGraphComponent implements OnInit {
   
   @ViewChild('graph') graph : ElementRef;
+  
+  private word_title: string;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private trn: TranslateService
   ) {}
 
   ngOnInit() {
+    this.trn.get('dashboard.record.recorded').subscribe(word=>{
+      this.word_title = word;
+    });
   }
   
   ngAfterViewInit() {
     let layout = {
-      title:'Recorded Data'
+      title: this.word_title
     };
     Plotly.newPlot(this.graph.nativeElement,this.data,layout);
   }

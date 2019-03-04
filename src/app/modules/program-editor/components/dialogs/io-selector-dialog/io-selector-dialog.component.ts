@@ -28,7 +28,7 @@ export class IoSelectorDialogComponent implements OnInit {
       if (ret.err) {
         return;
       }
-      this.list = ret.result.split(',');
+      this.list = ret.result.length > 0 ? ret.result.split(',') : [];
     });
   }
   

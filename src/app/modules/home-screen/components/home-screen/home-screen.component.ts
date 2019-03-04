@@ -6,6 +6,7 @@ import {GroupManagerService} from '../../../../modules/core/services/group-manag
 import {Subscription} from 'rxjs';
 import {trigger, transition, style, animate} from '@angular/animations';
 import {ScreenManagerService, WebsocketService} from '../../../core';
+import {TranslateService} from '@ngx-translate/core';
 
 declare var Plotly;
 
@@ -49,9 +50,11 @@ export class HomeScreenComponent implements OnInit {
   simulated: boolean = false;
   viewInit: boolean = false;
   profileSrc: string = this.api.getProfilePic(this.login.getCurrentUser().user.username);
+  contextSelection: string = null;
   
   private sub : Subscription = null;
   private chartInit : boolean = false;
+  private words: any;
 
   constructor(
     public login : LoginService,
@@ -59,9 +62,26 @@ export class HomeScreenComponent implements OnInit {
     public groupManager : GroupManagerService,
     public ws: WebsocketService,
     private api : ApiService,
-    private screenMngr: ScreenManagerService
+    private screenMngr: ScreenManagerService,
+    private trn: TranslateService
   ) {
-
+    
+  }
+  
+  private getSelection(): string {
+    let t: string = null;
+    if (window.getSelection) {
+      t = window.getSelection().toString();
+    } else if (document.getSelection && document.getSelection().type !== 'Control') {
+      t = document.getSelection().toString();
+    }
+    return t && t.trim().length > 0 ? t : null;
+  }
+  
+  copy() {
+    document.execCommand('copy');
+    this.contextMenuShown = false;
+    this.contextSelection = null;
   }
   
   private afterSysInfoLoaded() {
@@ -113,7 +133,7 @@ export class HomeScreenComponent implements OnInit {
     };
     let data = [{
       values: [sysInfo.diskSize - sysInfo.freeDiskSpace, sysInfo.freeDiskSpace],
-      labels: ['Used Space', 'Free Space'],
+      labels: this.words['home.chart_space'],
       type: 'pie',
       marker: {
         colors: colors
@@ -121,7 +141,7 @@ export class HomeScreenComponent implements OnInit {
     }];
     let data2 = [{
       values: [sysInfo.ramSize - sysInfo.freeRamSpace, sysInfo.freeRamSpace],
-      labels: ['Used RAM', 'Free RAM'],
+      labels: this.words['home.chart_ram'],
       type: 'pie',
       marker: {
         colors: colors
@@ -135,21 +155,24 @@ export class HomeScreenComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.notification.newMessage.subscribe(()=>{
-      const objDiv = this.msgContainer.nativeElement;
-      objDiv.scrollTop = objDiv.scrollHeight;
-    });
-    this.sub = this.groupManager.sysInfoLoaded.subscribe((loaded)=>{
-      if (loaded) {
-        this.afterSysInfoLoaded();
-      }
-    });
-    window.addEventListener('resize',()=>{
-      this.updateCharts();
-    });
-    this.screenMngr.controlsAnimating.subscribe(stat=>{
-      if (!stat)
+    this.trn.get(['home.chart_ram', 'home.chart_space']).subscribe(words=>{
+      this.words = words;
+      this.notification.newMessage.subscribe(()=>{
+        const objDiv = this.msgContainer.nativeElement;
+        objDiv.scrollTop = objDiv.scrollHeight;
+      });
+      this.sub = this.groupManager.sysInfoLoaded.subscribe((loaded)=>{
+        if (loaded) {
+          this.afterSysInfoLoaded();
+        }
+      });
+      window.addEventListener('resize',()=>{
         this.updateCharts();
+      });
+      this.screenMngr.controlsAnimating.subscribe(stat=>{
+        if (!stat)
+          this.updateCharts();
+      });
     });
   }
   
@@ -167,6 +190,7 @@ export class HomeScreenComponent implements OnInit {
     this.contextMenuX = e.offsetX;
     this.contextMenuY = e.offsetY;
     this.contextMenuShown = true;
+    this.contextSelection = this.getSelection();
   }
   
   onMessageLogClick() {

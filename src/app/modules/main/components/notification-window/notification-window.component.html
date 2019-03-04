@@ -13,7 +13,13 @@
   <button mat-button (mousedown)="clear($event)">
     <div class="center-vertical">
       <mat-icon>clear</mat-icon>
-      <span class="button-text">Clear messages</span>
+      <span class="button-text">{{'clear_msgs'|translate}}</span>
+    </div>
+  </button>
+  <button mat-button (mousedown)="copy($event)" *ngIf="contextSelection && contextSelection.length > 0">
+    <div class="center-vertical">
+      <img src="assets/pics/icons/content-copy.png">
+      <span class="button-text">{{'copy'|translate}}</span>
     </div>
   </button>
 </ul>

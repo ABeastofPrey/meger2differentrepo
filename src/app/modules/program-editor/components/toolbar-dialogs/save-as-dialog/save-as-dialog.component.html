@@ -1,14 +1,14 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    <mat-icon>add</mat-icon>&nbsp;&nbsp;Save Project As...
+    <mat-icon>add</mat-icon>&nbsp;&nbsp;{{'projects.toolbar.save_as'|translate}}
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="New Project Name" [(ngModel)]="name">
+      <input matInput placeholder="{{'projects.toolbar.rename_prj_name'|translate}}" [(ngModel)]="name">
     </mat-form-field>
   </div>
   <div class="actions">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || submitting">CREATE</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || submitting">{{'button.create'|translate}}</button>
   </div>
 </div>

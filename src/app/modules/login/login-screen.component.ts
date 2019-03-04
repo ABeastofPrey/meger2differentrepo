@@ -9,6 +9,7 @@ import {ApiService, WebsocketService} from '../core';
 import {environment} from '../../../environments/environment';
 import {trigger, state, style, transition, animate, animateChild, group, query} from '@angular/animations';
 import {Subscription} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'login-screen',
@@ -68,14 +69,19 @@ export class LoginScreenComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private api: ApiService,
-    public ws: WebsocketService
+    public ws: WebsocketService,
+    private trn: TranslateService
   ) {
     this.api.get('/cs/api/java-version').subscribe((ret:{ver:string})=>{
       this.isVersionOK = ret.ver.startsWith(environment.compatible_webserver_ver);
       if (!this.isVersionOK) {
-        this.errors.error =
-          'Please use web server v' + environment.compatible_webserver_ver +
-          ' (current is v' + ret.ver + ')';
+        const params = {
+          ver: environment.compatible_webserver_ver,
+          current: ret.ver
+        };
+        this.trn.get('error.invalid_webserver', params).subscribe(str=>{
+          this.errors.error = str;
+        });
       }
     });
     this.ver = environment.gui_ver;
@@ -97,7 +103,9 @@ export class LoginScreenComponent implements OnInit {
         setTimeout(()=>{
           if (!this.ws.connected) {
             this.ws.reset();
-            this.errors.error = "Can't establish a websocket connection.";
+            this.trn.get('error.conn_ws').subscribe(err=>{
+              this.errors.error = err;
+            });
             this.isSubmitting = false;
             console.log('WS TIMEOUT');
           }
@@ -112,8 +120,11 @@ export class LoginScreenComponent implements OnInit {
         });
       },
       err => {
-        if (err.type === 'error')
-          this.errors.error = "Can't connect to softMC";
+        if (err.type === 'error') {
+          this.trn.get('error.conn_mc').subscribe(err=>{
+            this.errors.error = err;
+          });
+        }
         else
           this.errors = err;
         this.isSubmitting = false;
@@ -146,7 +157,6 @@ export class LoginScreenComponent implements OnInit {
   ngAfterViewInit() {
     this.route.queryParams.subscribe(params=>{
       if (params['serverDisconnected']) {
-        console.log('show server disconnect dialog');
         this.router.navigate(this.route.snapshot.url,{queryParams:{}});
         setTimeout(()=>{ // TO FINISH THE ANIMATION TRANSITION
           this.dialog.open(ServerDisconnectComponent);

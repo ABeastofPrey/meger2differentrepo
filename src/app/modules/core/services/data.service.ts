@@ -1,5 +1,4 @@
 import { Injectable, ApplicationRef } from '@angular/core';
-import {MatSnackBar} from '@angular/material';
 import {BehaviorSubject} from 'rxjs';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {TeachService} from './teach.service';
@@ -187,6 +186,8 @@ export class DataService {
   get LeadByNoseLibVer() {return this._lbnVer; }
   
   // IOs
+  private _iomapVer: string = null;
+  get iomapVer() {return this._iomapVer;}
   private _ioModules: IoModule[];
   get ioModules() {return this._ioModules;}
   
@@ -429,6 +430,7 @@ export class DataService {
       queries.push(this.ws.query('?GRP_VER'));
       queries.push(this.ws.query('?LBN_VER'));
       queries.push(this.ws.query('?PAY_VER'));
+      queries.push(this.ws.query('?IOMAP_VER'));
       
       return Promise.all(queries).then((result: MCQueryResponse[])=>{
         
@@ -454,6 +456,7 @@ export class DataService {
         this._gripperLibVer = result[5].err ? null : result[5].result;
         this._lbnVer = result[6].err ? null : result[6].result;
         this._payloadLibVer = result[7].err ? null : result[7].result;
+        this._iomapVer = result[8].err ? null : result[8].result;
         
         return this.refreshMachineTables()
           .then(()=>{return this.refreshWorkPieces();})
@@ -483,7 +486,6 @@ export class DataService {
   constructor(
     private ws : WebsocketService,
     private teach : TeachService,
-    private snack : MatSnackBar,
     private ref : ApplicationRef,
     private stat: TpStatService
   ) {
@@ -581,13 +583,6 @@ export class DataService {
         }
       }
     });
-  }
-  
-  onSettingsKeyboardClose() {
-    this.ws.send('?tp_set_inactivity_timeout(' + this._inactivityTimeout + ')',null);
-    this.ws.send('?tp_set_mc_timeout(' + this._softMCTimeout + ')',null);
-    this.ws.send('?tp_set_refresh_rate(' + this._refreshCycle + ')',null);
-    this.snack.open('SETTINGS CHANGED','',{duration: 2000});
   }
   
   refreshIos() {

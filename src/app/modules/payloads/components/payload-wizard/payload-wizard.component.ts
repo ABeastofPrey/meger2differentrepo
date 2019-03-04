@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {NewPayloadDialogComponent} from '../new-payload-dialog/new-payload-dialog.component';
 import {DataService, WebsocketService, MCQueryResponse} from '../../../core';
-import {Payload, position} from '../../../core/models/payload.model';
+import {Payload} from '../../../core/models/payload.model';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payload-wizard',
@@ -14,13 +15,21 @@ export class PayloadWizardComponent implements OnInit {
   
   selectedPayload: Payload = null;
   currPayloadString: string = null;
+  
+  private words: any;
 
   constructor(
     public data: DataService,
     private dialog: MatDialog,
     private ws: WebsocketService,
-    private snack: MatSnackBar
-  ) {}
+    private snack: MatSnackBar,
+    private trn: TranslateService
+  ) {
+    this.trn.get(['payloads','button.delete','button.cancel','changeOK'])
+    .subscribe(words=>{
+      this.words = words;
+    });
+  }
 
   ngOnInit() {
     this.ws.query('?pay_get_current_values(' + this.data.selectedRobot + ')')
@@ -30,11 +39,11 @@ export class PayloadWizardComponent implements OnInit {
       const parts = ret.result.split(',');
       if (parts.length !== 3)
         return;
-      this.currPayloadString =  'Current values (' +
-                          this.data.selectedRobot + '):<br>' + 
-                          '<b>Mass:</b> ' + parts[0] + '<br>' +
-                          '<b>Inertia:</b> ' + parts[1] + '<br>' +
-                          '<b>Offset X:</b> ' + parts[2];
+      this.currPayloadString =  this.words['payloads']['current'] + ' (' +
+        this.data.selectedRobot + '):<br>' + 
+        '<b>' + this.words['payloads']['mass']+':</b> '+parts[0]+'<br>' +
+        '<b>' + this.words['payloads']['inertia']+':</b> '+parts[1]+'<br>' +
+        '<b>' + this.words['payloads']['offX'] + ':</b> ' + parts[2];
     });
   }
   
@@ -61,21 +70,24 @@ export class PayloadWizardComponent implements OnInit {
   }
   
   delete() {
-    this.dialog.open(YesNoDialogComponent,{
-      data: {
-        title: 'Delete ' + this.selectedPayload.name + '?',
-        msg: 'This cannot be undone.',
-        yes: 'DELETE',
-        no: 'CANCEL'
-      }
-    }).afterClosed().subscribe(ret=>{
-      if (!ret) return;
-      this.ws.query('?pay_reset_payload("' + this.selectedPayload.name + '")')
-      .then((ret: MCQueryResponse)=>{
-        if (ret.result === '0') {
-          this.selectedPayload = null;
-          this.data.refreshPayloads();
+    this.trn.get('payloads.delete_title',{name:this.selectedPayload.name})
+    .subscribe(word=>{
+      this.dialog.open(YesNoDialogComponent,{
+        data: {
+          title: word,
+          msg: this.words['payloads']['delete_msg'],
+          yes: this.words['button.delete'],
+          no: this.words['button.cancel']
         }
+      }).afterClosed().subscribe(ret=>{
+        if (!ret) return;
+        this.ws.query('?pay_reset_payload("' + this.selectedPayload.name + '")')
+        .then((ret: MCQueryResponse)=>{
+          if (ret.result === '0') {
+            this.selectedPayload = null;
+            this.data.refreshPayloads();
+          }
+        });
       });
     });
   }
@@ -148,7 +160,7 @@ export class PayloadWizardComponent implements OnInit {
       if (ret.result !== '0' || ret.err)
         this.selectedPayload.mass = oldVal;
       else
-        this.snack.open('Changes Saved','',{duration:1500});
+        this.snack.open(this.words['changeOK'],'',{duration:1500});
     });
   }
   
@@ -162,7 +174,7 @@ export class PayloadWizardComponent implements OnInit {
       if (ret.result !== '0' || ret.err)
         this.selectedPayload.inertia = oldVal;
       else
-        this.snack.open('Changes Saved','',{duration:1500});
+        this.snack.open(this.words['changeOK'],'',{duration:1500});
     });
   }
   
@@ -176,7 +188,7 @@ export class PayloadWizardComponent implements OnInit {
       if (ret.result !== '0' || ret.err)
         this.selectedPayload.Lx = oldVal;
       else
-        this.snack.open('Changes Saved','',{duration:1500});
+        this.snack.open(this.words['changeOK'],'',{duration:1500});
     });
   }
   
@@ -186,7 +198,7 @@ export class PayloadWizardComponent implements OnInit {
     const cmd = '?PAY_SET_IDENT_MAXPOS(' + i + ',' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       if (ret.result === '0')
-        this.snack.open('Changes Saved','',{duration:1500});
+        this.snack.open(this.words['changeOK'],'',{duration:1500});
     });
   }
   
@@ -196,7 +208,7 @@ export class PayloadWizardComponent implements OnInit {
     const cmd = '?PAY_SET_IDENT_MINPOS(' + i + ',' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       if (ret.result === '0')
-        this.snack.open('Changes Saved','',{duration:1500});
+        this.snack.open(this.words['changeOK'],'',{duration:1500});
     });
   }
   
@@ -206,7 +218,7 @@ export class PayloadWizardComponent implements OnInit {
     const cmd = '?PAY_SET_IDENT_OVRDVEL(' + i + ',' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       if (ret.result === '0')
-        this.snack.open('Changes Saved','',{duration:1500});
+        this.snack.open(this.words['changeOK'],'',{duration:1500});
     });
   }
   
@@ -216,7 +228,7 @@ export class PayloadWizardComponent implements OnInit {
     const cmd = '?PAY_SET_IDENT_TIME(' + i + ',' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       if (ret.result === '0')
-        this.snack.open('Changes Saved','',{duration:1500});
+        this.snack.open(this.words['changeOK'],'',{duration:1500});
     });
   }
   

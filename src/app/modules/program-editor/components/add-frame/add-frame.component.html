@@ -1,17 +1,17 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    <mat-icon>add</mat-icon>&nbsp;&nbsp;Add {{frameType}}
+    <mat-icon>add</mat-icon>&nbsp;&nbsp;{{('frames.new.'+data)|translate}}
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="{{frameType}} Name" [(ngModel)]="name" maxlength="32">
+      <input matInput placeholder="{{('frames.name.'+data)|translate}}" [(ngModel)]="name" maxlength="32">
     </mat-form-field>
-    <mat-checkbox color="primary" [(ngModel)]="isArray">Array</mat-checkbox>
+    <mat-checkbox color="primary" [(ngModel)]="isArray">{{'arr'|translate}}</mat-checkbox>
     <mat-form-field *ngIf="isArray" style="margin-top: 8px;">
-      <input matInput placeholder="Array Size" [(ngModel)]="arrSize">
+      <input matInput placeholder="{{'arr_size'|translate}}" [(ngModel)]="arrSize">
     </mat-form-field>
     <div *ngIf="!isArray" style="margin-top: 8px;">
-      <div class="label">Values</div>
+      <div class="label">{{'values'|translate}}</div>
       <div class="values">
         <mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
           <span matPrefix style='font-weight: bold;'>{{coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i]}}:&nbsp;&nbsp;</span>
@@ -25,7 +25,7 @@
     </div>
   </div>
   <div class="actions">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="add()" [disabled]="!name" style="text-transform: uppercase;">CREATE {{frameType}}</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="add()" [disabled]="!name" style="text-transform: uppercase;">{{('frames.create.'+data)|translate}}</button>
   </div>
 </div>

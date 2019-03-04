@@ -7,6 +7,7 @@ import {ApiService} from '../../../../modules/core/services/api.service';
 import {TourService} from 'ngx-tour-md-menu';
 import {Subscription} from 'rxjs';
 import {trigger, transition, style, animate, animateChild, group, query} from '@angular/animations';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'dashboard-screen',
@@ -28,16 +29,21 @@ import {trigger, transition, style, animate, animateChild, group, query} from '@
 export class DashboardComponent implements OnInit {
   
   private sub: Subscription;
+  private words: any;
 
   constructor(
     public dashboard : DashboardService,
     private dialog:MatDialog,
     private api: ApiService,
     private snack : MatSnackBar,
-    private tour: TourService
+    private tour: TourService,
+    private trn: TranslateService
   ) { }
 
   ngOnInit() {
+    this.trn.get(['dashboard.err_file', 'dismiss']).subscribe(words=>{
+      this.words = words;
+    });
     this.sub = this.tour.stepShow$.subscribe(step=>{
       if (step.anchorId === 'dashboard-fab') {
         setTimeout(()=>{
@@ -54,7 +60,7 @@ export class DashboardComponent implements OnInit {
   downloadCSV() {
     this.api.getRecordingCSV(null).then((csv:string)=>{
       if (csv === null) {
-        this.snack.open('FILE NOT FOUND','DISMISS');
+        this.snack.open(this.words['dashboard.err_file'],this.words['dismiss']);
         return;
       }
       let element = document.createElement('a');

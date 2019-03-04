@@ -1,18 +1,18 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    <mat-icon>create_new_folder</mat-icon>&nbsp;&nbsp;New Project
+    <mat-icon>create_new_folder</mat-icon>&nbsp;&nbsp;{{'projects.new'|translate}}
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="Project Name" [(ngModel)]="fileName" maxlength="32">
+      <input matInput placeholder="{{'projects.name'|translate}}" [(ngModel)]="fileName" maxlength="32">
     </mat-form-field>
     <div class="center-vertical" style="color:red;">
       <mat-icon>warning</mat-icon>
-      This will kill all tasks and libraries currently running.
+      {{'projects.warning'|translate}}
     </div>
   </div>
   <div class="actions">
-    <button mat-button mat-dialog-close>CANCEL</button>
-    <button mat-button color="primary" (click)="create()" [disabled]="!fileName || fileName.length === 0">CREATE PROJECT</button>
+    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="!fileName || fileName.length === 0">{{'projects.btnCreate'|translate}}</button>
   </div>
 </div>

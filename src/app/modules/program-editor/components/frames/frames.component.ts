@@ -10,6 +10,7 @@ import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-
 import {ComponentType} from '@angular/cdk/portal';
 import {ToolCalibrationDialogComponent} from '../tool-calibration-dialog/tool-calibration-dialog.component';
 import {FrameCalibrationDialogComponent} from '../frame-calibration-dialog/frame-calibration-dialog.component';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'frames',
@@ -27,13 +28,22 @@ export class FramesComponent implements OnInit {
   private _value : any[] = [];
   private currFrameType: string = 'tool';
   private _calibrationDialogShowing: boolean = false;
+  private words: any;
 
   constructor(
     private data: DataService,
     private dialog: MatDialog,
     private ws: WebsocketService,
-    private snack: MatSnackBar
-  ) { }
+    private snack: MatSnackBar,
+    private trn: TranslateService
+  ) {
+    this.trn.get([
+      'changeOK','value','frames.delete.msg','button.delete','button.cancel'
+    ]).subscribe(words=>{
+      this.words = words;
+    });
+  }
+  
   ngOnInit() {
     this.dataSource.data = this.getData();
   }
@@ -89,7 +99,7 @@ export class FramesComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       this.rowClick(this.selectedVar,true); // REFRESH DATA
       if (ret.result === '0')
-        this.snack.open('Changes saved',null,{duration: 2000});
+        this.snack.open(this.words['changeOK'],null,{duration: 2000});
       else
         console.log(ret.cmd + '>>>' + ret.result);
     });
@@ -151,7 +161,7 @@ export class FramesComponent implements OnInit {
       if (valuesString.indexOf("#") === 0)
         valuesString = valuesString.substr(1);
       if (valuesString.indexOf(",") === -1) {
-        this._legend = ['Value'];
+        this._legend = [this.words['value']];
         this._value = [{value:valuesString.trim()}];
         return;
       }
@@ -213,61 +223,65 @@ export class FramesComponent implements OnInit {
   }
   
   deleteSelected() {
-    let ref = this.dialog.open(YesNoDialogComponent,{
-      data: {
-        title: 'Delete ' + this.selectedVar.name + '?',
-        msg: 'This cannot be undone.',
-        yes: 'DELETE',
-        no: 'CANCEL'
-      }
-    });
-    ref.afterClosed().subscribe(ret=>{
-      if (ret) {
-        let cmd = '?TP_REMOVE_FRAME("' + this.currFrameType + '","' + 
-                  this.selectedVar.name + '")';
-        this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-          if (ret.result === '0') {
-            this.selectedVar = null;
-            var queries = [
-              this.data.refreshBases(),
-              this.data.refreshTools(),
-              this.data.refreshMachineTables(),
-              this.data.refreshWorkPieces()
-            ];
-            Promise.all(queries).then(()=>{
-              this.dataSource.data = this.getData();
-            });
-          }
-        });
-      }
+    this.trn.get('frames.delete.title', this.selectedVar).subscribe(word=>{
+      this.dialog.open(YesNoDialogComponent,{
+        data: {
+          title: word,
+          msg: this.words['frames.delete.msg'],
+          yes: this.words['button.delete'],
+          no: this.words['button.cancel']
+        }
+      }).afterClosed().subscribe(ret=>{
+        if (ret) {
+          let cmd = '?TP_REMOVE_FRAME("' + this.currFrameType + '","' + 
+                    this.selectedVar.name + '")';
+          this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+            if (ret.result === '0') {
+              this.selectedVar = null;
+              var queries = [
+                this.data.refreshBases(),
+                this.data.refreshTools(),
+                this.data.refreshMachineTables(),
+                this.data.refreshWorkPieces()
+              ];
+              Promise.all(queries).then(()=>{
+                this.dataSource.data = this.getData();
+              });
+            }
+          });
+        }
+      });;
     });
   }
   
   deleteChecked() {
-    let ref = this.dialog.open(YesNoDialogComponent,{
-      data: {
-        title: 'Delete' + this.selection.selected.length + ' variables ?',
-        msg: 'This cannot be undone.',
-        yes: 'DELETE',
-        no: 'CANCEL'
-      }
-    });
-    ref.afterClosed().subscribe(ret=>{
-      if (ret) {
-        let queries : Promise<any>[] = [];
-        for (let v of this.selection.selected)
-          queries.push(this.ws.query('?TP_DELETEVAR("' + v.name + '")'));
-        Promise.all(queries).then(()=>{
-          this.selectedVar = null;
-          var dataQueries = [
-            this.data.refreshBases(),
-            this.data.refreshTools()
-          ];
-          Promise.all(dataQueries).then(()=>{
-            this.data.refreshVariables();
+    this.trn.get('frames.delete.title_multi', {
+      num:this.selection.selected.length
+    }).subscribe(word=>{
+      let ref = this.dialog.open(YesNoDialogComponent,{
+        data: {
+          title: word,
+          msg: this.words['frames.delete.msg'],
+          yes: this.words['button.delete'],
+          no: this.words['button.cancel']
+        }
+      }).afterClosed().subscribe(ret=>{
+        if (ret) {
+          let queries : Promise<any>[] = [];
+          for (let v of this.selection.selected)
+            queries.push(this.ws.query('?TP_DELETEVAR("' + v.name + '")'));
+          Promise.all(queries).then(()=>{
+            this.selectedVar = null;
+            var dataQueries = [
+              this.data.refreshBases(),
+              this.data.refreshTools()
+            ];
+            Promise.all(dataQueries).then(()=>{
+              this.data.refreshVariables();
+            });
           });
-        });
-      }
+        }
+      });
     });
   }
   

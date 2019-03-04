@@ -116,9 +116,9 @@ export class ApiService {
   }
   
   getProfilePic(username: string) {   
-    return 'assets/pics/logo_cs.png';
-    /*return environment.api_url + '/cs/api/' + username + '/pic?token='
-      + localStorage.getItem('jwtToken');*/
+    //return 'assets/pics/logo_cs.png';
+    return environment.api_url + '/cs/api/' + username + '/pic?token='
+      + localStorage.getItem('jwtToken');
   }
   
   getFiles(extensions?:string) {
@@ -153,9 +153,10 @@ export class ApiService {
   downloadZip(files : string[]) {
     let body = new HttpParams();
     body = body.set('token', this.token);
-    if (files)
+    if (files) {
       body = body.set('files', files.join());
-    this.http.get(environment.api_url + '/cs/mczip',{params:body})
+    }
+    this.http.post(environment.api_url + '/cs/mczip',body)
     .subscribe(ret=>{
       if (ret)
         window.location.href = 'http://' + environment.ip + '/MCFiles.zip';
@@ -165,19 +166,16 @@ export class ApiService {
   downloadProjectZip(project: string) {
     const url = environment.api_url + '/cs/api/zipProject/' + project.toUpperCase();
     window.location.href = url;
-    /*return this.http.get(url,{
-        responseType: 'blob'
-      }).toPromise().then(data=>{
-        var blob = new Blob([data], { type: 'application/zip'});
-        var url = window.URL.createObjectURL(blob);
-        var pwa = window.open(url);
-        if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-          alert('Please disable your Pop-up blocker and try again.');
-        }
-      });*/
   }
   
   deleteFile(name : string) {
+    let body = new HttpParams();
+    body = body.set('token', this.token);
+    return this.http.delete(environment.api_url + '/cs/file/' + name, {params:body})
+      .toPromise();
+  }
+  
+  deleteFolder(name: string) {
     let body = new HttpParams();
     body = body.set('token', this.token);
     return this.http.delete(environment.api_url + '/cs/file/' + name, {params:body})
@@ -268,6 +266,17 @@ export class ApiService {
     let body = new HttpParams();
     body = body.set('palletData', data);
     return this.http.post(environment.api_url + '/tp/pallet/'+name,body).toPromise();
+  }
+  
+  createFolder(path : string) : Promise<boolean> {
+    const url = environment.api_url + '/cs/api/folder';
+    return <Promise<boolean>> this.http.post(url,{path:path}).toPromise();
+  }
+  
+  moveFiles(files: string, target: string): Promise<boolean> {
+    const url = environment.api_url + '/cs/api/move';
+    return <Promise<boolean>> this.http.post(url,{files:files,target:target})
+      .toPromise();
   }
 
 }

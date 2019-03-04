@@ -8,12 +8,12 @@ import { Component, OnInit } from '@angular/core';
 export class ConfigurationComponent implements OnInit {
   
   tabs = [
-    { path: 'about', label: 'About', icon: 'info'},
-    { path: 'diagnostics', label: 'Diagnostics', icon: 'dvr'},
-    { path: 'robots', label: 'Robots', icon: 'group_work'},
+    { path: 'about', label: 'about.title', icon: 'info'},
+    { path: 'diagnostics', label: 'diagnostics.title', icon: 'dvr'},
+    { path: 'robots', label: 'robots.title', icon: 'group_work'},
     { path: 'io', label: 'I/O', icon: 'compare_arrows'},
-    { path: 'gui-settings', label: 'User Interface', icon: 'settings_applications'},
-    { path: 'users', label: 'User Manager', icon: 'security'}
+    { path: 'gui-settings', label: 'interface.title', icon: 'settings_applications'},
+    { path: 'users', label: 'userManager.title', icon: 'security'}
   ];
 
   constructor() { }

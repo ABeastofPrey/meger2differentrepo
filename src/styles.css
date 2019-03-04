@@ -79,6 +79,37 @@ html, body {
        url('assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 100;
+  src: url('assets/fonts/google/OpenSans-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 300;
+  src: url('assets/fonts/google/OpenSans-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/google/OpenSans-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 600;
+  src: url('assets/fonts/google/OpenSans-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 800;
+  src: url('assets/fonts/google/OpenSans-ExtraBold.ttf') format('truetype');
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -116,6 +147,12 @@ html, body {
 }
 .mat-tab-label-active { opacity: 1!important; }
 mat-slide-toggle { display: block!important; }
+
+/* FIX TOO LONG SNACKBAR ISSUE */
+.mat-simple-snackbar > span {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
 
 /* DOCS TOOLTIP FOR ACE EDITOR */
 .docs {

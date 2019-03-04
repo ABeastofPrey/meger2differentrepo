@@ -1,15 +1,15 @@
 <div class="side-menu-content" *ngIf="prg.status">
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="program" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">PROGRAM</button>
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="flow" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">FLOW</button>
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="interpolation" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">INTERPOLATION</button>
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="motion" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">MOTION</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="program" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">{{'projectCommands.menu.program'|translate}}</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="flow" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">{{'projectCommands.menu.flow'|translate}}</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="interpolation" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">{{'projectCommands.menu.interpolation'|translate}}</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="motion" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">{{'projectCommands.menu.motion'|translate}}</button>
   <button mat-raised-button color="primary" [matMenuTriggerFor]="io" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">I/O</button>
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="variables" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">VARIABLES</button>
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="pallets" *ngIf="this.data.palletLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">PALLETS</button>
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="grippers" *ngIf="this.data.gripperLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">GRIPPERS</button>
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="payloads" *ngIf="this.data.payloadLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">PAYLOADS</button>
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="teach" [disabled]="prg.variablesInLine.length === 0 || prg.status.statusCode !== -1">TEACH...</button>
-  <button mat-raised-button color="primary" (click)="menu_edit_line()" [disabled]="prg.lineParams === null || prg.status.statusCode !== -1"><mat-icon>mode_edit</mat-icon> EDIT...</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="variables" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">{{'projectCommands.menu.variables'|translate}}</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="pallets" *ngIf="this.data.palletLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">{{'projectCommands.menu.pallets'|translate}}</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="grippers" *ngIf="this.data.gripperLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">{{'projectCommands.menu.grippers'|translate}}</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="payloads" *ngIf="this.data.payloadLibVer !== null" [disabled]="prg.activeFile==null || prg.status.statusCode !== -1">{{'projectCommands.menu.payloads'|translate}}</button>
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="teach" [disabled]="prg.variablesInLine.length === 0 || prg.status.statusCode !== -1">{{'button.teach'|translate}}...</button>
+  <button mat-raised-button color="primary" (click)="menu_edit_line()" [disabled]="prg.lineParams === null || prg.status.statusCode !== -1"><mat-icon>mode_edit</mat-icon> {{'button.edit'|translate}}...</button>
   <mat-menu #teach="matMenu">
     <button mat-menu-item *ngFor="let v of this.prg.variablesInLine" (click)="prg.teachVariable(v)">{{v.name}}<span *ngIf="v.selectedIndex > -1">[{{v.selectedIndex}}]</span></button>
   </mat-menu>

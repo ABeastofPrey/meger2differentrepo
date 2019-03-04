@@ -7,7 +7,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {ResizableModule} from 'angular-resizable-element';
 import { AngularSplitModule } from 'angular-split';
 import {YesNoDialogComponent} from '../../components/yes-no-dialog/yes-no-dialog.component';
-import {NewFileDialogComponent} from '../../components/new-file-dialog/new-file-dialog.component';
 import {JogSettingsDialogComponent} from '../../components/jog-settings-dialog/jog-settings-dialog.component';
 import {RobotSelectorComponent} from '../tp/components/selectors/robot-selector/robot-selector.component';
 import {BaseSelectorComponent} from '../tp/components/selectors/base-selector/base-selector.component';
@@ -22,6 +21,7 @@ import {CoordinatesDisplayComponent} from '../tp/components/coordinates-display/
 import {TourMatMenuModule} from 'ngx-tour-md-menu';
 import {UpdateDialogComponent} from '../../components/update-dialog/update-dialog.component';
 import { ClickOutsideModule } from 'ng-click-outside';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -32,9 +32,10 @@ import { ClickOutsideModule } from 'ng-click-outside';
     ReactiveFormsModule,
     HttpClientModule,
     ResizableModule,
-    AngularSplitModule,
+    AngularSplitModule.forRoot(),
     TourMatMenuModule,
-    ClickOutsideModule
+    ClickOutsideModule,
+    TranslateModule
   ],
   exports: [
     CommonModule,
@@ -59,11 +60,11 @@ import { ClickOutsideModule } from 'ng-click-outside';
     CoordinatesDisplayComponent,
     UpdateDialogComponent,
     TourMatMenuModule,
-    ClickOutsideModule
+    ClickOutsideModule,
+    TranslateModule
   ],
   declarations: [
     YesNoDialogComponent,
-    NewFileDialogComponent,
     JogSettingsDialogComponent,
     RobotSelectorComponent,
     BaseSelectorComponent,
@@ -77,7 +78,7 @@ import { ClickOutsideModule } from 'ng-click-outside';
     CoordinatesDisplayComponent,
     UpdateDialogComponent
   ],
-  entryComponents: [YesNoDialogComponent, NewFileDialogComponent, JogSettingsDialogComponent, UpdateDialogComponent],
+  entryComponents: [YesNoDialogComponent, JogSettingsDialogComponent, UpdateDialogComponent],
   schemas:[NO_ERRORS_SCHEMA]
 })
 export class SharedModule { }

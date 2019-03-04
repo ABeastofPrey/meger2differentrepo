@@ -3,6 +3,10 @@ import {fadeAnimation} from './fade.animation';
 import {LoginService} from './modules/core';
 import {TourService} from 'ngx-tour-md-menu';
 import {RouterOutlet} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {LangService} from './modules/core/services/lang.service';
+import {environment} from '../environments/environment';
+import {OverlayContainer} from '@angular/cdk/overlay';
 
 @Component({
   selector: 'control-studio',
@@ -12,137 +16,154 @@ import {RouterOutlet} from '@angular/router';
 })
 export class ControlStudioComponent {
   
+  env = environment;
+  
   public getRouterOutletState(outlet: RouterOutlet) {
     return outlet.isActivated ? outlet.activatedRouteData : '';
   }
   
-  constructor(private login: LoginService, private tour: TourService) {
-    let steps = [
-      {
-        anchorId: 'menu',
-        title: 'Navigation Menu',
-        content: 'This button shows/hides the navigation menu',
-        enableBackdrop: true,
-      },
-      {
-        anchorId: 'jog-controls',
-        title: 'Jog Controls',
-        content: "This button shows/hides the JOG controls. This feature will be disabled while TP.LIB isn't loaded.",
-        enableBackdrop: true
-      },
-      {
-        anchorId: 'watch',
-        title: 'Watch Window',
-        content: "This button shows/hides the WATCH window. This window can be used to monitor system and program variables.",
-        enableBackdrop: true
-      },
-      {
-        anchorId: 'message-log-button',
-        title: 'Message Log',
-        content: "This button shows/hides the MESSAGE LOG window. Here you can see informative messages sent from the controller.",
-        enableBackdrop: true
-      },
-      {
-        anchorId: 'message-log',
-        title: 'Message Log',
-        content: "When you're at the home screen, messages will also appear here.",
-        enableBackdrop: true,
-        route: '/'
-      },
-      {
-        anchorId: 'terminal',
-        title: 'Terminal',
-        content: "This is the terminal. You can use it to send MC-Basic commands to the controller.",
-        enableBackdrop: true
-      },
-      {
-        anchorId: 'sys-info',
-        title: 'System Information',
-        content: "System information is displayed at the bottom of ths home screen."
-      },
-    ];
-    if (window.innerWidth >= 1024) {
-      // ADD STEPS THAT WILL BE ONLY SHOWN IN NORMAL SCREEN RESOLUTIONS
+  constructor(
+    private login: LoginService,
+    private tour: TourService,
+    private translate: TranslateService,
+    private lang: LangService,
+    private overlayContainer: OverlayContainer
+  ) {
+    overlayContainer.getContainerElement().classList.add(this.env.theme.name);
+    this.lang.init();
+    this.translate.get('tour').toPromise().then((tour:TourStep[])=>{
+      let steps = [
+        {
+          anchorId: 'menu',
+          title: tour[0].title,
+          content: tour[0].content,
+          enableBackdrop: true,
+        },
+        {
+          anchorId: 'jog-controls',
+          title: tour[1].title,
+          content: tour[1].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'watch',
+          title: tour[2].title,
+          content: tour[2].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'message-log-button',
+          title: tour[3].title,
+          content: tour[3].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'message-log',
+          title: tour[4].title,
+          content: tour[4].content,
+          enableBackdrop: true,
+          route: '/'
+        },
+        {
+          anchorId: 'terminal',
+          title: tour[5].title,
+          content: tour[5].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'sys-info',
+          title: tour[6].title,
+          content: tour[6].content
+        },
+      ];
+      if (window.innerWidth >= 1024) {
+        // ADD STEPS THAT WILL BE ONLY SHOWN IN NORMAL SCREEN RESOLUTIONS
+        steps = steps.concat([
+          {
+            anchorId: 'screen-Motion Dashboard',
+            title: tour[7].title,
+            content: tour[7].content,
+            enableBackdrop: true
+          },
+        ]);
+      }
       steps = steps.concat([
         {
-          anchorId: 'screen-Motion Dashboard',
-          title: 'Motion Dashboard',
-          content: "Now, let's take a look at the Motion Dashboard screen.",
+          anchorId: 'dashboard-fab',
+          title: tour[8].title,
+          content: tour[8].content,
+          enableBackdrop: true,
+          route: '/dashboard'
+        },
+        {
+          anchorId: 'dashboard-window',
+          title: tour[9].title,
+          content: tour[9].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'dashboard-enable',
+          title: tour[10].title,
+          content: tour[10].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'dashboard-expand',
+          title: tour[11].title,
+          content: tour[11].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'dashboard-move',
+          title: tour[12].title,
+          content: tour[12].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'dashboard-rec',
+          title: tour[13].title,
+          content: tour[13].content,
           enableBackdrop: true
         },
       ]);
-    }
-    steps = steps.concat([
-      {
-        anchorId: 'dashboard-fab',
-        title: 'Add a new Dashboard',
-        content: "We can use this button to create a new Motion Dashboard window.",
-        enableBackdrop: true,
-        route: '/dashboard'
-      },
-      {
-        anchorId: 'dashboard-window',
-        title: 'Dashboard Window',
-        content: "This is a motion dashboard window. You can create a window for each motion element in the system, and drag it around the screen.",
-        enableBackdrop: true
-      },
-      {
-        anchorId: 'dashboard-enable',
-        title: 'Enable/Disable the robot',
-        content: "Use this toggle button to enable and disable the robot.",
-        enableBackdrop: true
-      },
-      {
-        anchorId: 'dashboard-expand',
-        title: 'Moving the robot',
-        content: "Use this panel to perform simple move commands.",
-        enableBackdrop: true
-      },
-      {
-        anchorId: 'dashboard-move',
-        title: 'Moving the robot',
-        content: "Use this panel to perform simple move commands.",
-        enableBackdrop: true
-      },
-      {
-        anchorId: 'dashboard-rec',
-        title: 'Recorder',
-        content: "Use this button to record data in 2D and 3D formats.",
-        enableBackdrop: true
-      },
-    ]);
-    if (window.innerWidth >= 1024) {
-      // ADD STEPS THAT WILL BE ONLY SHOWN IN NORMAL SCREEN RESOLUTIONS
+      if (window.innerWidth >= 1024) {
+        // ADD STEPS THAT WILL BE ONLY SHOWN IN NORMAL SCREEN RESOLUTIONS
+        steps = steps.concat([
+          {
+            anchorId: 'screen-Project Editor',
+            title: tour[14].title,
+            content: tour[14].content,
+            enableBackdrop: true,
+            route: '/projects'
+          },
+        ]);
+      }
       steps = steps.concat([
         {
-          anchorId: 'screen-Project Editor',
-          title: 'Project Editor',
-          content: "Now, let's take a look at the Project Editor.",
+          anchorId: 'project-tree',
+          title: tour[15].title,
+          content: tour[15].content,
           enableBackdrop: true,
           route: '/projects'
         },
+        {
+          anchorId: 'project-toolbar-1',
+          title: tour[16].title,
+          content: tour[16].content,
+          enableBackdrop: true
+        }
       ]);
-    }
-    steps = steps.concat([
-      {
-        anchorId: 'project-tree',
-        title: 'This is the project tree',
-        content: "Here you can find all the programs, libraries and configuration files for your project.",
-        enableBackdrop: true,
-        route: '/projects'
-      },
-      {
-        anchorId: 'project-toolbar-1',
-        title: 'Toolbar',
-        content: "Use this toolbar to open, edit and execute your project.",
-        enableBackdrop: true
-      }
-    ]);
-    this.tour.initialize(steps);
+      this.tour.initialize(steps);
+    });
   }
   
   ngOnInit() {
     this.login.populate();
   }
   
+}
+
+interface TourStep {
+  title: string;
+  content: string;
 }

@@ -1,9 +1,9 @@
 <div class="wrapper">
   <div class="content mat-typography">
     <span>4</span>
-    <img src="assets/pics/logo_only.gif">
+    <img src="assets/pics/{{env.theme.spinner}}">
     <span>4</span>
-    <h2>Page Not Found</h2>
-    <a href="javascript:void" (click)="back()">Go Back</a>
+    <h2>{{'404'|translate}}</h2>
+    <a href="javascript:void" (click)="back()">{{'back'|translate}}</a>
   </div>
 </div>

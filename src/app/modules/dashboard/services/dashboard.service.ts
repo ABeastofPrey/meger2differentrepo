@@ -9,6 +9,7 @@ import {RecordParams} from '../components/record-dialog/record-dialog.component'
 import {TourService} from 'ngx-tour-md-menu';
 import {ApplicationRef} from '@angular/core';
 import {NgZone} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class DashboardService {
@@ -17,6 +18,7 @@ export class DashboardService {
   private is3D : boolean = false;
   private isAdvanced : boolean = false;
   private _busy : boolean = false;
+  private words: any;
   
   lastChartData : Graph[] = null;
   
@@ -59,8 +61,12 @@ export class DashboardService {
     private snack: MatSnackBar,
     private tour: TourService,
     private zone: NgZone,
-    private ref: ApplicationRef
+    private ref: ApplicationRef,
+    private trn: TranslateService
   ) {
+    this.trn.get(['dashboard.err_file', 'dismiss','dashboard.charts.2d','dashboard.charts.3d']).subscribe(words=>{
+      this.words = words;
+    });
     this.tour.start$.subscribe(start=>{
       localStorage.removeItem('dashboards');
     });
@@ -155,11 +161,11 @@ export class DashboardService {
     });
   }
   
-  getRecordingData(recName: string) {
+  private getRecordingData(recName: string) {
     this._busy = true;
     return this.api.getRecordingCSV(recName).then((csv:string)=>{
       if (csv === null) {
-        this.snack.open('FILE NOT FOUND','DISMISS');
+        this.snack.open(this.words['dashboard.err_file'],this.words['dismiss']);
         return false;
       }
       this.lastChartData = this.csvToGraphs(csv);
@@ -178,7 +184,7 @@ export class DashboardService {
     if (this.is3D && !this.isAdvanced) { // 3D GRAPH
       let chartData : Graph3D = {
         mode: 'lines',
-        name: '3D Graph',
+        name: this.words['dashboard.charts.3d'],
         x: [],
         y: [],
         z: [],
@@ -197,7 +203,7 @@ export class DashboardService {
     } else { // 2D ADVANCED
       newData.push({
         mode: 'lines',
-        name: '2D Graph',
+        name: this.words['dashboard.charts.2d'],
         x: [],
         y: []
       });

@@ -1,26 +1,26 @@
 <div class="main-wrapper">
   <div class="loader mat-elevation-z6" *ngIf="isLoading">
-    <img src="assets/pics/logo_only.gif">
-    Loading Simulator...
+    <img src="assets/pics/{{env.theme.spinner}}">
+    {{'simulator_screen.loading'|translate}}
   </div>
   <div class="toolbar">
-    <button matTooltip="Cube" (click)="addObject('Cube')"><img src="assets/pics/icons/cube.png"></button>
-    <button matTooltip="Sphere" (click)="addObject('Sphere')"><img src="assets/pics/icons/sphere.png"></button>
-    <button matTooltip="Cylinder" (click)="addObject('Cylinder')"><img src="assets/pics/icons/cylinder.png"></button>
+    <button matTooltip="{{'simulator_screen.cube'|translate}}" (click)="addObject('Cube')"><img src="assets/pics/icons/cube.png"></button>
+    <button matTooltip="{{'simulator_screen.sphere'|translate}}" (click)="addObject('Sphere')"><img src="assets/pics/icons/sphere.png"></button>
+    <button matTooltip="{{'simulator_screen.cylinder'|translate}}" (click)="addObject('Cylinder')"><img src="assets/pics/icons/cylinder.png"></button>
   </div>
-  <split direction="horizontal" (dragEnd)="onDragEnd()">
-      <split-area size="15" class="side-panel">
-        <split direction="vertical">
-          <split-area size="50">
+  <as-split direction="horizontal" (dragEnd)="onDragEnd()">
+      <as-split-area size="15" class="side-panel">
+        <as-split direction="vertical">
+          <as-split-area size="50">
             <objects-list></objects-list>
-          </split-area>
-          <split-area size="50">
+          </as-split-area>
+          <as-split-area size="50">
             <object-properties [lastSelectedNode]="sim.lastSelectedNode.value"></object-properties>
-          </split-area>
-        </split>
-      </split-area>
-    <split-area size="85">
+          </as-split-area>
+        </as-split>
+      </as-split-area>
+    <as-split-area size="85">
       <div class="wrapper" #threejs></div>
-    </split-area>
-  </split>
+    </as-split-area>
+  </as-split>
 </div>

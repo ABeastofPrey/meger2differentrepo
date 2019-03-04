@@ -7,6 +7,7 @@ import {TPVariableType} from '../../../core/models/tp/tp-variable-type.model';
 import {FOUR_AXES_LOCATION, SIX_AXES_LOCATION} from '../../../core/models/tp/location-format.model';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {AddVarComponent} from '../add-var/add-var.component';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'data-screen',
@@ -29,6 +30,7 @@ export class DataScreenComponent implements OnInit {
   private _legend : string[] = [];
   private _value : any[] = [];
   private _varRefreshing : boolean = false;
+  private words: any;
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
@@ -71,28 +73,15 @@ export class DataScreenComponent implements OnInit {
     private ws: WebsocketService,
     private snackBar : MatSnackBar,
     private dialog : MatDialog,
-    public login : LoginService
+    public login : LoginService,
+    private trn: TranslateService
   ) {
-
-  }
-  
-  importData() {
-    /*let ref = this.dialog.open(OpenFileDialogComponent,{
-      data: {
-        ext: 'UPG'
-      }
+    this.trn.get([
+      'value', 'dataScreen.delete.msg', 'button.delete', 'button.cancel',
+      'success', 'changeOK'
+    ]).subscribe(words=>{
+      this.words = words;
     });
-    ref.afterClosed().subscribe((fileName:string)=>{
-      if (fileName) {
-        fileName = fileName.substring(0, fileName.indexOf('.'));
-        let cmd='?TP_COPY_DATA("'+fileName+'","'+this.data.selectedDomain+'")';
-        this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-          if (ret.result === '0') {
-            this.data.refreshVariables();
-          }
-        });
-      }
-    });*/
   }
   
   teach() {
@@ -179,7 +168,7 @@ export class DataScreenComponent implements OnInit {
       if (valuesString.indexOf("#") === 0)
         valuesString = valuesString.substr(1);
       if (valuesString.indexOf(",") === -1) {
-        this._legend = ['Value'];
+        this._legend = [this.words['value']];
         this._varRefreshing = false
         this._value = [{value:valuesString.trim()}];
         return;
@@ -214,60 +203,65 @@ export class DataScreenComponent implements OnInit {
   }
 
   deleteSelected() {
-    let ref = this.dialog.open(YesNoDialogComponent,{
-      data: {
-        title: 'Delete ' + this.selectedVar.name + '?',
-        msg: 'This cannot be undone.',
-        yes: 'DELETE',
-        no: 'CANCEL'
-      }
-    });
-    ref.afterClosed().subscribe(ret=>{
-      if (ret) {
-        let cmd = '?TP_DELETEVAR("' + this.selectedVar.name + '")';
-        this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-          if (ret.result === '0') {
-            this.selectedVar = null;
-            this.snackBar.open('Success!','',{duration:2000});
-            var queries = [
-              this.data.refreshBases(),
-              this.data.refreshTools()
-            ];
-            Promise.all(queries).then(()=>{
-              this.data.refreshVariables();
-            });
-          }
-        });
-      }
+    this.trn.get('dataScreen.delete.title', {name: this.selectedVar.name})
+    .subscribe(word=>{
+      this.dialog.open(YesNoDialogComponent,{
+        data: {
+          title: word,
+          msg: this.words['dataScreen.delete.msg'],
+          yes: this.words['button.delete'],
+          no: this.words['button.cancel']
+        }
+      }).afterClosed().subscribe(ret=>{
+        if (ret) {
+          let cmd = '?TP_DELETEVAR("' + this.selectedVar.name + '")';
+          this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+            if (ret.result === '0') {
+              this.selectedVar = null;
+              this.snackBar.open(this.words['success'],'',{duration:2000});
+              var queries = [
+                this.data.refreshBases(),
+                this.data.refreshTools()
+              ];
+              Promise.all(queries).then(()=>{
+                this.data.refreshVariables();
+              });
+            }
+          });
+        }
+      });
     });
   }
   
   deleteChecked() {
-    let ref = this.dialog.open(YesNoDialogComponent,{
-      data: {
-        title: 'Delete' + this.selection.selected.length + ' variables ?',
-        msg: 'This cannot be undone.',
-        yes: 'DELETE',
-        no: 'CANCEL'
-      }
-    });
-    ref.afterClosed().subscribe(ret=>{
-      if (ret) {
-        let queries : Promise<any>[] = [];
-        for (let v of this.selection.selected)
-          queries.push(this.ws.query('?TP_DELETEVAR("' + v.name + '")'));
-        Promise.all(queries).then(()=>{
-          this.selectedVar = null;
-          this.snackBar.open('Success!','',{duration:2000});
-          var dataQueries = [
-            this.data.refreshBases(),
-            this.data.refreshTools()
-          ];
-          Promise.all(dataQueries).then(()=>{
-            this.data.refreshVariables();
+    this.trn.get('dataScreen.delete.title_multi',
+      {num: this.selection.selected.length}
+    ).subscribe(word=>{
+      this.dialog.open(YesNoDialogComponent,{
+        data: {
+          title: word,
+          msg: this.words['dataScreen.delete.msg'],
+          yes: this.words['button.delete'],
+          no: this.words['button.cancel']
+        }
+      }).afterClosed().subscribe(ret=>{
+        if (ret) {
+          let queries : Promise<any>[] = [];
+          for (let v of this.selection.selected)
+            queries.push(this.ws.query('?TP_DELETEVAR("' + v.name + '")'));
+          Promise.all(queries).then(()=>{
+            this.selectedVar = null;
+            this.snackBar.open(this.words['success'],'',{duration:2000});
+            var dataQueries = [
+              this.data.refreshBases(),
+              this.data.refreshTools()
+            ];
+            Promise.all(dataQueries).then(()=>{
+              this.data.refreshVariables();
+            });
           });
-        });
-      }
+        }
+      });
     });
   }
   
@@ -285,7 +279,7 @@ export class DataScreenComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       this.rowClick(this.selectedVar,true); // REFRESH DATA
       if (ret.result === '0')
-        this.snackBar.open('Changes saved',null,{duration: 2000});
+        this.snackBar.open(this.words['changeOK'],null,{duration: 2000});
       else
         console.log(ret.cmd + '>>>' + ret.result);
     });

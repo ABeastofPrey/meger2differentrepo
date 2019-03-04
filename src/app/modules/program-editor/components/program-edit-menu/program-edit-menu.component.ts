@@ -49,7 +49,7 @@ export class ProgramEditMenuComponent implements OnInit {
 
   menu_grp_use() {
     let ref = this.dialog.open(GripperSelectorComponent,{
-      data: 'Set Active Gripper'
+      data: 'Set Gripper'
     });
     ref.afterClosed().subscribe((grp:Gripper)=>{
       if (grp) {
@@ -85,7 +85,7 @@ export class ProgramEditMenuComponent implements OnInit {
   
   menu_pay_use() {
     this.dialog.open(PayloadSelectorComponent,{
-      data: 'Use Payload'
+      data: 'Set Payload'
     }).afterClosed().subscribe((pay:Payload)=>{
       if (pay) {
         const cmd = '?PAY_SET_PAYLOAD("' + pay.name + '")';
@@ -97,7 +97,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_plt_pick() {
     let ref = this.dialog.open(PalletPickerDialogComponent,{
       data: {
-        title: 'Insert Pick Command',
+        title: 'projectCommands.other.title_pick',
         pickRobot: true
       }
     });
@@ -111,7 +111,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_plt_place() {
     let ref = this.dialog.open(PalletPickerDialogComponent,{
       data: {
-        title: 'Insert Place Command',
+        title: 'projectCommands.other.title_place',
         pickRobot: true
       }
     });
@@ -125,7 +125,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_plt_home() {
     let ref = this.dialog.open(PalletPickerDialogComponent,{
       data: {
-        title: 'Insert Home Command',
+        title: 'projectCommands.other.title_home',
         pickRobot: true
       }
     });
@@ -147,7 +147,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_plt_get_index() {
     this.dialog.open(PalletPickerDialogComponent,{
       data: {
-        title: 'Insert Get Pallet Index Command',
+        title: 'projectCommands.other.title_plt_index',
         pickRobot: false
       }
     }).afterClosed().subscribe(plt=>{
@@ -178,25 +178,6 @@ export class ProgramEditMenuComponent implements OnInit {
         this.menu_circle(this.prg.lineParams['target'].length === 1, this.prg.lineParams);
         break;
     }
-  }
-  menu_sub() {
-    /*let ref = this.dialog.open(SubDialogComponent);
-    ref.afterClosed().subscribe(name=>{
-      if (name) {
-        let cmd = '\n\npublic sub ' + name + '\n\n\t\n\nend sub';
-        this.prg.insertFunction(cmd);
-      }
-    });*/
-  }
-  menu_function() {
-    /*let ref = this.dialog.open(FunctionDialogComponent);
-    ref.afterClosed().subscribe(ret=>{
-      if (ret) {
-        let cmd = '\n\npublic function ' +
-                  ret.name + ' as ' + ret.type + '\n\n\t\n\nend function';
-        this.prg.insertFunction(cmd);
-      }
-    });*/
   }
   menu_program() { this.prg.insertAndJump('program\n\n\t\n\nend program',3); }
   menu_call() {
@@ -293,7 +274,7 @@ export class ProgramEditMenuComponent implements OnInit {
       {
         width: '400px',
         data: {
-          title:'Insert Attach/Detach Command',
+          title:'projectCommands.other.title_attach',
           must: false
         }
       }
@@ -314,7 +295,7 @@ export class ProgramEditMenuComponent implements OnInit {
       {
         width: '400px',
         data: {
-          title:'Insert DoPass Command',
+          title:'projectCommands.other.title_doPass',
           must: false
         }
       }
@@ -386,7 +367,7 @@ export class ProgramEditMenuComponent implements OnInit {
       RobotSelectorDialogComponent,
       {
         width: '400px',
-        data: {title:'Insert WaitForMotion Command', must: false}
+        data: {title:'projectCommands.other.title_waitForMotion', must: false}
       }
     );
     ref.afterClosed().subscribe((robot:string)=>{
@@ -402,8 +383,7 @@ export class ProgramEditMenuComponent implements OnInit {
     let ref = this.dialog.open(
       DelayDialogComponent,
       {
-        width: '400px',
-        data: {title:'Insert Delay Command'}
+        width: '400px'
       }
     );
     ref.afterClosed().subscribe((cmd:string)=>{
@@ -417,7 +397,7 @@ export class ProgramEditMenuComponent implements OnInit {
       RobotSelectorDialogComponent,
       {
         width: '400px',
-        data: {title:'Insert Enable Command', must: false}
+        data: {title:'projectCommands.other.title_en', must: false}
       }
     );
     ref.afterClosed().subscribe((robot:string)=>{
@@ -434,7 +414,7 @@ export class ProgramEditMenuComponent implements OnInit {
       RobotSelectorDialogComponent,
       {
         width: '400px',
-        data: {title:'Insert Disable Command', must: false}
+        data: {title:'projectCommands.other.title_disable', must: false}
       }
     );
     ref.afterClosed().subscribe((robot:string)=>{
@@ -452,7 +432,7 @@ export class ProgramEditMenuComponent implements OnInit {
       {
         width: '400px',
         data: {
-          title: 'Insert an Input Reference',
+          title: 'projectCommands.other.title_inRef',
           inputs: true,
           outputs: false
         }
@@ -470,7 +450,7 @@ export class ProgramEditMenuComponent implements OnInit {
       {
         width: '400px',
         data: {
-          title: 'Insert an Output Reference',
+          title: 'projectCommands.other.title_outRef',
           inputs: false,
           outputs: true
         }
