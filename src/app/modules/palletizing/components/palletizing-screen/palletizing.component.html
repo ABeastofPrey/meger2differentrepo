@@ -15,7 +15,9 @@
       <button mat-fab color="accent" [disabled]="data.selectedPallet === null" (click)="scale(-0.05)"><mat-icon>zoom_out</mat-icon></button>
     </div>
   </div>
-  <div class="canvas-wrapper" #palletContainer [style.background]="data.selectedPallet ? '#fff' : ''">
+  <div class="canvas-wrapper" #palletContainer 
+    [style.background]="data.selectedPallet ? '#fff' : ''"
+    [style.background-image]="'url(' + palletBgImgUrl + ')'">
     <canvas #palletPreview width="{{800}}" height="{{800}}"></canvas>
     <div *ngIf="abnormalItemCount" class="error-message">
       {{'pallets.err_item_count'|translate}}

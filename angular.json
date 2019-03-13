@@ -21,7 +21,8 @@
               "src/mode-vbscript.js"
             ],
             "styles": [
-              "src/styles.css",
+              "src/styles.scss",
+              "src/assets/styles/material-kuka.scss",
               "src/assets/styles/material-servotronix.scss",
               "node_modules/angular2-draggable/css/resizable.min.css",
               "node_modules/jquery-ui-dist/jquery-ui.min.css"
@@ -93,7 +94,8 @@
               "node_modules/ace-builds/src-min/ext-searchbox.js"
             ],
             "styles": [
-              "src/styles.css",
+              "src/styles.scss",
+              "src/assets/styles/material-kuka.scss",
               "src/assets/styles/material-servotronix.scss",
               "node_modules/ngx-draggable-widget/NgDraggableWidget.css"
             ],

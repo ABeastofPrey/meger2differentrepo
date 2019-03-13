@@ -20,7 +20,7 @@
         'selected':mgr.screen === s,
         'disabled':(s.requiresTpLib && !tpOnline) || (s.autoModeOnly && stat.mode !== 'A')
       }">
-      <mat-icon>{{s.icon}}</mat-icon>
+      <mat-icon class="mat-primary">{{s.icon}}</mat-icon>
       <span>{{s.name}}</span>
     </li>
   </ul>

@@ -7,21 +7,21 @@
       [class.disabled]="!online"
     >
       <mat-icon>touch_app</mat-icon>
-      <div>{{appName}} {{'help.tour'|translate}}</div>
+      <div>{{env.appName}} {{'help.tour'|translate}}</div>
     </a>
-    <a href="http://softmc.servotronix.com/wiki/welcome" target="_blank">
+    <a *ngIf="isNotKuka" href="http://softmc.servotronix.com/wiki/welcome" target="_blank">
       <img src="assets/pics/wiki.png">
       <div>{{'help.wiki'|translate}}</div>
     </a>
-    <a href="http://www.servotronix.com" target="_blank">
+    <a *ngIf="isNotKuka" href="http://www.servotronix.com" target="_blank">
       <img src="assets/pics/logo_cs.png">
       <div>Servotronix.com</div>
     </a>
-    <a href="http://servotronix.com/products/softmc-7-multi-axis-motion-controller/#software" target="_blank">
+    <a *ngIf="isNotKuka" href="http://servotronix.com/products/softmc-7-multi-axis-motion-controller/#software" target="_blank">
       <mat-icon>file_download</mat-icon>
       <div>{{'help.downloads'|translate}}</div>
     </a>
-    <a href="http://softmc.servotronix.com/wiki/Program_Examples" target="_blank">
+    <a *ngIf="isNotKuka" href="http://softmc.servotronix.com/wiki/Program_Examples" target="_blank">
       <mat-icon>code</mat-icon>
       <div>{{'help.code'|translate}}</div>
     </a>
@@ -29,7 +29,7 @@
       <mat-icon>keyboard</mat-icon>
       <div>{{'help.keys'|translate}}</div>
     </a>
-    <a href="mailto:support@servotronix.com">
+    <a *ngIf="isNotKuka" href="mailto:support@servotronix.com">
       <mat-icon>contact_mail</mat-icon>
       <div>{{'help.contact'|translate}}</div>
     </a>

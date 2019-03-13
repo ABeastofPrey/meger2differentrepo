@@ -1,86 +1,43 @@
 @import '~@angular/material/theming';
 
-@include mat-core();
-
 $material-servotronix-primary: mat-palette($mat-teal, 600, 900, 400);
 $material-servotronix-accent:  mat-palette($mat-amber, A200, A100, A400);
 $material-servotronix-warn:    mat-palette($mat-red);
 
 $servotronix-theme: mat-light-theme($material-servotronix-primary, $material-servotronix-accent, $material-servotronix-warn);
 
-$material-kuka-primary: mat-palette($mat-amber, 900, 100);
-$material-kuka-accent:  mat-palette($mat-blue-gray, 50, 100, 800);
-$material-kuka-warn:    mat-palette($mat-red, 900);
-
-$kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $material-kuka-warn);
-
 $material-black: rgb(0.51,0.51,0.51);
 $material-semi-black: rgba(0,0,0,0.54);
 
-@include angular-material-theme($servotronix-theme);
+.stx {
+  @include angular-material-theme($servotronix-theme);
 
-.kuka-theme {
-  @include angular-material-theme($kuka-theme);
   .primary, main-menu li:hover:not(.disabled), main-menu li.selected:not(.disabled) {
-    color: mat-color($material-kuka-primary, 900);
+    color: mat-color($material-servotronix-primary, 600);
   }
   .primary-light {
-    color: mat-color($material-kuka-primary, 400);
-  }
-  .mat-toolbar.mat-primary, .mat-flat-button.mat-primary,
-  .mat-raised-button.mat-primary, .mat-fab.mat-primary,
-  .mat-mini-fab.mat-primary,
-  .mat-tab-group.mat-background-primary .mat-tab-label,
-  .mat-tab-group.mat-background-primary .mat-tab-link,
-  .mat-tab-nav-bar.mat-background-primary .mat-tab-label,
-  .mat-tab-nav-bar.mat-background-primary .mat-tab-link {
-    color: #fff!important;
-  }
-  .mat-flat-button.mat-accent, .mat-raised-button.mat-accent,
-  .mat-fab.mat-accent, .mat-mini-fab.mat-accent {
-    color: mat-color($material-kuka-accent, 800);
+    color: mat-color($material-servotronix-primary, 100);
   }
   .primary-bg-dark {
-    background-color: mat-color($material-kuka-primary, 900);
+    background-color: mat-color($material-servotronix-primary, 900);
     color: #fff;
   }
   .primary-bg, .mat-button-toggle-checked {
-    background-color: mat-color($material-kuka-primary, 900);
+    background-color: mat-color($material-servotronix-primary, 600);
     color: #fff!important;
   }
   .warn-bg {
-    background-color: mat-color($material-kuka-warn);
+    background-color: mat-color($material-servotronix-warn);
     color: #fff;
   }
   .warn {
-    color: mat-color($material-kuka-warn);
+    color: mat-color($material-servotronix-warn);
   }
-}
+  .mat-title-color {
+    color: $material-black;
+  }
+  .mat-subtitle-color {
+    color: $material-semi-black;
+  }
 
-.primary, main-menu li:hover:not(.disabled), main-menu li.selected:not(.disabled) {
-  color: mat-color($material-servotronix-primary, 600);
-}
-.primary-light {
-  color: mat-color($material-servotronix-primary, 100);
-}
-.primary-bg-dark {
-  background-color: mat-color($material-servotronix-primary, 900);
-  color: #fff;
-}
-.primary-bg, .mat-button-toggle-checked {
-  background-color: mat-color($material-servotronix-primary, 600);
-  color: #fff!important;
-}
-.warn-bg {
-  background-color: mat-color($material-servotronix-warn);
-  color: #fff;
-}
-.warn {
-  color: mat-color($material-servotronix-warn);
-}
-.mat-title-color {
-  color: $material-black;
-}
-.mat-subtitle-color {
-  color: $material-semi-black;
 }

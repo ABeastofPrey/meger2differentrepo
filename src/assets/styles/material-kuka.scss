@@ -1,0 +1,81 @@
+@import '~@angular/material/theming';
+
+$base-Sunrise: #ff7300;
+$primary-Sunrise: #ff7300;
+
+$base-Connect: #ff5800;
+$primary-Connect: #ff5800;
+
+$base-KSS: rgb(253, 100, 0);
+$primary-KSS: rgb(253, 100, 0);
+
+$base-IISy: green;
+$primary-IISy: green;
+
+$mat-kuka: (
+    100: $base-Connect,
+    200: $primary-Connect,
+    300: $base-IISy,
+    400: $primary-IISy,
+    500: $base-Sunrise,
+    600: $primary-Sunrise,
+    700: $base-KSS,
+    800: $primary-KSS,
+    contrast: (
+      100: $dark-primary-text,
+      200: $dark-primary-text,
+      300: $dark-primary-text,
+      400: $dark-primary-text,
+      500: $dark-primary-text,
+      600: $dark-primary-text,
+      700: $dark-primary-text,
+      800: $dark-primary-text,
+    )
+  );
+
+$material-kuka-primary: mat-palette($mat-kuka, 500, 400, 800); // colors most widely used across all screens and components.
+$material-kuka-accent:  mat-palette($mat-blue-gray, 50, 100, 800); // colors used for the floating action button and interactive elements.
+$material-kuka-warn:    mat-palette($mat-red, 900); // colors used to convey error state.
+
+$kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $material-kuka-warn);
+
+
+.kuka {
+  @include angular-material-theme($kuka-theme);
+  @include mat-tree-theme($kuka-theme);
+
+  /* Here is the style difinition of header portion.
+   *
+   */
+  mat-toolbar {
+
+  }
+
+  /* Here is the style difinition of side navagation portion.
+   *
+   */
+  mat-sidenav-container mat-sidenav {
+    li.selected:not(.disabled) {
+      color: mat-color($material-kuka-primary);
+    }
+    .user-info .name {
+      color: mat-color($material-kuka-primary);
+    }
+  }
+
+  /* Here is the style difinition of content portion.
+   *
+   */
+  mat-sidenav-container mat-sidenav-content {
+    
+  }
+
+  /*
+   * Custom style for cdk global overlay wrapper.
+   */
+  .cdk-global-overlay-wrapper {
+    .title {
+      background-color: mat-color($material-kuka-primary);
+    }
+  }
+}

@@ -1,13 +1,24 @@
-export const KukaTheme : Theme = {
-  name: 'kuka-theme',
+export interface Platform {
+  name: string;
+  logo: string;
+  spinner: string;
+}
+
+export const Kuka: Platform = {
+  name: 'kuka',
   logo: 'kuka.png',
   spinner: 'kuka-spinner.gif' // Must be 64 by 64 px
 };
 
-export const ServotronixTheme : Theme = {
+export const Servotronix: Platform = {
   name: 'stx',
   logo: 'stx.png',
   spinner: 'logo_only.gif' // Must be 64 by 64 px
+};
+
+export const Platforms = {
+  Kuka: Kuka,
+  Servotronix: Servotronix,
 };
 
 export const environment = {
@@ -18,11 +29,6 @@ export const environment = {
   tp_ver: '1.3.1.0',
   gui_ver: '1.0.7',
   compatible_webserver_ver: '3.0.8',
-  theme: ServotronixTheme
+  platform: Platforms.Servotronix,
+  platforms: Platforms
 };
-
-interface Theme {
-  name: string;
-  logo: string;
-  spinner: string;
-}

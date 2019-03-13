@@ -32,7 +32,7 @@ class ParameterErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-jump3-dialog',
   templateUrl: 'jump3-dialog.component.html',
-  styleUrls: ['jump3-dialog.component.css']
+  styleUrls: ['jump3-dialog.component.scss']
 })
 export class Jump3DialogComponent implements OnInit {
   constructor(

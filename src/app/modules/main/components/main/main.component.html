@@ -1,11 +1,11 @@
 <div class="wrapper mat-typography" #container id="container">
   <div [class.hidden]="!isRouterLoading" class="spinner mat-elevation-z6">
-    <img src="assets/pics/{{env.theme.spinner}}">
+    <img src="assets/pics/{{env.platform.spinner}}">
   </div>
   <mat-toolbar [color]="stat.systemErrorCode < 0 ? 'warn' : 'primary'" [class.primary-bg-dark]="stat.systemErrorCode >= 0">
     <button mat-icon-button (click)="drawer.toggle()" tourAnchor="menu"><mat-icon>menu</mat-icon></button>
     <span class='center-vertical'>
-      <img src="assets/pics/{{env.theme.logo}}" class="img-logo">
+      <img src="assets/pics/{{env.platform.logo}}" class="img-logo">
       {{appName}}
     </span>
     <mat-icon *ngIf="stat.systemErrorCode < 0" [matTooltip]="'Error ' + stat.systemErrorCode">warning</mat-icon>

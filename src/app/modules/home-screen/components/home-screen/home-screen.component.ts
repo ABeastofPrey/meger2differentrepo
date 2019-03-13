@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import {trigger, transition, style, animate} from '@angular/animations';
 import {ScreenManagerService, WebsocketService} from '../../../core';
 import {TranslateService} from '@ngx-translate/core';
+import {UtilsService} from '../../../core/services/utils.service';
 
 declare var Plotly;
 
@@ -63,7 +64,8 @@ export class HomeScreenComponent implements OnInit {
     public ws: WebsocketService,
     private api : ApiService,
     private screenMngr: ScreenManagerService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService
   ) {
     
   }
@@ -87,17 +89,17 @@ export class HomeScreenComponent implements OnInit {
   private afterSysInfoLoaded() {
     this.updateCharts();
     const cpu = this.groupManager.sysInfo.cpu;
-    let mc : string;
+    let mc: string = this.utils.IsKuka ? 'kuka_' : '';
     if (this.groupManager.sysInfo.ver.indexOf('SIM') === 0) {
       this.simulated = true;
-      mc = '703';
+      mc += '703';
     }
     else if (cpu.indexOf('E3825') !== -1)
-      mc = '703';
+      mc += '703';
     else if (cpu.indexOf('neon') !== -1 || cpu.toLowerCase().indexOf('arm') !== -1)
-      mc = '301';
+      mc += '301';
     else
-      mc = '702';
+      mc += '702';
     this.mcImage = 'assets/pics/mc/' + mc + '.png';
   }
   

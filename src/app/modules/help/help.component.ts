@@ -4,6 +4,7 @@ import {TpStatService} from '../core';
 import {environment} from '../../../environments/environment';
 import {MatDialog} from '@angular/material';
 import {ShortcutsComponent} from './components/shortcuts/shortcuts.component';
+import { UtilsService } from '../core/services/utils.service';
 
 @Component({
   selector: 'help-screen',
@@ -13,13 +14,18 @@ import {ShortcutsComponent} from './components/shortcuts/shortcuts.component';
 export class HelpComponent implements OnInit {
   
   online: boolean = false;
-  appName: string = environment.appName;
+  env = environment;
 
   constructor(
     private tour: TourService,
     private stat: TpStatService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private utils: UtilsService
   ) {
+  }
+
+  get isNotKuka(): boolean {
+    return !this.utils.IsKuka;
   }
   
   startTour() {

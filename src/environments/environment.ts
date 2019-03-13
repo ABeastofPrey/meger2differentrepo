@@ -3,16 +3,27 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-export const KukaTheme : Theme = {
-  name: 'kuka-theme',
+export interface Platform {
+  name: string;
+  logo: string;
+  spinner: string;
+}
+
+export const Kuka: Platform = {
+  name: 'kuka',
   logo: 'kuka.png',
   spinner: 'kuka-spinner.gif' // Must be 64 by 64 px
 };
 
-export const ServotronixTheme : Theme = {
+export const Servotronix: Platform = {
   name: 'stx',
   logo: 'stx.png',
   spinner: 'logo_only.gif' // Must be 64 by 64 px
+};
+
+export const Platforms = {
+  Kuka: Kuka,
+  Servotronix: Servotronix,
 };
 
 export const environment = {
@@ -23,11 +34,6 @@ export const environment = {
   tp_ver: '1.3.1.0',
   gui_ver: '1.0.7',
   compatible_webserver_ver: '3.0.8',
-  theme: ServotronixTheme
+  platform: Platforms.Kuka,
+  platforms: Platforms
 };
-
-interface Theme {
-  name: string;
-  logo: string;
-  spinner: string;
-}

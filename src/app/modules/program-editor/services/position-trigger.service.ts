@@ -1,9 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from '../../core/services/websocket.service';
-
-import { complement, compose, equals, toLower, map, prop, always, dropLast, split } from 'ramda';
+import { hasError, handler, errMsgProp, Right, Left } from './service-adjunct';
+import { compose, map, prop, always, dropLast, split, tap, then } from 'ramda';
 import { Either } from 'ramda-fantasy';
-import { hasError, hasNoError } from './service-adjunct';
 
 export interface IResPLS {
     index: number;
@@ -14,54 +13,42 @@ export interface IResPLS {
     RelatedTo: number; // selected from
     Output: number[];
 }
-const { Left, Right } = Either;
 
 @Injectable()
 export class PositionTriggerService {
     // Notify the observer who should update table data or not.
     public broadcaster = new EventEmitter<boolean>();
 
-    constructor(private ws: WebsocketService) { }
+    private query: any;
+    private cud: any; // create update delete
+
+    constructor(private ws: WebsocketService) {
+        const commonHandler = handler(tap(() => this.broadcaster.emit(true)), errMsgProp);
+        this.query = _api => this.ws.query(_api);
+        this.cud = compose(then(commonHandler), this.query);
+    }
 
     public async createPls(name: string): Promise<any> {
         const api = `?PLS_create("${name}")`;
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        if (hasNoError(result)) {
-            this.broadcaster.emit(true);
-            return Right('Create successfully.');
-        } else {
-            return Left(result);
-        }
+        return this.cud(api);
     }
 
     public async updatePls({name, distance, selectedOutput, selectedState, selectedFrom}): Promise<any> {
         const api = `?Pls_update("${name}", ${selectedOutput}, ${distance}, ${selectedState}, ${selectedFrom})`; // position is distance.
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        if (hasNoError(result)) {
-            this.broadcaster.emit(true);
-            return Right('Update successfully.');
-        } else {
-            return Left(result);
-        }
+        return this.cud(api);
     }
 
     public async deletePls(name: string): Promise<any> {
         const api = `?Deleterow("${name}")`;
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        if (hasNoError(result)) {
-            this.broadcaster.emit(true);
-            return Right('Delete successfully.');
-        } else {
-            return Left(result);
-        }
+        return this.cud(api);
     }
 
     public async retrievePls(): Promise<any> {
         const api = '?PLS_getTable';
-        const { result: plsRes } = <MCQueryResponse>await this.ws.query(api);
+        const res = <MCQueryResponse>await this.ws.query(api);
         const ios = await this.retrieveIos();
-        if (hasError(plsRes)) {
-            return Left(plsRes);
+        if (hasError(res)) {
+            return Left(res.result);
         } else if (Either.isLeft(ios)) {
             return ios;
         } else {
@@ -70,11 +57,11 @@ export class PositionTriggerService {
                 () => iosList = [],
                 val => iosList = val
             )(ios);
-            const res = <IResPLS[]>map(x => {
+            const plsRes = <IResPLS[]>map(x => {
                 x.Output = iosList;
                 return x;
-            }, JSON.parse(plsRes));
-            return Right(res);
+            }, JSON.parse(res.result));
+            return Right(plsRes);
         }
     }
 
@@ -87,19 +74,13 @@ export class PositionTriggerService {
      */
     public async retrieveIos(io = 0): Promise<any> {
         const api = `?IOMAP_GET_IOS_NUMBERS_STRING(${io})`;
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        if (hasNoError(result)) {
-            const parseIos = compose(map(Number), dropLast(1), split(','), dropLast(1));
-            return Right(parseIos(result));
-        } else {
-            return Left(result);
-        }
+        const parseIos = compose(map(Number), dropLast(1), split(','), dropLast(1));
+        const resHandler = handler(parseIos, errMsgProp);
+        const retrieve = compose(then(resHandler), this.query);
+        return retrieve(api);
     }
 
     public async plsNameList(): Promise<string[]> {
-        return Either.either(
-            always([]),
-            map(prop('PLSname'))
-        )(await this.retrievePls());
+        return Either.either(always([]), map(prop('PLSname')))(await this.retrievePls());
     }
 }

@@ -29,7 +29,7 @@ export class ControlStudioComponent {
     private lang: LangService,
     private overlayContainer: OverlayContainer
   ) {
-    overlayContainer.getContainerElement().classList.add(this.env.theme.name);
+    overlayContainer.getContainerElement().classList.add(this.env.platform.name);
     this.lang.init();
     this.translate.get('tour').toPromise().then((tour:TourStep[])=>{
       let steps = [

@@ -314,7 +314,6 @@ export class ProgramEditMenuComponent implements OnInit {
       JumpDialogComponent,
       {
         width: '400px',
-        backdropClass: 'static',
         disableClose: true
       }
     );
@@ -330,7 +329,6 @@ export class ProgramEditMenuComponent implements OnInit {
       Jump3DialogComponent,
       {
         width: '400px',
-        backdropClass: 'static',
         disableClose: true,
         data: { type: type }
       }
@@ -345,7 +343,6 @@ export class ProgramEditMenuComponent implements OnInit {
       HomeDialogComponent,
       {
         width: '400px',
-        backdropClass: 'static',
         disableClose: true,
         data: 'nothing'
       }

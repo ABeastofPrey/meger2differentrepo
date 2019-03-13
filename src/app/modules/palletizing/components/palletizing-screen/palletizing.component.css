@@ -13,7 +13,7 @@
   flex: 1;
   overflow: hidden;
   position: relative;
-  background: url('../../../../../assets/pics/pallet/servotronix_pallet.jpg');
+  /* background: url('../../../../../assets/pics/pallet/servotronix_pallet.jpg'); */
   background-size: cover;
 }
 button { margin-top: 8px; }

@@ -19,11 +19,11 @@
       <form [formGroup]="authForm" (ngSubmit)="submitForm()">
         <fieldset [disabled]="isSubmitting">
           <mat-form-field>
-            <mat-icon matPrefix>person</mat-icon>
+            <mat-icon class="mat-primary" matPrefix>person</mat-icon>
             <input matInput placeholder="{{'userManager.username'|translate}}" formControlName="username">
           </mat-form-field>
           <mat-form-field>
-            <mat-icon matPrefix>security</mat-icon>
+            <mat-icon class="mat-primary" matPrefix>security</mat-icon>
             <input matInput placeholder="{{'password'|translate}}" type="password" formControlName="password">
           </mat-form-field>
           <button

@@ -5,7 +5,7 @@ import {TaskService, MCQueryResponse} from ".";
 import {MatSnackBar, MatDialog} from "@angular/material";
 import {UpdateDialogComponent} from "../../../components/update-dialog/update-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
-
+import {environment as env} from '../../../../environments/environment';
 /* 
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
 */
@@ -71,6 +71,18 @@ export class UtilsService {
         this.ws.query('load autoexec.prg');
       return true;
     });
+  }
+
+  public get PlatformList(): {name: string}[] {
+    const platformList: {name: string}[] = [];
+    for (let value of <{name: string}[]>Object.values(env.platforms)) {
+      platformList.push(value);
+    }
+    return platformList;
+  }
+
+  public get IsKuka(): boolean {
+    return env.platform.name === env.platforms.Kuka.name;
   }
 }
 

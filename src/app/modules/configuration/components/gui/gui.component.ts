@@ -3,7 +3,9 @@ import {TranslateService} from '@ngx-translate/core';
 import {MatSelectChange} from '@angular/material';
 import {LangService} from '../../../core/services/lang.service';
 import {WebsocketService} from '../../../core';
-import {environment, ServotronixTheme, KukaTheme} from '../../../../../environments/environment';
+import {environment} from '../../../../../environments/environment';
+import {OverlayContainer} from '@angular/cdk/overlay';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'app-gui',
@@ -17,7 +19,9 @@ export class GuiComponent implements OnInit {
   constructor(
     public trn: TranslateService,
     private lang: LangService,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    private overlayContainer: OverlayContainer,
+    private utils: UtilsService
   ) { }
 
   ngOnInit() {
@@ -30,18 +34,24 @@ export class GuiComponent implements OnInit {
     });
   }
   
-  /*
+  /**
    * TEMPORARY FUNCTION, WILL NOT BE IN THE FINAL PRODUCT
+   * Remove unselected themes witch defined in environment from global style,
+   * and add current selected theme to global.
+   *
+   * @param {MatSelectChange} {value: selectedTheme}
+   * @memberof GuiComponent
    */
-  changeTheme(e: MatSelectChange) {
-    switch (e.value) {
-      case 'stx':
-        this.env.theme = ServotronixTheme;
-        break;
-      case 'kuka-theme':
-        this.env.theme = KukaTheme;
-        break;
-    }
+  changeTheme({value: selectedTheme}: MatSelectChange) {
+    const gui = this;
+    const { classList } = this.overlayContainer.getContainerElement();
+    this.utils.PlatformList.forEach(platform => {
+      if (platform.name === selectedTheme) {
+        gui.env.platform = <any>platform;
+        classList.add(platform.name);
+      } else {
+        classList.remove(platform.name);
+      }
+    });
   }
-
 }

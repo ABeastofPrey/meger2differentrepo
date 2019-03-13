@@ -5,6 +5,7 @@ import {DataService, WebsocketService, MCQueryResponse} from '../../../core';
 import {NewPalletOptions, AddPalletDialogComponent} from '../add-pallet-dialog/add-pallet-dialog.component';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
+import {UtilsService} from '../../../core/services/utils.service';
 
 declare var Isomer:any
 
@@ -42,7 +43,8 @@ export class PalletizingComponent implements OnInit {
     public data : DataService,
     private dialog : MatDialog,
     private ws : WebsocketService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService
   ) {
     this.trn.get(['button.delete', 'button.cancel','pallets.delete.msg'])
     .subscribe(words=>{
@@ -50,9 +52,7 @@ export class PalletizingComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() { }
   
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -407,6 +407,12 @@ export class PalletizingComponent implements OnInit {
       }
     }
     return result;
+  }
+
+  public get palletBgImgUrl(): string {
+    const imgName = this.utils.IsKuka ? 'kuka_pallet.jpg' : 'servotronix_pallet.jpg';
+    const imgUrl = `../../../../../assets/pics/pallet/${imgName}`;
+    return imgUrl;
   }
 
 }

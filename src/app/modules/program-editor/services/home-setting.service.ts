@@ -1,10 +1,8 @@
 import { WebsocketService, MCQueryResponse } from '../../../modules/core/services/websocket.service';
 import { Injectable } from '@angular/core';
-import { compose, map, ifElse, isEmpty, identity } from 'ramda';
-import { Either } from 'ramda-fantasy';
-import { hasNoError } from './service-adjunct';
+import { compose, map, ifElse, isEmpty, identity, then } from 'ramda';
+import { handler, Result, Nothing, errMsgProp } from './service-adjunct';
 
-const { Left, Right } = Either;
 const parseNum = ifElse(isEmpty, identity, Number);
 const parseRes = compose(map(parseNum), JSON.parse);
 
@@ -12,51 +10,55 @@ const parseRes = compose(map(parseNum), JSON.parse);
 export class HomeSettingService {
     constructor(private ws: WebsocketService) { }
 
-    public async getHomePostion(): Promise<number[]> {
+    public async getHomePostion(): Promise<Result> {
         const api = '?getAllHome';
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        return hasNoError(result) ? Right(parseRes(result)) : Left(result);
+        const resHandler = handler(parseRes, errMsgProp);
+        return this.query(api, resHandler);
     }
 
-    public async getHomeOrder(): Promise<number[]> {
+    public async getHomeOrder(): Promise<Result> {
         const api = '?getAllHomeOrder';
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        return hasNoError(result) ? Right(parseRes(result)) : Left(result);
+        const resHandler = handler(parseRes, errMsgProp);
+        return this.query(api, resHandler);
     }
 
     public async updateHomePostion(index: number, value: number): Promise<any> {
         const api = `setHome(${index}, ${value})`;
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        return hasNoError(result) ? Right('Successfully updated home position.') : Left(result);
+        const resHandler = handler(Nothing, errMsgProp);
+        return this.query(api, resHandler);
     }
 
     public async clearHomePosition(index: number): Promise<any> {
         const api = `clearHome(${index})`;
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        return hasNoError(result) ? Right('Successfully clear home position.') : Left(result);
+        const resHandler = handler(Nothing, errMsgProp);
+        return this.query(api, resHandler);
     }
 
     public async updateHomeOrder(index: number, value: number): Promise<any> {
         const api = `setHomeOrder(${index}, ${value})`;
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        return hasNoError(result) ? Right('Successfully updated home order.') : Left(result);
+        const resHandler = handler(Nothing, errMsgProp);
+        return this.query(api, resHandler);
     }
 
     public async readCurrentPosition(): Promise<any> {
         const api = '?HM_readCurrentPosition';
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        return hasNoError(result) ? Right(parseRes(result)) : Left(result);
+        const resHandler = handler(parseRes, errMsgProp);
+        return this.query(api, resHandler);
     }
 
     public async getPositionMax(index: number): Promise<any> {
         const api = `?maingroup.j${index}.pmax`;
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        return hasNoError(result) ? Right(Number(result)) : Left(result);
+        const resHandler = handler(Number, errMsgProp);
+        return this.query(api, resHandler);
     }
 
     public async getPositionMin(index: number): Promise<any> {
         const api = `?maingroup.j${index}.pmin`;
-        const { result } = <MCQueryResponse>await this.ws.query(api);
-        return hasNoError(result) ? Right(Number(result)) : Left(result);
+        const resHandler = handler(Number, errMsgProp);
+        return this.query(api, resHandler);
+    }
+
+    private async query(api: string, responseHandler: (res: MCQueryResponse) => Result): Promise<Result> {
+        return compose(then(responseHandler), _api => this.ws.query(_api))(api);
     }
 }
