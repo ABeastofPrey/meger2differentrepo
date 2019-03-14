@@ -10,6 +10,7 @@ import {environment} from '../../../environments/environment';
 import {trigger, state, style, transition, animate, animateChild, group, query} from '@angular/animations';
 import {Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
+import {UtilsService} from '../core/services/utils.service';
 
 @Component({
   selector: 'login-screen',
@@ -61,6 +62,12 @@ export class LoginScreenComponent implements OnInit {
   appName: string = environment.appName;
   
   private subs: Subscription[] = [];
+  
+  public get loginBgImgUrl(): string {
+    const imgName = this.utils.IsKuka ? 'kuka_robot_bg.jpg' : 'robot_bg.jpg';
+    const imgUrl = `assets/pics/${imgName}`;
+    return imgUrl;
+  }
 
   constructor(
     public login: LoginService,
@@ -70,7 +77,8 @@ export class LoginScreenComponent implements OnInit {
     private dialog: MatDialog,
     private api: ApiService,
     public ws: WebsocketService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public utils: UtilsService
   ) {
     this.api.get('/cs/api/java-version').subscribe((ret:{ver:string})=>{
       this.isVersionOK = ret.ver.startsWith(environment.compatible_webserver_ver);

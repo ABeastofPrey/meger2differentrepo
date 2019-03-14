@@ -7,6 +7,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {WebsocketService} from '../../../../modules/core/services/websocket.service';
 import {UpdateDialogComponent} from '../../../../components/update-dialog/update-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
+import {UtilsService} from '../../../core/services/utils.service';
 
 @Component({
   selector: 'apps',
@@ -25,7 +26,8 @@ export class AppsComponent implements OnInit {
     private dialog: MatDialog,
     private snack: MatSnackBar,
     private ws: WebsocketService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public utils: UtilsService
   ) {
     this.trn.get('apps').subscribe(words=>{
       this.words = words;

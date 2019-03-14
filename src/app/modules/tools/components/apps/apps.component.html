@@ -2,7 +2,7 @@
   <div class="title">{{'apps.title'|translate}}</div>
   <input type="file" accept=".ipk, .rpm, .IPK, .RPM, .zip, .ZIP" #upload (change)="onUploadFilesChange($event)" class="file-input" />
   <mat-card class="main">
-    <a href="/modbus/" target="_blank">
+    <a *ngIf="!utils.IsKuka" href="/modbus/" target="_blank">
       <mat-icon>perm_data_setting</mat-icon>
       <div>{{'apps.modbus'|translate}}</div>
     </a>

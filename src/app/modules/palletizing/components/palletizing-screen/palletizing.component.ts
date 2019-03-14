@@ -411,7 +411,7 @@ export class PalletizingComponent implements OnInit {
 
   public get palletBgImgUrl(): string {
     const imgName = this.utils.IsKuka ? 'kuka_pallet.jpg' : 'servotronix_pallet.jpg';
-    const imgUrl = `../../../../../assets/pics/pallet/${imgName}`;
+    const imgUrl = `assets/pics/pallet/${imgName}`;
     return imgUrl;
   }
 

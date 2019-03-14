@@ -21,7 +21,8 @@
   z-index: 9;
 }
 header {
-  background-image: url('../../../assets/pics/robot_bg.jpg');
+  background-size: 100%;
+  background-repeat: no-repeat;
   height: 40%;
   padding: 16px;
   line-height: 1.15;

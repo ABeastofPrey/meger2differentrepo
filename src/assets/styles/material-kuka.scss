@@ -12,6 +12,8 @@ $primary-KSS: rgb(253, 100, 0);
 $base-IISy: green;
 $primary-IISy: green;
 
+$material-semi-black: rgba(0,0,0,0.54);
+
 $mat-kuka: (
     100: $base-Connect,
     200: $primary-Connect,
@@ -43,12 +45,13 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
 .kuka {
   @include angular-material-theme($kuka-theme);
   @include mat-tree-theme($kuka-theme);
-
   /* Here is the style difinition of header portion.
    *
    */
   mat-toolbar {
-
+    .center-vertical {
+      color: white;
+    }
   }
 
   /* Here is the style difinition of side navagation portion.
@@ -67,7 +70,12 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
    *
    */
   mat-sidenav-container mat-sidenav-content {
-    
+    .mat-tab-link {
+      color: white !important;
+    }
+    .enabledApp {
+      color: $material-semi-black;
+    }
   }
 
   /*
@@ -77,5 +85,18 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
     .title {
       background-color: mat-color($material-kuka-primary);
     }
+  }
+
+  .primary-light {
+    color: mat-color($material-kuka-primary, 800);
+  }
+
+  .mat-subtitle-color {
+    color: $material-semi-black;
+  }
+
+  .primary-bg, .mat-button-toggle-checked {
+    background-color: mat-color($material-kuka-primary, 600);
+    color: #fff !important;
   }
 }

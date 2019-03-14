@@ -6,9 +6,10 @@
         <h2>{{'connecting'|translate}}...</h2>
       </div>
     </div>
-    <header>
+    <header [style.background-image]="'url(' + loginBgImgUrl + ')'">
       <div class="center-vertical">
-        <img src="assets/pics/logo_cs.png" height="100" width="100">
+        <img [ngStyle]="{'opacity': utils.IsKuka ? 0 : 100}"
+        src="assets/pics/logo_cs.png" height="100" width="100">
         <div>
           <div class="title">{{appName}}</div>
           <div class="subtitle">v{{ver}}</div>
