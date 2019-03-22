@@ -1,0 +1,19 @@
+<div class="mat-typography">
+    <h1 class="title">Activation</h1>
+    <div mat-dialog-content>
+      <qrcode [qrdata]="url" [size]="200" [level]="'M'"></qrcode>
+      <mat-form-field class="activation-form">
+        <input matInput placeholder="Please input captcha" [formControl]="control" [(ngModel)]="pinCode">
+        <mat-error *ngIf="(control.hasError('minlength') || control.hasError('maxlength')) && !control.hasError('required')">
+          Please enter a captcha of length 6.
+        </mat-error>
+        <mat-error *ngIf="control.hasError('required')">
+          Captcha is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div mat-dialog-actions class="actions">
+      <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>CANCEL</button>
+      <button mat-button color="primary" [disabled]="hasError" (click)="verify()">VERIFY</button>
+    </div>
+</div>

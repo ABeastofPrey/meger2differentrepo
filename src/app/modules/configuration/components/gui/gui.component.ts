@@ -47,7 +47,7 @@ export class GuiComponent implements OnInit {
     const { classList } = this.overlayContainer.getContainerElement();
     this.utils.PlatformList.forEach(platform => {
       if (platform.name === selectedTheme) {
-        gui.env.platform = <any>platform;
+        gui.env.platform = platform;
         classList.add(platform.name);
       } else {
         classList.remove(platform.name);

@@ -86,9 +86,11 @@
             "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
+            "codeCoverage": false,
             "scripts": [
               "src/assets/scripts/plotly-latest.min.js",
               "src/assets/scripts/numeric.min.js",
+              "src/assets/scripts/kuka-decrypt.js",
               "node_modules/ace-builds/src-min/ace.js",
               "node_modules/ace-builds/src-min/theme-eclipse.js",
               "node_modules/ace-builds/src-min/ext-searchbox.js"

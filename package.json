@@ -19,6 +19,8 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "angular-split": "^1.0.4",
+    "angularx-qrcode": "^1.5.3",
+    "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
     "jquery": "^3.3.1",
     "jquery-ui-dist": "^1.12.1",
