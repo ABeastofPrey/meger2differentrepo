@@ -139,6 +139,7 @@
   "double": "Double",
   "doubles": "Doubles",
   "duration": "Duration",
+  "empty_list": "List is empty",
   "enable": "Enable",
   "error": {
     "conn_mc": "Can't connect to softMC",
@@ -651,7 +652,7 @@
     "btnChange": "CHANGE ROBOT",
     "btnSetCurrent": "SET CURRENT",
     "bus": "Bus Type",
-    "disp": "Displacements",
+    "disp": "Mastering",
     "max-payload": "Max Payload",
     "model": "Model",
     "name": "Name",

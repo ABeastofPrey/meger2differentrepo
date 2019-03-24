@@ -385,7 +385,7 @@ export class ProgramEditorService {
       this.statusChange.emit(this.status);
       return;
     }
-    const cmd = '?'+file+(!isLib?'.status':'.dummyVariable');
+    const cmd = isLib ? ('?' + file + '.dummyVariable') : ('?' + file + '.status');
     this.oldStatString = null;
     this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
       if (ret !== this.oldStatString) {
@@ -532,7 +532,7 @@ export class ProgramStatus {
   name : string = null;
   
   constructor(status : string) {
-    if (status === null) {
+    if (status === null || status === 'No such task') {
       this.name = 'Not Loaded';
       this.statusCode = TASKSTATE_NOTLOADED;
       return;

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolve
 import {WebsocketService, MCQueryResponse} from '../../../core';
 import {GraphComponent, GraphData} from '../graph/graph.component';
 import {Subscription} from 'rxjs';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-diagnostics',
@@ -15,6 +16,8 @@ export class DiagnosticsComponent implements OnInit {
   isRefreshing : boolean = false;
   interval: any;
   sub: Subscription;
+  
+  public env = environment;
   
   @ViewChild('container', {read: ViewContainerRef}) ref: ViewContainerRef;
 

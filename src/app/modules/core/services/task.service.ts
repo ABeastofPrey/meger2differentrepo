@@ -13,7 +13,6 @@ export class TaskService {
 
   constructor(
     private ws : WebsocketService,
-    private snack: MatSnackBar,
     private ref : ApplicationRef) {
   }
   

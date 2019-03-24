@@ -33,6 +33,9 @@ export class WebsocketService {
   private timeout: any;
   private worker = new Worker('assets/scripts/conn.js');
   private _port: string = null;
+  private _otherClients: number = 0;
+  
+  private words: any;
   
   private words: any;
   
@@ -50,6 +53,10 @@ export class WebsocketService {
   
   get isTimeout(): Observable<boolean> {
     return this._isTimeout.asObservable();
+  }
+  
+  get otherClients(): number {
+    return this._otherClients;
   }
   
   connect() {
@@ -90,8 +97,11 @@ export class WebsocketService {
           this._zone.run(()=>{
             switch (e.data.msg) {
               case 0: // ONOPEN - Websocket connected, Testing connection...
-                this.query('java_port').then((ret:MCQueryResponse)=>{
-                  this._port = ret.result;
+                Promise.all(
+                  [this.query('java_port'),this.query('java_es')]
+                ).then((ret:any[])=>{
+                  this._port = ret[0].result;
+                  this._otherClients = Number(ret[1].result) - 1;
                   this._isConnected.next(true);
                   clearTimeout(this.timeout);
                   this.timeout = null;
@@ -169,7 +179,14 @@ export class WebsocketService {
 
   handleMessage(msg: string) {
     var errFrame = null;
-    var data: MCResponse = JSON.parse(msg);
+    let data: MCResponse = null;
+    try {
+      data = JSON.parse(msg);
+    } catch (e) {
+      console.log(e);
+      console.log(msg);
+      return;
+    };
     var isErrorFrame = (data['msg'].indexOf("$ERRORFRAME$") === 0);
     if (isErrorFrame) {
       data['msg'] = data['msg'].substr(12);
@@ -185,6 +202,11 @@ export class WebsocketService {
                 data['cmd_id'] === -1) { // Server Announcment
       if (data['msg'].indexOf(">>>") === 0) { 
         // TP DIALOG MSG
+      } else if (data['msg'].indexOf('%%%') === 0) {
+        // CLIENT UPDATE NOTIFICATION
+        this._zone.run(()=>{
+          this._otherClients = Number(data['msg'].substring(3)) - 1;
+        });
       } else { // Other Server announcements
         this.notification.onAsyncMessage(data['msg']);
         if (data['msg'] === 'No avilable ports') {

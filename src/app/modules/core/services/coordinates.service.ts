@@ -73,7 +73,7 @@ export class CoordinatesService {
       this._locations = newLocations;
       this._axis = null;
       var now = new Date().getTime();
-      if (now - this.lastTick > 100) {
+      if (now - this.lastTick > 200) {
         this.ref.tick();
         this.lastTick = now;
         now = null;

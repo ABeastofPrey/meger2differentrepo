@@ -89,7 +89,7 @@ export class TaskMngrComponent implements OnInit {
     this.selected = [];
   }
   resetAll() {
-    this.utils.resetAll();
+    this.utils.resetAll(true);
   }
 
 }

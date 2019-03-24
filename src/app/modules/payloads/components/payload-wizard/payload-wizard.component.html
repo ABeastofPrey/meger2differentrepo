@@ -4,6 +4,7 @@
       <div>{{data.payloadLibVer}}</div>
       <mat-form-field>
         <mat-select placeholder="{{'payloads.payload'|translate}}" [(ngModel)]="selectedPayload" (ngModelChange)="onPayloadChange()">
+          <mat-option disabled *ngIf="data.payloads.length === 0">{{'empty_list'|translate}}</mat-option>
           <mat-option *ngFor="let p of data.payloads" [value]="p">
             {{ p.name }}
           </mat-option>

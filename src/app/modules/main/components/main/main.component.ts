@@ -75,7 +75,7 @@ export class MainComponent implements OnInit {
     public cooService: CoordinatesService,
     public screenManager: ScreenManagerService,
     private _zone: NgZone,
-    private ws: WebsocketService,
+    public ws: WebsocketService,
     private dialog: MatDialog,
     private tour: TourService,
     public prj: ProjectManagerService,

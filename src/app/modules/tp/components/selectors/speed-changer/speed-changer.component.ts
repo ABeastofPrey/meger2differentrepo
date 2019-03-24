@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import {MatSliderChange} from '@angular/material';
+import {MatSliderChange, MatSelectChange} from '@angular/material';
 import {WebsocketService, TpStatService, DataService} from '../../../../core';
 
 @Component({
@@ -19,10 +19,16 @@ export class SpeedChangerComponent implements OnInit {
 
   ngOnInit() { }
   
-  ngDoCheck() { this.val = this.stat.velocityRate; }
+  ngDoCheck() {
+    this.val = this.stat.velocityRate;
+  }
   
   onChange(event: MatSliderChange) {
     this.ws.query('?tp_speed(' + event.value + ')');
+  }
+  
+  onIncChange(event: MatSelectChange) {
+    this.data.jogIncrements = event.value;
   }
 
 }

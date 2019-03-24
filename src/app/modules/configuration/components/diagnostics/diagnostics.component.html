@@ -9,7 +9,7 @@
       </mat-radio-group>
     </div>
     <div class="diagnostics-container">
-      <div *ngIf="isRefreshing">{{'loading'|translate}}</div>
+      <div *ngIf="isRefreshing"><img src="assets/pics/{{env.platform.spinner}}"></div>
       <div translate [innerHTML]="content"></div>
       <div #container></div>
     </div>

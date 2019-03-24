@@ -35,7 +35,7 @@ export class SimulatorComponent implements OnInit {
       this.words = words;
     });
     this.mgr.controlsAnimating.subscribe(stat=>{
-      if (stat) {
+      if (stat && this.player) {
         this.player.setSize(0,0);
       } else {
         this.onDragEnd();
@@ -45,13 +45,15 @@ export class SimulatorComponent implements OnInit {
   
   @HostListener('click')
   onClick() {
-    let obj = this.player.getSelectedObject();
-    if (obj) {
-      this.sim.customObjectsMapper.forEach((val:any, key:TreeNode)=>{
-        if (obj === val) {
-          this.sim.lastSelectedNode.next(key);
-        }
-      });
+    if (this.player) {
+      let obj = this.player.getSelectedObject();
+      if (obj) {
+        this.sim.customObjectsMapper.forEach((val:any, key:TreeNode)=>{
+          if (obj === val) {
+            this.sim.lastSelectedNode.next(key);
+          }
+        });
+      }
     }
   }
   
@@ -167,6 +169,8 @@ export class SimulatorComponent implements OnInit {
   ngOnInit() {
     const loader = new THREE.FileLoader();
     let modelPath: string = 'assets/scripts/threejs/';
+    if (this.robot.selectedRobot == null)
+      return;
     const robot = this.robot.selectedRobot.part_number;
     if (robot.indexOf('500') > 0)
       modelPath += 'wukong500';

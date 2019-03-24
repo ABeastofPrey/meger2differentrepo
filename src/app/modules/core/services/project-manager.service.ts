@@ -73,7 +73,7 @@ export class ProjectManagerService {
     this.activeProject = false;
     this.interval = setInterval(()=>{
       if (this.currProject.value) {
-        this.ws.query('?prj_get_status("' + this.currProject.value.name + '")')
+        this.ws.query('?PRJ_GET_STATUS("' + this.currProject.value.name + '")')
         .then((ret: MCQueryResponse)=>{
           if (this.oldStat === ret.result)
             return;
@@ -306,19 +306,26 @@ export class ProjectManagerService {
     });
   }
   
-  onLimitChanged(name:string,e:Event,paramType:string,prevValue:number) {
+  onLimitChanged(name:string,e:Event,paramType:string,prevValue:number,limit:Limit) {
     const target: any = e.target;
     const cmd = '?TP_SET_PROJECT_PARAMETER("' + name + '","' + paramType + '","' +
         target.value + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       if (ret.result === '0') {
         this.snack.open(this.words,'',{duration:1500});
+        this.updateModel(name,limit,target.value);
       } else {
         target.value = prevValue;
       }
     });
-      
-    
+  }
+  
+  private updateModel(name: string, limit: Limit, newVal: number) {
+    if (name.endsWith('min')) {
+      limit.min = newVal;
+    } else {
+      limit.max = newVal;
+    }
   }
   
   onProgramSettingChanged(setting:string) {

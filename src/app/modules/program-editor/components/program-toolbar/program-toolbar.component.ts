@@ -496,7 +496,7 @@ export class ProgramToolbarComponent implements OnInit {
             // ALL FILES DELETES SUCCESSFULY - CONTINUE TO DELETE FOLDERS..
             promises = [];
             for (let n of selected) {
-              if (!n.isFolder)
+              if (!n.isFolder || n.name === 'SSMC')
                 continue;
               if (n.parent === null || !this.prj.checklistSelection.isSelected(n.parent))
                 promises.push(this.deleteRecursivly(n));
@@ -530,6 +530,8 @@ export class ProgramToolbarComponent implements OnInit {
         return;
       files = [];
       for (let node of selected) {
+        if (node.name === 'SSMC')
+          continue;
         files.push(node.path);
       }
     } else {

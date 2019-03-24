@@ -88,7 +88,7 @@ export class ProgramEditMenuComponent implements OnInit {
       data: 'Set Payload'
     }).afterClosed().subscribe((pay:Payload)=>{
       if (pay) {
-        const cmd = '?PAY_SET_PAYLOAD("' + pay.name + '")';
+        const cmd = 'PAY_SET_PAYLOAD("' + pay.name + '")';
         this.prg.insertAndJump(cmd,0);
       }
     });

@@ -5,12 +5,13 @@ import {MCQueryResponse, WebsocketService} from '../../../modules/core/services/
 export class TerminalService {
   
   cmds: TerminalCommand[] = [];
-
+  history: string[] = [];
   public sentCommandEmitter: EventEmitter<string> = new EventEmitter<string>();
   
   send(cmd : string) {
     return this.ws.query(cmd).then((ret:MCQueryResponse)=>{
       this.cmds.push({cmd: cmd, result: ret.result});
+      this.history.push(cmd);
     });
   }
 

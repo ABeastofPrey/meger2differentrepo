@@ -4,11 +4,11 @@
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="{{'projects.toolbar.app_name'|translate}}" [(ngModel)]="name">
+      <input matInput placeholder="{{'projects.toolbar.app_name'|translate}}" [(ngModel)]="name" (keyup.enter)="create()">
     </mat-form-field>
   </div>
   <div class="actions">
     <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || submitting">{{'projects.toolbar.app_create'|translate}}</button>
+    <button mat-button color="primary" type="submit" (click)="create()" [disabled]="isValueInvalid()">{{'projects.toolbar.app_create'|translate}}</button>
   </div>
 </div>

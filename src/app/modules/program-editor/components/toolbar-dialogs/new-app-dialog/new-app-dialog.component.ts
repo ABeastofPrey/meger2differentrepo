@@ -20,6 +20,8 @@ export class NewAppDialogComponent implements OnInit {
   ) { }
   
   create() {
+    if (this.isValueInvalid())
+      return;
     const name = this.name.toUpperCase();
     const proj = this.prj.currProject.value;
     this.submitting = true;
@@ -37,6 +39,10 @@ export class NewAppDialogComponent implements OnInit {
 
   ngOnInit() {
     this.name = '';
+  }
+  
+  isValueInvalid() {
+    return !this.name || this.name.length === 0 || this.submitting;
   }
 
 }

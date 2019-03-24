@@ -3,6 +3,9 @@
   background: #fff;
   overflow: hidden;
 }
+.project-tree {
+  overflow: auto;
+}
 .mode-toggle {
   width: 100%;
   flex: 0 0 48px;

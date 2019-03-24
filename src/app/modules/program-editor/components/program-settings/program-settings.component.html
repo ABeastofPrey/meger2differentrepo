@@ -1,11 +1,11 @@
 <div class="wrapper">
   <mat-accordion *ngIf="prj.currProject.value">
-    <mat-expansion-panel #applicationsPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.apps.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.apps.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="applicationsPanel.expanded">
+      <div class="content">
         <div class="app-list">
           <table>
             <thead class="mat-subtitle-color">
@@ -40,12 +40,12 @@
         </div>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel #motionParametersPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.motion_params.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.motion_params.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="motionParametersPanel.expanded">
+      <div class="content">
         <mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
           <input matInput placeholder="VCruise" [(ngModel)]="prj.currProject.value.settings.vcruise" type="text">
           <span matSuffix>deg/sec</span>
@@ -63,12 +63,12 @@
         <mat-slide-toggle color="primary" [(ngModel)]="prj.currProject.value.settings.overlap" (change)="prj.onProgramSettingChanged('overlap')">Motion Overlap</mat-slide-toggle>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel #motionFramesPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.motion_frames.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.motion_frames.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="motionFramesPanel.expanded">
+      <div class="content">
         <mat-form-field>
           <mat-select placeholder="{{'tool'|translate}}" [(ngModel)]="prj.currProject.value.settings.tool" (selectionChange)="prj.onProgramSettingChanged('tool')">
             <mat-option *ngFor="let item of dataService.tools" value="{{item}}">{{item}}</mat-option>
@@ -91,12 +91,12 @@
         </mat-form-field>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel #positionLimitsPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.pos.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.pos.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="positionLimitsPanel.expanded">
+      <div class="content">
         <table class="limits">
           <tr *ngFor="let p of prj.currProject.value.settings.limits.position; let i=index;">
             <td>J{{i+1}}</td>
@@ -116,23 +116,23 @@
         </table>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel #wordLimitsPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.world.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.world.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="wordLimitsPanel.expanded">
+      <div class="content">
         <table class="limits">
           <tr *ngFor="let p of prj.currProject.value.settings.limits.world">
             <td>
               <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'world',p.min)">
+                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min" (change)="prj.onLimitChanged(p.name+'min',$event,'world',p.min,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'world',p.max)">
+                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max" (change)="prj.onLimitChanged(p.name+'max',$event,'world',p.max,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -140,12 +140,12 @@
         </table>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel #toolLimitsPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.tool.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.tool.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="toolLimitsPanel.expanded">
+      <div class="content">
         <table class="limits">
           <tr *ngFor="let p of prj.currProject.value.settings.limits.tool">
             <td>
@@ -164,12 +164,12 @@
         </table>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel #baseLimitsPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.base.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.base.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="baseLimitsPanel.expanded">
+      <div class="content">
         <table class="limits">
           <tr *ngFor="let p of prj.currProject.value.settings.limits.base">
             <td>
@@ -188,12 +188,12 @@
         </table>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel #machineTableLimitsPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.mt.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.mt.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="machineTableLimitsPanel.expanded">
+      <div class="content">
         <table class="limits">
           <tr *ngFor="let p of prj.currProject.value.settings.limits.mt">
             <td>
@@ -212,12 +212,12 @@
         </table>
       </div>
     </mat-expansion-panel>
-    <mat-expansion-panel #wordPieceLimitsPanel>
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.wp.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.wp.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="content" *ngIf="wordPieceLimitsPanel.expanded">
+      <div class="content">
         <table class="limits">
           <tr *ngFor="let p of prj.currProject.value.settings.limits.wp">
             <td>
@@ -236,34 +236,13 @@
         </table>
       </div>
     </mat-expansion-panel>
-
-	  <mat-expansion-panel #archSettingsPanel>
+	<mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>{{'projectSettings.arch.title'|translate}}</mat-panel-title>
         <mat-panel-description>{{'projectSettings.arch.desc'|translate}}</mat-panel-description>
       </mat-expansion-panel-header>
-      <div *ngIf="archSettingsPanel.expanded">
+      <div>
         <app-arch-setting></app-arch-setting>
-      </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel #positionTriggerPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Position Trigger</mat-panel-title>
-        <mat-panel-description>Define parameters for Position Trigger</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div *ngIf="positionTriggerPanel.expanded">
-        <app-position-trigger></app-position-trigger>
-      </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel #homeConfigPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Home Config</mat-panel-title>
-        <mat-panel-description>Define parameters for Home Config</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div *ngIf="homeConfigPanel.expanded">
-        <app-home-setting></app-home-setting>
       </div>
     </mat-expansion-panel>
   </mat-accordion>

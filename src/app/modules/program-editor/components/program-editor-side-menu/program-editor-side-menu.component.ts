@@ -170,8 +170,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
             this.openFile(n);
           }
         });
-        return;
       });
+      return;
     }
     const projName = this.currProject.name;
     if (n.type !== 'File')
@@ -290,13 +290,18 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       }
     }).afterClosed().subscribe((name:string)=>{
       if (name) {
+        name = name.toUpperCase();
         const prj = this.prj.currProject.value;
         const cmd = '?prj_rename_application("' + prj.name + '","' +
                   app + '","' + name + '")';
         this.ws.query(cmd).then((ret: MCQueryResponse)=>{
           if (ret.err || ret.result !== '0')
             return;
-          this.prj.refreshAppList(prj, true);
+          this.service.close();
+          this.prj.refreshAppList(prj, true).then(()=>{
+            const path = prj.name + '/' + name + '/';
+            this.service.setFile(name + '.UPG', path, null);
+          });
         });
       }
     });
@@ -312,13 +317,18 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       }
     }).afterClosed().subscribe((name:string)=>{
       if (name) {
+        name = name.toUpperCase();
         const prj = this.prj.currProject.value;
         const cmd = '?prj_save_application_as("' + prj.name + '","' +
                   app + '","' + name + '")';
         this.ws.query(cmd).then((ret: MCQueryResponse)=>{
           if (ret.err || ret.result !== '0')
             return;
-          this.prj.refreshAppList(prj, true);
+          this.service.close();
+          this.prj.refreshAppList(prj, true).then(()=>{
+            const path = prj.name + '/' + name + '/';
+            this.service.setFile(name + '.UPG', path, null);
+          });
         });
       }
     });

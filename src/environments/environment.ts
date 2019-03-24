@@ -32,8 +32,9 @@ export const environment = {
   api_url: 'http://10.4.20.85:1207',
   ip: '10.4.20.85',
   tp_ver: '1.3.1.0',
-  gui_ver: '1.0.7',
-  compatible_webserver_ver: '3.0.8',
+  gui_ver: '1.0.9',
+  compatible_webserver_ver: '3.1.0',
   platform: Platforms.Kuka,
   platforms: Platforms
 };
+

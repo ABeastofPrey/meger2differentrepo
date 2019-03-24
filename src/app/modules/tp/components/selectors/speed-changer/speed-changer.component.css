@@ -9,3 +9,6 @@ mat-slider { width: 95%; display: block;}
   width: 100px;
   margin-left: 16px;
 }
+.hidden {
+  display: none;
+}

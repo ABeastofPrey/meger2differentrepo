@@ -50,9 +50,9 @@
             {{selectedVar.name}}{{selectedVar.isArr ? '['+selectedVar.selectedIndex+']':''}}
           </div>
           <div class="buttons" *ngIf="selectedVar || selection.selected.length > 0">
-            <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="primary" (click)="showCalibrationDialog()">{{'button.calibrate'|translate}}</button>
+            <button *ngIf="selectedVar && selectedVar.name !== '-'" mat-raised-button color="primary" (click)="showCalibrationDialog()">{{'button.calibrate'|translate}}</button>
             <button *ngIf="selectedVar" mat-raised-button color="primary" (click)="setAsCurrent()">{{'button.set_current'|translate}}</button>
-            <button *ngIf="selectedVar && selectedVar.name !== 'NULL'" mat-raised-button color="warn" (click)="deleteSelected()">{{'dataScreen.del'|translate:selectedVar}}</button>
+            <button *ngIf="selectedVar && selectedVar.name !== '-'" mat-raised-button color="warn" (click)="deleteSelected()">{{'dataScreen.del'|translate:selectedVar}}</button>
             <button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">{{'button.delete_selected'|translate}}</button>
           </div>
           <div class="var-details" *ngIf="selectedVar">

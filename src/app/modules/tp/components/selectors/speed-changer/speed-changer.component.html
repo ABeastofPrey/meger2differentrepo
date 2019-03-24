@@ -3,14 +3,14 @@
   (change)="onChange($event)"
   >
 </mat-slider>
-<div *ngIf="val===0.1" class="center-vertical">
+<div [class.hidden]="val!==0.1" class="center-vertical">
   <span>Incremental</span>
   <mat-form-field class="short">
-    <mat-select placeholder="{{'jogScreen.percision'|translate}}" [value]="data.jogIncrements" (selectionChange)="data.jogIncrements = $event.value">
-      <mat-option [value]="SMALL">{{'jogScreen.speed_inc.s'|translate}}</mat-option>
-      <mat-option [value]="MEDIUM">{{'jogScreen.speed_inc.m'|translate}}</mat-option>
-      <mat-option [value]="LARGE">{{'jogScreen.speed_inc.l'|translate}}</mat-option>
-      <mat-option [value]="EXTRA_LARGE">{{'jogScreen.speed_inc.xl'|translate}}</mat-option>
+    <mat-select placeholder="{{'jogScreen.percision'|translate}}" [value]="data.jogIncrements" (selectionChange)="onIncChange($event)">
+      <mat-option value="SMALL">{{'jogScreen.speed_inc.s'|translate}}</mat-option>
+      <mat-option value="MEDIUM">{{'jogScreen.speed_inc.m'|translate}}</mat-option>
+      <mat-option value="LARGE">{{'jogScreen.speed_inc.l'|translate}}</mat-option>
+      <mat-option value="EXTRA_LARGE">{{'jogScreen.speed_inc.xl'|translate}}</mat-option>
     </mat-select>
   </mat-form-field>
 </div>

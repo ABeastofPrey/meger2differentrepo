@@ -177,7 +177,7 @@ export class GripperScreenComponent implements OnInit {
   
   addNewItem(node: GripperTableFlatNode) {
     const title = 
-      this.words['add'] + 
+      this.words['add'] + ' ' +
       (node ? this.words['grippers.grp'] : this.words['grippers.ef']);
     this.dialog.open(SingleInputDialogComponent,{
       data: {
@@ -200,8 +200,10 @@ export class GripperScreenComponent implements OnInit {
           const parent = this.flatNodeMap.get(node);
           this.ws.query('?GRP_ADD_GRIPPER("' + ef + '","' + name + '")')
           .then((ret: MCQueryResponse)=>{
-            if (ret.result === '0')
+            if (ret.result === '0') {
               this.database.insertItem(parent, name);
+              this.treeControl.expand(node);
+            }
           });
         }
       }
@@ -299,7 +301,9 @@ export class GripperScreenComponent implements OnInit {
       this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET('+ef_and_grp+',1)'),
       this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET('+ef_and_grp+',2)'),
       this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME('+ef_and_grp+',"OPEN")'),
-      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME('+ef_and_grp+',"CLOSE")')
+      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME('+ef_and_grp+',"CLOSE")'),
+      this.ws.query('?IOMAP_GET_All_SYS_IOS(0)'),
+      this.ws.query('?IOMAP_GET_All_SYS_IOS(1)')
     ];
     Promise.all(promises).then((ret: MCQueryResponse[])=>{
       grp.useTool = ret[0].result === '1';

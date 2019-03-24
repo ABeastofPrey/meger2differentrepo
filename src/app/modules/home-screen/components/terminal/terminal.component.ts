@@ -1,12 +1,11 @@
-import { Component, OnInit, ElementRef, ViewChild, Input, HostListener } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, HostListener, NgZone } from '@angular/core';
 import {TerminalService} from '../../services/terminal.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
+import {Input} from '@angular/core';
 import {trigger, transition, style, animate} from '@angular/animations';
-import { trim, equals, complement, compose } from 'ramda';
 import {KeywordService} from '../../../core/services/keywords.service';
-
-const isNotEmptyStr = complement(compose(equals(''), trim));
+import {ApplicationRef} from '@angular/core';
 
 declare var ace;
 
@@ -58,9 +57,9 @@ export class TerminalComponent implements OnInit {
 
   constructor(
     public terminal : TerminalService,
-    private api : ApiService,
-    private groups: GroupManagerService,
-    private keywords: KeywordService
+    private keywords: KeywordService,
+    private zone: NgZone,
+    private ref: ApplicationRef
   ) {}
   
   ngAfterViewInit() {
@@ -68,6 +67,12 @@ export class TerminalComponent implements OnInit {
       const height = this.wrapper.nativeElement.scrollHeight;
       this.wrapper.nativeElement.scrollTop = height;
     },0);
+    this.zone.runOutsideAngular(()=>{
+      this.initAce();
+    });
+  }
+  
+  private initAce() {
     this.editor = ace.edit(this.editorLine.nativeElement);
     let editor = this.editor;
     editor.setOptions({
@@ -130,7 +135,7 @@ export class TerminalComponent implements OnInit {
     if (mouseY > editorLineY)
       this.editor.focus();
   }
-
+  
   clear(e: MouseEvent) {
     e.stopImmediatePropagation();
     this.terminal.cmds = [];
@@ -138,18 +143,17 @@ export class TerminalComponent implements OnInit {
     this.contextMenuShown = false;
     this.editor.focus();
   }
-
+  
   private send() {
     this.changeFlag = true;
-    this.terminal.send(this.cmd).then(() => {
-      // tslint:disable-next-line
-      isNotEmptyStr(this.cmd) && this.terminal.sentCommandEmitter.emit(this.cmd);
+    this.terminal.send(this.cmd).then(()=>{
       this.cmd = '';
       this.lastCmdIndex = -1;
-      setTimeout(() => {
+      setTimeout(()=>{
         const height = this.wrapper.nativeElement.scrollHeight;
         this.wrapper.nativeElement.scrollTop = height;
-      }, 0);
+        this.ref.tick();
+      },0);
     });
   }
   
@@ -194,45 +198,47 @@ export class TerminalComponent implements OnInit {
       console.log('Something went wrong', err);
     }); 
   }
-
+  
   openScriptDialog() {
     this.uploadInput.nativeElement.click();
   }
-
+  
   onKeyDown() {
-    if (this.terminal.cmds.length > 0) {
+    if (this.terminal.history.length > 0) {
       this.lastCmdIndex++;
-      if (this.lastCmdIndex >= this.terminal.cmds.length)
+      if (this.lastCmdIndex >= this.terminal.history.length)
         this.lastCmdIndex = 0;
-      let cmd = this.terminal.cmds[this.lastCmdIndex].cmd;
-      let cmdTmp = cmd;
-      while (this.lastCmdIndex < this.terminal.cmds.length && (cmdTmp.trim().length === 0 || cmdTmp === this.cmd)) {
+      let cmd: string = this.terminal.history[this.lastCmdIndex];
+      let cmdTmp: string = cmd;
+      while (this.lastCmdIndex < this.terminal.history.length && (cmdTmp.trim().length === 0 || cmdTmp === this.cmd)) {
         this.lastCmdIndex++;
-        if (this.lastCmdIndex < this.terminal.cmds.length)
-          cmdTmp = this.terminal.cmds[this.lastCmdIndex].cmd;
+        if (this.lastCmdIndex < this.terminal.history.length)
+          cmdTmp = this.terminal.history[this.lastCmdIndex];
       }
-      if (this.lastCmdIndex < this.terminal.cmds.length)
+      if (this.lastCmdIndex < this.terminal.history.length)
         cmd = cmdTmp;
       this.cmd = cmd;
     }
+    this.ref.tick();
   }
   
   onKeyUp() {
-    if (this.terminal.cmds.length > 0) {
+    if (this.terminal.history.length > 0) {
       this.lastCmdIndex--;
       if (this.lastCmdIndex < 0)
-        this.lastCmdIndex = this.terminal.cmds.length - 1;
-      let cmd = this.terminal.cmds[this.lastCmdIndex].cmd;
-      let cmdTmp = cmd;
+        this.lastCmdIndex = this.terminal.history.length - 1;
+      let cmd: string = this.terminal.history[this.lastCmdIndex];
+      let cmdTmp: string = cmd;
       while (this.lastCmdIndex >= 0 && (cmdTmp.trim().length === 0 || cmdTmp === this.cmd)) {
         this.lastCmdIndex--;
         if (this.lastCmdIndex >= 0)
-          cmdTmp = this.terminal.cmds[this.lastCmdIndex].cmd;
+          cmdTmp = this.terminal.history[this.lastCmdIndex];
       }
       if (this.lastCmdIndex > -1)
         cmd = cmdTmp;
       this.cmd = cmd;
     }
+    this.ref.tick();
   }
   
   onUploadFilesChange(e:any) {

@@ -6,6 +6,7 @@ import {MatSnackBar, MatDialog} from "@angular/material";
 import {UpdateDialogComponent} from "../../../components/update-dialog/update-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
 import {environment as env, Platform} from '../../../../environments/environment';
+
 /* 
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
 */

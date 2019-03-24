@@ -191,6 +191,10 @@ export class DataService {
   private _ioModules: IoModule[];
   get ioModules() {return this._ioModules;}
   
+  // MCU
+  private _mcuVer: string = null;
+  get mcuVer() {return this._mcuVer;}
+  
   // Settings
   private _isEmulator = false;
   get isEmulator() { return this._isEmulator; }
@@ -228,11 +232,11 @@ export class DataService {
   private _tpTypes : TpType[];
   get tpTypes() { return this._tpTypes; }
   set tpTypes(val: TpType[]) { this._tpTypes = val; }
-  private _jogIncrements: number;
+  private _jogIncrements: string;
   get jogIncrements() { return this._jogIncrements; }
-  set jogIncrements(val: number) {
+  set jogIncrements(val: string) {
     const oldVal = this._jogIncrements;
-    this.ws.query('?TP_SET_JOG_INCREMENT_SIZE('+val+')')
+    this.ws.query('?TP_SET_JOG_INCREMENT_SIZE("'+val+'")')
     .then((ret:MCQueryResponse)=>{
       this._jogIncrements = ret.result === '0' ? val : oldVal;
     });
@@ -431,6 +435,7 @@ export class DataService {
       queries.push(this.ws.query('?LBN_VER'));
       queries.push(this.ws.query('?PAY_VER'));
       queries.push(this.ws.query('?IOMAP_VER'));
+      queries.push(this.ws.query('?MCU_VER'));
       
       return Promise.all(queries).then((result: MCQueryResponse[])=>{
         
@@ -457,6 +462,7 @@ export class DataService {
         this._lbnVer = result[6].err ? null : result[6].result;
         this._payloadLibVer = result[7].err ? null : result[7].result;
         this._iomapVer = result[8].err ? null : result[8].result;
+        this._mcuVer = result[9].err ? null : result[9].result;
         
         return this.refreshMachineTables()
           .then(()=>{return this.refreshWorkPieces();})
@@ -553,7 +559,7 @@ export class DataService {
       this._softTPTypes = results[5].result.split(",");
       this._MCVersion = results[7].result;
       this._JavaVersion = results[8].result;
-      this._jogIncrements = Number(results[9].result);
+      this._jogIncrements = results[9].result;
       try {
         this._keyboardFormat = JSON.parse(results[6].result);
       } catch (err) {

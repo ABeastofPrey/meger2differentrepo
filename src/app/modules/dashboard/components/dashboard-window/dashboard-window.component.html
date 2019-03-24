@@ -46,7 +46,7 @@
         <mat-slide-toggle color="primary" style="margin-bottom: 8px;" *ngIf="params.isGroup" [(ngModel)]="params.cartesian">{{'cartesian'|translate}}</mat-slide-toggle>
         <table>
           <tr *ngFor="let a of params.axes; let i=index;">
-            <td>{{a}}</td><td><mat-form-field><input matInput [(ngModel)]="params.target[i]" type="number"></mat-form-field></td>
+            <td>{{params.cartesian ? cart[i] : a}}</td><td><mat-form-field><input matInput [(ngModel)]="params.target[i]" type="number"></mat-form-field></td>
           </tr>
           <tr><td>Velocity</td><td><mat-form-field><input matInput [(ngModel)]="params.vel" type="number"></mat-form-field></td></tr>
           <tr><td>Acc</td><td><mat-form-field><input matInput [(ngModel)]="params.acc" type="number"></mat-form-field></td></tr>

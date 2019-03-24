@@ -111,8 +111,10 @@ export class McFileTreeComponent implements OnInit {
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.prj.checklistSelection.clear();
     this.api.get('/cs/api/files').toPromise().then((ret:JsonNode)=>{
-      this.unfilteredDataSource = new TreeNode(ret,null).children;
+      const parent = new TreeNode(ret,null);
+      this.unfilteredDataSource = [parent];
       this.nestedDataSource._data.next(this.unfilteredDataSource);
+      this.nestedTreeControl.expand(parent);
       this.isRefreshing = false;
     });
   }
@@ -147,6 +149,9 @@ export class McFileTreeComponent implements OnInit {
   /* ANGULAR MATERIAL DEMO FUNCTIONS FOR CHECKBOX SELECTION */
   /** Whether all the descendants of the node are selected. */
   descendantsAllSelected(node: TreeNode): boolean {
+    if (!node) {
+      return false;
+    }
     if (!node.isFolder || node.children.length === 0)
       return this.prj.checklistSelection.isSelected(node);
     const descendants = this.nestedTreeControl.getDescendants(node);
@@ -158,6 +163,9 @@ export class McFileTreeComponent implements OnInit {
 
   /** Whether part of the descendants are selected */
   descendantsPartiallySelected(node: TreeNode): boolean {
+    if (!node) {
+      return false;
+    }
     const descendants = this.nestedTreeControl.getDescendants(node);
     const result = descendants.some(child => this.prj.checklistSelection.isSelected(child));
     return result && !this.descendantsAllSelected(node);
@@ -165,6 +173,9 @@ export class McFileTreeComponent implements OnInit {
 
   /** Toggle the item selection. Select/deselect all the descendants node */
   nodeSelectionToggle(node: TreeNode): void {
+    if (!node) {
+      return;
+    }
     this.prj.checklistSelection.toggle(node);
     this.prj.checklistSelection.isSelected(node);
     const descendants = this.nestedTreeControl.getDescendants(node);
@@ -377,6 +388,13 @@ export class TreeNode {
   parent: TreeNode;
   
   constructor(node:JsonNode | string, parent: TreeNode) {
+    if (parent === null) {
+      this.name = 'SSMC';
+      this.isFolder = true;
+      this.parent = null;
+      this.children = new TreeNode(node, this).children;
+      return;
+    }
     this.parent = parent;
     if (typeof node === 'string') {
       this.name = node;
@@ -396,10 +414,10 @@ export class TreeNode {
   get path() : string {
     let path = this.name;
     let parent = this.parent;
-    if (parent === null)
+    if (parent === null || parent.name === 'SSMC')
       return path;
     // TRAVEL UP THE TREE UNTIL JUST BEFORE THE ROOT
-    while (parent.parent) {
+    while (parent.parent && parent.parent.name !== 'SSMC') {
       path = parent.name + '$$' + path; // $$ will be replaced with "/"
       parent = parent.parent;
     }

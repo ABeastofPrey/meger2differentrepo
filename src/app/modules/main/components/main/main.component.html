@@ -13,6 +13,7 @@
       <mat-icon>settings_remote</mat-icon>
       REMOTE MODE
     </div>
+    <mat-icon color="accent" *ngIf="ws.otherClients > 0" [matTooltip]="ws.otherClients + ' Other connections are active'">warning</mat-icon>
     <div [matTooltip]="jogTooltip">
       <button mat-mini-fab (click)="screenManager.toggleControls()" [disabled]="!tpOnline || prj.activeProject || !cooService.coosLoaded.value" tourAnchor="jog-controls"><mat-icon>touch_app</mat-icon></button>
     </div>

@@ -20,6 +20,8 @@ export class DashboardWindowComponent implements OnInit {
   @ViewChild('window') window : ElementRef;
   
   private words: any;
+  
+  public cart: string[];
 
   constructor(
     private dashboard: DashboardService,
@@ -35,6 +37,14 @@ export class DashboardWindowComponent implements OnInit {
   }
 
   ngOnInit() {
+    switch (this.params.axes.length) {
+      case 4:
+        this.cart = ['X','Y','Z','R'];
+        break;
+      default:
+        this.cart = ['X','Y','Z','Y','P','R'];
+        break;
+    }
     this.tour.stepHide$.subscribe(step=>{
       if (step.anchorId === 'dashboard-rec') {
         this.close();

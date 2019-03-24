@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, ApplicationRef, NgZone} from '@angular/core';
-import {ProgramEditorService, ProgramStatus, TASKSTATE_NOTLOADED, TRNERRLine} from '../../services/program-editor.service';
+import {ProgramEditorService, ProgramStatus, TASKSTATE_NOTLOADED, TRNERRLine, TASKSTATE_RUNNING} from '../../services/program-editor.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Subscription} from 'rxjs';
@@ -97,7 +97,8 @@ export class ProgramEditorAceComponent implements OnInit {
       );
       if (stat.programLine > 0) {
         this.highlightLine(stat.programLine);
-        this.editor.scrollToLine(stat.programLine,true, true,null);
+        if (stat.statusCode !== TASKSTATE_RUNNING)
+          this.editor.scrollToLine(stat.programLine,true, true,null);
       }
       if (stat && stat.statusCode === TASKSTATE_NOTLOADED)
         this.setBreakpoints('');
@@ -386,7 +387,7 @@ export class ProgramEditorAceComponent implements OnInit {
                 };
               }));
             } else {
-              callback(null, this.commands.map(function(cmd) {
+              callback(null, this.commands.map<any>(function(cmd) {
                 return {
                   caption: cmd.name,
                   value: cmd.name,
@@ -394,7 +395,21 @@ export class ProgramEditorAceComponent implements OnInit {
                   type: 'command',
                   docHTML: '<div class="docs"><b>' + cmd.name + '<br><br>Syntax: </b>' + cmd.syntax + '<br><b>Description:</b><br>' + cmd.description + '</div>'
                 };
-              }));
+              }).concat(this.keywords.wordList.map(function(word) {
+                return {
+                  caption: word,
+                  value: word,
+                  meta: "parameter",
+                  type: 'parameter'
+                };
+              })).concat(this.keywords.keywords.map(function(word) {
+                return {
+                  caption: word,
+                  value: word,
+                  meta: "keyword",
+                  type: 'keyword'
+                };
+              })));
             }
           }
         }
@@ -511,15 +526,21 @@ export class ProgramEditorAceComponent implements OnInit {
     });
     // HANDLE MOUSE HOVER OVER WORDS
     this.editor.on('mousemove', (e)=> {
-      if (this.service.status === null)
-        return this.hideTooltip();
+      if (this.service.status === null) {
+        this.hideTooltip();
+        return;
+      }
       const code = this.service.status.statusCode;
-      if (code !== 2 && code != 4)
-        return this.hideTooltip();
+      if (code !== 2 && code != 4) {
+        this.hideTooltip();
+        return;
+      }
       const position = e.getDocumentPosition();
       const token = this.editor.session.getTokenAt(position.row,position.column);
-      if (token === null)
-        return this.hideTooltip();
+      if (token === null) {
+        this.hideTooltip();
+        return;
+      }
       if (token.value === this.lastWord)
         return;
       this.hideTooltip();
@@ -572,6 +593,8 @@ export class ProgramEditorAceComponent implements OnInit {
   }
   
   private hideTooltip() {
+    if (!this.tooltipVisible)
+      return;
     this.tooltipVisible = false;
     this.ref.tick();
   }

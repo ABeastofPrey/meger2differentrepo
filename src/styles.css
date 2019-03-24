@@ -1,0 +1,189 @@
+@charset "utf-8";
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+     -khtml-user-select: none; /* Konqueror */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden!important;
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/material/MaterialIcons-Regular.eot'); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url('assets/fonts/material/MaterialIcons-Regular.woff2') format('woff2'),
+       url('assets/fonts/material/MaterialIcons-Regular.woff') format('woff'),
+       url('assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/material/MaterialIcons-Regular.eot'); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url('assets/fonts/material/MaterialIcons-Regular.woff2') format('woff2'),
+       url('assets/fonts/material/MaterialIcons-Regular.woff') format('woff'),
+       url('assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 100;
+  src: url('assets/fonts/google/OpenSans-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 300;
+  src: url('assets/fonts/google/OpenSans-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/google/OpenSans-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 600;
+  src: url('assets/fonts/google/OpenSans-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'open-sans';
+  font-style: normal;
+  font-weight: 800;
+  src: url('assets/fonts/google/OpenSans-ExtraBold.ttf') format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+.center-vertical {
+  display: flex;
+  align-items: center;
+}
+
+.center-vertical-horizontal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mat-tab-label-active { opacity: 1!important; }
+mat-slide-toggle { display: block!important; }
+
+/* FIX TOO LONG SNACKBAR ISSUE */
+.mat-simple-snackbar > span {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+/* DOCS TOOLTIP FOR ACE EDITOR */
+.docs {
+  white-space: pre-line;
+  font-family: monospace;
+  overflow: auto;
+  max-height: 200px;
+}
+
+/* ACE LINE HIGHLIGHTING STYLES */
+.line-highlight {
+  position:absolute;
+  background:rgba(100,200,100,0.5);
+  z-index:20;
+}
+.line-highlight-error {
+  position:absolute;
+  background:rgba(200,100,100,0.5);
+  z-index:20;
+}
+.line-highlight-motion {
+  position:absolute;
+  background:rgba(100,100,200,0.5);
+  z-index:20;
+}
+.ace_breakpoint{ 
+  border-radius: 20px 0px 0px 20px; 
+  box-shadow: 0px 0px 1px 1px red inset; 
+}
+.ace_gutter-cell { cursor: pointer; }
+.ace_gutter-cell:hover {
+  background-color: #bdbdbd;
+  color: white;
+}

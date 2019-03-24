@@ -43,7 +43,7 @@ export class ScreenManagerService {
     return this._screen;
   }
   set screen(s:ControlStudioScreen) {
-    if ((s.requiresTpLib && !this.tpOnline) ||
+    if (typeof s === 'undefined' || (s.requiresTpLib && !this.tpOnline) ||
        (s.autoModeOnly && this.stat.mode !== 'A')
     ) {
       this._screen = this.screens[0];
@@ -126,7 +126,7 @@ export class ScreenManagerService {
           this.controlsAnimating.emit(false);
         },300);
       }
-      if (mode !== 'A' && this.screen.requiresTpLib) {
+      if (mode !== 'A' && this.screen.requiresTpLib && !this.stat.onlineStatus.value) {
         this.screen = this.screens[0];
         this.router.navigateByUrl('/');
       }
