@@ -20,7 +20,7 @@ export class ScreenManagerService {
     {icon: 'insert_chart', name:'Motion Dashboard', permission: 1, url: 'dashboard'},
     {icon: 'insert_comment', name:'Project Editor', permission: 1, url: 'projects'},
     {icon: '3d_rotation', name:'3D Simulator', permission: 1, url: 'simulator',requiresTpLib: true},
-    {icon: 'touch_app', name:'Teach', permission: 1, url: 'teach',requiresTpLib: true, autoModeOnly: true},
+    {icon: 'touch_app', name:'Teach', permission: 1, url: 'teach',requiresTpLib: true},
     //{icon: 'insert_comment', name:'Graphic Editor', permission: 1, url: 'blockly'},
     {icon: 'settings', name:'System Configuration', permission: 0, url: 'configuration'},
     {icon: 'playlist_play', name:'Task Manager', permission: 1, url: 'tasks'},

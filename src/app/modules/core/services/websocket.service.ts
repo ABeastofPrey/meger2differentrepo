@@ -37,8 +37,6 @@ export class WebsocketService {
   
   private words: any;
   
-  private words: any;
-  
   get port() { return this._port; }
   updateFirmwareMode: boolean = false;
   

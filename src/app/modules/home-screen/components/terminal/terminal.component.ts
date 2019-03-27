@@ -1,7 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, HostListener, NgZone } from '@angular/core';
 import {TerminalService} from '../../services/terminal.service';
-import {ApiService} from '../../../../modules/core/services/api.service';
-import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Input} from '@angular/core';
 import {trigger, transition, style, animate} from '@angular/animations';
 import {KeywordService} from '../../../core/services/keywords.service';
@@ -36,6 +34,7 @@ export class TerminalComponent implements OnInit {
   @ViewChild('wrapper') wrapper : ElementRef;
   @ViewChild('upload') uploadInput: ElementRef;
   @ViewChild('editorLine') editorLine : ElementRef;
+  @ViewChild('editorDiv') editorDiv: ElementRef;
   
   @Input('offsetX') offsetX: number;
   @Input('offsetY') offsetY: number;
@@ -68,7 +67,41 @@ export class TerminalComponent implements OnInit {
       this.wrapper.nativeElement.scrollTop = height;
     },0);
     this.zone.runOutsideAngular(()=>{
-      this.initAce();
+      this.initMainAce(); // Init the command history editor
+      this.initAce(); // Init line editor
+    });
+  }
+  
+  private initMainAce() {
+    let editor = ace.edit(this.editorDiv.nativeElement);
+    editor.setOptions({
+      autoScrollEditorIntoView: true,
+      highlightActiveLine: false,
+      printMargin: false,
+      showGutter: false,
+      theme: "ace/theme/eclipse",
+      fontSize: "14px",
+      maxLines: Infinity,
+      readOnly: true
+    });
+    editor.renderer.$cursorLayer.element.style.display = "none";
+    this.keywords.initDone.subscribe(done=>{
+      if (!done)
+        return;
+      editor.getSession().setMode("ace/mode/mcbasic");
+    });
+    editor.$blockScrolling = Infinity;
+    editor.setValue(this.terminal.cmdsAsString,1);
+    setTimeout(()=>{
+      const height = this.wrapper.nativeElement.scrollHeight;
+      this.wrapper.nativeElement.scrollTop = height;
+    },50);
+    this.terminal.onNewCommand.subscribe(cmd=>{
+      editor.setValue(this.terminal.cmdsAsString,1);
+      setTimeout(()=>{
+        const height = this.wrapper.nativeElement.scrollHeight;
+        this.wrapper.nativeElement.scrollTop = height;
+      },50);
     });
   }
   
@@ -117,14 +150,9 @@ export class TerminalComponent implements OnInit {
   
   onContextMenu(e:MouseEvent) {
     e.preventDefault();
-    let x: number = e.layerX;
-    let y: number = e.layerY;
-    if (!isNaN(this.offsetX))
-      x -= this.offsetX;
-    if (!isNaN(this.offsetY))
-      y -= this.offsetY;
-    this.contextMenuX = x;
-    this.contextMenuY = y;
+    let rect = this.wrapper.nativeElement.getBoundingClientRect();
+    this.contextMenuX = e.clientX - rect.left;
+    this.contextMenuY = e.clientY - rect.top;
     this.contextMenuShown = true;
     this.contextSelection = this.getSelection();
   }
@@ -138,7 +166,7 @@ export class TerminalComponent implements OnInit {
   
   clear(e: MouseEvent) {
     e.stopImmediatePropagation();
-    this.terminal.cmds = [];
+    this.terminal.clear();
     this.cmd = '';
     this.contextMenuShown = false;
     this.editor.focus();
@@ -150,8 +178,6 @@ export class TerminalComponent implements OnInit {
       this.cmd = '';
       this.lastCmdIndex = -1;
       setTimeout(()=>{
-        const height = this.wrapper.nativeElement.scrollHeight;
-        this.wrapper.nativeElement.scrollTop = height;
         this.ref.tick();
       },0);
     });

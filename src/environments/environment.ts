@@ -29,8 +29,8 @@ export const Platforms = {
 export const environment = {
   production: false,
   appName: 'ControlStudio+',
-  api_url: 'http://10.4.20.85:1207',
-  ip: '10.4.20.85',
+  api_url: 'http://10.4.20.61:1207',
+  ip: '10.4.20.61',
   tp_ver: '1.3.1.0',
   gui_ver: '1.0.9',
   compatible_webserver_ver: '3.1.0',

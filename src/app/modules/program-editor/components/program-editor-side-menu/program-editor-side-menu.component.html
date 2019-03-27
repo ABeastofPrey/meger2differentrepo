@@ -1,6 +1,6 @@
 <div class="wrapper">
-  <div class="center-vertical-horizontal">
-    <img src="assets/pics/{{env.platform.spinner}}" *ngIf="prj.isLoading">
+  <div *ngIf="prj.isLoading" class="center-block">
+    <img src="assets/pics/{{env.platform.spinner}}">
   </div>
   <div class="project-tree" *ngIf="currProject && service.modeToggle === 'prj'">
     <div class="title">{{currProject.name}}</div>

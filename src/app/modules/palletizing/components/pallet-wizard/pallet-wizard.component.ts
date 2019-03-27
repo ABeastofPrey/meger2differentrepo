@@ -316,13 +316,13 @@ export class PalletWizardComponent implements OnInit {
     let cmd;
     switch (control.value) {
       case 'full':
-        cmd = '?PLT_SET_INDEX_STATUS_FULL("' + pallet.name + '")';
+        cmd = 'PLT_SET_INDEX_STATUS_FULL("' + pallet.name + '")';
         break;
       case 'empty':
-        cmd = '?PLT_SET_INDEX_STATUS_EMPTY("' + pallet.name + '")';
+        cmd = 'PLT_SET_INDEX_STATUS_EMPTY("' + pallet.name + '")';
         break;
       case 'custom':
-        cmd = '?PLT_SET_INDEX_STATUS("' + pallet.name + '",' + pallet.index+')';
+        cmd = 'PLT_SET_INDEX_STATUS("' + pallet.name + '",' + pallet.index+')';
         break;
       default: // NO PALLET INDEX MODE SELECTED
         if (pallet.type === 'CUSTOM' && pallet.dataFile === null)
@@ -330,9 +330,6 @@ export class PalletWizardComponent implements OnInit {
         return Promise.resolve({invalidIndex: true});
     }
     return this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-      if (ret.result !== '0' || ret.err) {
-        return { invalidIndex: true };
-      }
       return this.ws.query('?PLT_GET_INDEX_STATUS("' + pallet.name + '")')
       .then((ret: MCQueryResponse)=>{
         this.dataService.selectedPallet.index = Number(ret.result);

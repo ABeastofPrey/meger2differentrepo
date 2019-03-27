@@ -3,6 +3,7 @@
     <input matInput type="text" [(ngModel)]="filterByString" (change)="filterData()" (ngModelChange)="onSearchChange()" [disabled]="isRefreshing" #searchInput>
     <mat-icon matPrefix>search</mat-icon>
   </mat-form-field>
+  <mat-slide-toggle class="checkbox_en" color="primary" [(ngModel)]="enableSelect">{{'checkbox_enable'|translate}}</mat-slide-toggle>
   <div class="center-vertical-horizontal">
     <img src="assets/pics/{{env.platform.spinner}}" *ngIf="isRefreshing">
   </div>
@@ -10,7 +11,7 @@
     <mat-tree-node *matTreeNodeDef="let node;">
       <li (contextmenu)="openContextMenu($event,node)" class="leaf">
         <div (click)="openFile(node)" [class.selected]="lastSelectedNode === node">
-          <mat-checkbox class="checklist-leaf-node"
+          <mat-checkbox class="checklist-leaf-node" *ngIf="enableSelect"
         [checked]="prj.checklistSelection.isSelected(node)"
         (change)="leafSelectionToggle(node,$event)" (click)="$event.stopPropagation()"></mat-checkbox>
           <mat-icon color="primary">insert_drive_file</mat-icon>
@@ -24,7 +25,8 @@
           <mat-icon>
             {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
-          <mat-checkbox [checked]="descendantsAllSelected(node)"
+          <mat-checkbox *ngIf="enableSelect"
+        [checked]="descendantsAllSelected(node)"
         [indeterminate]="descendantsPartiallySelected(node)"
         (change)="nodeSelectionToggle(node)" (click)="$event.stopPropagation()"></mat-checkbox>
           <mat-icon class="primary-light">

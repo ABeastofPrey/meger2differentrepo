@@ -43,13 +43,13 @@ export class PalletIndexDialogComponent implements OnInit {
     let cmd : string = null;
     switch (this.option) {
       case 'custom':
-        cmd='?PLT_SET_INDEX_STATUS("'+this.pallet.name+'",'+this.pallet.index+')';
+        cmd='PLT_SET_INDEX_STATUS("'+this.pallet.name+'",'+this.pallet.index+')';
         break;
       case 'full':
-        cmd='?PLT_SET_INDEX_STATUS_FULL("'+this.pallet.name+'")';
+        cmd='PLT_SET_INDEX_STATUS_FULL("'+this.pallet.name+'")';
         break;
       case 'empty':
-        cmd='?PLT_SET_INDEX_STATUS_EMPTY("'+this.pallet.name+'")';
+        cmd='PLT_SET_INDEX_STATUS_EMPTY("'+this.pallet.name+'")';
         break;
     }
     this.dialogRef.close(cmd);

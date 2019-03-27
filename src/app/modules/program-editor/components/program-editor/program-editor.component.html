@@ -46,7 +46,8 @@
           <as-split-area size="10" *ngIf="service.mode === 'editor'">
             <div *ngIf="service.errors.length > 0">{{'projects.notification.errMsg'|translate}}</div>
             <div class="error-line" *ngFor="let e of service.errors" (click)="service.skipToLine(e.number)">{{e.number+':'+e.error}}</div>
-            <div *ngIf="service.errors.length === 0">{{'projects.notification.none'|translate}}</div>
+            <div *ngIf="service.errors.length === 0 && !service.backtrace">{{'projects.notification.none'|translate}}</div>
+            <div *ngIf="service.backtrace" style="white-space: pre-wrap;">{{service.backtrace.str}}</div>
           </as-split-area>
         </as-split>
       </as-split-area>

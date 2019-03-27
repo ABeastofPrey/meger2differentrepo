@@ -156,16 +156,25 @@ export class ApiService {
     if (files) {
       body = body.set('files', files.join());
     }
-    this.http.post(environment.api_url + '/cs/mczip',body)
-    .subscribe(ret=>{
+    return this.http.post(environment.api_url + '/cs/mczip',body).toPromise()
+    .then(ret=>{
       if (ret)
         window.location.href = 'http://' + environment.ip + '/MCFiles.zip';
     });
   }
   
   downloadProjectZip(project: string) {
-    const url = environment.api_url + '/cs/api/zipProject/' + project.toUpperCase();
-    window.location.href = url;
+    const url = environment.api_url + '/cs/api/zipProject/' +
+        project.toUpperCase();
+    return this.http.get(url,{responseType: 'arraybuffer'}).toPromise()
+    .then(ret=>{
+      const blob = new Blob([ret], { type: 'application/zip'});
+      const url = window.URL.createObjectURL(blob);
+      const pwa = window.open(url);
+      if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
+        alert( 'Please disable your Pop-up blocker and try again.');
+      }
+    });
   }
   
   deleteFile(name : string) {

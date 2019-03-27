@@ -64,6 +64,7 @@
   "cartesian": "Cartesian",
   "changeError": "An error occured, changes not saved",
   "changeOK": "Changes Saved",
+  "checkbox_enable": "Allow selection",
   "clear_msgs": "Clear messages",
   "close": "Close",
   "connecting": "Connecting",

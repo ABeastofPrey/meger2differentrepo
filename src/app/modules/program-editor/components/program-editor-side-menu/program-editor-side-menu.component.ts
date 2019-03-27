@@ -426,10 +426,10 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     data.push(grippers);
     data.push(io);
     data.push(payloads);
-    data.push(errors);
-    data.push(macros);
-    data.push(vision);
-    data.push(conveyor);
+    /*data.push(errors);
+      data.push(macros);
+      data.push(vision);
+      data.push(conveyor);*/
     this.nestedDataSource._data.next(data);
     this.setDragAndDrop();
   }

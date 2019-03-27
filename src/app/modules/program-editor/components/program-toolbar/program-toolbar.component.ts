@@ -121,8 +121,9 @@ export class ProgramToolbarComponent implements OnInit {
   
   export() {
     this.prj.isLoading = true;
-    this.api.downloadProjectZip(this.prj.currProject.value.name);
-    this.prj.isLoading = false;
+    return this.api.downloadProjectZip(this.prj.currProject.value.name).then(()=>{
+      this.prj.isLoading = false;
+    });
   }
   newApp() { this.dialog.open(NewAppDialogComponent); }
   newLib() { this.dialog.open(NewLibDialogComponent); }
@@ -253,6 +254,7 @@ export class ProgramToolbarComponent implements OnInit {
   }
   
   onUploadProjectFile(e:any) {
+    this.prj.isLoading = true;
     for(let f of e.target.files) {
       if (this.fromBackup) { // USER UPLOADS A BACKUP ZIP
         let count = 0;
@@ -280,7 +282,7 @@ export class ProgramToolbarComponent implements OnInit {
                     return;
                   this.api.getFile("isWebServerAlive.HTML").then(ret=>{
                     ok = true;
-                    location.href = '/?from=restore';
+                    location.href = '/rs/?from=restore';
                   }).catch(err=>{
                   });
                 },2000);
@@ -290,6 +292,7 @@ export class ProgramToolbarComponent implements OnInit {
             const words = [
              'files.err_upload','files.err_ext','files.err_permission'
             ];
+            this.prj.isLoading = false;
             this.trn.get(words, {name: f.name}).subscribe(words=>{
               switch (ret.error.err) {
                 case -2:
@@ -339,9 +342,11 @@ export class ProgramToolbarComponent implements OnInit {
                         this.api.deleteProjectZip(verification.file);
                         this.snack.open(this.words['projects.toolbar']['err_import'],this.words['dismiss']);
                       }
+                      this.prj.isLoading = false;
                     });
                   } else {  // USER CANCELED, TELL SERVER TO DELETE THE FILE
                     this.api.deleteProjectZip(verification.file);
+                    this.prj.isLoading = false;
                   }
                 });
               });
@@ -349,9 +354,11 @@ export class ProgramToolbarComponent implements OnInit {
           });
         } else {
           // ZIP FILE IS INVALID
+          this.prj.isLoading = false;
           this.snack.open(this.words['projects.toolbar']['err_import_file'],this.words['dismiss']);
         }
       },(ret:HttpErrorResponse)=>{ // ON ERROR
+        this.prj.isLoading = false;
         const words = [
           'files.err_upload','files.err_ext','files.err_permission'
         ];
@@ -537,7 +544,10 @@ export class ProgramToolbarComponent implements OnInit {
     } else {
       files = null;
     }
-    return this.api.downloadZip(files);
+    this.prj.isLoading = true;
+    return this.api.downloadZip(files).then(()=>{
+      this.prj.isLoading = false;
+    });
   }
 
 }

@@ -55,6 +55,8 @@ export class ChecklistDatabase {
           let children: GripperTableNode[] = [];
           let ef = new EndEffector();
           for (let grp of ret[i].result.split(',')) {
+            if (grp.length === 0)
+              continue;
             let child = new Gripper();
             child.item = grp;
             children.push(child);
@@ -270,11 +272,10 @@ export class GripperScreenComponent implements OnInit {
   }
   
   private getEndEffectorData(ef: EndEffector) {
-    const promises : Promise<any>[] = [
+    /*const promises : Promise<any>[] = [
       this.ws.query('?GRP_END_EFFECTOR_GET_TOOL("' + ef.item + '")'),
       this.ws.query('?GRP_END_EFFECTOR_GET_SAFETY_DIN("' + ef.item + '")'),
-      this.ws.query('?GRP_END_EFFECTOR_GET_DIN_RANGE("' + ef.item + '")')
-      
+      this.ws.query('?GRP_END_EFFECTOR_GET_DIN_RANGE("' + ef.item + '")')  
     ];
     Promise.all(promises).then((ret: MCQueryResponse[])=>{
       ef.tool = ret[0].result;
@@ -284,7 +285,7 @@ export class GripperScreenComponent implements OnInit {
       for (let i = 0; i < binary.length; i++) {
         ef.invert[i] = binary.charAt(i) === '1';
       }
-    });
+    });*/
   }
   
   private getGripperData(grp: Gripper) {
@@ -325,20 +326,19 @@ export class GripperScreenComponent implements OnInit {
   }
   
   updateEfInput() {
-    const ef = (<EndEffector> this.selectedNode);
-    const val = ef.dInput;
-    let inv = '0b';
-    for (let b of ef.invert){
-      inv += (b ? '1' : '0');
-    }
-    const cmd='?GRP_END_EFFECTOR_SET_SAFETY_DIN("'+ef.item+'",'+val+','+inv+')';
-    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-      console.log(ret);
-      if (ret.result !== '0') {
-        
+    /*const ef = (<EndEffector> this.selectedNode);
+      const val = ef.dInput;
+      let inv = '0b';
+      for (let b of ef.invert){
+        inv += (b ? '1' : '0');
       }
-    });
-    
+      const cmd='?GRP_END_EFFECTOR_SET_SAFETY_DIN("'+ef.item+'",'+val+','+inv+')';
+      this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+        console.log(ret);
+        if (ret.result !== '0') {
+
+        }
+      });*/
   }
   
   updateGripperCmd(i:number) {
@@ -372,13 +372,13 @@ export class GripperScreenComponent implements OnInit {
   }
   
   updateEfTool(e:MatSelectChange) {
-    const ef = this.selectedNode.item;
-    this.ws.query('?GRP_END_EFFECTOR_SET_TOOL("' + ef + '","' + e.value+'")')
-    .then((ret: MCQueryResponse)=>{
-      if (ret.result !== '0') {
-        
-      }
-    });
+    /*const ef = this.selectedNode.item;
+      this.ws.query('?GRP_END_EFFECTOR_SET_TOOL("' + ef + '","' + e.value+'")')
+      .then((ret: MCQueryResponse)=>{
+        if (ret.result !== '0') {
+
+        }
+      });*/
   }
   
   updateGripperSleep(openClose:string) {

@@ -27,6 +27,7 @@ export class McFileTreeComponent implements OnInit {
   filterByString: string = "";
   env = environment;
   isRefreshing: boolean = false;
+  enableSelect: boolean = false;
   
   /*
    * CONTEXT MENU

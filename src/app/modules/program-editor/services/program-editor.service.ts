@@ -63,6 +63,7 @@ export class ProgramEditorService {
   variablesInLine: TPVariable[] = [];
   lineParams : any = null;
   disableStepOver : boolean = false;
+  private lastRow: number = -1;
   
   // FLOW REMEMBERING
   lastVar : TPVariable;
@@ -144,6 +145,9 @@ export class ProgramEditorService {
   }
   
   onAceEditorCursorChange(rowIndex:number, row:string) {
+    if (rowIndex === this.lastRow)
+      return;
+    this.lastRow = rowIndex;
     this.rangeStart = NaN;
     this.rangeEnd = NaN;
     this.rangeText = null;
@@ -399,16 +403,21 @@ export class ProgramEditorService {
             this.statusChange.emit(this.status);
           } else {
             this.status = new ProgramStatus(err ? null : ret);
+            if (this.status.statusCode === TASKSTATE_NOTLOADED) {
+              this.statusChange.emit(this.status);
+              this.backtrace = null;
+              return;
+            }
             if (this.stepMode || this.backtrace) {
               this.getBackTrace().then((bt:Backtrace)=>{
                 this.backtrace = bt;
-                if (bt.files[0].name !== this.displayedFile) {
-                  this.setFile(bt.files[0].name, null, null, bt);
-                }
-                if (this.backtrace && this.status) {
-                  this.status.programLine = this.status.sourceLine;
-                  this.statusChange.emit(this.status);
-                }
+                /*if (bt.files[0].name !== this.displayedFile) {
+                        this.setFile(bt.files[0].name, null, null, bt);
+                      }
+                      if (this.backtrace && this.status) {
+                        this.status.programLine = this.status.sourceLine;
+                        this.statusChange.emit(this.status);
+                      }*/
                 this.stepMode = false;
               });
             } else if (this.status.statusCode === TASKSTATE_ERROR || this.status.statusCode === TASKSTATE_STOPPED) {
@@ -418,12 +427,15 @@ export class ProgramEditorService {
                   this.status.programLine = bt.files[0].line;
                   this.statusChange.emit(this.status);
                 } else {
-                  this.setFile(bt.files[0].name, null, null, bt);
+                  console.log(this.status);
+                  this.backtrace = bt;
+                  this.statusChange.emit(this.status);
+                  //this.setFile(bt.files[0].name, null, null, bt);
                 }
               });
             } else {
               this.statusChange.emit(this.status);
- 
+              this.backtrace = null;
             }
           }
         });
@@ -437,6 +449,8 @@ export class ProgramEditorService {
   
   getBackTrace() {
     return this.ws.query('BackTrace ' + this.activeFile).then((ret: MCQueryResponse)=>{
+      if (ret.err)
+        return null;
       return new Backtrace(ret.result);
     });
   }

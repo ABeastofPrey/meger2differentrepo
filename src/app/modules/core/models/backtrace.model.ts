@@ -3,8 +3,10 @@ export class Backtrace {
   taskName: string;
   taskState: number;
   files: BacktraceFile[];
+  str: string;
   
   constructor(str: string) {
+    this.str = str;
     const lines = str.split('\n');
     let files : BacktraceFile[] = [];
     let parts = lines[0].split(' ');

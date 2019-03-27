@@ -50,6 +50,6 @@
   </div>
   <div class="actions">
     <button mat-button (click)="cancel()">{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="this.location == null || (this.location.isArr && !this.rangeMode && this.locationIndex < 0) || (this.rangeMode && (this.indexFrom < 0 || this.indexTo < 0 || this.indexFrom >= this.indexTo)) || invalidBlending()">{{!this.withParams ? 'button.insert' : 'button.edit' | translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="this.location == null || (this.location.isArr && !this.rangeMode && this.locationIndex < 0) || (this.rangeMode && (this.indexFrom < 0 || this.indexTo < 0 || this.indexFrom >= this.indexTo)) || invalidBlending()">{{(!this.withParams ? 'button.insert' : 'button.edit') | translate}}</button>
   </div>
 </div>

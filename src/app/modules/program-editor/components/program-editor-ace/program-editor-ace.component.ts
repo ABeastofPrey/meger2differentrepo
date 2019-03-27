@@ -86,11 +86,15 @@ export class ProgramEditorAceComponent implements OnInit {
     this.task.start();
     this.service.refreshStatus(true);
     this.subs = this.service.editorTextChange.subscribe(text=>{
+      if (text === null)
+        return;
       this.removeAllMarkers();
-      if (this.editor)
+      if (this.editor) {
         this.editor.setValue((text || ''),-1);
+      }
     });
     this.subs.add(this.service.statusChange.subscribe((stat:ProgramStatus)=>{
+      console.log(stat);
       this.removeAllMarkers();
       this.editor.setReadOnly(
         stat === null || stat.statusCode !== TASKSTATE_NOTLOADED
@@ -124,7 +128,7 @@ export class ProgramEditorAceComponent implements OnInit {
       }
     }));
     this.subs.add(this.service.fileChange.subscribe((fileName)=>{
-      if (fileName.endsWith('B'))
+      if (fileName.endsWith('B') || this.service.modeToggle === 'mc')
         return this.setBreakpoints('');
       if (this.prj.currProject.value) {
         const app = fileName.substring(0, fileName.indexOf('.'));
@@ -255,7 +259,7 @@ export class ProgramEditorAceComponent implements OnInit {
       showPrintMargin: false,
       theme: "ace/theme/eclipse",
       enableBasicAutocompletion: true,
-      enableLiveAutocompletion: true
+      enableLiveAutocompletion: false
     });
     this.api.getDocs().then(result=>{
       this.commands = result;
@@ -418,10 +422,11 @@ export class ProgramEditorAceComponent implements OnInit {
       });
     });
     this.editor.$blockScrolling = Infinity;
-    if (this.service.editorText)
+    if (this.service.editorText) {
       this.editor.setValue(this.service.editorText,-1);
-    else 
+    } else {
       this.editor.setReadOnly(true);
+    }
     this.editor.getSession().on('change',e=>{
       this.service.isDirty = true;
       var breakpointsArray = Object.keys(this.editor.session.getBreakpoints());

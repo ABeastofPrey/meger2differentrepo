@@ -8,14 +8,32 @@ export class TerminalService {
   history: string[] = [];
   public sentCommandEmitter: EventEmitter<string> = new EventEmitter<string>();
   
+  public onNewCommand: EventEmitter<TerminalCommand> = new EventEmitter<TerminalCommand>();
+  
   send(cmd : string) {
     return this.ws.query(cmd).then((ret:MCQueryResponse)=>{
-      this.cmds.push({cmd: cmd, result: ret.result});
+      const terminalCommand = {cmd: cmd, result: ret.result};
+      this.cmds.push(terminalCommand);
       this.history.push(cmd);
+      this.onNewCommand.emit(terminalCommand);
     });
+  }
+  
+  get cmdsAsString() : string {
+    const sep = '--> ';
+    if (this.cmds.length === 0)
+      return '';
+    return sep + this.cmds.map(cmd=>{
+      return cmd.cmd + (cmd.result.length > 0 ? '\n'+cmd.result : '');
+    }).join('\n'+sep);
   }
 
   constructor(private ws : WebsocketService) { }
+  
+  clear() {
+    this.cmds = [];
+    this.onNewCommand.emit(null);
+  }
 
 }
 
