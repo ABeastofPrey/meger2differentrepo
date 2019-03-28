@@ -15,6 +15,8 @@ import { CustomIOComponent } from './components/io/custom-io/custom-io.component
 import { RobotSelectionComponent } from './components/robot-selection/robot-selection.component';
 import { IoButtonComponent } from './components/io/io-button/io-button.component';
 import { AboutComponent } from './components/about/about.component';
+import { TopologyComponent } from './components/topology/topology.component';
+import { TopologyService } from './services/topology.service';
 
 @NgModule({
   imports: [
@@ -34,9 +36,10 @@ import { AboutComponent } from './components/about/about.component';
     CustomIOComponent,
     RobotSelectionComponent,
     IoButtonComponent,
-    AboutComponent
+    AboutComponent,
+    TopologyComponent
   ],
-  providers: [IoService],
+  providers: [IoService, TopologyService],
   entryComponents: [
     NewUserDialogComponent,
     GraphComponent,

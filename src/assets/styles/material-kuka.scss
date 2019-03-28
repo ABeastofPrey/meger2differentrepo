@@ -36,7 +36,7 @@ $mat-kuka: (
   );
 
 $material-kuka-primary: mat-palette($mat-kuka, 500, 400, 800); // colors most widely used across all screens and components.
-$material-kuka-accent:  mat-palette($mat-blue-gray, 50, 100, 800); // colors used for the floating action button and interactive elements.
+$material-kuka-accent:  mat-palette($mat-amber, A200, A100, A400); // colors used for the floating action button and interactive elements.
 $material-kuka-warn:    mat-palette($mat-red, A200); // colors used to convey error state.
 
 $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $material-kuka-warn);
@@ -48,11 +48,7 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   /* Here is the style difinition of header portion.
    *
    */
-  mat-toolbar {
-    .center-vertical {
-      color: white;
-    }
-  }
+  mat-toolbar { }
 
   /* Here is the style difinition of side navagation portion.
    *
@@ -70,9 +66,6 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
    *
    */
   mat-sidenav-container mat-sidenav-content {
-    .mat-tab-link {
-      color: white !important;
-    }
     .enabledApp {
       color: $material-semi-black;
     }
@@ -97,6 +90,6 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
 
   .primary-bg, .mat-button-toggle-checked {
     background-color: mat-color($material-kuka-primary, 600);
-    color: #fff !important;
+    color: $light-primary-text !important;
   }
 }

@@ -37,8 +37,8 @@ export class ActivationComponent implements OnInit {
         return hasAnyErr(this.control);
     }
 
-    async ngOnInit(): Promise<void> {
-        await this.retriveIDandEncryptRouteParameter();
+    ngOnInit(): void {
+        this.retriveIDandEncryptRouteParameter();
     }
 
     public verify(): void {
@@ -51,16 +51,16 @@ export class ActivationComponent implements OnInit {
         doVerify(lowerPCode);
     }
 
-    private retriveIDandEncryptRouteParameter(): string {
+    private retriveIDandEncryptRouteParameter(): void {
         const saveId = id => this.machineId = id;
         const assembleUrl = kukaPar => this.url += `&kuka=${kukaPar}`;
-        const bindService = bind(this.service.getMachineId, this.service);
+        const getMachineId = bind(this.service.getMachineId, this.service);
         const errIO = err => IO(() => console.warn('Retrieve machine ID failed: ' + err));
         const runErrIO = compose(IO.runIO, errIO);
         const encrypt = compose(tap(assembleUrl), this.encryptRouteParameter.bind(this), tap(saveId));
         const logOrEncrypt = Either.either(runErrIO, encrypt);
-        const doIt = compose(then(logOrEncrypt), bindService);
-        return doIt();
+        const doIt = compose(then(logOrEncrypt), getMachineId);
+        doIt();
     }
 
     private encryptRouteParameter(machineId: string): string {

@@ -616,6 +616,14 @@
     "wp": {
       "desc": "Define your work piece's limits",
       "title": "Work Piece Limits"
+    },
+    "position_trigger": {
+      "desc": "Define parameters for Position Trigger",
+      "title": "Position Trigger"
+    },
+    "home_config": {
+      "desc": "Define parameters for Home Config",
+      "title": "Home Config"
     }
   },
   "projectTree": {

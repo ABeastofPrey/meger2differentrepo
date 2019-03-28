@@ -7,6 +7,7 @@ import {IoComponent} from './components/io/io.component';
 import {GuiComponent} from './components/gui/gui.component';
 import {UserMngrComponent} from './components/user-manager/user-mngr/user-mngr.component';
 import {AboutComponent} from './components/about/about.component';
+import { TopologyComponent } from './components/topology/topology.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
       {
         path: 'io',
         component: IoComponent
+      },
+      {
+        path: 'topology',
+        component: TopologyComponent
       },
       {
         path: 'gui-settings',
