@@ -82,11 +82,12 @@ export class TopologyComponent implements OnInit, OnDestroy {
 
     private async refresh(): Promise<void> {
         let isErrState = await this.checkStateWithOpMode();
-        this.showTopology();
+        await this.retrieveAndAssemble();
+        setTimeout(() => { this.treeControl.expandAll(); }, 100);
         this.hasErr = isErrState ? true : false; // set status
         this.interval = setInterval(async () => {
             isErrState = await this.checkStateWithOpMode();
-            unless(equals(false), this.showTopology.bind(this))(isErrState);
+            unless(equals(false), this.retrieveAndAssemble.bind(this))(isErrState);
             this.hasErr = isErrState ? true : false;
         }, 1500);
     }
@@ -109,11 +110,6 @@ export class TopologyComponent implements OnInit, OnDestroy {
         return fetchModeAndCheck();
     }
 
-    private async showTopology(): Promise<void> {
-        await this.retrieveAndAssemble();
-        setTimeout(() => { this.treeControl.expandAll(); }, 100);
-    }
-
     private async retrieveAndAssemble(): Promise<void> {
         const retrieveTopology = bind(this.service.getDeviceTopology, this.service);
         const logError = err => console.warn('Retrieve device topology failed: ' + err);
@@ -125,6 +121,7 @@ export class TopologyComponent implements OnInit, OnDestroy {
                 const needRefresh = this.isChanged(levelOrder(tree[0]));
                 if (needRefresh) {
                     this.dataSource.data = tree;
+                    setTimeout(() => { this.treeControl.expandAll(); }, 100);
                 }
             }
         };
