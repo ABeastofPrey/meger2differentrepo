@@ -1,9 +1,9 @@
 <div class="mat-typography">
-  <div class="wrapper warn">
-    <div class="title">{{data.title}}</div>
-    <div class="msg">{{data.message}}</div>
+  <h1 class="title mat-primary">{{data.title}}</h1>
+  <div mat-dialog-content class="msg">
+    {{data.message}}
   </div>
-  <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>{{'button.close'|translate}}</button>
+  <div mat-dialog-actions class="actions">
+    <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>{{'button.close'|translate}}</button>
   </div>
 </div>

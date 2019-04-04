@@ -1,5 +1,9 @@
 .topology {
     padding: 16px;
+    .warn-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
     mat-card-actions {
         padding-left: 10px;
     }

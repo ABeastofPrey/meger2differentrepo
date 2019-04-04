@@ -1,4 +1,5 @@
 <div class="topology">
+    <button *ngIf="hasErr" mat-raised-button color="warn" class="warn-btn">{{errTip}}</button>
     <mat-card>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>

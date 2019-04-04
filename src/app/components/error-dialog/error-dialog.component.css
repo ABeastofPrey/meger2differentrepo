@@ -1,7 +1,10 @@
 .title {
   font-size: 20px;
-  margin-bottom: 20px;
+  margin: -24px -24px 24px -24px;
+  padding: 16px;
   font-weight: 500;
+  background-color: #00897b;
+  color: #fff;
 }
 .msg {
   font-size: 16px;
@@ -13,5 +16,4 @@
   display: flex;
   padding: 8px 8px 8px 24px;
   justify-content: flex-end;
-  margin: 0 -24px -24px 0;
 }
