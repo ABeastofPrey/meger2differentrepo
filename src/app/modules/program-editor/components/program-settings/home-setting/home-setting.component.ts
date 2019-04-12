@@ -4,6 +4,7 @@ import { range, equals, converge, __, and, gt, lt, complement, isEmpty, identity
 import { isNotValidNumber } from 'ramda-adjunct';
 import { Either } from 'ramda-fantasy';
 import { MatSnackBar } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
 
 const transferNum = ifElse(isEmpty, identity, Number);
@@ -22,11 +23,13 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
     private min: number;
     private max; number;
     private subscription: any;
+    private words: any;
 
     constructor(
         private service: HomeSettingService,
         private terminalService: TerminalService,
-        public snackBar: MatSnackBar) {
+        public snackBar: MatSnackBar,
+        private trn: TranslateService) {
             this.subscription = this.terminalService.sentCommandEmitter.subscribe(cmd => {
                 this.retrieveOrder();
                 this.retrievePosition();
@@ -34,6 +37,9 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
         }
 
     ngOnInit(): void {
+        this.trn.get(['projectSettings.home_config']).subscribe(words => {
+            this.words = words['projectSettings.home_config'];
+        });
         this.retrieveOrder();
         this.retrievePosition();
     }
@@ -71,13 +77,13 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
             if (isEqualsToPrevious(value)) { return; } else {
                 Either.either(
                     err => console.warn('Update Home Position failed: ' + err),
-                    () => this.snackBar.open('Changes saved!', '', { duration: 1000 })
+                    () => this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
                 )(await this.service.clearHomePosition(index));
             }
         } else {
             if (isNotValidNumber(value)) {
                 target.value = this.preValue;
-                this.snackBar.open('Please enter a valid number.', '', { duration: 1000 });
+                this.snackBar.open(this.words['validNumTip'], '', { duration: 1000 });
                 return;
             } else if (isEqualsToPrevious(value)) { return; } else {
                 const isNotEq2PreIndex = complement(equals(this.preIndex));
@@ -90,13 +96,13 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
                     isOverLimit = complement(positionRange);
                 if (isOverLimit(value)) {
                     target.value = this.preValue;
-                    this.snackBar.open(`Please enter a valid number between [${this.min},${this.max}].`, '', { duration: 3000 });
+                    this.snackBar.open(`${this.words['numRange']} [${this.min},${this.max}].`, '', { duration: 3000 });
                     return;
                 }
             }
             Either.either(
                 err => console.warn('Update Home Position failed: ' + err),
-                () => this.snackBar.open('Changes saved!', '', { duration: 1000 })
+                () => this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
             )(await this.service.updateHomePostion(index, value));
         }
     }
@@ -104,7 +110,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
     public async updateOrder(index: number, value: number): Promise<void> {
         Either.either(
             err => console.warn('Update Home Order failed: ' + err),
-            () => this.snackBar.open('Changes saved!', '', { duration: 1000 })
+            () => this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
         )(await this.service.updateHomeOrder(index, value));
     }
 

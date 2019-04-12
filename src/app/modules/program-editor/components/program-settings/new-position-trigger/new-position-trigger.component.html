@@ -2,13 +2,13 @@
     <div mat-dialog-content>
         <mat-form-field>
             <span matPrefix>{{namePrefix}} &nbsp;</span>
-            <input matInput placeholder="Name" [(ngModel)]="name" [formControl]="nameControl" [errorStateMatcher]="nameMatcher"
+            <input matInput placeholder="{{'projectSettings.position_trigger.newPositionTrigger.namePlaceholder'|translate}}" [(ngModel)]="name" [formControl]="nameControl" [errorStateMatcher]="nameMatcher"
             (keydown)="onKeyDown($event.keyCode)" (keyup)="onKeyUp($event.keyCode)">
-            <mat-error>Name is required.</mat-error>
+            <mat-error>{{'projectSettings.position_trigger.newPositionTrigger.requireErr'|translate}}</mat-error>
         </mat-form-field>
     </div>
     <div mat-dialog-actions class="actions">
-        <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>CANCEL</button>
-        <button mat-button color="primary" [disabled]="canNotCreate" (click)="close()">CREATE</button>
+        <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>{{'button.cancel'|translate}}</button>
+        <button mat-button color="primary" [disabled]="canNotCreate" (click)="close()">{{'button.create'|translate}}</button>
     </div>
 </div>

@@ -1,5 +1,6 @@
 import { MatSnackBar } from '@angular/material';
 import { SharedModule } from '../../../../shared/shared.module';
+import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NO_ERRORS_SCHEMA, EventEmitter } from '@angular/core';
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
@@ -38,7 +39,7 @@ describe('HomeSettingComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [HomeSettingComponent],
-            imports: [SharedModule, BrowserAnimationsModule],
+            imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
             providers: [
                 {provide: HomeSettingService, useValue: homeSettingService},
                 {provide: TerminalService, useValue: terminalService},

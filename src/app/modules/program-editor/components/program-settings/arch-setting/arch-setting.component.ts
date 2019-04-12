@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ArchSettingService } from '../../../services/arch-setting.service';
 import { MatSnackBar } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
 
 export interface ArchElement {
@@ -23,17 +24,24 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
   private previousValue: string;
   private currentValue: string;
   private subscription: any;
+  private words: any;
 
   constructor(
     private asService: ArchSettingService,
     private terminalService: TerminalService,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    private trn: TranslateService) {
       this.subscription = this.terminalService.sentCommandEmitter.subscribe(cmd => {
         this.getTableData();
       });
     }
 
-  ngOnInit() { this.getTableData(); }
+  ngOnInit() {
+    this.getTableData();
+    this.trn.get(['projectSettings.arch']).subscribe(words => {
+      this.words = words['projectSettings.arch'];
+    });
+  }
 
   ngOnDestroy(): void { this.subscription.unsubscribe(); }
 
@@ -45,12 +53,12 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     if (this.previousValue === event.target.value) { return; }
     if (!this.validator(event.target.value)) {
       event.target.value = this.previousValue;
-      this.snackBar.open('Please input positive number!', '', { duration: 2000, });
+      this.snackBar.open(this.words['positiveNumTip'], '', { duration: 2000, });
       return;
     }
     try {
       await this.asService.setArch(Number(index), Number(departOrApproach) as 1 | 2, Number(changedValue));
-      this.snackBar.open('Value has been updated!', '', { duration: 1500, });
+      this.snackBar.open(this.words['positiveNumTip'], '', { duration: 1500, });
     } catch (err) {
       console.error('Change value failed: ' + err.errString);
     }

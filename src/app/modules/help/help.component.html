@@ -39,11 +39,11 @@
     </a>
     <a *ngIf="utils.IsKuka && !isActivated" matTooltip="activation" (click)="activation()">
       <mat-icon>lock</mat-icon>
-      <div>Activation</div>
+      <div>{{'help.activation.title'|translate}}</div>
     </a>
     <a *ngIf="utils.IsKuka && isActivated" href="https://xpert.kuka.com/" target="_blank">
       <mat-icon>lock_open</mat-icon>
-      <div>KUKA Xpert</div>
+      <div>{{'help.activation.xpert'|translate}}</div>
     </a>
   </mat-card>
 </div>

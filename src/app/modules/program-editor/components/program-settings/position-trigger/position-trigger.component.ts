@@ -2,9 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { NewPositionTriggerComponent } from '../new-position-trigger/new-position-trigger.component';
 import { PositionTriggerService, IResPLS } from '../../../services/position-trigger.service';
-import { T, F, ifElse, always, map, compose, converge, propEq, equals, filter, bind, forEach,
-    all, any, not, and, lensProp, set, or, isNil, isEmpty, gt, __, prop, reduce, complement } from 'ramda';
+import {
+    T, F, ifElse, always, map, compose, converge, propEq, equals, filter, bind, forEach,
+    all, any, not, and, lensProp, set, or, isNil, isEmpty, gt, __, prop, reduce, complement
+} from 'ramda';
 import { Either, Maybe } from 'ramda-fantasy';
+import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
 
 export interface IPositionTrigger {
@@ -80,6 +83,7 @@ export const combineNames: (x: IPositionTrigger[]) => string = compose(insertCom
 export class PositionTriggerComponent implements OnInit, OnDestroy {
     private preDistance: number;
     private subscription: any;
+    private positiveNumTip: string;
     public data: IPositionTrigger[] = [];  // table data source.
     public get columns(): ReadonlyArray<string> { return initColumns(); }
     public get isAllChecked(): boolean { return isAllChecked(this.data); }
@@ -89,27 +93,33 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
     constructor(
         public snackBar: MatSnackBar, public dialog: MatDialog,
         private terminalService: TerminalService,
-        private service: PositionTriggerService) {
+        private service: PositionTriggerService,
+        private trn: TranslateService) {
         this.service.broadcaster.subscribe(this.assembleData.bind(this));
         this.subscription = this.terminalService.sentCommandEmitter.subscribe(cmd => {
             this.assembleData();
         });
     }
 
-    ngOnInit(): void { this.assembleData(); }
+    ngOnInit(): void {
+        this.trn.get(['projectSettings.position_trigger.positiveNumTip']).subscribe(words => {
+            this.positiveNumTip = words['projectSettings.position_trigger.positiveNumTip'];
+        });
+        this.assembleData();
+    }
 
     ngOnDestroy(): void { this.subscription.unsubscribe(); }
 
     public toggleAll(event: any): void { this.data = toggleAll(event)(this.data); }
 
     public createPls(): void {
-        this.dialog.open(NewPositionTriggerComponent, {disableClose: true}).afterClosed()
-        .subscribe(async (name: string) => canCreate(name) && (
-            Either.either(
-                err => console.log(err), // handle error.
-                Nothing
-            )(await this.service.createPls(name))
-        ));
+        this.dialog.open(NewPositionTriggerComponent, { disableClose: true }).afterClosed()
+            .subscribe(async (name: string) => canCreate(name) && (
+                Either.either(
+                    err => console.log(err), // handle error.
+                    Nothing
+                )(await this.service.createPls(name))
+            ));
     }
 
     public async updatePls(element: IPositionTrigger): Promise<void> {
@@ -134,7 +144,7 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
     public onBlur(element: IPositionTrigger): void {
         if (isNotPositiveNumber(element.distance)) {
             element.distance = Number(this.preDistance);
-            this.snackBar.open('Please input positive number!', '', { duration: 2000 });
+            this.snackBar.open(this.positiveNumTip, '', { duration: 2000 });
         } else if (isChanged(this.preDistance, element.distance)) {
             this.updatePls(element);
         }

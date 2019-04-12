@@ -58,7 +58,10 @@
     "save": "SAVE",
     "set_current": "SET AS CURRENT",
     "teach": "TEACH",
-    "upload": "UPLOAD"
+    "upload": "UPLOAD",
+    "reset": "RESET",
+    "verify": "VERIFY",
+    "apply": "apply"
   },
   "calibrate": "Calibrate",
   "cartesian": "Cartesian",
@@ -231,7 +234,15 @@
     "title": "softMC Help Center",
     "tour": "Tour",
     "tourDisabled": "Tour is disabled because TP.LIB is not loaded",
-    "wiki": "softMC Wikipedia"
+    "wiki": "softMC Wikipedia",
+    "activation": {
+      "title": "Activation",
+      "xpert": "KUKA Xpert",
+      "captchaPlaceholder": "Please input captcha",
+      "incorrectCaptchaTip": "Captcha is not correct!",
+      "lengthErr": "Please enter a captcha of length 6.",
+      "requireErr": "Captcha is required"
+    }
   },
   "hexadecimal": "Hexadecimal",
   "home": {
@@ -258,6 +269,40 @@
     "text": "Text Box",
     "toggle": "On/Off Switch",
     "type": "Input Type"
+  },
+  "topology": {
+    "title": "Device Manager",
+    "errTip": "It seems that some device has been changed, please do reset all for CS+ in Task Manager.",
+    "exTip": "Expand all",
+    "colTip": "Collapse all"
+  },
+  "io": {
+    "standardView": "Standard View",
+    "hexadecimal": "Hexadecimal Values",
+    "invalidName": "Invalid name",
+    "addView": "Add View",
+    "delView": "Del View",
+    "addRow": "Add Row",
+    "delRow": "Del Row",
+    "allInputs": "All Inputs",
+    "allOutputs": "All Outputs",
+    "driveIoInputs": "Drive IO Inputs",
+    "driveIoOutputs": "Drive IO Outputs",
+    "userIoInputs": "User IO Inputs",
+    "userIoOutputs": "User IO Outputs",
+    "bit": "Bit",
+    "byte": "Byte",
+    "word": "Word",
+    "status": "Status",
+    "value": "Value",
+    "label": "Label",
+    "type": "Type",
+    "port": "Port",
+    "customView": "Custom View",
+    "dialogTitle": "Are you sure?",
+    "dialogMsg": "The selected custom view will be deleted permanently.",
+    "dialogYes": "yes",
+    "DialogNo": "Cancel"
   },
   "interface": {
    "title": "User Interface"
@@ -481,6 +526,29 @@
     "while": {
       "title": "Insert While Loop",
       "condition": "Condition"
+    },
+    "goHome": {
+      "title": "Insert GoHome Command",
+      "vCruisePh": "VCruise",
+      "numRange": "Please enter a number in"
+    },
+    "jump": {
+      "title": "Insert Jump Command",
+      "titleA": "Insert",
+      "titleB": "Command",
+      "requireErr": "This field is required",
+      "motionPh": "Motion Element",
+      "departPh": "Depart Point",
+      "approachPh": "Approach Point",
+      "destPh": "Dest Frame",
+      "archPh": "Arch Number",
+      "limitZPh": "limit Z",
+      "blendingPh": "Blending Percentage",
+      "speedPh": "Speed",
+      "accelerationPh": "Acceleration",
+      "numRange": "Please enter a number in",
+      "intRange": "Please enter an integer in",
+      "advanced": "Advanced"
     }
   },
   "projects": {
@@ -583,7 +651,12 @@
     },
     "arch": {
       "desc": "Define parameters for Arch command",
-      "title": "Arch Settings"
+      "title": "Arch Settings",
+      "archCol": "Arch",
+      "departZCol": "DepartZ",
+      "approachZCol": "ApproachZ",
+      "positiveNumTip": "Please input positive number!",
+      "valChangedTip": "Value has been updated!"
     },
     "base": {
       "desc": "Define your base's limits",
@@ -619,11 +692,30 @@
     },
     "position_trigger": {
       "desc": "Define parameters for Position Trigger",
-      "title": "Position Trigger"
+      "title": "Position Trigger",
+      "nameCol": "Name",
+      "outputCol": "Output",
+      "StateCol": "State",
+      "FromCol": "From",
+      "DistanceCol": "Distance",
+      "deleteBtn": "DELETE SELECTED",
+      "positiveNumTip": "Please input positive number!",
+      "newPositionTrigger": {
+        "namePlaceholder": "Name",
+        "requireErr": "Name is required."
+      }
     },
     "home_config": {
       "desc": "Define parameters for Home Config",
-      "title": "Home Config"
+      "title": "Home Config",
+      "homePosition": "Home Position",
+      "homeOrder": "Home Order",
+      "degree": "Values are in degree",
+      "curPositionBtn": "Read Current Position",
+      "stepOption": "Step",
+      "savedTip": "Changes saved!",
+      "validNumTip": "Please enter a valid number.",
+      "numRange": "Please enter a valid number between"
     }
   },
   "projectTree": {
@@ -730,7 +822,14 @@
     "multi": "Multi",
     "multi_scara": "XYZ 3-Point",
     "pnts": "Points added",
-    "single": "Single"
+    "single": "Single",
+    "calibrate_result": "Calibration Result",
+    "isApplyDataToTool": "Do you want to apply the following tool data for Tool",
+    "current": "current",
+    "new": "new",
+    "delta": "delta",
+    "calibrationSuccess": "Calibration Success.",
+    "resultOutOfScope": "The determined calculation error exceeds the allowable limit 5mm.\nThe use of this tool data can lead to undesirable behaviour."
   },
   "tools": "Tools",
   "tour": [

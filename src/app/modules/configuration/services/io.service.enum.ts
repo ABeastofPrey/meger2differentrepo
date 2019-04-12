@@ -1,7 +1,7 @@
 /**
  * The IO option enum.
  */
-export enum IoOption {
+export enum IoOptions {
   AllInputs = 'All Inputs',
   AllOutputs = 'All Outputs',
   DriveIoInputs = 'Drive IO Inputs',
@@ -11,12 +11,28 @@ export enum IoOption {
 }
 
 /**
+ * The interface of IO option.
+ */
+export interface IoOption {
+  key: IoOptions;
+  value: string;
+}
+
+/**
  * The IO format option enum.
  */
-export enum IoFormatOption {
+export enum IoFormatOptions {
   Bit = 'bit',
   Byte = 'byte',
   Word = 'word'
+}
+
+/**
+ * The interface of IO format option.
+ */
+export interface IoFormatOption {
+  key: IoFormatOptions;
+  value: string;
 }
 
 /**

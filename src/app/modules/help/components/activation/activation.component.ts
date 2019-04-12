@@ -5,6 +5,7 @@ import { ActivationService } from './activation.service';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { compose, invoker, applySpec, identity, converge, then, bind, tap, equals, toLower, ifElse, anyPass } from 'ramda';
 import { Either, IO } from 'ramda-fantasy';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-activation',
@@ -22,11 +23,13 @@ export class ActivationComponent implements OnInit {
     public machineId: string = '';
     public pinCode: string = '';
     private verficationCode: string = '';
+    private words: string;
 
     constructor(
         public dialogRef: MatDialogRef<any>,
         public snackBar: MatSnackBar,
-        private service: ActivationService
+        private service: ActivationService,
+        private trn: TranslateService
     ) { }
 
     public get hasError(): boolean {
@@ -38,6 +41,9 @@ export class ActivationComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.trn.get(['help.activation.incorrectCaptchaTip']).subscribe(words => {
+            this.words = words['help.activation.incorrectCaptchaTip'];
+        });
         this.retriveIDandEncryptRouteParameter();
     }
 
@@ -46,7 +52,7 @@ export class ActivationComponent implements OnInit {
         const lowerPCode = toLower(this.pinCode);
         const isVerified: boolean = equals(lowerVCode);
         const closeDialog = () => this.dialogRef.close(this.machineId);
-        const promptSnack = () => this.snackBar.open('Captcha is not correct!', '', { duration: 2000 });
+        const promptSnack = () => this.snackBar.open(this.words, '', { duration: 2000 });
         const doVerify = ifElse(isVerified, closeDialog, promptSnack);
         doVerify(lowerPCode);
     }

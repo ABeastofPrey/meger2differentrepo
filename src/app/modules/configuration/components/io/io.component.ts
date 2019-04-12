@@ -4,9 +4,9 @@ import { MatSort, MatTableDataSource, MatTabChangeEvent, MatDialog } from '@angu
 import { FormControl, Validators } from '@angular/forms';
 
 import { IO, IoService } from '../../services/io.service';
-import { IoOption, IoFormatOption, IoTableColumn } from '../../services/io.service.enum';
+import { IoOption, IoOptions, IoFormatOption, IoFormatOptions, IoTableColumn } from '../../services/io.service.enum';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
-
+import { TranslateService } from '@ngx-translate/core';
 import { CustomIOComponent } from './custom-io/custom-io.component';
 
 @Component({
@@ -43,32 +43,32 @@ export class IoComponent implements OnInit, AfterViewInit {
   /**
    * The selected io option in left table.
    */
-  leftSelected: IoOption;
+  leftSelected: IoOption = {key: IoOptions.AllInputs, value: IoOptions.AllInputs};
 
   /**
    * The selected io option in right table.
    */
-  rightSelected: IoOption;
+  rightSelected: IoOption = {key: IoOptions.AllOutputs, value: IoOptions.AllOutputs};
 
   /**
    * The selected io format option in left table.
    */
-  leftRadioOptions: IoFormatOption;
+  leftRadioOptions: IoFormatOption = {key: IoFormatOptions.Bit, value: IoFormatOptions.Bit};
 
   /**
    * The selected io format option in right table.
    */
-  rightRadioOptions: IoFormatOption;
-
-  /**
-   * The IoFormatOption enum object reference.
-   */
-  ioFormatOptionReference = IoFormatOption;
+  rightRadioOptions: IoFormatOption = {key: IoFormatOptions.Bit, value: IoFormatOptions.Bit};
 
   /**
    * The IoTableColumn enum object reference.
    */
-  IoTableColumnReference = IoTableColumn;
+   IoTableColumnReference = IoTableColumn;
+
+  /**
+   * The IoFormatOptions enum object reference.
+   */
+   IoFormatOptionsReference = IoFormatOptions;
 
   /**
    * The data source for left table.
@@ -114,21 +114,36 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   @ViewChildren(CustomIOComponent) customIos: QueryList<CustomIOComponent>;
 
+  private words: any;
+
   /**
    * Constructor.
    * @param ioService The IoService instance.
    */
-  constructor(private ioService: IoService, private dialog: MatDialog) {
+  constructor(private ioService: IoService, private dialog: MatDialog,
+    private trn: TranslateService) {
+      this.trn.get(['io']).subscribe(words => {
+        this.words = words['io'];
+        this.ioOptions = [{key: IoOptions.AllInputs, value: this.words['allInputs']},
+                          {key: IoOptions.AllOutputs, value: this.words['allOutputs']},
+                          {key: IoOptions.DriveIoInputs, value: this.words['driveIoInputs']},
+                          {key: IoOptions.DriveIoOutputs, value: this.words['driveIoOutputs']},
+                          {key: IoOptions.UserIoInputs, value: this.words['userIoInputs']},
+                          {key: IoOptions.UserIoOutputs, value: this.words['userIoOutputs']},
+                        ];
+        this.radioButtonOptions = [
+          {key: IoFormatOptions.Bit, value: this.words['bit']},
+          {key: IoFormatOptions.Byte, value: this.words['byte']},
+          {key: IoFormatOptions.Word, value: this.words['word']}
+        ];
+        this.leftSelected.value = this.words['allInputs'];
+        this.rightSelected.value = this.words['allInputs'];
+        this.leftRadioOptions.value = this.words['bit'];
+        this.rightRadioOptions.value = this.words['bit'];
+      });
 
     this.leftDataSource = new MatTableDataSource([]);
     this.rightDataSource = new MatTableDataSource([]);
-
-    this.ioOptions = ioService.getIoOptions();
-    this.radioButtonOptions = ioService.getIoFormatOptions();
-    this.leftSelected = IoOption.AllInputs;
-    this.rightSelected = IoOption.AllOutputs;
-    this.leftRadioOptions = IoFormatOption.Bit;
-    this.rightRadioOptions = IoFormatOption.Bit;
   }
 
   ngOnInit() {
@@ -169,7 +184,7 @@ export class IoComponent implements OnInit, AfterViewInit {
     }
 
     this.customTabAddIndex = this.customEmptyIndex.indexOf(0) + 1;
-    let tabName = 'Custom View ' + this.customTabAddIndex;
+    let tabName = this.words['customView'] + this.customTabAddIndex;
     let newCustomViewFormControl = new FormControl(tabName, [
       Validators.required,
     ]);
@@ -195,10 +210,10 @@ export class IoComponent implements OnInit, AfterViewInit {
   deleteCustomTab() {
     let ref = this.dialog.open(YesNoDialogComponent, {
       data: {
-        title: 'Are you sure?',
-        msg: 'The selected custom view will be deleted permanently.',
-        yes: 'DELETE',
-        no: 'CANCEL'
+        title: this.words['dialogTitle'],
+        msg: this.words['dialogMsg'],
+        yes: this.words['dialogYes'],
+        no: this.words['dialogNo']
       }
     });
     ref.afterClosed().subscribe(ret => {
@@ -243,16 +258,20 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   onViewSelectionChange(flag) {
     if (flag === 'left') {
-      this.updateTable(this.leftSelected, this.leftRadioOptions, this.hex, this.leftDataSource, this.sorts.first);
+      this.leftRadioOptions.value = this.words[this.leftRadioOptions.key];
+      this.updateTable(this.leftSelected.key, this.leftRadioOptions.key, this.hex, this.leftDataSource, this.sorts.first);
     }
 
     if (flag === 'right') {
-      this.updateTable(this.rightSelected, this.rightRadioOptions, this.hex, this.rightDataSource, this.sorts.last);
+      this.rightRadioOptions.value = this.words[this.rightRadioOptions.key];
+      this.updateTable(this.rightSelected.key, this.rightRadioOptions.key, this.hex, this.rightDataSource, this.sorts.last);
     }
 
     if (flag === 'all') {
-      this.updateTable(this.leftSelected, this.leftRadioOptions, this.hex, this.leftDataSource, this.sorts.first);
-      this.updateTable(this.rightSelected, this.rightRadioOptions, this.hex, this.rightDataSource, this.sorts.last);
+      this.leftRadioOptions.value = this.words[this.leftRadioOptions.key];
+      this.rightRadioOptions.value = this.words[this.rightRadioOptions.key];
+      this.updateTable(this.leftSelected.key, this.leftRadioOptions.key, this.hex, this.leftDataSource, this.sorts.first);
+      this.updateTable(this.rightSelected.key, this.rightRadioOptions.key, this.hex, this.rightDataSource, this.sorts.last);
     }
   }
 
@@ -264,9 +283,9 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   onClickRadioButtonInIO(port: number, flag: string): boolean {
     if (flag === 'right') {
-      return this.changeIoValue(port, 'left', this.rightSelected, this.rightDataSource);
+      return this.changeIoValue(port, 'left', this.rightSelected.key, this.rightDataSource);
     } else {
-      return this.changeIoValue(port, 'right', this.leftSelected, this.leftDataSource);
+      return this.changeIoValue(port, 'right', this.leftSelected.key, this.leftDataSource);
     }
   }
 
@@ -324,7 +343,7 @@ export class IoComponent implements OnInit, AfterViewInit {
    * @param dataSource The table data source.
    * @param sort The MatSort instance.
    */
-  private updateTable(ioOption: IoOption, formatOption: string, isHex: boolean, dataSource: MatTableDataSource<IO>, sort: MatSort) {
+  private updateTable(ioOption: IoOptions, formatOption: string, isHex: boolean, dataSource: MatTableDataSource<IO>, sort: MatSort) {
     this.ioService.queryIos(ioOption, formatOption, isHex).then(() => {
       dataSource.data = this.ioService.getIos();
       dataSource.sort = sort;
@@ -340,7 +359,7 @@ export class IoComponent implements OnInit, AfterViewInit {
    * @returns if it is output, return true.
    */
   private changeIoValue(port: number, flag: string, ioOption: string, dataSource: MatTableDataSource<IO>): boolean {
-    if ((ioOption === IoOption.AllInputs) || (ioOption === IoOption.DriveIoInputs) || (ioOption === IoOption.UserIoInputs)) {
+    if ((ioOption === IoOptions.AllInputs) || (ioOption === IoOptions.DriveIoInputs) || (ioOption === IoOptions.UserIoInputs)) {
       return false;
     }
 

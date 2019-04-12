@@ -5,7 +5,7 @@ import {
   MCQueryResponse
 } from '../../core/services/websocket.service';
 
-import { CustomIOType, IoOption, IoFormatOption,
+import { CustomIOType, IoFormatOption, IoOptions,
   IoServiceCommand, HexValue, IoDirection, IoScope, CustomIoKey, IoKey
 } from './io.service.enum';
 
@@ -45,34 +45,34 @@ export class IoService {
   /**
    * The IO options.
    */
-  private ioOptions: IoOption[] = [
-    IoOption.AllInputs,
-    IoOption.AllOutputs,
-    IoOption.DriveIoInputs,
-    IoOption.DriveIoOutputs,
-    IoOption.UserIoInputs,
-    IoOption.UserIoOutputs
-  ];
+  // private ioOptions: string[] = [
+  //   AllInputs,
+  //   AllOutputs,
+  //   DriveIoInputs,
+  //   DriveIoOutputs,
+  //   UserIoInputs,
+  //   UserIoOutputs
+  // ];
 
   /**
    * The IO value format option.
    */
-  private ioFormatOption: IoFormatOption[] = [
-    IoFormatOption.Bit,
-    IoFormatOption.Byte,
-    IoFormatOption.Word
-  ];
+  // private ioFormatOption: IoFormatOption[] = [
+  //   IoFormatOption.Bit,
+  //   IoFormatOption.Byte,
+  //   IoFormatOption.Word
+  // ];
 
   /**
    * The map between io option and query command parameters.
    */
   private ioOptionMap = new Map([
-    [IoOption.AllInputs, { dio: IoDirection.Din, ioScope: IoScope.All }],
-    [IoOption.AllOutputs, { dio: IoDirection.Dout, ioScope: IoScope.All }],
-    [IoOption.DriveIoInputs, { dio: IoDirection.Din, ioScope: IoScope.Drv }],
-    [IoOption.DriveIoOutputs, { dio: IoDirection.Dout, ioScope: IoScope.Drv }],
-    [IoOption.UserIoInputs, { dio: IoDirection.Din, ioScope: IoScope.Usr }],
-    [IoOption.UserIoOutputs, { dio: IoDirection.Dout, ioScope: IoScope.Usr }],
+    [IoOptions.AllInputs, { dio: IoDirection.Din, ioScope: IoScope.All }],
+    [IoOptions.AllOutputs, { dio: IoDirection.Dout, ioScope: IoScope.All }],
+    [IoOptions.DriveIoInputs, { dio: IoDirection.Din, ioScope: IoScope.Drv }],
+    [IoOptions.DriveIoOutputs, { dio: IoDirection.Dout, ioScope: IoScope.Drv }],
+    [IoOptions.UserIoInputs, { dio: IoDirection.Din, ioScope: IoScope.Usr }],
+    [IoOptions.UserIoOutputs, { dio: IoDirection.Dout, ioScope: IoScope.Usr }],
   ]);
 
   /**
@@ -98,17 +98,17 @@ export class IoService {
    * Get all the io options.
    * @returns All io options.
    */
-  getIoOptions(): IoOption[] {
-    return this.ioOptions.slice(0);
-  }
+  // getIoOptions(): string[] {
+  //   return this.ioOptions.slice(0);
+  // }
 
   /**
    * Get all the io value format options.
    * @returns All io format options.
    */
-  getIoFormatOptions(): IoFormatOption[] {
-    return this.ioFormatOption.slice(0);
-  }
+  // getIoFormatOptions(): IoFormatOption[] {
+  //   return this.ioFormatOption.slice(0);
+  // }
 
   /**
    * Get all the custom io types.
@@ -125,7 +125,7 @@ export class IoService {
    * @param hex whether the value is hex.
    * @returns One promise instance contains query command.
    */
-  queryIos(option: IoOption, bitSize: string, hex: boolean) {
+  queryIos(option: IoOptions, bitSize: string, hex: boolean) {
     let cmd = this.getQueryIOCommand(option, bitSize, hex);
     return this.send(cmd);
   }
@@ -352,7 +352,7 @@ export class IoService {
    * @param bitSize IO bit size.
    * @param hex Whether the value is hex.
    */
-  private getQueryIOCommand(option: IoOption, bitSize: string, hex: boolean): string {
+  private getQueryIOCommand(option: IoOptions, bitSize: string, hex: boolean): string {
     let dio = IoDirection.Din;
     let ioScope = IoScope.All;
 

@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '../../../../shared/shared.module';
+import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogRef } from '@angular/material';
 import { NewPositionTriggerComponent } from './new-position-trigger.component';
@@ -19,7 +20,7 @@ describe('NewPositionTriggerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ NewPositionTriggerComponent ],
-      imports: [SharedModule, BrowserAnimationsModule],
+      imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
       providers: [
           {provide: MatDialogRef, useValue: fakeMatDialog},
           {provide: TerminalService, useValue: terminalService}]

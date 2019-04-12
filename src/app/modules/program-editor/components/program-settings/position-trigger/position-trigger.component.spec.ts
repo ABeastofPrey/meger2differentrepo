@@ -5,6 +5,7 @@ import { PositionTriggerComponent, IPositionTrigger, initColumns, assemblePLS, a
 } from './position-trigger.component';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { SharedModule } from '../../../../shared/shared.module';
+import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PositionTriggerService, IResPLS } from '../../../services/position-trigger.service';
 
@@ -53,7 +54,7 @@ describe('PositionTriggerComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [PositionTriggerComponent],
-            imports: [SharedModule, BrowserAnimationsModule],
+            imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
             providers: [
                 {provide: PositionTriggerService, useValue: fakeService},
                 {provide: MatSnackBar, useValue: fakeMatSnackBar},

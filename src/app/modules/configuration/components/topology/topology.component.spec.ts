@@ -2,9 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TopologyService } from '../../services/topology.service';
 import { TopologyComponent } from './topology.component';
 import { SharedModule } from '../../../shared/shared.module';
+import { UnitTestModule } from '../../../shared/unit-test.module';
 import { Either } from 'ramda-fantasy';
 import { levelOrder } from './topology.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 const { Right } = Either;
 
 describe('TopologyComponent', () => {
@@ -22,7 +24,7 @@ describe('TopologyComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [SharedModule, BrowserAnimationsModule],
+            imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
             declarations: [TopologyComponent],
             providers: [{ provide: TopologyService, useValue: fakeService }]
         }).compileComponents();

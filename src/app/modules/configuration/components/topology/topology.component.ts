@@ -61,7 +61,6 @@ export class TopologyComponent implements OnInit, OnDestroy {
     public treeControl: FlatTreeControl<FileFlatNode>;
     public dataSource: MatTreeFlatDataSource<DeviceNode, FileFlatNode>;
     public hasErr: boolean = false;
-    public errTip: string;
     public hasChild = (_: number, nodeData: FileFlatNode) => nodeData.expandable;
 
     constructor(
@@ -69,7 +68,6 @@ export class TopologyComponent implements OnInit, OnDestroy {
     ) {
         this.treeControl = new FlatTreeControl<FileFlatNode>(getLevel, isExpandable);
         this.dataSource = new MatTreeFlatDataSource(this.treeControl, treeFlattener);
-        this.errTip = 'Here are some device error, please reset all CS+ in Task Manager.';
     }
 
     ngOnInit(): void {

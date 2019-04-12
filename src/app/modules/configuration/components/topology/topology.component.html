@@ -1,5 +1,5 @@
 <div class="topology">
-    <button *ngIf="hasErr" mat-raised-button color="warn" class="warn-btn">{{errTip}}</button>
+    <button *ngIf="hasErr" mat-raised-button color="warn" class="warn-btn">{{'topology.errTip'|translate}}</button>
     <mat-card>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
@@ -18,10 +18,10 @@
             </mat-tree-node>
         </mat-tree>
         <mat-card-actions>
-            <button matTooltip="Expand all" mat-icon-button>
+            <button matTooltip="{{'topology.exTip'|translate}}" mat-icon-button>
                 <mat-icon (click)="treeControl.expandAll()" class="mat-primary mat-icon">add</mat-icon>
             </button>
-            <button matTooltip="Collapse all" mat-icon-button>
+            <button matTooltip="{{'topology.colTip'|translate}}" mat-icon-button>
                 <mat-icon (click)="treeControl.collapseAll()" class="mat-primary mat-icon">remove</mat-icon>
             </button>
         </mat-card-actions>

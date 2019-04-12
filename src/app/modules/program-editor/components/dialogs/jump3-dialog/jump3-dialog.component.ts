@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, ErrorStateMatcher, MatSelectChange } fro
 import { FormControl, Validators, FormGroupDirective, NgForm, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Jump3DialogService } from '../../../services/jump3-dialog.service';
 import { map, range, all, find } from 'ramda';
+import { TranslateService } from '@ngx-translate/core';
 
 interface IParameter {
   placeholder: string;
@@ -35,17 +36,25 @@ class ParameterErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['jump3-dialog.component.scss']
 })
 export class Jump3DialogComponent implements OnInit {
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<any>,
-    private service: Jump3DialogService) { }
 
   public requiredPars: IRequiredPar[];
   public optionalPars: IOptionalPar[];
   public isAdvanced: boolean;
   private vMax: number;
   private aMax: number;
-  private limits: {min: number, max: number}[];
+  private limits: { min: number, max: number }[];
+  private words: any;
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<any>,
+    private service: Jump3DialogService,
+    private trn: TranslateService
+  ) {
+    this.trn.get(['projectCommands.jump']).subscribe(words => {
+      this.words = words['projectCommands.jump'];
+    });
+  }
 
   async ngOnInit() {
     this.requiredPars = await this.assemblingRequiredPars();
@@ -67,14 +76,14 @@ export class Jump3DialogComponent implements OnInit {
 
   public errorMessage(control: FormControl): string {
     if (control.hasError('required')) {
-      return 'This field is required';
+      return this.words['requireErr'];
     } else if (control.hasError('limit')) {
       return control.errors.limit.msg;
     }
   }
 
   private async assemblingRequiredPars(): Promise<IRequiredPar[]> {
-    const placeholders = ['Motion Element', 'Depart Point', 'Approach Point', 'Dest Frame'],
+    const placeholders = [this.words['motionPh'], this.words['departPh'], this.words['approachPh'], this.words['destPh']],
       motionElements = await this.service.retriveMotionElements(),
       destFrames = this.service.retriveDestFrames(),
       options = [motionElements, destFrames, destFrames, destFrames];
@@ -83,7 +92,7 @@ export class Jump3DialogComponent implements OnInit {
         placeholder: placeholders[n],
         control: new FormControl('', [Validators.required]),
         matcher: ParameterErrorStateMatcher.of(),
-        change: (event: MatSelectChange) => {if (n === 0) { this.retriveLimits(event.value); }},
+        change: (event: MatSelectChange) => { if (n === 0) { this.retriveLimits(event.value); } },
         options: options[n],
         selected: null
       } as IRequiredPar;
@@ -91,9 +100,9 @@ export class Jump3DialogComponent implements OnInit {
   }
 
   private assemblingOptionalPars(): IOptionalPar[] {
-    const placeholders = ['Arch Number', 'Blending Percentage', 'Speed', 'Acceleration'];
+    const placeholders = [this.words['archPh'], this.words['blendingPh'], this.words['speedPh'], this.words['accelerationPh']];
     const suffixs = [, '%', 'mm/s', 'mm/s'], sups = [, , , 2];
-    this.limits = [{min: 1, max: 7}, {min: 0, max: 100}, {min: 0, max: this.vMax}, {min: 0, max: this.aMax}];
+    this.limits = [{ min: 1, max: 7 }, { min: 0, max: 100 }, { min: 0, max: this.vMax }, { min: 0, max: this.aMax }];
     return map(n => {
       return {
         placeholder: placeholders[n],
@@ -124,32 +133,34 @@ export class Jump3DialogComponent implements OnInit {
   }
 
   private limitValidator(min: number, max: number, index: number): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} | null => {
+    return (control: AbstractControl): { [key: string]: any } | null => {
       if (!!control.value === false) { return null; }
-      let msg = `Please enter a number in [${min}, ${max}].`;
+      let msg = `${this.words['numRange']} [${min}, ${max}].`;
       let forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) > max || Number(control.value) < min;
       if (index === 0 && !forbidden) {
         if (Number(control.value) % 1 !== 0) { // Shouldn't input decimal number for Arch number.
-          msg = `Please enter an integer in [${min}, ${max}].`;
+          msg = `${this.words['intRange']} [${min}, ${max}].`;
           forbidden = true;
         }
       }
       if (index === 2 || index === 3) {
-        msg = `Please enter a number in (${min}, ${max}).`;
+        msg = `${this.words['numRange']} (${min}, ${max}).`;
         forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) >= max || Number(control.value) <= min;
-       }
-      return forbidden ? {'limit': {
-        index: index, min: min, max: max, value: control.value,
-        msg: msg
-      }} : null;
+      }
+      return forbidden ? {
+        'limit': {
+          index: index, min: min, max: max, value: control.value,
+          msg: msg
+        }
+      } : null;
     };
   }
 
   private limitValidator1(min: number, max: number, index: number): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} | null => {
+    return (control: AbstractControl): { [key: string]: any } | null => {
       if (!!control.value === false) { return null; }
       const forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) >= max || Number(control.value) <= min;
-      return forbidden ? {'limit1': {index: index, min: min, max: max, value: control.value}} : null;
+      return forbidden ? { 'limit1': { index: index, min: min, max: max, value: control.value } } : null;
     };
   }
 }

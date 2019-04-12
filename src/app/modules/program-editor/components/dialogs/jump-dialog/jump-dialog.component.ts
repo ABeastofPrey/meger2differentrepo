@@ -8,6 +8,7 @@ import { DataService, MCQueryResponse } from '../../../../core/services';
 import { WebsocketService } from './../../../../core/services/websocket.service';
 import { ProgramEditorService } from '../../../services/program-editor.service';
 import { JumpParameterErrorKey, JumpParameter } from './jump-dialog.enum';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * The class to define the error matcher for the validation form.
@@ -28,6 +29,8 @@ export class ParameterErrorStateMatcher implements ErrorStateMatcher {
  * This class describes the logics to insert jump command into the user program.
  */
 export class JumpDialogComponent implements OnInit {
+
+  private words: any = {};
 
   /**
    * The max value of the speed.
@@ -54,11 +57,7 @@ export class JumpDialogComponent implements OnInit {
   /**
    * The error messages for the value validation.
    */
-  private errorMessages = {
-    [JumpParameterErrorKey.NotIntegerArcNumber]: 'Please enter a integer in [1, 7].',
-    [JumpParameterErrorKey.InValidArcNumber]: 'Please enter a integer in [1, 7].',
-    [JumpParameterErrorKey.InValidBlending]: 'Please enter a number in [0, 100].'
-  };
+  private errorMessages: any;
 
   /**
    * The motion element of the jump command.
@@ -160,8 +159,16 @@ export class JumpDialogComponent implements OnInit {
   constructor(public dataService: DataService,
     public dialogRef: MatDialogRef<any>,
     private prgService: ProgramEditorService,
-    private ws: WebsocketService) {
-
+    private ws: WebsocketService,
+    private trn: TranslateService) {
+      this.trn.get(['projectCommands.jump']).subscribe(words => {
+        this.words = words['projectCommands.jump'];
+        this.errorMessages = {
+          [JumpParameterErrorKey.NotIntegerArcNumber]: `${this.words['intRange']} [1, 7].`,
+          [JumpParameterErrorKey.InValidArcNumber]: `${this.words['intRange']} [1, 7].`,
+          [JumpParameterErrorKey.InValidBlending]: `${this.words['numRange']} [0, 100].`
+        };
+      });
     }
 
   ngOnInit() {
@@ -299,7 +306,7 @@ ${this.acceleration ? this.acceleration : -1})`;
         return;
       }
       this.accelerationMax = Math.floor(Number(ret.result));
-      this.errorMessages[JumpParameterErrorKey.InValidAcceleration] = `Please enter a number in (0, ${this.accelerationMax})`;
+      this.errorMessages[JumpParameterErrorKey.InValidAcceleration] = `${this.words['numRange']} (0, ${this.accelerationMax})`;
       this.advancedFormControls[JumpParameter.Acceleration] = new FormControl('', [
         this.createValidator(0, this.accelerationMax, JumpParameterErrorKey.InValidAcceleration,
           (value: Number, min: Number, max: Number): boolean => {
@@ -318,7 +325,7 @@ ${this.acceleration ? this.acceleration : -1})`;
         return;
       }
       this.speedMax = Math.floor(Number(ret.result));
-      this.errorMessages[JumpParameterErrorKey.InValidSpeed] = `Please enter a number in (0, ${this.speedMax})`;
+      this.errorMessages[JumpParameterErrorKey.InValidSpeed] = `${this.words['numRange']} (0, ${this.speedMax})`;
       this.advancedFormControls[JumpParameter.Speed] = new FormControl('', [
         this.createValidator(0, this.speedMax, JumpParameterErrorKey.InValidSpeed,
           (value: Number, min: Number, max: Number): boolean => {
@@ -346,7 +353,7 @@ ${this.acceleration ? this.acceleration : -1})`;
         }
         this.limitZMin = Math.floor(Number(zMinRet.result));
         this.errorMessages[JumpParameterErrorKey.InValidLimitZ] =
-          `Please enter a number in [${this.limitZMin}, ${this.limitZMax}]`;
+          `${this.words['numRange']} [${this.limitZMin}, ${this.limitZMax}]`;
 
         this.advancedFormControls[JumpParameter.LimitZ] = new FormControl('', [
           this.createValidator(this.limitZMin, this.limitZMax, JumpParameterErrorKey.InValidLimitZ,

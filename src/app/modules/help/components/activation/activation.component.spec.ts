@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '../../../shared/shared.module';
+import { UnitTestModule } from '../../../shared/unit-test.module';
 import { ActivationComponent } from './activation.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { MatSnackBar, MatDialogRef } from '@angular/material';
@@ -8,7 +9,7 @@ import { ActivationService } from './activation.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Either } from 'ramda-fantasy';
 
-declare const Kuka: { kukaInfo: (encryptText: string) => { machinedId: string, verificationCode: string }};
+declare const Kuka: { kukaInfo: (encryptText: string) => { machinedId: string, verificationCode: string } };
 
 const { Right } = Either;
 
@@ -38,11 +39,11 @@ describe('ProgramSettingsComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [SharedModule, QRCodeModule, BrowserAnimationsModule],
+            imports: [SharedModule, UnitTestModule, QRCodeModule, BrowserAnimationsModule],
             providers: [
-                {provide: MatSnackBar, useValue: fakeMatSnackBar},
-                {provide: MatDialogRef, useValue: fakeMatDialog},
-                {provide: ActivationService, useValue: fakeService}
+                { provide: MatSnackBar, useValue: fakeMatSnackBar },
+                { provide: MatDialogRef, useValue: fakeMatDialog },
+                { provide: ActivationService, useValue: fakeService }
             ],
             declarations: [ActivationComponent],
             schemas: [NO_ERRORS_SCHEMA]

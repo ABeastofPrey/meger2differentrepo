@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild, AfterViewInit, Input } from '@angular/core';
 import { MatTable, MatTableDataSource, MatRow } from '@angular/material';
 
-import { CustomIOType, IoFormatOption, IoTableColumn } from '../../../services/io.service.enum';
+import { CustomIOType, IoTableColumn } from '../../../services/io.service.enum';
 import { CustomIO, IoService, CustomIOPort } from '../../../services/io.service';
+
 
 @Component({
   selector: 'app-custom-io',
@@ -26,10 +27,11 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     IoTableColumn.Label
   ];
 
+
   /**
    * The IoFormatOption enum object reference.
    */
-  ioFormatOptionReference = IoFormatOption;
+  //IoFormatOptionsReference = IoFormatOptions;
 
   /**
    * The CustomIOType enum object reference.

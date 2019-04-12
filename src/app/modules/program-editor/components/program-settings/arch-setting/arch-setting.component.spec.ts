@@ -1,5 +1,6 @@
 import { ArchSettingComponent } from './arch-setting.component';
 import { SharedModule } from '../../../../shared/shared.module';
+import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { ArchSettingService } from '../../../services/arch-setting.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -37,7 +38,7 @@ describe('ArchSettingComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [ArchSettingComponent],
-            imports: [SharedModule, BrowserAnimationsModule],
+            imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
             providers: [
               { provide: ArchSettingService, useValue: archSettingService },
               { provide: ComponentFixtureAutoDetect, useValue: true },

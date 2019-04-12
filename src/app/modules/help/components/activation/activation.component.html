@@ -1,19 +1,19 @@
 <div class="mat-typography">
-    <h1 class="title">Activation</h1>
+    <h1 class="title">{{'help.activation.title'|translate}}</h1>
     <div mat-dialog-content>
       <qrcode [qrdata]="url" [size]="200" [level]="'M'"></qrcode>
       <mat-form-field class="activation-form">
-        <input matInput placeholder="Please input captcha" [formControl]="control" [(ngModel)]="pinCode">
+        <input matInput placeholder="{{'help.activation.captchaPlaceholder'|translate}}" [formControl]="control" [(ngModel)]="pinCode">
         <mat-error *ngIf="(control.hasError('minlength') || control.hasError('maxlength')) && !control.hasError('required')">
-          Please enter a captcha of length 6.
+          {{'help.activation.lengthErr'|translate}}
         </mat-error>
         <mat-error *ngIf="control.hasError('required')">
-          Captcha is <strong>required</strong>
+          {{'help.activation.requireErr'|translate}}
         </mat-error>
       </mat-form-field>
     </div>
     <div mat-dialog-actions class="actions">
-      <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>CANCEL</button>
-      <button mat-button color="primary" [disabled]="hasError" (click)="verify()">VERIFY</button>
+      <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>{{'button.cancel'|translate}}</button>
+      <button mat-button color="primary" [disabled]="hasError" (click)="verify()">{{'button.verify'|translate}}</button>
     </div>
 </div>

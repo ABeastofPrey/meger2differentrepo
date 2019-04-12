@@ -1,6 +1,6 @@
 <div class="mat-typography" style="margin: -24px;">
   <div class="header mat-toolbar mat-primary mat-elevation-z3">
-      <div class="title">{{calibrationMessageReference.CalibrationResult + ' ' + toolName}}</div>
+      <div class="title">{{"tool_calib.calibrate_result" | translate }} {{ toolName }}</div>
   </div>
 
   <div class="tooltip">
@@ -8,7 +8,7 @@
         <mat-icon>help</mat-icon>
     </div>
     <div class="tooltip-text">
-        <pre>{{calibrationMessageReference.IsApplyDataToTool + ' ' + toolName}}?</pre>
+        <pre>{{"tool_calib.isApplyDataToTool" | translate }} {{ toolName }}?</pre>
     </div>
   </div>
   <div class="result-table">
@@ -32,19 +32,19 @@
       </ng-container>
 
       <ng-container matColumnDef="{{CalibrationTableColumnReference.Current}}">
-        <mat-header-cell *matHeaderCellDef>{{CalibrationTableColumnReference.Current | titlecase}}</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>{{"tool_calib.current" | translate}}</mat-header-cell>
         <mat-cell color="primary" *matCellDef="let element">
           {{element.current | number: "1.0-4"}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="{{CalibrationTableColumnReference.New}}">
-        <mat-header-cell *matHeaderCellDef>{{CalibrationTableColumnReference.New | titlecase}}</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>{{"tool_calib.new" | translate}}</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.new | number: "1.0-4"}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="{{CalibrationTableColumnReference.Delta}}">
-          <mat-header-cell *matHeaderCellDef>{{CalibrationTableColumnReference.Delta | titlecase}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>{{"tool_calib.delta" | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let element"> {{element.delta | number: "1.0-4"}} </mat-cell>
         </ng-container>
 
@@ -59,17 +59,17 @@
     </div>
     <div class="warning-text">
         <ng-container *ngIf="!calibrationOutOfScope">
-            <pre>{{calibrationMessageReference.CalibrationSuccess}}</pre>
+            <pre>{{"tool_calib.calibrationSuccess" | translate}}</pre>
         </ng-container>
         <ng-container *ngIf="calibrationOutOfScope">
-          <pre>{{calibrationMessageReference.ResultOutOfScope}}</pre>
+          <pre>{{"tool_calib.resultOutOfScope" | translate}}</pre>
         </ng-container>
     </div>
   </div>
 
   <div class="multiple-buttons">
-        <button mat-raised-button class="apply-button" color="primary" (click)="onApply()">Apply</button>
-        <button mat-raised-button class="cancel-button" color="primary" (click)="onCancel()">Cancel</button>
+        <button mat-raised-button class="apply-button" color="primary" (click)="onApply()">{{"tool_calib.apply" | translate}}</button>
+        <button mat-raised-button class="cancel-button" color="primary" (click)="onCancel()">{{"tool_calib.cancel" | translate}}</button>
   </div>
 
 </div>

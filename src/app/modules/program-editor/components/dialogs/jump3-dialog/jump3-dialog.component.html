@@ -1,5 +1,5 @@
 <div class="mat-typography">
-  <h1 class="title">Insert {{data.type}} Command</h1>
+  <h1 class="title">{{'projectCommands.jump.titleA'|translate}} {{data.type}} {{'projectCommands.jump.titleB'|translate}}</h1>
   <div mat-dialog-content>
     <!-- Required command parameters -->
     <mat-form-field *ngFor="let requirePar of requiredPars">
@@ -12,7 +12,7 @@
       </mat-error>
     </mat-form-field>
     <!-- Toggle slide for set optional parameters-->
-    <mat-slide-toggle [(ngModel)]="isAdvanced" style="margin-bottom: 8px;" color="primary" [disabled]="!enableAdvanced" >Advanced</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="isAdvanced" style="margin-bottom: 8px;" color="primary" [disabled]="!enableAdvanced" >{{'projectCommands.jump.advanced'|translate}}</mat-slide-toggle>
     <!-- Optional command parameters -->
     <ng-container *ngIf="isAdvanced">
       <mat-form-field *ngFor="let optionalPar of optionalPars">
@@ -26,7 +26,7 @@
     </ng-container>
   </div>
   <div mat-dialog-actions class="actions">
-    <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>CANCEL</button>
-    <button mat-button color="primary" [disabled]="!enableAdvanced || hasInvalidOptional" (click)="emitCmd()">INSERT</button>
+    <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>{{'button.cancel'|translate}}</button>
+    <button mat-button color="primary" [disabled]="!enableAdvanced || hasInvalidOptional" (click)="emitCmd()">{{'button.insert'|translate}}</button>
   </div>
 </div>

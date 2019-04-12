@@ -1,8 +1,8 @@
 <div class="home-config">
     <!-- home position -->
     <div class="home-position">
-        <span class="group-head">Home Position</span>
-        <span *ngIf="positionList.length !== 0" >Values are in degree</span>
+        <span class="group-head">{{'projectSettings.home_config.homePosition'|translate}}</span>
+        <span *ngIf="positionList.length !== 0" >{{'projectSettings.home_config.degree'|translate}}</span>
         <div class="items-container">
             <mat-form-field *ngFor="let p of positionList; let i=index">
                 <span matPrefix >J{{i+1}}: &nbsp;</span>
@@ -11,17 +11,17 @@
                 (keyup)="onKeyup($event)"/>
             </mat-form-field>
         </div>
-        <button *ngIf="positionList.length !== 0" mat-raised-button class="read-btn" (click)="readCurrentPosition()">Read Current Position</button>
+        <button *ngIf="positionList.length !== 0" mat-raised-button class="read-btn" (click)="readCurrentPosition()">{{'projectSettings.home_config.curPositionBtn'|translate}}</button>
     </div>
     <!-- home order -->
     <div class="home-order">
-        <span class="group-head">Home Order</span>
+        <span class="group-head">{{'projectSettings.home_config.homeOrder'|translate}}</span>
         <div class="items-container">
             <mat-form-field *ngFor="let o of orderList; let i=index">
                 <span matPrefix >J{{i+1}}: &nbsp;</span>
                 <mat-select [(value)]="o" (selectionChange)="updateOrder(i+1, $event.value)">
                     <mat-option *ngFor="let op of orderOptions" [value]="op">
-                        Step {{op}}
+                        {{'projectSettings.home_config.stepOption'|translate}} {{op}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
