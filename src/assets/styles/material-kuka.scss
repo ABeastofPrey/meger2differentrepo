@@ -88,8 +88,13 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
     color: $material-semi-black;
   }
 
-  .primary-bg, .mat-button-toggle-checked {
-    background-color: mat-color($material-kuka-primary, 600);
+  .primary-bg, .mat-button-toggle-checked, .virtual-keyboard .key-down, .virtual-keyboard .key:active {
+    background-color: mat-color($material-kuka-primary, 600)!important;
     color: $light-primary-text !important;
+  }
+  
+  .mode-selector .mat-button-toggle-checked {
+    background-color: mat-color($material-kuka-accent);
+    color: mat-color($material-kuka-accent, default-contrast);
   }
 }

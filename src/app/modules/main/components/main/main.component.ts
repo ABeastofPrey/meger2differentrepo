@@ -9,6 +9,7 @@ import {environment} from '../../../../../environments/environment';
 import {trigger, transition, style, animate, query, stagger} from '@angular/animations';
 import {RobotService} from '../../../core/services/robot.service';
 import {TranslateService} from '@ngx-translate/core';
+import {CommonService} from '../../../core/services/common.service';
 
 @Component({
   selector: 'app-main',
@@ -80,7 +81,8 @@ export class MainComponent implements OnInit {
     private tour: TourService,
     public prj: ProjectManagerService,
     private robot: RobotService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public cmn: CommonService
   ) {
     this.trn.get(['main.errJog','main.jogControlsToggle']).subscribe(words=>{
       this.words = words;
@@ -150,25 +152,28 @@ export class MainComponent implements OnInit {
       clearInterval(this.jogInterval);
       this.motionFlag = true;
       this.mouseDownIndex = i;
-      this.ws.send('?tp_jog(' + i + ')');
+      this.ws.send('?tp_jog(' + i + ')',true);
       //console.log('jog');
       this.jogInterval = setInterval(()=>{
         if (this.motionFlag) {
-          this.ws.send('?tp_jog(' + i + ')');
-          window.navigator.vibrate(200);
+          this.ws.send('?tp_jog(' + i + ')',true);
+          navigator.vibrate(200);
           //console.log('jog');
         } else {
           clearInterval(this.jogInterval);
-          this.ws.send("?tp_jog(0)");
+          this.ws.send("?tp_jog(0)",true);
         }
       },this.data._refreshCycle);
     });
   }
   
-  mouseUp() {
+  mouseUp(e:MouseEvent) {
+    let target:any = e.target;
+    if (e.type === 'mouseout' && target.tagName !== 'TD')
+      return;
     if (this.jogButtonPressed || this.stat.isMoving) {
       this.motionFlag = false;
-      this.ws.send("?tp_jog(0)");
+      this.ws.send("?tp_jog(0)",true);
       clearInterval(this.jogInterval);
     }
     this.jogButtonPressed = false;
@@ -177,10 +182,6 @@ export class MainComponent implements OnInit {
   
   openJogSettings() {
     this.dialog.open(JogSettingsDialogComponent);
-  }
-  
-  onJogEnableChange(e: MatSlideToggleChange) {
-    this.stat.mode = (e.checked ? 'T1' : 'A');
   }
   
   toggleTerminal() {

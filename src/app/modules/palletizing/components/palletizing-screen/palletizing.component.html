@@ -17,7 +17,7 @@
     </div>
   </div>
   <div class="canvas-wrapper" #palletContainer 
-    [style.background-image]="data.selectedPallet ? '#fff' : 'url(' + palletBgImgUrl + ')'">
+    [style.background-image]="data.selectedPallet ? 'none' : 'url(' + palletBgImgUrl + ')'">
     <canvas #palletPreview width="{{800}}" height="{{800}}"></canvas>
     <div *ngIf="abnormalItemCount" class="error-message">
       {{'pallets.err_item_count'|translate}}

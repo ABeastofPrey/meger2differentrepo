@@ -389,9 +389,9 @@ export class ProgramEditorService {
       this.statusChange.emit(this.status);
       return;
     }
-    const cmd = isLib ? ('?' + file + '.dummyVariable') : ('?' + file + '.status');
+    const cmd = isLib ? ('?' + file + '.dummyVariable') : ('cyc4,' + file);
     this.oldStatString = null;
-    this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
+    this.statusInterval = this.ws.send(cmd,false,(ret:string,command:string,err:ErrorFrame)=>{
       if (ret !== this.oldStatString) {
         this.oldStatString = ret;
         this.zone.run(()=>{
@@ -427,7 +427,6 @@ export class ProgramEditorService {
                   this.status.programLine = bt.files[0].line;
                   this.statusChange.emit(this.status);
                 } else {
-                  console.log(this.status);
                   this.backtrace = bt;
                   this.statusChange.emit(this.status);
                   //this.setFile(bt.files[0].name, null, null, bt);

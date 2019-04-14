@@ -3,7 +3,7 @@ import {MatTreeFlatDataSource, MatTreeFlattener, MatSelectChange, MatSlideToggle
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {of as ofObservable, Observable, BehaviorSubject} from 'rxjs';
 import {GripperTestDialogComponent} from '../gripper-test-dialog/gripper-test-dialog.component';
-import {WebsocketService, MCQueryResponse, DataService} from '../../../core';
+import {WebsocketService, MCQueryResponse, DataService, LoginService} from '../../../core';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {SingleInputDialogComponent} from '../../../../components/single-input-dialog/single-input-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
@@ -132,7 +132,8 @@ export class GripperScreenComponent implements OnInit {
     private database: ChecklistDatabase,
     private ws: WebsocketService,
     private dialog: MatDialog,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public login: LoginService
   ) {
     const words = [
      'add','grippers.ef','grippers.grp','delete','name','button.delete',

@@ -6,11 +6,11 @@
       <mat-icon>perm_data_setting</mat-icon>
       <div>{{'apps.modbus'|translate}}</div>
     </a>
-    <a (click)="uploadIPK()" *ngIf="login.permission === 'Administrator'">
+    <a (click)="uploadIPK()" *ngIf="login.isAdmin">
       <mat-icon>system_update</mat-icon>
       <div>{{'apps.firmware'|translate}}...</div>
     </a>
-    <a (click)="reboot()" *ngIf="login.permission === 'Administrator'">
+    <a (click)="reboot()">
       <mat-icon>power_settings_new</mat-icon>
       <div>{{'apps.reboot'|translate}}</div>
     </a>

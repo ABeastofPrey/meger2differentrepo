@@ -39,12 +39,11 @@
             <mat-form-field appearance="outline" class="disp">
               <mat-label>J{{i+1}}</mat-label>
               <input matInput [(ngModel)]="disp[i]" (change)="onSettingsKeyboardClose()">
-              <span matSuffix>[{{units[i]}}]</span>
+              <span matSuffix *ngIf="units">[{{units[i]}}]</span>
             </mat-form-field>
             <button mat-raised-button color="primary" (click)="setHome(i+1)" class="btn-home center-vertical-horizontal">
               <mat-icon>gps_fixed</mat-icon><span style="margin-left: 8px;">{{'robots.btnSetCurrent'|translate}}</span>
             </button>
-
           </div>
         </div>
       </mat-tab>

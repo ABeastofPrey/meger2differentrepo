@@ -6,6 +6,9 @@ import {BehaviorSubject} from 'rxjs';
 import {ApiService} from './api.service';
 import {environment} from '../../../../environments/environment';
 import {TranslateService} from '@ngx-translate/core';
+import {AuthPassDialogComponent} from '../../../components/auth-pass-dialog/auth-pass-dialog.component';
+import {CommonService} from './common.service';
+import {LoginService} from './login.service';
 
 class TPStatResponse {
   ENABLE : number;
@@ -60,12 +63,48 @@ export class TpStatService {
     let dm = active ? 1 : 0;
     this._virtualDeadman = active;
     this._deadman = active;
-    this.ws.send('?tp_set_deadman(' + dm + ')',(result,cmd,err)=>{
+    this.ws.send('?tp_set_deadman(' + dm + ')',true,(result,cmd,err)=>{
       if (result !== '0') {
         this._virtualDeadman = oldStat;
         this._deadman = oldStat;
       }
     });
+  }
+  
+  /*
+   * IF THE USER USES A TABLET, AND CHANGES THE MODE (T1,T2...) SO FIRST HE
+   * WILL BE PROMPT TO ENTER HIS PASSWORD AGAIN.
+   */
+  changeMode(mode: string) {
+    if (this.cmn.isTablet) {
+      const currMode = this._switch;
+      this._switch = mode;
+      this.zone.run(()=>{
+        this.dialog.open(AuthPassDialogComponent,{
+          minWidth: '400px'
+        }).afterClosed()
+        .subscribe((pass:string)=>{
+          if (pass) {
+            const username = this.login.getCurrentUser().user.username;
+            this.api.confirmPass(username,pass).then(ret=>{
+              if (ret) {
+                this.mode = mode;
+              } else {
+                this.snack.open(
+                  this.words['password_err'],
+                  this.words['acknowledge']
+                );
+                this._switch = currMode;
+              }
+            });
+          } else {
+            this._switch = currMode;
+          }
+        });
+      });
+    } else {
+      this.mode = mode;
+    }
   }
   
   get mode() : string {return this._switch; }
@@ -106,7 +145,7 @@ export class TpStatService {
   get enabled() : boolean { return this._enabled; }
   toggleEnabled() {
     let newVal = this.enabled ? 0 : 1;
-    this.ws.send('?tp_enable(' + newVal + ')');
+    this.ws.send('?tp_enable(' + newVal + ')',true);
   }
   
   updateState(statString : string) {
@@ -145,7 +184,7 @@ export class TpStatService {
             this.zone.run(()=>{
               setTimeout(()=>{
                 this.snack.open(err,this.words['acknowledge']).afterDismissed().subscribe(()=>{
-                  this.ws.send('?TP_CONFIRM_ERROR');
+                  this.ws.send('?TP_CONFIRM_ERROR',true);
                 });
               },0);
             });
@@ -164,7 +203,7 @@ export class TpStatService {
   startTpLibChecker() {
     if (this.tpInterval !== null)
       this.ws.clearInterval(this.tpInterval);
-    this.tpInterval = this.ws.send('?system_state',(res,cmd,err)=>{
+    this.tpInterval = this.ws.send('?system_state',false,(res,cmd,err)=>{
       const offline = err || res !== '1000';
       if (offline && this._online) { // WAS ONLINE BEFORE
         this.onlineStatus.next(false);
@@ -213,7 +252,9 @@ export class TpStatService {
     private zone : NgZone,
     private snack: MatSnackBar,
     private api: ApiService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private cmn: CommonService,
+    private login: LoginService
   ) {
     this.onlineStatus.subscribe(stat=>{
       if (stat) { // TP ONLINE
@@ -225,9 +266,9 @@ export class TpStatService {
         });
       }
     });
-    this.trn.get(['acknowledge', 'offline', 'online']).toPromise().then(words=>{
+    this.trn.get(['acknowledge', 'offline', 'online', 'password_err'])
+    .subscribe(words=>{
       this.words = words;
-    }).then(()=>{
       this.init();
     });
   }
@@ -253,7 +294,7 @@ export class TpStatService {
       });
       if (stat) { // TP_VER is OK
         // START KEEPALIVE
-        this.interval = this.ws.send('?tp_stat',(res,cmd,err)=>{
+        this.interval = this.ws.send('cyc0',true,(res,cmd,err)=>{
           if (err && this._online) {
             this.ws.clearInterval(this.interval);
             this.onlineStatus.next(false);

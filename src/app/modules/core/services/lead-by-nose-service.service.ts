@@ -120,11 +120,11 @@ export class LeadByNoseServiceService {
         //this.mgr.mode == this.mgr.ScreenMode.TP;
         return;
       }
-      this.keepAlive = this.ws.send('?LBN_GET_STATUS',(result:string)=>{
+      this.keepAlive = this.ws.send('?LBN_GET_STATUS',true,(result:string)=>{
         if (result === '0') {
           this._lbnStatus = false;
           this.ws.clearInterval(this.keepAlive);
-          this.ws.send('?LBN_EXECUTE(0)');
+          this.ws.send('?LBN_EXECUTE(0)',true);
           //this.mgr.mode == this.mgr.ScreenMode.TP;
         }
       },200);
@@ -145,7 +145,7 @@ export class LeadByNoseServiceService {
             this.snackbar.open(this.word_errTimeout,'',{duration:2000});
             //this.mgr.mode = this.mgr.ScreenMode.TP;
             this.ws.clearInterval(this.keepAlive);
-            this.ws.send('?LBN_EXECUTE(0)');
+            this.ws.send('?LBN_EXECUTE(0)',true);
             this._lbnStatus = false;
           }
         });

@@ -62,6 +62,7 @@ login-screen { flex: 1; }
 watch-window, notification-window, terminal-window {
   flex: 1;
   display: flex;
+  overflow: hidden;
 }
 watch-window {
   max-width: 450px;
@@ -123,7 +124,10 @@ watch-window {
   -moz-box-shadow: 0px 0px 128px 16px rgba(0,255,0,1);
   box-shadow: 0px 0px 128px 16px rgba(0,255,0,1);
 }
-.indicator-on { color: lime; }
+.indicator-on { 
+  background-color: lime!important;
+  color: #000!important;
+}
 coordinates {
   position: absolute;
   bottom: 8px;
@@ -144,3 +148,17 @@ coordinates {
   justify-content: center;
 }
 .remote mat-icon { margin-right: 8px; }
+.mode-selector {
+  margin-right: 16px;
+}
+.mode-selector .title {
+  font-size: 16px;
+  margin-right: 8px;
+}
+main-menu {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: block;
+  overflow: hidden;
+}

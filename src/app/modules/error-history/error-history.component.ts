@@ -66,7 +66,7 @@ export class ErrorHistoryComponent implements OnInit {
   }
   
   acknowledge() {
-    this.ws.send('?TP_CONFIRM_ERROR');
+    this.ws.send('?TP_CONFIRM_ERROR',true);
   }
   
   refreshErrors() { // ONCE, NOT INTERVAL

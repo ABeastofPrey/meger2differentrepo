@@ -4,6 +4,8 @@ import {Input} from '@angular/core';
 import {trigger, transition, style, animate} from '@angular/animations';
 import {KeywordService} from '../../../core/services/keywords.service';
 import {ApplicationRef} from '@angular/core';
+import {CommonService} from '../../../core/services/common.service';
+import {LoginService} from '../../../core';
 
 declare var ace;
 
@@ -58,10 +60,14 @@ export class TerminalComponent implements OnInit {
     public terminal : TerminalService,
     private keywords: KeywordService,
     private zone: NgZone,
-    private ref: ApplicationRef
+    private ref: ApplicationRef,
+    public cmn: CommonService,
+    public login: LoginService
   ) {}
   
   ngAfterViewInit() {
+    if (!this.login.isAdmin)
+      return;
     setTimeout(()=>{
       const height = this.wrapper.nativeElement.scrollHeight;
       this.wrapper.nativeElement.scrollTop = height;
@@ -82,8 +88,9 @@ export class TerminalComponent implements OnInit {
       theme: "ace/theme/eclipse",
       fontSize: "14px",
       maxLines: Infinity,
-      readOnly: true
+      readOnly: true,
     });
+    editor.getSession().setUseWrapMode(true);
     editor.renderer.$cursorLayer.element.style.display = "none";
     this.keywords.initDone.subscribe(done=>{
       if (!done)
@@ -145,7 +152,8 @@ export class TerminalComponent implements OnInit {
     });
     editor.commands.bindKey("up",()=>{ this.onKeyUp(); });
     editor.commands.bindKey("down",()=>{ this.onKeyUp(); });
-    editor.focus();
+    if (!this.cmn.isTablet)
+      editor.focus();
   }
   
   onContextMenu(e:MouseEvent) {
@@ -169,7 +177,8 @@ export class TerminalComponent implements OnInit {
     this.terminal.clear();
     this.cmd = '';
     this.contextMenuShown = false;
-    this.editor.focus();
+    if (!this.cmn.isTablet)
+      this.editor.focus();
   }
   
   private send() {
@@ -214,15 +223,21 @@ export class TerminalComponent implements OnInit {
   }
   
   paste() {
-    navigator['clipboard'].readText()
-    .then(text => {
-      this.editor.insert(text);
+    try {
+      navigator['clipboard'].readText()
+      .then(text => {
+        this.editor.insert(text);
+        this.contextMenuShown = false;
+        this.editor.focus();
+      })
+      .catch(err => {
+        console.log('Something went wrong', err);
+      });
+    } catch (err) {
+      alert('CLIPBOARD OPERATIONS NOT SUPPORTED, USE CTRL + V');
       this.contextMenuShown = false;
       this.editor.focus();
-    })
-    .catch(err => {
-      console.log('Something went wrong', err);
-    }); 
+    }
   }
   
   openScriptDialog() {

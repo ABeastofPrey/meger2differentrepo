@@ -10,7 +10,7 @@
 .context-menu { 
   position: absolute;
   background: #fff;
-  z-index: 2;
+  z-index: 6;
 }
 .context-menu mat-icon, .context-menu img {
   font-size: 18px;

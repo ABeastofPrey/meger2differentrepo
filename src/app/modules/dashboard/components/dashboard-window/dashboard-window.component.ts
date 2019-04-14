@@ -6,6 +6,7 @@ import {DashboardWindow, DashboardService, DashboardParam} from '../../services/
 import {WebsocketService, MCQueryResponse} from '../../../../modules/core/services/websocket.service';
 import {TourService} from 'ngx-tour-md-menu';
 import {TranslateService} from '@ngx-translate/core';
+import {LoginService} from '../../../core';
 
 @Component({
   selector: 'dashboard-window',
@@ -29,7 +30,8 @@ export class DashboardWindowComponent implements OnInit {
     private snack : MatSnackBar,
     private dialog : MatDialog,
     private tour : TourService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public login: LoginService
   ) {
     this.trn.get(['dashboard.err_target','dismiss','dashboard.move_sent']).subscribe(words=>{
       this.words = words;

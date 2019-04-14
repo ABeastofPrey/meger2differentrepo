@@ -1,6 +1,6 @@
 <div class="content" #wrapper (contextmenu)="onContextMenu($event)">
-  <div *ngIf="login.getCurrentUser().user.permission === 1">{{notification.notifications}}</div>
-  <div *ngIf="login.getCurrentUser().user.permission === 0">
+  <div *ngIf="!login.isAdmin">{{notification.notifications}}</div>
+  <div *ngIf="login.isAdmin">
     <div *ngFor="let n of notification.notificationsAsArray">
       <div *ngIf="n.msg">{{n.msg}}</div>
       <div *ngIf="n.err">

@@ -1,18 +1,20 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import {MatSnackBar} from '@angular/material';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import {MatSnackBar, MatDrawer} from '@angular/material';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ApiService, LoginService, UploadResult, ScreenManagerService, TpStatService, ControlStudioScreen} from '../../../core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
+import {CommonService} from '../../../core/services/common.service';
 
 @Component({
   selector: 'main-menu',
   templateUrl: './main-menu.component.html',
-  styleUrls: ['./main-menu.component.css']
+  styleUrls: ['./main-menu.component.scss']
 })
 export class MainMenuComponent implements OnInit {
   
   @ViewChild('upload') uploadInput: ElementRef;
+  @Input('drawer') drawer: MatDrawer;
   
   profileSrc: string;
   tpOnline: boolean = false;
@@ -24,7 +26,8 @@ export class MainMenuComponent implements OnInit {
     public mgr: ScreenManagerService,
     private router: Router,
     public stat: TpStatService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private cmn: CommonService
   ) {
     
   }
@@ -33,7 +36,10 @@ export class MainMenuComponent implements OnInit {
     if (s.requiresTpLib && !this.tpOnline)
       return;
     this.mgr.screen = s;
-    this.router.navigateByUrl('/' + s.url);
+    this.router.navigateByUrl('/' + s.url).then(()=>{
+      if (this.cmn.isTablet)
+        this.drawer.close();
+    });
   }
 
   ngOnInit() {

@@ -40,8 +40,7 @@
                 </mat-header-cell>
                 <ng-container *ngIf="leftRadioOptions.key === IoFormatOptionsReference.Bit">
                   <mat-cell color="primary" *matCellDef="let element">
-                    <io-button [status]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'left')"></io-button>
-                    <!--<input type="radio" name="LeftValue{{element.port}}" [checked]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'left')">-->
+                    <io-button [status]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'left')" [disabled]="login.isViewer"></io-button>
                   </mat-cell>
                 </ng-container>
                 <ng-container *ngIf="leftRadioOptions.key !== IoFormatOptionsReference.Bit">
@@ -99,8 +98,7 @@
                 </mat-header-cell>
                 <ng-container *ngIf="rightRadioOptions.key === IoFormatOptionsReference.Bit">
                   <mat-cell color="primary" *matCellDef="let element">
-                    <io-button [status]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'right')"></io-button>
-                    <!--<input type="radio" name="RightValue{{element.port}}" [checked]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'right')">-->
+                    <io-button [status]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'right')" [disabled]="login.isViewer"></io-button>
                   </mat-cell>
                 </ng-container>
                 <ng-container *ngIf="rightRadioOptions.key !== IoFormatOptionsReference.Bit">

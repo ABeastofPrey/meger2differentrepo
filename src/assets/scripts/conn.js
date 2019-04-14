@@ -1,6 +1,7 @@
 var globalConn = new MCConnection();
 var worker = this;
 var intervals = [];
+var pending = [];
 
 onmessage = function(e) {
   if (e.data.serverMsg) {
@@ -20,23 +21,35 @@ onmessage = function(e) {
   }
   if (e.data.interval) { // INTERVAL
     intervals[e.data.id] = true;
-    timer(e.data.id, e.data.interval, e.data.msg);
+    timer(e.data.id, e.data.interval, e.data.msg, e.data.force);
   } else
     globalConn.sendData(e.data.msg);
 }
 
-function timer(id, interval, msg) {
+function timer(id, interval, msg, force) {
   var now = new Date().getTime();
   var timeout;
   if (intervals[id]) {
     timeout = setTimeout(function(){
-      timer(id, interval, msg);
+      timer(id, interval, msg, force);
     },interval);
+    if (!globalConn.connected())
+      return;
+    if (!force && pending[id]) {
+      //vcconsole.log('still pending',id);
+      clearTimeout(timeout);
+      setTimeout(function(){
+        timer(id, interval, msg, force);
+      },10);
+      return;
+    }
     globalConn.sendData(msg);
+    //console.log('sent msg',id);
+    pending[id] = true;
     if (new Date().getTime() - now > interval) {
       clearTimeout(timeout);
       setTimeout(function(){
-        timer(id, interval);
+        timer(id, interval, msg, force);
       },interval);
     }
   } else {
@@ -54,6 +67,7 @@ function MCConnection() {
   var IP = self.location.hostname;
   //var IP = '10.4.20.61';
   var reset = true;
+  var isConnected = false;
   
   this.connect = function(){
     //Initiate a websocket connection
@@ -65,6 +79,7 @@ function MCConnection() {
         },100);
         console.log("WEBSOCKET OPENED");
         reset = false;
+        isConnected = true;
       };
       ws.onerror = function(e) {
         worker.postMessage({serverMsg:true,msg:1}); // ONERROR MESSAGE
@@ -74,10 +89,20 @@ function MCConnection() {
       ws.onclose = function(event) {
         worker.postMessage({serverMsg:true,msg:2,clean:event.wasClean}); // ONCLOSE MESSAGE
         console.log("WEBSOCKET CLOSED");
+        isConnected = false;
       };
       ws.onmessage = function (msg) {
-        //console.log(JSON.parse(msg.data)['cmd']);
-        worker.postMessage({serverMsg:false,msg:msg.data});
+        try {
+          let jsonMessage = JSON.parse(msg.data);
+          var id = jsonMessage['cmd_id'];
+          if (id >= 0 && pending[id]) {
+            //console.log('done pending',msg);
+            pending[id] = false;
+          }
+          worker.postMessage({serverMsg:false,msg:jsonMessage});
+        } catch (err) {
+          console.log('INVALID JSON FROM MC WEB SERVER',err);
+        }
       };
       setTimeout(function(){
         if (ws && ws.readyState !== ws.OPEN) {
@@ -117,8 +142,8 @@ function MCConnection() {
     reset = true;
   };
   
-  this.startLBN = function() {
-    
+  this.connected = function() {
+    return isConnected;
   };
 
 }

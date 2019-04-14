@@ -3,7 +3,7 @@ import {ProgramEditorService, ProgramStatus, TASKSTATE_NOTLOADED, TRNERRLine, TA
 import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Subscription} from 'rxjs';
-import {DataService, TaskService, MCFile, ProjectManagerService, WebsocketService, MCQueryResponse, KeywordService} from '../../../core';
+import {DataService, TaskService, MCFile, ProjectManagerService, WebsocketService, MCQueryResponse, KeywordService, LoginService} from '../../../core';
 import {MatSnackBar} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 
@@ -64,7 +64,7 @@ export class ProgramEditorAceComponent implements OnInit {
   tooltipY: number;
 
   constructor(
-    private service : ProgramEditorService,
+    public service : ProgramEditorService,
     private api : ApiService,
     private groups: GroupManagerService,
     private zone: NgZone,
@@ -75,7 +75,8 @@ export class ProgramEditorAceComponent implements OnInit {
     private ws: WebsocketService,
     private snack: MatSnackBar,
     private trn: TranslateService,
-    private keywords: KeywordService
+    private keywords: KeywordService,
+    public login: LoginService
   ) {
     this.trn.get(['projects.ace', 'dismiss']).subscribe(words=>{
       this.words = words;
@@ -97,7 +98,8 @@ export class ProgramEditorAceComponent implements OnInit {
       console.log(stat);
       this.removeAllMarkers();
       this.editor.setReadOnly(
-        stat === null || stat.statusCode !== TASKSTATE_NOTLOADED
+        stat === null || stat.statusCode !== TASKSTATE_NOTLOADED ||
+        this.login.isOperator
       );
       if (stat.programLine > 0) {
         this.highlightLine(stat.programLine);

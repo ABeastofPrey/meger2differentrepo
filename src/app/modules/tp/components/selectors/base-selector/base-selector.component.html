@@ -1,5 +1,5 @@
 <mat-form-field>
-  <mat-select placeholder="{{'base'|translate}}" [(ngModel)]="dataService.selectedBase">
+  <mat-select placeholder="{{'base'|translate}}" [(ngModel)]="dataService.selectedBase" [disabled]="disabled">
     <mat-option *ngFor="let item of dataService.bases" value="{{item}}">{{item}}</mat-option>
   </mat-select>
 </mat-form-field>

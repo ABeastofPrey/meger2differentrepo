@@ -1,0 +1,16 @@
+{
+  "background_color": "rgb(238, 238, 238)",
+  "description": "ControlStudio+ IDE for advanced robotics applications.",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/pics/logo_cs.png",
+      "sizes": "180x173",
+      "type": "image/png"
+    }
+  ],
+  "name": "ControlStudio+",
+  "short_name": "CS+",
+  "start_url": "../index.html",
+  "orientation": "landscape"
+}

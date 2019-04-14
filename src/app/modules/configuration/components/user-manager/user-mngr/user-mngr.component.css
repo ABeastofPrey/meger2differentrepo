@@ -4,9 +4,6 @@
   padding: 16px;
   box-sizing: border-box;
 }
-mat-table {
-  margin-top: 72px;
-}
 .mat-column-select { overflow: initial; }
 .toolbar {
   margin-bottom: 8px;

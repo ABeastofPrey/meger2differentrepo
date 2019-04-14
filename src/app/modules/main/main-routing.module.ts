@@ -5,6 +5,7 @@ import {RouterModule} from '@angular/router';
 import {MainAuthResolver} from './main-auth-resolver.service';
 import {ProgramEditorComponent} from '../program-editor/components/program-editor/program-editor.component';
 import {HomeScreenComponent} from '../home-screen/components/home-screen/home-screen.component';
+import {PermissionGuardService} from '../configuration/permission-guard.service';
 
 const routes: Routes = [
   {
@@ -16,47 +17,69 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: HomeScreenComponent
+        component: HomeScreenComponent,
+        canActivate: [PermissionGuardService],
+        data: { permission: 99 }
       },
       {
         path: 'dashboard',
-        loadChildren: '../dashboard/dashboard.module#DashboardModule'
+        loadChildren: '../dashboard/dashboard.module#DashboardModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 99 }
       },
       {
         path: 'projects',
-        component: ProgramEditorComponent
+        component: ProgramEditorComponent,
+        canActivate: [PermissionGuardService],
+        data: { permission: 99 }
       },
       {
         path: 'simulator',
-        loadChildren: '../simulator/simulator.module#SimulatorModule'
+        loadChildren: '../simulator/simulator.module#SimulatorModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 1 }
       },
       {
         path: 'teach',
-        loadChildren: '../tp/tp.module#TpModule'
+        loadChildren: '../tp/tp.module#TpModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 99 }
       },
       {
         path: 'configuration',
-        loadChildren: '../configuration/configuration.module#ConfigurationModule'
+        loadChildren: '../configuration/configuration.module#ConfigurationModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 99 }
       },
       {
         path: 'tasks',
-        loadChildren: '../task-manager/task-manager.module#TaskManagerModule'
+        loadChildren: '../task-manager/task-manager.module#TaskManagerModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 1 }
       },
       {
         path: 'tools',
-        loadChildren: '../tools/tools.module#ToolsModule'
+        loadChildren: '../tools/tools.module#ToolsModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 1 }
       },
       {
         path: 'errors',
-        loadChildren: '../error-history/error-history.module#ErrorHistoryModule'
+        loadChildren: '../error-history/error-history.module#ErrorHistoryModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 99 }
       },
       {
         path: 'log',
-        loadChildren: '../log-screen/log-screen.module#LogScreenModule'
+        loadChildren: '../log-screen/log-screen.module#LogScreenModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 1 }
       },
       {
         path: 'help',
-        loadChildren: '../help/help.module#HelpModule'
+        loadChildren: '../help/help.module#HelpModule',
+        canActivate: [PermissionGuardService],
+        data: { permission: 99 }
       }
     ]
   }

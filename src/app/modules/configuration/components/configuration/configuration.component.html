@@ -1,13 +1,16 @@
 <div class="wrapper">
   <nav mat-tab-nav-bar backgroundColor="primary" color="accent">
-    <a mat-tab-link *ngFor="let tab of tabs"
-      [routerLink]="[tab.path]"
-      routerLinkActive
-      #rla="routerLinkActive"
-      [active]="rla.isActive">
-      <mat-icon>{{tab.icon}}</mat-icon>
-      {{ tab.label | translate}}
-    </a>
+    <div *ngFor="let tab of tabs">
+      <a mat-tab-link 
+      *ngIf="login.permissionCode === 99 || login.permissionCode <= tab.permission"
+        [routerLink]="[tab.path]"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [active]="rla.isActive">
+        <mat-icon>{{tab.icon}}</mat-icon>
+        {{ tab.label | translate}}
+      </a>
+    </div>
   </nav>
   <router-outlet class="configuration"></router-outlet>
 </div>

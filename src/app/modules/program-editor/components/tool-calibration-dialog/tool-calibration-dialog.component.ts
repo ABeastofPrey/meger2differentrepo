@@ -81,7 +81,7 @@ export class ToolCalibrationDialogComponent implements OnInit {
   }
 
   clearCalibrationPoints() {
-    this.ws.send('?TP_REMOVE_CALIBRATION_POINT(1)');
+    this.ws.send('?TP_REMOVE_CALIBRATION_POINT(1)',true);
     this.pointsAdded = 0;
   }
 

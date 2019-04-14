@@ -97,7 +97,7 @@ export class AppsComponent implements OnInit {
         this.api.uploadIPK(f).then((ret: UploadResult)=>{
           if (ret.success) {
             this.ws.updateFirmwareMode = true;
-            this.ws.send('?user sys_reboot(0,0,0)');
+            this.ws.send('?user sys_reboot(0,0,0)',true);
             setTimeout(()=>{
               let ok = false;
               let interval = setInterval(()=>{

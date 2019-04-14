@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {NewPayloadDialogComponent} from '../new-payload-dialog/new-payload-dialog.component';
-import {DataService, WebsocketService, MCQueryResponse} from '../../../core';
+import {DataService, WebsocketService, MCQueryResponse, LoginService} from '../../../core';
 import {Payload} from '../../../core/models/payload.model';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
@@ -23,7 +23,8 @@ export class PayloadWizardComponent implements OnInit {
     private dialog: MatDialog,
     private ws: WebsocketService,
     private snack: MatSnackBar,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public login: LoginService
   ) {
     this.trn.get(['payloads','button.delete','button.cancel','changeOK'])
     .subscribe(words=>{

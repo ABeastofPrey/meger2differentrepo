@@ -90,7 +90,6 @@ export class WebsocketService {
     });
     this._zone.runOutsideAngular(()=>{
       this.worker.onmessage = (e)=>{
-        //console.log(JSON.parse(e.data.msg)['cmd']);
         if (e.data.serverMsg) {
           this._zone.run(()=>{
             switch (e.data.msg) {
@@ -136,7 +135,8 @@ export class WebsocketService {
     });
   }
   
-  send(msg: string, callback?, interval? : number) {
+  send(msg: string, force: boolean, callback?, interval? : number) {
+    //console.log('send',msg);
     this.socketQueueId++;
     if (callback) {
       this.socketQueue['i_'+this.socketQueueId] = callback;
@@ -149,42 +149,33 @@ export class WebsocketService {
       token: this.jwt.getToken()
     };
     var str = JSON.stringify(MCMessage);
-    this.worker.postMessage({msg:str,serverMsg:false,interval:interval,id: this.socketQueueId});
+    this.worker.postMessage({
+      msg:str,
+      serverMsg:false,
+      interval:interval,
+      id: this.socketQueueId,
+      force:force
+    });
     msg = null;
     return this.socketQueueId;
   }
   
   query(query){
     return new Promise((resolve,reject)=>{
-      const start = new Date().getTime();
-      this.send(query,function(result,cmd,err){
-        //console.log(cmd, (new Date().getTime() - start));
+      //let start = new Date().getTime();
+      this.send(query,false,function(result,cmd: string,err){
+        /*if (cmd.startsWith('cyc'))
+              console.log(cmd, (new Date().getTime() - start));*/
         resolve({result:result,cmd:cmd,err:err});
       });
     }).catch(reason=>{
      
     });
  }
- 
- queryWorker(query: string, interval? : number){
-    return new Promise((resolve)=>{
-      this.send(query,function(result,cmd,err){
-        resolve({result:result,cmd:cmd,err:err});
-      },interval);
-    }
-  );
- }
 
-  handleMessage(msg: string) {
+  handleMessage(data: MCResponse) {
     var errFrame = null;
-    let data: MCResponse = null;
-    try {
-      data = JSON.parse(msg);
-    } catch (e) {
-      console.log(e);
-      console.log(msg);
-      return;
-    };
+    //console.log('receive',data['cmd']);
     var isErrorFrame = (data['msg'].indexOf("$ERRORFRAME$") === 0);
     if (isErrorFrame) {
       data['msg'] = data['msg'].substr(12);

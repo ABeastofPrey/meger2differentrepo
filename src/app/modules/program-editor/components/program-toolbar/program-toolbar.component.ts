@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {NewProjectDialogComponent} from '../new-project-dialog/new-project-dialog.component';
-import {WebsocketService, MCQueryResponse, ProjectManagerService, ApiService, UploadResult, ProjectVerificationResult, TpStatService} from '../../../core';
+import {WebsocketService, MCQueryResponse, ProjectManagerService, ApiService, UploadResult, ProjectVerificationResult, TpStatService, LoginService} from '../../../core';
 import {OpenProjectDialogComponent} from '../open-project-dialog/open-project-dialog.component';
 import {ProgramEditorService} from '../../services/program-editor.service';
 import {NewAppDialogComponent} from '../toolbar-dialogs/new-app-dialog/new-app-dialog.component';
@@ -51,7 +51,8 @@ export class ProgramToolbarComponent implements OnInit {
     private api: ApiService,
     private utl: UtilsService,
     private trn: TranslateService,
-    public stat: TpStatService
+    public stat: TpStatService,
+    public login: LoginService
   ) {
     this.trn.get(
       ['projects.toolbar','error.err','button.cancel','button.delete',

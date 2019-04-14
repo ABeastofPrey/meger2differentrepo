@@ -30,6 +30,28 @@ export class LoginService {
     return null;
   }
   
+  get permissionCode() : number {
+    if (this.getCurrentUser().user)
+      return this.getCurrentUser().user.permission;
+    return -1;
+  }
+  
+  get isAdmin() : boolean {
+    return this.permissionCode === 0 || this.permissionCode === 99;
+  }
+  
+  get isViewer() : boolean {
+    return this.permissionCode === 3;
+  }
+  
+  get isOperator() : boolean {
+    return this.permissionCode === 2;
+  }
+  
+  get isSuper() : boolean {
+    return this.permissionCode === 99;
+  }
+  
   populate() {
     // If JWT detected, attempt to get & store user's info
     if (this.jwtService.getToken()) {
@@ -82,7 +104,7 @@ export class LoginService {
     if (!this.jwtService.getToken())
       return;
     if (!serverDisconnected) {
-      this.ws.send('?tp_exit');
+      this.ws.send('?tp_exit',true);
       this.ws.reset();
     }
     this.purgeAuth();

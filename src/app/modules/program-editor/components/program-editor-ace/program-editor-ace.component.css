@@ -11,3 +11,18 @@
   z-index: 1;
   font-size: 12px;
 }
+.wrapper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+.overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.12);
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

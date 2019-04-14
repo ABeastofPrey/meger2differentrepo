@@ -1,2 +1,5 @@
-<div #editor class="editor"></div>
-<div class="tooltip mat-elevation-z1" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">{{lastWord}}: {{tooltipValue}}</div>
+<div class="wrapper">
+  <div class="overlay" *ngIf="login.isViewer || login.isOperator || (service.status && service.status.statusCode !== -1)"></div>
+  <div #editor class="editor"></div>
+  <div class="tooltip mat-elevation-z1" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">{{lastWord}}: {{tooltipValue}}</div>
+</div>

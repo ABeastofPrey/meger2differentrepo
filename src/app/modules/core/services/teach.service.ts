@@ -143,13 +143,13 @@ export class TeachService {
     if(this.fullName == null)
       return;
     if (straight)
-      this.ws.send('?tp_moves("' + this.fullName + '")');
+      this.ws.send('?tp_moves("' + this.fullName + '")',true);
     else
-      this.ws.send('?tp_move("' + this.fullName + '")');
+      this.ws.send('?tp_move("' + this.fullName + '")',true);
   }
   
   stop() {
-    this.ws.send('?tp_stop');
+    this.ws.send('?tp_stop',true);
   }
 
 }

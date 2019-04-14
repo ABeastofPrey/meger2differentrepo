@@ -5,11 +5,15 @@ import {environment} from '../../../../environments/environment';
 import {catchError} from 'rxjs/operators';
 import {throwError} from 'rxjs';
 import {RecordingData} from '../models/rec-data.model';
+import {User} from '../models/user.model';
 
 export const imgPath = environment.api_url + '/blockly/';
 
 export const PERMISSION_ADMIN = 0;
-export const PERMISSION_NORMAL = 1;
+export const PERMISSION_PROGRAMMER = 1;
+export const PERMISSION_OPERATOR = 2;
+export const PERMISSION_VIEWER = 3;
+export const PERMISSION_SUPER = 99;
 
 @Injectable()
 export class ApiService {
@@ -47,6 +51,18 @@ export class ApiService {
   
   private get token() {
     return localStorage.getItem('jwtToken');
+  }
+  
+  confirmPass(username: string, pass: string) {
+    return this.post('/cs/api/users',{user: {
+      username: username,
+      password: pass
+    }}).toPromise()
+    .then(ret=>{
+      return true;
+    },err=>{
+      return false;
+    });
   }
   
   upload(file : File, overwrite : boolean) {
@@ -232,6 +248,17 @@ export class ApiService {
       .toPromise();
   }
   
+  editUser(username : string, password: string, fullName:string, permission: number) {
+    const user = {
+      username: username,
+      password: password,
+      fullName: fullName,
+      permission: permission.toString()
+    };
+    return this.http.put(environment.api_url + '/cs/api/user',user)
+      .toPromise();
+  }
+  
   deleteUser(username : string) {
     return this.http.delete(environment.api_url + '/cs/api/user/' + username)
       .toPromise();
@@ -241,8 +268,14 @@ export class ApiService {
     switch (permission) {
       case PERMISSION_ADMIN:
         return 'Administrator';
-      case PERMISSION_NORMAL:
-        return 'softMC User';
+      case PERMISSION_PROGRAMMER:
+        return 'Programmer';
+      case PERMISSION_OPERATOR:
+        return 'Operator';
+      case PERMISSION_VIEWER:
+        return 'Viewer';
+      case PERMISSION_SUPER:
+        return 'System Supervisor';
     }
   }
   

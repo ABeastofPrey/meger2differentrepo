@@ -9,6 +9,7 @@ import {TpStatService} from './tp-stat.service';
 import {Pallet} from '../models/pallet.model';
 import {Payload} from '../models/payload.model';
 import {IoModule} from '../models/io/io-module.model';
+import {LoginService} from './login.service';
 
 declare var Blockly:any;
 
@@ -493,7 +494,8 @@ export class DataService {
     private ws : WebsocketService,
     private teach : TeachService,
     private ref : ApplicationRef,
-    private stat: TpStatService
+    private stat: TpStatService,
+    private login: LoginService
   ) {
     this.stat.onlineStatus.subscribe(stat=>{
       if (stat) {
@@ -515,13 +517,12 @@ export class DataService {
     
     const promises = [
       this.ws.query('?TP_ENTER("CS+")'),
-      this.ws.query("?TP_SET_STAT_FORMAT(2)"),
-      //this.ws.query("?TP_JOGSCREEN")
+      this.ws.query("?TP_SET_STAT_FORMAT(2)")
     ];
     
     this.teach.reset();
     this.reset();
-    this.ws.query('?tp_set_user_type("ADMINISTRATOR","ADMINISTRATOR")')
+    this.ws.query('?TP_SET_PERMISSION(' + this.login.permissionCode + ')')
     .then(()=>{return Promise.all(promises);})
     .then(()=>{return this.ws.query('?tp_get_switch_mode');})
     .then((ret:MCQueryResponse)=>{

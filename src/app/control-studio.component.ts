@@ -7,6 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {LangService} from './modules/core/services/lang.service';
 import {environment} from '../environments/environment';
 import {OverlayContainer} from '@angular/cdk/overlay';
+import {CommonService} from './modules/core/services/common.service';
 
 @Component({
   selector: 'control-studio',
@@ -23,6 +24,7 @@ export class ControlStudioComponent {
   }
   
   constructor(
+    public cmn: CommonService,
     private login: LoginService,
     private tour: TourService,
     private translate: TranslateService,
@@ -30,6 +32,8 @@ export class ControlStudioComponent {
     private overlayContainer: OverlayContainer
   ) {
     overlayContainer.getContainerElement().classList.add(this.env.platform.name);
+    if (this.cmn.isTablet)
+      overlayContainer.getContainerElement().classList.add('tablet-ui');
     this.lang.init();
     this.translate.get('tour').toPromise().then((tour:TourStep[])=>{
       let steps = [

@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import {DataService} from '../../../../core';
 
 
@@ -8,6 +8,8 @@ import {DataService} from '../../../../core';
   styleUrls: ['./frame-selector.component.css']
 })
 export class FrameSelectorComponent implements OnInit {
+  
+  @Input('disabled') disabled: boolean;
 
   constructor(
     public dataService: DataService

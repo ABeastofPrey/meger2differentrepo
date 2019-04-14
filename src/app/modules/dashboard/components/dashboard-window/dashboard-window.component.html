@@ -18,7 +18,7 @@
   <div class="content">
     <div style="flex: 1;">
       <mat-slide-toggle *ngIf="params.name === 'SCARA (Tour)'" color="primary" style="margin-bottom: 8px;" [checked]="params.enable" (change)="toggleEnable()" tourAnchor="dashboard-enable">{{'enable'|translate}}</mat-slide-toggle>
-      <mat-slide-toggle *ngIf="params.name !== 'SCARA (Tour)'" color="primary" style="margin-bottom: 8px;" [checked]="params.enable" (change)="toggleEnable()">{{'enable'|translate}}</mat-slide-toggle>
+      <mat-slide-toggle *ngIf="params.name !== 'SCARA (Tour)'" color="primary" style="margin-bottom: 8px;" [checked]="params.enable" (change)="toggleEnable()" [disabled]="login.isViewer">{{'enable'|translate}}</mat-slide-toggle>
       <div class="params-container">
         <div class="params-title center-vertical">
           <span style="flex: 1;">{{'parameters'|translate}}</span>
@@ -28,9 +28,9 @@
           <tr *ngFor="let p of params.params; let i=index;">
             <td style='padding-right: 8px;'>{{p.name}}</td>
             <td>
-              <mat-form-field *ngIf="p.inputType==='INPUT'"><input matInput [(ngModel)]="p.value" (input)="dashboard.onChange(params, p,$event.target.value)"></mat-form-field>
-              <mat-slide-toggle *ngIf="p.inputType==='TOGGLE'" color="primary" style="margin-bottom: 8px;" [checked]="p.value==='1'" (change)="dashboard.onChange(params, p,$event.checked)"></mat-slide-toggle>
-              <mat-slider *ngIf="p.inputType==='SLIDER'" thumbLabel="true" tickInterval="auto" [min]="p.sliderMin" [max]="p.sliderMax" [(ngModel)]="p.value" color="primary" (change)="dashboard.onChange(params, p,$event.value)"></mat-slider>
+              <mat-form-field *ngIf="p.inputType==='INPUT'"><input matInput [(ngModel)]="p.value" (input)="dashboard.onChange(params, p,$event.target.value)" [disabled]="login.isViewer"></mat-form-field>
+              <mat-slide-toggle *ngIf="p.inputType==='TOGGLE'" color="primary" style="margin-bottom: 8px;" [checked]="p.value==='1'" (change)="dashboard.onChange(params, p,$event.checked)" [disabled]="login.isViewer"></mat-slide-toggle>
+              <mat-slider *ngIf="p.inputType==='SLIDER'" thumbLabel="true" tickInterval="auto" [min]="p.sliderMin" [max]="p.sliderMax" [(ngModel)]="p.value" color="primary" (change)="dashboard.onChange(params, p,$event.value)" [disabled]="login.isViewer"></mat-slider>
             </td>
             <td><div *ngIf="p.inputType==='SLIDER'">{{p.value}}</div></td>
             <td>
@@ -55,6 +55,6 @@
         </table>
       </div>
     </div>
-    <div class="expand primary-bg-dark" (click)="toggleExpand()"><mat-icon class="primary-light" tourAnchor="dashboard-expand">{{params.isExpanded ? 'chevron_left' : 'more_vert'}}</mat-icon></div>
+    <div *ngIf="!login.isViewer" class="expand primary-bg-dark" (click)="toggleExpand()"><mat-icon class="primary-light" tourAnchor="dashboard-expand">{{params.isExpanded ? 'chevron_left' : 'more_vert'}}</mat-icon></div>
   </div>
 </div>

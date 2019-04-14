@@ -1,0 +1,39 @@
+/*
+  THIS FILE SETS SOME MATERIAL ITEMS BIGGER FOR TABLET UI
+*/
+$larger-mini-fab-height: 44px;
+.tablet-ui {
+  .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    line-height: $larger-mini-fab-height;
+    padding: 0 22px;
+  }
+  .mat-mini-fab {
+    width: $larger-mini-fab-height;
+    height: $larger-mini-fab-height;
+  }
+  .mat-simple-snackbar-action button {
+    max-height: 48px;
+  }
+  .mat-raised-button, .mat-button {
+    font-size: 16px;
+  }
+  .mat-badge-content {
+    width: 26px!important;
+    height: 26px!important;
+    line-height: 26px!important;
+    font-size: 14px;
+  }
+  .mat-snack-bar-container {
+    max-width: 45vw;
+  }
+  .mat-simple-snackbar {
+    font-size: 18px;
+  }
+  .mat-typography, .mat-card-subtitle, .mat-card-content {
+    font-size: 16px;
+  }
+  .mat-card-avatar {
+    height: 60px;
+    width: 60px;
+  }
+}

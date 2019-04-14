@@ -24,6 +24,7 @@
               "src/styles.scss",
               "src/assets/styles/material-kuka.scss",
               "src/assets/styles/material-servotronix.scss",
+              "src/assets/styles/shared.scss",
               "node_modules/angular2-draggable/css/resizable.min.css",
               "node_modules/jquery-ui-dist/jquery-ui.min.css"
             ],

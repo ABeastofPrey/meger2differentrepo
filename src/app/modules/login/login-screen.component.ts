@@ -11,6 +11,7 @@ import {trigger, state, style, transition, animate, animateChild, group, query} 
 import {Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {UtilsService} from '../core/services/utils.service';
+import {CommonService} from '../core/services/common.service';
 
 @Component({
   selector: 'login-screen',
@@ -35,7 +36,7 @@ import {UtilsService} from '../core/services/utils.service';
     trigger('cardIsToolbar',[
       state('card',style({
         width: '50%',
-        height: '75%'
+        height: 'auto'
       })),
       state('toolbar',style({
         width: '100%',
@@ -60,6 +61,7 @@ export class LoginScreenComponent implements OnInit {
   errors: Errors = {error: null};
   isVersionOK: boolean = true;
   appName: string = environment.appName;
+  platform: string = null;
   
   private subs: Subscription[] = [];
   
@@ -78,8 +80,10 @@ export class LoginScreenComponent implements OnInit {
     private api: ApiService,
     public ws: WebsocketService,
     private trn: TranslateService,
-    public utils: UtilsService
+    public utils: UtilsService,
+    public cmn: CommonService
   ) {
+    this.platform = navigator.platform;
     this.api.get('/cs/api/java-version').subscribe((ret:{ver:string})=>{
       this.isVersionOK = ret.ver.startsWith(environment.compatible_webserver_ver);
       if (!this.isVersionOK) {
@@ -120,6 +124,8 @@ export class LoginScreenComponent implements OnInit {
         },3000);
         this.ws.isConnected.subscribe(stat=>{
           if (stat) {
+            if (this.cmn.isTablet)
+              this.cmn.goFullScreen();
             setTimeout(()=>{
               this.router.navigateByUrl('/');
               this.isSubmitting = false;

@@ -1,24 +1,33 @@
 <div class="mat-typography">
   <div class="title mat-elevation-z1">
-    <mat-icon>person_add</mat-icon>&nbsp;&nbsp;{{'userManager.new'|translate}}
+    <mat-icon>{{data ? 'edit' : 'person_add'}}</mat-icon>&nbsp;&nbsp;{{(data ? 'userManager.btnEdit' : 'userManager.new')|translate}}
   </div>
   <mat-form-field>
-    <input matInput placeholder="{{'userManager.username'|translate}}" [(ngModel)]="username">
+    <input matInput placeholder="{{'userManager.username'|translate}}" [(ngModel)]="username" [disabled]="data">
+    <mat-error *ngIf="!data && username.toLowerCase() === 'admin'">
+      {{'userManager.err_username_reserved'|translate}}
+    </mat-error>
   </mat-form-field>
   <mat-form-field>
     <input matInput placeholder="{{'userManager.full'|translate}}" [(ngModel)]="fullName">
   </mat-form-field>
   <mat-form-field>
     <input matInput type="password" placeholder="{{'password'|translate}}" [(ngModel)]="password">
+    <mat-hint align="start" *ngIf="data && password.length === 0"><strong>Leave blank to remain unchanged</strong> </mat-hint>
   </mat-form-field>
   <mat-form-field>
-    <mat-select placeholder="{{'userManager.permission'|translate}}" [(ngModel)]="permission">
+    <input matInput type="password" placeholder="{{'password_confirm'|translate}}" [(ngModel)]="passwordConfirm" [disabled]="password.length === 0">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select placeholder="{{'userManager.permission'|translate}}" [(ngModel)]="permission" [disabled]="username === 'admin' || (data && !login.isAdmin)">
       <mat-option [value]="0">Administrator</mat-option>
-      <mat-option [value]="1">Normal User</mat-option>
+      <mat-option [value]="1">Programmer</mat-option>
+      <mat-option [value]="2">Operator</mat-option>
+      <mat-option [value]="3">Viewer</mat-option>
     </mat-select>
   </mat-form-field>
   <div class="actions">
     <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="create()" [disabled]="username.length===0 || password.length===0 || fullName.length===0 || fullName.indexOf(' ')===-1 || permission === -1">{{'userManager.btnCreate'|translate}}</button>
+    <button mat-button color="primary" (click)="create()" [disabled]="username.length===0 || (username === 'admin' && !data) || (password.length===0 && !data) || (password.length>0 && password !== passwordConfirm) || fullName.length===0 || fullName.indexOf(' ')===-1 || permission === -1">{{(data ? 'userManager.btnEdit' : 'userManager.btnCreate')|translate}}</button>
   </div>
 </div>

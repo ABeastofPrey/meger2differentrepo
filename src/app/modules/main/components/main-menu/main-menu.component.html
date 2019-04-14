@@ -6,13 +6,13 @@
       </div>
       <div class="user-info">
         <div class="name primary">{{'hello'|translate}}, {{login.fName}}!</div>
-        <div class="mat-body-1">{{login.permission}}</div>
+        <div class="mat-body-1 permission">{{login.permission}}</div>
       </div>
     </div>
   </div>
-  <ul class="mat-subtitle-color">
-    <li 
-      *ngFor="let s of mgr.screens"
+  <ul class="list mat-subtitle-color">
+    <li class="screen"
+    *ngFor="let s of mgr.screens"
       [tourAnchor]="'screen-'+s.name"
       (click)="onClick(s)"
       [ngClass]="{

@@ -1,6 +1,6 @@
 <div class="wrapper">
-  <mat-grid-list cols="8" rowHeight="fit">
-    <mat-grid-tile colspan="2" rowspan="1">
+  <mat-grid-list cols="12" rowHeight="fit">
+    <mat-grid-tile colspan="3" rowspan="1">
       <mat-card>
         <mat-card-header>
           <div mat-card-avatar style='background-size: cover;' [style.background-image]="'url(' + profileSrc + ')'"></div>
@@ -15,12 +15,12 @@
         <p>{{'home.port'|translate}} <b>{{ws.port}}</b>.</p>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="6" rowspan="1">
+    <mat-grid-tile colspan="9" rowspan="1">
       <mat-card>
         <terminal tourAnchor="terminal"></terminal>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="2" rowspan="2">
+    <mat-grid-tile colspan="3" rowspan="2">
       <mat-card class="info-card" *ngIf="groupManager.sysInfo" @fade>
         <div class="center-vertical title title-3">
           <mat-icon>perm_device_information</mat-icon>{{'home.system'|translate}}
@@ -35,7 +35,7 @@
         </div>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="6" rowspan="1">
+    <mat-grid-tile colspan="9" rowspan="1">
       <mat-card style="white-space: pre-wrap;" (contextmenu)="onContextMenu($event)" tourAnchor="message-log">
         {{'message_log'|translate}}
         <mat-card-content #msgLogContainer style="user-select: text;">{{notification.notifications}}</mat-card-content>
@@ -55,7 +55,7 @@
         </ul>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="2" rowspan="1" tourAnchor="sys-info">
+    <mat-grid-tile colspan="3" rowspan="1" tourAnchor="sys-info">
       <mat-card class="info-card" *ngIf="groupManager.sysInfo" @fade>
         <div class="center-vertical title title-1">
           <mat-icon>info</mat-icon>{{'home.software'|translate}}
@@ -80,7 +80,7 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="2" rowspan="1">
+    <mat-grid-tile colspan="3" rowspan="1">
       <mat-card class="info-card" *ngIf="groupManager.sysInfo">
         <div class="center-vertical title title-2">
           <mat-icon>touch_app</mat-icon>{{'home.features'|translate}}
@@ -93,7 +93,7 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="2" rowspan="1">
+    <mat-grid-tile colspan="3" rowspan="1">
       <mat-card class="info-card">
         <div class="center-vertical title title-4">
           <mat-icon>group_work</mat-icon>{{'home.groups'|translate}}

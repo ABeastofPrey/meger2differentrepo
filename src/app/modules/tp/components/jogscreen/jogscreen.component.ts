@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {trigger,state,style,animate,transition} from '@angular/animations';
-import {DataService, TeachService} from '../../../core';
+import {DataService, TeachService, LoginService} from '../../../core';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
@@ -37,7 +37,8 @@ export class JogScreenComponent implements OnInit {
   constructor(
     public data : DataService,
     public teach : TeachService,
-    private trn : TranslateService
+    private trn : TranslateService,
+    public login: LoginService
   ) {
     this.trn.get('jogScreen.menu').subscribe(words=>{
       this.menuTypes = [];

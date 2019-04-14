@@ -185,7 +185,7 @@ export class BlocklyService {
     if (this.activeFile === null)
       return;
     let cmd = '?BLOCKLY.PRG.status';
-    this.statusInterval = this.ws.send(cmd,(ret:string,command:string,err:ErrorFrame)=>{
+    this.statusInterval = this.ws.send(cmd,false,(ret:string,command:string,err:ErrorFrame)=>{
       if (this._forceClose) {
         this._forceClose = false;
         return this.refreshStatus(false);

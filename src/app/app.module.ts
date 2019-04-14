@@ -12,6 +12,7 @@ import { ErrorDialogComponent } from './components/error-dialog/error-dialog.com
 import { SuccessDialogComponent } from './components/success-dialog/success-dialog.component';
 import {TourMatMenuModule} from 'ngx-tour-md-menu';
 import { SingleInputDialogComponent } from './components/single-input-dialog/single-input-dialog.component';
+import { AuthPassDialogComponent } from './components/auth-pass-dialog/auth-pass-dialog.component';
   
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SingleInputDialogComponent } from './components/single-input-dialog/sin
     ServerDisconnectComponent,
     ErrorDialogComponent,
     SuccessDialogComponent,
-    SingleInputDialogComponent
+    SingleInputDialogComponent,
+    AuthPassDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +39,8 @@ import { SingleInputDialogComponent } from './components/single-input-dialog/sin
     ServerDisconnectComponent,
     ErrorDialogComponent,
     SuccessDialogComponent,
-    SingleInputDialogComponent
+    SingleInputDialogComponent,
+    AuthPassDialogComponent
   ]
 })
 export class AppModule { }

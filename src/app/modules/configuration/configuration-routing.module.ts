@@ -8,6 +8,7 @@ import {GuiComponent} from './components/gui/gui.component';
 import {UserMngrComponent} from './components/user-manager/user-mngr/user-mngr.component';
 import {AboutComponent} from './components/about/about.component';
 import { TopologyComponent } from './components/topology/topology.component';
+import {PermissionGuardService as PermissionGuard}from './permission-guard.service';
 
 const routes: Routes = [
   {
@@ -16,39 +17,66 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'about'
+        redirectTo: 'about',
       },
       {
         path: 'about',
-        component: AboutComponent
+        component: AboutComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 99
+        }
       },
       {
         path: 'diagnostics',
-        component: DiagnosticsComponent
+        component: DiagnosticsComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 99
+        }
       },
       {
         path: 'robots',
-        component: RobotsComponent
+        component: RobotsComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 0
+        }
       },
       {
         path: 'io',
-        component: IoComponent
+        component: IoComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 99
+        }
       },
       {
         path: 'topology',
-        component: TopologyComponent
+        component: TopologyComponent,
+        data: {
+          permission: 99
+        }
       },
       {
         path: 'gui-settings',
-        component: GuiComponent
+        component: GuiComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 99
+        }
       },
       {
         path: 'users',
-        component: UserMngrComponent
+        component: UserMngrComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 99
+        }
       },
       {
         path: '**',
-        redirectTo: 'diagnostics'
+        redirectTo: 'about'
       },
     ]
   }

@@ -5,6 +5,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material';
 import {SuccessDialogComponent} from '../../../components/success-dialog/success-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
+import {CommonService} from './common.service';
 
 @Injectable()
 export class ScreenManagerService {
@@ -16,25 +17,28 @@ export class ScreenManagerService {
   private words: any;
   
   private _screens : ControlStudioScreen[] = [
-    {icon: 'home', name:'Home', permission: 1, url: ''},
-    {icon: 'insert_chart', name:'Motion Dashboard', permission: 1, url: 'dashboard'},
-    {icon: 'insert_comment', name:'Project Editor', permission: 1, url: 'projects'},
+    {icon: 'home', name:'Home', permission: 99, url: ''},
+    {icon: 'insert_chart', name:'Motion Dashboard', permission: 99, url: 'dashboard'},
+    {icon: 'insert_comment', name:'Project Editor', permission: 99, url: 'projects'},
     {icon: '3d_rotation', name:'3D Simulator', permission: 1, url: 'simulator',requiresTpLib: true},
-    {icon: 'touch_app', name:'Teach', permission: 1, url: 'teach',requiresTpLib: true},
+    {icon: 'touch_app', name:'Teach', permission: 99, url: 'teach',requiresTpLib: true},
     //{icon: 'insert_comment', name:'Graphic Editor', permission: 1, url: 'blockly'},
-    {icon: 'settings', name:'System Configuration', permission: 0, url: 'configuration'},
+    {icon: 'settings', name:'System Configuration', permission: 99, url: 'configuration'},
     {icon: 'playlist_play', name:'Task Manager', permission: 1, url: 'tasks'},
     {icon: 'apps', name:'softMC Tools', permission: 1, url: 'tools'},
     {icon: 'error', name:'Error History', permission: 0, url: 'errors'},
-    {icon: 'list', name:'Log', permission: 0, url: 'log'},
-    {icon: 'help_outline', name:'Help', permission: 1, url: 'help'}
+    {icon: 'list', name:'Log', permission: 1, url: 'log'},
+    {icon: 'help_outline', name:'Help', permission: 99, url: 'help'}
   ];
   
   get screens() : ControlStudioScreen[]{
     if (!this.login.getCurrentUser().user)
       return [];
     return this._screens.filter(s=>{
-      return s.permission >= this.login.getCurrentUser().user.permission;
+      const permission = this.login.getCurrentUser().user.permission;
+      if (permission === 99)
+        return true;
+      return s.permission >= permission;
     });
   }
   
@@ -55,7 +59,8 @@ export class ScreenManagerService {
   toggleControls() {
     this.controlsAnimating.emit(true);
     this.openedControls = !this.openedControls;
-    this.stat.mode = this.openedControls ? 'T1' : 'A';
+    if (!this.cmn.isTablet)
+      this.stat.mode = this.openedControls ? 'T1' : 'A';
     setTimeout(()=>{
       this.controlsAnimating.emit(false);
     },300);
@@ -89,7 +94,8 @@ export class ScreenManagerService {
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private cmn: CommonService
   ){
     this.trn.get(['restore.success']).subscribe(words=>{
       this.words = words;
@@ -133,7 +139,7 @@ export class ScreenManagerService {
     });
     this.stat.onlineStatus.subscribe(stat=>{
       this.tpOnline = stat;
-      if (!stat && this.screen.requiresTpLib) {
+      if (!stat && this.screen && this.screen.requiresTpLib) {
         this.screen = this.screens[0];
         this.router.navigateByUrl('/');
       }

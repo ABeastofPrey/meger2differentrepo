@@ -1,0 +1,19 @@
+<div class="wrapper virtual-keyboard tablet-ui">
+  <mat-form-field style="width: 100%;">
+    <input disabled matInput placeholder="{{placeholder}}" type="{{inputType}}" [value]="currValue">
+    <button matSuffix mat-mini-fab (click)="accept()" color="primary">
+      <mat-icon>done</mat-icon>
+    </button>
+  </mat-form-field>
+  <div class="keyboard">
+    <div class="row" *ngFor="let row of layout">
+      <button 
+      mat-raised-button
+      *ngFor="let btn of row"
+        [innerHTML]="btnToHtml(btn)"
+        [ngClass]="{'space' : btn===' ', 'key-down': (btn==='arrow_upward' && _shiftMode) || (btn==='more' && _moreMode)}"
+        class="key"
+        (click)="onInput(btn)"></button>
+    </div>
+  </div>
+</div>

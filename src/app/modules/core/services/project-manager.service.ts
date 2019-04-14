@@ -71,10 +71,15 @@ export class ProjectManagerService {
     if (this.interval)
       clearInterval(this.interval);
     this.activeProject = false;
+    let waiting: boolean = false;
     this.interval = setInterval(()=>{
+      if (waiting)
+        return;
       if (this.currProject.value) {
-        this.ws.query('?PRJ_GET_STATUS("' + this.currProject.value.name + '")')
+        waiting = true;
+        return this.ws.query('cyc3,' + this.currProject.value.name)
         .then((ret: MCQueryResponse)=>{
+          waiting = false;
           if (this.oldStat === ret.result)
             return;
           this.oldStat = ret.result;

@@ -10,6 +10,7 @@ import { TerminalWindowComponent } from './components/terminal-window/terminal-w
 import {HomeScreenModule} from '../home-screen/home-screen.module';
 import { CoordinatesComponent } from './components/coordinates/coordinates.component';
 import {ProgramEditorModule} from '../program-editor/program-editor.module';
+import {PermissionGuardService} from '../configuration/permission-guard.service';
 
 @NgModule({
   imports: [
@@ -26,6 +27,6 @@ import {ProgramEditorModule} from '../program-editor/program-editor.module';
     TerminalWindowComponent,
     CoordinatesComponent
   ],
-  providers: [MainAuthResolver]
+  providers: [MainAuthResolver, PermissionGuardService]
 })
 export class MainModule { }

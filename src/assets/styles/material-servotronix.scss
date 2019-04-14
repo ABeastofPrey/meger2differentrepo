@@ -39,5 +39,10 @@ $material-semi-black: rgba(0,0,0,0.54);
   .mat-subtitle-color {
     color: $material-semi-black;
   }
+  
+  .mode-selector .mat-button-toggle-checked {
+    background-color: mat-color($material-servotronix-accent);
+    color: mat-color($material-servotronix-accent, default-contrast);
+  }
 
 }

@@ -1,19 +1,19 @@
 <div class="flex-full background">
   <mat-grid-list cols="3" rowHeight="fit" style='height: 100%;'>
-    <mat-grid-tile colspan="1">
+    <mat-grid-tile [colspan]="login.isViewer || login.isOperator ? 2 : 1">
       <mat-card class="jog-screen-card mat-elevation-z3">
         <mat-card-title class="mat-toolbar mat-primary mat-elevation-z1">
           <span class="title-text">{{'jogScreen.settings'|translate}}</span>
         </mat-card-title>
         <mat-card-content class="jog-parameters">
-          <robot-selector class="jog-parameter"></robot-selector>
-          <frame-selector class="jog-parameter" *ngIf="data.isRobotType"></frame-selector>
-          <tool-selector class="jog-parameter" *ngIf="data.tools.length > 0 && data.isRobotType"></tool-selector>
-          <base-selector class="jog-parameter" *ngIf="data.bases.length > 0 && data.isRobotType"></base-selector>
-          <machine-table-selector class="jog-parameter" *ngIf="data.isRobotType"></machine-table-selector>
-          <work-piece-selector class="jog-parameter" *ngIf="data.isRobotType"></work-piece-selector>
-          <domain-selector class="jog-parameter"></domain-selector>
-          <speed-changer class="jog-parameter"></speed-changer>
+          <robot-selector class="jog-parameter" [disabled]="login.isViewer || login.isOperator"></robot-selector>
+          <frame-selector class="jog-parameter" *ngIf="data.isRobotType" [disabled]="login.isViewer || login.isOperator"></frame-selector>
+          <tool-selector class="jog-parameter" *ngIf="data.tools.length > 0 && data.isRobotType" [disabled]="login.isViewer || login.isOperator"></tool-selector>
+          <base-selector class="jog-parameter" *ngIf="data.bases.length > 0 && data.isRobotType" [disabled]="login.isViewer || login.isOperator"></base-selector>
+          <machine-table-selector class="jog-parameter" *ngIf="data.isRobotType" [disabled]="login.isViewer || login.isOperator"></machine-table-selector>
+          <work-piece-selector class="jog-parameter" *ngIf="data.isRobotType" [disabled]="login.isViewer || login.isOperator"></work-piece-selector>
+          <domain-selector class="jog-parameter" [disabled]="login.isViewer || login.isOperator"></domain-selector>
+          <speed-changer class="jog-parameter" [disabled]="login.isViewer || login.isOperator"></speed-changer>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -22,7 +22,7 @@
         <coordinates-display></coordinates-display>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="1">
+    <mat-grid-tile colspan="1" *ngIf="!login.isViewer && !login.isOperator">
       <mat-card class="jog-screen-card mat-elevation-z3">
         <mat-card-title 
           class="mat-toolbar mat-primary mat-elevation-z1"

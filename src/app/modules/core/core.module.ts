@@ -21,6 +21,7 @@ import {ProjectManagerService} from './services/project-manager.service';
 import {UtilsService} from './services/utils.service';
 import {LangService} from './services/lang.service';
 import {KeywordService} from './services/keywords.service';
+import {CommonService} from './services/common.service';
 
 @NgModule({
   imports: [
@@ -46,7 +47,8 @@ import {KeywordService} from './services/keywords.service';
     ProjectManagerService,
     UtilsService,
     LangService,
-    KeywordService
+    KeywordService,
+    CommonService
   ]
 })
 export class CoreModule { }

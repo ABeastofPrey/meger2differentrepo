@@ -1,15 +1,15 @@
 <div class="wrapper mat-typography">
   <ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'prj'" (click)="toggleFocus()">
-    <li (mouseenter)="currMenu=1" [class.selected]="onFocus && currMenu===1" [class.disabled]="this.prj.currProject.value === null || prj.activeProject">{{'projectTree.prj'|translate}}</li>
-    <li (mouseenter)="currMenu=2" [class.selected]="onFocus && currMenu===2" [class.disabled]="this.prj.currProject.value === null || prj.activeProject">{{'projects.toolbar.create'|translate}}</li>
-    <li (mouseenter)="currMenu=3" [class.selected]="onFocus && currMenu===3 && prgService.mode === 'editor'" [class.disabled]="prgService.mode !== 'editor' || prj.activeProject">{{'projects.toolbar.edit'|translate}}</li>
+    <li (mouseenter)="currMenu=1" [class.selected]="onFocus && currMenu===1" [class.disabled]="this.prj.currProject.value === null || prj.activeProject || login.isOperator">{{'projectTree.prj'|translate}}</li>
+    <li (mouseenter)="currMenu=2" [class.selected]="onFocus && currMenu===2" [class.disabled]="this.prj.currProject.value === null || prj.activeProject || login.isOperator">{{'projects.toolbar.create'|translate}}</li>
+    <li (mouseenter)="currMenu=3" [class.selected]="onFocus && currMenu===3 && prgService.mode === 'editor'" [class.disabled]="prgService.mode !== 'editor' || prj.activeProject || login.isOperator">{{'projects.toolbar.edit'|translate}}</li>
     <li (mouseenter)="currMenu=4" [class.selected]="onFocus && currMenu===4" [class.disabled]="this.prj.currProject.value === null">{{'projects.toolbar.run'|translate}}</li>
   </ul>
   <ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'mc'" (click)="toggleFocus()">
     <li (mouseenter)="currMenu=5" [class.selected]="onFocus && currMenu===5" [class.disabled]="false">{{'projects.toolbar.file'|translate}}</li>
     <li (mouseenter)="currMenu=6" [class.selected]="onFocus && currMenu===6" [class.disabled]="false">{{'projects.toolbar.controller'|translate}}</li>
   </ul>
-  <ul class="mat-elevation-z1">
+  <ul class="mat-elevation-z1" *ngIf="login.isAdmin">
     <mat-button-toggle-group [(ngModel)]="prgService.modeToggle" (change)="currMenu = 0;onFocus=false;">
       <mat-button-toggle value="prj">{{'projectTree.prj'|translate}}</mat-button-toggle>
       <mat-button-toggle value="mc">{{'projectTree.cnt'|translate}}</mat-button-toggle>
@@ -17,7 +17,7 @@
   </ul>
 </div>
 <div class="dropdown-container mat-title-color" *ngIf="onFocus && (prgService.modeToggle === 'mc' || this.prj.currProject.value)" (click)="onFocus=false">
-  <ul class="dropdown-menu menu1" *ngIf="currMenu === 1 && !prj.activeProject">
+  <ul class="dropdown-menu menu1" *ngIf="currMenu === 1 && !prj.activeProject && !login.isOperator">
     <li (click)="new()"><mat-icon>note_add</mat-icon>{{'projects.toolbar.new'|translate}}...</li>
     <li (click)="open()"><mat-icon>create_new_folder</mat-icon>{{'projects.toolbar.open'|translate}}...</li>
     <div class="seperator"></div>
@@ -28,12 +28,12 @@
     <li (click)="rename()"><mat-icon>edit</mat-icon>{{'projects.toolbar.rename'|translate}}...</li>
     <li (click)="delete()" class="warn"><mat-icon>delete</mat-icon>{{'delete'|translate}}...</li>
   </ul>
-  <ul class="dropdown-menu menu2" *ngIf="currMenu === 2 && this.prj.currProject.value && !prj.activeProject">
+  <ul class="dropdown-menu menu2" *ngIf="currMenu === 2 && this.prj.currProject.value && !prj.activeProject && !login.isOperator">
     <li (click)="newApp()"><mat-icon>add</mat-icon>{{'projects.toolbar.app'|translate}}...</li>
     <li (click)="newLib()"><mat-icon>add</mat-icon>{{'projects.toolbar.lib'|translate}}...</li>
     <li style="cursor: not-allowed;"><mat-icon>add</mat-icon>{{'projects.toolbar.dep'|translate}}...</li>
   </ul>
-  <ul class="dropdown-menu menu3" *ngIf="currMenu === 3 && prgService.mode === 'editor' && !prj.activeProject">
+  <ul class="dropdown-menu menu3" *ngIf="currMenu === 3 && prgService.mode === 'editor' && !prj.activeProject && !login.isOperator">
     <li (click)="undo()"><mat-icon>undo</mat-icon>{{'projects.toolbar.undo'|translate}}</li>
     <li (click)="redo()"><mat-icon>redo</mat-icon>{{'projects.toolbar.redo'|translate}}</li>
     <div class="seperator"></div>

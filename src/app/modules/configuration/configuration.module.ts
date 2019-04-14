@@ -17,6 +17,7 @@ import { IoButtonComponent } from './components/io/io-button/io-button.component
 import { AboutComponent } from './components/about/about.component';
 import { TopologyComponent } from './components/topology/topology.component';
 import { TopologyService } from './services/topology.service';
+import {PermissionGuardService} from './permission-guard.service';
 
 @NgModule({
   imports: [
@@ -39,7 +40,11 @@ import { TopologyService } from './services/topology.service';
     AboutComponent,
     TopologyComponent
   ],
-  providers: [IoService, TopologyService],
+  providers: [
+    IoService,
+    TopologyService,
+    PermissionGuardService
+  ],
   entryComponents: [
     NewUserDialogComponent,
     GraphComponent,

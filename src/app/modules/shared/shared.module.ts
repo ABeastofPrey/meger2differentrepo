@@ -22,6 +22,8 @@ import {TourMatMenuModule} from 'ngx-tour-md-menu';
 import {UpdateDialogComponent} from '../../components/update-dialog/update-dialog.component';
 import { ClickOutsideModule } from 'ng-click-outside';
 import {TranslateModule} from '@ngx-translate/core';
+import {KeyboardDirective, KeyboardDialog} from '../virtual-keyboard/keyboard.directive';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @NgModule({
   imports: [
@@ -35,7 +37,8 @@ import {TranslateModule} from '@ngx-translate/core';
     AngularSplitModule.forRoot(),
     TourMatMenuModule,
     ClickOutsideModule,
-    TranslateModule
+    TranslateModule,
+    NgScrollbarModule
   ],
   exports: [
     CommonModule,
@@ -61,7 +64,9 @@ import {TranslateModule} from '@ngx-translate/core';
     UpdateDialogComponent,
     TourMatMenuModule,
     ClickOutsideModule,
-    TranslateModule
+    TranslateModule,
+    KeyboardDirective,
+    NgScrollbarModule
   ],
   declarations: [
     YesNoDialogComponent,
@@ -76,9 +81,16 @@ import {TranslateModule} from '@ngx-translate/core';
     WorkPieceSelectorComponent,
     TeachVariableEditorComponent,
     CoordinatesDisplayComponent,
-    UpdateDialogComponent
+    UpdateDialogComponent,
+    KeyboardDirective,
+    KeyboardDialog
   ],
-  entryComponents: [YesNoDialogComponent, JogSettingsDialogComponent, UpdateDialogComponent],
+  entryComponents: [
+    YesNoDialogComponent,
+    JogSettingsDialogComponent,
+    UpdateDialogComponent,
+    KeyboardDialog
+  ],
   schemas:[NO_ERRORS_SCHEMA]
 })
 export class SharedModule { }

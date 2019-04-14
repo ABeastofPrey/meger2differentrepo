@@ -1,19 +1,30 @@
 import { Injectable, ApplicationRef } from '@angular/core';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {ErrorFrame} from '../models/error-frame.model';
-import {MatSnackBar} from '@angular/material';
+import {TpStatService} from './tp-stat.service';
 
 @Injectable()
 export class TaskService {
   
   private interval : number = null;
   private lastTaskList : string = null;
+  private isActive: boolean = false;
+  private tasklistCommand = '?tasklist';
   
   tasks: MCTask[] = [];
 
   constructor(
     private ws : WebsocketService,
-    private ref : ApplicationRef) {
+    private ref : ApplicationRef,
+    private stat: TpStatService) {
+    this.stat.onlineStatus.subscribe(stat=>{
+      if (!this.ws.connected)
+        return;
+      // TP LIB IS ONLINE
+      this.stop();
+      this.tasklistCommand = stat ? 'cyc1' : '?tasklist';
+      this.start();
+    });
   }
   
   parseTasklist(list:string) : MCTask[] {
@@ -50,14 +61,17 @@ export class TaskService {
   }
   
   getList() : Promise<MCTask[]>{
-    return this.ws.query('?tasklist').then((ret: MCQueryResponse)=>{
+    return this.ws.query(this.tasklistCommand).then((ret: MCQueryResponse)=>{
       return this.parseTasklist(ret.result);
     });
   }
   
   start() {
+    if (this.isActive)
+      return;
+    this.isActive = true;
     this.interval = 
-      this.ws.send('?tasklist',(ret:string,cmd:string,err:ErrorFrame)=>{
+      this.ws.send(this.tasklistCommand,false,(ret:string,cmd:string,err:ErrorFrame)=>{
       if (err || ret === this.lastTaskList)
         return;
       this.lastTaskList = ret;
@@ -69,6 +83,8 @@ export class TaskService {
   stop() {
     if (this.interval)
       this.ws.clearInterval(this.interval);
+    this.isActive = false;
+    this.interval = null;
   }
   
   run(indexes:number[]) {

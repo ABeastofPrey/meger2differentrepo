@@ -1,0 +1,29 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  max-width: 750px;
+  align-items: center;
+  background: #d0d0d0;
+  padding: 1em;
+  margin-left: -24px;
+  margin-right: -24px;
+  margin-bottom: -24px;
+}
+.keyboard button {
+  min-width: auto;
+  margin: 2px;
+  display: flex;
+  box-shadow: 0 0 0 0;
+  border-radius: 6px;
+  background-color: #FAFAFA;
+  color: black;
+}
+.row { display: flex; }
+.space { width: 200px; }
+::ng-deep .virtual-keyboard .mat-input-element:disabled { color: #000; }
+::ng-deep .virtual-keyboard .mat-form-field-underline { display: none; }
+::ng-deep .tablet-ui .keyboard button { 
+  line-height: 48px;
+  padding: 0 24px;
+  font-size: 16px;
+}

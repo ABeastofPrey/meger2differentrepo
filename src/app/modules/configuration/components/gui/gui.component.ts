@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {MatSelectChange} from '@angular/material';
 import {LangService} from '../../../core/services/lang.service';
-import {WebsocketService} from '../../../core';
+import {WebsocketService, LoginService} from '../../../core';
 import {environment} from '../../../../../environments/environment';
 import {OverlayContainer} from '@angular/cdk/overlay';
 import { UtilsService } from '../../../core/services/utils.service';
@@ -21,7 +21,8 @@ export class GuiComponent implements OnInit {
     private lang: LangService,
     private ws: WebsocketService,
     private overlayContainer: OverlayContainer,
-    private utils: UtilsService
+    private utils: UtilsService,
+    public login: LoginService
   ) { }
 
   ngOnInit() {

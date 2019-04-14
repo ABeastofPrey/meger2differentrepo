@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewChildren, AfterViewInit, QueryList } from '@angular/core';
 import { MatSort, MatTableDataSource, MatTabChangeEvent, MatDialog } from '@angular/material';
-
 import { FormControl, Validators } from '@angular/forms';
-
 import { IO, IoService } from '../../services/io.service';
 import { IoOption, IoOptions, IoFormatOption, IoFormatOptions, IoTableColumn } from '../../services/io.service.enum';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomIOComponent } from './custom-io/custom-io.component';
+import {LoginService} from '../../../core';
 
 @Component({
   selector: 'app-io',
@@ -120,28 +119,31 @@ export class IoComponent implements OnInit, AfterViewInit {
    * Constructor.
    * @param ioService The IoService instance.
    */
-  constructor(private ioService: IoService, private dialog: MatDialog,
-    private trn: TranslateService) {
-      this.trn.get(['io']).subscribe(words => {
-        this.words = words['io'];
-        this.ioOptions = [{key: IoOptions.AllInputs, value: this.words['allInputs']},
-                          {key: IoOptions.AllOutputs, value: this.words['allOutputs']},
-                          {key: IoOptions.DriveIoInputs, value: this.words['driveIoInputs']},
-                          {key: IoOptions.DriveIoOutputs, value: this.words['driveIoOutputs']},
-                          {key: IoOptions.UserIoInputs, value: this.words['userIoInputs']},
-                          {key: IoOptions.UserIoOutputs, value: this.words['userIoOutputs']},
-                        ];
-        this.radioButtonOptions = [
-          {key: IoFormatOptions.Bit, value: this.words['bit']},
-          {key: IoFormatOptions.Byte, value: this.words['byte']},
-          {key: IoFormatOptions.Word, value: this.words['word']}
-        ];
-        this.leftSelected.value = this.words['allInputs'];
-        this.rightSelected.value = this.words['allInputs'];
-        this.leftRadioOptions.value = this.words['bit'];
-        this.rightRadioOptions.value = this.words['bit'];
-      });
-
+  constructor(
+    private ioService: IoService,
+    private dialog: MatDialog,
+    public login: LoginService,
+    private trn: TranslateService
+  ) {
+    this.trn.get(['io']).subscribe(words => {
+      this.words = words['io'];
+      this.ioOptions = [{key: IoOptions.AllInputs, value: this.words['allInputs']},
+                        {key: IoOptions.AllOutputs, value: this.words['allOutputs']},
+                        {key: IoOptions.DriveIoInputs, value: this.words['driveIoInputs']},
+                        {key: IoOptions.DriveIoOutputs, value: this.words['driveIoOutputs']},
+                        {key: IoOptions.UserIoInputs, value: this.words['userIoInputs']},
+                        {key: IoOptions.UserIoOutputs, value: this.words['userIoOutputs']},
+                      ];
+      this.radioButtonOptions = [
+        {key: IoFormatOptions.Bit, value: this.words['bit']},
+        {key: IoFormatOptions.Byte, value: this.words['byte']},
+        {key: IoFormatOptions.Word, value: this.words['word']}
+      ];
+      this.leftSelected.value = this.words['allInputs'];
+      this.rightSelected.value = this.words['allInputs'];
+      this.leftRadioOptions.value = this.words['bit'];
+      this.rightRadioOptions.value = this.words['bit'];
+    });
     this.leftDataSource = new MatTableDataSource([]);
     this.rightDataSource = new MatTableDataSource([]);
   }

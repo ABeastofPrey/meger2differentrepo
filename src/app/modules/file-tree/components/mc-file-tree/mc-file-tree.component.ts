@@ -263,9 +263,9 @@ export class McFileTreeComponent implements OnInit {
       if (ret) {
         const f = new File([new Blob([''])],ret);
         let path = '';
-        if (node.isFolder)
+        if (node.isFolder && node.name !== 'SSMC')
           path = node.decodedpath;
-        else if (node.parent)
+        else if (node.parent && node.parent.name !== 'SSMC')
           path = node.parent.decodedpath;
         this.api.uploadToPath(f, false, path).then((result: UploadResult)=>{
           if (result.success) {
@@ -330,9 +330,9 @@ export class McFileTreeComponent implements OnInit {
     }).afterClosed().subscribe((name:string)=>{
       if (name) {
         let path = '';
-        if (node.isFolder)
+        if (node.isFolder && node.name !== 'SSMC')
           path = node.decodedpath;
-        else if (node.parent)
+        else if (node.parent && node.parent.name !== 'SSMC')
           path = node.parent.decodedpath;
         this.api.createFolder(path + name).then(result=>{
           if (result) {

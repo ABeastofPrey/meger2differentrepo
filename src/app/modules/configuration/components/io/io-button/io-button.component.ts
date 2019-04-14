@@ -23,6 +23,7 @@ import {trigger, state, style, transition, animate} from '@angular/animations';
 export class IoButtonComponent implements OnInit {
   
   @Input('status') status: boolean;
+  @Input('disabled') disabled: boolean;
   @Output('click') onClickEvent: EventEmitter<boolean> = new EventEmitter();
 
   constructor() { }
@@ -30,8 +31,9 @@ export class IoButtonComponent implements OnInit {
   ngOnInit() {
   }
   
-  onClick() {
-    this.onClickEvent.emit(this.status);
+  onClick(e:MouseEvent) {
+    if (this.disabled)
+      e.stopImmediatePropagation();
   }
 
 }

@@ -1,5 +1,5 @@
 <mat-form-field>
-  <mat-select placeholder="{{'tool'|translate}}" [(ngModel)]="dataService.selectedTool">
+  <mat-select placeholder="{{'tool'|translate}}" [(ngModel)]="dataService.selectedTool" [disabled]="disabled">
     <mat-option *ngFor="let item of dataService.tools" value="{{item}}">{{item}}</mat-option>
   </mat-select>
 </mat-form-field>

@@ -1,1 +1,1 @@
-<div [class.green]="status" [@onOff]="status ? 'on' : 'off'"></div>
+<div [class.green]="status" [class.disabled]="disabled" [@onOff]="status ? 'on' : 'off'" (click)="onClick($event)"></div>

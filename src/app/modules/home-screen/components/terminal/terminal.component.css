@@ -3,6 +3,9 @@
   width: 100%;
   overflow: auto;
 }
+.disabled {
+  cursor: not-allowed;
+}
 .terminal div, .terminal input {
   user-select: text;
   font-family: monospace;
@@ -27,7 +30,7 @@ input {
 .context-menu { 
   position: absolute;
   background: #fff;
-  z-index: 4;
+  z-index: 6;
 }
 .context-menu mat-icon, .context-menu img {
   font-size: 18px;

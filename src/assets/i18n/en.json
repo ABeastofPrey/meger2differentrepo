@@ -40,6 +40,7 @@
     "calibrate": "CALIBRATE",
     "cancel": "CANCEL",
     "close": "CLOSE",
+    "confirm": "CONFIRM",
     "create": "CREATE",
     "delete": "DELETE",
     "delete_selected": "DELETE SELECTED",
@@ -132,6 +133,7 @@
   "dialogs": {
     "jogSettings": "Jog Settings"
   },
+  "disable": "Disable",
   "disabled": "Disabled",
   "disconnect": {
     "title": "CAN'T CONNECT TO THE CONTROLLER",
@@ -143,6 +145,7 @@
   "double": "Double",
   "doubles": "Doubles",
   "duration": "Duration",
+  "edit": "Edit",
   "empty_list": "List is empty",
   "enable": "Enable",
   "error": {
@@ -374,6 +377,7 @@
     }
   },
   "message_log": "Message Log",
+  "mode_selector": "Mode",
   "motion_element": "Motion Element",
   "motion_elements": "Motion Elements",
   "motion_elements_empty": "No motion elements",
@@ -448,6 +452,9 @@
   "parameter": "Parameter",
   "parameters": "Parameters",
   "password": "Password",
+  "password_confirm": "Confirm Password",
+  "password_confirm_err": "Please confirm password",
+  "password_err": "Wrong password",
   "paste": "Paste",
   "payloads": {
     "btn_create": "CREATE PAYLOAD",
@@ -905,6 +912,7 @@
   "type": "Type",
   "userManager": {
     "btnCreate": "CREATE USER",
+    "btnEdit": "EDIT USER",
     "delete": {
       "title": "Are you sure?",
       "msg": "The selected users will be deleted permanently.",
@@ -915,6 +923,7 @@
       "err": "INVALID REQUEST"
     },
     "err": "Error: User already exists or invalid parameters sent",
+    "err_username_reserved": "Reserved username, please choose another one",
     "full": "Full Name",
     "new": "New User",
     "permission": "Permission",

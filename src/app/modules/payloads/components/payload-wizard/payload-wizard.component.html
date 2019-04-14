@@ -10,25 +10,25 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-raised-button color="warn" *ngIf="selectedPayload" (click)="delete()">
+      <button mat-raised-button color="warn" *ngIf="selectedPayload && !login.isOperator" (click)="delete()">
         {{'button.delete'|translate}}
       </button>
       <div *ngIf="currPayloadString" [innerHTML]="currPayloadString" style="margin-top: 16px;"></div>
-      <button mat-fab color="primary" class="menu-fab" (click)="newPayload()">
+      <button mat-fab color="primary" class="menu-fab" (click)="newPayload()" *ngIf="!login.isOperator">
         <mat-icon>add</mat-icon>
       </button>
     </div>
     <div *ngIf="selectedPayload" class="temp-scara-wizard">
       <mat-form-field>
-        <input matInput type="number" min="0" placeholder="{{'payloads.mass'|translate}}" [value]="selectedPayload.mass" (change)="onMassChange($event)">
+        <input matInput [disabled]="login.isOperator" type="number" min="0" placeholder="{{'payloads.mass'|translate}}" [value]="selectedPayload.mass" (change)="onMassChange($event)">
         <span matSuffix>[Kg]</span>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="number" min="0" placeholder="{{'payloads.inertia'|translate}}" [value]="selectedPayload.inertia" (change)="onInertiaChange($event)">
+        <input matInput [disabled]="login.isOperator" type="number" min="0" placeholder="{{'payloads.inertia'|translate}}" [value]="selectedPayload.inertia" (change)="onInertiaChange($event)">
         <span matSuffix>[Kg * m<sup>2</sup>]</span>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="number" min="0" placeholder="{{'payloads.offX'|translate}}" [value]="selectedPayload.Lx" (change)="onXOffsetChange($event)">
+        <input matInput [disabled]="login.isOperator" type="number" min="0" placeholder="{{'payloads.offX'|translate}}" [value]="selectedPayload.Lx" (change)="onXOffsetChange($event)">
         <span matSuffix>[m]</span>
       </mat-form-field>
     </div>

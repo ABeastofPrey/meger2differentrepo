@@ -31,6 +31,7 @@ import {
   MatAutocompleteModule,
   MatTreeModule,
   MatRippleModule,
+  MatBadgeModule,
 } from '@angular/material';
   import {DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -67,7 +68,8 @@ import {
     MatAutocompleteModule,
     MatTreeModule,
     MatRippleModule,
-    DragDropModule
+    DragDropModule,
+    MatBadgeModule
   ],
   exports: [
     MatButtonModule,
@@ -100,7 +102,8 @@ import {
     MatAutocompleteModule,
     MatTreeModule,
     MatRippleModule,
-    DragDropModule
+    DragDropModule,
+    MatBadgeModule
   ],
   declarations: []
 })

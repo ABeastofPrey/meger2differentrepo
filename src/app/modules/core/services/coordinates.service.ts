@@ -5,6 +5,8 @@ import {DataService} from './data.service';
 import {ScreenManagerService} from './screen-manager.service';
 import {ProjectManagerService} from './project-manager.service';
 
+const POLL_INTERVAL: number = 100;
+
 export class Coordinate {
   key:  string;
   value:  number;
@@ -73,7 +75,7 @@ export class CoordinatesService {
       this._locations = newLocations;
       this._axis = null;
       var now = new Date().getTime();
-      if (now - this.lastTick > 200) {
+      if (now - this.lastTick > POLL_INTERVAL) {
         this.ref.tick();
         this.lastTick = now;
         now = null;
@@ -85,7 +87,7 @@ export class CoordinatesService {
       var val = parts[1].substring(1, parts[1].length - 1);
       this._axis = new Coordinate(key, parseFloat(val));
       var now = new Date().getTime();
-      if (now - this.lastTick > 200) {
+      if (now - this.lastTick > POLL_INTERVAL) {
         this.ref.tick();
         this.lastTick = now;
         now = null;
@@ -106,9 +108,9 @@ export class CoordinatesService {
       if (stat && this.interval === null) {  //LOADED and INTERVAL ISN'T SET
         this._zone.runOutsideAngular(() => {
           this.interval = setInterval(()=>{
-            if (this.coosLoaded.value && !this.mgr.openedControls && this.mgr.screen.url !== 'simulator' && this.mgr.screen.url !== 'teach' && !this.prj.activeProject)
+            if (this.coosLoaded.value && !this.mgr.openedControls && this.mgr.screen && this.mgr.screen.url !== 'simulator' && this.mgr.screen.url !== 'teach' && !this.prj.activeProject)
               return;
-            this.ws.query('?tp_get_coordinates').then((result:MCQueryResponse)=>{
+            this.ws.query('cyc2').then((result:MCQueryResponse)=>{
               if (result.err) {
                 clearInterval(this.interval);
                 return;
@@ -123,7 +125,7 @@ export class CoordinatesService {
                 result = null;
               },0);
             });
-          },200);
+          },POLL_INTERVAL);
         });
       }
     });

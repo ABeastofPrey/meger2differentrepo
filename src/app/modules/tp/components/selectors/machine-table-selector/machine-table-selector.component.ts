@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {DataService} from '../../../../core';
+import {Input} from '@angular/core';
 
 @Component({
   selector: 'machine-table-selector',
@@ -7,6 +8,8 @@ import {DataService} from '../../../../core';
   styleUrls: ['./machine-table-selector.component.css']
 })
 export class MachineTableSelectorComponent implements OnInit {
+  
+  @Input('disabled') disabled: boolean;
 
   constructor(
     public dataService: DataService

@@ -1,3 +1,11 @@
+.wrapper {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
 .header { padding: 24px; }
 .profile-pic {
   width: 50px;
@@ -41,4 +49,21 @@ li.selected {
 }
 .disabled {
   cursor: not-allowed;
+}
+.list {
+  overflow: auto;
+  flex: 1;
+}
+
+::ng-deep .tablet-ui {
+  .profile-pic {
+    width: 75px;
+    height: 75px;
+  }
+  .name { font-size: 24px; }
+  .permission { font-size: 18px; }
+  .screen {
+    font-size: 18px;
+    padding: 16px;
+  }
 }

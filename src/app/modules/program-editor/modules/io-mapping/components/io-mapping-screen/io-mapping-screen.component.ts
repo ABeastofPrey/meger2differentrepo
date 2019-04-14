@@ -169,8 +169,9 @@ export class IoMappingScreenComponent implements OnInit {
           start = this.activeModule.io.firstOutput;
           end = this.activeModule.io.lastOutput;
         }
-        this.ws.query('?IOMAP_GET_CYCLIC_VALUES('+ioType+','+start+','+end+')')
+        this.ws.query('cyc5,'+ioType+','+start+','+end)
         .then((ret: MCQueryResponse)=>{
+          console.log(ret.result);
           const parts = ret.result.split(';');
           if (ioType === 1) {
             for (let i=0; i<parts.length; i++) {

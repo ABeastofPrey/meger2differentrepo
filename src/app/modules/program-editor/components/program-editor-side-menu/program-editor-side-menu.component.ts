@@ -4,7 +4,7 @@ import {MatTreeNestedDataSource, MatDialog} from '@angular/material';
 import {of as observableOf, Subscription} from 'rxjs';
 import {ProgramEditorService, getStatusString} from '../../services/program-editor.service';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
-import {MCFile, ProjectManagerService, DataService, WebsocketService, MCQueryResponse} from '../../../core';
+import {MCFile, ProjectManagerService, DataService, WebsocketService, MCQueryResponse, LoginService} from '../../../core';
 import {MCProject} from '../../../core/models/project/mc-project.model';
 import {ElementRef} from '@angular/core';
 import {NewAppDialogComponent} from '../toolbar-dialogs/new-app-dialog/new-app-dialog.component';
@@ -56,7 +56,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     private ws: WebsocketService,
     private zone: NgZone,
     private trn: TranslateService,
-    private dd: DragDrop
+    private dd: DragDrop,
+    private login: LoginService
   ) {
     this.trn.get([
       'projectTree.dirty','button.discard','button.save','button.delete',
@@ -400,8 +401,10 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       let prgNode = new TreeNode('','File',p.name,appNode);
       prgNode.ref = app;
       appNode.children.push(prgNode);
-      appNode.children.push(new TreeNode('','Data',p.name,appNode));
-      appNode.children.push(libsNode);
+      if (!this.login.isOperator && !this.login.isViewer) {
+        appNode.children.push(new TreeNode('','Data',p.name,appNode));
+        //appNode.children.push(libsNode);
+      }
       apps.children.push(appNode);
     }
     let deps = new TreeNode('','Dependencies', p.name,null);
@@ -420,12 +423,16 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     let payloads = new TreeNode('', 'Payloads', p.name,null);
     data.push(apps);
     data.push(deps);
-    data.push(settings);
-    data.push(frames);
-    data.push(pallets);
-    data.push(grippers);
-    data.push(io);
-    data.push(payloads);
+    if (!this.login.isOperator && !this.login.isViewer) {
+      data.push(settings);
+      data.push(frames);
+      data.push(pallets);
+    }
+    if (!this.login.isViewer) {
+      data.push(grippers);
+      data.push(io);
+      data.push(payloads);
+    }
     /*data.push(errors);
       data.push(macros);
       data.push(vision);
