@@ -274,7 +274,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     this.ioService.setIoByBit(entry.selectedPort, entry.value).then(() => {
       this.customTable.renderRows();
     });
-
+    this.ngAfterViewInit();
     return true;
   }
 
