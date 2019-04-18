@@ -26,6 +26,7 @@
     "jquery-ui-dist": "^1.12.1",
     "lodash": "^4.17.11",
     "ng-click-outside": "^4.0.0",
+    "ngx-scrollbar": "^4.1.1",
     "ngx-tour-core": "^4.0.1",
     "ngx-tour-md-menu": "^4.0.1",
     "ramda": "^0.26.0",
