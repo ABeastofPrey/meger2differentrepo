@@ -69,6 +69,10 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
     .enabledApp {
       color: $material-semi-black;
     }
+
+    .home-config .home-position .read-btn:hover {
+      color: mat-color($material-kuka-primary);
+    }
   }
 
   /*

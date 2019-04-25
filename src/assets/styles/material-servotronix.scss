@@ -45,4 +45,7 @@ $material-semi-black: rgba(0,0,0,0.54);
     color: mat-color($material-servotronix-accent, default-contrast);
   }
 
+  .home-config .home-position .read-btn:hover {
+    color: mat-color($material-servotronix-primary);
+  }
 }
