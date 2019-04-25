@@ -5,6 +5,7 @@ import {TpRoutingModule} from './tp-routing.module';
 import {SharedModule} from '../shared/shared.module';
 import {JogScreenComponent} from './components/jogscreen/jogscreen.component';
 import {LeadByNoseScreenComponent} from './components/lead-by-nose-screen/lead-by-nose-screen.component';
+import { HandGuidingComponent } from './components/hand-guiding/hand-guiding.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import {LeadByNoseScreenComponent} from './components/lead-by-nose-screen/lead-b
   declarations: [
     TpComponent,
     JogScreenComponent,
-    LeadByNoseScreenComponent
+    LeadByNoseScreenComponent,
+    HandGuidingComponent
   ]
 })
 export class TpModule { }

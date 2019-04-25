@@ -337,11 +337,17 @@
     },
     "tabs": {
       "jog": "Jog",
-      "lbn": "Lead By Nose"
+      "lbn": "Lead By Nose",
+      "handguiding": "Hand Guiding"
     },
     "tool_align": "Tool Align",
     "var": "Variable",
     "var_none": "No variables"
+  },
+  "handGuiding": {
+    "joint": "J",
+    "free": "Free All",
+    "lock": "Lock All"
   },
   "joint": "Joint",
   "joints": "Joints",
@@ -704,7 +710,7 @@
       "outputCol": "Output",
       "StateCol": "State",
       "FromCol": "From",
-      "DistanceCol": "Distance",
+      "valueCol": "Value",
       "deleteBtn": "DELETE SELECTED",
       "positiveNumTip": "Please input positive number!",
       "newPositionTrigger": {

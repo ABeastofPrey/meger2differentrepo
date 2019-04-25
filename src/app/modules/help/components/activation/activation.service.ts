@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { handler, errMsgProp } from '../../../../modules/program-editor/services/service-adjunct';
+import { handler, errMsgProp } from '../../../core/services/service-adjunct';
 import { compose, then, identity } from 'ramda';
 import { WebsocketService } from '../../../core/services/websocket.service';
 

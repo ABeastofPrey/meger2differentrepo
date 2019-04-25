@@ -334,11 +334,17 @@
     },
     "tabs": {
       "jog": "Jog",
-      "lbn": "Lead By Nose"
+      "lbn": "Lead By Nose",
+      "handguiding": "Hand Guiding"
     },
     "tool_align": "Tool Align",
     "var": "Variable",
     "var_none": "No variables"
+  },
+  "handGuiding": {
+    "joint": "轴",
+    "free": "全部释放",
+    "lock": "全部解锁"
   },
   "joint": "Joint",
   "joints": "Joints",
@@ -697,7 +703,7 @@
       "outputCol": "Output",
       "StateCol": "State",
       "FromCol": "From",
-      "DistanceCol": "Distance",
+      "valueCol": "值",
       "deleteBtn": "DELETE SELECTED",
       "positiveNumTip": "Please input positive number!",
       "newPositionTrigger": {

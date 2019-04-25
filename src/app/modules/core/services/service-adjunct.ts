@@ -1,8 +1,8 @@
 import { complement, compose, ifElse, prop, curry } from 'ramda';
 import { Either, Maybe } from 'ramda-fantasy';
 import { isNotNil } from 'ramda-adjunct';
-import { MCQueryResponse } from '../../../modules/core/services/websocket.service';
-import { ErrorFrame } from '../../../modules/core/models/error-frame.model';
+import { MCQueryResponse } from './websocket.service';
+import { ErrorFrame } from '../models/error-frame.model';
 
 export const { Left, Right } = Either;
 

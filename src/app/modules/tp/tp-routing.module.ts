@@ -3,6 +3,7 @@ import {TpComponent} from './tp.component';
 import {Routes, RouterModule} from '@angular/router';
 import {LeadByNoseScreenComponent} from './components/lead-by-nose-screen/lead-by-nose-screen.component';
 import {JogScreenComponent} from './components/jogscreen/jogscreen.component';
+import { HandGuidingComponent } from './components/hand-guiding/hand-guiding.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,9 @@ const routes: Routes = [
       {
         path: 'jog',
         component: JogScreenComponent
+      }, {
+        path: 'handguiding',
+        component: HandGuidingComponent
       }
     ]
   }

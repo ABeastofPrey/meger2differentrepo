@@ -6,6 +6,7 @@ import {MatSnackBar, MatDialog} from "@angular/material";
 import {UpdateDialogComponent} from "../../../components/update-dialog/update-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
 import {environment as env, Platform} from '../../../../environments/environment';
+import { DataService } from './data.service';
 
 /* 
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
@@ -23,7 +24,8 @@ export class UtilsService {
     private task: TaskService,
     private snack: MatSnackBar,
     private dialog: MatDialog,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public dataService: DataService,
   ){
     this.trn.get(['utils.success', 'acknowledge']).subscribe(words=>{
       this.words = words;
@@ -84,6 +86,10 @@ export class UtilsService {
 
   public get IsKuka(): boolean {
     return env.platform.name === env.platforms.Kuka.name;
+  }
+
+  public get IsScara(): boolean {
+    return (this.dataService.robotType === 'SCARA') ? true : false;
   }
 }
 

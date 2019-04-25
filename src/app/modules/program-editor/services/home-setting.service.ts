@@ -1,7 +1,7 @@
 import { WebsocketService, MCQueryResponse } from '../../../modules/core/services/websocket.service';
 import { Injectable } from '@angular/core';
 import { compose, map, ifElse, isEmpty, identity, then } from 'ramda';
-import { handler, Result, Nothing, errMsgProp } from './service-adjunct';
+import { handler, Result, Nothing, errMsgProp } from '../../core/services/service-adjunct';
 
 const parseNum = ifElse(isEmpty, identity, Number);
 const parseRes = compose(map(parseNum), JSON.parse);
