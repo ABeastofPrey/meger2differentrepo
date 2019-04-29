@@ -52,7 +52,7 @@
         </ng-container>
         <!-- distance -->
         <ng-container matColumnDef="{{columns[5]}}">
-            <mat-header-cell *matHeaderCellDef>{{'projectSettings.position_trigger.valueCol'|translate}} [mm / s / %]</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>{{'projectSettings.position_trigger.valueCol'|translate}} [mm/ms/%]</mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field>
                     <input matInput type="text" [(ngModel)]="element.distance" (focus)="onFocus(element.distance)" (blur)="onBlur(element)"/>

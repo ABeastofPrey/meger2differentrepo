@@ -33,7 +33,7 @@ export class PositionTriggerService {
         return this.cud(api);
     }
 
-    public async updatePls({name, distance, selectedOutput, selectedState, selectedFrom}): Promise<any> {
+    public async updatePls({name, distance, selectedOutput, selectedState, selectedFrom}: any): Promise<any> {
         const api = `?Pls_update("${name}", ${selectedOutput}, ${distance}, ${selectedState}, ${selectedFrom})`; // position is distance.
         return this.cud(api);
     }

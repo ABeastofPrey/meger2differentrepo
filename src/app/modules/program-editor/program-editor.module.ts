@@ -54,6 +54,7 @@ import { PayloadSelectorComponent } from './components/dialogs/payload-selector/
 import { HomeSettingComponent } from './components/program-settings/home-setting/home-setting.component';
 import { HomeSettingService } from './services/home-setting.service';
 import { HomeDialogComponent } from './components/dialogs/home-dialog/home-dialog.component';
+import { PLSSourceComponent } from './components/dialogs/pls-source/pls-source.component';
 import { HomeDialogService } from './services/home-dialog.service';
 import {FileTreeModule} from '../file-tree/file-tree.module';
 
@@ -109,6 +110,7 @@ import {FileTreeModule} from '../file-tree/file-tree.module';
     JumpDialogComponent,
     Jump3DialogComponent,
     HomeDialogComponent,
+    PLSSourceComponent,
     PositionTriggerComponent,
     NewPositionTriggerComponent,
     DataNotArrayPipe,
@@ -145,6 +147,7 @@ import {FileTreeModule} from '../file-tree/file-tree.module';
     JumpDialogComponent,
     Jump3DialogComponent,
     HomeDialogComponent,
+    PLSSourceComponent,
     PositionTriggerComponent,
     NewPositionTriggerComponent,
     StopDialogComponent,

@@ -1,6 +1,6 @@
 <div class="mat-typography">
   <div class="wrapper">
-    <div class="title">{{data.moveS ? 'projectCommands.move.title_move' : 'projectCommands.move.title_moves' | translate}}</div>
+    <div class="title">{{(data.moveS ? 'projectCommands.move.title_moves' : 'projectCommands.move.title_move') | translate}}</div>
     <div class="content">
       <mat-form-field>
         <mat-select placeholder="{{'projectCommands.move.move'|translate}}" [(ngModel)]="location" (selectionChange)="resetIndex()">

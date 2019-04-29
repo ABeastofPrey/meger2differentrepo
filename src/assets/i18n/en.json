@@ -562,6 +562,13 @@
       "numRange": "Please enter a number in",
       "intRange": "Please enter an integer in",
       "advanced": "Advanced"
+    },
+    "ptSource": {
+      "title": "Insert SetPTSource Command",
+      "sourcePh": "Choose PT Source",
+      "sourceDistance": "Distance",
+      "sourceTime": "Time",
+      "sourcePercentage": "Percentage"
     }
   },
   "projects": {
@@ -712,7 +719,7 @@
       "FromCol": "From",
       "valueCol": "Value",
       "deleteBtn": "DELETE SELECTED",
-      "positiveNumTip": "Please input positive number!",
+      "positiveNumTip": "Please input nonnegative number!",
       "newPositionTrigger": {
         "namePlaceholder": "Name",
         "requireErr": "Name is required."
@@ -759,7 +766,18 @@
   "record": "Record",
   "restore": {
     "restoring": "Restoring system from file",
-    "success": "System restored successfuly!"
+    "success": "System restored successfuly!",
+    "home": "Home",
+    "insert_chart":"Motion Dashboard",
+    "insert_comment": "Program editor",
+    "3d_rotation": "3D Simulator",
+    "touch_app": "Teach",
+    "settings": "System Configration",
+    "playlist_play": "Task Manager",
+    "apps": "softMC Tools",
+    "error": "Error History",
+    "list": "Log",
+    "help_outline": "Help"
   },
   "robots": {
     "axes": "Robot Axes",
@@ -842,7 +860,9 @@
     "new": "new",
     "delta": "delta",
     "calibrationSuccess": "Calibration Success.",
-    "resultOutOfScope": "The determined calculation error exceeds the allowable limit 5mm.\nThe use of this tool data can lead to undesirable behaviour."
+    "resultOutOfScope": "The determined calculation error exceeds the allowable limit 5mm.\nThe use of this tool data can lead to undesirable behaviour.",
+    "apply": "Apply",
+    "cancel": "Cancel"
   },
   "tools": "Tools",
   "tour": [

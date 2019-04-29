@@ -23,6 +23,7 @@ import {StopDialogComponent} from '../dialogs/stop-dialog/stop-dialog.component'
 import {Payload} from '../../../core/models/payload.model';
 import {PayloadSelectorComponent} from '../dialogs/payload-selector/payload-selector.component';
 import { HomeDialogComponent } from '../dialogs/home-dialog/home-dialog.component';
+import { PLSSourceComponent } from '../dialogs/pls-source/pls-source.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -421,6 +422,18 @@ export class ProgramEditMenuComponent implements OnInit {
           cmd = robot + '.' + cmd;
         this.prg.insertAndJump(cmd,0);
       }
+    });
+  }
+
+  menu_pls_source() {
+    this.dialog.open(
+      PLSSourceComponent, {
+        width: '400px',
+        disableClose: true,
+      }).afterClosed().subscribe((cmd: string) => {
+        if (cmd) {
+          this.prg.insertAndJump(cmd, 0);
+        }
     });
   }
   menu_inputs() {

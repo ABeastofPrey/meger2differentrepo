@@ -1,0 +1,23 @@
+<div class="mat-typography">
+    <h1 class="title">{{'projectCommands.ptSource.title'|translate}}</h1>
+    <div mat-dialog-content>
+        <mat-form-field>
+            <mat-select placeholder="{{'projectCommands.jump.motionPh'|translate}}" [(ngModel)]="motionElement">
+                <mat-option *ngFor="let e of motionElements" [value]="e">{{e}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-select placeholder="{{'projectCommands.ptSource.sourcePh'|translate}}" [(ngModel)]="source">
+                <mat-option [value]="'PathLength'">{{'projectCommands.ptSource.sourceDistance'|translate}}</mat-option>
+                <mat-option [value]="'PathTime'">{{'projectCommands.ptSource.sourceTime'|translate}}</mat-option>
+                <mat-option [value]="'PathPercentage'">{{'projectCommands.ptSource.sourcePercentage'|translate}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions class="actions">
+        <button mat-button color="primary" [mat-dialog-close]="null"
+            cdkFocusInitial>{{'button.cancel'|translate}}</button>
+        <button mat-button color="primary" (click)="emitCmd()">{{'button.insert'|translate}}</button>
+    </div>
+</div>

@@ -4,7 +4,7 @@ import { NewPositionTriggerComponent } from '../new-position-trigger/new-positio
 import { PositionTriggerService, IResPLS } from '../../../services/position-trigger.service';
 import {
     T, F, ifElse, always, map, compose, converge, propEq, equals, filter, bind, forEach,
-    all, any, not, and, lensProp, set, or, isNil, isEmpty, gt, __, prop, reduce, complement
+    all, any, not, and, lensProp, set, or, isNil, isEmpty, gte, __, prop, reduce, complement
 } from 'ramda';
 import { Either, Maybe } from 'ramda-fantasy';
 import { TranslateService } from '@ngx-translate/core';
@@ -63,7 +63,7 @@ export const canCreate: (x: string) => boolean = complement(converge(or, [isNil,
 
 export const isNumber: (x: any) => boolean = converge(and, [compose(not, isNaN, Number), complement(isEmpty)]);
 
-export const isPositiveNumber: (x: number) => boolean = converge(and, [isNumber, gt(__, 0)]);
+export const isPositiveNumber: (x: number) => boolean = converge(and, [isNumber, gte(__, 0)]);
 
 export const isNotPositiveNumber: (x: number) => boolean = complement(isPositiveNumber);
 

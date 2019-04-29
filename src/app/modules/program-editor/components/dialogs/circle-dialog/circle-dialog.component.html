@@ -51,6 +51,6 @@
   </div>
   <div class="actions">
     <button mat-button (click)="cancel()">{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="this.circlePoint == null || (!this.data.angle && this.targetPoint == null) || (this.data.angle && this.angle.length === 0) || (this.circlePoint.isArr && this.circlePointIndex < 0) || (this.targetPoint && this.targetPoint.isArr && this.targetPointIndex < 0) || invalidBlending()">{{!this.withParams ? 'button.insert' : 'button.edit' | translate}}</button>
+    <button mat-button color="primary" (click)="insert()" [disabled]="this.circlePoint == null || (!this.data.angle && this.targetPoint == null) || (this.data.angle && this.angle.length === 0) || (this.circlePoint.isArr && this.circlePointIndex < 0) || (this.targetPoint && this.targetPoint.isArr && this.targetPointIndex < 0) || invalidBlending()">{{(!this.withParams ? 'button.insert' : 'button.edit') | translate}}</button>
   </div>
 </div>
