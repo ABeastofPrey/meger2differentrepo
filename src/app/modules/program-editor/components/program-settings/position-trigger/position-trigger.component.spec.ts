@@ -185,7 +185,7 @@ describe('PositionTriggerComponent', () => {
 
     it('should give the exact result of isPositiveNumber.', () => {
         expect(isPositiveNumber(-1)).toBeFalsy();
-        expect(isPositiveNumber(0)).toBeFalsy();
+        expect(isPositiveNumber(0)).toBeTruthy();
         expect(isPositiveNumber(1)).toBeTruthy();
     });
 

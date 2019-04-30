@@ -15,6 +15,10 @@ getTestBed().initTestEnvironment(
   platformBrowserDynamicTesting()
 );
 // Then we find all the tests.
-const context = require.context('./', true, /\.spec\.ts$/);
+const programSettingsContext = require.context('./app/modules/program-editor/components/program-settings/', true, /\.spec\.ts$/);
 // And load the modules.
-context.keys().map(context);
+programSettingsContext.keys().map(programSettingsContext);
+
+const jump3DialogContext = require.context('./app/modules/program-editor/components/dialogs/jump3-dialog/', true, /\.spec\.ts$/);
+// And load the modules.
+jump3DialogContext.keys().map(jump3DialogContext);

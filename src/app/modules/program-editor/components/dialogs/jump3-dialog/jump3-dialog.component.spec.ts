@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '../../../../shared/shared.module';
+import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogRef, MAT_DIALOG_DATA, ErrorStateMatcher, MatSelectChange } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Jump3DialogService } from '../../../services/jump3-dialog.service';
 import { Jump3DialogComponent } from './jump3-dialog.component';
-import { range, curry, compose, map } from 'ramda';
+import { range, map } from 'ramda';
 import * as Faker from 'faker';
 
 describe('Jump3DialogComponent', () => {
@@ -29,7 +30,7 @@ describe('Jump3DialogComponent', () => {
         { provide: MatDialogRef, useValue: { close: jasmine.createSpy('close') } },
         { provide: Jump3DialogService, useValue: jump3DialogService }
       ],
-      imports: [SharedModule, BrowserAnimationsModule]
+      imports: [SharedModule, BrowserAnimationsModule, UnitTestModule]
     })
     .compileComponents();
   }));

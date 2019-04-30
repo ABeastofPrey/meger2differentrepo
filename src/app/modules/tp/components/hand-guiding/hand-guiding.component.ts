@@ -72,7 +72,7 @@ export class HandGuidingComponent implements OnInit {
 
     private initJoints(): void {
         const converter = (x: number) => !!x;
-        const retriveJoints = this.service.getJoints.bind(this.service);
+        const retrieveJoints = this.service.getJoints.bind(this.service);
         const logErr = err => console.warn(err);
         const setSta = (res: number[]) => {
             const states: boolean[] = map(converter, res);
@@ -81,7 +81,7 @@ export class HandGuidingComponent implements OnInit {
             });
         };
         const logOrSet = either(logErr, setSta);
-        const _initJoints = compose(then(logOrSet), retriveJoints);
+        const _initJoints = compose(then(logOrSet), retrieveJoints);
         _initJoints();
     }
 

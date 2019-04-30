@@ -39,11 +39,13 @@ describe('HomeSettingComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [HomeSettingComponent],
-            imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
+            imports: [
+                SharedModule, BrowserAnimationsModule, UnitTestModule
+            ],
             providers: [
-                {provide: HomeSettingService, useValue: homeSettingService},
-                {provide: TerminalService, useValue: terminalService},
-                {provide: MatSnackBar, useValue: fakeMatSnackBar},
+                { provide: HomeSettingService, useValue: homeSettingService },
+                { provide: TerminalService, useValue: terminalService },
+                { provide: MatSnackBar, useValue: fakeMatSnackBar },
             ],
             schemas: [NO_ERRORS_SCHEMA]
         });
@@ -110,8 +112,9 @@ describe('HomeSettingComponent', () => {
     });
 
     it('should update order', async(() => {
-        comp.updateOrder(1, 20);
+        fixture.detectChanges();
         fixture.whenStable().then(() => {
+            comp.updateOrder(1, 20);
             expect(homeSettingService.updateHomeOrder.calls.any()).toBe(true);
         });
     }));
@@ -145,8 +148,9 @@ describe('HomeSettingComponent', () => {
 
     it('should update position successfully when enter empty', async(() => {
         const target = {value: ''};
-        comp.updatePosition(1, target);
+        fixture.detectChanges();
         fixture.whenStable().then(() => {
+            comp.updatePosition(1, target);
             expect(homeSettingService.clearHomePosition).toHaveBeenCalledWith(1);
         });
     }));
@@ -154,8 +158,8 @@ describe('HomeSettingComponent', () => {
     it('should update position failed when enter empty', async(() => {
         const target = {value: ''};
         homeSettingService.clearHomePosition.and.returnValue(Left());
-        comp.updatePosition(1, target);
         fixture.whenStable().then(() => {
+            comp.updatePosition(1, target);
             expect(homeSettingService.clearHomePosition).toHaveBeenCalledWith(1);
             homeSettingService.clearHomePosition.calls.reset();
             homeSettingService.clearHomePosition.and.returnValue(Right());
@@ -167,14 +171,15 @@ describe('HomeSettingComponent', () => {
         homeSettingService.clearHomePosition.calls.reset();
         homeSettingService.clearHomePosition.and.returnValue(Right());
         comp.onFocus('');
-        comp.updatePosition(1, target);
         fixture.whenStable().then(() => {
+            comp.updatePosition(1, target);
             expect(homeSettingService.clearHomePosition.calls.any()).toBe(false);
         });
     }));
 
     it('should update position failed when enter invalid number', async(() => {
         const target = {value: '20a'};
+        fixture.detectChanges();
         comp.updatePosition(1, target);
         fixture.whenStable().then(() => {
             expect(openSpy).toHaveBeenCalled();
@@ -184,6 +189,7 @@ describe('HomeSettingComponent', () => {
     it('should update position failed when enter valid number but equals to previous input', async(() => {
         homeSettingService.updateHomePostion.calls.reset();
         homeSettingService.updateHomePostion.and.returnValue(Right());
+        fixture.detectChanges();
         const target = {value: '20'};
         comp.onFocus('20');
         comp.updatePosition(1, target);
@@ -196,6 +202,7 @@ describe('HomeSettingComponent', () => {
     async(() => {
         homeSettingService.updateHomePostion.calls.reset();
         homeSettingService.updateHomePostion.and.returnValue(Right());
+        fixture.detectChanges();
         const target = {value: '20'};
         comp.onFocus('30');
         comp.updatePosition(undefined, target);
@@ -208,6 +215,7 @@ describe('HomeSettingComponent', () => {
     async(() => {
         homeSettingService.updateHomePostion.calls.reset();
         homeSettingService.updateHomePostion.and.returnValue(Right());
+        fixture.detectChanges();
         const target = {value: '20'};
         comp.onFocus('30');
         comp.updatePosition(1, target);
@@ -220,6 +228,7 @@ describe('HomeSettingComponent', () => {
     it('should update position failed when enter valid number but not equals to previous input', async(() => {
         homeSettingService.updateHomePostion.calls.reset();
         homeSettingService.updateHomePostion.and.returnValue(Left('faliled'));
+        fixture.detectChanges();
         const target = {value: '9'};
         comp.onFocus('30');
         comp.updatePosition(2, target);
