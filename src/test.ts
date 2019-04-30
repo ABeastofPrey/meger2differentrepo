@@ -22,3 +22,11 @@ programSettingsContext.keys().map(programSettingsContext);
 const jump3DialogContext = require.context('./app/modules/program-editor/components/dialogs/jump3-dialog/', true, /\.spec\.ts$/);
 // And load the modules.
 jump3DialogContext.keys().map(jump3DialogContext);
+
+const ioContext = require.context('./app/modules/configuration/components/io/', true, /\.spec\.ts$/);
+// And load the modules.
+ioContext.keys().map(ioContext);
+
+const configurationServiceContext = require.context('./app/modules/configuration/services/', true, /\.spec\.ts$/);
+// And load the modules.
+configurationServiceContext.keys().map(configurationServiceContext);
