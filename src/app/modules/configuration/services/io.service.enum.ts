@@ -38,13 +38,21 @@ export interface IoFormatOption {
 /**
  * The custom IO type enum.
  */
-export enum CustomIOType {
+export enum CustomIOTypes {
   InputBit = 'Input Bit',
   InputByte = 'Input Byte',
   InputWord  = 'Input Word',
   OutputBit = 'Output Bit',
   OutputByte = 'Output Byte',
   OutputWord = 'Output Word'
+}
+
+/**
+ * The interface of custom IO type.
+ */
+export interface CustomIOType {
+  key: CustomIOTypes;
+  value: string;
 }
 
 /**

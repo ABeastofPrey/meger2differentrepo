@@ -77,7 +77,7 @@
   "dashboard": {
     "charts": {
      "2d": "2D Graph",
-     "3d": "3D Graph" 
+     "3d": "3D Graph"
     },
     "err_file": "FILE NOT FOUND",
     "err_move": "Error {{code}}: {{msg}}",
@@ -305,7 +305,13 @@
     "dialogTitle": "Are you sure?",
     "dialogMsg": "The selected custom view will be deleted permanently.",
     "dialogYes": "yes",
-    "DialogNo": "Cancel"
+    "DialogNo": "Cancel",
+    "inputBit": "Input Bit",
+    "inputByte": "Input Byte",
+    "inputWord": "Input Word",
+    "outputBit": "Output Bit",
+    "outputByte": "Output Byte",
+    "outputWord": "Output Word"
   },
   "interface": {
    "title": "User Interface"

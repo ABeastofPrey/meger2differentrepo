@@ -6,11 +6,11 @@
             <mat-header-cell *matHeaderCellDef> {{'io.type' | translate}} </mat-header-cell>
             <ng-container>
               <mat-cell color="primary" *matCellDef="let element; let i = index">
-                <mat-select [(value)]="element.selectedType" placeholder={{element.selectedType}} class="mat-select-normal-place-holder"
+                <mat-select [(value)]="element.selectedType.key" placeholder={{element.selectedType.key}} class="mat-select-normal-place-holder"
                   (click)="removeSelectionOnPortOrTypeChange($event)" (selectionChange)="typeSelectionChange(i, $event.value)"
                   disableRipple="true">
-                  <mat-option *ngFor="let type of element.type" [value]="type">
-                    {{type}}
+                  <mat-option *ngFor="let type of element.type" [value]="type.key">
+                    {{type.value}}
                   </mat-option>
                 </mat-select>
               </mat-cell>
@@ -35,10 +35,10 @@
           <ng-container matColumnDef="{{IoTableColumnReference.Value}}">
             <mat-header-cell *matHeaderCellDef> {{'io.status' | translate}} </mat-header-cell>
             <mat-cell color="primary" *matCellDef="let element; let i = index;">
-              <ng-container *ngIf="element.selectedType === CustomIOTypeReference.InputBit || element.selectedType === CustomIOTypeReference.OutputBit ">
+              <ng-container *ngIf="element.selectedType.key === CustomIOTypeReference.InputBit || element.selectedType.key === CustomIOTypeReference.OutputBit ">
                 <input type="radio" [name]="i" [checked]="element.value === '1'" (click)="onClickRadioButtonInCustomIO(i, $event)">
               </ng-container>
-              <ng-container *ngIf="element.selectedType != CustomIOTypeReference.InputBit && element.selectedType != CustomIOTypeReference.OutputBit ">
+              <ng-container *ngIf="element.selectedType.key != CustomIOTypeReference.InputBit && element.selectedType.key != CustomIOTypeReference.OutputBit ">
                 {{element.value}}
               </ng-container>
             </mat-cell>

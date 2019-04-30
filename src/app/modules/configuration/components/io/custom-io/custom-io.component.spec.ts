@@ -3,9 +3,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DebugElement } from '@angular/core';
 
 import { SharedModule } from '../../../../shared/shared.module';
+import { UnitTestModule } from '../../../../shared/unit-test.module';
+
 import { CustomIOComponent } from './custom-io.component';
 
-import { CustomIOType } from './../../../services/io.service.enum';
+import { CustomIOTypes, CustomIOType } from './../../../services/io.service.enum';
 import { IoService } from '../../../services/io.service';
 import { WebsocketService } from '../../../../core/services/websocket.service';
 
@@ -45,7 +47,7 @@ describe('CustomIOComponent', () => {
     const spyObj = jasmine.createSpyObj('WebSocketService', ['query']);
 
     TestBed.configureTestingModule({
-      imports: [SharedModule, BrowserAnimationsModule],
+      imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
       providers: [IoService, { provide: WebsocketService, useValue: spyObj }],
       declarations: [CustomIOComponent]
     })
@@ -304,14 +306,14 @@ describe('CustomIOComponent', () => {
 
     expect(ioTable.children.item(1).textContent).toBe('Output Bit2000 1 ', 'it is the first row.');
 
-    let spyValue = createMockCustomIo(CustomIOType.OutputByte);
+    let spyValue = createMockCustomIo(CustomIOTypes.OutputByte);
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
        return Promise.resolve(mcQueryResponse);
       });
 
-    component.typeSelectionChange(0, CustomIOType.OutputByte);
+    component.typeSelectionChange(0, CustomIOTypes.OutputByte);
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
@@ -336,14 +338,14 @@ describe('CustomIOComponent', () => {
 
     expect(ioTable.children.item(1).textContent).toBe('Output Bit2000 1 ', 'it is the first row.');
 
-    let spyValue = createMockCustomIo(CustomIOType.InputBit, 3000, '0', '1');
+    let spyValue = createMockCustomIo(CustomIOTypes.InputBit, 3000, '0', '1');
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
        return Promise.resolve(mcQueryResponse);
       });
 
-    component.typeSelectionChange(0, CustomIOType.InputBit);
+    component.typeSelectionChange(0, CustomIOTypes.InputBit);
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
@@ -370,7 +372,7 @@ describe('CustomIOComponent', () => {
 
     expect(ioTable.children.item(1).textContent).toBe('Output Bit2000 1 ', 'it is the first row.');
 
-    let spyValue = createMockCustomIo(CustomIOType.OutputBit, 2001, '0', '1');
+    let spyValue = createMockCustomIo(CustomIOTypes.OutputBit, 2001, '0', '1');
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
@@ -439,7 +441,7 @@ describe('CustomIOComponent', () => {
    * @param label The mock custom io label.
    * @returns The mock custom io.
    */
-  function createMockCustomIo(type = CustomIOType.OutputBit, port = 2000, value = '0', label = '1') {
+  function createMockCustomIo(type = CustomIOTypes.OutputBit, port = 2000, value = '0', label = '1') {
     return `{"type":"${type}","port":${port},"value":"${value}","label":"${label}"}`;
   }
 

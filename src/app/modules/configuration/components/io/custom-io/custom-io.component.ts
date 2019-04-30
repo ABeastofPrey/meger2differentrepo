@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { MatTable, MatTableDataSource, MatRow } from '@angular/material';
 
-import { CustomIOType, IoTableColumn } from '../../../services/io.service.enum';
+import { CustomIOTypes, CustomIOType, IoTableColumn } from '../../../services/io.service.enum';
 import { CustomIO, IoService, CustomIOPort } from '../../../services/io.service';
 
 
@@ -27,16 +28,10 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     IoTableColumn.Label
   ];
 
-
   /**
-   * The IoFormatOption enum object reference.
+   * The CustomIOTypes enum object reference.
    */
-  //IoFormatOptionsReference = IoFormatOptions;
-
-  /**
-   * The CustomIOType enum object reference.
-   */
-  CustomIOTypeReference = CustomIOType;
+  CustomIOTypeReference = CustomIOTypes;
 
   /**
    * The IoTableColumn enum object reference.
@@ -90,15 +85,37 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
   private customIOTypes: CustomIOType[] = [];
 
   /**
+   * The translation words.
+   */
+  private words: any;
+
+  /**
+   *  All the custom IO types.
+   */
+  private allCustomIoTypes: any;
+
+  /**
    * Constructor.
    * @param ioService The ioService instance.
    */
-  constructor(private ioService: IoService) {
+  constructor(private ioService: IoService, private trn: TranslateService) {
     this.tableIndex = 1;
     this.customDataSource = new MatTableDataSource([]);
     this.changeSelectRow(null, -1);
     this.enableButtonsInCustomTab(true, false);
     this.customHex = false;
+
+    this.trn.get(['io']).subscribe(words => {
+      this.words = words['io'];
+      this.allCustomIoTypes = [
+                        {key: CustomIOTypes.InputBit, value: this.words['inputBit']},
+                        {key: CustomIOTypes.InputByte, value: this.words['inputByte']},
+                        {key: CustomIOTypes.InputWord, value: this.words['inputWord']},
+                        {key: CustomIOTypes.OutputBit, value: this.words['outputBit']},
+                        {key: CustomIOTypes.OutputByte, value: this.words['outputByte']},
+                        {key: CustomIOTypes.OutputWord, value: this.words['outputWord']},
+                      ];
+                    });
   }
 
   ngOnInit() {}
@@ -137,10 +154,18 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     if (defaultType) {
        let portKey = defaultType.replace(/\s/g, '');
 
+       let typeValue = null;
+       for (let type of this.allCustomIoTypes) {
+          if (type.key === defaultType) {
+            typeValue = type.value;
+            break;
+          }
+       }
+
        this.customDataSource.data.push({
-        type: this.ioService.getCustomIoTypes(),
+        type: this.allCustomIoTypes,
         port: this.customIoPorts[portKey],
-        selectedType: defaultType,
+        selectedType: { key: defaultType, value: typeValue },
         selectedPort: this.customIoPorts[portKey][0],
         value: '',
         label: ''
@@ -210,7 +235,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
 
     if (!select) {
       this.ioService
-        .modifyCustomIo(this.tableIndex, index + 1, value, ports[0], this.customHex)
+        .modifyCustomIo(this.tableIndex, index + 1,  this.customDataSource.data[index].selectedType, ports[0], this.customHex)
         .then(() => {
           this.customDataSource.data[index] = this.ioService.getCustomIo(this.customIOTypes, this.customIoPorts);
           this.customTable.renderRows();
@@ -218,7 +243,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.ioService.modifyCustomIo(this.tableIndex, index + 1, value,
+    this.ioService.modifyCustomIo(this.tableIndex, index + 1,  this.customDataSource.data[index].selectedType,
         this.customDataSource.data[index].selectedPort,
         this.customHex
       ).then(() => {
@@ -262,7 +287,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     this.enableButtonsInCustomTab(true, false);
 
     let entry = this.customDataSource.data[index];
-    if (entry.selectedType === CustomIOType.InputBit) {
+    if (entry.selectedType.key === CustomIOTypes.InputBit) {
       return false;
     }
 
@@ -314,10 +339,9 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
   private checkCustomIoTypes() {
     this.customIOTypes = [];
 
-    let allCustomIoTypes = this.ioService.getCustomIoTypes();
     if (this.customIoPorts) {
-      for (let type of allCustomIoTypes) {
-        let key = type.replace(/\s/g, '');
+      for (let type of this.allCustomIoTypes) {
+        let key = type.key.replace(/\s/g, '');
         if (this.customIoPorts[key] && this.customIoPorts[key].length) {
           this.customIOTypes.push(type);
         }
@@ -329,18 +353,18 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
    * Find the default custom io type.
    * @returns the default custom io type.
    */
-  private findDefaultType(): CustomIOType {
+  private findDefaultType(): CustomIOTypes {
 
     if (this.customIoPorts) {
-      let key = CustomIOType.InputBit.replace(/\s/g, '');
+      let key = CustomIOTypes.InputBit.replace(/\s/g, '');
 
       if (this.customIoPorts[key] && this.customIoPorts[key].length) {
-        return CustomIOType.InputBit;
+        return CustomIOTypes.InputBit;
       }
 
-      key = CustomIOType.OutputBit.replace(/\s/g, '');
+      key = CustomIOTypes.OutputBit.replace(/\s/g, '');
       if (this.customIoPorts[key] && this.customIoPorts[key].length) {
-        return CustomIOType.OutputBit;
+        return CustomIOTypes.OutputBit;
       }
     }
     return null;
