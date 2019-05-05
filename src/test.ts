@@ -14,19 +14,20 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
+
 // Then we find all the tests.
 const programSettingsContext = require.context('./app/modules/program-editor/components/program-settings/', true, /\.spec\.ts$/);
 // And load the modules.
 programSettingsContext.keys().map(programSettingsContext);
 
 const jump3DialogContext = require.context('./app/modules/program-editor/components/dialogs/jump3-dialog/', true, /\.spec\.ts$/);
-// And load the modules.
 jump3DialogContext.keys().map(jump3DialogContext);
 
+const activationContext = require.context('./app/modules/help/components/activation/', true, /\.spec\.ts$/);
+activationContext.keys().map(activationContext);
+
 const ioContext = require.context('./app/modules/configuration/components/io/', true, /\.spec\.ts$/);
-// And load the modules.
 ioContext.keys().map(ioContext);
 
 const configurationServiceContext = require.context('./app/modules/configuration/services/', true, /\.spec\.ts$/);
-// And load the modules.
 configurationServiceContext.keys().map(configurationServiceContext);
