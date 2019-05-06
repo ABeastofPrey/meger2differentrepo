@@ -58,7 +58,7 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     }
     try {
       await this.asService.setArch(Number(index), Number(departOrApproach) as 1 | 2, Number(changedValue));
-      this.snackBar.open(this.words['positiveNumTip'], '', { duration: 1500, });
+      this.snackBar.open(this.words['valChangedTip'], '', { duration: 1500, });
     } catch (err) {
       console.error('Change value failed: ' + err.errString);
     }

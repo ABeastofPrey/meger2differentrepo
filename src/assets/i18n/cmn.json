@@ -305,7 +305,7 @@
     "dialogTitle": "确定?",
     "dialogMsg": "选定的自定义视图会被永久删除.",
     "dialogYes": "是",
-    "DialogNo": "取消",
+    "dialogNo": "取消",
     "inputBit": "输入 位",
     "inputByte": "输入 字节",
     "inputWord": "输入 字",

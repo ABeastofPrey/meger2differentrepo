@@ -305,7 +305,7 @@
     "dialogTitle": "Are you sure?",
     "dialogMsg": "The selected custom view will be deleted permanently.",
     "dialogYes": "yes",
-    "DialogNo": "Cancel",
+    "dialogNo": "Cancel",
     "inputBit": "Input Bit",
     "inputByte": "Input Byte",
     "inputWord": "Input Word",

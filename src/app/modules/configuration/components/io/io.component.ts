@@ -186,7 +186,7 @@ export class IoComponent implements OnInit, AfterViewInit {
     }
 
     this.customTabAddIndex = this.customEmptyIndex.indexOf(0) + 1;
-    let tabName = this.words['customView'] + this.customTabAddIndex;
+    let tabName = this.words['customView'] + ' ' + this.customTabAddIndex;
     let newCustomViewFormControl = new FormControl(tabName, [
       Validators.required,
     ]);
@@ -211,6 +211,7 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   deleteCustomTab() {
     let ref = this.dialog.open(YesNoDialogComponent, {
+      disableClose: true,
       data: {
         title: this.words['dialogTitle'],
         msg: this.words['dialogMsg'],

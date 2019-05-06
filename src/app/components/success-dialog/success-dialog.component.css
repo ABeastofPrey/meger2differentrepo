@@ -1,4 +1,7 @@
-.title {
+.cover {
+  height: 100%;
+}
+.tit {
   font-size: 20px;
   font-weight: 500;
 }
@@ -12,7 +15,7 @@
   display: flex;
   padding: 8px 8px 8px 24px;
   justify-content: flex-end;
-  margin: 0 -24px -24px 0;
+  /* margin: 0 -24px -24px 0; */
 }
 .ok {
   font-size: 72px;

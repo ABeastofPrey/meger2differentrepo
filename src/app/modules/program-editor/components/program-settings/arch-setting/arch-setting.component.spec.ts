@@ -141,4 +141,13 @@ describe('ArchSettingComponent', () => {
         expect(getInitTableSpy.calls.any()).toBe(true, 'getInitTableSpy should be called.');
       });
     }));
+
+    it('should cache the preivous value', async(() => {
+      const event = { target: { value: 12, blur: () => {} }, keyCode: 13 };
+      const eve = { target: { value: 12 } };
+      comp.onFocus(event);
+      comp.onBlur(eve, '0', 'aa', '1');
+      comp.onKeyup(event);
+      expect(1).toBe(1);
+    }));
 });

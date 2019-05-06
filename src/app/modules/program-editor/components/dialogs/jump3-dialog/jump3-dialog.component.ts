@@ -22,7 +22,7 @@ interface IOptionalPar extends IParameter {
   sup: number;
 }
 
-class ParameterErrorStateMatcher implements ErrorStateMatcher {
+export class ParameterErrorStateMatcher implements ErrorStateMatcher {
   static of(): ParameterErrorStateMatcher { return new this(); }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -132,7 +132,7 @@ export class Jump3DialogComponent implements OnInit {
     return this.isAdvanced ? advanceCmd : normalCmd;
   }
 
-  private limitValidator(min: number, max: number, index: number): ValidatorFn {
+  public limitValidator(min: number, max: number, index: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       if (!!control.value === false) { return null; }
       let msg = `${this.words['numRange']} [${min}, ${max}].`;
@@ -153,14 +153,6 @@ export class Jump3DialogComponent implements OnInit {
           msg: msg
         }
       } : null;
-    };
-  }
-
-  private limitValidator1(min: number, max: number, index: number): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      if (!!control.value === false) { return null; }
-      const forbidden = (Number(control.value).toString() === 'NaN') || Number(control.value) >= max || Number(control.value) <= min;
-      return forbidden ? { 'limit1': { index: index, min: min, max: max, value: control.value } } : null;
     };
   }
 }
