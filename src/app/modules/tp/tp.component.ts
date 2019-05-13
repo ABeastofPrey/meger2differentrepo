@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import { UtilsService } from '../../modules/core/services/utils.service';
 
+const lbnTab = 'lbn', hGTab = 'handguiding';
+const TABS = ['jog', lbnTab, hGTab];
+
 @Component({
   selector: 'app-tp',
   templateUrl: './tp.component.html',
@@ -16,13 +19,7 @@ export class TpComponent implements OnInit {
     public utils: UtilsService
   ) {
     this.trn.get('jogScreen.tabs').subscribe(words => {
-      const TABS = ['jog', 'lbn', 'handguiding'];
       let tabs: Tab[] = [];
-      if (utils.IsScara) {
-        TABS.splice(1, 1);
-      } else {
-        TABS.splice(2, 1);
-      }
       for (let t of TABS) {
         tabs.push({
           path: t,
@@ -34,6 +31,26 @@ export class TpComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  /**
+   * For lbn tab, if the robot is Scara, then it shouldn't display.
+   * For handguiding, it should display only the robot is Scara.
+   *
+   * @param {string} tabPath
+   * @returns {boolean}
+   * @memberof TpComponent
+   */
+  public shouldShow(tabPath: string): boolean {
+    const isLbn = _tabPath => (_tabPath === lbnTab) ? true : false;
+    const isHandGuiding = _tabPath => ( _tabPath === hGTab) ? true : false;
+    if (isLbn(tabPath)) {
+      return this.utils.IsScara ? false : true;
+    } else if (isHandGuiding(tabPath)) {
+      return this.utils.IsScara ? true : false;
+    } else {
+      return true;
+    }
   }
 
 }
