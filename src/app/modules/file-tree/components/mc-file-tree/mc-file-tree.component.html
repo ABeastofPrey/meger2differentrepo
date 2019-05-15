@@ -1,13 +1,13 @@
 <div class="tree-wrapper">
   <mat-form-field class="search">
-    <input matInput type="text" [(ngModel)]="filterByString" (change)="filterData()" (ngModelChange)="onSearchChange()" [disabled]="isRefreshing" #searchInput>
+    <input matInput type="text" [(ngModel)]="filterByString" (change)="filterData()" (ngModelChange)="onSearchChange()" [disabled]="isRefreshing" #searchInput virtualKeyboard ktype="text">
     <mat-icon matPrefix>search</mat-icon>
   </mat-form-field>
   <mat-slide-toggle class="checkbox_en" color="primary" [(ngModel)]="enableSelect">{{'checkbox_enable'|translate}}</mat-slide-toggle>
   <div class="center-vertical-horizontal">
     <img src="assets/pics/{{env.platform.spinner}}" *ngIf="isRefreshing">
   </div>
-  <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
+  <mat-tree class="mobile-scrollbar" [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
     <mat-tree-node *matTreeNodeDef="let node;">
       <li (contextmenu)="openContextMenu($event,node)" class="leaf">
         <div (click)="openFile(node)" [class.selected]="lastSelectedNode === node">

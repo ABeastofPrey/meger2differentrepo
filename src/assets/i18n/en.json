@@ -622,7 +622,7 @@
       "idle": "Idle",
       "import": "Import",
       "jtl": "Jump to Line",
-      "kill": "Kill",
+      "kill": "Kill & Unload",
       "lib": "Library",
       "lib_create": "CREATE LIBRARY",
       "lib_name": "Library Name",
@@ -663,7 +663,8 @@
       "stp_over": "Step Over",
       "undo": "Undo",
       "unload": "Unload",
-      "upload": "Upload to softMC"
+      "upload": "Upload to softMC",
+      "vrate": "Project Velocity"
     },
     "warning": "This will kill all tasks and libraries currently running."
   },
@@ -834,6 +835,19 @@
   "string": "String",
   "strings": "Strings",
   "success": "Success!",
+  "tabs": {
+    "configuration": "System Configuration",
+    "dashboard": "Motion Dashboard",
+    "editor": "Project Editor",
+    "help": "Help",
+    "history": "Error History",
+    "home": "Home",
+    "log": "Log",
+    "simulator": "3D Simulator",
+    "task": "Task Manager",
+    "teach": "Teach",
+    "tools": "softMC Tools"
+  },
   "tasks": {
     "display": "Display",
     "idle": "Idle Task",

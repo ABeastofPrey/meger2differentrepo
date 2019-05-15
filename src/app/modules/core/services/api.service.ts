@@ -186,10 +186,14 @@ export class ApiService {
     .then(ret=>{
       const blob = new Blob([ret], { type: 'application/zip'});
       const url = window.URL.createObjectURL(blob);
-      const pwa = window.open(url);
-      if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-        alert( 'Please disable your Pop-up blocker and try again.');
-      }
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.setAttribute('style','display: none');
+      a.href = url;
+      a.download = project.toUpperCase() + '.ZIP';
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     });
   }
   

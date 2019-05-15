@@ -4,7 +4,7 @@
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="{{'files.name'|translate}}" [(ngModel)]="newFile.name">
+      <input matInput placeholder="{{'files.name'|translate}}" [(ngModel)]="newFile.name" virtualKeyboard ktype="text">
     </mat-form-field>
     <mat-form-field>
       <mat-select placeholder="{{'files.ext'|translate}}" [(ngModel)]="newFile.ext">

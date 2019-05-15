@@ -5,6 +5,7 @@ import {DataService, WebsocketService, MCQueryResponse, LoginService} from '../.
 import {Payload} from '../../../core/models/payload.model';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
+import {FormControl, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-payload-wizard',
@@ -15,6 +16,9 @@ export class PayloadWizardComponent implements OnInit {
   
   selectedPayload: Payload = null;
   currPayloadString: string = null;
+  ctrlMass = this.initCtrl();
+  ctrlInertia = this.initCtrl();
+  ctrlLx = this.initCtrl();
   
   private words: any;
 
@@ -46,6 +50,15 @@ export class PayloadWizardComponent implements OnInit {
         '<b>' + this.words['payloads']['inertia']+':</b> '+parts[1]+'<br>' +
         '<b>' + this.words['payloads']['offX'] + ':</b> ' + parts[2];
     });
+  }
+  
+  private initCtrl() : FormControl {
+    return new FormControl(
+      {
+        disabled: this.login.isOperator
+      },
+      [Validators.min(0)]
+    );
   }
   
   newPayload() {
@@ -129,6 +142,7 @@ export class PayloadWizardComponent implements OnInit {
         }
         this.selectedPayload.refPos = refPos;*/
       this.selectedPayload.mass = Number(results[0].result);
+      this.ctrlMass.setValue(this.selectedPayload.mass);
       /*this.selectedPayload.j5_max = Number(results[2].result);
         this.selectedPayload.j6_max = Number(results[3].result);
         this.selectedPayload.j5_min = Number(results[4].result);
@@ -138,7 +152,9 @@ export class PayloadWizardComponent implements OnInit {
         this.selectedPayload.j5_ident_time = Number(results[8].result);
         this.selectedPayload.j6_ident_time = Number(results[9].result);*/
       this.selectedPayload.inertia = Number(results[1].result);
+      this.ctrlInertia.setValue(this.selectedPayload.inertia);
       this.selectedPayload.Lx = Number(results[2].result);
+      this.ctrlLx.setValue(this.selectedPayload.Lx);
     });
   }
   

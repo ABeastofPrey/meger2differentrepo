@@ -4,7 +4,7 @@
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="{{'projects.toolbar.app_name'|translate}}" [(ngModel)]="name" (keyup.enter)="create()">
+      <input matInput placeholder="{{'projects.toolbar.app_name'|translate}}" [(ngModel)]="name" (keyup.enter)="create()" virtualKeyboard ktype="text" (onKeyboardClose)="create()">
     </mat-form-field>
   </div>
   <div class="actions">

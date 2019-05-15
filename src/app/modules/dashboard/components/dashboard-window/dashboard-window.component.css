@@ -18,11 +18,8 @@
   margin: -12px -12px -12px 8px;
   display: flex;
   align-items: center;
-  padding: 4px;
+  padding: 0 16px;
   cursor: pointer;
-}
-.expand mat-icon:hover {
-  color: #fff;
 }
 .move-content {
   margin: 32px 0 0 8px;

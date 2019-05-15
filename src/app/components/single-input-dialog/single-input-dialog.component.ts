@@ -17,7 +17,8 @@ export class SingleInputDialogComponent implements OnInit {
   }
   
   create() {
-    this.dialogRef.close(this.val);
+    if (this.val && this.val.length > 0)
+      this.dialogRef.close(this.val);
   }
 
 }

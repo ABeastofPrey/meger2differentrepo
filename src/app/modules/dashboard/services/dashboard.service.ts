@@ -92,7 +92,7 @@ export class DashboardService {
     }
     this.zone.runOutsideAngular(()=>{
       setInterval(()=>{
-        if (this.mgr.screen.name !== 'Motion Dashboard')
+        if (this.mgr.screen.name !== 'dashboard')
           return;
         for (let w of this.windows) {
           if (w.name === 'SCARA (Tour)')

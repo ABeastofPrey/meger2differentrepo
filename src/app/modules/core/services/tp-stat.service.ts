@@ -76,10 +76,14 @@ export class TpStatService {
    * WILL BE PROMPT TO ENTER HIS PASSWORD AGAIN.
    */
   changeMode(mode: string) {
+    const currMode = this._switch;
     if (this.cmn.isTablet) {
-      const currMode = this._switch;
-      this._switch = mode;
       this.zone.run(()=>{
+        // MAKE THE BUTTON REMAIN THE SAME IF THE PASSWORD WASN'T CHANEGD
+        this._switch = null;
+        setTimeout(()=>{
+          this._switch = currMode;
+        },0);
         this.dialog.open(AuthPassDialogComponent,{
           minWidth: '400px'
         }).afterClosed()
@@ -94,11 +98,8 @@ export class TpStatService {
                   this.words['password_err'],
                   this.words['acknowledge']
                 );
-                this._switch = currMode;
               }
             });
-          } else {
-            this._switch = currMode;
           }
         });
       });
@@ -110,7 +111,7 @@ export class TpStatService {
   get mode() : string {return this._switch; }
   set mode(mode:string) {
     let oldStat = this.mode;
-    this.ws.query('?tp_set_mode("' + mode + '")').then((ret:MCQueryResponse)=>{
+    this.ws.query('?tp_set_switch_mode("' + mode + '")').then((ret:MCQueryResponse)=>{
       if (ret.result !== '0') {
         this._virtualModeSelector = oldStat;
         this._switch = this._virtualModeSelector;
@@ -129,7 +130,7 @@ export class TpStatService {
             });
           });
         }
-        this.mode = oldStat;
+        this._switch = oldStat;
       } else {
         this._virtualModeSelector = mode;
         this._switch = this._virtualModeSelector;
@@ -149,9 +150,17 @@ export class TpStatService {
   }
   
   updateState(statString : string) {
-    if (this.lastStatString === statString || statString.length === 0)
+    if (this.lastStatString === statString)
       return;
     this.lastStatString = statString;
+    if (statString.length === 0) {
+      console.log('ERROR: CYCLIC FUNCTION 0 (TP_STAT) RETURNS A BLANK RESULT');
+      this._systemErrorCode = -999;
+      this.ws.clearInterval(this.interval);
+      this.onlineStatus.next(false);
+      this._online = false;
+      return;
+    }
     try {
       //this.zone.run(()=>{
         var stat:TPStatResponse = JSON.parse(statString);
@@ -240,6 +249,9 @@ export class TpStatService {
     return this.ws.query('?tp_exit').then(()=>{
       return this.ws.query('call TP_setKeepAliveBreakable(1)');
     }).then(()=>{
+      // WE NEED TO WAIT AT LEAST 50ms FOR BREAKABLE TO TAKE AFFECT
+      return new Promise(resolve => setTimeout(() => resolve(), 60));
+    }).then(()=>{
       this.onlineStatus.next(false);
       this._online = false;
     });
@@ -294,7 +306,7 @@ export class TpStatService {
       });
       if (stat) { // TP_VER is OK
         // START KEEPALIVE
-        this.interval = this.ws.send('cyc0',true,(res,cmd,err)=>{
+        this.interval = this.ws.send('cyc0',true,(res: string,cmd,err)=>{
           if (err && this._online) {
             this.ws.clearInterval(this.interval);
             this.onlineStatus.next(false);

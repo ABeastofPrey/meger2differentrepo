@@ -38,7 +38,7 @@
           <div class="center-vertical" *ngFor="let d of disp; let i=index; trackBy:trackByFn">
             <mat-form-field appearance="outline" class="disp">
               <mat-label>J{{i+1}}</mat-label>
-              <input matInput [(ngModel)]="disp[i]" (change)="onSettingsKeyboardClose()">
+              <input matInput [(ngModel)]="disp[i]" (change)="onSettingsKeyboardClose()" virtualKeyboard ktype="numeric" (onKeyboardClose)="onSettingsKeyboardClose()">
               <span matSuffix *ngIf="units">[{{units[i]}}]</span>
             </mat-form-field>
             <button mat-raised-button color="primary" (click)="setHome(i+1)" class="btn-home center-vertical-horizontal">
@@ -55,7 +55,7 @@
           </div>
           <mat-form-field appearance="outline" *ngFor="let d of dh; let i=index; trackBy:trackByFn" class="dh">
             <mat-label>{{d.name}}</mat-label>
-            <input matInput [(ngModel)]="d.value" (change)="onSettingsKeyboardClose(i)">
+            <input matInput [(ngModel)]="d.value" (change)="onSettingsKeyboardClose(i)" virtualKeyboard ktype="numeric" (onKeyboardClose)="onSettingsKeyboardClose()">
             <span matSuffix>[mm]</span>
           </mat-form-field>
         </div>

@@ -26,7 +26,7 @@ export class SpeedChangerComponent implements OnInit {
   }
   
   onChange(event: MatSliderChange) {
-    this.ws.query('?tp_speed(' + event.value + ')');
+    this.ws.query('?tp_set_jog_vrate(' + event.value + ')');
   }
   
   onIncChange(event: MatSelectChange) {

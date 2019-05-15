@@ -31,7 +31,7 @@
         <div *ngIf="advancedMode">
           <mat-form-field>
               <input matInput placeholder="{{'projectCommands.jump.archPh'|translate}}" name="arcNumber" [(ngModel)]="arcNumber" [formControl]="advancedFormControls[jumpParameterReference.ArcNumber]"
-              [errorStateMatcher]="errorMatcher">
+              [errorStateMatcher]="errorMatcher" virtualKeyboard ktype="numeric">
               <mat-error>
                 {{getErrors(advancedFormControls[jumpParameterReference.ArcNumber])}}
               </mat-error>
@@ -39,7 +39,7 @@
 
           <mat-form-field>
               <input matInput placeholder="{{'projectCommands.jump.limitZPh'|translate}}" name="limitZ" [(ngModel)]="limitZ" [formControl]="advancedFormControls[jumpParameterReference.LimitZ]"
-              [errorStateMatcher]="errorMatcher">
+              [errorStateMatcher]="errorMatcher" virtualKeyboard ktype="numeric">
               <mat-error>
                 {{getErrors(advancedFormControls[jumpParameterReference.LimitZ])}}
               </mat-error>
@@ -47,7 +47,7 @@
 
           <mat-form-field>
             <input matInput placeholder="{{'projectCommands.jump.blendingPh'|translate}}" name="blending" [(ngModel)]="blending" [formControl]="advancedFormControls[jumpParameterReference.Blending]"
-            [errorStateMatcher]="errorMatcher">
+            [errorStateMatcher]="errorMatcher" virtualKeyboard ktype="numeric">
             <span matSuffix>%</span>
             <mat-error>
               {{getErrors(advancedFormControls[jumpParameterReference.Blending])}}
@@ -56,7 +56,7 @@
 
           <mat-form-field>
               <input matInput placeholder="{{'projectCommands.jump.speedPh'|translate}}" name="speed" [(ngModel)]="speed" [formControl]="advancedFormControls[jumpParameterReference.Speed]"
-              [errorStateMatcher]="errorMatcher">
+              [errorStateMatcher]="errorMatcher" virtualKeyboard ktype="numeric">
               <span matSuffix>deg/s</span>
               <mat-error>
                 {{getErrors(advancedFormControls[jumpParameterReference.Speed])}}
@@ -65,7 +65,7 @@
 
           <mat-form-field>
               <input matInput placeholder="{{'projectCommands.jump.accelerationPh'|translate}}" name="acceleration" [(ngModel)]="acceleration" [formControl]="advancedFormControls[jumpParameterReference.Acceleration]"
-              [errorStateMatcher]="errorMatcher">
+              [errorStateMatcher]="errorMatcher" virtualKeyboard ktype="numeric">
               <span matSuffix>deg/s<sup>2</sup></span>
               <mat-error>
                 {{getErrors(advancedFormControls[jumpParameterReference.Acceleration])}}

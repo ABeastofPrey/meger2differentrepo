@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="title">{{'pallets.create'|translate}}</div>
     <div class="content">
-      <mat-form-field><input matInput placeholder="{{'pallets.name'|translate}}" [(ngModel)]="palletName"></mat-form-field>
+      <mat-form-field><input matInput placeholder="{{'pallets.name'|translate}}" [(ngModel)]="palletName" virtualKeyboard ktype="text"></mat-form-field>
       <div>
         <mat-form-field>
           <mat-select placeholder="{{'pallets.type'|translate}}" [(ngModel)]="palletType">

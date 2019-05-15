@@ -41,7 +41,11 @@ mat-card-title {
   min-height: 30px;
   font-size: 24px;
 }
-terminal { flex: 1; overflow: hidden;}
+terminal { 
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
 .title, .welcome {
   margin: -16px -16px 16px -16px !important;
 }

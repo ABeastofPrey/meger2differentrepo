@@ -126,7 +126,7 @@
       <ng-template mat-tab-label>
         <input matInput placeholder="" [(ngModel)]="customViewFormControl[index].value" (keydown)="tabLabelChange($event)"
           [formControl]="customViewFormControl[index]" (change)="tabLabelNameChange(index, customViewFormControl[index].value)"
-          required>
+              virtualKeyboard ktype="text" (onKeyboardClose)="tabLabelNameChange(index, customViewFormControl[index].value)" required>
         <mat-error *ngIf="customViewFormControl[index].hasError('required')">
           {{'io.invalidName'|translate}}
         </mat-error>

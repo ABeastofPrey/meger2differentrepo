@@ -16,13 +16,13 @@ import {MoveDialogComponent} from '../dialogs/move-dialog/move-dialog.component'
 import {CircleDialogComponent} from '../dialogs/circle-dialog/circle-dialog.component';
 import {RobotSelectorDialogComponent} from '../dialogs/robot-selector-dialog/robot-selector-dialog.component';
 import {DelayDialogComponent} from '../dialogs/delay-dialog/delay-dialog.component';
-import {IoSelectorDialogComponent} from '../dialogs/io-selector-dialog/io-selector-dialog.component';
 import {DimDialogComponent} from '../dialogs/dim-dialog/dim-dialog.component';
 import {LineParser} from '../../../core/models/line-parser.model';
 import {StopDialogComponent} from '../dialogs/stop-dialog/stop-dialog.component';
 import {Payload} from '../../../core/models/payload.model';
 import {PayloadSelectorComponent} from '../dialogs/payload-selector/payload-selector.component';
 import { HomeDialogComponent } from '../dialogs/home-dialog/home-dialog.component';
+import {IoSelectorDialogComponent} from '../../../../components/io-selector-dialog/io-selector-dialog.component';
 import { PLSSourceComponent } from '../dialogs/pls-source/pls-source.component';
 
 @Component({

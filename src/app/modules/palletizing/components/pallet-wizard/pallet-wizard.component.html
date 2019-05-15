@@ -25,13 +25,13 @@
               <h3>{{'pallets.wizard.num_of_items'|translate}}</h3>
               <div style="display: flex;">
                 <mat-form-field class="input-small">
-                  <input matInput min="1" placeholder="nX" [(ngModel)]="dataService.selectedPallet.items_x" formControlName="itemsX" required (ngModelChange)="onWindowResize()">
+                  <input matInput min="1" placeholder="nX" [(ngModel)]="dataService.selectedPallet.items_x" formControlName="itemsX" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                 </mat-form-field>
                 <mat-form-field class="input-small">
-                  <input matInput placeholder="nY" min="1" [(ngModel)]="dataService.selectedPallet.items_y" formControlName="itemsY" required (ngModelChange)="onWindowResize()">
+                  <input matInput placeholder="nY" min="1" [(ngModel)]="dataService.selectedPallet.items_y" formControlName="itemsY" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                 </mat-form-field>
                 <mat-form-field class="input-small">
-                  <input matInput placeholder="nZ" min="1" [(ngModel)]="dataService.selectedPallet.items_z" formControlName="itemsZ" required (ngModelChange)="onWindowResize()">
+                  <input matInput placeholder="nZ" min="1" [(ngModel)]="dataService.selectedPallet.items_z" formControlName="itemsZ" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                 </mat-form-field>
               </div>
             </div>
@@ -40,13 +40,13 @@
                 <h3>{{'pallets.wizard.dimensions_item'|translate}}</h3>
                 <div style="display: flex;">
                   <mat-form-field class="input-small">
-                    <input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.item_size_x" formControlName="itemSizeX" required (ngModelChange)="onWindowResize()">
+                    <input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.item_size_x" formControlName="itemSizeX" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                   </mat-form-field>
                   <mat-form-field class="input-small">
-                    <input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.item_size_y" formControlName="itemSizeY" required (ngModelChange)="onWindowResize()">
+                    <input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.item_size_y" formControlName="itemSizeY" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                   </mat-form-field>
                   <mat-form-field class="input-small">
-                    <input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.item_size_z" formControlName="itemSizeZ" required (ngModelChange)="onWindowResize()">
+                    <input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.item_size_z" formControlName="itemSizeZ" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                   </mat-form-field>
                 </div>
               </div>
@@ -54,13 +54,13 @@
                 <h3>{{'pallets.wizard.dimensions_pallet'|translate}}</h3>
                 <div style="display: flex;">
                   <mat-form-field class="input-small">
-                    <input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.pallet_size_x" formControlName="palletSizeX" required (ngModelChange)="onWindowResize()">
+                    <input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.pallet_size_x" formControlName="palletSizeX" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                   </mat-form-field>
                   <mat-form-field class="input-small">
-                    <input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.pallet_size_y" formControlName="palletSizeY" required (ngModelChange)="onWindowResize()">
+                    <input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.pallet_size_y" formControlName="palletSizeY" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                   </mat-form-field>
                   <mat-form-field class="input-small">
-                    <input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.pallet_size_z" formControlName="palletSizeZ" required (ngModelChange)="onWindowResize()">
+                    <input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.pallet_size_z" formControlName="palletSizeZ" required (ngModelChange)="onWindowResize()" virtualKeyboard ktype="numeric">
                   </mat-form-field>
                 </div>
               </div>
@@ -69,7 +69,7 @@
               <h3>{{'pallets.wizard.levels_in_pallet'|translate}}:</h3>
               <div style="display: flex; align-items: center;">
                 <mat-form-field class="input-normal">
-                  <input matInput placeholder="{{'pallets.wizard.levels'|translate}}" [(ngModel)]="dataService.selectedPallet.levels" formControlName="levels" required>
+                  <input matInput placeholder="{{'pallets.wizard.levels'|translate}}" [(ngModel)]="dataService.selectedPallet.levels" formControlName="levels" required virtualKeyboard ktype="numeric">
                 </mat-form-field>
                 <mat-checkbox color="primary" [(ngModel)]="dataService.selectedPallet.diffOddEven" formControlName="diffOddEven">{{'pallets.wizard.odd_even'|translate}}</mat-checkbox>
               </div>
@@ -81,7 +81,7 @@
                 <mat-radio-button value="empty" style="margin: 0 16px;" color="primary">{{'pallets.wizard.index_empty'|translate}} (0)</mat-radio-button>
                 <mat-radio-button value="custom" color="primary">
                   <mat-form-field class="input-normal">
-                    <input matInput placeholder="{{'pallets.wizard.index_custom'|translate}}" [(ngModel)]="dataService.selectedPallet.index" [disabled]="itemIndexMode !== 'custom'" [ngModelOptions]="{standalone: true}" (ngModelChange)="onIndexChange()">
+                    <input matInput placeholder="{{'pallets.wizard.index_custom'|translate}}" [(ngModel)]="dataService.selectedPallet.index" [disabled]="itemIndexMode !== 'custom'" [ngModelOptions]="{standalone: true}" (ngModelChange)="onIndexChange()" virtualKeyboard ktype="numeric">
                   </mat-form-field>
                 </mat-radio-button>
               </mat-radio-group>
@@ -142,9 +142,9 @@
                 </span>
               </div>
               <div style="display: flex;">
-                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.origin.x" formControlName="originX" required></mat-form-field>
-                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.origin.y" formControlName="originY" required></mat-form-field>
-                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.origin.z" formControlName="originZ" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.origin.x" formControlName="originX" required virtualKeyboard ktype="numeric"></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.origin.y" formControlName="originY" required virtualKeyboard ktype="numeric"></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.origin.z" formControlName="originZ" required virtualKeyboard ktype="numeric"></mat-form-field>
               </div>
             </div>
             <div (mouseenter)="setOriginPic(2)">
@@ -155,9 +155,9 @@
                 </span>
               </div>
               <div style="display: flex;">
-                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.posX.x" formControlName="posXX" required></mat-form-field>
-                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.posX.y" formControlName="posXY" required></mat-form-field>
-                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.posX.z" formControlName="posXZ" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.posX.x" formControlName="posXX" required virtualKeyboard ktype="numeric"></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.posX.y" formControlName="posXY" required virtualKeyboard ktype="numeric"></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.posX.z" formControlName="posXZ" required virtualKeyboard ktype="numeric"></mat-form-field>
               </div>
             </div>
             <div (mouseenter)="setOriginPic(3)">
@@ -168,9 +168,9 @@
                 </span>
               </div>
               <div style="display: flex;">
-                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.posY.x" formControlName="posYX" required></mat-form-field>
-                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.posY.y" formControlName="posYY" required></mat-form-field>
-                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.posY.z" formControlName="posYZ" required></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.posY.x" formControlName="posYX" required virtualKeyboard ktype="numeric"></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.posY.y" formControlName="posYY" required virtualKeyboard ktype="numeric"></mat-form-field>
+                <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.posY.z" formControlName="posYZ" required virtualKeyboard ktype="numeric"></mat-form-field>
               </div>
             </div>
           </div>
@@ -192,12 +192,12 @@
             </span>
             <h3>{{'pallets.wizard.curr_pos'|translate}}:</h3>
             <div style="display: flex;">
-              <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.entry.x" formControlName="x" required></mat-form-field>
-              <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.entry.y" formControlName="y" required></mat-form-field>
-              <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.entry.z" formControlName="z" required></mat-form-field>
-              <mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"><input matInput placeholder="Yaw" [(ngModel)]="dataService.selectedPallet.entry.yaw" formControlName="yaw" required></mat-form-field>
-              <mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"><input matInput placeholder="Pitch" [(ngModel)]="dataService.selectedPallet.entry.pitch" formControlName="pitch" required></mat-form-field>
-              <mat-form-field class="input-small"><input matInput placeholder="Roll" [(ngModel)]="dataService.selectedPallet.entry.roll" formControlName="roll" required></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="X" [(ngModel)]="dataService.selectedPallet.entry.x" formControlName="x" required virtualKeyboard ktype="numeric"></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="Y" [(ngModel)]="dataService.selectedPallet.entry.y" formControlName="y" required virtualKeyboard ktype="numeric"></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="Z" [(ngModel)]="dataService.selectedPallet.entry.z" formControlName="z" required virtualKeyboard ktype="numeric"></mat-form-field>
+              <mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"><input matInput placeholder="Yaw" [(ngModel)]="dataService.selectedPallet.entry.yaw" formControlName="yaw" required virtualKeyboard ktype="numeric"></mat-form-field>
+              <mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"><input matInput placeholder="Pitch" [(ngModel)]="dataService.selectedPallet.entry.pitch" formControlName="pitch" required virtualKeyboard ktype="numeric"></mat-form-field>
+              <mat-form-field class="input-small"><input matInput placeholder="Roll" [(ngModel)]="dataService.selectedPallet.entry.roll" formControlName="roll" required virtualKeyboard ktype="numeric"></mat-form-field>
             </div>
           </div>
           <img src="assets/pics/pallet/entry.png">
@@ -214,8 +214,8 @@
               <mat-slide-toggle [(ngModel)]="dataService.selectedPallet.appEnabled" color="primary" formControlName="appEnable" (change)="toggleAppEnable($event)">{{'enable'|translate}}</mat-slide-toggle>
             </div>
             <div style="display: flex">
-              <mat-form-field class="input-normal"><input matInput placeholder="{{'pallets.wizard.offV'|translate}}" [(ngModel)]="dataService.selectedPallet.approach_offset_vertical" formControlName="app_off_v"></mat-form-field>
-              <mat-form-field class="input-normal"><input matInput placeholder="{{'pallets.wizard.offH'|translate}}" [(ngModel)]="dataService.selectedPallet.approach_offset_horizontal" formControlName="app_off_h"></mat-form-field>
+              <mat-form-field class="input-normal"><input matInput placeholder="{{'pallets.wizard.offV'|translate}}" [(ngModel)]="dataService.selectedPallet.approach_offset_vertical" formControlName="app_off_v" virtualKeyboard ktype="numeric"></mat-form-field>
+              <mat-form-field class="input-normal"><input matInput placeholder="{{'pallets.wizard.offH'|translate}}" [(ngModel)]="dataService.selectedPallet.approach_offset_horizontal" formControlName="app_off_h" virtualKeyboard ktype="numeric"></mat-form-field>
             </div>
             <mat-checkbox [(ngModel)]="dataService.selectedPallet.appExceed" color="primary" formControlName="appExceed" (change)="toggleAppExceed($event)">{{'pallets.wizard.exceed'|translate}}</mat-checkbox>
             <h3>{{'pallets.wizard.app_dir'|translate}}:</h3>
@@ -239,8 +239,8 @@
               <mat-slide-toggle [(ngModel)]="dataService.selectedPallet.retEnabled" color="primary" formControlName="retEnable" (change)="toggleRetEnable($event)">{{'enable'|translate}}</mat-slide-toggle>
             </div>
             <div style="display: flex">
-              <mat-form-field class="input-normal"><input matInput placeholder="{{'pallets.wizard.offV'|translate}}" [(ngModel)]="dataService.selectedPallet.retract_offset_vertical" formControlName="ret_off_v"></mat-form-field>
-              <mat-form-field class="input-normal"><input matInput placeholder="{{'pallets.wizard.offH'|translate}}" [(ngModel)]="dataService.selectedPallet.retract_offset_horizontal" formControlName="ret_off_h"></mat-form-field>
+              <mat-form-field class="input-normal"><input matInput placeholder="{{'pallets.wizard.offV'|translate}}" [(ngModel)]="dataService.selectedPallet.retract_offset_vertical" formControlName="ret_off_v" virtualKeyboard ktype="numeric"></mat-form-field>
+              <mat-form-field class="input-normal"><input matInput placeholder="{{'pallets.wizard.offH'|translate}}" [(ngModel)]="dataService.selectedPallet.retract_offset_horizontal" formControlName="ret_off_h" virtualKeyboard ktype="numeric"></mat-form-field>
             </div>
             <mat-checkbox [(ngModel)]="dataService.selectedPallet.retExceed" color="primary" formControlName="retExceed" (change)="toggleRetExceed($event)">{{'pallets.wizard.exceed'|translate}}</mat-checkbox>
             <h3>{{'pallets.wizard.ret_dir'|translate}}:</h3>

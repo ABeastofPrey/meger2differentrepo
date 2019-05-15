@@ -17,6 +17,12 @@ $larger-mini-fab-height: 44px;
   .mat-raised-button, .mat-button {
     font-size: 16px;
   }
+  
+  .mat-tree-node, .mat-nested-tree-node {
+    display: block;
+    font-size: 18px;
+    padding: 13px 0;
+  }
   .mat-badge-content {
     width: 26px!important;
     height: 26px!important;

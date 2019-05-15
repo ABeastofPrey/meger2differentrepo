@@ -34,50 +34,67 @@
           <mat-icon>build</mat-icon> {{'grippers.btnTest'|translate}}
         </button>
       </h1>
-      <div *ngIf="selectedNode.nodeType==='ef'" class="content">
-        <!--<div class="row">
-          <mat-form-field>
-            <input matInput placeholder="dInput" [(ngModel)]="selectedNode.dInput" type="number" (change)="updateEfInput()">
-          </mat-form-field>
-        </div>-->
-      </div>
       <div *ngIf="selectedNode.nodeType==='grp'" class="content">
         <h4 class="mat-subtitle-color" style="margin-top: -24px;">{{selectedNode.parent.item}} > {{selectedNode.item}}</h4>
         <div class="row">
           <mat-form-field>
-            <input [disabled]="login.isOperator" matInput placeholder="dOut Command 1" [(ngModel)]="selectedNode.cmd1" type="number" (change)="updateGripperCmd(1)">
+            <mat-select placeholder="dOut Command 1" [(ngModel)]="selectedNode.cmd1" (selectionChange)="updateGripperCmd(1)" [disabled]="login.isOperator">
+              <mat-option *ngIf="database.outputs.length === 0" disabled>{{'empty_list'|translate}}</mat-option>
+              <mat-option *ngFor="let o of database.outputs" [value]="o">{{o}}</mat-option>
+            </mat-select>
           </mat-form-field>
           <mat-checkbox color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.cmd1_invert" (change)="updateGripperCmd(1)">{{'invert'|translate}}</mat-checkbox>
         </div>
         <h2>Sleep Time:</h2>
         <div class="row">
           <mat-form-field>
-            <input [disabled]="login.isOperator" matInput placeholder="{{'open'|translate}}" [(ngModel)]="selectedNode.sleep_open" type="number" (change)="updateGripperSleep('OPEN')">
+            <input matInput [disabled]="login.isOperator" 
+              placeholder="{{'open'|translate}}"
+              [(ngModel)]="selectedNode.sleep_open"
+              type="number"
+              (change)="updateGripperSleep('OPEN')"
+              (onKeyboardClose)="updateGripperSleep('OPEN')"
+              virtualKeyboard ktype="numeric"
+            >
             <span matSuffix>ms.</span>
           </mat-form-field>
           <mat-form-field>
-            <input [disabled]="login.isOperator" matInput placeholder="{{'close'|translate}}" [(ngModel)]="selectedNode.sleep_close" type="number" (change)="updateGripperSleep('CLOSE')">
+            <input [disabled]="login.isOperator" matInput
+          placeholder="{{'close'|translate}}"
+          [(ngModel)]="selectedNode.sleep_close"
+          type="number" (change)="updateGripperSleep('CLOSE')"
+          virtualKeyboard ktype="numeric"
+          (onKeyboardClose)="updateGripperSleep('CLOSE')">
             <span matSuffix>ms.</span>
           </mat-form-field>
         </div>
         <h2>{{'optional'|translate}}:</h2>
         <div class="row">
           <mat-form-field>
-            <input matInput placeholder="dOut Command 2" type="number" [(ngModel)]="selectedNode.cmd2" [disabled]="login.isOperator || !selectedNode.cmd2_enabled" (change)="updateGripperCmd(2)">
+            <mat-select placeholder="dOut Command 2" [(ngModel)]="selectedNode.cmd2" (selectionChange)="updateGripperCmd(2)" [disabled]="login.isOperator || !selectedNode.cmd2_enabled">
+              <mat-option *ngIf="database.outputs.length === 0" disabled>{{'empty_list'|translate}}</mat-option>
+              <mat-option *ngFor="let o of database.outputs" [value]="o">{{o}}</mat-option>
+            </mat-select>
           </mat-form-field>
           <mat-checkbox color="primary" [(ngModel)]="selectedNode.cmd2_invert" (change)="updateGripperCmd(2)" [disabled]="login.isOperator || !selectedNode.cmd2_enabled">{{'invert'|translate}}</mat-checkbox>
           <mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.cmd2_enabled">{{'enable'|translate}}</mat-slide-toggle>
         </div>
         <div class="row">
           <mat-form-field>
-            <input matInput placeholder="dIn Feedback 1" type="number" [(ngModel)]="selectedNode.fb1" [disabled]="login.isOperator || !selectedNode.fb1_enabled" (change)="updateGripperFb(1)">
+            <mat-select placeholder="dIn Feedback 1" [(ngModel)]="selectedNode.fb1" (selectionChange)="updateGripperFb(1)" [disabled]="login.isOperator || !selectedNode.fb1_enabled">
+              <mat-option *ngIf="database.inputs.length === 0" disabled>{{'empty_list'|translate}}</mat-option>
+              <mat-option *ngFor="let o of database.inputs" [value]="o">{{o}}</mat-option>
+            </mat-select>
           </mat-form-field>
           <mat-checkbox color="primary" [(ngModel)]="selectedNode.fb1_invert" [disabled]="login.isOperator || !selectedNode.fb1_enabled" (change)="updateGripperFb(1)">{{'invert'|translate}}</mat-checkbox>
           <mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb1_enabled">{{'enable'|translate}}</mat-slide-toggle>
         </div> 
         <div class="row">
           <mat-form-field>
-            <input matInput placeholder="dIn Feedback 2" type="number" [(ngModel)]="selectedNode.fb2" [disabled]="login.isOperator || !selectedNode.fb2_enabled" (change)="updateGripperFb(2)">
+            <mat-select placeholder="dIn Feedback 2" [(ngModel)]="selectedNode.fb2" (selectionChange)="updateGripperFb(2)" [disabled]="login.isOperator || !selectedNode.fb2_enabled">
+              <mat-option *ngIf="database.inputs.length === 0" disabled>{{'empty_list'|translate}}</mat-option>
+              <mat-option *ngFor="let o of database.inputs" [value]="o">{{o}}</mat-option>
+            </mat-select>
           </mat-form-field>
           <mat-checkbox color="primary" [(ngModel)]="selectedNode.fb2_invert" [disabled]="login.isOperator || !selectedNode.fb2_enabled" (change)="updateGripperFb(2)">{{'invert'|translate}}</mat-checkbox>
           <mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb2_enabled">{{'enable'|translate}}</mat-slide-toggle>

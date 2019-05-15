@@ -3,7 +3,7 @@
     <div class="title">{{'projectCommands.delay.title'|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <input matInput placeholder="{{'projectCommands.delay.time'|translate}} [ms.]" [(ngModel)]="delay" type="number">
+        <input matInput placeholder="{{'projectCommands.delay.time'|translate}} [ms.]" [(ngModel)]="delay" type="number" virtualKeyboard ktype="numeric">
       </mat-form-field>
       <mat-slide-toggle [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary">{{'advanced'|translate}}</mat-slide-toggle>
       <mat-form-field *ngIf="advancedMode">

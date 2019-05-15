@@ -14,6 +14,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {environment} from '../../../../../environments/environment';
 import {SingleInputDialogComponent} from '../../../../components/single-input-dialog/single-input-dialog.component';
 import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
+import {CommonService} from '../../../core/services/common.service';
 
 const leafTypes = [
   'File','Data','Library','Macros','Settings','Errors','Dependency','Frames',
@@ -57,7 +58,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     private zone: NgZone,
     private trn: TranslateService,
     private dd: DragDrop,
-    private login: LoginService
+    private login: LoginService,
+    private cmn: CommonService
   ) {
     this.trn.get([
       'projectTree.dirty','button.discard','button.save','button.delete',
@@ -79,6 +81,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           this.refreshData();
         });
       } else {
+        this.currProject = null;
         this.nestedDataSource._data.next(null);
         this.nestedTreeControl.dataNodes = [];
       }
@@ -438,7 +441,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       data.push(vision);
       data.push(conveyor);*/
     this.nestedDataSource._data.next(data);
-    this.setDragAndDrop();
+    if (!this.cmn.isTablet)
+      this.setDragAndDrop();
   }
   
   hasNestedChild = (_: number, nodeData: TreeNode) => {

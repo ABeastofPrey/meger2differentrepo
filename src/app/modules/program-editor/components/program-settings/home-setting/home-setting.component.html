@@ -8,6 +8,7 @@
                 <span matPrefix >J{{i+1}}: &nbsp;</span>
                 <input matInput [(ngModel)]="p"
                 (focus)="onFocus($event.target.value)" (blur)="updatePosition(i+1, $event.target)"
+                 virtualKeyboard ktype="numeric" (onKeyboardClose)="updatePosition(i+1,$event.target)"
                 (keyup)="onKeyup($event)"/>
             </mat-form-field>
         </div>

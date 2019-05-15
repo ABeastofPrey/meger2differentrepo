@@ -3,7 +3,7 @@
     <div class="title primary-bg">{{'dashboard.record.title'|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <input type="number" placeholder="{{'duration'|translate}}" matInput [(ngModel)]="duration">
+        <input type="number" placeholder="{{'duration'|translate}}" matInput [(ngModel)]="duration" virtualKeyboard ktype="numeric">
         <span matSuffix>ms.</span>
       </mat-form-field>
       <mat-radio-group *ngIf="data.isGroup" [(ngModel)]="recMode">
@@ -12,13 +12,13 @@
         <mat-radio-button value="3" style="margin-left: 16px;">{{'dashboard.record.type.3d'|translate}}</mat-radio-button>
       </mat-radio-group>
       <div style="margin-top: 16px;" *ngIf="recMode === '3'">
-        <mat-form-field><input placeholder="X" matInput [(ngModel)]="x"></mat-form-field>
-        <mat-form-field><input placeholder="Y" matInput [(ngModel)]="y"></mat-form-field>
-        <mat-form-field><input placeholder="Z" matInput [(ngModel)]="z"></mat-form-field>
+        <mat-form-field><input placeholder="X" matInput [(ngModel)]="x" virtualKeyboard ktype="text"></mat-form-field>
+        <mat-form-field><input placeholder="Y" matInput [(ngModel)]="y" virtualKeyboard ktype="text"></mat-form-field>
+        <mat-form-field><input placeholder="Z" matInput [(ngModel)]="z" virtualKeyboard ktype="text"></mat-form-field>
       </div>
       <div style="margin-top: 16px;" *ngIf="recMode === '2'">
-        <mat-form-field><input placeholder="X" matInput [(ngModel)]="x2D"></mat-form-field>
-        <mat-form-field><input placeholder="Y" matInput [(ngModel)]="y2D"></mat-form-field>
+        <mat-form-field><input placeholder="X" matInput [(ngModel)]="x2D" virtualKeyboard ktype="text"></mat-form-field>
+        <mat-form-field><input placeholder="Y" matInput [(ngModel)]="y2D" virtualKeyboard ktype="text"></mat-form-field>
       </div>
     </div>
   </div>

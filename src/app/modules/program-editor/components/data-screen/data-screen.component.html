@@ -59,14 +59,25 @@
       </div>
     </div>
     <div class="var-details" *ngIf="selectedVar">
-      <mat-form-field *ngFor="let val of this._value; let i = index" floatLabel="never">
+      <mat-form-field *ngFor="let val of this._value; let i = index" floatLabel="never" [style.width]="selectedVar.typeStr === 'STRING' ? '400px' : 'inherit'">
         <span matPrefix style='font-weight: bold;'>{{this._legend[i]}}:&nbsp;&nbsp;</span>
         <input
-          matInput
-          [placeholder]="this._legend[i]" 
+        *ngIf="selectedVar.typeStr !== 'STRING'"
+        matInput
+        [placeholder]="this._legend[i]" 
           [(ngModel)]="this._value[i].value"
           (change)="onKeyboardClose()"
+           virtualKeyboard ktype="numeric"
+           (onKeyboardClose)="onKeyboardClose()"
         >
+        <textarea matInput *ngIf="selectedVar.typeStr === 'STRING'"
+          [placeholder]="this._legend[i]"
+          [(ngModel)]="this._value[i].value"
+          virtualKeyboard ktype="text"
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          maxlength="80"
+          cdkAutosizeMinRows="1"></textarea>
       </mat-form-field>
     </div>
   </mat-card>

@@ -3,7 +3,7 @@
     <div class="title">{{'projectCommands.sleep.title'|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <input matInput placeholder="{{'projectCommands.sleep.time'|translate}}" [(ngModel)]="time" type="number">
+        <input matInput placeholder="{{'projectCommands.sleep.time'|translate}}" [(ngModel)]="time" type="number" virtualKeyboard ktype="numeric">
         <span matSuffix>ms.</span>
       </mat-form-field>
     </div>

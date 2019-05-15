@@ -96,7 +96,7 @@ export class HomeScreenComponent implements OnInit {
     }
     else if (cpu.indexOf('E3825') !== -1)
       mc = '703';
-    else if (cpu.indexOf('CPUS = 2')) {
+    else if (cpu.indexOf('CPUS = 2') !== -1) {
       mc = '302';
     } else if (cpu.indexOf('neon') !== -1 || cpu.toLowerCase().indexOf('arm') !== -1)
       mc = '301';

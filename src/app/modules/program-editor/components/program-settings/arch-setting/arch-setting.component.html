@@ -9,7 +9,7 @@
     <mat-header-cell *matHeaderCellDef> {{'projectSettings.arch.departZCol'|translate}} </mat-header-cell>
     <mat-cell *matCellDef="let element">
       <mat-form-field>
-        <input matInput type="text" [(ngModel)]="element.depart" (focus)="onFocus($event)" (blur)="onBlur($event, element.index, element.depart, 1)" (keyup)="onKeyup($event)">
+        <input matInput type="text" [(ngModel)]="element.depart" (focus)="onFocus($event)" (blur)="onBlur($event, element.index, element.depart, 1)" (keyup)="onKeyup($event)" virtualKeyboard ktype="text" (onKeyboardClose)="onBlur($event,element.index,element.depart,1)">
       </mat-form-field>
     </mat-cell>
   </ng-container>
@@ -18,7 +18,7 @@
     <mat-header-cell *matHeaderCellDef> {{'projectSettings.arch.approachZCol'|translate}} </mat-header-cell>
     <mat-cell *matCellDef="let element">
       <mat-form-field>
-        <input matInput type="text" [(ngModel)]="element.approach" (focus)="onFocus($event)" (blur)="onBlur($event, element.index, element.approach, 2)" (keyup)="onKeyup($event)">
+        <input matInput type="text" [(ngModel)]="element.approach" (focus)="onFocus($event)" (blur)="onBlur($event, element.index, element.approach, 2)" (keyup)="onKeyup($event)" virtualKeyboard ktype="text" (onKeyboardClose)="onBlur($event, element.index, element.approach, 2)">
       </mat-form-field>
     </mat-cell>
   </ng-container>

@@ -55,7 +55,7 @@
             <mat-header-cell *matHeaderCellDef>{{'projectSettings.position_trigger.valueCol'|translate}} [mm/ms/%]</mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field>
-                    <input matInput type="text" [(ngModel)]="element.distance" (focus)="onFocus(element.distance)" (blur)="onBlur(element)"/>
+                  <input matInput type="text" [(ngModel)]="element.distance" (focus)="onFocus(element.distance)" (blur)="onBlur(element)" virtualKeyboard ktype="text" (onKeyboardClose)="onBlur(element)"/>
                 </mat-form-field>
             </mat-cell>
         </ng-container>

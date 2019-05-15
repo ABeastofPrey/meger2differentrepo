@@ -17,18 +17,18 @@ export class ScreenManagerService {
   private words: any;
   
   private _screens : ControlStudioScreen[] = [
-    {icon: 'home', name:'Home', permission: 99, url: ''},
-    {icon: 'insert_chart', name:'Motion Dashboard', permission: 99, url: 'dashboard'},
-    {icon: 'insert_comment', name:'Project Editor', permission: 99, url: 'projects'},
-    {icon: '3d_rotation', name:'3D Simulator', permission: 1, url: 'simulator',requiresTpLib: true},
-    {icon: 'touch_app', name:'Teach', permission: 99, url: 'teach',requiresTpLib: true},
-    //{icon: 'insert_comment', name:'Graphic Editor', permission: 1, url: 'blockly'},
-    {icon: 'settings', name:'System Configuration', permission: 99, url: 'configuration'},
-    {icon: 'playlist_play', name:'Task Manager', permission: 1, url: 'tasks'},
-    {icon: 'apps', name:'softMC Tools', permission: 1, url: 'tools'},
-    {icon: 'error', name:'Error History', permission: 0, url: 'errors'},
-    {icon: 'list', name:'Log', permission: 1, url: 'log'},
-    {icon: 'help_outline', name:'Help', permission: 99, url: 'help'}
+    {icon: 'home', name:'home', permission: 99, url: ''},
+    {icon: 'insert_chart', name:'dashboard', permission: 99, url: 'dashboard'},
+    {icon: 'insert_comment', name:'editor', permission: 99, url: 'projects'},
+    {icon: '3d_rotation', name:'simulator', permission: 1, url: 'simulator',requiresTpLib: true},
+    {icon: 'touch_app', name:'teach', permission: 99, url: 'teach',requiresTpLib: true},
+    //{icon: 'insert_comment', name:'blockly', permission: 1, url: 'blockly'},
+    {icon: 'settings', name:'configuration', permission: 99, url: 'configuration'},
+    {icon: 'playlist_play', name:'task', permission: 1, url: 'tasks'},
+    {icon: 'apps', name:'tools', permission: 1, url: 'tools'},
+    {icon: 'error', name:'history', permission: 0, url: 'errors'},
+    {icon: 'list', name:'log', permission: 1, url: 'log'},
+    {icon: 'help_outline', name:'help', permission: 99, url: 'help'}
   ];
   
   get screens() : ControlStudioScreen[]{

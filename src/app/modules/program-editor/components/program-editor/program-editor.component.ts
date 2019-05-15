@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {ProgramEditorService, TASKSTATE_NOTLOADED, TASKSTATE_RUNNING, TASKSTATE_STOPPED, TASKSTATE_ERROR, TASKSTATE_READY, TASKSTATE_KILLED} from '../../services/program-editor.service';
 import {DataService, ProjectManagerService, LoginService} from '../../../core';
+import {CommonService} from '../../../core/services/common.service';
 
 @Component({
   selector: 'program-editor',
   templateUrl: './program-editor.component.html',
-  styleUrls: ['./program-editor.component.css']
+  styleUrls: ['./program-editor.component.scss']
 })
 export class ProgramEditorComponent implements OnInit {
 
@@ -13,7 +14,8 @@ export class ProgramEditorComponent implements OnInit {
     public service : ProgramEditorService,
     public data: DataService,
     public prj: ProjectManagerService,
-    public login: LoginService
+    public login: LoginService,
+    public cmn: CommonService
   ) { }
 
   ngOnInit() {

@@ -150,6 +150,21 @@ html, body {
 .mat-tab-label-active { opacity: 1!important; }
 mat-slide-toggle { display: block!important; }
 
+/* ALLOW SCROLL TABS*/
+.mat-tab-links { overflow: auto !important; }
+@media (pointer:coarse) {
+  .mat-tab-label-container { overflow: auto !important; }
+}
+
+/*  CSS FOR SCROLLBARS */
+.mobile-scrollbar::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+}
+.mobile-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.26);
+}
+
 /* FIX TOO LONG SNACKBAR ISSUE */
 .mat-simple-snackbar > span {
   overflow-x: hidden;
@@ -184,7 +199,10 @@ mat-slide-toggle { display: block!important; }
   border-radius: 20px 0px 0px 20px; 
   box-shadow: 0px 0px 1px 1px red inset; 
 }
-.ace_gutter-cell { cursor: pointer; }
+.ace_gutter-cell { 
+  cursor: pointer;
+  padding-right: 2px!important;
+}
 .ace_gutter-cell:hover {
   background-color: #bdbdbd;
   color: white;

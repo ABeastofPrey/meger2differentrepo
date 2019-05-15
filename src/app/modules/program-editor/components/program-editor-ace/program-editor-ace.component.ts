@@ -4,8 +4,9 @@ import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Subscription} from 'rxjs';
 import {DataService, TaskService, MCFile, ProjectManagerService, WebsocketService, MCQueryResponse, KeywordService, LoginService} from '../../../core';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar, MatInput} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
+import {CommonService} from '../../../core/services/common.service';
 
 declare var ace;
 
@@ -76,7 +77,8 @@ export class ProgramEditorAceComponent implements OnInit {
     private snack: MatSnackBar,
     private trn: TranslateService,
     private keywords: KeywordService,
-    public login: LoginService
+    public login: LoginService,
+    public cmn: CommonService
   ) {
     this.trn.get(['projects.ace', 'dismiss']).subscribe(words=>{
       this.words = words;
@@ -95,11 +97,10 @@ export class ProgramEditorAceComponent implements OnInit {
       }
     });
     this.subs.add(this.service.statusChange.subscribe((stat:ProgramStatus)=>{
-      console.log(stat);
       this.removeAllMarkers();
       this.editor.setReadOnly(
-        stat === null || stat.statusCode !== TASKSTATE_NOTLOADED ||
-        this.login.isOperator
+        stat === null || stat.statusCode > -1 ||
+        this.login.isOperator || this.cmn.isTablet
       );
       if (stat.programLine > 0) {
         this.highlightLine(stat.programLine);
@@ -132,7 +133,7 @@ export class ProgramEditorAceComponent implements OnInit {
     this.subs.add(this.service.fileChange.subscribe((fileName)=>{
       if (fileName.endsWith('B') || this.service.modeToggle === 'mc')
         return this.setBreakpoints('');
-      if (this.prj.currProject.value) {
+      if (this.prj.currProject.value && this.service.modeToggle === 'prj') {
         const app = fileName.substring(0, fileName.indexOf('.'));
         const prjAndApp = '"' + this.prj.currProject.value.name + '","' + app + '"';
         this.ws.query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')').then((ret: MCQueryResponse)=>{
@@ -217,7 +218,7 @@ export class ProgramEditorAceComponent implements OnInit {
         spaceIndex++;
       else
         break;
-      if (spaceIndex%4 === 0)
+      if (spaceIndex%2 === 0)
         count++;
     }
     while (text.charAt(index++) === "\t") {
@@ -257,11 +258,14 @@ export class ProgramEditorAceComponent implements OnInit {
   private initEditor() {
     this.editor = ace.edit(this.editorDiv.nativeElement);
     this.editor.setOptions({
-      fontSize: '14px',
+      fontSize: this.cmn.isTablet ? '18px' : '13px',
       showPrintMargin: false,
-      theme: "ace/theme/eclipse",
+      theme: "ace/theme/cs",
       enableBasicAutocompletion: true,
-      enableLiveAutocompletion: false
+      enableLiveAutocompletion: false,
+      readOnly: this.cmn.isTablet,
+      tabSize: 2,
+      fontFamily: 'courier'
     });
     this.api.getDocs().then(result=>{
       this.commands = result;
@@ -491,6 +495,8 @@ export class ProgramEditorAceComponent implements OnInit {
       this.service.editorLine = line + 1;
     });
     this.editor.on("guttermousedown", this.editor.$breakpointListener = (e)=>{
+      if (this.service.modeToggle === 'prj')
+        return;
       if (this.service.activeFile.endsWith('B') || this.service.backtrace) {
         this.zone.run(()=>{
           this.snack.open(this.words['projects.ace']['bp_lib'],this.words['dismiss']);
@@ -566,18 +572,10 @@ export class ProgramEditorAceComponent implements OnInit {
             return this.ws.query(cmd2).then((ret: MCQueryResponse)=>{
               if (ret.err)
                 return;
-              this.tooltipX = e.domEvent.offsetX + 50;
-              this.tooltipY = e.domEvent.offsetY + 120;
-              this.tooltipVisible = true;
-              this.tooltipValue = ret.result;
-              this.ref.tick();
+              this.showTooptip(e, ret.result);
             });
           }
-          this.tooltipX = e.domEvent.offsetX + 50;
-          this.tooltipY = e.domEvent.offsetY + 120;
-          this.tooltipVisible = true;
-          this.tooltipValue = ret.result;
-          this.ref.tick();
+          this.showTooptip(e, ret.result);
         });
       },500);
     });
@@ -590,13 +588,21 @@ export class ProgramEditorAceComponent implements OnInit {
         });
       }
     });
-    if (this.service.activeFile) {
+    if (this.service.activeFile && this.service.modeToggle === 'prj') {
       const app = this.service.activeFile.substring(0, this.service.activeFile.indexOf('.'));
       const prjAndApp = '"' + this.prj.currProject.value.name + '","' + app + '"';
       this.ws.query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')').then((ret: MCQueryResponse)=>{
         this.setBreakpoints(ret.result);
       });
     }
+  }
+  
+  private showTooptip(e: any, val: any) {
+    this.tooltipX = e.domEvent.offsetX + 50;
+    this.tooltipY = e.domEvent.offsetY + 8;
+    this.tooltipVisible = true;
+    this.tooltipValue = val;
+    this.ref.tick();
   }
   
   private hideTooltip() {
@@ -648,6 +654,25 @@ export class ProgramEditorAceComponent implements OnInit {
       this.editor.session.removeMarker(this.markers.pop());
     }
   }
+  
+  /*************** Virtual Keyboard **********************/
+  @ViewChild(MatInput) dummyInput : MatInput;
+  dummyText : string = '';
+  showKeyboard() {
+    var editor = this.editor;
+    var position = editor.getCursorPosition();
+    var row = position.row; // current row
+    this.dummyText = editor.session.getLine(row).trim();
+    this.dummyInput.focus();
+  }
+  onDummyKeyboardClose() {
+    var editor = this.editor;
+    var position = editor.getCursorPosition();
+    var row = position.row; // current row
+    this.replaceLine(row, this.dummyText);
+    this.dummyText = '';
+  }
+  /******************************************************/
 
 }
 

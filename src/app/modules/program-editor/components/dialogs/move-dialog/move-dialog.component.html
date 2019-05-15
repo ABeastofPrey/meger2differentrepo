@@ -34,10 +34,10 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <input matInput [placeholder]="data.moveS ? 'VTran [mm/s]' : 'VCruise [deg/s]'" [(ngModel)]="vcruise">
+          <input matInput [placeholder]="data.moveS ? 'VTran [mm/s]' : 'VCruise [deg/s]'" [(ngModel)]="vcruise" virtualKeyboard ktype="numeric">
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Blending Percentage" [(ngModel)]="blending">
+          <input matInput placeholder="Blending Percentage" [(ngModel)]="blending" virtualKeyboard ktype="numeric">
           <span matSuffix>%</span>
         </mat-form-field>
         <mat-form-field>

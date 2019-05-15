@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import {WebsocketService, MCQueryResponse} from '../../../../core';
+import {WebsocketService, MCQueryResponse} from '../../modules/core';
 
 @Component({
   selector: 'app-io-selector-dialog',

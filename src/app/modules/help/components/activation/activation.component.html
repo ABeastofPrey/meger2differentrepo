@@ -3,7 +3,7 @@
     <div mat-dialog-content>
       <qrcode [qrdata]="url" [size]="200" [level]="'M'"></qrcode>
       <mat-form-field class="activation-form">
-        <input matInput placeholder="{{'help.activation.captchaPlaceholder'|translate}}" [formControl]="control" [(ngModel)]="pinCode">
+        <input matInput placeholder="{{'help.activation.captchaPlaceholder'|translate}}" [formControl]="control" [(ngModel)]="pinCode" virtualKeyboard ktype="numeric">
         <mat-error *ngIf="(control.hasError('minlength') || control.hasError('maxlength')) && !control.hasError('required')">
           {{'help.activation.lengthErr'|translate}}
         </mat-error>

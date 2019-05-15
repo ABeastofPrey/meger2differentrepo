@@ -9,6 +9,7 @@ import {ScreenManagerService} from './screen-manager.service';
 import {TranslateService} from '@ngx-translate/core';
 import {SelectionModel} from '@angular/cdk/collections';
 import {TreeNode} from '../../file-tree/components/mc-file-tree/mc-file-tree.component';
+import {TpStatService} from './tp-stat.service';
 
 /*
  * THIS SERVICE MANAGES THE PROJECTS IN THE PROJECT EDITOR, BUT ALSO MANAGES
@@ -37,7 +38,8 @@ export class ProjectManagerService {
     private data: DataService,
     private snack: MatSnackBar,
     private mgr: ScreenManagerService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private stat: TpStatService
   ) {
     this.trn.get('changeOK').subscribe(words=>{
       this.words = words;
@@ -55,11 +57,17 @@ export class ProjectManagerService {
         this.reset();
       }
     });
+    this.stat.onlineStatus.subscribe(stat=>{
+      if (!stat) {
+        this.reset();
+      }
+    });
   }
   
   reset() {
     this.stopStatusRefresh();
     this.currProject.next(null);
+    this.oldStat = null;
   }
   
   stopStatusRefresh() {
@@ -155,8 +163,8 @@ export class ProjectManagerService {
   
   getCurrentProject() : Promise<any> {
     return this.ws.query('?prj_get_current_project').then((ret:MCQueryResponse)=>{
-      if (ret.err)
-        return Promise.reject(null);
+      if (ret.err || !this.stat.onlineStatus.value)
+        return Promise.resolve(null);
       this.isLoading = true;
       const projName = ret.result;
       let proj = new MCProject(projName);
@@ -191,6 +199,7 @@ export class ProjectManagerService {
       this.ws.query('?TP_GET_PROJECT_PARAMETER("machinetable","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("workpiece","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("MOTIONOVERLAP","")'),
+      this.ws.query('?TP_GET_PROJECT_VRATE')
     ];
     return Promise.all(promises).then((results:MCQueryResponse[])=>{
       if (results[0].err === null && results[0].result.length > 0) {
@@ -221,6 +230,7 @@ export class ProjectManagerService {
         proj.settings.wpiece = results[6].result;
       }
       proj.settings.overlap = results[7].result === '1';
+      proj.settings.vrate = Number(results[8].result);
       let posArr : Limit[] = [];
       let promises : Promise<any>[] = [];
       for (let j = 1; j <= this.data.locationDescriptions.length; j++) {

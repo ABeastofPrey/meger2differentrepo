@@ -68,7 +68,7 @@ export class RobotsComponent implements OnInit {
         this.refreshDisp();
         this.refreshDH();
         this.data.selectedFrame = 'JOINT';
-        this.ws.query('?tp_speed(10)');
+        this.ws.query('?tp_set_jog_vrate(10)');
       }
     });
   }
@@ -173,7 +173,6 @@ export class RobotsComponent implements OnInit {
           id: 'update'
         });
         this.ws.query('?ROB_SELECT_ROBOT_CONFIGURATION("' + ret.part_number + '",0)').then((ret:MCQueryResponse)=>{
-          console.log(ret);
           if (ret.result === '0') {
             this.ws.updateFirmwareMode = true;
             this.ws.query('?user sys_reboot(0,0,0)');

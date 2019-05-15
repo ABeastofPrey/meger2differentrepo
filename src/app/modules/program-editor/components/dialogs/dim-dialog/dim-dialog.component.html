@@ -3,7 +3,7 @@
     <div class="title">{{'projectCommands.dim.title'|translate}}</div>
     <div class="content">
       <mat-form-field>
-        <input matInput placeholder="{{'variables.name'|translate}}" [(ngModel)]="varName" type="text">
+        <input matInput placeholder="{{'variables.name'|translate}}" [(ngModel)]="varName" type="text" virtualKeyboard ktype="text">
       </mat-form-field>
       <mat-select placeholder="{{'variables.type'|translate}}" [(ngModel)]="varType">
         <mat-option value="long">{{'long'|translate}}</mat-option>

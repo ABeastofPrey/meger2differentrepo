@@ -12,7 +12,9 @@ $material-semi-black: rgba(0,0,0,0.54);
 .stx {
   @include angular-material-theme($servotronix-theme);
 
-  .primary, main-menu li:hover:not(.disabled), main-menu li.selected:not(.disabled) {
+  .primary, main-menu li:hover:not(.disabled),
+    main-menu li.selected:not(.disabled),
+    .mat-form-field-appearance-outline .mat-form-field-outline-thick {
     color: mat-color($material-servotronix-primary, 600);
   }
   .primary-light {
@@ -22,7 +24,9 @@ $material-semi-black: rgba(0,0,0,0.54);
     background-color: mat-color($material-servotronix-primary, 900);
     color: #fff;
   }
-  .primary-bg, .mat-button-toggle-checked {
+  .primary-bg, .mat-button-toggle-checked, .virtual-keyboard .key-down,
+  .virtual-keyboard .key:active,
+  .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label {
     background-color: mat-color($material-servotronix-primary, 600);
     color: #fff!important;
   }

@@ -1,5 +1,8 @@
 terminal {
-  overflow: hidden;
   flex: 1;
   margin: 16px;
+  height: calc(100% - 32px);
+  width: calc(100% - 32px);
+  overflow: hidden;
+  display: flex;
 }

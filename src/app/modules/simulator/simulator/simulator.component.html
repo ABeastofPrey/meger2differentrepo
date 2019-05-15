@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div class="main-wrapper" [class.tablet-ui]="cmn.isTablet">
   <div class="loader mat-elevation-z6" *ngIf="isLoading">
     <img src="assets/pics/{{env.platform.spinner}}">
     {{'simulator_screen.loading'|translate}}

@@ -2,13 +2,6 @@
   <!--<button mat-fab class="fab" (click)="openScriptDialog()" color="primary"><mat-icon>description</mat-icon></button>
   <input type="file" accept=".trm, .TRM" #upload (change)="onUploadFilesChange($event)" class="file-input" />-->
   <div class="terminal" #wrapper (contextmenu)="onContextMenu($event)">
-    <!--<div class="terminal-row" *ngFor="let row of terminal.cmds">
-      <div class="center-vertical">
-        <div style="margin-right: 8px;">- -></div>
-        <div class="row">{{row.cmd}}</div>
-      </div>
-      <div style="white-space: pre-wrap;">{{row.result}}</div>
-    </div>-->
     <div class="editor" #editorDiv></div>
     <div class="center-vertical">
       <div style="margin: 0 8px 0 4px;">--></div>
@@ -43,5 +36,8 @@
     </button>
   </ul>
 </div>
-<div class="wrapper disabled" *ngIf="!login.isAdmin">
-</div>
+<div class="wrapper disabled" *ngIf="!login.isAdmin"></div>
+<mat-form-field class="hidden">
+  <input matInput placeholder="" [(ngModel)]="dummyText" virtualKeyboard ktype="text" #dummyInput (onKeyboardClose)="onDummyKeyboardClose()">
+</mat-form-field>
+<button mat-fab *ngIf="cmn.isTablet" class="fab" (click)="showKeyboard()"><mat-icon>keyboard</mat-icon></button>

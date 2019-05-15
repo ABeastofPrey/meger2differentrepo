@@ -14,7 +14,7 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field *ngIf="data.angle">
-        <input matInput placeholder="Angle" [(ngModel)]="angle">
+        <input matInput placeholder="Angle" [(ngModel)]="angle" virtualKeyboard ktype="numeric">
       </mat-form-field>
       <mat-form-field *ngIf="!data.angle">
         <mat-select placeholder="TargetPoint" [(ngModel)]="targetPoint" (selectionChange)="resetIndexTargetPoint()">
@@ -35,10 +35,10 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Vtran [mm/s]" [(ngModel)]="vtran">
+          <input matInput placeholder="Vtran [mm/s]" [(ngModel)]="vtran" virtualKeyboard ktype="numeric">
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Blending Percentage" [(ngModel)]="blending">
+          <input matInput placeholder="Blending Percentage" [(ngModel)]="blending" virtualKeyboard ktype="numeric">
           <span matSuffix>%</span>
         </mat-form-field>
         <mat-form-field>

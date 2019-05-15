@@ -45,8 +45,10 @@ export class UtilsService {
     this.resetAll(true).then(result=>{
       if (result) { // RESET ALL SUCCESS
         this.stat.onlineStatus.subscribe(stat=>{
-          if (stat)
+          if (stat) {
+            this.ws.updateFirmwareMode = false;
             dialog.close();
+          }
         });
       } else {
         dialog.close();
@@ -58,20 +60,32 @@ export class UtilsService {
     return this.stat.resetAll().then(()=>{
       return this.task.resetAll();
     }).then((ret)=>{
+      if (!env.production)
+        console.log('sys.en = 0');
       return this.ws.query('sys.en = 0');
     }).then(()=>{
+      if (!env.production)
+        console.log('reset all');
       return this.ws.query('reset all');
     }).then((ret: MCQueryResponse)=>{
+      if (!env.production)
+        console.log('reset all returned:',ret);
       if (ret.err) {
-        this.trn.get('utils.err_reset', {result: ret.result}).subscribe(err=>{
+        this.trn.get('utils.err_reset', {result: ret.err.errMsg}).subscribe(err=>{
           this.snack.open(err, this.words['acknowledge']);
         });
         return false;
       }
       this.snack.open(this.words['utils.success'],null,{duration:1500});
       this.stat.startTpLibChecker();
-      if (loadautoexec)
-        this.ws.query('load autoexec.prg');
+      if (loadautoexec) {
+        if (!env.production)
+          console.log('loading autoexec.prg...');
+        return this.ws.query('load autoexec.prg');
+      }
+    }).then(()=>{
+      if (!env.production)
+        console.log('reset all done');
       return true;
     });
   }

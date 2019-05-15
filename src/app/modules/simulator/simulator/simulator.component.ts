@@ -6,6 +6,7 @@ import 'rxjs/add/operator/take';
 import {RobotService} from '../../core/services/robot.service';
 import {TranslateService} from '@ngx-translate/core';
 import {environment} from '../../../../environments/environment';
+import {CommonService} from '../../core/services/common.service';
 
 declare var THREE, PREVIEW3D;
 
@@ -29,7 +30,8 @@ export class SimulatorComponent implements OnInit {
     private coo: CoordinatesService,
     public sim: SimulatorService,
     private robot: RobotService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public cmn: CommonService
   ) {
     this.trn.get('simulator_screen').subscribe(words=>{
       this.words = words;

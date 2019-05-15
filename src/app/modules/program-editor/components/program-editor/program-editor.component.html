@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper" [class.tablet-ui]="cmn.isTablet">
   <program-toolbar tourAnchor="project-toolbar-1" *ngIf="!login.isViewer"></program-toolbar>
   <div class="blocker" *ngIf="prj.isLoading"></div>
   <as-split direction="horizontal" (dragEnd)="onDragEnd()">
@@ -7,30 +7,32 @@
       </as-split-area>
       <as-split-area [size]="service.mode === 'editor' && !login.isOperator && !login.isViewer ? 65 : 80">
         <as-split direction="vertical" (dragEnd)="onDragEnd()">
-          <as-split-area size="90" class="right-side" style="position: relative;">
+          <as-split-area size="80" class="right-side" style="position: relative;">
             <h1 class="program-name" *ngIf="service.mode === 'editor'">{{service.activeFile ? service.activeFile : 'files.no_file' | translate}}</h1>
             <div class="editor-wrapper" *ngIf="service.mode === 'editor'">
               <div class="toolbar center-vertical" tourAnchor="project-toolbar-2" *ngIf="service.status">
-                <mat-icon *ngIf="!login.isOperator && !login.isViewer" (click)="service.save()" matRipple matTooltip="{{'projects.toolbar.save'|translate}}" [class.disabled]="service.status.statusCode !== taskStates[0]">save</mat-icon>
+                <mat-icon *ngIf="!login.isOperator && !login.isViewer" (click)="service.save()" matRipple matTooltip="{{'projects.toolbar.save'|translate}}" [class.disabled]="service.status.statusCode > -1">save</mat-icon>
                 <mat-icon (click)="service.download()" matTooltip="{{'projects.toolbar.download'|translate}}">file_download</mat-icon>
-                <div class="separator"></div>
-                <img src="assets/pics/icons/load.png" *ngIf="!login.isViewer" (click)="service.load()" matTooltip="{{'projects.toolbar.save_load'|translate}}" [class.disabled]="service.status.statusCode !== taskStates[0]">
-                <img src="assets/pics/icons/unload.png" *ngIf="!service.fileRef && !login.isViewer" (click)="service.unload()" matTooltip="{{'projects.toolbar.unload'|translate}}" [class.disabled]="service.status.statusCode === taskStates[0]">
-                <mat-icon (click)="service.kill()" *ngIf="!login.isViewer" matTooltip="{{'projects.toolbar.kill'|translate}}" [class.disabled]="service.status.statusCode === taskStates[0]">stop</mat-icon>
-                <mat-icon (click)="service.run()" *ngIf="!login.isViewer" matTooltip="{{'projects.toolbar.run'|translate}}" [class.disabled]="service.status.statusCode === taskStates[0]">play_arrow</mat-icon>
-                <mat-icon (click)="service.jump()" *ngIf="!login.isViewer" matTooltip="{{'projects.toolbar.jtl'|translate}}" [class.disabled]="service.status.statusCode === taskStates[0]">skip_next</mat-icon>
-                <mat-icon (click)="service.idle()" *ngIf="!service.fromProject && !login.isViewer" matTooltip="{{'projects.toolbar.idle'|translate}}" [class.disabled]="service.status.statusCode !== taskStates[1]">pause</mat-icon>
-                <div class="separator" *ngIf="!login.isViewer"></div>
-                <img src="assets/pics/icons/step_over.png" *ngIf="!login.isViewer" (click)="service.stepOver()" matTooltip="{{'projects.toolbar.stp_over'|translate}}" [class.disabled]="isStepDisabled">
-                <img src="assets/pics/icons/step_into.png" *ngIf="!login.isViewer" (click)="service.stepInto()" matTooltip="{{'projects.toolbar.stp_into'|translate}}" [class.disabled]="isStepDisabled">
-                <img src="assets/pics/icons/step_out.png" *ngIf="!login.isViewer" (click)="service.stepOut()" matTooltip="{{'projects.toolbar.stp_out'|translate}}" [class.disabled]="isStepDisabled">
-                <div class="separator" *ngIf="!login.isViewer"></div>
-                <div class="status" *ngIf="service.status">{{'status'|translate}}:
-                  <span
-                    [class.primary]="service.status.statusCode === taskStates[1]"
-                    [class.warn]="service.status.statusCode === taskStates[0] || service.status.statusCode === taskStates[3]">
-                      {{service.status.name}}
-                  </span>
+                <div class="center-vertical" *ngIf="service.status.statusCode !== -2"><!--NOT A SYSTEM FILE -->
+                  <div class="separator"></div>
+                  <img src="assets/pics/icons/load.png" *ngIf="!login.isViewer" (click)="service.load()" matTooltip="{{'projects.toolbar.save_load'|translate}}" [class.disabled]="service.status.statusCode !== taskStates[0]">
+                  <img src="assets/pics/icons/unload.png" *ngIf="!service.fileRef && !login.isViewer" (click)="service.unload()" matTooltip="{{'projects.toolbar.unload'|translate}}" [class.disabled]="service.status.statusCode === taskStates[0]">
+                  <mat-icon (click)="service.kill()" *ngIf="!login.isViewer" matTooltip="{{'projects.toolbar.kill'|translate}}" [class.disabled]="service.status.statusCode === taskStates[0]">stop</mat-icon>
+                  <mat-icon (click)="service.run()" *ngIf="!login.isViewer" matTooltip="{{'projects.toolbar.run'|translate}}" [class.disabled]="service.status.statusCode === taskStates[0]">play_arrow</mat-icon>
+                  <mat-icon (click)="service.jump()" *ngIf="!login.isViewer" matTooltip="{{'projects.toolbar.jtl'|translate}}" [class.disabled]="service.status.statusCode === taskStates[0]">skip_next</mat-icon>
+                  <mat-icon (click)="service.idle()" *ngIf="!service.fromProject && !login.isViewer" matTooltip="{{'projects.toolbar.idle'|translate}}" [class.disabled]="service.status.statusCode !== taskStates[1]">pause</mat-icon>
+                  <div class="separator" *ngIf="!login.isViewer"></div>
+                  <img src="assets/pics/icons/step_over.png" *ngIf="!login.isViewer" (click)="service.stepOver()" matTooltip="{{'projects.toolbar.stp_over'|translate}}" [class.disabled]="isStepDisabled">
+                  <img src="assets/pics/icons/step_into.png" *ngIf="!login.isViewer" (click)="service.stepInto()" matTooltip="{{'projects.toolbar.stp_into'|translate}}" [class.disabled]="isStepDisabled">
+                  <img src="assets/pics/icons/step_out.png" *ngIf="!login.isViewer" (click)="service.stepOut()" matTooltip="{{'projects.toolbar.stp_out'|translate}}" [class.disabled]="isStepDisabled">
+                  <div class="separator" *ngIf="!login.isViewer"></div>
+                  <div class="status" *ngIf="service.status">{{'status'|translate}}:
+                    <span
+                      [class.primary]="service.status.statusCode === taskStates[1]"
+                      [class.warn]="service.status.statusCode === taskStates[0] || service.status.statusCode === taskStates[3]">
+                        {{service.status.name}}
+                    </span>
+                  </div>
                 </div>
               </div>
               <program-editor-ace></program-editor-ace>
@@ -43,9 +45,9 @@
             <app-payload-wizard *ngIf="service.mode === 'payloads'" style="flex: 1; display: flex;"></app-payload-wizard>
             <io-mapping *ngIf="service.mode === 'io'" style="flex: 1; display: flex;"></io-mapping>
           </as-split-area>
-          <as-split-area size="10" *ngIf="service.mode === 'editor'">
+          <as-split-area size="20" *ngIf="service.mode === 'editor'">
             <div *ngIf="service.errors.length > 0">{{'projects.notification.errMsg'|translate}}</div>
-            <div class="error-line" *ngFor="let e of service.errors" (click)="service.skipToLine(e.number)">{{e.number+':'+e.error}}</div>
+            <div class="error-line" *ngFor="let e of service.errors" (click)="service.skipToLine(e.number)">{{e.number+':\t'+e.error}}</div>
             <div *ngIf="service.errors.length === 0 && !service.backtrace">{{'projects.notification.none'|translate}}</div>
             <div *ngIf="service.backtrace" style="white-space: pre-wrap;">{{service.backtrace.str}}</div>
           </as-split-area>

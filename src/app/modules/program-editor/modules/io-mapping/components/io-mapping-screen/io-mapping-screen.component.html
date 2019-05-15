@@ -45,12 +45,12 @@
                 </td>
                 <td>
                   <mat-form-field>
-                    <input type="text" matInput [value]="io.name" (change)="updateName($event,io)" maxlength="32" [disabled]="prj.activeProject">
+                    <input type="text" matInput [value]="io.name" (change)="updateName($event,io)" maxlength="32" [disabled]="prj.activeProject" ktype="text" (onKeyboardClose)="updateName($event,io)">
                   </mat-form-field>
                 </td>
                 <td>
                   <mat-form-field>
-                    <input type="text" matInput [value]="io.description" (change)="updateDescription($event,io)" maxlength="80" [disabled]="prj.activeProject">
+                    <input type="text" matInput [value]="io.description" (change)="updateDescription($event,io)" maxlength="80" [disabled]="prj.activeProject" ktype="text" (onKeyboardClose)="updateDescription($event,io)">
                   </mat-form-field>
                 </td>
                 <td style="text-align: center;">
@@ -66,12 +66,12 @@
                 </td>
                 <td>
                   <mat-form-field>
-                    <input type="text" matInput [value]="io.name" (change)="updateName($event,io)" maxlength="32" [disabled]="prj.activeProject">
+                    <input type="text" matInput [value]="io.name" (change)="updateName($event,io)" maxlength="32" [disabled]="prj.activeProject" ktype="text" (onKeyboardClose)="updateName($event,io)">
                   </mat-form-field>
                 </td>
                 <td>
                   <mat-form-field>
-                    <input type="text" matInput [value]="io.description" (change)="updateDescription($event,io)" maxlength="80" [disabled]="prj.activeProject">
+                    <input type="text" matInput [value]="io.description" (change)="updateDescription($event,io)" maxlength="80" [disabled]="prj.activeProject" ktype="text" (onKeyboardClose)="updateDescription($event,io)">
                   </mat-form-field>
                 </td>
                 <td style="text-align: center;">

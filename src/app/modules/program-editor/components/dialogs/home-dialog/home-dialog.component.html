@@ -3,7 +3,7 @@
     <div mat-dialog-content>
         <mat-form-field>
             <input matInput placeholder="{{'projectCommands.goHome.vCruisePh'|translate}}" [(ngModel)]="velocity"
-            [formControl]="control" [errorStateMatcher]="matcher" />
+            [formControl]="control" [errorStateMatcher]="matcher" virtualKeyboard ktype="numeric"/>
             <span matSuffix>deg/s</span>
             <mat-error> {{errorMessage}} </mat-error>
         </mat-form-field>

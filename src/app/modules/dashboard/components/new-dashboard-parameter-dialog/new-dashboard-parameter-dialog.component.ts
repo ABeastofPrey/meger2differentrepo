@@ -3,6 +3,7 @@ import {MatDialogRef, MatAutocompleteSelectedEvent} from '@angular/material';
 import {FormControl} from '@angular/forms';
 import {DashboardParam} from '../../services/dashboard.service';
 import {ApiService} from '../../../../modules/core/services/api.service';
+import {CommonService} from '../../../core/services/common.service';
 
 @Component({
   selector: 'app-new-dashboard-parameter-dialog',
@@ -20,7 +21,11 @@ export class NewDashboardParameterDialogComponent implements OnInit {
     return this._params;
   }
 
-  constructor(private api: ApiService, public ref : MatDialogRef<any>) {
+  constructor(
+    private api: ApiService,
+    public ref : MatDialogRef<any>,
+    public cmn: CommonService
+  ) {
     this.api.getMCProperties().then((ret: MCCommand[])=>{
       this._params = ret;
       this.ctrl.valueChanges.subscribe((ret)=>{
@@ -34,8 +39,17 @@ export class NewDashboardParameterDialogComponent implements OnInit {
   }
   
   filter(name: string): MCCommand[] {
-    return this._params.filter(option =>
-      option.text.toLowerCase().indexOf(name.toLowerCase()) > -1);
+    return this._params.filter(option => {
+      return option.text.toLowerCase().indexOf(name.toLowerCase()) > -1;
+    });
+  }
+  
+  verifyOption(name: string) {
+    if (!this.cmn.isTablet)
+      return true;
+    return this._params.filter(option=>{
+      return option.text.toLowerCase() === name.toLowerCase();
+    }).length > 0;
   }
 
   ngOnInit() {

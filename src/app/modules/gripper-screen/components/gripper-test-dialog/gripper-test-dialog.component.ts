@@ -22,15 +22,15 @@ export class GripperTestDialogComponent implements OnInit {
   }
   
   open() {
-    this.ws.query('?GRP_OPEN_GRIPPER("'+this.data.ef+'","'+this.data.grp+'")');
+    this.ws.query('GRP_OPEN_GRIPPER("'+this.data.ef+'","'+this.data.grp+'")');
   }
   
   close() {
-    this.ws.query('?GRP_CLOSE_GRIPPER("'+this.data.ef+'","'+this.data.grp+'")');
+    this.ws.query('GRP_CLOSE_GRIPPER("'+this.data.ef+'","'+this.data.grp+'")');
   }
   
   cycle() {
-    const cmd = 'call GRP_RUN_CYCLE_TEST(' + this.time + ',"' +
+    const cmd = 'GRP_RUN_CYCLE_TEST(' + this.time + ',"' +
                 this.data.ef + '","' + this.data.grp + '")';
     this.ws.query(cmd);
   }

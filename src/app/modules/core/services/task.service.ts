@@ -18,8 +18,10 @@ export class TaskService {
     private ref : ApplicationRef,
     private stat: TpStatService) {
     this.stat.onlineStatus.subscribe(stat=>{
-      if (!this.ws.connected)
+      if (!this.ws.connected) {
+        this.tasklistCommand = '?tasklist';
         return;
+      }
       // TP LIB IS ONLINE
       this.stop();
       this.tasklistCommand = stat ? 'cyc1' : '?tasklist';
@@ -28,11 +30,17 @@ export class TaskService {
   }
   
   parseTasklist(list:string) : MCTask[] {
+    if (list.length === 0) {
+      this.tasklistCommand = '?tasklist';
+      return [];
+    }
     let tasks: MCTask[] = [];
     if (list === 'No tasks found')
       return tasks;
     let lines = list.split('\n');
     for (let line of lines) {
+      if (line.trim().length === 0)
+        continue;
       const parts : string[] = line.split(',');
       let name:string, state:string, priority: number, path: string = null;
       if (line.indexOf("Task")===0) {
@@ -129,21 +137,29 @@ export class TaskService {
   }
   
   resetAll() {
-    let promises = [];
-    const tasksCopy = this.tasks.slice();
-    for (let task of tasksCopy) {
-      const promise = (task.priority == null) ?
-        Promise.resolve(null) : this.ws.query('KillTask ' + task.name);
-      promises.push(promise);
-    }
-    return Promise.all(promises).then((ret)=>{
-      promises = [];
-      for (let i = 0; i < tasksCopy.length; i++) {
-        const task = tasksCopy[i];
-        if (task.priority || task.state.indexOf('Global')===-1)
-          promises.push(this.ws.query('Unload ' + task.name));
+    this.stop();
+    this.tasklistCommand = '?tasklist';
+    return this.getList().then(()=>{
+      let promises = [];
+      const tasksCopy = this.tasks.slice();
+      for (let task of tasksCopy) {
+        if (task.priority !== null)
+          promises.push(this.ws.query('KillTask ' + task.name));
       }
-      return Promise.all(promises);
+      return Promise.all(promises).then(ret=>{
+        console.log(ret);
+        let promises = [];
+        for (let i = 0; i < tasksCopy.length; i++) {
+          const task = tasksCopy[i];
+          if (task.priority || task.state.indexOf('Global')===-1) {
+            console.log('Unload ' + task.name);
+            promises.push(this.ws.query('Unload ' + task.name));
+          }
+        }
+        return Promise.all(promises);
+      });
+    }).then(ret=>{
+      console.log(ret);
     });
   }
 

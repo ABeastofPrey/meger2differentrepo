@@ -10,6 +10,7 @@ import {Pallet} from '../models/pallet.model';
 import {Payload} from '../models/payload.model';
 import {IoModule} from '../models/io/io-module.model';
 import {LoginService} from './login.service';
+import {CommonService} from './common.service';
 
 declare var Blockly:any;
 
@@ -46,7 +47,7 @@ export class DataService {
         return Promise.reject(ret.result);
       }
       this.teach.reset();
-      Blockly.selectedRobot = this._selectedRobot;
+      //Blockly.selectedRobot = this._selectedRobot;
       const promises : any = Promise.all([
         this.ws.query("?tp_is_robot_type"),
         this.ws.query("?TP_GET_MOTION_ELEMENT_TYPE")
@@ -207,32 +208,6 @@ export class DataService {
   get controlsAreShowing() {
     return this._isEmulator || this.tabletMode > 0;
   }
-  private _tpType : TpType = null;
-  get tpType() { return this._tpType; }
-  set tpType(val:TpType) {
-    let oldVal = this._tpType;
-    this._tpType = val;
-    this.ws.query('?TP_SET_TP_TYPE("' + val.name + '")').then((ret: MCQueryResponse)=>{
-      if (ret.result !== '0' || ret.err) {
-        this._tpType = oldVal;
-      } else {
-        if (this._tpType.name === 'EMULATOR') {
-          this.isEmulator = true;
-          this.isRealDevice = false;
-          this.tabletMode = 0;
-        } else { // REAL TP
-          this.isRealDevice = true;
-          this.isEmulator = false;
-          this.tabletMode = this._tpType.name === 'TABLET_WITHOUT_SWITCH'?1 : 0;
-        }
-      }
-      //console.log(this._tpType.name);
-      this.ref.tick();
-    });
-  }
-  private _tpTypes : TpType[];
-  get tpTypes() { return this._tpTypes; }
-  set tpTypes(val: TpType[]) { this._tpTypes = val; }
   private _jogIncrements: string;
   get jogIncrements() { return this._jogIncrements; }
   set jogIncrements(val: string) {
@@ -404,17 +379,16 @@ export class DataService {
       return this.ws.query('?TP_SET_MOTION_ELEMENT("' + this.robots[0] + '")')
       .then((ret:MCQueryResponse)=>{
         if (ret.err || ret.result !== "0") {
-          return null;
+          return Promise.resolve(null);
         }
         this._selectedRobot = this.robots[0];
         this.teach.reset();
-        Blockly.selectedRobot = this._selectedRobot;
-        const promises : any = Promise.all([
+        //Blockly.selectedRobot = this._selectedRobot;
+        return Promise.all([
           this.ws.query("?tp_is_robot_type"),
           this.ws.query("?TP_GET_MOTION_ELEMENT_TYPE")
         ]);
-        return promises;
-      }).then((ret:MCQueryResponse[])=>{
+      }).then((ret: MCQueryResponse[])=>{
         this._isRobotType = ret[0].result !== '0';
         this._robotType = ret[1].result;
       }).catch(()=>{});
@@ -493,7 +467,7 @@ export class DataService {
   constructor(
     private ws : WebsocketService,
     private teach : TeachService,
-    private ref : ApplicationRef,
+    private cmn: CommonService,
     private stat: TpStatService,
     private login: LoginService
   ) {
@@ -514,9 +488,9 @@ export class DataService {
   
   init() {
     // NOTE: CALLING THIS OUTSIDE OF ANGULAR CAUSES TABS TO STOP WORKING...
-    
+    const TP_TYPE = this.cmn.isTablet ? 'TP' : 'CS+';
     const promises = [
-      this.ws.query('?TP_ENTER("CS+")'),
+      this.ws.query('?TP_ENTER("' + TP_TYPE + '")'),
       this.ws.query("?TP_SET_STAT_FORMAT(2)")
     ];
     
@@ -528,11 +502,6 @@ export class DataService {
     .then((ret:MCQueryResponse)=>{
       if (ret.result !== 'A')
         this.stat.mode = 'A';
-      //this.stat.deadman = false;
-      this.tpType = {
-        name: 'EMULATOR',
-        friendlyName: null
-      };
       return this.refreshData();
     }).then(()=>{return this.getSettings();})
     .then(()=>{this.dataLoaded.next(true);});

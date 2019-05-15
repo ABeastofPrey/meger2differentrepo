@@ -24,12 +24,17 @@
   left: 50%;
   transform: translate(-50%,-50%);
   overflow: hidden;
+  padding: 48px 40px 36px;
+  min-height: 500px;
+  box-sizing: border-box;
 }
 .toolbar {
   height: 100%;
   width: 100%;
   position: absolute;
   z-index: 9;
+  top: 0;
+  left: 0;
 }
 header {
   background-size: 100%;
@@ -40,17 +45,19 @@ header {
   color: #fff;
   display: flex;
   align-items: flex-end;
+  margin: -48px -40px 0;
 }
 .title { font-size: 36px; font-weight: 500;}
 .subtitle { font-size: 18px; font-weight: 300;}
 .main {
-  padding: 36px;
+  margin-top: 36px;
   font-size: 16px;
   display: flex;
   flex-direction: column;
   text-align: center;
 }
-.main mat-form-field { width: 100%; }
+.main mat-form-field { width: 100%; cursor: text; }
+
 ::ng-deep .tablet-ui .login-card mat-form-field { margin: -8px 0; }
 .main mat-icon {
   margin-right: 24px;

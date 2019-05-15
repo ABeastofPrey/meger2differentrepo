@@ -11,7 +11,7 @@
     <tbody>
       <tr>
         <td><mat-icon>add</mat-icon></td>
-        <td><input type="text" [(ngModel)]="watch.newVarName" (keyup.enter)="watch.addVar()" (clickOutside)="onBlur()"></td>
+        <td><input type="text" [(ngModel)]="watch.newVarName" (keyup.enter)="watch.addVar()" (clickOutside)="onBlur()" virtualKeyboard ktype="text" (onKeyboardClose)="watch.addVar()"></td>
         <td>
           <select [(ngModel)]="watch.newVarContext" #context>
             <option *ngFor="let c of watch.contexts" [value]="c">{{c}}</option>

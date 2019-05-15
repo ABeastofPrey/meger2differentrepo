@@ -17,7 +17,7 @@
     <ng-container *ngIf="isAdvanced">
       <mat-form-field *ngFor="let optionalPar of optionalPars">
           <input matInput placeholder="{{optionalPar.placeholder}}" [(ngModel)]="optionalPar.selected"
-          [formControl]="optionalPar.control" [errorStateMatcher]="optionalPar.matcher">
+          [formControl]="optionalPar.control" [errorStateMatcher]="optionalPar.matcher" virtualKeyboard ktype="text">
           <span matSuffix>{{optionalPar.suffix}}<sup>{{optionalPar.sup}}</sup></span>
           <mat-error>
             {{errorMessage(optionalPar.control)}}

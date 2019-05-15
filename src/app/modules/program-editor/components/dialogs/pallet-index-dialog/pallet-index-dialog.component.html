@@ -13,7 +13,7 @@
         <mat-radio-button value="custom" color="primary">
           <span *ngIf="pallet === null || option !== 'custom'">{{'pallets.wizard.index_custom'|translate}}</span>
           <mat-form-field class="input-normal" *ngIf="pallet !== null && option === 'custom'">
-            <input matInput placeholder="{{'pallets.wizard.index_custom'|translate}}" [(ngModel)]="pallet.index">
+            <input matInput placeholder="{{'pallets.wizard.index_custom'|translate}}" [(ngModel)]="pallet.index" virtualKeyboard ktype="numeric">
           </mat-form-field>
         </mat-radio-button>
       </mat-radio-group>

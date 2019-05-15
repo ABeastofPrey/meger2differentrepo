@@ -2,7 +2,9 @@ import { Directive, ElementRef, Renderer2, HostListener, Component, Inject, Inpu
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {NgModel, FormControlName} from '@angular/forms';
 import {CommonService} from '../core/services/common.service';
-import {WebsocketService} from '../core';
+import {NgControl} from '@angular/forms';
+import {FormControl} from '@angular/forms';
+import {Optional} from '@angular/core';
 
 @Directive({
   selector: '[virtualKeyboard]',
@@ -45,7 +47,8 @@ export class KeyboardDirective {
         name: this.name,
         layout: selectedLayout,
         keyboardType: this.ktype,
-        accept: this.onKeyboardClose
+        accept: [this.onKeyboardClose],
+        ctrl: this.ctrl
       }
     });
     this.ref.afterClosed().subscribe(()=>{
@@ -60,6 +63,7 @@ export class KeyboardDirective {
     public renderer: Renderer2,
     private ngModel: NgModel,
     private cmn: CommonService,
+    @Optional() private ctrl: NgControl,
     private name: FormControlName){
   }
   
@@ -77,10 +81,12 @@ export class KeyboardDialog {
   public inputType : string;
   public layout: any;
   public ctrl: FormControlName;
+  public control: FormControl;
   public currValue: string = '';
-  private onKeyboardClose: EventEmitter<any>;
+  private onKeyboardClose: EventEmitter<any>[];
   private _shiftMode : boolean = false;
   private _moreMode : boolean = false;
+  private val: any;
 
   constructor(
     public dialogRef: MatDialogRef<KeyboardDialog>,
@@ -91,31 +97,37 @@ export class KeyboardDialog {
       this.layout = data.layout;
       this.onKeyboardClose = data.accept;
       this.ctrl = data.name;
+      this.control = data.ctrl ? data.ctrl.control : null;
       if (this.ctrl && this.ctrl.name) {
-        this.currValue = this.ctrl.value;
+        this.currValue = this.ctrl.value || '';
         if (this.ctrl.valueChanges) {
           this.ctrl.valueChanges.subscribe(val=>{
             this.currValue = val;
           });
         }
+      } else if (this.control) {
+        this.currValue = this.control.value || '';
+        if (this.control.valueChanges) {
+          this.control.valueChanges.subscribe(val=>{
+            this.currValue = val;
+          });
+        }
       } else {
-        this.currValue = this.ngModel.value || '';
-        this.ngModel.valueChanges.subscribe(val=>{
-          this.currValue = val;
-        });
+        this.currValue = this.ngModel.value || data.el.value || '';
+        if (this.ngModel) {
+          this.ngModel.valueChanges.subscribe(val=>{
+            this.currValue = val;
+          });
+        }
       }
     }
     
   onInput(key) {
-    var value : string = '' + (this.ngModel.value || this.ctrl.value);
+    var value: string = '' + ((this.control && this.control.value) || (this.ngModel && this.ngModel.value) || (this.ctrl && this.ctrl.value) || this.currValue || '');
     if (value === 'undefined' || value === 'null')
       value = '';
     switch(key) {
       case 'backspace':
-        /*if (this._shiftMode){
-          this._shiftMode = false;
-          this.layout = this.data.layout;
-        }*/
         value = value.slice(0, -1);
         if (value === '' && this.data.keyboardType === 'numeric')
           value = '0';
@@ -140,18 +152,40 @@ export class KeyboardDialog {
           value += key;
         break;
     }
-    if (this.ngModel && !this.ctrl.name) {
-      this.ngModel.update.emit(value);
+    this.val = value;
+    if (this.control) {
+      this.control.setValue(value);
+      return;
     }
-    else if (this.ctrl.control)
+    if (this.ngModel && this.ctrl && !this.ctrl.name) {
+      if (this.ngModel.value !== null)
+        this.ngModel.update.emit(value);
+      else {
+        this.currValue = value;
+        if ((this.inputType === 'number' && !isNaN(Number(value))) || this.inputType !== 'number')
+          this.data.el.value = value;
+      }
+    }
+    else if (this.ctrl && this.ctrl.control) {
       this.ctrl.control.setValue(value);
-    else
+    } else if (this.ctrl) {
       this.ctrl.valueAccessor.writeValue(value);
+    } else {
+      this.data.el.value = value;
+    }
   }
   
   accept() {
     this.dialogRef.close();
-    this.onKeyboardClose.emit();
+    for (let e of this.onKeyboardClose) {
+      if (e) {
+        e.emit({
+          target: {
+            value: this.val
+          }
+        });
+      }
+    }
   }
   
   btnToHtml(btn : string) {

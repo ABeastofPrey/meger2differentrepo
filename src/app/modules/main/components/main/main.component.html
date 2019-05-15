@@ -22,7 +22,7 @@
         <mat-button-toggle value="R">R</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-    <button mat-mini-fab color="warn" [class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()" matTooltip="{{'enable'|translate}}/{{'disable'|translate}} {{data.selectedRobot}}">
+    <button mat-mini-fab [disabled]="login.isViewer || !stat.onlineStatus.value" color="warn" [class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()" matTooltip="{{'enable'|translate}}/{{'disable'|translate}} {{data.selectedRobot}}">
       <mat-icon>power_settings_new</mat-icon>
     </button>
     <div [matTooltip]="jogTooltip">
@@ -44,6 +44,7 @@
       <mat-icon>exit_to_app</mat-icon>
     </button>
   </mat-toolbar>
+  <mat-progress-bar color="accent" mode="indeterminate" *ngIf="stat.systemErrorCode >= 0 && stat.systemErrorCode !== 1000"></mat-progress-bar>
   <mat-sidenav-container class="mat-typography">
     <mat-sidenav #drawer [mode]="!cmn.isTablet && screenWidth >= 1024 ? 'side' : 'over'" [opened]="!cmn.isTablet && screenWidth >= 1024" class="mat-elevation-z6">
       <main-menu [drawer]="drawer"></main-menu>
@@ -64,14 +65,14 @@
             </button>
           </div>
           <div class="center-vertical" *ngIf="data.selectedRobot">
-            <button mat-mini-fab [color]="stat.enabled ? 'accent' : 'warn'" (click)="stat.toggleEnabled()" style="margin-right: 16px;">
+            <button mat-mini-fab color="warn" [class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()" matTooltip="{{'enable'|translate}}/{{'disable'|translate}} {{data.selectedRobot}}" style="margin-right: 16px;">
               <mat-icon>power_settings_new</mat-icon>
             </button>
             {{data.selectedRobot}}
           </div>
           <div *ngIf="data.selectedRobot === null">{{'main.no_robot'|translate}}</div>
           <mat-card-content style="margin-top: 8px;" *ngIf="stat.enabled" @fadeSimple>
-            <div class="jog-table-container mat-elevation-z5">
+            <div class="jog-table-container mat-elevation-z5" id="jog-container">
               <table class="jog-table" *ngIf="cooService.axisCoordinate === null && cooService.jointKeys || cooService.locationKeys">
                 <tr *ngFor="let legend of (data.selectedFrame === 'JOINT') ? cooService.jointKeys.split(',') : cooService.locationKeys.split(','); let i = index">
                   <td (mouseout)="mouseUp($event)"><button mat-fab color="primary" [class.active]="mouseDownIndex===-(i+1)" (mousedown)="mouseDown(-(i+1),$event)" (mouseup)="mouseUp($event)" (touchstart)="mouseDown(-(i+1),$event)" (touchend)="mouseUp($event)"><mat-icon>remove</mat-icon></button></td>

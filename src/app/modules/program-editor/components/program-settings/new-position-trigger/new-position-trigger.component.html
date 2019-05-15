@@ -2,8 +2,11 @@
     <div mat-dialog-content>
         <mat-form-field>
             <span matPrefix>{{namePrefix}} &nbsp;</span>
-            <input matInput placeholder="{{'projectSettings.position_trigger.newPositionTrigger.namePlaceholder'|translate}}" [(ngModel)]="name" [formControl]="nameControl" [errorStateMatcher]="nameMatcher"
-            (keydown)="onKeyDown($event.keyCode)" (keyup)="onKeyUp($event.keyCode)">
+            <input matInput
+          placeholder="{{'projectSettings.position_trigger.newPositionTrigger.namePlaceholder'|translate}}"
+          [(ngModel)]="name" [formControl]="nameControl" [errorStateMatcher]="nameMatcher"
+          (keydown)="onKeyDown($event.keyCode)" (keyup)="onKeyUp($event.keyCode)"
+          virtualKeyboard ktype="text">
             <mat-error>{{'projectSettings.position_trigger.newPositionTrigger.requireErr'|translate}}</mat-error>
         </mat-form-field>
     </div>

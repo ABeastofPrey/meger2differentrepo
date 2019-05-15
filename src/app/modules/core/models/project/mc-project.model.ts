@@ -50,6 +50,7 @@ export class App {
 export class ProjectSettings {
   vcruise: number;
   vtran: number;
+  vrate: number;
   blendingMethod : number;
   tool: string;
   base: string;

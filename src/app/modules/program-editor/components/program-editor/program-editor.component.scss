@@ -17,11 +17,12 @@ program-editor-side-menu {   min-width: 20%; }
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 .program-name {
   font-size: 24px;
   font-weight: 600;
-  padding: 16px 16px 8px 16px;
+  padding: 16px 16px 0px 16px;
   height: 36px;
   margin: 0;
 }
@@ -91,5 +92,18 @@ program-editor-ace { flex: 1;}
   background: rgba(0,0,0,0.2);
   width: 100%;
   height: 100%;
-  z-index: 6;
+  z-index: 10;
+}
+
+.tablet-ui {
+  .toolbar mat-icon, .toolbar img {
+    padding: 12px;
+    height: 24px;
+    line-height: 24px;
+    border: 1px solid #888;
+    margin-right: 6px;
+  }
+  .toolbar {
+    font-size: 18px;
+  }
 }

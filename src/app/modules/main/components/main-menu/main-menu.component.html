@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <ul class="list mat-subtitle-color">
+  <ul class="list mat-subtitle-color mobile-scrollbar">
     <li class="screen"
     *ngFor="let s of mgr.screens"
       [tourAnchor]="'screen-'+s.name"
@@ -21,7 +21,7 @@
         'disabled':(s.requiresTpLib && !tpOnline) || (s.autoModeOnly && stat.mode !== 'A')
       }">
       <mat-icon class="mat-primary">{{s.icon}}</mat-icon>
-      <span>{{s.name}}</span>
+      <span>{{('tabs.' + s.name)|translate}}</span>
     </li>
   </ul>
 </div>

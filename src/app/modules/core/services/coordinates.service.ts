@@ -111,12 +111,10 @@ export class CoordinatesService {
             if (this.coosLoaded.value && !this.mgr.openedControls && this.mgr.screen && this.mgr.screen.url !== 'simulator' && this.mgr.screen.url !== 'teach' && !this.prj.activeProject)
               return;
             this.ws.query('cyc2').then((result:MCQueryResponse)=>{
-              if (result.err) {
+              if (result.err || result.result.length === 0) {
                 clearInterval(this.interval);
                 return;
               }
-              if (result.result.length === 0)
-                return;
               setTimeout(()=>{
                 this.update(result.result);
                 if (!this.coosLoaded.value)

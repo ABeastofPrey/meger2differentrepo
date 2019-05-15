@@ -1,6 +1,6 @@
 <div class="wrapper virtual-keyboard tablet-ui">
   <mat-form-field style="width: 100%;">
-    <input disabled matInput placeholder="{{placeholder}}" type="{{inputType}}" [value]="currValue">
+    <input disabled matInput placeholder="{{placeholder}}" type="{{inputType === 'password' ? 'password' : 'text'}}" [value]="currValue">
     <button matSuffix mat-mini-fab (click)="accept()" color="primary">
       <mat-icon>done</mat-icon>
     </button>

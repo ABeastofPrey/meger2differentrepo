@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper mat-typography">
   <div *ngIf="prj.isLoading" class="center-block">
     <img src="assets/pics/{{env.platform.spinner}}">
   </div>
@@ -27,7 +27,7 @@
         </li>
       </mat-tree-node>
       <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
-        <li class="mat-typography" (contextmenu)="openContextMenu($event,node)" [id]="node.type+(node.name && node.name.length > 0 ? '-'+node.name : '')">
+        <li (contextmenu)="openContextMenu($event,node)" [id]="node.type+(node.name && node.name.length > 0 ? '-'+node.name : '')">
           <div [class.selected]="lastSelectedNode === node" (click)="toggleNode(node);selectNode(node);">
             <mat-icon class="mat-primary">
               {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -62,7 +62,7 @@
         <button mat-button (click)="newApp()"><mat-icon class="primary-light">add</mat-icon>{{'projects.toolbar.new_app'|translate}}...</button>
       </div>
       <div *ngIf="lastSelectedNode && lastSelectedNode.type === 'App'">
-        <button mat-button (click)="runApp(lastSelectedNode.name)" *ngIf="lastSelectedNode.ref && lastSelectedNode.ref.status !== 2"><mat-icon>play_arrow</mat-icon>Run {{lastSelectedNode.name}}</button>
+        <button mat-button (click)="runApp(lastSelectedNode.name)" *ngIf="lastSelectedNode.ref && lastSelectedNode.ref.status !== 2"><mat-icon>play_arrow</mat-icon>{{'projects.toolbar.run'|translate}} {{lastSelectedNode.name}}</button>
         <button mat-button (click)="newLib(lastSelectedNode.name)"><mat-icon class="primary-light">add</mat-icon>{{'projects.toolbar.new_lib'|translate}}...</button>
         <mat-divider></mat-divider>
         <button mat-button (click)="renameApp(lastSelectedNode.name)"><mat-icon class="primary-light">edit</mat-icon>{{'projects.toolbar.rename'|translate}} {{lastSelectedNode.name}}...</button>

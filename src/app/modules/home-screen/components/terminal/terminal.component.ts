@@ -6,6 +6,7 @@ import {KeywordService} from '../../../core/services/keywords.service';
 import {ApplicationRef} from '@angular/core';
 import {CommonService} from '../../../core/services/common.service';
 import {LoginService} from '../../../core';
+import {MatInput} from '@angular/material';
 
 declare var ace;
 
@@ -40,10 +41,11 @@ export class TerminalComponent implements OnInit {
   
   @Input('offsetX') offsetX: number;
   @Input('offsetY') offsetY: number;
-  
+
   private changeFlag : boolean = false;
   private lastCmdIndex : number = -1;
   private editor : any;
+  private Range = ace.require('ace/range').Range;
   
   get cmd() {
     return this._cmd;
@@ -85,7 +87,7 @@ export class TerminalComponent implements OnInit {
       highlightActiveLine: false,
       printMargin: false,
       showGutter: false,
-      theme: "ace/theme/eclipse",
+      theme: "ace/theme/cs",
       fontSize: "14px",
       maxLines: Infinity,
       readOnly: true,
@@ -121,10 +123,11 @@ export class TerminalComponent implements OnInit {
       highlightActiveLine: false,
       printMargin: false,
       showGutter: false,
-      theme: "ace/theme/eclipse",
+      theme: "ace/theme/cs",
       fontSize: "14px",
       enableBasicAutocompletion: true,
-      enableLiveAutocompletion: true
+      enableLiveAutocompletion: true,
+      readOnly: this.cmn.isTablet
     });
     this.keywords.initDone.subscribe(done=>{
       if (!done)
@@ -168,8 +171,15 @@ export class TerminalComponent implements OnInit {
   onClick(e:MouseEvent) { // 0 - down, 1 - up
     const mouseY = e.clientY;
     const editorLineY = this.editorLine.nativeElement.getBoundingClientRect().y;
-    if (mouseY > editorLineY)
-      this.editor.focus();
+    if (mouseY > editorLineY) {
+      if (!this.cmn.isTablet)
+        this.editor.focus();
+      else {
+        const target: HTMLElement = <HTMLElement>e.target;
+        if (target.tagName.toUpperCase() === 'DIV')
+          this.showKeyboard();
+      }
+    }
   }
   
   clear(e: MouseEvent) {
@@ -296,5 +306,57 @@ export class TerminalComponent implements OnInit {
     this.send();
     this.editor.focus();
   }
+  
+  /*************** Virtual Keyboard **********************/
+  @ViewChild(MatInput) dummyInput : MatInput;
+  dummyText : string = '';
+  showKeyboard() {
+    var editor = this.editor;
+    var position = editor.getCursorPosition();
+    var row = position.row; // current row
+    this.dummyText = editor.session.getLine(row).trim();
+    this.dummyInput.focus();
+  }
+  onDummyKeyboardClose() {
+    var editor = this.editor;
+    var position = editor.getCursorPosition();
+    var row = position.row; // current row
+    this.cmd = this.dummyText;
+    this.send();
+    this.dummyText = '';
+  }
+  private replaceLine(index : number, newLine : string) {
+    let editor = this.editor;
+    let line : string = editor.session.getLine(index);
+    let tabs = Array(this.numberOfTabs(line) + 1).join('\t');
+    let txtLines = newLine.split('\n');
+    for (let i = 0; i < txtLines.length; i++)
+      txtLines[i] = tabs + txtLines[i];
+    newLine = txtLines.join('\n');
+    editor.session.replace(
+      new this.Range(index, 0, index, Number.MAX_VALUE),
+      newLine
+    );
+  }
+  private numberOfTabs(text : string) {
+    let count = 0;
+    let index = 0;
+    let spaceIndex = 0;
+    if (text === null || text.length === 0)
+      return 0;
+    for (let i = 0; i < text.length; i++) {
+      if (text.charCodeAt(i)===32)
+        spaceIndex++;
+      else
+        break;
+      if (spaceIndex%4 === 0)
+        count++;
+    }
+    while (text.charAt(index++) === "\t") {
+      count++;
+    }
+    return count;
+  }
+  /******************************************************/
 
 }

@@ -34,7 +34,6 @@ import {RobotSelectorDialogComponent} from './components/dialogs/robot-selector-
 import {PalletPickerDialogComponent} from './components/dialogs/pallet-picker-dialog/pallet-picker-dialog.component';
 import {PalletIndexDialogComponent} from './components/dialogs/pallet-index-dialog/pallet-index-dialog.component';
 import {MoveDialogComponent} from './components/dialogs/move-dialog/move-dialog.component';
-import {IoSelectorDialogComponent} from './components/dialogs/io-selector-dialog/io-selector-dialog.component';
 import {IfDialogComponent} from './components/dialogs/if-dialog/if-dialog.component';
 import {DimDialogComponent} from './components/dialogs/dim-dialog/dim-dialog.component';
 import {DelayDialogComponent} from './components/dialogs/delay-dialog/delay-dialog.component';
@@ -96,7 +95,6 @@ import {FileTreeModule} from '../file-tree/file-tree.module';
     DelayDialogComponent,
     DimDialogComponent,
     IfDialogComponent,
-    IoSelectorDialogComponent,
     MoveDialogComponent,
     PalletIndexDialogComponent,
     PalletPickerDialogComponent,
@@ -137,7 +135,6 @@ import {FileTreeModule} from '../file-tree/file-tree.module';
     DelayDialogComponent,
     DimDialogComponent,
     IfDialogComponent,
-    IoSelectorDialogComponent,
     MoveDialogComponent,
     PalletIndexDialogComponent,
     PalletPickerDialogComponent,

@@ -1,5 +1,8 @@
-<div class="wrapper">
-  <div class="overlay" *ngIf="login.isViewer || login.isOperator || (service.status && service.status.statusCode !== -1)"></div>
+<div class="wrapper" [class.disabled]="login.isViewer || login.isOperator || (service.status && service.status.statusCode > 0) || !service.status">
   <div #editor class="editor"></div>
   <div class="tooltip mat-elevation-z1" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">{{lastWord}}: {{tooltipValue}}</div>
 </div>
+<mat-form-field class="hidden">
+  <input matInput placeholder="" [(ngModel)]="dummyText" virtualKeyboard ktype="text" #dummyInput (onKeyboardClose)="onDummyKeyboardClose()">
+</mat-form-field>
+<button mat-fab *ngIf="cmn.isTablet && !login.isViewer && !login.isOperator && service.status && service.status.statusCode < 0" class="fab" (click)="showKeyboard()"><mat-icon>keyboard</mat-icon></button>

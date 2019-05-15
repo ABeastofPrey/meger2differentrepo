@@ -58,7 +58,7 @@
           <div class="var-details" *ngIf="selectedVar">
             <mat-form-field *ngFor="let val of this._value; let i = index" floatLabel="never">
               <span matPrefix style='font-weight: bold;'>{{this._legend[i]}}:&nbsp;&nbsp;</span>
-              <input matInput [placeholder]="this._legend[i]" [(ngModel)]="this._value[i].value" (change)="onKeyboardClose()">
+              <input matInput [placeholder]="this._legend[i]" [(ngModel)]="this._value[i].value" (change)="onKeyboardClose()" virtualKeyboard ktype="numeric" (onKeyboardClose)="onKeyboardClose()">
             </mat-form-field>
           </div>
         </mat-card>

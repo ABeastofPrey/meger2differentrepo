@@ -94,6 +94,7 @@ export class ProgramEditorService {
         this.displayedFile = null;
         this.editorText = '';
         this.editorTextChange.emit('');
+        this._modeToggle = 'prj';
       }
     });
     const words = [
@@ -125,7 +126,26 @@ export class ProgramEditorService {
     this.displayedFile = f;
     const finalPath = path || '';
     this.activeFilePath = path ? path : null;
-    this.api.getPathFile(finalPath+f).then(ret=>{
+    if (f === 'FWCONFIG') {
+      this.api.getFile(f).then(ret=>{
+        this.editorText = ret;
+        this.editorTextChange.emit(ret);
+        this.refreshStatus(false);
+        const status = {
+          statusCode: -2,
+          name: 'SYSTEM',
+          sourceLine: -1,
+          programLine: -1
+        };
+        this.statusChange.emit(status);
+        this.status = status;
+        this.isDirty = false;
+        this.fileChange.next(this.activeFile);
+        this.dragEnd.emit();
+      });
+      return;
+    }
+    this.api.getPathFile(finalPath+f).then((ret:string)=>{
       this.editorText = ret;
       this.editorTextChange.emit(ret);
       this.refreshStatus(true);
@@ -191,7 +211,7 @@ export class ProgramEditorService {
     this.activeFile = null;
     this.displayedFile = null;
     this.editorText = null;
-    this.editorTextChange.emit(null);
+    this.editorTextChange.emit('');
     this.status = null;
     this.errors = [];
     this.editorLine = -1;
@@ -310,6 +330,12 @@ export class ProgramEditorService {
   idle() {
     if (this.activeFile === null)
       return;
+    if (this.fileRef) {
+      const prj = this.prj.currProject.value.name;
+      const file = this.activeFile.substring(0,this.activeFile.indexOf('.'));
+      this.ws.query('?tp_pause_app("' + prj + '","' + file + '")');
+      return;
+    }
     this.ws.query('IdleTask ' + this.activeFile);
   }
   
@@ -376,7 +402,7 @@ export class ProgramEditorService {
   
   refreshStatus(on : boolean) {
     this.ws.clearInterval(this.statusInterval);
-    if (!on || this.activeFile === null) {
+    if (!on || this.activeFile === null || (this.status && this.status.statusCode === -2)) {
       return;
     }
     const file = this.activeFile;
@@ -392,6 +418,10 @@ export class ProgramEditorService {
     const cmd = isLib ? ('?' + file + '.dummyVariable') : ('cyc4,' + file);
     this.oldStatString = null;
     this.statusInterval = this.ws.send(cmd,false,(ret:string,command:string,err:ErrorFrame)=>{
+      if (ret.length === 0) {
+        this.refreshStatus(false);
+        return;
+      }
       if (ret !== this.oldStatString) {
         this.oldStatString = ret;
         this.zone.run(()=>{
@@ -426,6 +456,18 @@ export class ProgramEditorService {
                   this.backtrace = null;
                   this.status.programLine = bt.files[0].line;
                   this.statusChange.emit(this.status);
+                  if (this.status.statusCode === TASKSTATE_ERROR) {
+                    this.ws.query('?' + file + '.error').then((ret: MCQueryResponse)=>{
+                      const err = new ErrorFrame(ret.result);
+                      this.errors = [
+                        {
+                          number: this.status.programLine + 1,
+                          file: file,
+                          error: err.errMsg
+                        }
+                      ];
+                    });
+                  }
                 } else {
                   this.backtrace = bt;
                   this.statusChange.emit(this.status);

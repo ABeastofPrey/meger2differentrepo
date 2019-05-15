@@ -50,11 +50,11 @@
       </mat-expansion-panel-header>
       <div class="content" *ngIf="motionParametersPanel.expanded">
         <mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
-          <input matInput placeholder="VCruise" [(ngModel)]="prj.currProject.value.settings.vcruise" type="text">
+          <input matInput placeholder="VCruise" [(ngModel)]="prj.currProject.value.settings.vcruise" type="number" virtualKeyboard ktype="numeric">
           <span matSuffix>deg/sec</span>
         </mat-form-field>
         <mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
-          <input matInput placeholder="VTran" [(ngModel)]="prj.currProject.value.settings.vtran" type="text">
+          <input matInput placeholder="VTran" [(ngModel)]="prj.currProject.value.settings.vtran" type="number" virtualKeyboard ktype="numeric">
           <span matSuffix>mm/sec</span>
         </mat-form-field>
         <h3>Blending Method</h3>
@@ -112,14 +112,18 @@
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-                  (change)="prj.onLimitChanged(p.name+'min',$event,'J'+(i+1),p.min,p)">
+             virtualKeyboard ktype="numeric"
+            (change)="prj.onLimitChanged(p.name+'min',$event,'J'+(i+1),p.min,p)"
+            (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'J'+(i+1),p.min,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-                  (change)="prj.onLimitChanged(p.name+'max',$event,'J'+(i+1),p.max,p)">
+            virtualKeyboard ktype="numeric"
+            (change)="prj.onLimitChanged(p.name+'max',$event,'J'+(i+1),p.max,p)"
+            (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'J'+(i+1),p.max,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -138,14 +142,18 @@
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-                  (change)="prj.onLimitChanged(p.name+'min',$event,'world',p.min,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'min',$event,'world',p.min,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'world',p.min,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-                  (change)="prj.onLimitChanged(p.name+'max',$event,'world',p.max,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'max',$event,'world',p.max,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'world',p.max,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -164,14 +172,18 @@
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-                  (change)="prj.onLimitChanged(p.name+'min',$event,'tool',p.min,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'min',$event,'tool',p.min,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'tool',p.min,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-                  (change)="prj.onLimitChanged(p.name+'max',$event,'tool',p.max,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'max',$event,'tool',p.max,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'tool',p.max,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -190,14 +202,18 @@
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-                  (change)="prj.onLimitChanged(p.name+'min',$event,'base',p.min,p)">
+            virtualKeyboard ktype="numeric"
+            (change)="prj.onLimitChanged(p.name+'min',$event,'base',p.min,p)"
+            (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'base',p.min,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-                  (change)="prj.onLimitChanged(p.name+'max',$event,'base',p.max,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'max',$event,'base',p.max,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'base',p.max,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -216,14 +232,18 @@
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-                  (change)="prj.onLimitChanged(p.name+'min',$event,'machinetable',p.min,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'min',$event,'machinetable',p.min,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'machinetable',p.min,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-                  (change)="prj.onLimitChanged(p.name+'max',$event,'machinetable',p.max,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'max',$event,'machinetable',p.max,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'machinetable',p.max,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
@@ -242,14 +262,18 @@
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-                  (change)="prj.onLimitChanged(p.name+'min',$event,'workpiece',p.min,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'min',$event,'workpiece',p.min,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'workpiece',p.min,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
                 <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-                  (change)="prj.onLimitChanged(p.name+'max',$event,'workpiece',p.max,p)">
+              virtualKeyboard ktype="numeric"
+              (change)="prj.onLimitChanged(p.name+'max',$event,'workpiece',p.max,p)"
+              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'workpiece',p.max,p)">
                 <div matSuffix>{{p.unit}}</div>
               </mat-form-field>
             </td>

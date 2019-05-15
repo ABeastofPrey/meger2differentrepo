@@ -45,7 +45,9 @@ import {CommonService} from '../core/services/common.service';
         top: 0,
         left: 0,
         transform: 'translate(0)',
-        boxShadow: 'none'
+        boxShadow: 'none',
+        padding: 0,
+        minHeight: 0
       })),
       transition('card => toolbar',[animate('1s ease-in-out')])
     ])
@@ -147,6 +149,9 @@ export class LoginScreenComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.ws.connected) {
+      this.login.logout();
+    }
     let init = false;
     this.subs.push(this.login.isAuthenticated.subscribe(auth=>{
       if (!init && !this.isSubmitting && auth && this.ws.connected) {
@@ -169,6 +174,7 @@ export class LoginScreenComponent implements OnInit {
   }
   
   ngAfterViewInit() {
+    (document.activeElement as HTMLElement).blur();
     this.route.queryParams.subscribe(params=>{
       if (params['serverDisconnected']) {
         this.router.navigate(this.route.snapshot.url,{queryParams:{}});

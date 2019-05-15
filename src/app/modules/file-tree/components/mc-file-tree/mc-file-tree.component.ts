@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource, MatDialog, MatSnackBar} from '@angular/material';
-import {ApiService, ProjectManagerService, UploadResult} from '../../../core';
+import {ApiService, ProjectManagerService, UploadResult, LoginService} from '../../../core';
 import {of, Subscription} from 'rxjs';
 import {environment} from '../../../../../environments/environment';
 import {FileFilterService} from '../../file-filter.service';
@@ -47,7 +47,8 @@ export class McFileTreeComponent implements OnInit {
     private service: ProgramEditorService,
     private trn: TranslateService,
     private dialog: MatDialog,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private login: LoginService
   ) {
     this.trn.get([
       'error.err','dismiss','success','projects.toolbar.new_folder',
@@ -113,10 +114,16 @@ export class McFileTreeComponent implements OnInit {
     this.prj.checklistSelection.clear();
     this.api.get('/cs/api/files').toPromise().then((ret:JsonNode)=>{
       const parent = new TreeNode(ret,null);
-      this.unfilteredDataSource = [parent];
+      let data = [];
+      if (this.login.isAdmin) {
+        data.push(new TreeNode(null,null));
+      }
+      data.push(parent);
+      this.unfilteredDataSource = data;
       this.nestedDataSource._data.next(this.unfilteredDataSource);
       this.nestedTreeControl.expand(parent);
       this.isRefreshing = false;
+      console.log(data);
     });
   }
   
@@ -255,7 +262,8 @@ export class McFileTreeComponent implements OnInit {
     setTimeout(()=>{
       this.service.dragEnd.emit();
     },200);
-    this.service.setFile(n.name, n.parent ? n.parent.decodedpath : '', null);
+    console.log(n);
+    this.service.setFile(n.name, n.parent ? n.parent.decodedPath : '', null);
   }
   
   newFile(node: TreeNode) {
@@ -264,9 +272,9 @@ export class McFileTreeComponent implements OnInit {
         const f = new File([new Blob([''])],ret);
         let path = '';
         if (node.isFolder && node.name !== 'SSMC')
-          path = node.decodedpath;
+          path = node.decodedPath;
         else if (node.parent && node.parent.name !== 'SSMC')
-          path = node.parent.decodedpath;
+          path = node.parent.decodedPath;
         this.api.uploadToPath(f, false, path).then((result: UploadResult)=>{
           if (result.success) {
             this.snack.open(
@@ -331,9 +339,9 @@ export class McFileTreeComponent implements OnInit {
       if (name) {
         let path = '';
         if (node.isFolder && node.name !== 'SSMC')
-          path = node.decodedpath;
+          path = node.decodedPath;
         else if (node.parent && node.parent.name !== 'SSMC')
-          path = node.parent.decodedpath;
+          path = node.parent.decodedPath;
         this.api.createFolder(path + name).then(result=>{
           if (result) {
             this.snack.open(
@@ -387,13 +395,22 @@ export class TreeNode {
   children: TreeNode[] = [];
   isFolder: boolean;
   parent: TreeNode;
+  ref: TreeNode; // for filtered data, reference the original node
+  path: string;
+  decodedPath: string;
   
   constructor(node:JsonNode | string, parent: TreeNode) {
-    if (parent === null) {
+    if (parent === null && node) {
       this.name = 'SSMC';
       this.isFolder = true;
       this.parent = null;
       this.children = new TreeNode(node, this).children;
+      return;
+    }
+    if (node === null) {
+      this.name = 'FWCONFIG';
+      this.isFolder = false;
+      this.parent = null;
       return;
     }
     this.parent = parent;
@@ -410,25 +427,20 @@ export class TreeNode {
     for (let f of node.files) {
       this.children.push(new TreeNode(f, this));
     }
-  }
-  
-  get path() : string {
+    
+    // SET PATH
     let path = this.name;
-    let parent = this.parent;
+    this.path = path;
     if (parent === null || parent.name === 'SSMC')
-      return path;
+      return;
     // TRAVEL UP THE TREE UNTIL JUST BEFORE THE ROOT
     while (parent.parent && parent.parent.name !== 'SSMC') {
       path = parent.name + '$$' + path; // $$ will be replaced with "/"
       parent = parent.parent;
     }
-    return path;
-  }
-  
-  get decodedpath() : string {
-    const path = this.path;
-    const decoded = path.replace(new RegExp('\\$\\$','g'),'/') + '/';
-    return decoded;
+    this.path = path;
+    // SET DECODED PATH
+    this.decodedPath = path.replace(new RegExp('\\$\\$','g'),'/') + '/';
   }
 }
 

@@ -1,13 +1,33 @@
 <div class="wrapper mat-typography">
-  <ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'prj'" (click)="toggleFocus()">
+  <ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'prj'" (click)="toggleFocus($event)">
     <li (mouseenter)="currMenu=1" [class.selected]="onFocus && currMenu===1" [class.disabled]="this.prj.currProject.value === null || prj.activeProject || login.isOperator">{{'projectTree.prj'|translate}}</li>
     <li (mouseenter)="currMenu=2" [class.selected]="onFocus && currMenu===2" [class.disabled]="this.prj.currProject.value === null || prj.activeProject || login.isOperator">{{'projects.toolbar.create'|translate}}</li>
     <li (mouseenter)="currMenu=3" [class.selected]="onFocus && currMenu===3 && prgService.mode === 'editor'" [class.disabled]="prgService.mode !== 'editor' || prj.activeProject || login.isOperator">{{'projects.toolbar.edit'|translate}}</li>
-    <li (mouseenter)="currMenu=4" [class.selected]="onFocus && currMenu===4" [class.disabled]="this.prj.currProject.value === null">{{'projects.toolbar.run'|translate}}</li>
+    <li (mouseenter)="currMenu=4" [class.selected]="onFocus && currMenu===4" *ngIf="!cmn.isTablet" [class.disabled]="this.prj.currProject.value === null">{{'projects.toolbar.run'|translate}}</li>
   </ul>
-  <ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'mc'" (click)="toggleFocus()">
+  <ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'mc'" (click)="toggleFocus($event)">
     <li (mouseenter)="currMenu=5" [class.selected]="onFocus && currMenu===5" [class.disabled]="false">{{'projects.toolbar.file'|translate}}</li>
     <li (mouseenter)="currMenu=6" [class.selected]="onFocus && currMenu===6" [class.disabled]="false">{{'projects.toolbar.controller'|translate}}</li>
+  </ul>
+  <ul class="mat-elevation-z1 prj-buttons" *ngIf="cmn.isTablet">
+    <button (click)="stop()" mat-raised-button color="primary" style="margin-right: 24px;" matTooltip="{{'projects.toolbar.stop_prj'|translate}}"><mat-icon>stop</mat-icon></button>
+    <button (click)="run()" mat-raised-button color="primary" matTooltip="{{'projects.toolbar.run_prj'|translate}}"><mat-icon>play_arrow</mat-icon></button>
+  </ul>
+  <ul class="mat-elevation-z1 v-slider-container" *ngIf="prj.currProject.value">
+    <span class="title">{{'projects.toolbar.vrate'|translate}}</span>
+    <button mat-raised-button color="primary" (click)="changeVrate(false)">-</button>
+    <mat-slider
+    class="v-slider"
+    color="primary"
+    thumbLabel
+    max="100"
+    min="1"
+    tickInterval="auto"
+    [value]="prj.currProject.value.settings.vrate"
+    (change)="onVrateChange($event)"
+   >
+    </mat-slider>
+    <button mat-raised-button color="primary" (click)="changeVrate(true)">+</button>
   </ul>
   <ul class="mat-elevation-z1" *ngIf="login.isAdmin">
     <mat-button-toggle-group [(ngModel)]="prgService.modeToggle" (change)="currMenu = 0;onFocus=false;">

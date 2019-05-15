@@ -17,12 +17,20 @@
   width: 100%;
   display: flex;
 }
-.overlay {
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.12);
-  z-index: 5;
+.disabled .ace_editor {
+  background: rgba(0,0,0,0.088)!important;
+}
+::ng-deep .disabled .ace_active-line {
+  background: transparent!important;
+}
+.hidden {
+  width: 0!important;
+  height: 0!important;
   position: absolute;
-  top: 0;
-  left: 0;
+}
+.fab {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 2;
 }

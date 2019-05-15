@@ -24,6 +24,7 @@ import { ClickOutsideModule } from 'ng-click-outside';
 import {TranslateModule} from '@ngx-translate/core';
 import {KeyboardDirective, KeyboardDialog} from '../virtual-keyboard/keyboard.directive';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import {IoSelectorDialogComponent} from '../../components/io-selector-dialog/io-selector-dialog.component';
 
 @NgModule({
   imports: [
@@ -66,7 +67,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
     ClickOutsideModule,
     TranslateModule,
     KeyboardDirective,
-    NgScrollbarModule
+    NgScrollbarModule,
+    IoSelectorDialogComponent
   ],
   declarations: [
     YesNoDialogComponent,
@@ -83,12 +85,14 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
     CoordinatesDisplayComponent,
     UpdateDialogComponent,
     KeyboardDirective,
-    KeyboardDialog
+    KeyboardDialog,
+    IoSelectorDialogComponent
   ],
   entryComponents: [
     YesNoDialogComponent,
     JogSettingsDialogComponent,
     UpdateDialogComponent,
+    IoSelectorDialogComponent,
     KeyboardDialog
   ],
   schemas:[NO_ERRORS_SCHEMA]

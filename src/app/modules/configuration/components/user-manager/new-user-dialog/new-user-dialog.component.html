@@ -3,20 +3,20 @@
     <mat-icon>{{data ? 'edit' : 'person_add'}}</mat-icon>&nbsp;&nbsp;{{(data ? 'userManager.btnEdit' : 'userManager.new')|translate}}
   </div>
   <mat-form-field>
-    <input matInput placeholder="{{'userManager.username'|translate}}" [(ngModel)]="username" [disabled]="data">
+    <input matInput placeholder="{{'userManager.username'|translate}}" [(ngModel)]="username" [disabled]="data" virtualKeyboard ktype="text">
     <mat-error *ngIf="!data && username.toLowerCase() === 'admin'">
       {{'userManager.err_username_reserved'|translate}}
     </mat-error>
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="{{'userManager.full'|translate}}" [(ngModel)]="fullName">
+    <input matInput placeholder="{{'userManager.full'|translate}}" [(ngModel)]="fullName" virtualKeyboard ktype="text">
   </mat-form-field>
   <mat-form-field>
-    <input matInput type="password" placeholder="{{'password'|translate}}" [(ngModel)]="password">
+    <input matInput type="password" placeholder="{{'password'|translate}}" [(ngModel)]="password" virtualKeyboard ktype="text">
     <mat-hint align="start" *ngIf="data && password.length === 0"><strong>Leave blank to remain unchanged</strong> </mat-hint>
   </mat-form-field>
   <mat-form-field>
-    <input matInput type="password" placeholder="{{'password_confirm'|translate}}" [(ngModel)]="passwordConfirm" [disabled]="password.length === 0">
+    <input matInput type="password" placeholder="{{'password_confirm'|translate}}" [(ngModel)]="passwordConfirm" [disabled]="password.length === 0" virtualKeyboard ktype="text">
   </mat-form-field>
   <mat-form-field>
     <mat-select placeholder="{{'userManager.permission'|translate}}" [(ngModel)]="permission" [disabled]="username === 'admin' || (data && !login.isAdmin)">

@@ -28,7 +28,7 @@
           <tr *ngFor="let p of params.params; let i=index;">
             <td style='padding-right: 8px;'>{{p.name}}</td>
             <td>
-              <mat-form-field *ngIf="p.inputType==='INPUT'"><input matInput [(ngModel)]="p.value" (input)="dashboard.onChange(params, p,$event.target.value)" [disabled]="login.isViewer"></mat-form-field>
+              <mat-form-field *ngIf="p.inputType==='INPUT'"><input matInput [(ngModel)]="p.value" (input)="dashboard.onChange(params, p,$event.target.value)" [disabled]="login.isViewer" virtualKeyboard ktype="text"></mat-form-field>
               <mat-slide-toggle *ngIf="p.inputType==='TOGGLE'" color="primary" style="margin-bottom: 8px;" [checked]="p.value==='1'" (change)="dashboard.onChange(params, p,$event.checked)" [disabled]="login.isViewer"></mat-slide-toggle>
               <mat-slider *ngIf="p.inputType==='SLIDER'" thumbLabel="true" tickInterval="auto" [min]="p.sliderMin" [max]="p.sliderMax" [(ngModel)]="p.value" color="primary" (change)="dashboard.onChange(params, p,$event.value)" [disabled]="login.isViewer"></mat-slider>
             </td>
@@ -46,15 +46,15 @@
         <mat-slide-toggle color="primary" style="margin-bottom: 8px;" *ngIf="params.isGroup" [(ngModel)]="params.cartesian">{{'cartesian'|translate}}</mat-slide-toggle>
         <table>
           <tr *ngFor="let a of params.axes; let i=index;">
-            <td>{{params.cartesian ? cart[i] : a}}</td><td><mat-form-field><input matInput [(ngModel)]="params.target[i]" type="number"></mat-form-field></td>
+            <td>{{params.cartesian ? cart[i] : a}}</td><td><mat-form-field><input matInput [(ngModel)]="params.target[i]" type="number" virtualKeyboard ktype="numeric"></mat-form-field></td>
           </tr>
-          <tr><td>Velocity</td><td><mat-form-field><input matInput [(ngModel)]="params.vel" type="number"></mat-form-field></td></tr>
-          <tr><td>Acc</td><td><mat-form-field><input matInput [(ngModel)]="params.acc" type="number"></mat-form-field></td></tr>
-          <tr><td>Dec</td><td><mat-form-field><input matInput [(ngModel)]="params.dec" type="number"></mat-form-field></td></tr>
-          <tr><td>Jerk</td><td><mat-form-field><input matInput [(ngModel)]="params.jerk" type="number"></mat-form-field></td></tr>
+          <tr><td>Velocity</td><td><mat-form-field><input matInput [(ngModel)]="params.vel" type="number" virtualKeyboard ktype="numeric"></mat-form-field></td></tr>
+          <tr><td>Acc</td><td><mat-form-field><input matInput [(ngModel)]="params.acc" type="number" virtualKeyboard ktype="numeric"></mat-form-field></td></tr>
+          <tr><td>Dec</td><td><mat-form-field><input matInput [(ngModel)]="params.dec" type="number" virtualKeyboard ktype="numeric"></mat-form-field></td></tr>
+          <tr><td>Jerk</td><td><mat-form-field><input matInput [(ngModel)]="params.jerk" type="number" virtualKeyboard ktype="numeric"></mat-form-field></td></tr>
         </table>
       </div>
     </div>
-    <div *ngIf="!login.isViewer" class="expand primary-bg-dark" (click)="toggleExpand()"><mat-icon class="primary-light" tourAnchor="dashboard-expand">{{params.isExpanded ? 'chevron_left' : 'more_vert'}}</mat-icon></div>
+    <div *ngIf="!login.isViewer" matRipple class="expand primary-bg-dark" (click)="toggleExpand()"><mat-icon class="primary-light" tourAnchor="dashboard-expand">{{params.isExpanded ? 'chevron_left' : 'more_vert'}}</mat-icon></div>
   </div>
 </div>

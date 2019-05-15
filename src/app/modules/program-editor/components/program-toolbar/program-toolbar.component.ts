@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog, MatSnackBar, MatSliderChange} from '@angular/material';
 import {NewProjectDialogComponent} from '../new-project-dialog/new-project-dialog.component';
 import {WebsocketService, MCQueryResponse, ProjectManagerService, ApiService, UploadResult, ProjectVerificationResult, TpStatService, LoginService} from '../../../core';
 import {OpenProjectDialogComponent} from '../open-project-dialog/open-project-dialog.component';
@@ -18,11 +18,12 @@ import {TreeNode} from '../../../file-tree/components/mc-file-tree/mc-file-tree.
 import {UpdateDialogComponent} from '../../../../components/update-dialog/update-dialog.component';
 import {NewFileDialogComponent} from '../../../file-tree/components/new-file-dialog/new-file-dialog.component';
 import {SingleInputDialogComponent} from '../../../../components/single-input-dialog/single-input-dialog.component';
+import {CommonService} from '../../../core/services/common.service';
 
 @Component({
   selector: 'program-toolbar',
   templateUrl: './program-toolbar.component.html',
-  styleUrls: ['./program-toolbar.component.css']
+  styleUrls: ['./program-toolbar.component.scss']
 })
 export class ProgramToolbarComponent implements OnInit {
   
@@ -36,7 +37,12 @@ export class ProgramToolbarComponent implements OnInit {
   @ViewChild('upload') uploadInput: ElementRef;
   
   
-  toggleFocus() { this.onFocus = !this.onFocus; }
+  toggleFocus(e:MouseEvent) {
+    if (this.cmn.isTablet)
+      this.onFocus = e.toElement.tagName === 'LI';
+    else
+      this.onFocus = !this.onFocus;
+  }
   doImport(fromBackup: boolean) {
     this.uploadInput.nativeElement.click();
     this.fromBackup = fromBackup;
@@ -52,7 +58,8 @@ export class ProgramToolbarComponent implements OnInit {
     private utl: UtilsService,
     private trn: TranslateService,
     public stat: TpStatService,
-    public login: LoginService
+    public login: LoginService,
+    public cmn: CommonService
   ) {
     this.trn.get(
       ['projects.toolbar','error.err','button.cancel','button.delete',
@@ -74,6 +81,7 @@ export class ProgramToolbarComponent implements OnInit {
     ref.afterClosed().subscribe(projectName=>{
       if (projectName) {
         this.ws.query('?prj_new_project("' + projectName + '")').then((ret:MCQueryResponse)=>{
+          console.log(ret);
           if (ret.result === '0') {
             this.prj.currProject.next(null);
             this.utl.resetAllDialog(this.words['projects.toolbar']['changing']);
@@ -91,6 +99,8 @@ export class ProgramToolbarComponent implements OnInit {
       if (projectName) {
         this.ws.query('?prj_set_current_project("' + projectName + '")').then((ret:MCQueryResponse)=>{
           if (ret.result === '0') {
+            this.prgService.close();
+            this.ws.updateFirmwareMode = true;
             this.prj.currProject.next(null);
             this.utl.resetAllDialog(this.words['projects.toolbar']['changing']);
           } else
@@ -321,7 +331,10 @@ export class ProgramToolbarComponent implements OnInit {
           this.ws.query(cmd).then((ret: MCQueryResponse)=>{
             if (ret.result === '0') {
               // PROJECT IMPORT IS OK - TELL WEB SERVER TO UNZIP THE FILE
-              this.importProject(verification.file, projectName);
+              this.importProject(verification.file, projectName).then(()=>{
+                this.api.deleteProjectZip(verification.file);
+                this.prj.isLoading = false;
+              });
             } else { // PROJECT EXISTS, ASK USER IF HE WANTS TO OVERWRITE
               this.trn.get('projects.toolbar.overwrite_prj.msg', {name: projectName}).subscribe(word=>{
                 this.dialog.open(YesNoDialogComponent,{
@@ -533,7 +546,9 @@ export class ProgramToolbarComponent implements OnInit {
   downloadFiles(fromSelected: boolean) {
     let files : string[];
     if (fromSelected) {
-      const selected = this.prj.checklistSelection.selected;
+      const selected = this.prj.checklistSelection.selected.filter(node=>{
+        return node.name !== 'FWCONFIG';
+      });
       if (selected.length === 0)
         return;
       files = [];
@@ -548,7 +563,36 @@ export class ProgramToolbarComponent implements OnInit {
     this.prj.isLoading = true;
     return this.api.downloadZip(files).then(()=>{
       this.prj.isLoading = false;
+    },err=>{
+      this.prj.isLoading = false;
+      this.snack.open(
+        this.words['error.err'],
+        this.words['dismiss'],
+        {duration:2000}
+      );
+    }).catch(err=>{
+      this.prj.isLoading = false;
+      this.snack.open(
+        this.words['error.err'],
+        this.words['dismiss'],
+        {duration:2000}
+      );
     });
+  }
+  
+  onVrateChange(e: MatSliderChange | number) {
+    const val = Number(e) || (<MatSliderChange>e).value;
+    this.prj.currProject.value.settings.vrate = val;
+    const cmd = '?TP_SET_PROJECT_VRATE(' + val + ')';
+    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+      this.prj.currProject.value.settings.vrate = Number(ret.result);
+    });
+  }
+  
+  // If "add" is true --> +1, otherwise --> -1
+  changeVrate(add: boolean) {
+    const val = this.prj.currProject.value.settings.vrate + (add ? 1 : -1);
+    this.onVrateChange(val);
   }
 
 }

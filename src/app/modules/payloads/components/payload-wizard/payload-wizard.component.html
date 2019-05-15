@@ -20,121 +20,17 @@
     </div>
     <div *ngIf="selectedPayload" class="temp-scara-wizard">
       <mat-form-field>
-        <input matInput [disabled]="login.isOperator" type="number" min="0" placeholder="{{'payloads.mass'|translate}}" [value]="selectedPayload.mass" (change)="onMassChange($event)">
+        <input matInput type="number" min="0" placeholder="{{'payloads.mass'|translate}}" (change)="onMassChange($event)" virtualKeyboard ktype="numeric" (onKeyboardClose)="onMassChange($event)" [formControl]="ctrlMass">
         <span matSuffix>[Kg]</span>
       </mat-form-field>
       <mat-form-field>
-        <input matInput [disabled]="login.isOperator" type="number" min="0" placeholder="{{'payloads.inertia'|translate}}" [value]="selectedPayload.inertia" (change)="onInertiaChange($event)">
+        <input matInput type="number" min="0" placeholder="{{'payloads.inertia'|translate}}" (change)="onInertiaChange($event)" virtualKeyboard ktype="numeric" (onKeyboardClose)="onInertiaChange($event)" [formControl]="ctrlInertia">
         <span matSuffix>[Kg * m<sup>2</sup>]</span>
       </mat-form-field>
       <mat-form-field>
-        <input matInput [disabled]="login.isOperator" type="number" min="0" placeholder="{{'payloads.offX'|translate}}" [value]="selectedPayload.Lx" (change)="onXOffsetChange($event)">
+        <input matInput type="number" min="0" placeholder="{{'payloads.offX'|translate}}" (change)="onXOffsetChange($event)" virtualKeyboard ktype="numeric" (onKeyboardClose)="onXOffsetChange($event)" [formControl]="ctrlLx">
         <span matSuffix>[m]</span>
       </mat-form-field>
     </div>
-    <!--<mat-horizontal-stepper #stepper="matHorizontalStepper" [linear]="true" *ngIf="selectedPayload">
-      <mat-step>
-        <ng-template matStepLabel>Ref Pos</ng-template>
-        <div class="step-wrapper">
-          <div class="step-content">
-            <p>
-              The reference position is the position where the identification processes are performed.
-              It should be set to allow large amplitudes for j5 and j6.<br>
-              <b>Note:</b> The value of J4 must be 0.
-            </p>
-            <mat-form-field class="input-normal" *ngFor="let p of selectedPayload.refPos; let i=index;">
-              <input matInput placeholder="J{{i+1}}" [(ngModel)]="selectedPayload.refPos[i].value" (change)="onRefPosChange()">
-            </mat-form-field>
-          </div>
-        </div>
-      </mat-step>
-      <mat-step>
-        <ng-template matStepLabel>Mass</ng-template>
-        <div class="step-wrapper">
-          <div class="step-content">
-            <mat-form-field class="input-large">
-              <input matInput placeholder="Payload Mass" [(ngModel)]="selectedPayload.mass" (change)="onMassChange()">
-              <span matSuffix>[Kg]</span>
-            </mat-form-field>
-          </div>
-        </div>
-      </mat-step>
-      <mat-step>
-        <ng-template matStepLabel>J5</ng-template>
-        <div class="step-wrapper">
-          <div class="step-content">
-            <h2>J5</h2>
-            <div class="inline">
-              <mat-form-field class="input-normal">
-                <input matInput placeholder="J5 Max" [(ngModel)]="selectedPayload.j5_max" (change)="onMaxPosChange(5)">
-                <span matSuffix>[Deg]</span>
-              </mat-form-field>
-              <mat-form-field class="input-normal">
-                <input matInput placeholder="J5 Min" [(ngModel)]="selectedPayload.j5_min" (change)="onMinPosChange(5)">
-                <span matSuffix>[Deg]</span>
-              </mat-form-field>
-            </div>
-            <mat-form-field class="input-normal input-wide">
-              <input matInput placeholder="Identification Velocity" [(ngModel)]="selectedPayload.j5_ident_vel" (change)="onVelChange(5)">
-              <span matSuffix>%</span>
-            </mat-form-field>
-            <mat-form-field class="input-normal input-wide">
-              <input matInput placeholder="Identification Time" [(ngModel)]="selectedPayload.j5_ident_time" (change)="onTimeChange(5)">
-              <span matSuffix>[Sec]</span>
-            </mat-form-field>
-            <button type="button" (click)="ident(5)" mat-raised-button color="primary" class="input-wide" style="margin-top: 16px;">START IDENTIFICATION</button>
-            <button type="button" mat-raised-button color="primary" class="input-wide" style="margin-top: 16px;"><mat-icon>save</mat-icon> SET PARAMETERS</button>
-          </div>
-          <div class="step-content" style="flex:3;">
-            <h3>Result:</h3>
-            <div class="result">Result goes here...</div>
-          </div>
-        </div>
-      </mat-step>
-      <mat-step>
-        <ng-template matStepLabel>J6</ng-template>
-        <div class="step-wrapper">
-          <div class="step-content">
-            <h2>J6</h2>
-            <div class="inline">
-              <mat-form-field class="input-normal">
-                <input matInput placeholder="J6 Max" [(ngModel)]="selectedPayload.j6_max" (change)="onMaxPosChange(6)">
-                <span matSuffix>[Deg]</span>
-              </mat-form-field>
-              <mat-form-field class="input-normal">
-                <input matInput placeholder="J6 Min" [(ngModel)]="selectedPayload.j5_min" (change)="onMinPosChange(6)">
-                <span matSuffix>[Deg]</span>
-              </mat-form-field>
-            </div>
-            <mat-form-field class="input-normal input-wide">
-              <input matInput placeholder="Identification Velocity" [(ngModel)]="selectedPayload.j6_ident_vel" (change)="onVelChange(6)">
-              <span matSuffix>%</span>
-            </mat-form-field>
-            <mat-form-field class="input-normal input-wide">
-              <input matInput placeholder="Identification Time"  [(ngModel)]="selectedPayload.j6_ident_time" (change)="onTimeChange(6)">
-              <span matSuffix>[Sec]</span>
-            </mat-form-field>
-            <button type="button" (click)="ident(6)" mat-raised-button color="primary" class="input-wide" style="margin-top: 16px;">START IDENTIFICATION</button>
-            <button type="button" mat-raised-button color="primary" class="input-wide" style="margin-top: 16px;"><mat-icon>save</mat-icon> SET PARAMETERS</button>
-          </div>
-          <div class="step-content" style="flex:3;">
-            <h3>Result:</h3>
-            <div class="result">Result goes here...</div>
-          </div>
-        </div>
-      </mat-step>
-      <mat-step>
-        <form>
-          <ng-template matStepLabel>Result</ng-template>
-          <div class="step-wrapper">
-            <div class="step-content">
-              <h3>Summary:</h3>
-              <div class="result">All results goes here...</div>
-              <button type="button" mat-raised-button color="primary" class="input-wide" style="margin-top: 16px;">LOAD TO ROBOT</button>
-            </div>
-          </div>
-        </form>
-      </mat-step>
-    </mat-horizontal-stepper>-->
   </div>
 </div>

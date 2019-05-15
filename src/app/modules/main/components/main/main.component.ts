@@ -84,6 +84,13 @@ export class MainComponent implements OnInit {
     private trn: TranslateService,
     public cmn: CommonService
   ) {
+    this.trn.onLangChange.subscribe(event=>{
+      this.refreshLang();
+    });
+    this.refreshLang();
+  }
+  
+  private refreshLang() {
     this.trn.get(['main.errJog','main.jogControlsToggle']).subscribe(words=>{
       this.words = words;
     });
@@ -128,6 +135,20 @@ export class MainComponent implements OnInit {
       if (!auth)
         this.router.navigateByUrl('/login');
     });
+    // IF NOT CONNECTED AFTER 2 seconds - redirect...
+    setTimeout(()=>{
+      if (!this.ws.connected)
+        this.router.navigateByUrl('/login');
+    },2000);
+    this._zone.runOutsideAngular(()=>{
+      document.onmousemove = e=> {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const x = e.pageX, y = e.pageY;
+        if (x<=0 || x >= w || y<=0 || y>=h)
+          this.mouseUp(null);
+      };
+    });
   }
   
   onWindowMoving(el: any) {
@@ -168,9 +189,12 @@ export class MainComponent implements OnInit {
   }
   
   mouseUp(e:MouseEvent) {
-    let target:any = e.target;
-    if (e.type === 'mouseout' && target.tagName !== 'TD')
+    let target:HTMLElement = e ? <HTMLElement>e.target : null;
+    if (target && e.type === 'mouseout' &&
+      (target.tagName !== 'TD' && target.tagName !== 'HTML')
+    ) {
       return;
+    }
     if (this.jogButtonPressed || this.stat.isMoving) {
       this.motionFlag = false;
       this.ws.send("?tp_jog(0)",true);

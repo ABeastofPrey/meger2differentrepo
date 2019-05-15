@@ -4,7 +4,7 @@
   </div>
   <div class="name-wrapper">
     <mat-form-field>
-      <input matInput placeholder="{{'projects.name'|translate}}" [(ngModel)]="fileName" maxlength="32">
+      <input matInput placeholder="{{'projects.name'|translate}}" [(ngModel)]="fileName" maxlength="32" virtualKeyboard ktype="text">
     </mat-form-field>
     <div class="center-vertical" style="color:red;">
       <mat-icon>warning</mat-icon>
