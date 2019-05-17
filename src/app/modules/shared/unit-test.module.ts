@@ -4,6 +4,7 @@ import { map, split, path, compose, converge, __, identity } from 'ramda';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
+import { CommonService } from '../core/services/common.service';
 
 declare const require: any;
 
@@ -45,7 +46,8 @@ export class TranslatePipeMock implements PipeTransform {
     exports: [TranslateModule, TranslatePipeMock],
     providers: [
         { provide: TranslateService, useClass: TranslateServiceStub },
-        { provide: TranslatePipe, useClass: TranslatePipeMock }
+        { provide: TranslatePipe, useClass: TranslatePipeMock },
+        CommonService
     ],
     schemas: [NO_ERRORS_SCHEMA],
     entryComponents: []
