@@ -622,7 +622,7 @@
       "idle": "闲置",
       "import": "导入",
       "jtl": "跳转到行",
-      "kill": "杀掉",
+      "kill": "杀掉&卸载",
       "lib": "Library库",
       "lib_create": "创建LIBRARY",
       "lib_name": "Library名",
@@ -663,7 +663,8 @@
       "stp_over": " 跳过",
       "undo": "撤销",
       "unload": "卸载",
-      "upload": "上传到softMC"
+      "upload": "上传到softMC",
+      "vrate": "项目速度"
     },
     "warning": "这会杀掉所有在运行的任务和library文件."
   },
@@ -834,6 +835,19 @@
   "string": "字符串",
   "strings": "字符串集",
   "success": "成功!",
+  "tabs": {
+    "configuration": "系统配置",
+    "dashboard": "运动看板",
+    "editor": "项目编辑器",
+    "help": "帮助",
+    "history": "错误历史",
+    "home": "主页",
+    "log": "日志",
+    "simulator": "3D 仿真器",
+    "task": "任务管理器",
+    "teach": "示教",
+    "tools": "softMC 工具"
+  },
   "tasks": {
     "display": "显示",
     "idle": "闲置任务",
