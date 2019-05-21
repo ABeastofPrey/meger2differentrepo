@@ -1,4 +1,4 @@
-<div class="wrapper mat-typography" #container id="container">
+<div class="wrapper mat-typography" #container id="container" [class.tablet-ui]="cmn.isTablet">
   <div [class.hidden]="!isRouterLoading" class="spinner mat-elevation-z6">
     <img src="assets/pics/{{env.platform.spinner}}">
   </div>
@@ -15,13 +15,14 @@
     </div>
     <mat-icon color="accent" *ngIf="ws.otherClients > 0" [matTooltip]="ws.otherClients + ' Other connections are active'">warning</mat-icon>
     <div class="mode-selector mat-elevation-z3" *ngIf="tpOnline && stat.mode && cmn.isTablet">
-      <mat-button-toggle-group [value]="stat.mode" (change)="stat.changeMode($event.value)" [disabled]="login.isViewer">
+      <mat-button-toggle-group [value]="stat.mode" (change)="stat.changeMode($event)" [disabled]="login.isViewer">
         <mat-button-toggle value="T1">T1</mat-button-toggle>
         <mat-button-toggle value="T2">T2</mat-button-toggle>
         <mat-button-toggle value="A">A</mat-button-toggle>
         <mat-button-toggle value="R">R</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
+    <mat-slide-toggle color="accent" [checked]="data.simulated" (click)="data.toggleSimulated($event)">{{'simulative'|translate}}</mat-slide-toggle>
     <button mat-mini-fab [disabled]="login.isViewer || !stat.onlineStatus.value" color="warn" [class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()" matTooltip="{{'enable'|translate}}/{{'disable'|translate}} {{data.selectedRobot}}">
       <mat-icon>power_settings_new</mat-icon>
     </button>
@@ -45,9 +46,9 @@
     </button>
   </mat-toolbar>
   <mat-progress-bar color="accent" mode="indeterminate" *ngIf="stat.systemErrorCode >= 0 && stat.systemErrorCode !== 1000"></mat-progress-bar>
-  <mat-sidenav-container class="mat-typography">
+  <mat-sidenav-container autosize class="mat-typography">
     <mat-sidenav #drawer [mode]="!cmn.isTablet && screenWidth >= 1024 ? 'side' : 'over'" [opened]="!cmn.isTablet && screenWidth >= 1024" class="mat-elevation-z6">
-      <main-menu [drawer]="drawer"></main-menu>
+      <main-menu [drawer]="drawer" [class.menu-small]="!screenManager.menuExpanded"></main-menu>
     </mat-sidenav>
     <mat-sidenav-content>
       <div style="flex: 1; display: flex; width: 100%;">

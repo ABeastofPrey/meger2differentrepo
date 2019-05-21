@@ -436,6 +436,7 @@ export class ProgramEditorService {
             if (this.status.statusCode === TASKSTATE_NOTLOADED) {
               this.statusChange.emit(this.status);
               this.backtrace = null;
+              this.errors = [];
               return;
             }
             if (this.stepMode || this.backtrace) {
@@ -456,23 +457,23 @@ export class ProgramEditorService {
                   this.backtrace = null;
                   this.status.programLine = bt.files[0].line;
                   this.statusChange.emit(this.status);
-                  if (this.status.statusCode === TASKSTATE_ERROR) {
-                    this.ws.query('?' + file + '.error').then((ret: MCQueryResponse)=>{
-                      const err = new ErrorFrame(ret.result);
-                      this.errors = [
-                        {
-                          number: this.status.programLine + 1,
-                          file: file,
-                          error: err.errMsg
-                        }
-                      ];
-                    });
-                  }
                 } else {
                   this.backtrace = bt;
                   this.statusChange.emit(this.status);
                   //this.setFile(bt.files[0].name, null, null, bt);
                 }
+                if (this.status.statusCode === TASKSTATE_ERROR) {
+                    this.ws.query('?' + file + '.error').then((ret: MCQueryResponse)=>{
+                      const err = new ErrorFrame(ret.result);
+                      this.errors = [
+                        {
+                          number: bt.files[0].name === file ? this.status.programLine + 1 : -1,
+                          file: bt.files[0].name,
+                          error: err.errMsg
+                        }
+                      ];
+                    });
+                  }
               });
             } else {
               this.statusChange.emit(this.status);

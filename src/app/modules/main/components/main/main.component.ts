@@ -1,8 +1,8 @@
-import { Component, OnInit, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import {NotificationService, LoginService, WatchService, DataService, TpStatService, CoordinatesService, ScreenManagerService, WebsocketService, ProjectManagerService} from '../../../core';
 import {Router, RouteConfigLoadStart, RouteConfigLoadEnd} from '@angular/router';
 import {JogSettingsDialogComponent} from '../../../../components/jog-settings-dialog/jog-settings-dialog.component';
-import {MatDialog, MatSidenav, MatSlideToggleChange} from '@angular/material';
+import {MatDialog, MatSidenav} from '@angular/material';
 import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {TourService} from 'ngx-tour-md-menu';
 import {environment} from '../../../../../environments/environment';
@@ -14,7 +14,7 @@ import {CommonService} from '../../../core/services/common.service';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css'],
+  styleUrls: ['./main.component.scss'],
   animations: [
     trigger('fade',[
       transition(':enter', [

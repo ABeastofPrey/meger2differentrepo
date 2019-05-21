@@ -82,9 +82,11 @@ program-editor-ace { flex: 1;}
 .error-line {
   line-height: 2;
   color: #880000;
-}
-.error-line:hover {
+  margin-left: 24px;
   font-weight: bold;
+}
+.error-line-selectable:hover {
+  text-decoration: underline;
   cursor: pointer;
 }
 .blocker {
@@ -94,7 +96,12 @@ program-editor-ace { flex: 1;}
   height: 100%;
   z-index: 10;
 }
-
+.backtrace {
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+  white-space: pre-wrap;
+  margin-top: 8px;
+}
 .tablet-ui {
   .toolbar mat-icon, .toolbar img {
     padding: 12px;

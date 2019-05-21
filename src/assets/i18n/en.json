@@ -9,10 +9,11 @@
   "Administrator": "Administrator",
   "advanced": "Advanced",
   "apps": {
+    "err_mcu": "Error: could not update MCU firmware",
     "firmware": "Update Firmware",
     "firmware_confirm": {
       "title": "Update softMC Firmware",
-      "msg": "softMC Will disconnect in the process. Please make sure you've saved all changes before proceeding.",
+      "msg": "softMC will disconnect during the process. Make sure you have saved all changes before proceeding.",
       "yes": "UPDATE FIRMWARE",
       "no": "CANCEL"
     },
@@ -20,7 +21,7 @@
     "reboot": "Reboot softMC",
     "reboot_confirm": {
       "title": "Reboot softMC?",
-      "msg": "softMC Will reboot. Please make sure you've saved all changes before proceeding.",
+      "msg": "softMC will reboot. Make sure you have saved all changes before proceeding.",
       "yes": "REBOOT",
       "no": "CANCEL"
     },
@@ -66,8 +67,8 @@
   },
   "calibrate": "Calibrate",
   "cartesian": "Cartesian",
-  "changeError": "An error occured, changes not saved",
-  "changeOK": "Changes Saved",
+  "changeError": "An error occurred, changes not saved",
+  "changeOK": "Changes saved",
   "checkbox_enable": "Allow selection",
   "clear_msgs": "Clear messages",
   "close": "Close",
@@ -91,12 +92,12 @@
     "move_sent": "MOTION COMMAND SENT",
     "new": {
       "err": "Dashboard already open",
-      "select": "select an axis or a group",
-      "subtitle": "Monitor, record and move groups & axes.",
+      "select": "Select an axis or a group",
+      "subtitle": "Monitor, record, and move groups and axes.",
       "title": "Add an Axis/Group Dashboard"
     },
     "new-param": {
-      "title": "Monitor a new Parameter"
+      "title": "Monitor a New Parameter"
     },
     "record": {
       "btnStart": "START RECORDING",
@@ -109,8 +110,8 @@
       }
     },
     "tooltip": {
-      "chart": "Show/Hide Chart window",
-      "csv": "Download Chart data as CSV",
+      "chart": "Show/Hide chart window",
+      "csv": "Download chart data as CSV",
       "external": "Show external graph"
     }
   },
@@ -118,7 +119,7 @@
     "del": "DELETE {{name}}",
     "delete": {
       "msg": "This cannot be undone.",
-      "title": "Delete variable {{name}}?",
+      "title": "Delete Variable {{name}}?",
       "title_multi": "Delete {{num}} variables?"
     }
   },
@@ -127,7 +128,7 @@
   "diagnostics": {
     "devices": "Devices State",
     "master": "Master State",
-    "no-data": "Data not available. Please load TP libraries and try again.",
+    "no-data": "Data not available. Load TP libraries and try again.",
     "title": "Diagnostics"
   },
   "dialogs": {
@@ -136,8 +137,8 @@
   "disable": "Disable",
   "disabled": "Disabled",
   "disconnect": {
-    "title": "CAN'T CONNECT TO THE CONTROLLER",
-    "msg": "Please check your network connection."
+    "title": "Cannot Connect to the Controller",
+    "msg": "Check your network connection."
   },
   "dismiss": "DISMISS",
   "domain": "Domain",
@@ -152,7 +153,8 @@
     "conn_mc": "Can't connect to softMC",
     "conn_ws": "Can't establish a websocket connection",
     "err": "Error",
-    "invalid_webserver": "Please use web server v{{ver}} (current is {{current}})"
+    "invalid_feature": "Invalid feature",
+    "invalid_webserver": "Use web server v{{ver}} (current is {{current}})"
   },
   "errorHistory": {
     "button": {
@@ -175,8 +177,8 @@
     "modified": "Last Modified",
     "name": "File Name",
     "no_file": "No File Selected",
-    "success_delete": "Success! All files were deleted.",
-    "success_upload": "Success: All Files were uploaded.",
+    "success_delete": "Success. All files were deleted.",
+    "success_upload": "Success. All files were uploaded.",
     "tree": "Controller Files",
     "upload": "UPLOAD TO MC..."
   },
@@ -241,14 +243,23 @@
     "activation": {
       "title": "Activation",
       "xpert": "KUKA Xpert",
-      "captchaPlaceholder": "Please input captcha",
-      "incorrectCaptchaTip": "Captcha is not correct!",
-      "lengthErr": "Please enter a captcha of length 6.",
+      "captchaPlaceholder": "Input captcha",
+      "incorrectCaptchaTip": "Captcha is incorrect.",
+      "lengthErr": "Captcha must be 6 characters",
       "requireErr": "Captcha is required"
     }
   },
   "hexadecimal": "Hexadecimal",
   "home": {
+    "addFeature": {
+      "add": "Add Feature",
+      "code": "License Code",
+      "desc": "Feature Description",
+      "installing": "Installing new feature",
+      "name": "Feature Name",
+      "success": "Feature was installed successfuly",
+      "title": "Add a New Feature"
+    },
     "axes_max": "Max. Axes",
     "axes_real": "Real Axes",
     "chart_ram": ["Used RAM","Free RAM"],
@@ -275,14 +286,14 @@
   },
   "topology": {
     "title": "Device Manager",
-    "errTip": "It seems that some device has been changed, please do reset all for CS+ in Task Manager.",
+    "errTip": "It seems a device has been changed. Reset all for CS+ in Task Manager.",
     "exTip": "Expand all",
     "colTip": "Collapse all"
   },
   "io": {
     "standardView": "Standard View",
     "hexadecimal": "Hexadecimal Values",
-    "invalidName": "Invalid name",
+    "invalidName": "Invalid Name",
     "addView": "Add View",
     "delView": "Del View",
     "addRow": "Add Row",
@@ -304,8 +315,8 @@
     "customView": "Custom View",
     "dialogTitle": "Are you sure?",
     "dialogMsg": "The selected custom view will be deleted permanently.",
-    "dialogYes": "yes",
-    "dialogNo": "Cancel",
+    "dialogYes": "DELETE",
+    "dialogNo": "CANCEL",
     "inputBit": "Input Bit",
     "inputByte": "Input Byte",
     "inputWord": "Input Word",
@@ -360,7 +371,7 @@
   "lang": {
     "cmn": "Chinese Mandarin",
     "en": "English",
-    "subtitle": "Set the language for the GUI & Library messages",
+    "subtitle": "Set the language for the GUI and library messages",
     "selected": "Selected Language"
   },
   "language": "Language",
@@ -383,7 +394,7 @@
     "no_robot": "No robot is selected",
     "tour": {
       "title": "Welcome!",
-      "msg": "Since this is your first time here, would you like a quick tour?",
+      "msg": "Since this is your first time using ControlStudio+, do you want a quick tour?",
       "yes": "YES, LET'S GO!",
       "no": "NO, THANKS"
     }
@@ -464,8 +475,8 @@
   "parameter": "Parameter",
   "parameters": "Parameters",
   "password": "Password",
-  "password_confirm": "Confirm Password",
-  "password_confirm_err": "Please confirm password",
+  "password_confirm": "Confirm password",
+  "password_confirm_err": "Confirm password",
   "password_err": "Wrong password",
   "paste": "Paste",
   "payloads": {
@@ -549,7 +560,7 @@
     "goHome": {
       "title": "Insert GoHome Command",
       "vCruisePh": "VCruise",
-      "numRange": "Please enter a number in"
+      "numRange": "Enter a number in"
     },
     "jump": {
       "title": "Insert Jump Command",
@@ -565,8 +576,8 @@
       "blendingPh": "Blending Percentage",
       "speedPh": "Speed",
       "accelerationPh": "Acceleration",
-      "numRange": "Please enter a number in",
-      "intRange": "Please enter an integer in",
+      "numRange": "Enter a number in",
+      "intRange": "Enter an integer in",
       "advanced": "Advanced"
     },
     "ptSource": {
@@ -586,7 +597,7 @@
     "name": "Project Name",
     "new": "New Project",
     "notification": {
-      "errMsg": "Errors found in the following lines (click to jump there):",
+      "errMsg": "Errors found in the following lines:",
       "none": "No compilation errors."
     },
     "open": "OPEN PROJECT",
@@ -605,7 +616,7 @@
       "dep": "Dependency",
       "dialog_conflict": {
         "title": "Settings Conflict Detected",
-        "msg": "Your project settings are different than the currently active settings. Which settings would you like to use?",
+        "msg": "The project settings are different from the currently active settings. Which settings do you want to use?",
         "yes": "CURRENT SETTINGS",
         "no": "PROJECT SETTINGS"
       },
@@ -635,11 +646,11 @@
       "new_lib": "New Library",
       "open": "Open",
       "overwrite_file": {
-        "title": "Overwrite existing file?",
+        "title": "Overwrite Existing File?",
         "msg": "File {{name}} already exists. Do you want to overwrite it?"
       },
       "overwrite_prj": {
-        "title": "Overwrite existing project?",
+        "title": "Overwrite Existing Project?",
         "msg": "Project {{name}} already exists. Do you want to overwrite it with the imported project?"
       },
       "prg": "Program",
@@ -670,23 +681,23 @@
   },
   "projectSettings": {
     "apps": {
-      "desc": "Choose which applications to run when the project starts",
+      "desc": "Choose the applications to run when the project starts",
       "en": "Enable App",
       "id": "Remote ID",
       "id_tooltip": "This ID can be used to start/pause/stop applications from remote I/O",
       "title": "Applications"
     },
     "arch": {
-      "desc": "Define parameters for Arch command",
+      "desc": "Define the parameters for Arch command",
       "title": "Arch Settings",
       "archCol": "Arch",
       "departZCol": "DepartZ",
       "approachZCol": "ApproachZ",
-      "positiveNumTip": "Please input positive number!",
+      "positiveNumTip": "Input a positive number!",
       "valChangedTip": "Value has been updated!"
     },
     "base": {
-      "desc": "Define your base's limits",
+      "desc": "Define the base limits",
       "title": "Base Limits"
     },
     "motion_frames": {
@@ -694,31 +705,31 @@
       "title": "Motion Frames"
     },
     "motion_params": {
-      "desc": "Select parameters for your motion commands",
+      "desc": "Select the parameters for motion commands",
       "title": "Motion Parameters"
     },
     "mt": {
-      "desc": "Define your machine tables's limits",
+      "desc": "Define the machine table limits",
       "title": "Machine Table Limits"
     },
     "pos": {
-      "desc": "Define your robot's position limits",
+      "desc": "Define the robot' position limits",
       "title": "Position Limits"
     },
     "tool": {
-      "desc": "Define your tool's limits",
+      "desc": "Define the tool limits",
       "title": "Tool Limits"
     },
     "world": {
-      "desc": "Define your world's limits",
+      "desc": "Define the world limits",
       "title": "World Limits"
     },
     "wp": {
-      "desc": "Define your work piece's limits",
+      "desc": "Define the work piece limits",
       "title": "Work Piece Limits"
     },
     "position_trigger": {
-      "desc": "Define parameters for Position Trigger",
+      "desc": "Define the parameters for Position Trigger",
       "title": "Position Trigger",
       "nameCol": "Name",
       "outputCol": "Output",
@@ -726,23 +737,23 @@
       "FromCol": "From",
       "valueCol": "Value",
       "deleteBtn": "DELETE SELECTED",
-      "positiveNumTip": "Please input nonnegative number!",
+      "positiveNumTip": "Input a non-negative number",
       "newPositionTrigger": {
         "namePlaceholder": "Name",
         "requireErr": "Name is required."
       }
     },
     "home_config": {
-      "desc": "Define parameters for Home Config",
+      "desc": "Define the parameters for Home Config",
       "title": "Home Config",
       "homePosition": "Home Position",
       "homeOrder": "Home Order",
-      "degree": "Values are in degree",
+      "degree": "Values are in degrees",
       "curPositionBtn": "Read Current Position",
       "stepOption": "Step",
       "savedTip": "Changes saved!",
-      "validNumTip": "Please enter a valid number.",
-      "numRange": "Please enter a valid number between"
+      "validNumTip": "Enter a valid number.",
+      "numRange": "Enter a valid number between"
     }
   },
   "projectTree": {
@@ -751,7 +762,7 @@
     "cnt": "Controller",
     "del_app_msg": "This operation cannot be undone, and will remove this application with all its data and libraries. Are you sure you wish to delete it?",
     "del_app_title": "Delete App {{name}}?",
-    "del_lib_msg": "This operation cannot be undone. Are you sure you wish to delete this library?",
+    "del_lib_msg": "This operation cannot be undone. Are you sure you want to delete this library?",
     "del_lib_title": "Delete Library {{name}}?",
     "dirty": "File has changed",
     "dirty_msg": "Do you want to save your changes to {{name}}?",
@@ -773,7 +784,7 @@
   "record": "Record",
   "restore": {
     "restoring": "Restoring system from file",
-    "success": "System restored successfuly!",
+    "success": "System restored successfully!",
     "home": "Home",
     "insert_chart":"Motion Dashboard",
     "insert_comment": "Program editor",
@@ -808,6 +819,7 @@
     "updating": "Updating Robot Configuration"
   },
   "select": "Select",
+  "simulative": "Simulative",
   "simulator": "3D Simulator",
   "simulator_screen": {
     "cube": "Cube",
@@ -820,7 +832,7 @@
   },
   "softMC_log": "softMC Log",
   "softMC User": "softMC User",
-  "standby": "Please stand by, this process may take a few minutes...",
+  "standby": "Stand by, this process may take a few minutes...",
   "stat": {
     "err_critical": {
       "title": "Critical Error",
@@ -828,7 +840,7 @@
     },
     "err_init": {
       "title": "System Initialization Error",
-      "msg": "Init error ({{result}}) - please contact support for help."
+      "msg": "Init error ({{result}}) - Contact support for help."
     }
   },
   "status": "Status",
@@ -881,8 +893,8 @@
     "delta": "delta",
     "calibrationSuccess": "Calibration Success.",
     "resultOutOfScope": "The determined calculation error exceeds the allowable limit 5mm.\nThe use of this tool data can lead to undesirable behaviour.",
-    "apply": "Apply",
-    "cancel": "Cancel"
+    "apply": "APPLY",
+    "cancel": "CANCEL"
   },
   "tools": "Tools",
   "tour": [
@@ -892,7 +904,7 @@
     },
     {
       "title": "Jog Controls",
-      "content": "This button shows/hides the JOG controls. This feature will be disabled while TP.LIB isn't loaded."
+      "content": "This button shows/hides the JOG controls. This feature is disabled when TP.LIB is not loaded."
     },
     {
       "title": "Watch Window",
@@ -900,42 +912,42 @@
     },
     {
       "title": "Message Log",
-      "content": "This button shows/hides the MESSAGE LOG window. Here you can see informative messages sent from the controller."
+      "content": "This button shows/hides the MESSAGE LOG window. This window displays messages sent from the controller."
     },
     {
       "title": "Message Log",
-      "content": "When you're at the home screen, messages will also appear here."
+      "content": "When you are in the Home screen, messages will also appear here."
     },
     {
       "title": "Terminal",
-      "content": "This is the terminal. You can use it to send MC-Basic commands to the controller."
+      "content": "Use the terminal to send MC-Basic commands to the controller."
     },
     {
       "title": "System Information",
-      "content": "System information is displayed at the bottom of ths home screen."
+      "content": "System information is displayed at the bottom of the Home screen."
     },
     {
       "title": "Motion Dashboard",
       "content": "Now, let's take a look at the Motion Dashboard screen."
     },
     {
-      "title": "Add a new Dashboard",
-      "content": "We can use this button to create a new Motion Dashboard window."
+      "title": "Add a New Dashboard",
+      "content": "Use this button to create a new Motion Dashboard window."
     },
     {
       "title": "Dashboard Window",
-      "content": "This is a motion dashboard window. You can create a window for each motion element in the system, and drag it around the screen."
+      "content": "This is a Motion Dashboard window. You can create a window for each motion element in the system, and drag it around the screen."
     },
     {
-      "title": "Enable/Disable the robot",
+      "title": "Enable/Disable the Robot",
       "content": "Use this toggle button to enable and disable the robot."
     },
     {
-      "title": "Moving the robot",
+      "title": "Moving the Robot",
       "content": "Use this panel to perform simple move commands."
     },
     {
-      "title": "Moving the robot",
+      "title": "Moving the Robot",
       "content": "Use this panel to perform simple move commands."
     },
     {
@@ -947,8 +959,8 @@
       "content": "Now, let's take a look at the Project Editor."
     },
     {
-      "title": "This is the project tree",
-      "content": "Here you can find all the programs, libraries and configuration files for your project."
+      "title": "This is the Project Tree",
+      "content": "The Project Tree contains all the programs, libraries and configuration files for your project."
     },
     {
       "title": "Toolbar",
@@ -969,7 +981,7 @@
       "err": "INVALID REQUEST"
     },
     "err": "Error: User already exists or invalid parameters sent",
-    "err_username_reserved": "Reserved username, please choose another one",
+    "err_username_reserved": "Reserved username. Choose another one.",
     "full": "Full Name",
     "new": "New User",
     "permission": "Permission",

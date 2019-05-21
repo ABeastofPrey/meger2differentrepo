@@ -21,6 +21,10 @@ mat-toolbar span {
   height: 100%;
 }
 mat-toolbar button, mat-toolbar > mat-icon { margin-right: 16px; }
+mat-toolbar mat-slide-toggle {
+  margin-right: 16px;
+  font-size: 16px;
+}
 mat-sidenav-container {
   -webkit-box-flex: 1;
   -ms-flex: 1;
@@ -157,8 +161,18 @@ coordinates {
 }
 main-menu {
   height: 100%;
-  width: 100%;
+  width: 265px;
   position: relative;
   display: block;
   overflow: hidden;
+  background-color: #FAFAFA;
+  transition: width 200ms ease-out, background-color .5s ease-out;
+}
+main-menu.menu-small {
+  width: 60px;
+}
+.tablet-ui {
+  .img-logo {
+    height: 16px;
+  }
 }

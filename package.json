@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve -o --host=0.0.0.0 --base-href=/rs/",
     "build": "ng build --prod",
     "test": "ng test --code-coverage",
     "lint": "ng lint",

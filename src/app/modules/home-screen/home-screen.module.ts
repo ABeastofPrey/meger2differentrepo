@@ -5,6 +5,7 @@ import {TerminalComponent} from './components/terminal/terminal.component';
 import {TerminalService} from './services/terminal.service';
 import {SharedModule} from '../shared/shared.module';
 import {HomeScreenRoutingModule} from './home-screen-routing.module';
+import { AddFeatureDialogComponent } from './components/add-feature-dialog/add-feature-dialog.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,10 @@ import {HomeScreenRoutingModule} from './home-screen-routing.module';
   declarations: [
     HomeScreenComponent,
     TerminalComponent,
+    AddFeatureDialogComponent,
+  ],
+  entryComponents: [
+    AddFeatureDialogComponent
   ],
   providers: [TerminalService],
   exports: [

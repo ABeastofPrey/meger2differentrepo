@@ -29,11 +29,11 @@ export const Platforms = {
 export const environment = {
   production: false,
   appName: 'ControlStudio+',
-  api_url: 'http://10.4.20.42:1207',
-  ip: '10.4.20.42',
+  api_url: 'http://10.4.20.31:1207',
+  ip: '10.4.20.31',
   tp_ver: '1.3.1.0',
-  gui_ver: '1.1.1',
-  compatible_webserver_ver: '3.1.2',
+  gui_ver: '1.1.2',
+  compatible_webserver_ver: '3.1.3',
   platform: Platforms.Kuka,
   platforms: Platforms
 };

@@ -61,55 +61,12 @@ html, body {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url('assets/fonts/material/MaterialIcons-Regular.eot'); /* For IE6-8 */
+  src: url('/assets/fonts/material/MaterialIcons-Regular.eot'); /* For IE6-8 */
   src: local('Material Icons'),
        local('MaterialIcons-Regular'),
-       url('assets/fonts/material/MaterialIcons-Regular.woff2') format('woff2'),
-       url('assets/fonts/material/MaterialIcons-Regular.woff') format('woff'),
-       url('assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url('assets/fonts/material/MaterialIcons-Regular.eot'); /* For IE6-8 */
-  src: local('Material Icons'),
-       local('MaterialIcons-Regular'),
-       url('assets/fonts/material/MaterialIcons-Regular.woff2') format('woff2'),
-       url('assets/fonts/material/MaterialIcons-Regular.woff') format('woff'),
-       url('assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'open-sans';
-  font-style: normal;
-  font-weight: 100;
-  src: url('assets/fonts/google/OpenSans-Light.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'open-sans';
-  font-style: normal;
-  font-weight: 300;
-  src: url('assets/fonts/google/OpenSans-Regular.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'open-sans';
-  font-style: normal;
-  font-weight: 400;
-  src: url('assets/fonts/google/OpenSans-SemiBold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'open-sans';
-  font-style: normal;
-  font-weight: 600;
-  src: url('assets/fonts/google/OpenSans-Bold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'open-sans';
-  font-style: normal;
-  font-weight: 800;
-  src: url('assets/fonts/google/OpenSans-ExtraBold.ttf') format('truetype');
+       url('/assets/fonts/material/MaterialIcons-Regular.woff2') format('woff2'),
+       url('/assets/fonts/material/MaterialIcons-Regular.woff') format('woff'),
+       url('/assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
 }
 
 .material-icons {

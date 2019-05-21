@@ -64,10 +64,10 @@ export class McFileTreeComponent implements OnInit {
         this.nestedTreeControl.expandAll();
         if (this.isRefreshing) {
           this.isRefreshing = false;
-          setTimeout(()=>{
-            this.searchInput.nativeElement.focus();
-          },0);
         }
+        setTimeout(()=>{
+          (<HTMLElement> document.activeElement).blur();
+        },0);
       }
     });
   }
@@ -104,7 +104,7 @@ export class McFileTreeComponent implements OnInit {
     this.lastSearchTimeout = setTimeout(()=>{
       if (curr === this.filterByString) // not changed for 500 ms
         this.filterData();
-    },400);
+    },1500);
   }
   
   private refreshFiles() {
@@ -123,7 +123,6 @@ export class McFileTreeComponent implements OnInit {
       this.nestedDataSource._data.next(this.unfilteredDataSource);
       this.nestedTreeControl.expand(parent);
       this.isRefreshing = false;
-      console.log(data);
     });
   }
   
@@ -142,6 +141,8 @@ export class McFileTreeComponent implements OnInit {
       this.nestedDataSource.data = this.unfilteredDataSource;
       this.nestedTreeControl.dataNodes = this.unfilteredDataSource;
       this.nestedTreeControl.collapseAll();
+      // expand SSMC
+      this.nestedTreeControl.expand(this.nestedDataSource.data[1]);
       this.isRefreshing = false;
       return;
     }
@@ -262,7 +263,6 @@ export class McFileTreeComponent implements OnInit {
     setTimeout(()=>{
       this.service.dragEnd.emit();
     },200);
-    console.log(n);
     this.service.setFile(n.name, n.parent ? n.parent.decodedPath : '', null);
   }
   

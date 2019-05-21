@@ -45,11 +45,20 @@
             <app-payload-wizard *ngIf="service.mode === 'payloads'" style="flex: 1; display: flex;"></app-payload-wizard>
             <io-mapping *ngIf="service.mode === 'io'" style="flex: 1; display: flex;"></io-mapping>
           </as-split-area>
-          <as-split-area size="20" *ngIf="service.mode === 'editor'">
+          <as-split-area size="20" *ngIf="service.mode === 'editor'" style="padding: 8px;">
             <div *ngIf="service.errors.length > 0">{{'projects.notification.errMsg'|translate}}</div>
-            <div class="error-line" *ngFor="let e of service.errors" (click)="service.skipToLine(e.number)">{{e.number+':\t'+e.error}}</div>
+            <div 
+          *ngFor="let e of service.errors"
+              class="center-vertical error-line"
+              (click)="e.number === -1 ? null : service.skipToLine(e.number)"
+              [class.error-line-selectable]="e.number !== -1">
+              <mat-icon style="margin-right: 8px;">bug_report</mat-icon>
+              <span *ngIf="e.number !== -1">Line {{e.number+':'}}&nbsp;&nbsp;</span>
+              <span *ngIf="e.number === -1">Task {{e.file+':'}}&nbsp;&nbsp;</span>
+              {{e.error}}
+            </div>
             <div *ngIf="service.errors.length === 0 && !service.backtrace">{{'projects.notification.none'|translate}}</div>
-            <div *ngIf="service.backtrace" style="white-space: pre-wrap;">{{service.backtrace.str}}</div>
+            <div *ngIf="service.backtrace" class="backtrace">{{service.backtrace.str}}</div>
           </as-split-area>
         </as-split>
       </as-split-area>

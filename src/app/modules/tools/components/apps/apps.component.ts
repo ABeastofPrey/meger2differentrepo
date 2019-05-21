@@ -8,6 +8,7 @@ import {WebsocketService} from '../../../../modules/core/services/websocket.serv
 import {UpdateDialogComponent} from '../../../../components/update-dialog/update-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
 import {UtilsService} from '../../../core/services/utils.service';
+import {MCQueryResponse} from '../../../core';
 
 @Component({
   selector: 'apps',
@@ -75,6 +76,32 @@ export class AppsComponent implements OnInit {
   }
   
   onUploadFilesChange(e:any) {
+    const file: File = e.target.files[0];
+    if (file && file.name.toUpperCase() === 'MCU_FW.ZIP') {
+      let dialog = this.dialog.open(UpdateDialogComponent,{
+        disableClose: true,
+        width: '100%',
+        height: '100%',
+        maxWidth: '100%',
+        closeOnNavigation: false,
+        data: this.words['updating'],
+        id: 'update'
+      });
+      this.api.uploadIPK(file).then((ret: UploadResult)=>{
+          e.target.value = null;
+          if (ret.success) {
+            // TODO: PUT THE FUNCTION HERE
+            this.ws.query('?UTL_UPDATE_MCU_FW').then((ret:MCQueryResponse)=>{
+              if (ret.result !== '0') {
+                this.snack.open(this.words['err_mcu'],'',{duration: 1500});
+              }
+              dialog.close();
+            });
+          } else
+            dialog.close();
+      });
+      return;
+    }
     let ref = this.dialog.open(YesNoDialogComponent,{
       width: '400px',
       data: this.words['firmware_confirm']

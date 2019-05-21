@@ -5,9 +5,13 @@ import {ApiService} from '../../../../modules/core/services/api.service';
 import {GroupManagerService} from '../../../../modules/core/services/group-manager.service';
 import {Subscription} from 'rxjs';
 import {trigger, transition, style, animate} from '@angular/animations';
-import {ScreenManagerService, WebsocketService} from '../../../core';
+import {ScreenManagerService, WebsocketService, MCQueryResponse} from '../../../core';
 import {TranslateService} from '@ngx-translate/core';
 import {UtilsService} from '../../../core/services/utils.service';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {AddFeatureDialogComponent} from '../add-feature-dialog/add-feature-dialog.component';
+import {Feature} from '../../models/feature.model';
+import {UpdateDialogComponent} from '../../../../components/update-dialog/update-dialog.component';
 
 declare var Plotly;
 
@@ -65,7 +69,9 @@ export class HomeScreenComponent implements OnInit {
     private api : ApiService,
     private screenMngr: ScreenManagerService,
     private trn: TranslateService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private dialog: MatDialog,
+    private snack: MatSnackBar
   ) {
     
   }
@@ -159,7 +165,11 @@ export class HomeScreenComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.trn.get(['home.chart_ram', 'home.chart_space']).subscribe(words=>{
+    const wordsArr = [
+      'home.chart_ram','home.chart_space','home.addFeature',
+      'error.invalid_feature', 'dismiss'
+    ];
+    this.trn.get(wordsArr).subscribe(words=>{
       this.words = words;
       this.notification.newMessage.subscribe(()=>{
         const objDiv = this.msgContainer.nativeElement;
@@ -204,6 +214,50 @@ export class HomeScreenComponent implements OnInit {
   clear() {
     this.notification.clear();
     this.contextMenuShown = false;
+  }
+  
+  addFeature() {
+    this.dialog.open(AddFeatureDialogComponent).afterClosed()
+    .subscribe((ret:Feature)=>{
+      if (ret) {
+        const importCmd: string = 
+          'import_c lic_man_add_feature(byval as string) as long';
+        this.ws.query(importCmd).then(()=>{
+          const cmd = '?lic_man_add_feature("' + ret.toString() + '")';
+          this.ws.query(cmd).then((ret:MCQueryResponse)=>{
+            if (ret.result === '0') {
+              this.dialog.open(UpdateDialogComponent,{
+                disableClose: true,
+                width: '100%',
+                height: '100%',
+                maxWidth: '100%',
+                closeOnNavigation: false,
+                data: this.words['home.addFeature']['installing'],
+                id: 'update'
+              });
+              this.ws.updateFirmwareMode = true;
+              this.ws.query('?user sys_reboot(0,0,0)');
+              setTimeout(()=>{
+                let ok = false;
+                let interval = setInterval(()=>{
+                  if (ok)
+                    return;
+                  this.api.getFile("isWebServerAlive.HTML").then(ret=>{
+                    ok = true;
+                    clearInterval(interval);
+                    location.href = location.href + '?from=feature';
+                  }).catch(err=>{
+
+                  });
+                },2000);
+              },10000);
+            } else {
+              this.snack.open(this.words['error.invalid_feature'],this.words['dismiss']);
+            }
+          });
+        });
+      }
+    });
   }
 
 }

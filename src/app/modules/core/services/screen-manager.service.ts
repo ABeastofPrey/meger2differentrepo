@@ -15,6 +15,19 @@ export class ScreenManagerService {
   
   private tpOnline: boolean = false;
   private words: any;
+  private _menuExpanded: boolean = false;
+  
+  get menuExpanded() : boolean {
+    return this._menuExpanded;
+  }
+  
+  toggleMenu() {
+    this.controlsAnimating.emit(true);
+    this._menuExpanded = !this._menuExpanded;
+    setTimeout(()=>{
+      this.controlsAnimating.emit(false);
+    },300);
+  }
   
   private _screens : ControlStudioScreen[] = [
     {icon: 'home', name:'home', permission: 99, url: ''},
@@ -97,7 +110,7 @@ export class ScreenManagerService {
     private trn: TranslateService,
     private cmn: CommonService
   ){
-    this.trn.get(['restore.success']).subscribe(words=>{
+    this.trn.get(['restore.success','home.addFeature.success']).subscribe(words=>{
       this.words = words;
     });
     const fromPath = this.router.parseUrl(this.router.url).queryParamMap.get('from');
@@ -108,10 +121,13 @@ export class ScreenManagerService {
           msg = 'Firmware update was done succesfully!';
           break;
         case 'robot':
-          msg = 'Robot configuration was changed succesfully!'
+          msg = 'Robot configuration was changed succesfully!';
           break;
         case 'restore':
-          msg = this.words['restore.success']
+          msg = this.words['restore.success'];
+          break;
+        case 'feature':
+          msg = this.words['home.addFeature.success'];
           break;
       }
       this.dialog.open(SuccessDialogComponent,{

@@ -1,10 +1,9 @@
-import { Injectable, ApplicationRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {TeachService} from './teach.service';
 import {TPVariable} from '../../core/models/tp/tp-variable.model';
 import {TPVariableType} from '../../core/models/tp/tp-variable-type.model';
-import {TpType} from '../../core/models/tp/tp-type.model';
 import {TpStatService} from './tp-stat.service';
 import {Pallet} from '../models/pallet.model';
 import {Payload} from '../models/payload.model';
@@ -12,7 +11,7 @@ import {IoModule} from '../models/io/io-module.model';
 import {LoginService} from './login.service';
 import {CommonService} from './common.service';
 
-declare var Blockly:any;
+//declare var Blockly:any;
 
 const DOMAIN_FRAMES = ['BASE','TOOL','MACHINETABLE','WORKPIECE'];
 
@@ -25,6 +24,19 @@ export class DataService {
   get varRefreshInProgress() { return this._varRefreshInProgress; }
   
   public dataRefreshed : BehaviorSubject <boolean> = new BehaviorSubject <boolean>(false);
+  
+  // System
+  private _simulated: boolean;
+  get simulated() { return this._simulated; }
+  toggleSimulated(e: any) {
+    e.preventDefault();
+    const newVal = this._simulated ? 0 : 1;
+    const cmd = '?tp_set_simulated_axes(' + newVal + ')';
+    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+      if (ret.result === '0')
+        this._simulated = newVal === 1;
+    });
+  }
   
   // Robots
   private _robots: string[] = [];
@@ -411,6 +423,7 @@ export class DataService {
       queries.push(this.ws.query('?PAY_VER'));
       queries.push(this.ws.query('?IOMAP_VER'));
       queries.push(this.ws.query('?MCU_VER'));
+      queries.push(this.ws.query('?TP_GET_SIMULATED_AXES'));
       
       return Promise.all(queries).then((result: MCQueryResponse[])=>{
         
@@ -438,6 +451,7 @@ export class DataService {
         this._payloadLibVer = result[7].err ? null : result[7].result;
         this._iomapVer = result[8].err ? null : result[8].result;
         this._mcuVer = result[9].err ? null : result[9].result;
+        this._simulated = result[10].result === '1';
         
         return this.refreshMachineTables()
           .then(()=>{return this.refreshWorkPieces();})

@@ -54,6 +54,8 @@ terminal {
   font-weight: 400;
   color: white;
   font-size: 1.25em;
+  min-height: 56px;
+  box-sizing: border-box;
 }
 .title-1 { background: linear-gradient(60deg, #26c6da, #00acc1); }
 .title-2 { background: linear-gradient(60deg, #66bb6a, #43a047); }
@@ -102,3 +104,4 @@ mat-card-content {
   overflow-x: hidden;
   margin: 0 -16px 0 -16px
 }
+.feature-add { color: #fff; }

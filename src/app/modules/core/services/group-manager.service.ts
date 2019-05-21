@@ -111,4 +111,5 @@ export interface SysInfo {
   platform : string;
   maxAxes : number;
   freeRamSpace : number;
+  hash: string;
 }

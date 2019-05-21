@@ -18,7 +18,7 @@
   display: flex;
 }
 .disabled .ace_editor {
-  background: rgba(0,0,0,0.088)!important;
+  background: #eee!important;
 }
 ::ng-deep .disabled .ace_active-line {
   background: transparent!important;

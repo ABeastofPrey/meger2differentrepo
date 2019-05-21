@@ -1,5 +1,5 @@
 import { Injectable, NgZone, ApplicationRef, EventEmitter } from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog, MatSnackBar, MatButtonToggleChange, MatButtonToggle} from '@angular/material';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {ErrorDialogComponent} from '../../../components/error-dialog/error-dialog.component';
 import {BehaviorSubject} from 'rxjs';
@@ -75,37 +75,28 @@ export class TpStatService {
    * IF THE USER USES A TABLET, AND CHANGES THE MODE (T1,T2...) SO FIRST HE
    * WILL BE PROMPT TO ENTER HIS PASSWORD AGAIN.
    */
-  changeMode(mode: string) {
-    const currMode = this._switch;
-    if (this.cmn.isTablet) {
-      this.zone.run(()=>{
-        // MAKE THE BUTTON REMAIN THE SAME IF THE PASSWORD WASN'T CHANEGD
-        this._switch = null;
-        setTimeout(()=>{
-          this._switch = currMode;
-        },0);
-        this.dialog.open(AuthPassDialogComponent,{
-          minWidth: '400px'
-        }).afterClosed()
-        .subscribe((pass:string)=>{
-          if (pass) {
-            const username = this.login.getCurrentUser().user.username;
-            this.api.confirmPass(username,pass).then(ret=>{
-              if (ret) {
-                this.mode = mode;
-              } else {
-                this.snack.open(
-                  this.words['password_err'],
-                  this.words['acknowledge']
-                );
-              }
-            });
-          }
-        });
+  changeMode(e: MatButtonToggleChange) {
+    this.zone.run(()=>{
+      e.source.buttonToggleGroup.value = this._switch;
+      this.dialog.open(AuthPassDialogComponent,{
+        minWidth: '400px'
+      }).afterClosed()
+      .subscribe((pass:string)=>{
+        if (pass) {
+          const username = this.login.getCurrentUser().user.username;
+          this.api.confirmPass(username,pass).then(ret=>{
+            if (ret) {
+              this.mode = e.value;
+            } else {
+              this.snack.open(
+                this.words['password_err'],
+                this.words['acknowledge']
+              );
+            }
+          });
+        }
       });
-    } else {
-      this.mode = mode;
-    }
+    });
   }
   
   get mode() : string {return this._switch; }

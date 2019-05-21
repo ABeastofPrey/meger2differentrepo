@@ -301,11 +301,11 @@ export class TerminalComponent implements OnInit {
   ngOnInit() {
   }
   
-  @HostListener('document:keydown.enter')
-  onEnterPress() {
-    this.send();
-    this.editor.focus();
-  }
+  /*@HostListener('document:keydown.enter')
+    onEnterPress() {
+      this.send();
+      this.editor.focus();
+    }*/
   
   /*************** Virtual Keyboard **********************/
   @ViewChild(MatInput) dummyInput : MatInput;

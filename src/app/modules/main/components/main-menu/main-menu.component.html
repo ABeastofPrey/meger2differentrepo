@@ -1,5 +1,5 @@
 <div class="wrapper" *ngIf="login.getCurrentUser().user">
-  <div class="header">
+  <div class="header" *ngIf="mgr.menuExpanded">
     <div class="center-vertical">
       <div class="profile-pic" (click)="showUploadWindow()" [class.clickable]="login.getCurrentUser().user.username!=='admin'">
         <img [src]="profileSrc">
@@ -8,20 +8,30 @@
         <div class="name primary">{{'hello'|translate}}, {{login.fName}}!</div>
         <div class="mat-body-1 permission">{{login.permission}}</div>
       </div>
+      <button *ngIf="mgr.menuExpanded" mat-icon-button color="primary" (click)="mgr.toggleMenu()">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
     </div>
   </div>
-  <ul class="list mat-subtitle-color mobile-scrollbar">
+  <ul class="list mat-subtitle-color mobile-scrollbar" [class.short-menu]="!mgr.menuExpanded">
+    <li class="screen" *ngIf="!mgr.menuExpanded">
+      <button mat-icon-button color="primary" (click)="mgr.toggleMenu()">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </li>
     <li class="screen"
     *ngFor="let s of mgr.screens"
       [tourAnchor]="'screen-'+s.name"
       (click)="onClick(s)"
+      matTooltip="{{('tabs.' + s.name)|translate}}"
+      [matTooltipDisabled] = "mgr.menuExpanded"
       [ngClass]="{
         'primary': mgr.screen === s,
         'selected':mgr.screen === s,
         'disabled':(s.requiresTpLib && !tpOnline) || (s.autoModeOnly && stat.mode !== 'A')
       }">
-      <mat-icon class="mat-primary">{{s.icon}}</mat-icon>
-      <span>{{('tabs.' + s.name)|translate}}</span>
+      <mat-icon>{{s.icon}}</mat-icon>
+      <span *ngIf="mgr.menuExpanded">{{('tabs.' + s.name)|translate}}</span>
     </li>
   </ul>
 </div>

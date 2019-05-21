@@ -37,7 +37,7 @@ $mat-kuka: (
 
 $material-kuka-primary: mat-palette($mat-kuka, 500, 400, 800); // colors most widely used across all screens and components.
 $material-kuka-accent:  mat-palette($mat-amber, A200, A100, A400); // colors used for the floating action button and interactive elements.
-$material-kuka-warn:    mat-palette($mat-red, A400); // colors used to convey error state.
+$material-kuka-warn:    mat-palette($mat-red, A700); // colors used to convey error state.
 
 $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $material-kuka-warn);
 
@@ -54,6 +54,7 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
    *
    */
   mat-sidenav-container mat-sidenav {
+    main-menu li:hover:not(.disabled),
     li.selected:not(.disabled) {
       color: mat-color($material-kuka-primary);
     }

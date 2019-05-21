@@ -21,11 +21,19 @@ export class ErrorFrame {
     this.errMsg = errString.substr(0,i);
     errString = errString.substr(i+2);
     var parts = errString.split(",");
-    if (parts.length !== 4)
+    if (parts.length < 3)
       return;
     i = parts[0].indexOf("\"");
     this.errTask = parts[0].substr(parts[0].indexOf(":")+1).trim();
-    this.errLine = parts[2].substr(parts[2].indexOf(":")+1).trim();
-    this.errModule = parts[3].substr(parts[3].indexOf(":")+1).trim();
+    i = parts[1].indexOf(':');
+    if (i > 0) {
+      this.errLine = parts[1].substr(i+1).trim();
+      this.errModule = parts[2].substr(parts[2].indexOf(":")+1).trim();
+    } else {
+      this.errTask += ',' + parts[1];
+      i = parts[2].indexOf(':');
+      this.errLine = parts[2].substr(i+1).trim();
+      this.errModule = parts[3].substr(parts[3].indexOf(":")+1).trim();
+    }
   }
 }
