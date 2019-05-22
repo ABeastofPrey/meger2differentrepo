@@ -92,6 +92,6 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
   }
 
   private validator(currentValue: string): boolean {
-    return (isNaN(Number(currentValue)) || Number(currentValue) < 0) ? false : true;
+    return ( (currentValue === '') || isNaN(Number(currentValue)) || Number(currentValue) < 0) ? false : true;
   }
 }
