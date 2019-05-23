@@ -80,12 +80,16 @@ export class TaskMngrComponent implements OnInit {
   isSelected(index) : boolean {
     return this.selected.includes(index);
   }
-  
-  run() { this.task.run(this.selected); }
-  kill() { this.task.kill(this.selected); }
-  idle() { this.task.idle(this.selected); }
+  private get filtersAsArr() {
+    return [
+      this.filterPrograms, this.filterLibs, this.filterGlobalLibs 
+    ];
+  }
+  run() { this.task.run(this.selected,this.filtersAsArr); }
+  kill() { this.task.kill(this.selected,this.filtersAsArr); }
+  idle() { this.task.idle(this.selected,this.filtersAsArr); }
   unload() { 
-    this.task.unload(this.selected);
+    this.task.unload(this.selected,this.filtersAsArr);
     this.selected = [];
   }
   resetAll() {

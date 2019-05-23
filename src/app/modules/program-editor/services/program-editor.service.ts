@@ -444,11 +444,11 @@ export class ProgramEditorService {
                 this.backtrace = bt;
                 /*if (bt.files[0].name !== this.displayedFile) {
                         this.setFile(bt.files[0].name, null, null, bt);
-                      }
-                      if (this.backtrace && this.status) {
-                        this.status.programLine = this.status.sourceLine;
-                        this.statusChange.emit(this.status);
                       }*/
+                if (this.backtrace && this.status) {
+                  this.status.programLine = this.status.sourceLine;
+                  this.statusChange.emit(this.status);
+                }
                 this.stepMode = false;
               });
             } else if (this.status.statusCode === TASKSTATE_ERROR || this.status.statusCode === TASKSTATE_STOPPED) {

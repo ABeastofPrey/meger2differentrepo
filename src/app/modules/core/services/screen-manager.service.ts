@@ -15,7 +15,7 @@ export class ScreenManagerService {
   
   private tpOnline: boolean = false;
   private words: any;
-  private _menuExpanded: boolean = false;
+  private _menuExpanded: boolean = true;
   
   get menuExpanded() : boolean {
     return this._menuExpanded;

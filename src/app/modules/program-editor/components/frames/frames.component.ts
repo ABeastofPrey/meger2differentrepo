@@ -269,7 +269,7 @@ export class FramesComponent implements OnInit {
         if (ret) {
           let queries : Promise<any>[] = [];
           for (let v of this.selection.selected)
-            queries.push(this.ws.query('?TP_DELETEVAR("' + v.name + '")'));
+            queries.push(this.ws.query('?TP_REMOVE_FRAME("'+v.name+'")'));
           Promise.all(queries).then(()=>{
             this.selectedVar = null;
             var dataQueries = [

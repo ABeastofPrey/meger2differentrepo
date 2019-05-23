@@ -67,7 +67,7 @@ export class PalletWizardComponent implements OnInit {
     private trn: TranslateService
   ) {
     this.trn.get([
-      'error.err','dismiss','button.save','button.discard'
+      'dismiss','button.save','button.discard'
     ]).subscribe(words=>{
         this.words = words;  
     });
@@ -240,8 +240,6 @@ export class PalletWizardComponent implements OnInit {
           this.dataService.selectedPallet.origin = 
             this.parseLocation(ret.result);
         });
-      } else {
-        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }
@@ -258,8 +256,6 @@ export class PalletWizardComponent implements OnInit {
           this.dataService.selectedPallet.posX = 
             this.parseLocation(ret.result);
         });
-      } else {
-        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }
@@ -276,8 +272,6 @@ export class PalletWizardComponent implements OnInit {
           this.dataService.selectedPallet.posY = 
             this.parseLocation(ret.result);
         });
-      } else {
-        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }
@@ -289,15 +283,11 @@ export class PalletWizardComponent implements OnInit {
       '?PLT_TEACH_ENTRY_POSITION("' + pallet.name + '",' + robot + ')'
     ).then((ret: MCQueryResponse)=>{
       if (ret.result === '0') {
-        console.log(ret);
         this.ws.query('?PLT_GET_ENTRY_POSITION("' + pallet.name + '")')
         .then((ret: MCQueryResponse)=>{
-          console.log(ret);
           this.dataService.selectedPallet.entry = 
             this.parseLocation(ret.result);
         });
-      } else {
-        this.snack.open(this.words['error.err'],'',{duration:2000});
       }
     });
   }

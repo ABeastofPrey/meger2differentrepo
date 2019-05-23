@@ -2,6 +2,7 @@ import { Injectable, ApplicationRef } from '@angular/core';
 import {WebsocketService, MCQueryResponse} from './websocket.service';
 import {ErrorFrame} from '../models/error-frame.model';
 import {TpStatService} from './tp-stat.service';
+import {TaskFilterPipe} from '../../task-manager/task-filter.pipe';
 
 @Injectable()
 export class TaskService {
@@ -16,6 +17,7 @@ export class TaskService {
   constructor(
     private ws : WebsocketService,
     private ref : ApplicationRef,
+    private filter: TaskFilterPipe,
     private stat: TpStatService) {
     this.stat.onlineStatus.subscribe(stat=>{
       if (!this.ws.connected) {
@@ -95,9 +97,10 @@ export class TaskService {
     this.interval = null;
   }
   
-  run(indexes:number[]) {
+  run(indexes:number[], filters: boolean[]) {
+    const filtered: MCTask[] = this.filter.transform(this.tasks,filters);
     for (let i of indexes) {
-      let task = this.tasks[i];
+      let task = filtered[i];
       if (task.priority === null)
         continue;
       this.ws.query('KillTask ' + task.name).then(()=>{
@@ -106,27 +109,30 @@ export class TaskService {
     }
   }
   
-  kill(indexes:number[]) {
+  kill(indexes:number[], filters: boolean[]) {
+    const filtered: MCTask[] = this.filter.transform(this.tasks,filters);
     for (let i of indexes) {
-      let task = this.tasks[i];
+      const task = filtered[i];
       if (task.priority == null)
         continue;
       this.ws.query('KillTask ' + task.name);
     }
   }
   
-  idle(indexes:number[]) {
+  idle(indexes:number[],filters: boolean[]) {
+    const filtered: MCTask[] = this.filter.transform(this.tasks,filters);
     for (let i of indexes) {
-      let task = this.tasks[i];
+      let task = filtered[i];
       if (task.priority == null)
         continue;
       this.ws.query('IdleTask ' + task.name);
     }
   }
   
-  unload(indexes:number[]) {
+  unload(indexes:number[], filters: boolean[]) {
+    const filtered: MCTask[] = this.filter.transform(this.tasks,filters);
     for (let i of indexes) {
-      let task = this.tasks[i];
+      let task = filtered[i];
       const promise = (task.priority == null) ?
           Promise.resolve(null) : this.ws.query('KillTask ' + task.name);
       promise.then(()=>{

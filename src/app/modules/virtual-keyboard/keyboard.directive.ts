@@ -41,6 +41,7 @@ export class KeyboardDirective {
     this._dialogOpen = true;
     // SHOW KEYBOARD DIALOG
     this.ref = this.dialog.open(KeyboardDialog, {
+      autoFocus: false,
       data: {
         el: this.el.nativeElement,
         ngModel: this.ngModel,

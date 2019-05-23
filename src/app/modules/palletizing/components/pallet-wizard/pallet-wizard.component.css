@@ -91,7 +91,7 @@ h2, h3 {
 }
 
 .direction-picker {
-  background-image: url('/assets/pics/pallet/xy.png');
+  background-image: url('../../../../../assets/pics/pallet/xy.png');
   width: 200px;
   height: 140px;
   background-repeat: no-repeat;

@@ -9,6 +9,7 @@ import {UserMngrComponent} from './components/user-manager/user-mngr/user-mngr.c
 import {AboutComponent} from './components/about/about.component';
 import { TopologyComponent } from './components/topology/topology.component';
 import {PermissionGuardService as PermissionGuard}from './permission-guard.service';
+import {ThirdPartyComponent} from './components/third-party/third-party.component';
 
 const routes: Routes = [
   {
@@ -69,6 +70,14 @@ const routes: Routes = [
       {
         path: 'users',
         component: UserMngrComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 99
+        }
+      },
+      {
+        path: '3rd-party',
+        component: ThirdPartyComponent,
         canActivate: [PermissionGuard],
         data: {
           permission: 99

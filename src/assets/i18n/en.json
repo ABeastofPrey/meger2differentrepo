@@ -378,6 +378,11 @@
   "lbn": {
     "err_timeout": "Error: Timeout Reached"
   },
+  "legal": {
+    "terms": "Terms Of Use",
+    "title": "Legal",
+    "thirdParty": "Third Party Open-Source Libraries"
+  },
   "loading": "Loading...",
   "location": "Location",
   "locations": "Locations",

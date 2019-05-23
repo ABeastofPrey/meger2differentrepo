@@ -25,6 +25,8 @@ import {TranslateModule} from '@ngx-translate/core';
 import {KeyboardDirective, KeyboardDialog} from '../virtual-keyboard/keyboard.directive';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import {IoSelectorDialogComponent} from '../../components/io-selector-dialog/io-selector-dialog.component';
+import {HAMMER_GESTURE_CONFIG} from '@angular/platform-browser';
+import {ControlStudioGestureConfig} from './cs-gesture-config';
 
 @NgModule({
   imports: [
@@ -95,6 +97,12 @@ import {IoSelectorDialogComponent} from '../../components/io-selector-dialog/io-
     IoSelectorDialogComponent,
     KeyboardDialog
   ],
-  schemas:[NO_ERRORS_SCHEMA]
+  schemas:[NO_ERRORS_SCHEMA],
+  providers: [
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: ControlStudioGestureConfig
+    }
+  ]
 })
 export class SharedModule { }

@@ -1,0 +1,27 @@
+.wrapper {
+  padding: 16px;
+  flex: 1;
+  background: #eee;
+  overflow: auto;
+}
+.license {
+  white-space: pre-line;
+  font-size: 12px;
+  line-height: 20px;
+  font-family: monospace;
+}
+.header {
+  padding: 12px 24px;
+  border-radius: px;
+  z-index: 2;
+  position: relative;
+  font-weight: bold;
+  font-size: 16px;
+}
+.content {
+  margin-bottom: 16px;
+}
+:host {
+  flex: 1;
+  display: flex;
+}

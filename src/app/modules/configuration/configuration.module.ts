@@ -18,6 +18,7 @@ import { AboutComponent } from './components/about/about.component';
 import { TopologyComponent } from './components/topology/topology.component';
 import { TopologyService } from './services/topology.service';
 import {PermissionGuardService} from './permission-guard.service';
+import { ThirdPartyComponent } from './components/third-party/third-party.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import {PermissionGuardService} from './permission-guard.service';
     RobotSelectionComponent,
     IoButtonComponent,
     AboutComponent,
-    TopologyComponent
+    TopologyComponent,
+    ThirdPartyComponent
   ],
   providers: [
     IoService,

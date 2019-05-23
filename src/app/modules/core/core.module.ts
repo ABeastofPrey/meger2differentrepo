@@ -22,6 +22,7 @@ import {UtilsService} from './services/utils.service';
 import {LangService} from './services/lang.service';
 import {KeywordService} from './services/keywords.service';
 import {CommonService} from './services/common.service';
+import {TaskFilterPipe} from '../task-manager/task-filter.pipe';
 
 @NgModule({
   imports: [
@@ -48,7 +49,8 @@ import {CommonService} from './services/common.service';
     UtilsService,
     LangService,
     KeywordService,
-    CommonService
+    CommonService,
+    TaskFilterPipe
   ]
 })
 export class CoreModule { }
