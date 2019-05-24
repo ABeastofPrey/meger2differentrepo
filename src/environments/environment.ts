@@ -33,7 +33,7 @@ export const environment = {
   ip: '10.4.20.31',
   tp_ver: '1.3.1.0',
   gui_ver: '1.1.2',
-  compatible_webserver_ver: '3.1.3',
+  compatible_webserver_ver: '3.1.2',
   platform: Platforms.Kuka,
   platforms: Platforms
 };

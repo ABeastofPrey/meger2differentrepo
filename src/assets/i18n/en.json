@@ -286,7 +286,7 @@
   },
   "topology": {
     "title": "Device Manager",
-    "errTip": "It seems a device has been changed. Reset all for CS+ in Task Manager.",
+    "errTip": "It seems that some devices have been changed, please do reset all operation of CS+ in Task Manager.",
     "exTip": "Expand all",
     "colTip": "Collapse all"
   },
