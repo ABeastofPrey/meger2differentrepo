@@ -122,9 +122,10 @@
         <mat-checkbox color="primary" [(ngModel)]="hex" (change)="onViewSelectionChange('all')">{{'io.hexadecimal'|translate}}</mat-checkbox>
       </div>
     </mat-tab>
-    <mat-tab *ngFor="let tab of tabs; let index = index" class="content">
+    <mat-tab *ngFor="let tab of tabs; let index = index" class="content" #myTab>
       <ng-template mat-tab-label>
-        <input matInput placeholder="" [(ngModel)]="customViewFormControl[index].value" (keydown)="tabLabelChange($event)"
+        <input *ngIf="!myTab.isActive" matInput [(ngModel)]="customViewFormControl[index].value"/>
+        <input *ngIf="myTab.isActive" matInput placeholder="" [(ngModel)]="customViewFormControl[index].value" (keydown)="tabLabelChange($event)"
           [formControl]="customViewFormControl[index]" (change)="tabLabelNameChange(index, customViewFormControl[index].value)"
               virtualKeyboard ktype="text" (onKeyboardClose)="tabLabelNameChange(index, customViewFormControl[index].value)" required>
         <mat-error *ngIf="customViewFormControl[index].hasError('required')">
