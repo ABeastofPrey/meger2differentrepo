@@ -85,7 +85,7 @@
         <div class="center-vertical title title-2">
           <mat-icon>touch_app</mat-icon>
           <span style="flex:1;">{{'home.features'|translate}}</span>
-          <button mat-icon-button class="feature-add" *ngIf="login.isAdmin" (click)="addFeature()"><mat-icon>add</mat-icon></button>
+          <!--<button mat-icon-button class="feature-add" *ngIf="login.isAdmin" (click)="addFeature()"><mat-icon>add</mat-icon></button>-->
         </div>
         <mat-card-content class="mat-subtitle-color">
           <div class="feature-line center-vertical" *ngFor="let f of groupManager.sysInfo.features">
