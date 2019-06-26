@@ -38,6 +38,7 @@
               <program-editor-ace></program-editor-ace>
             </div>
             <data-screen *ngIf="service.mode === 'data'" style="overflow: auto; flex: 1;"></data-screen>
+            <data-screen *ngIf="service.mode === pPoints" [useAsProjectPoints]="true" style="overflow: auto; flex: 1;"></data-screen>
             <program-settings *ngIf="service.mode === 'settings'" style="overflow: auto; flex: 1;"></program-settings>
             <frames *ngIf="service.mode === 'frames'" style="overflow: auto; flex: 1;"></frames>
             <pallet-screen *ngIf="service.mode === 'pallets'" style="flex: 1; display: flex;"></pallet-screen>

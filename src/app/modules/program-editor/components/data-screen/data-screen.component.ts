@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import {MatTableDataSource, MatSort, MatSnackBar, MatDialog} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
 import {TPVariable} from '../../../core/models/tp/tp-variable.model';
@@ -17,6 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class DataScreenComponent implements OnInit {
   
   @ViewChild(MatSort) sort: MatSort;
+  @Input() useAsProjectPoints: boolean = false;
   
   selectedVar: TPVariable = null;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
@@ -89,6 +90,9 @@ export class DataScreenComponent implements OnInit {
     if (this.selectedVar.isArr)
       fullname += '[' + this.selectedVar.selectedIndex + ']';
     let cmd_teach = '?tp_teach("' + fullname + '","' + this.selectedVar.typeStr + '")';
+    if (this.useAsProjectPoints) {
+      cmd_teach = '?tp_teach_project_points("' + fullname + '","' + this.selectedVar.typeStr + '")';
+    }
     this.ws.query(cmd_teach).then((ret:MCQueryResponse)=>{
       if (ret.result === '0') {
         this.rowClick(this.selectedVar,true); // REFRESH SELECTED VAR DATA
@@ -103,16 +107,22 @@ export class DataScreenComponent implements OnInit {
       return;
     }
     let data = [];
-    if (this._showJoints)
-      data = data.concat(this.data.joints);
-    if (this._showLocations)
-      data = data.concat(this.data.locations);
-    if (this._showLongs)
-      data = data.concat(this.data.longs);
-    if (this._showDoubles)
-      data = data.concat(this.data.doubles);
-    if (this._showStrings)
-      data = data.concat(this.data.strings);
+    if (this.useAsProjectPoints) {
+      if (this._showJoints) {
+        data = data.concat(this.data.pJoints);
+      }
+    } else {
+      if (this._showJoints)
+        data = data.concat(this.data.joints);
+      if (this._showLocations)
+        data = data.concat(this.data.locations);
+      if (this._showLongs)
+        data = data.concat(this.data.longs);
+      if (this._showDoubles)
+        data = data.concat(this.data.doubles);
+      if (this._showStrings)
+        data = data.concat(this.data.strings);
+    }
     this.dataSource.data = data;
     this.selection.clear();
   }
@@ -158,7 +168,8 @@ export class DataScreenComponent implements OnInit {
     let fullname = this.selectedVar.name;
     if (this.selectedVar.isArr)
       fullname += '[' + this.selectedVar.selectedIndex + ']';
-    this.ws.query('?tp_get_value_namespace("' + fullname + '")')
+    const api = this.useAsProjectPoints ? `?tp_get_project_value_namespace("${fullname}")` : '?tp_get_value_namespace("' + fullname + '")';
+    this.ws.query(api)
     .then((ret:MCQueryResponse)=>{
       if (ret.err) {
         this._varRefreshing = false;
@@ -194,7 +205,11 @@ export class DataScreenComponent implements OnInit {
   }
   
   showAddDialog() {
-    this.dialog.open(AddVarComponent);
+    this.dialog.open(AddVarComponent, {
+      data: {
+        useAsProjectPoints: this.useAsProjectPoints
+      }
+    });
   }
   
   onDomainChange() {
@@ -215,6 +230,9 @@ export class DataScreenComponent implements OnInit {
       }).afterClosed().subscribe(ret=>{
         if (ret) {
           let cmd = '?TP_DELETEVAR("' + this.selectedVar.name + '")';
+          if (this.useAsProjectPoints) {
+            cmd = '?TP_DELETE_Project_points("' + this.selectedVar.name + '")';
+          }
           this.ws.query(cmd).then((ret: MCQueryResponse)=>{
             if (ret.result === '0') {
               this.selectedVar = null;
@@ -247,8 +265,13 @@ export class DataScreenComponent implements OnInit {
       }).afterClosed().subscribe(ret=>{
         if (ret) {
           let queries : Promise<any>[] = [];
-          for (let v of this.selection.selected)
-            queries.push(this.ws.query('?TP_DELETEVAR("' + v.name + '")'));
+          for (let v of this.selection.selected) {
+            let cmd = '?TP_DELETEVAR("' + v.name + '")';
+            if (this.useAsProjectPoints) {
+              cmd = '?TP_DELETE_project_points("' + v.name + '")';
+            }
+            queries.push(this.ws.query(cmd));
+          }
           Promise.all(queries).then(()=>{
             this.selectedVar = null;
             this.snackBar.open(this.words['success'],'',{duration:2000});
@@ -275,7 +298,10 @@ export class DataScreenComponent implements OnInit {
       if (i<this._value.length-1)
         value += ',';
     }
-    const cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
+    let cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
+    if (this.useAsProjectPoints) {
+      cmd = '?TP_EDIT_project_points("' + fullname + '","' + value + '")';
+    }
     this.ws.query(cmd).then((ret: MCQueryResponse)=>{
       this.rowClick(this.selectedVar,true); // REFRESH DATA
       if (ret.result === '0')

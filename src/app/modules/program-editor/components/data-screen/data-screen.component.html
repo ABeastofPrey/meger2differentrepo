@@ -2,10 +2,10 @@
   <button mat-fab color="primary" class="fixed-top-right mat-elevation-z5" [ngClass]="{'real-device':!data.isEmulator}" (click)="showAddDialog()"><mat-icon>add</mat-icon></button>
   <mat-card class="data-filter mat-elevation-z3">
     <mat-checkbox color="primary" [(ngModel)]="showJoints" [disabled]="!data.isRobotType">{{'joints'|translate}}</mat-checkbox>
-    <mat-checkbox color="primary" [(ngModel)]="showLocations" [disabled]="!data.isRobotType">{{'locations'|translate}}</mat-checkbox>
-    <mat-checkbox color="primary" [(ngModel)]="showLongs">{{'longs'|translate}}</mat-checkbox>
-    <mat-checkbox color="primary" [(ngModel)]="showDoubles">{{'doubles'|translate}}</mat-checkbox>
-    <mat-checkbox color="primary" [(ngModel)]="showStrings">{{'strings'|translate}}</mat-checkbox>
+    <mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showLocations" [disabled]="!data.isRobotType">{{'locations'|translate}}</mat-checkbox>
+    <mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showLongs">{{'longs'|translate}}</mat-checkbox>
+    <mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showDoubles">{{'doubles'|translate}}</mat-checkbox>
+    <mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showStrings">{{'strings'|translate}}</mat-checkbox>
   </mat-card>
   <mat-table #table [dataSource]="dataSource" matSort class="data-table mat-elevation-z3" [style.background-color]="data.varRefreshInProgress ? '#ebebeb' : '#fff'">
     <ng-container matColumnDef="select">

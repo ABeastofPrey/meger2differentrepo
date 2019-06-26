@@ -16,12 +16,14 @@ import {SingleInputDialogComponent} from '../../../../components/single-input-di
 import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
 import {CommonService} from '../../../core/services/common.service';
 
+export const projectPoints = 'pPoints';
+
 const leafTypes = [
-  'File','Data','Library','Macros','Settings','Errors','Dependency','Frames',
+  'File','Data','Library','Macros','Settings', projectPoints, 'Errors','Dependency','Frames',
   'Pallets','Grippers','Vision','Conveyor','IO','Payloads'
 ];
 const disableWhenProjectActive = [
- 'DATA','MACROS','SETTINGS','ERRORS','FRAMES','PALLETS','GRIPPERS','PAYLOADS'
+ 'DATA','MACROS','SETTINGS','ERRORS','FRAMES','PALLETS','GRIPPERS','PAYLOADS', projectPoints.toUpperCase()
 ];
 
 @Component({
@@ -43,6 +45,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   menuTop: string = '0';
   
   public env = environment;
+  public projectPoints = projectPoints;
   
   private _getChildren = (node: TreeNode) => {return observableOf(node.children); };
   private subscriptions: Subscription[] = [];
@@ -191,6 +194,10 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     }
     if (n.type === 'Settings') {
       this.service.mode = 'settings';
+      return;
+    }
+    if (n.type === projectPoints) {
+      this.service.mode = projectPoints;
       return;
     }
     if (n.type === 'Frames') {
@@ -416,6 +423,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     }
     let macros = new TreeNode('', 'Macros', p.name,null);
     let settings = new TreeNode('', 'Settings', p.name,null);
+    let pPoints = new TreeNode('', projectPoints, p.name,null);
     let errors = new TreeNode('', 'Errors', p.name,null);
     let frames = new TreeNode('', 'Frames', p.name,null);
     let pallets = new TreeNode('', 'Pallets', p.name,null);
@@ -428,6 +436,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     data.push(deps);
     if (!this.login.isOperator && !this.login.isViewer) {
       data.push(settings);
+      data.push(pPoints);
       data.push(frames);
       data.push(pallets);
     }

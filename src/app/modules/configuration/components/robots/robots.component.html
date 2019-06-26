@@ -30,7 +30,7 @@
     </div>
     <div *ngIf="robot.selectedRobot === null">{{'na'|translate}}</div>
   </mat-card>
-  <mat-card *ngIf="robot.selectedRobot && stat.onlineStatus.value" @fade style="min-height: 200px;">
+  <mat-card *ngIf="robot.selectedRobot && stat.onlineStatus.value" style="min-height: 200px;">
     <h2>{{'robots.params'|translate}}</h2>
     <mat-tab-group animationDuration="0ms" backgroundColor="primary" color="accent">
       <mat-tab label="{{'robots.disp'|translate}}">
@@ -45,6 +45,11 @@
               <mat-icon>gps_fixed</mat-icon><span style="margin-left: 8px;">{{'robots.btnSetCurrent'|translate}}</span>
             </button>
           </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="{{'robots.reference.title'|translate}}" #refMasteringTab>
+        <div *ngIf="refMasteringTab.isActive" class="container">
+          <app-reference-mastering></app-reference-mastering>
         </div>
       </mat-tab>
       <mat-tab label="DH">

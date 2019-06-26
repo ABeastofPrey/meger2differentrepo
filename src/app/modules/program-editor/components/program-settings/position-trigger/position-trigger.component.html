@@ -34,7 +34,9 @@
             <mat-cell *matCellDef="let element">
                 <mat-form-field>
                     <mat-select [(ngModel)]="element.selectedState" (selectionChange)="updatePls(element)">
-                        <mat-option *ngFor="let option of element.state" [value]="option">{{(option === 1) ? 'TRUE' : 'FALSE'}}</mat-option>
+                        <mat-option *ngFor="let option of element.state" [value]="option">
+                            {{(option === 1) ? ('projectSettings.position_trigger.stateColTrue'|translate) : ('projectSettings.position_trigger.stateColFalse'|translate)}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
             </mat-cell>
@@ -45,7 +47,9 @@
             <mat-cell *matCellDef="let element">
                 <mat-form-field>
                     <mat-select [(ngModel)]="element.selectedFrom" (selectionChange)="updatePls(element)">
-                        <mat-option *ngFor="let option of element.from" [value]="option">{{(option === 0) ? 'START' : 'END'}}</mat-option>
+                        <mat-option *ngFor="let option of element.from" [value]="option">
+                            {{(option === 0) ? ('projectSettings.position_trigger.fromColStart'|translate) : ('projectSettings.position_trigger.fromColEnd'|translate)}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
             </mat-cell>

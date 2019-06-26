@@ -113,7 +113,8 @@
               "src/app/modules/tp/**/*.ts",
               "src/app/modules/virtual-keyboard/**/*.ts",
               "src/app/modules/program-editor/services/*.ts",
-              "src/app/modules/help/components/activation/activation.service.ts"
+              "src/app/modules/help/components/activation/activation.service.ts",
+              "src/app/modules/configuration/services/reference-mastering.service.ts"
             ],
             "scripts": [
               "src/assets/scripts/plotly-latest.min.js",

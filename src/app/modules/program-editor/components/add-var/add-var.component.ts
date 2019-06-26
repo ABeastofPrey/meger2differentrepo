@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatDialogRef, MatSnackBar, MatInput} from '@angular/material';
+import { Component, OnInit, Inject } from '@angular/core';
+import {MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
 import {FOUR_AXES_LOCATION, SIX_AXES_LOCATION} from '../../../core/models/tp/location-format.model';
 import {DataService, WebsocketService, CoordinatesService, MCQueryResponse} from '../../../core';
 import {TranslateService} from '@ngx-translate/core';
@@ -27,8 +27,12 @@ export class AddVarComponent implements OnInit {
     private ws : WebsocketService,
     public coos : CoordinatesService,
     private snackbar : MatSnackBar,
-    private trn: TranslateService
-  ) { 
+    private trn: TranslateService,
+    @Inject(MAT_DIALOG_DATA) public para: any
+  ) {
+    if (this.para.useAsProjectPoints) {
+      this.varType = 'JOINT';
+    }
     if (this.data.domainIsFrame)
       this.varType = 'LOCATION';
     this.trn.get(['success']).subscribe(words=>{
@@ -65,6 +69,9 @@ export class AddVarComponent implements OnInit {
     }
     var cmd = '?TP_ADDVAR("' + name + '","' + this.varType + '","' +
               this.data.selectedRobot + '","' + value + '")';
+    if (this.para.useAsProjectPoints) {
+      cmd = '?TP_ADD_project_points("' + name + '","' + this.varType + '","' + this.data.selectedRobot + '","' + value + '")';
+    }
     this.ws.query(cmd).then((ret:MCQueryResponse)=>{
       if (ret.err || ret.result !== '0') {
         console.log(ret);

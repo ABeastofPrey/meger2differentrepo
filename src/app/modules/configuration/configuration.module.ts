@@ -19,6 +19,8 @@ import { TopologyComponent } from './components/topology/topology.component';
 import { TopologyService } from './services/topology.service';
 import {PermissionGuardService} from './permission-guard.service';
 import { ThirdPartyComponent } from './components/third-party/third-party.component';
+import { ReferenceMasteringComponent } from './components/reference-mastering/reference-mastering.component';
+import { ReferenceMasteringService } from './services/reference-mastering.service';
 
 @NgModule({
   imports: [
@@ -40,11 +42,13 @@ import { ThirdPartyComponent } from './components/third-party/third-party.compon
     IoButtonComponent,
     AboutComponent,
     TopologyComponent,
-    ThirdPartyComponent
+    ThirdPartyComponent,
+    ReferenceMasteringComponent
   ],
   providers: [
     IoService,
     TopologyService,
+    ReferenceMasteringService,
     PermissionGuardService
   ],
   entryComponents: [

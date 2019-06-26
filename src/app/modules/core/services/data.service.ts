@@ -248,16 +248,19 @@ export class DataService {
   
   // Variables
   private _joints: TPVariable[] = [];
+  private _pJoints: TPVariable[] = [];
   private _locations: TPVariable[] = [];
   private _longs: TPVariable[] = [];
   private _doubles: TPVariable[] = [];
   private _strings: TPVariable[] = [];
   get joints() : TPVariable[] {return this._joints; }
+  get pJoints(): TPVariable[] {return this._pJoints; }
   get locations() : TPVariable[] {return this._locations; }
   get longs() : TPVariable[] {return this._longs; }
   get doubles() : TPVariable[] {return this._doubles; }
   get strings() : TPVariable[] {return this._strings; }
   private addJoint(data : TPVariable) : void { this._joints.push(data); }
+  private addPJoint(data : TPVariable) : void { this._pJoints.push(data); }
   private addLocation(data : TPVariable) : void {this._locations.push(data);}
   private addLong(data : TPVariable) : void { this._longs.push(data);}
   private addDouble(data : TPVariable) : void { this._doubles.push(data);}
@@ -595,7 +598,8 @@ export class DataService {
       this.ws.query('?TP_get_locations("all")'),
       this.ws.query('?TP_GET_LONGS("")'),
       this.ws.query('?TP_GET_DOUBLES("")'),
-      this.ws.query('?TP_GET_STRINGS("")')
+      this.ws.query('?TP_GET_STRINGS("")'),
+      this.ws.query('?tp_get_project_joints("ALL")')
     ];
     return Promise.all(promises).then((result: MCQueryResponse[])=>{
       // ADD JOINTS
@@ -638,6 +642,14 @@ export class DataService {
           this.addString(new TPVariable(TPVariableType.STRING,name));
       });
       
+      // ADD Project joits
+      this._pJoints.length = 0;
+      var data = result[5].result.split(',');
+      data.forEach((name:string)=>{
+        if (name.length > 0)
+          this.addPJoint(new TPVariable(TPVariableType.JOINT,name));
+      });
+
       this._varRefreshInProgress = false;
       this.dataRefreshed.next(true);
     });

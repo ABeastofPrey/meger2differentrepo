@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ProgramEditorService, TASKSTATE_NOTLOADED, TASKSTATE_RUNNING, TASKSTATE_STOPPED, TASKSTATE_ERROR, TASKSTATE_READY, TASKSTATE_KILLED} from '../../services/program-editor.service';
 import {DataService, ProjectManagerService, LoginService} from '../../../core';
 import {CommonService} from '../../../core/services/common.service';
+import { projectPoints } from '../program-editor-side-menu/program-editor-side-menu.component';
 
 @Component({
   selector: 'program-editor',
@@ -9,6 +10,7 @@ import {CommonService} from '../../../core/services/common.service';
   styleUrls: ['./program-editor.component.scss']
 })
 export class ProgramEditorComponent implements OnInit {
+  public pPoints = projectPoints;
 
   constructor(
     public service : ProgramEditorService,

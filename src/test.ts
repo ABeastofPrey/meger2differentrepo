@@ -32,3 +32,6 @@ ioContext.keys().map(ioContext);
 
 const configurationServiceContext = require.context('./app/modules/configuration/services/', true, /\.spec\.ts$/);
 configurationServiceContext.keys().map(configurationServiceContext);
+
+const rmContext = require.context('./app/modules/configuration/components/reference-mastering/', true, /\.spec\.ts$/);
+rmContext.keys().map(rmContext);

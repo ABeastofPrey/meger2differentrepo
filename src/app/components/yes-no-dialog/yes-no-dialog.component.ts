@@ -20,7 +20,7 @@ export class YesNoDialogComponent implements OnInit {
   }
   
   no() {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 
 }
