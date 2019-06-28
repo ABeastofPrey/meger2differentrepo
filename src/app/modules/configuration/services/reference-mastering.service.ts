@@ -28,7 +28,7 @@ export class ReferenceMasteringService {
     }
 
     public async masterFinal([j1, j2, j3, j4]: (0|1)[]): Promise<any> {
-        const api = `MT_master_final(${this.robot}, ${j1}, ${j2}, 0, 0)`;
+        const api = `MT_master_final(${this.robot}, ${j1}, ${j2}, ${j3}, 0)`;
         const query = _api => this.ws.query(_api);
         const resHandler = handler(identity, errMsgProp);
         const _masterZero = compose(then(resHandler), query);

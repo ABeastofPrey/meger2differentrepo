@@ -864,7 +864,7 @@
       "emjsh": "Please ensure all the joints have been mastered by basic master.",
       "j20": "Jog to zero",
       "bmj": "Basic Master: Joint",
-      "bmjsh": "Please ensure the joint/joints to be mastered are roughly at zero pulse point",
+      "bmjsh": "Please ensure the joint/joints to be mastered are at zero pulse point",
       "bmjsh2": "Please jog the robot into the near point of the marked point.",
       "bmjsh3": "Please move the robot to the reference point by command",
       "pulsePosition": "pulse position of joint",
