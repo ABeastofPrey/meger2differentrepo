@@ -82,9 +82,12 @@ describe('ReferenceMasteringComponent', () => {
   it('should give the expectation result of canNotUse', () => {
     let canNotUse = component.canNotUse();
     expect(canNotUse).toBe(false);
-    component.stat.mode = 'T2';
+    component.stat.mode = 'T1';
     canNotUse = component.canNotUse();
     expect(canNotUse).toBe(false);
+    component.stat.mode = 'T2';
+    canNotUse = component.canNotUse();
+    expect(canNotUse).toBe(true);
     component.stat.mode = 'Auto';
     canNotUse = component.canNotUse();
     expect(canNotUse).toBe(true);
@@ -111,6 +114,7 @@ describe('ReferenceMasteringComponent', () => {
     component.masterZero();
     fixture.whenStable().then(() => {
       expect(masterZero.calls.any()).toBe(true);
+      masterZero.calls.reset();
     });
   }));
 
@@ -127,6 +131,7 @@ describe('ReferenceMasteringComponent', () => {
     component.masterFinal();
     fixture.whenStable().then(() => {
       expect(masterFinal.calls.any()).toBe(true);
+      masterFinal.calls.reset();
     });
   }));
 
@@ -143,6 +148,7 @@ describe('ReferenceMasteringComponent', () => {
     component.recordPoint();
     fixture.whenStable().then(() => {
       expect(recordPoint.calls.any()).toBe(true);
+      recordPoint.calls.reset();
     });
   }));
 
@@ -159,6 +165,7 @@ describe('ReferenceMasteringComponent', () => {
     component.masterLeftRight();
     fixture.whenStable().then(() => {
       expect(masterLeftRight.calls.any()).toBe(true);
+      masterLeftRight.calls.reset();
     });
   }));
 
@@ -245,43 +252,24 @@ describe('ReferenceMasteringComponent', () => {
     });
   }));
 
-  it('should call moveToRef api', async(() => {
+  it('should give expectation of moveToRef api', async(() => {
     jasmine.clock().install();
     component.moveToRef(true);
     fixture.whenStable().then(() => {
       expect(moveToRef.calls.any()).toBe(true);
-      jasmine.clock().tick(1000);
+      jasmine.clock().tick(500);
       expect(isMoveing.calls.any()).toBe(true);
-      jasmine.clock().uninstall();
-    });
-  }));
-
-  it('should call moveToRef api with failing moveToRef', async(() => {
-    moveToRef.calls.reset();
-
-    isMoveing.calls.reset();
-    moveToRef = fakeService.moveToRef.and.returnValue(Promise.resolve(Left('failed')));
-    component.moveToRef(true);
-    fixture.whenStable().then(() => {
-      expect(moveToRef.calls.any()).toBe(true);
+      isMoveing = fakeService.isMoveing.and.returnValue(Promise.resolve(Left('failed')));
+      component.moveToRef(true);
+      jasmine.clock().tick(500);
+      isMoveing.calls.reset();
       expect(isMoveing.calls.any()).toBe(false);
+      jasmine.clock().uninstall();
       moveToRef.calls.reset();
       isMoveing.calls.reset();
-    });
-  }));
-
-  it('should call moveToRef api', async(() => {
-    moveToRef.calls.reset();
-    isMoveing.calls.reset();
-    jasmine.clock().install();
-    moveToRef = fakeService.moveToRef.and.returnValue(Promise.resolve(Right('Success')));
-    isMoveing = fakeService.isMoveing.and.returnValue(Promise.resolve(Left('failed')));
-    component.moveToRef(true);
-    fixture.whenStable().then(() => {
-      expect(moveToRef.calls.any()).toBe(true);
-      jasmine.clock().tick(1000);
-      expect(isMoveing.calls.any()).toBe(true);
-      jasmine.clock().uninstall();
+      moveToRef = fakeService.moveToRef.and.returnValue(Promise.resolve(Left('failed')));
+      component.moveToRef(true);
+      expect(isMoveing.calls.any()).toBe(false);
     });
   }));
 
@@ -301,8 +289,12 @@ describe('ReferenceMasteringComponent', () => {
     });
   }));
 
-  it('should call destroy', () => {
-    component.ngOnDestroy();
-    expect(true).toBe(true);
-  });
+  it('should call destroy', async(() => {
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      component.stepper.selectedIndex = 1;
+      component.ngOnDestroy();
+      expect(true).toBe(true);
+    });
+  }));
 });

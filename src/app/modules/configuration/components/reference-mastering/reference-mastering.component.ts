@@ -76,8 +76,8 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     }
 
     public canNotUse(): boolean {
-        const isNotT1OrT2Mode = (this.stat.mode !== 'T1' && this.stat.mode !== 'T2');
-        const _canNotUse = isNotT1OrT2Mode ? true : false;
+        const isNotT1Mode = this.stat.mode !== 'T1';
+        const _canNotUse = isNotT1Mode ? true : false;
         return _canNotUse;
     }
 
