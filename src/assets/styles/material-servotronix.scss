@@ -43,7 +43,7 @@ $material-semi-black: rgba(0,0,0,0.54);
   .mat-subtitle-color {
     color: $material-semi-black;
   }
-  
+
   .mode-selector .mat-button-toggle-checked {
     background-color: mat-color($material-servotronix-accent);
     color: mat-color($material-servotronix-accent, default-contrast);
@@ -52,4 +52,20 @@ $material-semi-black: rgba(0,0,0,0.54);
   .home-config .home-position .read-btn:hover {
     color: mat-color($material-servotronix-primary);
   }
+
+  .custom-selected-row {
+    background-color: mat-color($material-servotronix-primary, 100);
+  }
+
+  .custom-button:hover {
+    color: mat-color($material-servotronix-primary, 100);
+  }
+
+  .highlighted { background-color: #B2DFDB!important; }
+
+  .data-table mat-row:hover { background-color: #E0F2F1; }
+
+  .selected:not(.disabled) { background: #E0F2F1!important; }
+
+  .item { background: #004D40; }
 }

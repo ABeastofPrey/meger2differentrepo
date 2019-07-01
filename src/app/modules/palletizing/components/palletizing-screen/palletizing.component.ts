@@ -21,21 +21,24 @@ const servotronixColor2 = new Color(0, 78, 78);
 const borderSize = 5;
 const maxXYsize = 10;
 
+const kukaColor2 = new Color(229, 156, 96);
+const kukaColor = new Color(255, 115, 0);
+
 @Component({
   selector: 'pallet-screen',
   templateUrl: './palletizing.component.html',
   styleUrls: ['./palletizing.component.css']
 })
 export class PalletizingComponent implements OnInit {
-  
+
   @ViewChild('palletPreview') preview : ElementRef;
   @ViewChild('palletContainer') container : ElementRef;
-  
+
   private iso : any = null;
   private adjustedMaxSize : number;
   private scaleFactor : number = 1;
   private words: any;
-  
+
   abnormalItemCount : boolean = false;
   wizardMode: boolean = false;
 
@@ -53,12 +56,12 @@ export class PalletizingComponent implements OnInit {
   }
 
   ngOnInit() { }
-  
+
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.onWindowResize();
   }
-  
+
   onWindowResize() {
     if (this.container) {
       var element: any = this.container.nativeElement;
@@ -79,13 +82,13 @@ export class PalletizingComponent implements OnInit {
       this.drawPreview();
     }
   }
-  
+
   ngAfterViewInit() {
     setTimeout(()=>{
       this.onWindowResize();
     },200);
   }
-  
+
   private getPalletInfo() {
     let name = this.data.selectedPallet.name;
     let queries : Promise<any>[] = [
@@ -108,7 +111,7 @@ export class PalletizingComponent implements OnInit {
       this.data.selectedPallet.index = Number(ret[5].result);
     });
   }
-  
+
   addPallet() {
     let ref = this.dialog.open(AddPalletDialogComponent,{
       width: '400px'
@@ -132,16 +135,16 @@ export class PalletizingComponent implements OnInit {
       }
     });
   }
-  
+
   editPallet() {
     this.wizardMode = true;
   }
-  
+
   onWizardClose() {
     this.wizardMode = false;
     setTimeout(()=>{this.onWindowResize();},0);
   }
-  
+
   deletePallet() {
     this.trn.get('pallets.delete.title',{name:this.data.selectedPallet.name})
     .subscribe(word=>{
@@ -166,7 +169,7 @@ export class PalletizingComponent implements OnInit {
       });
     });
   }
-  
+
   drawPreview() {
     var canvas = this.preview.nativeElement;
     var ctx = canvas.getContext('2d');
@@ -177,11 +180,19 @@ export class PalletizingComponent implements OnInit {
     }
     this.iso = new Isomer(canvas);
     this.iso.add(data.floor,floor); // add floor
-    for (let item of data.items) {
-      this.iso.add(item.shape, (item.z%2===0) ? servotronixColor : servotronixColor2);
+    if (this.utils.IsKuka) {
+      for (let item of data.items) {
+        this.iso.add(item.shape, (item.z%2===0) ? kukaColor : kukaColor2);
+      }
+    }
+
+    if (!this.utils.IsKuka) {
+      for (let item of data.items) {
+        this.iso.add(item.shape, (item.z%2===0) ? servotronixColor : servotronixColor2);
+      }
     }
   }
-  
+
   private getItemsXYZ(itemX:number, itemY:number, itemZ: number ) {
     let result = [];
     let pallet = this.data.selectedPallet;
@@ -208,7 +219,7 @@ export class PalletizingComponent implements OnInit {
     }
     return result;
   }
-  
+
   private getItemsYXZ(itemX:number, itemY:number, itemZ: number ) {
     let result = [];
     let pallet = this.data.selectedPallet;
@@ -235,7 +246,7 @@ export class PalletizingComponent implements OnInit {
     }
     return result;
   }
-  
+
   private getItemsXZY(itemX:number, itemY:number, itemZ: number ) {
     let result = [];
     let pallet = this.data.selectedPallet;
@@ -246,7 +257,7 @@ export class PalletizingComponent implements OnInit {
         for (var j = max_y; j>=0; j--) {
           var x = i * itemX;
           var y = j * itemY;
-          var itemsSoFar = 
+          var itemsSoFar =
             j * pallet.items_z * pallet.items_x + z * pallet.items_x + i + 1;
           if (pallet.index >= itemsSoFar) {
             result.push({
@@ -262,7 +273,7 @@ export class PalletizingComponent implements OnInit {
     }
     return result;
   }
-  
+
   private getItemsYZX(itemX:number, itemY:number, itemZ: number ) {
     let result = [];
     let pallet = this.data.selectedPallet;
@@ -273,7 +284,7 @@ export class PalletizingComponent implements OnInit {
         for (var j = pallet.items_y-1; j>=0; j--) {
           var x = i * itemX;
           var y = j * itemY;
-          var itemsSoFar = 
+          var itemsSoFar =
             i * pallet.items_z * pallet.items_y + z * pallet.items_y + j + 1;
           if (pallet.index >= itemsSoFar) {
             result.push({
@@ -289,7 +300,7 @@ export class PalletizingComponent implements OnInit {
     }
     return result;
   }
-  
+
   private getItemsZYX(itemX:number, itemY:number, itemZ: number ) {
     let result = [];
     let pallet = this.data.selectedPallet;
@@ -300,7 +311,7 @@ export class PalletizingComponent implements OnInit {
         for (var j = pallet.items_y-1; j>=0; j--) {
           var x = i * itemX;
           var y = j * itemY;
-          var itemsSoFar = 
+          var itemsSoFar =
             i * pallet.items_z * pallet.items_y + j * pallet.items_z + z + 1;
           if (pallet.index >= itemsSoFar) {
             result.push({
@@ -316,7 +327,7 @@ export class PalletizingComponent implements OnInit {
     }
     return result;
   }
-  
+
   private getItemsZXY(itemX:number, itemY:number, itemZ: number ) {
     let result = [];
     let pallet = this.data.selectedPallet;
@@ -327,7 +338,7 @@ export class PalletizingComponent implements OnInit {
         for (var j = max_y; j>=0; j--) {
           var x = i * itemX;
           var y = j * itemY;
-          var itemsSoFar = 
+          var itemsSoFar =
             j * pallet.items_z * pallet.items_x + i * pallet.items_z + z + 1;
           if (pallet.index >= itemsSoFar) {
             result.push({
@@ -343,7 +354,7 @@ export class PalletizingComponent implements OnInit {
     }
     return result;
   }
-  
+
   scale(factor : number) {
     this.scaleFactor += factor;
     if (this.scaleFactor <= 0) {
@@ -352,14 +363,14 @@ export class PalletizingComponent implements OnInit {
     }
     this.drawPreview();
   }
-  
+
   onPalletChange() {
     this.getPalletInfo().then(()=>{
       this.scaleFactor = 1;
       this.drawPreview();
     });
   }
-  
+
   private getPalletDrawingData():any{
     var result = {
       floor: null,
@@ -382,7 +393,7 @@ export class PalletizingComponent implements OnInit {
       var itemX = pallet.item_size_x * mm;
       var itemY = pallet.item_size_y * mm;
       var itemZ = pallet.item_size_z * mm;
-      result.floor = sizeByX ? 
+      result.floor = sizeByX ?
           Shape.Prism(Point(0,0,0),this.adjustedMaxSize,this.adjustedMaxSize*y/x,this.adjustedMaxSize/10) :
           Shape.Prism(Point(0,0,0),this.adjustedMaxSize*x/y,this.adjustedMaxSize,this.adjustedMaxSize/10);
       switch (pallet.order) {

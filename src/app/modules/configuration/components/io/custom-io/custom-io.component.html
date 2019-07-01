@@ -62,7 +62,7 @@
         <mat-icon>add</mat-icon>{{'io.addRow'|translate}}
       </button>
 
-      <button mat-button class="mat-button-no-hover-background" [ngClass]="{'custom-del-button': isDeleteEnable,'custom-del-button-disable': !isDeleteEnable}"
+      <button mat-button class="custom-button mat-button-no-hover-background" [ngClass]="{'custom-del-button': isDeleteEnable,'custom-del-button-disable': !isDeleteEnable}"
         (click)="deleteRowInCustomTable()" [disabled]="!isDeleteEnable" disableRipple="true">
         <mat-icon>delete</mat-icon>{{'io.delRow'|translate}}
       </button>

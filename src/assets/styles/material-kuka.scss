@@ -2,6 +2,7 @@
 
 $base-Sunrise: #ff7300;
 $primary-Sunrise: #ff7300;
+$matted-Sunrise: #ffe6d9;
 
 $base-Connect: #ff5800;
 $primary-Connect: #ff5800;
@@ -23,6 +24,7 @@ $mat-kuka: (
     600: $primary-Sunrise,
     700: $base-KSS,
     800: $primary-KSS,
+    900: $matted-Sunrise,
     contrast: (
       100: $light-primary-text,
       200: $light-primary-text,
@@ -32,6 +34,7 @@ $mat-kuka: (
       600: $light-primary-text,
       700: $light-primary-text,
       800: $light-primary-text,
+      900: $light-primary-text,
     )
   );
 
@@ -99,7 +102,7 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
     background-color: mat-color($material-kuka-primary, 600)!important;
     color: $light-primary-text !important;
   }
-  
+
   .mode-selector .mat-button-toggle-checked {
     background-color: mat-color($material-kuka-accent);
     color: mat-color($material-kuka-accent, default-contrast);
@@ -107,4 +110,29 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   .mat-card:not([class*='mat-elevation-z']) {
     box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 2px rgba(0, 0, 0, 0.12);
   }
+
+  .custom-selected-row {
+    background-color: mat-color($material-kuka-primary, 900);
+  }
+
+  .custom-button:hover {
+    color: mat-color($material-kuka-primary, 900);
+  }
+
+  .highlighted {
+    background-color: mat-color($material-kuka-primary, 900) !important;
+  }
+
+  .data-table mat-row:hover {
+    background-color: mat-color($material-kuka-primary, 900);
+  }
+
+  .selected:not(.disabled) { background:mat-color($material-kuka-primary, 900) !important; }
+
+  .cdk-program-focused {
+    background-color:mat-color($material-kuka-primary, 900) !important;
+  }
+
+  .item { background:mat-color($material-kuka-primary, 900); }
+
 }

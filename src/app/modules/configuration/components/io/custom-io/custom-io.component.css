@@ -55,18 +55,10 @@
   margin-top: 10px;
 }
 
-.custom-button:hover {
-  color: rgba(0, 136, 123, 0.87);
-}
-
 .mat-button-no-hover-background ::ng-deep .mat-button-focus-overlay {
   background-color: transparent;
 }
 
 .mat-select-normal-place-holder ::ng-deep .mat-select-placeholder {
    color: black;
-}
-
-.custom-selected-row {
-  background-color: rgba(0, 136, 123, 0.87);
 }

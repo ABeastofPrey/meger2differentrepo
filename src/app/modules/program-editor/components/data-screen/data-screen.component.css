@@ -56,8 +56,6 @@
   margin-right: 36px;
 }
 .data-table mat-row { cursor: pointer; }
-.data-table mat-row:hover { background-color: #E0F2F1; }
-.highlighted { background-color: #B2DFDB!important; }
 .current { font-weight: bold; }
 .refreshing { background-color: #ebebeb; }
 .fixed-top-right {

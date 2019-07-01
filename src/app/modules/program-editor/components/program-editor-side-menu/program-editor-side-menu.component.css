@@ -23,7 +23,7 @@
   font-size: 18px;
   padding-bottom: 0;
 }
-mat-tree { 
+mat-tree {
   flex: 1;
   margin: 0 16px;
 }
@@ -32,7 +32,6 @@ mat-nested-tree-node.disabled *, mat-tree-node.disabled * {
   color: #9E9E9E;
   cursor: not-allowed;
 }
-.selected:not(.disabled) { background: #E0F2F1!important; }
 .invisible { display: none; }
 ul,li {
   margin-top: 0;
