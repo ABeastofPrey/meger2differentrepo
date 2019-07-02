@@ -282,7 +282,10 @@
     "title": "设备管理器",
     "errTip": "设备改变, 请在任务管理器内点击‘重置所有’按钮完成初始化更新.",
     "exTip": "展开所有",
-    "colTip": "折叠所有"
+    "colTip": "折叠所有",
+    "controller": "控制器",
+    "driveBus": "驱动总线",
+    "extensionBus": "扩展总线"
   },
   "io": {
     "standardView": "标准 视图",
@@ -944,7 +947,8 @@
     "isApplyDataToTool": "需要应用当前工具数据给此工具吗",
     "current": "当前",
     "new": "新",
-    "delta": "delta三角",
+    "delta": "偏差",
+    "error": "误差",
     "calibrationSuccess": "校准成功.",
     "resultOutOfScope": "计算错误超过允许的限制5mm.\n使用该组工具数据会导致不可控的行为发生.",
     "apply": "应用",

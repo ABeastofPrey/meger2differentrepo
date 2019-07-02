@@ -5,7 +5,11 @@
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
                 <button mat-icon-button disabled></button>
                 <mat-icon class="mat-primary mat-icon">label</mat-icon>&nbsp;
-                {{node.name}}
+                <div [ngSwitch]="node.name">
+                    <span *ngSwitchCase="'Drive Bus'">{{'topology.driveBus'|translate}}</span>
+                    <span *ngSwitchCase="'Extension Bus'">{{'topology.extensionBus'|translate}}</span>
+                    <span *ngSwitchDefault>{{node.name}}</span>
+                </div>
             </mat-tree-node>
             <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
                 <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
@@ -14,7 +18,12 @@
                     </mat-icon>
                 </button>
                 <mat-icon class="mat-primary mat-icon">devices</mat-icon>&nbsp;
-                {{node.name}}
+                <div [ngSwitch]="node.name">
+                    <span *ngSwitchCase="'Controller'">{{'topology.controller'|translate}}</span>
+                    <span *ngSwitchCase="'Drive Bus'">{{'topology.driveBus'|translate}}</span>
+                    <span *ngSwitchCase="'Extension Bus'">{{'topology.extensionBus'|translate}}</span>
+                    <span *ngSwitchDefault>{{node.name}}</span>
+                </div>
             </mat-tree-node>
         </mat-tree>
         <mat-card-actions>

@@ -293,7 +293,10 @@
     "title": "Device Manager",
     "errTip": "It seems that some devices have been changed, please do reset all operation of CS+ in Task Manager.",
     "exTip": "Expand all",
-    "colTip": "Collapse all"
+    "colTip": "Collapse all",
+    "controller": "Controller",
+    "driveBus": "Drive Bus",
+    "extensionBus": "Extension Bus"
   },
   "io": {
     "standardView": "Standard View",
@@ -962,6 +965,7 @@
     "current": "current",
     "new": "new",
     "delta": "delta",
+    "error": "Error",
     "calibrationSuccess": "Calibration Success.",
     "resultOutOfScope": "The determined calculation error exceeds the allowable limit 5mm.\nThe use of this tool data can lead to undesirable behaviour.",
     "apply": "APPLY",
