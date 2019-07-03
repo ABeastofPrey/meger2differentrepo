@@ -1,4 +1,4 @@
-<div class="flex-full background">
+<div class="flex-full background-image">
   <mat-grid-list cols="3" rowHeight="fit" style='height: 100%;'>
     <mat-grid-tile [colspan]="login.isViewer || login.isOperator ? 2 : 1">
       <mat-card class="jog-screen-card mat-elevation-z3">
@@ -24,7 +24,7 @@
     </mat-grid-tile>
     <mat-grid-tile colspan="1" *ngIf="!login.isViewer && !login.isOperator">
       <mat-card class="jog-screen-card mat-elevation-z3">
-        <mat-card-title 
+        <mat-card-title
           class="mat-toolbar mat-primary mat-elevation-z1"
           [@menuState]="menuTypes[selectedMenuTypeIndex].name">
           <mat-icon class="card-title-icon">
@@ -37,8 +37,8 @@
             <mat-icon>menu</mat-icon>
           </button>
           <mat-menu #menu="matMenu" [overlapTrigger]="false">
-            <button 
-              mat-menu-item 
+            <button
+              mat-menu-item
               *ngFor="let mType of menuTypes; let i=index"
               (click)="onChange(i)">
               <mat-icon>{{mType.icon}}</mat-icon>
@@ -48,7 +48,7 @@
         </mat-card-title>
         <div class="menu-content" [@menuContent]="menuTypes[selectedMenuTypeIndex].i18">
           <div class="inner-content content-teach">
-            <mat-form-field 
+            <mat-form-field
               [style.maxWidth]="(teach.selectedTeachVariable && teach.selectedTeachVariable.isArr) ? '50%' : '100%'">
               <mat-select placeholder="{{'jogScreen.var'|translate}}" [(ngModel)]="teach.selectedTeachVariable" [disabled]="data.varRefreshInProgress" id="jog_screen_variable">
                 <mat-option *ngIf="this.data.joints.length===0 && this.data.locations.length === 0 && this.data.longs.length === 0 && this.data.doubles.length === 0 && this.data.strings.length === 0" disabled>{{'jogScreen.var_none'|translate}}</mat-option>
