@@ -53,15 +53,15 @@
         min-width: 300px;
     }
     .roughly-images-container {
-        height: 40vh;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: space-around;
+        justify-content: flex-start;
         align-items: center;
         .joint-container {
-            width: 49%;
-            height: 49%;
+            width: 35%;
+            min-width: 400px;
+            height: 180px;
             display: flex;
             flex-direction: row;
             justify-content: space-around;
@@ -70,6 +70,7 @@
             padding: 5px;
             border-radius: 5px;
             box-sizing: border-box;
+            margin: 5px;
             .joint-desc {
                 width: 45%;
                 align-self: flex-start;
