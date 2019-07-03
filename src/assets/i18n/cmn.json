@@ -583,7 +583,8 @@
       "sourceDistance": "距离",
       "sourceTime": "时间",
       "sourcePercentage": "百分比"
-    }
+    },
+    "createPoint": "添加点"
   },
   "projects": {
     "ace": {

@@ -207,7 +207,8 @@ export class DataScreenComponent implements OnInit {
   showAddDialog() {
     this.dialog.open(AddVarComponent, {
       data: {
-        useAsProjectPoints: this.useAsProjectPoints
+        useAsProjectPoints: this.useAsProjectPoints,
+        canUseArray: this.useAsProjectPoints ? false : true
       }
     });
   }

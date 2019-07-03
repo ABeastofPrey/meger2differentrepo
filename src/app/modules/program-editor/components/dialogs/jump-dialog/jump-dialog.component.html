@@ -15,9 +15,13 @@
         <mat-form-field>
           <mat-select placeholder="{{'projectCommands.jump.destPh'|translate}}" [(ngModel)]="location" [formControl]="requiredFormControls[jumpParameterReference.DestinationFrame]"
           [errorStateMatcher]="errorMatcher" (selectionChange)="reset()">
-            <mat-optgroup label="Locations" *ngIf="this.dataService.locations.length > 0">
-              <mat-option *ngFor="let data of (this.dataService.locations | dataNotArray)" [value]="data">
+            <mat-optgroup label="Locations">
+              <!-- <mat-option *ngFor="let data of (this.dataService.locations | dataNotArray)" [value]="data"> -->
+              <mat-option *ngFor="let data of locations" [value]="data">
                 {{ data.name }}
+              </mat-option>
+              <mat-option class="create-point-option" (click)="createPoint()">
+                + {{'projectCommands.createPoint'|translate}}
               </mat-option>
             </mat-optgroup>
           </mat-select>

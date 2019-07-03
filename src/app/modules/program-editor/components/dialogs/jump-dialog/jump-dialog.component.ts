@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, ErrorStateMatcher } from '@angular/material';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { MatDialogRef, ErrorStateMatcher, MatDialog } from '@angular/material';
 import { FormControl, Validators, FormGroupDirective, NgForm, ValidatorFn, AbstractControl,
   ValidationErrors } from '@angular/forms';
 
@@ -9,6 +9,7 @@ import { WebsocketService } from './../../../../core/services/websocket.service'
 import { ProgramEditorService } from '../../../services/program-editor.service';
 import { JumpParameterErrorKey, JumpParameter } from './jump-dialog.enum';
 import { TranslateService } from '@ngx-translate/core';
+import { AddVarComponent } from '../../add-var/add-var.component';
 
 /**
  * The class to define the error matcher for the validation form.
@@ -140,6 +141,10 @@ export class JumpDialogComponent implements OnInit {
    */
   get location() { return this.jumpLocation; }
 
+  get locations(): TPVariable[] {
+    return this.dataService.locations.filter(x => !x.isArr);
+  }
+
   /**
    * Set the destination location.
    * @param newLocation The new destination location.
@@ -160,7 +165,9 @@ export class JumpDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<any>,
     private prgService: ProgramEditorService,
     private ws: WebsocketService,
-    private trn: TranslateService) {
+    private trn: TranslateService,
+    private dialog: MatDialog,
+    private cd: ChangeDetectorRef) {
       this.trn.get(['projectCommands.jump']).subscribe(words => {
         this.words = words['projectCommands.jump'];
         this.errorMessages = {
@@ -182,6 +189,14 @@ export class JumpDialogComponent implements OnInit {
       }
 
       this.initializeLimitAndValidation();
+    });
+  }
+
+  public createPoint(): void {
+    const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
+    this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
+      this.location = this.locations.find(x => x.name === addedVar);
+      this.cd.detectChanges();
     });
   }
 

@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MatInput, MatInputModule } from '@angular/material';
+import { MatDialogModule, MatDialogRef, MatInput, MatInputModule, MatDialog } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
@@ -12,7 +12,7 @@ import { TPVariable } from '../../../../core/models/tp/tp-variable.model';
 import { JumpDialogComponent } from './jump-dialog.component';
 import { DataNotArrayPipe } from './jump-dialog.pipe';
 import { JumpParameter } from './jump-dialog.enum';
-
+import { UnitTestModule } from '../../../../shared/unit-test.module';
 
 /**
  * It contains all the test specs to JumpDialogComponent.
@@ -43,11 +43,9 @@ describe('JumpDialogComponent', () => {
    * The mock DataService instance.
    */
   let dataService = {
-    locations: () => {
-      return [{
-        value: null, isArr: false, varType: 1, isPosition: true, name: 'P1', typeStr: 'LOCATION', selectedIndex: 1
-      }];
-    }
+    locations: [{
+      value: null, isArr: false, varType: 1, isPosition: true, name: 'P1', typeStr: 'LOCATION', selectedIndex: 1
+    }]
   };
 
   /**
@@ -74,13 +72,27 @@ describe('JumpDialogComponent', () => {
    */
   beforeEach(async(() => {
     const spyObj = jasmine.createSpyObj('WebSocketService', ['query']);
+    const dummyDialog = {
+      open: () => {
+        return {
+          afterClosed: () => {
+            return {
+              subscribe: (cb) => {
+                cb('P1');
+              }
+            };
+          }
+        };
+      }
+    };
 
     TestBed.configureTestingModule({
-      imports: [SharedModule, MatDialogModule, MatInputModule, BrowserAnimationsModule],
+      imports: [SharedModule, MatDialogModule, MatInputModule, BrowserAnimationsModule, UnitTestModule],
       declarations: [ JumpDialogComponent, DataNotArrayPipe],
       providers: [
         { provide: MatDialogRef, useValue: dialogRef },
         { provide: WebsocketService, useValue: spyObj },
+        { provide: MatDialog, useValue: dummyDialog },
         { provide: DataService, useValue: dataService },
         { provide: ProgramEditorService, useValue: programEditorService },
     ]
@@ -176,7 +188,7 @@ describe('JumpDialogComponent', () => {
   it('when the user selects the motion element and destination frame, the advanced mode should be enable', () => {
     expect(component).toBeTruthy();
     expect(component.motionRobot).toBe('SCARA');
-    component.location = dataService.locations()[0];
+    component.location = dataService.locations[0];
     fixture.detectChanges();
 
     debugElement = fixture.debugElement;
@@ -220,7 +232,7 @@ describe('JumpDialogComponent', () => {
     expect(component).toBeTruthy();
     expect(component.motionRobot).toBe('SCARA');
 
-    component.location = dataService.locations()[0];
+    component.location = dataService.locations[0];
     fixture.detectChanges();
 
     expect(component.requiredFormControls[JumpParameter.DestinationFrame].status).toBe('VALID',
@@ -245,7 +257,7 @@ describe('JumpDialogComponent', () => {
     expect(component).toBeTruthy();
     expect(component.motionRobot).toBe('SCARA');
 
-    component.location = dataService.locations()[0];
+    component.location = dataService.locations[0];
     component.advancedMode = true;
     fixture.detectChanges();
 
@@ -276,4 +288,8 @@ describe('JumpDialogComponent', () => {
 
   });
 
+  it('should create new point', () => {
+      component.createPoint();
+      expect(component.location.name).toEqual('P1');
+    });
 });

@@ -8,14 +8,14 @@
     </mat-form-field>
     <mat-form-field *ngIf="!data.domainIsFrame">
       <mat-select placeholder="{{'variables.type'|translate}}" [(ngModel)]="varType" (selectionChange)="onTypeChange()">
-        <mat-option value="JOINT" *ngIf="data.isRobotType">{{'joint'|translate}}</mat-option>
-        <mat-option value="LOCATION" *ngIf="data.isRobotType && !para.useAsProjectPoints">{{'location'|translate}}</mat-option>
-        <mat-option *ngIf="!para.useAsProjectPoints" value="LONG">{{'long'|translate}}</mat-option>
-        <mat-option *ngIf="!para.useAsProjectPoints" value="DOUBLE">{{'double'|translate}}</mat-option>
-        <mat-option *ngIf="!para.useAsProjectPoints" value="STRING">{{'string'|translate}}</mat-option>
+        <mat-option *ngIf="isHotOption(0) && data.isRobotType" value="JOINT">{{'joint'|translate}}</mat-option>
+        <mat-option *ngIf="isHotOption(1) && data.isRobotType" value="LOCATION">{{'location'|translate}}</mat-option>
+        <mat-option *ngIf="isHotOption(2)" value="LONG">{{'long'|translate}}</mat-option>
+        <mat-option *ngIf="isHotOption(3)" value="DOUBLE">{{'double'|translate}}</mat-option>
+        <mat-option *ngIf="isHotOption(4)" value="STRING">{{'string'|translate}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-checkbox *ngIf="!para.useAsProjectPoints" color="primary" [(ngModel)]="isArray">{{'arr'|translate}}</mat-checkbox>
+    <mat-checkbox *ngIf="canUseArray" color="primary" [(ngModel)]="isArray">{{'arr'|translate}}</mat-checkbox>
     <mat-form-field *ngIf="isArray" style="margin-top: 8px;">
       <input matInput placeholder="{{'arr_size'|translate}}" [(ngModel)]="arrSize" virtualKeyboard ktype="numeric">
     </mat-form-field>

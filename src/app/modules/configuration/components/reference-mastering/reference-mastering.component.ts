@@ -70,7 +70,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
-        if(this.stepper.selectedIndex !== 0) {
+        if (this.stepper.selectedIndex !== 0) {
             this.resetOriginal();
         }
     }

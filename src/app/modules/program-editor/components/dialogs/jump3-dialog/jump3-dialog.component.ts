@@ -1,9 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, ErrorStateMatcher, MatSelectChange } from '@angular/material';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, ErrorStateMatcher, MatSelectChange, MatDialog } from '@angular/material';
 import { FormControl, Validators, FormGroupDirective, NgForm, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Jump3DialogService } from '../../../services/jump3-dialog.service';
 import { map, range, all, find } from 'ramda';
 import { TranslateService } from '@ngx-translate/core';
+import { AddVarComponent } from '../../add-var/add-var.component';
 
 interface IParameter {
   placeholder: string;
@@ -49,7 +50,9 @@ export class Jump3DialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<any>,
     private service: Jump3DialogService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private dialog: MatDialog,
+    private cd: ChangeDetectorRef
   ) {
     this.trn.get(['projectCommands.jump']).subscribe(words => {
       this.words = words['projectCommands.jump'];
@@ -68,6 +71,19 @@ export class Jump3DialogComponent implements OnInit {
 
   get hasInvalidOptional(): boolean {
     return (this.optionalPars && find(x => x.control.invalid === true, this.optionalPars)) ? true : false;
+  }
+
+  public createPoint(index: number): void {
+    const selectedOptions: string[] = map((x: IRequiredPar) => x.selected, this.requiredPars);
+    const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
+    this.dialog.open(AddVarComponent, option).afterClosed().subscribe(async addedVar => {
+      this.requiredPars = await this.assemblingRequiredPars();
+      selectedOptions.forEach((x, idx) => {
+        this.requiredPars[idx].selected = x;
+      });
+      this.requiredPars[index].selected = addedVar;
+      this.cd.detectChanges();
+    });
   }
 
   public emitCmd(): void {

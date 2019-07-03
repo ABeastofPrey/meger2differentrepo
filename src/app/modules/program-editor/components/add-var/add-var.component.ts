@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input } from '@angular/core';
 import {MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
 import {FOUR_AXES_LOCATION, SIX_AXES_LOCATION} from '../../../core/models/tp/location-format.model';
 import {DataService, WebsocketService, CoordinatesService, MCQueryResponse} from '../../../core';
@@ -18,6 +18,8 @@ export class AddVarComponent implements OnInit {
    SIX_AXES: string[] = SIX_AXES_LOCATION;
    isArray : boolean = false;
    arrSize : number = 0;
+   @Input() hotVariableOption: (0|1)[] = [1, 1, 1, 1, 1];
+   @Input() canUseArray: boolean = true;
    
    private words: any;
 
@@ -30,14 +32,26 @@ export class AddVarComponent implements OnInit {
     private trn: TranslateService,
     @Inject(MAT_DIALOG_DATA) public para: any
   ) {
+    this.varType = 'JOINT'; // set default selection.
     if (this.para.useAsProjectPoints) {
-      this.varType = 'JOINT';
+      this.hotVariableOption = [1, 0, 0, 0, 0];
     }
+    if (this.para.hotVariableOption) {
+      this.hotVariableOption = this.para.hotVariableOption;
+    }
+    if ((this.para.canUseArray !== undefined) && (this.para.canUseArray !== null)) {
+      this.canUseArray = this.para.canUseArray;
+    }
+
     if (this.data.domainIsFrame)
       this.varType = 'LOCATION';
     this.trn.get(['success']).subscribe(words=>{
       this.words = words;
     });
+  }
+
+  public isHotOption(index: number): boolean {
+    return this.hotVariableOption[index] === 1 ? true : false;
   }
 
   ngOnInit() {
@@ -52,7 +66,7 @@ export class AddVarComponent implements OnInit {
   }
   
   closeDialog() {
-    this.dialogRef.close();
+    this.dialogRef.close(this.name && this.name.toUpperCase());
   }
   
   add() {
@@ -67,7 +81,7 @@ export class AddVarComponent implements OnInit {
         value = this.values[0];
       }
     }
-    var cmd = '?TP_ADDVAR("' + name + '","' + this.varType + '","' +
+    let cmd = '?TP_ADDVAR("' + name + '","' + this.varType + '","' +
               this.data.selectedRobot + '","' + value + '")';
     if (this.para.useAsProjectPoints) {
       cmd = '?TP_ADD_project_points("' + name + '","' + this.varType + '","' + this.data.selectedRobot + '","' + value + '")';
@@ -76,20 +90,20 @@ export class AddVarComponent implements OnInit {
       if (ret.err || ret.result !== '0') {
         console.log(ret);
       } else {
-        this.closeDialog();
-        this.snackbar.open(this.words['success'],'',{duration:2000});
-        var queries = [
+        let queries = [
           this.data.refreshBases(),
           this.data.refreshTools(),
           this.data.refreshMachineTables(),
           this.data.refreshWorkPieces()
         ];
-        Promise.all(queries).then(()=>{
-          this.data.refreshVariables();
+        Promise.all(queries).then(() => {
+          this.data.refreshVariables().then(() => {
+            this.closeDialog();
+            this.snackbar.open(this.words['success'], '', {duration: 2000});
+          });
         });
       }
     });
-    
   }
 
 }

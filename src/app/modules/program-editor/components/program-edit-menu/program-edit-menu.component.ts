@@ -235,7 +235,8 @@ export class ProgramEditMenuComponent implements OnInit {
       MoveDialogComponent,
       {
         width: '400px',
-        data: {moveS: moves, params: params}
+        data: {moveS: moves, params: params},
+        disableClose: true
       }
     );
     ref.afterClosed().subscribe((cmd:string)=>{
@@ -254,7 +255,8 @@ export class ProgramEditMenuComponent implements OnInit {
       CircleDialogComponent,
       {
         width: '400px',
-        data: {angle: angle, params: params}
+        data: {angle: angle, params: params},
+        disableClose: true
       }
     );
     ref.afterClosed().subscribe((cmd:string)=>{

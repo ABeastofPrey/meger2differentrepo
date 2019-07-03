@@ -139,4 +139,10 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
     background: url('../pics/kuka_robot_bg.jpg');
   }
 
+  .create-point-option {
+    background: mat-color($material-kuka-primary, 900) !important;
+  }
+  .create-point-option:hover {
+    background: mat-color($material-kuka-primary, 900) !important;
+  }
 }

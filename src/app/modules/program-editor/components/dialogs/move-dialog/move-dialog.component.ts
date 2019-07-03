@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { TPVariable } from '../../../../core/models/tp/tp-variable.model';
 import { DataService } from '../../../../core';
 import { ProgramEditorService } from '../../../services/program-editor.service';
 import { PositionTriggerService } from '../../../services/position-trigger.service';
 import { reduce, isEmpty, complement } from 'ramda';
+import { AddVarComponent } from '../../add-var/add-var.component';
 
 @Component({
   selector: 'app-move-dialog',
@@ -42,6 +43,14 @@ export class MoveDialogComponent implements OnInit {
     this.prg.lastVar = this._location;
   }
 
+  get locations(): TPVariable[] {
+    return this.dataService.locations;
+  }
+
+  get joints(): TPVariable[] {
+    return this.dataService.joints;
+  }
+
   /*
    * CALLED WHEN THE SELECTED VARIABLE HAS CHANGED
    */
@@ -55,6 +64,8 @@ export class MoveDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private prg: ProgramEditorService,
+    private dialog: MatDialog,
+    private cd: ChangeDetectorRef,
     private mtService: PositionTriggerService
   ) {
     this.withParams = typeof(this.data.params) !== 'undefined';
@@ -100,6 +111,15 @@ export class MoveDialogComponent implements OnInit {
         this.blending = params['blending'];
       }
     }
+  }
+
+  public createPoint(): void {
+    const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
+    this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
+      let _location = this.locations.find(x => x.name === addedVar);
+      this.location = _location ? _location : this.joints.find(x => x.name === addedVar);
+      this.cd.detectChanges();
+    });
   }
 
   cancel() {

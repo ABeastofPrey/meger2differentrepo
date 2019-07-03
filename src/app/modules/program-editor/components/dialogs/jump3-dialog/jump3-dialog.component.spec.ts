@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '../../../../shared/shared.module';
 import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { Jump3DialogService } from '../../../services/jump3-dialog.service';
 import { Jump3DialogComponent, ParameterErrorStateMatcher } from './jump3-dialog.component';
 import { range, map } from 'ramda';
@@ -24,14 +24,27 @@ describe('Jump3DialogComponent', () => {
 
   const fakeDalog = jasmine.createSpyObj('MatDialogRef', ['close']);
   const closeSpy = fakeDalog.close;
+  const dummyDialog = {
+    open: () => {
+      return {
+        afterClosed: () => {
+          return {
+            subscribe: (cb) => {
+              cb(true);
+            }
+          };
+        }
+      };
+    }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [Jump3DialogComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        // { provide: MatDialogRef, useValue: { close: jasmine.createSpy('close') } },
         { provide: MatDialogRef, useValue: fakeDalog },
+        { provide: MatDialog, useValue: dummyDialog },
         { provide: Jump3DialogService, useValue: jump3DialogService }
       ],
       imports: [SharedModule, BrowserAnimationsModule, UnitTestModule]
@@ -181,6 +194,14 @@ describe('Jump3DialogComponent', () => {
       control.value = 1.2;
       const res = component.limitValidator(1, 20, 0)(control);
       expect(res.limit.msg).not.toBeNull();
+    });
+  }));
+
+  it('should create new point', async(() => {
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      component.createPoint(0);
+      expect(true).toBe(true);
     });
   }));
 });

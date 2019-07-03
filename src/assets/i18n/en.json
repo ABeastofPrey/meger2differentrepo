@@ -599,7 +599,8 @@
       "sourceDistance": "Distance",
       "sourceTime": "Time",
       "sourcePercentage": "Percentage"
-    }
+    },
+    "createPoint": "Add Point"
   },
   "projects": {
     "ace": {

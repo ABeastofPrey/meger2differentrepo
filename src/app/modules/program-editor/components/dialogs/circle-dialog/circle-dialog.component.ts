@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material';
 import {TPVariable} from '../../../../core/models/tp/tp-variable.model';
 import {DataService} from '../../../../core';
 import { PositionTriggerService } from '../../../services/position-trigger.service';
 import { reduce, isEmpty, complement } from 'ramda';
+import { AddVarComponent } from '../../add-var/add-var.component';
 
 @Component({
   selector: 'circle-dialog',
@@ -24,6 +25,14 @@ export class CircleDialogComponent implements OnInit {
   blending : string = null;
   ptList: string[] = [];
   pts: string[] = [];
+
+  get joints(): TPVariable[] {
+    return this.dataService.joints;
+  }
+
+  get locations(): TPVariable[] {
+    return this.dataService.locations;
+  }
   
   resetIndexCirclePoint() { this.circlePointIndex = -1; }
   resetIndexTargetPoint() { this.targetPointIndex = -1; }
@@ -32,7 +41,8 @@ export class CircleDialogComponent implements OnInit {
     public dataService: DataService,
     public dialogRef: MatDialogRef<any>,
     private mtService: PositionTriggerService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialog: MatDialog
   ) {
     this.withParams = typeof(this.data.params) !== 'undefined';
   }
@@ -76,7 +86,20 @@ export class CircleDialogComponent implements OnInit {
       }
     }
   }
-  
+
+  public createPoint(type: string): void {
+    const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
+    this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
+      let _point = this.locations.find(x => x.name === addedVar);
+      _point = _point ? _point : this.joints.find(x => x.name === addedVar);
+      if (type === 'circle') {
+        this.circlePoint = _point;
+      } else if (type === 'target') {
+        this.targetPoint = _point;
+      }
+    });
+  }
+
   invalidBlending() : boolean {
     if (this.blending) {
       let n = Number(this.blending);

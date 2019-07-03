@@ -4,8 +4,11 @@
     <div class="content">
       <mat-form-field>
         <mat-select placeholder="CirclePoint" [(ngModel)]="circlePoint" (selectionChange)="resetIndexCirclePoint()">
-          <mat-optgroup label="{{'joints'|translate}}" *ngIf="this.dataService.joints.length > 0"><mat-option *ngFor="let data of this.dataService.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
-          <mat-optgroup label="{{'locations'|translate}}" *ngIf="this.dataService.locations.length > 0"><mat-option *ngFor="let data of this.dataService.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="{{'joints'|translate}}" *ngIf="joints.length > 0"><mat-option *ngFor="let data of joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="{{'locations'|translate}}" *ngIf="locations.length > 0"><mat-option *ngFor="let data of locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-option class="create-point-option" (click)="createPoint('circle')">
+            + {{'projectCommands.createPoint'|translate}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field *ngIf="circlePoint && circlePoint.isArr">
@@ -18,8 +21,11 @@
       </mat-form-field>
       <mat-form-field *ngIf="!data.angle">
         <mat-select placeholder="TargetPoint" [(ngModel)]="targetPoint" (selectionChange)="resetIndexTargetPoint()">
-          <mat-optgroup label="{{'joints'|translate}}" *ngIf="this.dataService.joints.length > 0"><mat-option *ngFor="let data of this.dataService.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
-          <mat-optgroup label="{{'locations'|translate}}" *ngIf="this.dataService.locations.length > 0"><mat-option *ngFor="let data of this.dataService.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="{{'joints'|translate}}" *ngIf="joints.length > 0"><mat-option *ngFor="let data of joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-optgroup label="{{'locations'|translate}}" *ngIf="locations.length > 0"><mat-option *ngFor="let data of locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
+          <mat-option class="create-point-option" (click)="createPoint('target')">
+            + {{'projectCommands.createPoint'|translate}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field *ngIf="targetPoint && targetPoint.isArr && !data.angle">

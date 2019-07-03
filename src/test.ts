@@ -21,6 +21,9 @@ const programSettingsContext = require.context('./app/modules/program-editor/com
 // And load the modules.
 programSettingsContext.keys().map(programSettingsContext);
 
+const jumpDialogContext = require.context('./app/modules/program-editor/components/dialogs/jump-dialog/', true, /\.spec\.ts$/);
+jumpDialogContext.keys().map(jumpDialogContext);
+
 const jump3DialogContext = require.context('./app/modules/program-editor/components/dialogs/jump3-dialog/', true, /\.spec\.ts$/);
 jump3DialogContext.keys().map(jump3DialogContext);
 
