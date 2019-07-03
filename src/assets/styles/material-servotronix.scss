@@ -68,4 +68,8 @@ $material-semi-black: rgba(0,0,0,0.54);
   .selected:not(.disabled) { background: #E0F2F1!important; }
 
   .item { background: #004D40; }
+
+  .background {
+    background: url('../pics/robot_bg.jpg');
+  }
 }
