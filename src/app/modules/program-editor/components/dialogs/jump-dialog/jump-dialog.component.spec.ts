@@ -171,6 +171,7 @@ describe('JumpDialogComponent', () => {
     expect(component.motionRobots.length).toBe(2);
 
     component.motionRobot = component.motionRobots[1];
+    component.onMotionElementChanged();
     fixture.detectChanges();
 
     debugElement = fixture.debugElement;
@@ -178,7 +179,6 @@ describe('JumpDialogComponent', () => {
     let selectList = htmlElement.querySelectorAll('mat-select');
     expect(selectList.length).toBe(2);
     expect(selectList.item(0).getAttribute('ng-reflect-model')).toBe('SCARA1', 'the motion element is first one by default');
-    expect(selectList.item(1).getAttribute('ng-reflect-model')).toBeNull();
 
   });
 
@@ -216,6 +216,8 @@ describe('JumpDialogComponent', () => {
 
     expect(component.requiredFormControls[JumpParameter.DestinationFrame].untouched).toBe(true,
             'the destination frame window is untouched as default');
+    expect(component.requiredFormControls[JumpParameter.DestinationFrame].status).toBe('INVALID',
+          'the destination frame validation is unsuccessful');
 
     component.insert();
     fixture.detectChanges();
@@ -238,8 +240,9 @@ describe('JumpDialogComponent', () => {
     expect(component.requiredFormControls[JumpParameter.DestinationFrame].status).toBe('VALID',
             'the destination frame validation is successful');
 
+    debugElement = fixture.debugElement;
     let inputList = debugElement.queryAll(By.directive(MatInput));
-    expect(inputList.length).toBe(5);
+    expect(inputList.length).toBe(0);
 
     component.insert();
     fixture.detectChanges();
@@ -270,6 +273,50 @@ describe('JumpDialogComponent', () => {
     fixture.whenStable().then(() => {
       expect(component.dialogRef.close).toHaveBeenCalledWith('jump(SCARA, "P1", -1, 0xffff, -1, -1, -1)');
     });
+
+  });
+
+  /**
+   * The test to the jump command insertion.
+   */
+  it('the user can change advanced parameters after selects the motion element, destination frame and enables advanced mode', () => {
+    expect(component).toBeTruthy();
+    expect(component.motionRobot).toBe('SCARA');
+
+    component.location = dataService.locations[0];
+    component.advancedMode = true;
+    component.arcNumber = 2.3;
+    component.limitZ = 500.1;
+    component.speed = 6000.3;
+    component.acceleration = 400.4;
+    component.blending = 100.1;
+
+    fixture.detectChanges();
+
+    expect(component.advancedFormControls[JumpParameter.ArcNumber].status).toBe('INVALID',
+            'the arc number validation is unsuccessful');
+    expect(component.advancedFormControls[JumpParameter.LimitZ].status).toBe('INVALID',
+    'the limit z validation is unsuccessful');
+    expect(component.advancedFormControls[JumpParameter.Speed].status).toBe('INVALID',
+    'the speed validation is unsuccessful');
+    expect(component.advancedFormControls[JumpParameter.Acceleration].status).toBe('INVALID',
+    'the acceleration validation is unsuccessful');
+    expect(component.advancedFormControls[JumpParameter.Blending].status).toBe('INVALID',
+    'the blending validation is unsuccessful');
+
+    component.insert();
+    fixture.detectChanges();
+
+    expect(component.advancedFormControls[JumpParameter.ArcNumber].untouched).toBe(false,
+      'the arc number window is touched as default');
+    expect(component.advancedFormControls[JumpParameter.LimitZ].untouched).toBe(false,
+        'the limit z window is touched as default');
+    expect(component.advancedFormControls[JumpParameter.Speed].untouched).toBe(false,
+        'the speed window is touched as default');
+    expect(component.advancedFormControls[JumpParameter.Acceleration].untouched).toBe(false,
+          'the accleration window is touched as default');
+    expect(component.advancedFormControls[JumpParameter.Blending].untouched).toBe(false,
+          'the blending window is touched as default');
 
   });
 
