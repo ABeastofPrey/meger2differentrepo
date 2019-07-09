@@ -48,6 +48,9 @@
             <form>
                 <mat-card *ngIf="isBasicMode" class="mastering-card">
                     <ng-template matStepLabel>{{'robots.mastering.selectJoint'|translate}}</ng-template>
+                    <mat-card-header>
+                        <mat-card-title>{{'robots.mastering.selectJointH'|translate}}</mat-card-title>
+                    </mat-card-header>
                     <mat-card-content>
                         <label class="zero-radio-group-label">{{'robots.mastering.pickJoints'|translate}}</label>
                         <mat-radio-group class="zero-radio-group" [(ngModel)]="zeroAxis" [ngModelOptions]="{standalone: true}">
@@ -68,7 +71,10 @@
                     <ng-template matStepLabel>{{'robots.mastering.basicConfirm'|translate}}</ng-template>
                     <mat-card-header>
                         <mat-card-title>{{'robots.mastering.emjh'|translate}} 2</mat-card-title>
-                        <mat-card-subtitle>{{'robots.mastering.emjsh'|translate}}</mat-card-subtitle>
+                        <mat-card-subtitle>
+                            {{'robots.mastering.emjsh1'|translate}} <br/>
+                            {{'robots.mastering.emjsh2'|translate}}
+                        </mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
                         
