@@ -13,34 +13,32 @@ onmessage = function(e) {
         globalConn.reset();
         break;
       case 2: // STOP INTERVAL
-        if (e.data.id)
-          intervals[e.data.id] = null;
+        if (e.data.id) intervals[e.data.id] = null;
         break;
     }
     return;
   }
-  if (e.data.interval) { // INTERVAL
+  if (e.data.interval) {
+    // INTERVAL
     intervals[e.data.id] = true;
     timer(e.data.id, e.data.interval, e.data.msg, e.data.force);
-  } else
-    globalConn.sendData(e.data.msg);
-}
+  } else globalConn.sendData(e.data.msg);
+};
 
 function timer(id, interval, msg, force) {
   var now = new Date().getTime();
   var timeout;
   if (intervals[id]) {
-    timeout = setTimeout(function(){
+    timeout = setTimeout(function() {
       timer(id, interval, msg, force);
-    },interval);
-    if (!globalConn.connected())
-      return;
+    }, interval);
+    if (!globalConn.connected()) return;
     if (!force && pending[id]) {
       //vcconsole.log('still pending',id);
       clearTimeout(timeout);
-      setTimeout(function(){
+      setTimeout(function() {
         timer(id, interval, msg, force);
-      },10);
+      }, 10);
       return;
     }
     globalConn.sendData(msg);
@@ -48,9 +46,9 @@ function timer(id, interval, msg, force) {
     pending[id] = true;
     if (new Date().getTime() - now > interval) {
       clearTimeout(timeout);
-      setTimeout(function(){
+      setTimeout(function() {
         timer(id, interval, msg, force);
-      },interval);
+      }, interval);
     }
   } else {
     clearTimeout(timeout);
@@ -58,40 +56,39 @@ function timer(id, interval, msg, force) {
 }
 
 function MCConnection() {
-  
   var conn = this;
-  
+
   // Private Variables
   var ws = null;
   var MCPORT = 3010;
   var IP = self.location.hostname;
-  //var IP = '10.4.20.31';
+  //var IP = '10.4.20.45';
   var reset = true;
   var isConnected = false;
-  
-  this.connect = function(){
+
+  this.connect = function() {
     //Initiate a websocket connection
     try {
-      ws = new WebSocket("ws://" + IP + ":" + MCPORT);
-      ws.onopen = function(){
-        setTimeout(()=>{
-          worker.postMessage({serverMsg:true,msg:0}); // ONOPEN MESSAGE
-        },100);
-        console.log("WEBSOCKET OPENED");
+      ws = new WebSocket('ws://' + IP + ':' + MCPORT);
+      ws.onopen = function() {
+        setTimeout(() => {
+          worker.postMessage({ serverMsg: true, msg: 0 }); // ONOPEN MESSAGE
+        }, 100);
+        console.log('WEBSOCKET OPENED');
         reset = false;
         isConnected = true;
       };
       ws.onerror = function(e) {
-        worker.postMessage({serverMsg:true,msg:1}); // ONERROR MESSAGE
-        console.log("WEBSOCKET ERROR: ");
+        worker.postMessage({ serverMsg: true, msg: 1 }); // ONERROR MESSAGE
+        console.log('WEBSOCKET ERROR: ');
         console.log(e);
       };
       ws.onclose = function(event) {
-        worker.postMessage({serverMsg:true,msg:2,clean:event.wasClean}); // ONCLOSE MESSAGE
-        console.log("WEBSOCKET CLOSED");
+        worker.postMessage({ serverMsg: true, msg: 2, clean: event.wasClean }); // ONCLOSE MESSAGE
+        console.log('WEBSOCKET CLOSED');
         isConnected = false;
       };
-      ws.onmessage = function (msg) {
+      ws.onmessage = function(msg) {
         try {
           let jsonMessage = JSON.parse(msg.data);
           var id = jsonMessage['cmd_id'];
@@ -99,23 +96,23 @@ function MCConnection() {
             //console.log('done pending',msg);
             pending[id] = false;
           }
-          worker.postMessage({serverMsg:false,msg:jsonMessage});
+          worker.postMessage({ serverMsg: false, msg: jsonMessage });
         } catch (err) {
-          console.log('INVALID JSON FROM MC WEB SERVER',err);
+          console.log('INVALID JSON FROM MC WEB SERVER', err);
         }
       };
-      setTimeout(function(){
+      setTimeout(function() {
         if (ws && ws.readyState !== ws.OPEN) {
           ws.close();
-          worker.postMessage({serverMsg:true,msg:3}); // TIMEOUT MESSAGE
+          worker.postMessage({ serverMsg: true, msg: 3 }); // TIMEOUT MESSAGE
         }
-      },5000);
+      }, 5000);
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  this.sendData = function(jsonData){
+  this.sendData = function(jsonData) {
     if (ws && ws.readyState === ws.OPEN) {
       try {
         ws.send(jsonData);
@@ -127,23 +124,20 @@ function MCConnection() {
       }
     }
   };
-  
+
   this.reset = function() {
-    if (reset)
-      return;
+    if (reset) return;
     console.log('RESET CONNECTION');
     for (var interval in intervals) {
       intervals[interval] = false;
       intervalCounter = 0;
     }
-    if (ws !== null)
-      ws.close();
+    if (ws !== null) ws.close();
     ws = null;
     reset = true;
   };
-  
+
   this.connected = function() {
     return isConnected;
   };
-
 }

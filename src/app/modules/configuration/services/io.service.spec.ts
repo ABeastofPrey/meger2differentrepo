@@ -5,7 +5,6 @@ import { IoService } from './io.service';
 import { WebsocketService } from '../../core';
 import { CustomIOType, CustomIOTypes, IoOptions } from './io.service.enum';
 
-
 /**
  * It contains all the test specs to IoService.
  */
@@ -30,20 +29,19 @@ describe('IoService', () => {
 
     TestBed.configureTestingModule({
       imports: [UnitTestModule],
-      providers: [IoService, { provide: WebsocketService, useValue: spyObj }]
+      providers: [IoService, { provide: WebsocketService, useValue: spyObj }],
     });
 
     ioService = TestBed.get(IoService);
     webSocketServiceSpy = TestBed.get(WebsocketService);
     allCustomIoTypes = [
-      {key: CustomIOTypes.InputBit, value: 'Input Bit'},
-      {key: CustomIOTypes.InputByte, value: 'Input Byte'},
-      {key: CustomIOTypes.InputWord, value: 'Input Word'},
-      {key: CustomIOTypes.OutputBit, value: 'Output Bit'},
-      {key: CustomIOTypes.OutputByte, value: 'Output Byte'},
-      {key: CustomIOTypes.OutputWord, value: 'Output Word'},
+      { key: CustomIOTypes.InputBit, value: 'Input Bit' },
+      { key: CustomIOTypes.InputByte, value: 'Input Byte' },
+      { key: CustomIOTypes.InputWord, value: 'Input Word' },
+      { key: CustomIOTypes.OutputBit, value: 'Output Bit' },
+      { key: CustomIOTypes.OutputByte, value: 'Output Byte' },
+      { key: CustomIOTypes.OutputWord, value: 'Output Word' },
     ];
-
   });
 
   /**
@@ -60,7 +58,6 @@ describe('IoService', () => {
     expect(ioService).toBeTruthy();
 
     expect(ioService.getCustomIoPorts()).toBeNull();
-
   });
 
   /*********************************************************************************/
@@ -76,8 +73,8 @@ describe('IoService', () => {
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     ioService.queryCustomIoPorts().then(() => {
       let customIoPorts = ioService.getCustomIoPorts();
@@ -85,7 +82,6 @@ describe('IoService', () => {
       let key = CustomIOTypes.InputBit.replace(/\s/g, '');
       expect(customIoPorts[key]).toBeTruthy();
       expect(customIoPorts[key].length).toBe(0, 'no input port');
-
     });
   });
 
@@ -101,12 +97,12 @@ describe('IoService', () => {
     let mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
-      ioService.queryCustomIoPorts().then(() => {
-        expect(ioService).toBeTruthy();
-        expect(ioService.getCustomIoPorts()).toBeNull();
+    ioService.queryCustomIoPorts().then(() => {
+      expect(ioService).toBeTruthy();
+      expect(ioService.getCustomIoPorts()).toBeNull();
     });
   });
 
@@ -121,9 +117,13 @@ describe('IoService', () => {
     let spyValue = createMockCustomIoPorts();
     let customIoPorts = JSON.parse(spyValue);
 
-    expect(ioService.getCustomIos(allCustomIoTypes, customIoPorts)).toBeTruthy();
+    expect(
+      ioService.getCustomIos(allCustomIoTypes, customIoPorts)
+    ).toBeTruthy();
     expect(ioService.getCustomIos(allCustomIoTypes, customIoPorts).length).toBe(
-      0, 'custom ios query result should be empty');
+      0,
+      'custom ios query result should be empty'
+    );
   });
 
   /**
@@ -137,8 +137,8 @@ describe('IoService', () => {
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     spyValue = createMockCustomIoPorts();
     let customIoPorts = JSON.parse(spyValue);
@@ -147,10 +147,8 @@ describe('IoService', () => {
       let customIos = ioService.getCustomIos(allCustomIoTypes, customIoPorts);
       expect(customIos.length).toBe(3, 'it should have three custom ios');
       expect(customIos[0].label).toBe('1', 'custom io has its own label');
-
     });
   });
-
 
   /**
    * getCustomIos method test with the error response.
@@ -164,15 +162,15 @@ describe('IoService', () => {
     let mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     spyValue = createMockCustomIoPorts();
     let customIoPorts = JSON.parse(spyValue);
 
-      ioService.queryCustomIos(1, false).then(() => {
-        let customIos = ioService.getCustomIos(allCustomIoTypes, customIoPorts);
-        expect(customIos.length).toBe(0, 'there is no custom io');
+    ioService.queryCustomIos(1, false).then(() => {
+      let customIos = ioService.getCustomIos(allCustomIoTypes, customIoPorts);
+      expect(customIos.length).toBe(0, 'there is no custom io');
     });
   });
 
@@ -198,7 +196,6 @@ describe('IoService', () => {
       let customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
       expect(customIo).toBeTruthy();
     });
-
   });
 
   /**
@@ -221,10 +218,9 @@ describe('IoService', () => {
       let customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
       expect(customIo).toBeTruthy();
     });
-
   });
 
-    /**
+  /**
    * removeCustomIo method test.
    */
   it('remove custom io item in the view', () => {
@@ -243,7 +239,6 @@ describe('IoService', () => {
       let customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
       expect(customIo).toBeNull();
     });
-
   });
 
   /*********************************************************************************/
@@ -273,14 +268,13 @@ describe('IoService', () => {
     const mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     ioService.queryIos(IoOptions.AllInputs, 'all', false).then(() => {
       let ios = ioService.getIos();
       expect(ios.length).toBe(2, 'it should have two ios');
       expect(ios[0].label).toBe('Omri', 'io has its own label');
-
     });
   });
 
@@ -296,8 +290,8 @@ describe('IoService', () => {
     const mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     ioService.queryIos(IoOptions.AllInputs, 'all', false).then(() => {
       let ios = ioService.getIos();
@@ -317,11 +311,10 @@ describe('IoService', () => {
     const mcQueryResponse = { result: '', cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
-
-    ioService.setIoByBit(1, '1').then(() => {
+      return Promise.resolve(mcQueryResponse);
     });
+
+    ioService.setIoByBit(1, '1').then(() => {});
   });
 
   /*********************************************************************************/
@@ -376,13 +369,12 @@ describe('IoService', () => {
    */
   function createMockErrorFrame() {
     return {
-      errType : 'error',
-      errCode : 'error',
-      errMsg : 'error',
-      errTask : 'error',
-      errLine : 'error',
-      errModule  : 'error'
+      errType: 'error',
+      errCode: 'error',
+      errMsg: 'error',
+      errTask: 'error',
+      errLine: 'error',
+      errModule: 'error',
     };
   }
-
 });

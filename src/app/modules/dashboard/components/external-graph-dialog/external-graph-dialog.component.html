@@ -1,16 +1,36 @@
 <div class="main mat-typography">
-  <div class="wrapper">
-    <div class="title primary-bg">{{'dashboard.external.title'|translate}}</div>
-    <div class="content">
+	<div class="wrapper">
+		<div class="title primary-bg">
+			{{ 'dashboard.external.title' | translate }}
+		</div>
+		<div class="content">
       <mat-form-field>
-        <input type="text" placeholder="{{'dashboard.external.name'|translate}}" matInput [(ngModel)]="name" virtualKeyboard ktype="text">
-        <span matSuffix>.REC</span>
+        <mat-label>{{ 'dashboard.external.name' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedFile">
+          <mat-option *ngIf="files.length === 0">
+            {{ 'empty_list' | translate }}
+          </mat-option>
+          <mat-option *ngFor="let file of files" [value]="file">
+            {{file}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
-      <mat-checkbox color="primary" [(ngModel)]="is3D">{{'dashboard.external.3d'|translate}}</mat-checkbox>
-    </div>
-  </div>
-  <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="show()" [disabled]="name === null || name.length === 0">{{'dashboard.external.btnShow'|translate}}</button>
-  </div>
+			<mat-checkbox color="primary" [(ngModel)]="is3D">{{
+				'dashboard.external.3d' | translate
+			}}</mat-checkbox>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button color="primary" mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-button
+			color="primary"
+			(click)="show()"
+			[disabled]="selectedFile === null"
+		>
+			{{ 'dashboard.external.btnShow' | translate }}
+		</button>
+	</div>
 </div>

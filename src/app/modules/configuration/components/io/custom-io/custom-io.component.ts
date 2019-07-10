@@ -1,21 +1,33 @@
-import { Component, OnInit, ViewChild, AfterViewInit, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  Input,
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatTable, MatTableDataSource, MatRow } from '@angular/material';
 
-import { CustomIOTypes, CustomIOType, IoTableColumn } from '../../../services/io.service.enum';
-import { CustomIO, IoService, CustomIOPort } from '../../../services/io.service';
-
+import {
+  CustomIOTypes,
+  CustomIOType,
+  IoTableColumn,
+} from '../../../services/io.service.enum';
+import {
+  CustomIO,
+  IoService,
+  CustomIOPort,
+} from '../../../services/io.service';
 
 @Component({
   selector: 'app-custom-io',
   templateUrl: './custom-io.component.html',
-  styleUrls: ['./custom-io.component.css']
+  styleUrls: ['./custom-io.component.css'],
 })
 /**
  * This class describes the logics to custom io view.
  */
 export class CustomIOComponent implements OnInit, AfterViewInit {
-
   @Input() tableIndex: number;
 
   /**
@@ -25,7 +37,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     IoTableColumn.Type,
     IoTableColumn.Port,
     IoTableColumn.Value,
-    IoTableColumn.Label
+    IoTableColumn.Label,
   ];
 
   /**
@@ -71,7 +83,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
   /**
    * The custom io table instance.
    */
-  @ViewChild('customTable')
+  @ViewChild('customTable', { static: false })
   customTable: MatTable<CustomIO>;
 
   /**
@@ -108,31 +120,38 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     this.trn.get(['io']).subscribe(words => {
       this.words = words['io'];
       this.allCustomIoTypes = [
-                        {key: CustomIOTypes.InputBit, value: this.words['inputBit']},
-                        {key: CustomIOTypes.InputByte, value: this.words['inputByte']},
-                        {key: CustomIOTypes.InputWord, value: this.words['inputWord']},
-                        {key: CustomIOTypes.OutputBit, value: this.words['outputBit']},
-                        {key: CustomIOTypes.OutputByte, value: this.words['outputByte']},
-                        {key: CustomIOTypes.OutputWord, value: this.words['outputWord']},
-                      ];
-                    });
+        { key: CustomIOTypes.InputBit, value: this.words['inputBit'] },
+        { key: CustomIOTypes.InputByte, value: this.words['inputByte'] },
+        { key: CustomIOTypes.InputWord, value: this.words['inputWord'] },
+        { key: CustomIOTypes.OutputBit, value: this.words['outputBit'] },
+        { key: CustomIOTypes.OutputByte, value: this.words['outputByte'] },
+        { key: CustomIOTypes.OutputWord, value: this.words['outputWord'] },
+      ];
+    });
   }
 
   ngOnInit() {}
 
   ngAfterViewInit() {
-    this.ioService.queryCustomIoPorts().then(() => {
-      this.customIoPorts = this.ioService.getCustomIoPorts();
-      this.checkCustomIoTypes();
-    }).then(() => {
-      if (this.customIOTypes.length) {
-        this.ioService.queryCustomIos(this.tableIndex, this.customHex).then(() => {
-          this.customDataSource.data = this.ioService.getCustomIos(this.customIOTypes, this.customIoPorts);
-          this.enableButtonsInCustomTab(true, false);
-        });
-      }
-    });
-
+    this.ioService
+      .queryCustomIoPorts()
+      .then(() => {
+        this.customIoPorts = this.ioService.getCustomIoPorts();
+        this.checkCustomIoTypes();
+      })
+      .then(() => {
+        if (this.customIOTypes.length) {
+          this.ioService
+            .queryCustomIos(this.tableIndex, this.customHex)
+            .then(() => {
+              this.customDataSource.data = this.ioService.getCustomIos(
+                this.customIOTypes,
+                this.customIoPorts
+              );
+              this.enableButtonsInCustomTab(true, false);
+            });
+        }
+      });
   }
 
   /**
@@ -152,35 +171,48 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     let defaultType = this.findDefaultType();
 
     if (defaultType) {
-       let portKey = defaultType.replace(/\s/g, '');
+      let portKey = defaultType.replace(/\s/g, '');
 
-       let typeValue = null;
-       for (let type of this.allCustomIoTypes) {
-          if (type.key === defaultType) {
-            typeValue = type.value;
-            break;
-          }
-       }
+      let typeValue = null;
+      for (let type of this.allCustomIoTypes) {
+        if (type.key === defaultType) {
+          typeValue = type.value;
+          break;
+        }
+      }
 
-       this.customDataSource.data.push({
+      this.customDataSource.data.push({
         type: this.allCustomIoTypes,
         port: this.customIoPorts[portKey],
         selectedType: { key: defaultType, value: typeValue },
         selectedPort: this.customIoPorts[portKey][0],
         value: '',
-        label: ''
+        label: '',
       });
 
-      let newRow = this.customDataSource.data[this.customDataSource.data.length - 1];
+      let newRow = this.customDataSource.data[
+        this.customDataSource.data.length - 1
+      ];
       this.ioService
-        .addCustomIo(this.tableIndex, newRow.selectedType, newRow.selectedPort, this.customHex)
+        .addCustomIo(
+          this.tableIndex,
+          newRow.selectedType,
+          newRow.selectedPort,
+          this.customHex
+        )
         .then(() => {
-          this.customDataSource.data[this.customDataSource.data.length - 1] = this.ioService
-          .getCustomIo(this.customIOTypes, this.customIoPorts);
+          this.customDataSource.data[
+            this.customDataSource.data.length - 1
+          ] = this.ioService.getCustomIo(
+            this.customIOTypes,
+            this.customIoPorts
+          );
           this.customTable.renderRows();
 
-          this.changeSelectRow(this.customDataSource.data[this.customDataSource.data.length - 1],
-            this.customDataSource.data.length - 1);
+          this.changeSelectRow(
+            this.customDataSource.data[this.customDataSource.data.length - 1],
+            this.customDataSource.data.length - 1
+          );
           this.enableButtonsInCustomTab(true, true);
         });
     }
@@ -190,26 +222,31 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
    * Delete one row in the custom IO table.
    */
   deleteRowInCustomTable() {
-      let isSelectBottomLine = true;
-      if (this.selectedIndexInCustomTable !== this.customDataSource.data.length - 1) {
-        isSelectBottomLine = false;
-      }
+    let isSelectBottomLine = true;
+    if (
+      this.selectedIndexInCustomTable !==
+      this.customDataSource.data.length - 1
+    ) {
+      isSelectBottomLine = false;
+    }
 
-      this.ioService
-        .removeCustomIo(this.tableIndex, this.selectedIndexInCustomTable + 1)
-        .then(() => {
-          this.customDataSource.data.splice(this.selectedIndexInCustomTable, 1);
-          this.customTable.renderRows();
+    this.ioService
+      .removeCustomIo(this.tableIndex, this.selectedIndexInCustomTable + 1)
+      .then(() => {
+        this.customDataSource.data.splice(this.selectedIndexInCustomTable, 1);
+        this.customTable.renderRows();
 
-          if (isSelectBottomLine) {
-            this.changeSelectRow(this.customDataSource.data[this.customDataSource.data.length - 1],
-              this.customDataSource.data.length - 1);
-              this.enableButtonsInCustomTab(true, true);
-          } else {
-            this.changeSelectRow(null, -1);
-            this.enableButtonsInCustomTab(true, false);
-          }
-        });
+        if (isSelectBottomLine) {
+          this.changeSelectRow(
+            this.customDataSource.data[this.customDataSource.data.length - 1],
+            this.customDataSource.data.length - 1
+          );
+          this.enableButtonsInCustomTab(true, true);
+        } else {
+          this.changeSelectRow(null, -1);
+          this.enableButtonsInCustomTab(true, false);
+        }
+      });
   }
 
   /**
@@ -235,19 +272,36 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
 
     if (!select) {
       this.ioService
-        .modifyCustomIo(this.tableIndex, index + 1,  this.customDataSource.data[index].selectedType, ports[0], this.customHex)
+        .modifyCustomIo(
+          this.tableIndex,
+          index + 1,
+          this.customDataSource.data[index].selectedType,
+          ports[0],
+          this.customHex
+        )
         .then(() => {
-          this.customDataSource.data[index] = this.ioService.getCustomIo(this.customIOTypes, this.customIoPorts);
+          this.customDataSource.data[index] = this.ioService.getCustomIo(
+            this.customIOTypes,
+            this.customIoPorts
+          );
           this.customTable.renderRows();
         });
       return;
     }
 
-    this.ioService.modifyCustomIo(this.tableIndex, index + 1,  this.customDataSource.data[index].selectedType,
+    this.ioService
+      .modifyCustomIo(
+        this.tableIndex,
+        index + 1,
+        this.customDataSource.data[index].selectedType,
         this.customDataSource.data[index].selectedPort,
         this.customHex
-      ).then(() => {
-        this.customDataSource.data[index] = this.ioService.getCustomIo(this.customIOTypes, this.customIoPorts);
+      )
+      .then(() => {
+        this.customDataSource.data[index] = this.ioService.getCustomIo(
+          this.customIOTypes,
+          this.customIoPorts
+        );
         this.customTable.renderRows();
       });
   }
@@ -257,11 +311,20 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
    * @param index The row index.
    * @param value The changed value of the custom IO port.
    */
-   portSelectionChange(index, value) {
-    this.ioService.modifyCustomIo(this.tableIndex, index + 1, this.customDataSource.data[index].selectedType,
-        value, this.customHex
-      ).then(() => {
-        this.customDataSource.data[index] = this.ioService.getCustomIo(this.customIOTypes, this.customIoPorts);
+  portSelectionChange(index, value) {
+    this.ioService
+      .modifyCustomIo(
+        this.tableIndex,
+        index + 1,
+        this.customDataSource.data[index].selectedType,
+        value,
+        this.customHex
+      )
+      .then(() => {
+        this.customDataSource.data[index] = this.ioService.getCustomIo(
+          this.customIOTypes,
+          this.customIoPorts
+        );
         this.customTable.renderRows();
       });
   }
@@ -269,9 +332,12 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
   /**
    * The handler method if the hex checkbox is changed.
    */
-   customHexChanged() {
+  customHexChanged() {
     this.ioService.queryCustomIos(this.tableIndex, this.customHex).then(() => {
-      this.customDataSource.data = this.ioService.getCustomIos(this.customIOTypes, this.customIoPorts);
+      this.customDataSource.data = this.ioService.getCustomIos(
+        this.customIOTypes,
+        this.customIoPorts
+      );
     });
   }
 
@@ -281,7 +347,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
    * @param event Onclick event on the row.
    * @returns if it is output, return true.
    */
-   onClickRadioButtonInCustomIO(index, event) {
+  onClickRadioButtonInCustomIO(index, event) {
     event.stopPropagation();
     this.changeSelectRow(null, -1);
     this.enableButtonsInCustomTab(true, false);
@@ -308,7 +374,10 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
    * @param isAddEnable wheter the add button is enabled.
    * @param isDeleteEnable whether the delete button is enabled.
    */
-  private enableButtonsInCustomTab(isAddEnable: boolean, isDeleteEnable: boolean) {
+  private enableButtonsInCustomTab(
+    isAddEnable: boolean,
+    isDeleteEnable: boolean
+  ) {
     this.isAddEnable = isAddEnable;
     this.isDeleteEnable = isDeleteEnable;
 
@@ -354,7 +423,6 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
    * @returns the default custom io type.
    */
   private findDefaultType(): CustomIOTypes {
-
     if (this.customIoPorts) {
       let key = CustomIOTypes.InputBit.replace(/\s/g, '');
 

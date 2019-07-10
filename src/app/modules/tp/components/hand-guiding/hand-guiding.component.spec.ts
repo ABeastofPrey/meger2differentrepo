@@ -9,10 +9,9 @@ describe('JogScreenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HandGuidingComponent ],
-      providers: [HandGuidingService, TpStatService]
-    })
-    .compileComponents();
+      declarations: [HandGuidingComponent],
+      providers: [HandGuidingService, TpStatService],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

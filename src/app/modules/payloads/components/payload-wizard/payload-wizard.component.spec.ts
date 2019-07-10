@@ -8,9 +8,8 @@ describe('PayloadWizardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PayloadWizardComponent ]
-    })
-    .compileComponents();
+      declarations: [PayloadWizardComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

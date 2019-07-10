@@ -1,0 +1,32 @@
+.title {
+  display: flex;
+  align-items: center;
+  margin: -24px -24px 0 -24px;
+  padding: 16px;
+  color: #fff;
+  font-size: 18px;
+}
+.content {
+  padding: 24px;
+  box-sizing: border-box;
+}
+mat-radio-button {
+  margin-right: 24px;
+}
+.buttons {
+  width: 100%;
+  text-align: right;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.warn {
+  max-width: 400px;
+  margin-top: 16px;
+}
+.robot {
+  margin: 16px 0;
+}
+.confirm {
+  margin: 0 24px;
+  width: calc(100% - 48px);
+}

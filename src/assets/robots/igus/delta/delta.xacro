@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+<!-- =================================================================================== -->
+
+<robot name="igus_delta" xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <xacro:property name="DEG2RAD" value="0.017453292519943295" />
+    <xacro:property name="TRAIL_DISTANCE_FROM_CENTER" value="0.239" />
+    <xacro:property name="TRAIL_HEIGHT" value="0.6" />
+
+    <!-- link list -->
+    <link name="base_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="./meshes/visual/body4.stl"/>
+            </geometry>
+            <material name="">
+                <color rgba="0 0 0 0.2"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="trail_link_1">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="./meshes/visual/trail6.stl"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="trail_link_2">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="./meshes/visual/trail6.stl"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="trail_link_3">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="./meshes/visual/trail6.stl"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Pole Connectors Links -->
+    <link name="trail1_left_connector_link"/>
+    <link name="trail1_right_connector_link"/>
+    <link name="trail2_left_connector_link"/>
+    <link name="trail2_right_connector_link"/>
+    <link name="trail3_left_connector_link"/>
+    <link name="trail3_right_connector_link"/>
+
+    <!-- end of link list -->
+    <!-- joint list -->
+
+    <joint name="joint_a1" type="prismatic">
+        <origin rpy="0 ${-45*DEG2RAD} 0" xyz="${TRAIL_DISTANCE_FROM_CENTER} 0 ${TRAIL_HEIGHT}"/>
+        <parent link="base_link"/>
+        <child link="trail_link_1"/>
+        <axis xyz="-1 0 -1"/>
+        <limit effort="0" lower="0" upper="0.15" velocity="1"/>
+    </joint>
+
+    <joint name="joint_a2" type="prismatic">
+        <origin rpy="0 ${-45*DEG2RAD} ${120*DEG2RAD}" xyz="${-sin(DEG2RAD*30)*TRAIL_DISTANCE_FROM_CENTER} ${sin(DEG2RAD*60)*TRAIL_DISTANCE_FROM_CENTER} ${TRAIL_HEIGHT}"/>
+        <parent link="base_link"/>
+        <child link="trail_link_2"/>
+        <axis xyz="${sin(DEG2RAD*30)} ${-sin(DEG2RAD*60)} -1"/>
+        <limit effort="0" lower="0" upper="0.15" velocity="1"/>
+    </joint>
+
+    <joint name="joint_a3" type="prismatic">
+        <origin rpy="0 ${-45*DEG2RAD} ${-120*DEG2RAD}" xyz="${-sin(DEG2RAD*30)*TRAIL_DISTANCE_FROM_CENTER} ${-sin(DEG2RAD*60)*TRAIL_DISTANCE_FROM_CENTER} ${TRAIL_HEIGHT}"/>
+        <parent link="base_link"/>
+        <child link="trail_link_3"/>
+        <axis xyz="${sin(DEG2RAD*30)} ${sin(DEG2RAD*60)} -1"/>
+        <limit effort="0" lower="0" upper="0.15" velocity="1"/>
+    </joint>
+
+    <!-- Pole Joints -->
+    <joint name="joint_trail1_left_connector" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.035 -0.025 0"/>
+        <parent link="trail_link_1"/>
+        <child link="trail1_left_connector_link"/>
+    </joint>
+
+    <joint name="joint_trail1_right_connector" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.035 0.025 0"/>
+        <parent link="trail_link_1"/>
+        <child link="trail1_right_connector_link"/>
+    </joint>
+
+    <joint name="joint_trail2_left_connector" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.035 -0.025 0"/>
+        <parent link="trail_link_2"/>
+        <child link="trail2_left_connector_link"/>
+    </joint>
+
+    <joint name="joint_trail2_right_connector" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.035 0.025 0"/>
+        <parent link="trail_link_2"/>
+        <child link="trail2_right_connector_link"/>
+    </joint>
+
+    <joint name="joint_trail3_left_connector" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.035 -0.025 0"/>
+        <parent link="trail_link_3"/>
+        <child link="trail3_left_connector_link"/>
+    </joint>
+
+    <joint name="joint_trail3_right_connector" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.035 0.025 0"/>
+        <parent link="trail_link_3"/>
+        <child link="trail3_right_connector_link"/>
+    </joint>
+
+    <!-- ROS base_link to ours $ROBROOT coordinate system transform -->
+    <link name="base"/>
+    <joint name="base_link-base" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="base"/>
+    </joint>
+
+    <link name="tool0">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="./meshes/visual/plate5.stl"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="base_link-tool0" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="tool0"/>
+    </joint>
+
+
+</robot>
+

@@ -1,28 +1,48 @@
-import { Component, OnInit, ViewChildren, AfterViewInit, QueryList } from '@angular/core';
-import { MatSort, MatTableDataSource, MatTabChangeEvent, MatDialog } from '@angular/material';
+import {
+  Component,
+  OnInit,
+  ViewChildren,
+  AfterViewInit,
+  QueryList,
+} from '@angular/core';
+import {
+  MatSort,
+  MatTableDataSource,
+  MatTabChangeEvent,
+  MatDialog,
+} from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 import { IO, IoService } from '../../services/io.service';
-import { IoOption, IoOptions, IoFormatOption, IoFormatOptions, IoTableColumn } from '../../services/io.service.enum';
+import {
+  IoOption,
+  IoOptions,
+  IoFormatOption,
+  IoFormatOptions,
+  IoTableColumn,
+} from '../../services/io.service.enum';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomIOComponent } from './custom-io/custom-io.component';
-import {LoginService} from '../../../core';
+import { LoginService } from '../../../core';
 
 @Component({
   selector: 'app-io',
   templateUrl: './io.component.html',
-  styleUrls: ['./io.component.css']
+  styleUrls: ['./io.component.css'],
 })
 
 /**
  * This class describes the logics to io monitor.
  */
 export class IoComponent implements OnInit, AfterViewInit {
-
   /**
    * The io table columns.
    */
-  displayedColumns: IoTableColumn[] = [IoTableColumn.Port, IoTableColumn.Value, IoTableColumn.Label];
+  displayedColumns: IoTableColumn[] = [
+    IoTableColumn.Port,
+    IoTableColumn.Value,
+    IoTableColumn.Label,
+  ];
 
   /**
    * The io query options.
@@ -42,32 +62,44 @@ export class IoComponent implements OnInit, AfterViewInit {
   /**
    * The selected io option in left table.
    */
-  leftSelected: IoOption = {key: IoOptions.AllInputs, value: IoOptions.AllInputs};
+  leftSelected: IoOption = {
+    key: IoOptions.AllInputs,
+    value: IoOptions.AllInputs,
+  };
 
   /**
    * The selected io option in right table.
    */
-  rightSelected: IoOption = {key: IoOptions.AllOutputs, value: IoOptions.AllOutputs};
+  rightSelected: IoOption = {
+    key: IoOptions.AllOutputs,
+    value: IoOptions.AllOutputs,
+  };
 
   /**
    * The selected io format option in left table.
    */
-  leftRadioOptions: IoFormatOption = {key: IoFormatOptions.Bit, value: IoFormatOptions.Bit};
+  leftRadioOptions: IoFormatOption = {
+    key: IoFormatOptions.Bit,
+    value: IoFormatOptions.Bit,
+  };
 
   /**
    * The selected io format option in right table.
    */
-  rightRadioOptions: IoFormatOption = {key: IoFormatOptions.Bit, value: IoFormatOptions.Bit};
+  rightRadioOptions: IoFormatOption = {
+    key: IoFormatOptions.Bit,
+    value: IoFormatOptions.Bit,
+  };
 
   /**
    * The IoTableColumn enum object reference.
    */
-   IoTableColumnReference = IoTableColumn;
+  IoTableColumnReference = IoTableColumn;
 
   /**
    * The IoFormatOptions enum object reference.
    */
-   IoFormatOptionsReference = IoFormatOptions;
+  IoFormatOptionsReference = IoFormatOptions;
 
   /**
    * The data source for left table.
@@ -127,17 +159,18 @@ export class IoComponent implements OnInit, AfterViewInit {
   ) {
     this.trn.get(['io']).subscribe(words => {
       this.words = words['io'];
-      this.ioOptions = [{key: IoOptions.AllInputs, value: this.words['allInputs']},
-                        {key: IoOptions.AllOutputs, value: this.words['allOutputs']},
-                        {key: IoOptions.DriveIoInputs, value: this.words['driveIoInputs']},
-                        {key: IoOptions.DriveIoOutputs, value: this.words['driveIoOutputs']},
-                        {key: IoOptions.UserIoInputs, value: this.words['userIoInputs']},
-                        {key: IoOptions.UserIoOutputs, value: this.words['userIoOutputs']},
-                      ];
+      this.ioOptions = [
+        { key: IoOptions.AllInputs, value: this.words['allInputs'] },
+        { key: IoOptions.AllOutputs, value: this.words['allOutputs'] },
+        { key: IoOptions.DriveIoInputs, value: this.words['driveIoInputs'] },
+        { key: IoOptions.DriveIoOutputs, value: this.words['driveIoOutputs'] },
+        { key: IoOptions.UserIoInputs, value: this.words['userIoInputs'] },
+        { key: IoOptions.UserIoOutputs, value: this.words['userIoOutputs'] },
+      ];
       this.radioButtonOptions = [
-        {key: IoFormatOptions.Bit, value: this.words['bit']},
-        {key: IoFormatOptions.Byte, value: this.words['byte']},
-        {key: IoFormatOptions.Word, value: this.words['word']}
+        { key: IoFormatOptions.Bit, value: this.words['bit'] },
+        { key: IoFormatOptions.Byte, value: this.words['byte'] },
+        { key: IoFormatOptions.Word, value: this.words['word'] },
       ];
       this.leftSelected.value = this.words['allInputs'];
       this.rightSelected.value = this.words['allInputs'];
@@ -163,12 +196,11 @@ export class IoComponent implements OnInit, AfterViewInit {
         }
       }
 
-    for (i = 0; i < this.tabs.length; i++) {
-      this.customViewFormControl[i] = new FormControl(this.tabs[i], [
-        Validators.required,
-      ]);
-    }
-
+      for (i = 0; i < this.tabs.length; i++) {
+        this.customViewFormControl[i] = new FormControl(this.tabs[i], [
+          Validators.required,
+        ]);
+      }
     });
   }
 
@@ -195,15 +227,23 @@ export class IoComponent implements OnInit, AfterViewInit {
       this.customViewFormControl.push(newCustomViewFormControl);
       this.tabs.push(tabName);
     } else {
-      this.customViewFormControl.splice(this.customTabAddIndex - 1, 0, newCustomViewFormControl);
+      this.customViewFormControl.splice(
+        this.customTabAddIndex - 1,
+        0,
+        newCustomViewFormControl
+      );
       this.tabs.splice(this.customTabAddIndex - 1, 0, tabName);
     }
 
     this.ioService.setCustomTabName(this.customTabAddIndex, tabName);
     this.customEmptyIndex[this.customTabAddIndex - 1] = 1;
 
-    setTimeout(() => {this.selected.setValue(this.customTabAddIndex - 1); }, 0);
-    setTimeout(() => {this.selected.setValue(this.customTabAddIndex); }, 0);
+    setTimeout(() => {
+      this.selected.setValue(this.customTabAddIndex - 1);
+    }, 0);
+    setTimeout(() => {
+      this.selected.setValue(this.customTabAddIndex);
+    }, 0);
   }
 
   /**
@@ -216,8 +256,8 @@ export class IoComponent implements OnInit, AfterViewInit {
         title: this.words['dialogTitle'],
         msg: this.words['dialogMsg'],
         yes: this.words['dialogYes'],
-        no: this.words['dialogNo']
-      }
+        no: this.words['dialogNo'],
+      },
     });
     ref.afterClosed().subscribe(ret => {
       if (ret) {
@@ -229,8 +269,12 @@ export class IoComponent implements OnInit, AfterViewInit {
           this.tabs.splice(this.customTabDeleteIndex - 1, 1);
         }
 
-        if (this.customTabDeleteIndex < this.customEmptyIndex.indexOf(1, this.customTabDeleteIndex - 1) + 1) {
-          this.customTabDeleteIndex = this.customEmptyIndex.indexOf(1, this.customTabDeleteIndex - 1) + 1;
+        if (
+          this.customTabDeleteIndex <
+          this.customEmptyIndex.indexOf(1, this.customTabDeleteIndex - 1) + 1
+        ) {
+          this.customTabDeleteIndex =
+            this.customEmptyIndex.indexOf(1, this.customTabDeleteIndex - 1) + 1;
         }
         this.ioService.setCustomTabName(this.customTabDeleteIndex, ' ');
         this.ioService.clearCustomTab(this.customTabDeleteIndex);
@@ -262,19 +306,43 @@ export class IoComponent implements OnInit, AfterViewInit {
   onViewSelectionChange(flag) {
     if (flag === 'left') {
       this.leftRadioOptions.value = this.words[this.leftRadioOptions.key];
-      this.updateTable(this.leftSelected.key, this.leftRadioOptions.key, this.hex, this.leftDataSource, this.sorts.first);
+      this.updateTable(
+        this.leftSelected.key,
+        this.leftRadioOptions.key,
+        this.hex,
+        this.leftDataSource,
+        this.sorts.first
+      );
     }
 
     if (flag === 'right') {
       this.rightRadioOptions.value = this.words[this.rightRadioOptions.key];
-      this.updateTable(this.rightSelected.key, this.rightRadioOptions.key, this.hex, this.rightDataSource, this.sorts.last);
+      this.updateTable(
+        this.rightSelected.key,
+        this.rightRadioOptions.key,
+        this.hex,
+        this.rightDataSource,
+        this.sorts.last
+      );
     }
 
     if (flag === 'all') {
       this.leftRadioOptions.value = this.words[this.leftRadioOptions.key];
       this.rightRadioOptions.value = this.words[this.rightRadioOptions.key];
-      this.updateTable(this.leftSelected.key, this.leftRadioOptions.key, this.hex, this.leftDataSource, this.sorts.first);
-      this.updateTable(this.rightSelected.key, this.rightRadioOptions.key, this.hex, this.rightDataSource, this.sorts.last);
+      this.updateTable(
+        this.leftSelected.key,
+        this.leftRadioOptions.key,
+        this.hex,
+        this.leftDataSource,
+        this.sorts.first
+      );
+      this.updateTable(
+        this.rightSelected.key,
+        this.rightRadioOptions.key,
+        this.hex,
+        this.rightDataSource,
+        this.sorts.last
+      );
     }
   }
 
@@ -286,9 +354,19 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   onClickRadioButtonInIO(port: number, flag: string): boolean {
     if (flag === 'right') {
-      return this.changeIoValue(port, 'left', this.rightSelected.key, this.rightDataSource);
+      return this.changeIoValue(
+        port,
+        'left',
+        this.rightSelected.key,
+        this.rightDataSource
+      );
     } else {
-      return this.changeIoValue(port, 'right', this.leftSelected.key, this.leftDataSource);
+      return this.changeIoValue(
+        port,
+        'right',
+        this.leftSelected.key,
+        this.leftDataSource
+      );
     }
   }
 
@@ -333,7 +411,9 @@ export class IoComponent implements OnInit, AfterViewInit {
   private refreshCustomIoTab(index: number) {
     let selectedIndex = this.calculateCustomIoTabIndex(index);
 
-    let customIo = this.customIos.find(item => item.tableIndex === selectedIndex);
+    let customIo = this.customIos.find(
+      item => item.tableIndex === selectedIndex
+    );
     if (customIo) {
       customIo.ngAfterViewInit();
     }
@@ -346,7 +426,13 @@ export class IoComponent implements OnInit, AfterViewInit {
    * @param dataSource The table data source.
    * @param sort The MatSort instance.
    */
-  private updateTable(ioOption: IoOptions, formatOption: string, isHex: boolean, dataSource: MatTableDataSource<IO>, sort: MatSort) {
+  private updateTable(
+    ioOption: IoOptions,
+    formatOption: string,
+    isHex: boolean,
+    dataSource: MatTableDataSource<IO>,
+    sort: MatSort
+  ) {
     this.ioService.queryIos(ioOption, formatOption, isHex).then(() => {
       dataSource.data = this.ioService.getIos();
       dataSource.sort = sort;
@@ -361,8 +447,17 @@ export class IoComponent implements OnInit, AfterViewInit {
    * @param dataSource The table data source.
    * @returns if it is output, return true.
    */
-  private changeIoValue(port: number, flag: string, ioOption: string, dataSource: MatTableDataSource<IO>): boolean {
-    if ((ioOption === IoOptions.AllInputs) || (ioOption === IoOptions.DriveIoInputs) || (ioOption === IoOptions.UserIoInputs)) {
+  private changeIoValue(
+    port: number,
+    flag: string,
+    ioOption: string,
+    dataSource: MatTableDataSource<IO>
+  ): boolean {
+    if (
+      ioOption === IoOptions.AllInputs ||
+      ioOption === IoOptions.DriveIoInputs ||
+      ioOption === IoOptions.UserIoInputs
+    ) {
       return false;
     }
 

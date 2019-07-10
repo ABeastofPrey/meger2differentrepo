@@ -8,9 +8,8 @@ describe('FrameCalibrationDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FrameCalibrationDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [FrameCalibrationDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

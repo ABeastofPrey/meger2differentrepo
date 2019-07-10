@@ -47,6 +47,6 @@
 
 ::ng-deep .diagnostics-container table tr:first-child td {
   font-weight: bold;
-  color: rgba(0,0,0,0.52);
+  color: rgba(0, 0, 0, 0.52);
   border-bottom: 1px solid black;
 }

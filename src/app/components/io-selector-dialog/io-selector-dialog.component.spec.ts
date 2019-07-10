@@ -8,9 +8,8 @@ describe('IoSelectorDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IoSelectorDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [IoSelectorDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

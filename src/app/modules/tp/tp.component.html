@@ -1,12 +1,17 @@
 <div class="wrapper">
-  <nav mat-tab-nav-bar backgroundColor="primary" color="accent">
-    <ng-container *ngFor="let tab of tabs">
-      <a *ngIf="shouldShow(tab.path)" mat-tab-link routerLinkActive #rla="routerLinkActive"
-        [routerLink]="[tab.path]" 
-        [active]="rla.isActive">
-        {{ tab.label }}
-      </a>
-    </ng-container>
-  </nav>
-  <router-outlet></router-outlet>
+	<nav mat-tab-nav-bar backgroundColor="primary" color="accent">
+		<ng-container *ngFor="let tab of tabs">
+			<a
+				*ngIf="shouldShow(tab.path)"
+				mat-tab-link
+				routerLinkActive
+				#rla="routerLinkActive"
+				[routerLink]="[tab.path]"
+				[active]="rla.isActive"
+			>
+				{{ tab.label }}
+			</a>
+		</ng-container>
+	</nav>
+	<router-outlet></router-outlet>
 </div>

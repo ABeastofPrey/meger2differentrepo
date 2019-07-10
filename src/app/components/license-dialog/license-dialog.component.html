@@ -1,0 +1,17 @@
+<div class="wrapper mat-typography">
+	<mat-toolbar color="primary">
+		{{ 'license.title' | translate }}
+	</mat-toolbar>
+	<div class="content">
+		<mat-spinner color="primary" *ngIf="license === null"></mat-spinner>
+		<div #container class="license mat-elevation-z3" *ngIf="license" [innerHTML]="license"></div>
+		<div style="text-align: center;">
+			<button mat-button color="warn" mat-dialog-close>
+				{{ 'license.reject' | translate }}
+			</button>
+			<button mat-raised-button color="primary" (click)="accept()">
+				{{ 'license.accept' | translate }}
+			</button>
+		</div>
+	</div>
+</div>

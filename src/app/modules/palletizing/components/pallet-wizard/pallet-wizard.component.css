@@ -16,14 +16,20 @@ mat-form-field {
   margin-right: 8px;
   width: auto;
 }
-.input-large { max-width: 135px; }
-.input-normal { max-width: 90px; }
+.input-large {
+  max-width: 135px;
+}
+.input-normal {
+  max-width: 90px;
+}
 .input-small {
   max-width: 45px;
   margin-top: 8px;
   margin-bottom: -10px;
 }
-.input-large { font-size: 24px; }
+.input-large {
+  font-size: 24px;
+}
 .header {
   display: flex;
   padding: 1em;
@@ -33,12 +39,14 @@ mat-form-field {
   font-size: 24px;
   flex: 1;
 }
-.content { padding: 1em; }
-.label { 
-  color: rgba(0, 0, 0, 0.54); 
+.content {
+  padding: 1em;
+}
+.label {
+  color: rgba(0, 0, 0, 0.54);
   margin-top: 8px;
 }
-.step-wrapper  {
+.step-wrapper {
   display: flex;
   min-height: 305px;
 }
@@ -57,8 +65,9 @@ mat-form-field {
   max-width: 250px;
 }
 
-h2, h3 {
-  margin:0;
+h2,
+h3 {
+  margin: 0;
 }
 
 .text-and-button {
@@ -81,13 +90,13 @@ h2, h3 {
 }
 
 .red {
-  color: #AA0000;
+  color: #aa0000;
   font-weight: bold;
   margin: 0 6px;
 }
 
 .green {
-  color: #008800!important;
+  color: #008800 !important;
 }
 
 .direction-picker {
@@ -108,9 +117,11 @@ h2, h3 {
   padding-right: 16px;
   line-height: 2;
 }
-pallet-level-designer { flex: 1; }
+pallet-level-designer {
+  flex: 1;
+}
 .error-message {
-  background: #B71C1C;
+  background: #b71c1c;
   color: #fff;
   position: absolute;
   left: 0;

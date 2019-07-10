@@ -1,60 +1,96 @@
 <div class="wrapper">
-  <div class="toolbar center-vertical mat-elevation-z3" *ngIf="login.isAdmin">
-    <button mat-raised-button color="primary" (click)="create()" matTooltip="{{'userManager.new'|translate}}">
-      <mat-icon>person_add</mat-icon>
-    </button>
-    <button mat-raised-button color="warn" [disabled]="selection.selected.length===0" (click)="deleteSelected()">
-      <mat-icon>delete_forever</mat-icon>
-    </button>
-  </div>
-  <mat-table #table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="select">
-      <mat-header-cell *matHeaderCellDef>
-        <mat-checkbox color="primary"
-                *ngIf="login.isAdmin"
-                (change)="$event ? masterToggle() : null"
-                      [checked]="selection.hasValue() && isAllSelected()"
-                      [indeterminate]="selection.hasValue() && !isAllSelected()">
-        </mat-checkbox>
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-        <mat-checkbox color="primary"
-                *ngIf="login.isAdmin"
-                (click)="$event.stopPropagation()"
-                (change)="$event ? selection.toggle(row) : null"
-                      [checked]="selection.isSelected(row)">
-        </mat-checkbox>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="pic">
-      <mat-header-cell *matHeaderCellDef>{{'userManager.profilePic'|translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <div class="profile-pic">
-          <img [src]="element.pic">
-        </div>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="username">
-      <mat-header-cell *matHeaderCellDef mat-sort-header="username">{{'userManager.username'|translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.username}}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="fullName">
-      <mat-header-cell *matHeaderCellDef mat-sort-header="fullName">{{'userManager.full'|translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.fullName}}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="permission">
-      <mat-header-cell *matHeaderCellDef mat-sort-header="permission">{{'userManager.permission'|translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{api.getUserPermission(element.permission)}}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="edit">
-      <mat-header-cell *matHeaderCellDef>{{'edit'|translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let row">
-        <button mat-raised-button color="primary" (click)="editUser(row)">
-          <mat-icon>edit</mat-icon>
-        </button>
-      </mat-cell>
-    </ng-container>
-    <mat-header-row *matHeaderRowDef="login.isAdmin ? ['select','pic','username','fullName','permission','edit'] : ['pic','username','fullName','permission','edit']"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: login.isAdmin ? ['select','pic','username','fullName','permission','edit'] : ['pic','username','fullName','permission','edit']; let element;"></mat-row>
-  </mat-table>
+	<div class="toolbar center-vertical mat-elevation-z3" *ngIf="login.isAdmin">
+		<button
+			mat-raised-button
+			color="primary"
+			(click)="create()"
+			matTooltip="{{ 'userManager.new' | translate }}"
+		>
+			<mat-icon>person_add</mat-icon>
+		</button>
+		<button
+			mat-raised-button
+			color="warn"
+			[disabled]="selection.selected.length === 0"
+			(click)="deleteSelected()"
+		>
+			<mat-icon>delete_forever</mat-icon>
+		</button>
+	</div>
+	<mat-table #table [dataSource]="dataSource" matSort>
+		<ng-container matColumnDef="select">
+			<mat-header-cell *matHeaderCellDef>
+				<mat-checkbox
+					color="primary"
+					*ngIf="login.isAdmin"
+					(change)="$event ? masterToggle() : null"
+					[checked]="selection.hasValue() && isAllSelected()"
+					[indeterminate]="selection.hasValue() && !isAllSelected()"
+				>
+				</mat-checkbox>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let row">
+				<mat-checkbox
+					color="primary"
+					*ngIf="login.isAdmin"
+					(click)="$event.stopPropagation()"
+					(change)="$event ? selection.toggle(row) : null"
+					[checked]="selection.isSelected(row)"
+				>
+				</mat-checkbox>
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="pic">
+			<mat-header-cell *matHeaderCellDef>{{
+				'userManager.profilePic' | translate
+			}}</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				<div class="profile-pic">
+					<img [src]="element.pic" />
+				</div>
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="username">
+			<mat-header-cell *matHeaderCellDef mat-sort-header="username">{{
+				'userManager.username' | translate
+			}}</mat-header-cell>
+			<mat-cell *matCellDef="let element">{{ element.username }}</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="fullName">
+			<mat-header-cell *matHeaderCellDef mat-sort-header="fullName">{{
+				'userManager.full' | translate
+			}}</mat-header-cell>
+			<mat-cell *matCellDef="let element">{{ element.fullName }}</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="permission">
+			<mat-header-cell *matHeaderCellDef mat-sort-header="permission">{{
+				'userManager.permission' | translate
+			}}</mat-header-cell>
+			<mat-cell *matCellDef="let element">{{ api.getUserPermission(element.permission) }}</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="edit">
+			<mat-header-cell *matHeaderCellDef>{{ 'edit' | translate }}</mat-header-cell>
+			<mat-cell *matCellDef="let row">
+				<button mat-raised-button color="primary" (click)="editUser(row)">
+					<mat-icon>edit</mat-icon>
+				</button>
+			</mat-cell>
+		</ng-container>
+		<mat-header-row
+			*matHeaderRowDef="
+				login.isAdmin
+					? ['select', 'pic', 'username', 'fullName', 'permission', 'edit']
+					: ['pic', 'username', 'fullName', 'permission', 'edit']
+			"
+		></mat-header-row>
+		<mat-row
+			*matRowDef="
+				let row;
+				columns: login.isAdmin
+					? ['select', 'pic', 'username', 'fullName', 'permission', 'edit']
+					: ['pic', 'username', 'fullName', 'permission', 'edit'];
+				let element
+			"
+		></mat-row>
+	</mat-table>
 </div>

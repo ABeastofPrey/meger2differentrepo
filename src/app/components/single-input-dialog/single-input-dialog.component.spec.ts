@@ -8,9 +8,8 @@ describe('SingleInputDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SingleInputDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [SingleInputDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

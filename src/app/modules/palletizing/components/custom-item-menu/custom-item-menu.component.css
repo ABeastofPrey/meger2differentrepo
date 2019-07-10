@@ -1,2 +1,6 @@
-.buttons { display: flex; }
-.buttons button { margin-right: 16px;}
+.buttons {
+  display: flex;
+}
+.buttons button {
+  margin-right: 16px;
+}

@@ -1,47 +1,119 @@
 <div *ngIf="lastSelectedNode" style="margin: 8px;">
-  <h2>{{lastSelectedNode.name}}</h2>
-  <table class="full">
-    <thead>
-      <tr>
-        <td>{{'simulator_screen.prop'|translate}}</td>
-        <td>{{'simulator_screen.val'|translate}}</td>
-      </tr>
-    </thead>
-    <tr>
-      <td>POS_X</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.position.x" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'pos_x')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-    <tr>
-      <td>POS_Y</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.position.y" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'pos_y')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-    <tr>
-      <td>POS_Z</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.position.z" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'pos_z')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-    <tr>
-      <td>ROT_X</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.x" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'rot_x')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-    <tr>
-      <td>ROT_Y</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.y" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'rot_y')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-    <tr>
-      <td>ROT_Z</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.rotation.z" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'rot_z')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-    <tr>
-      <td>SCALE_X</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.scale.x" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'scale_x')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-    <tr>
-      <td>SCALE_Y</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.scale.y" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'scale_y')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-    <tr>
-      <td>SCALE_Z</td>
-      <td><input type="number" [(ngModel)]="lastSelectedNode.scale.z" (ngModelChange)="sim.onObjectParamChanged($event,lastSelectedNode,'scale_z')" virtualKeyboard ktype="numeric"></td>
-    </tr>
-  </table>
+	<h2>{{ lastSelectedNode.name }}</h2>
+	<table class="full">
+		<thead>
+			<tr>
+				<td>{{ 'simulator_screen.prop' | translate }}</td>
+				<td>{{ 'simulator_screen.val' | translate }}</td>
+			</tr>
+		</thead>
+		<tr>
+			<td>POS_X</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.position.x"
+					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_x')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>POS_Y</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.position.y"
+					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_y')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>POS_Z</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.position.z"
+					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_z')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>ROT_X</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.eulerXYZ.x"
+					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_x')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>ROT_Y</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.eulerXYZ.y"
+					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_y')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>ROT_Z</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.eulerXYZ.z"
+					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_z')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>SCALE_X</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.scale.x"
+					(ngModelChange)="sim.onObjectParamChanged($event, lastSelectedNode, 'scale_x')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>SCALE_Y</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.scale.y"
+					(ngModelChange)="sim.onObjectParamChanged($event, lastSelectedNode, 'scale_y')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>SCALE_Z</td>
+			<td>
+				<input
+					type="number"
+					[(ngModel)]="lastSelectedNode.scale.z"
+					(ngModelChange)="sim.onObjectParamChanged($event, lastSelectedNode, 'scale_z')"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</td>
+		</tr>
+	</table>
 </div>

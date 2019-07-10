@@ -5,6 +5,7 @@
     "subtitle": "Version information for this softMC controller"
   },
   "acknowledge": "ACKNOWLEDGE",
+  "actions": "Actions",
   "add": "Add",
   "Administrator": "Administrator",
   "advanced": "Advanced",
@@ -26,6 +27,13 @@
       "no": "CANCEL"
     },
     "rebooting": "Rebooting softMC...",
+    "restore": {
+      "default": "Default",
+      "desc": "Restore softMC to Factory State",
+      "msg": "This will also reset the calibration parameters. Robot DH parameters and Mastering parameters will have to be reconfigured manually after the system restore will be done.",
+      "robot": "Restore to the specified Robot",
+      "title": "Factory Restore"
+    },
     "title": "softMC Tools",
     "updating": "Updating Firmware"
   },
@@ -40,6 +48,7 @@
     "add": "ADD",
     "calibrate": "CALIBRATE",
     "cancel": "CANCEL",
+    "change": "CHANGE",
     "close": "CLOSE",
     "confirm": "CONFIRM",
     "create": "CREATE",
@@ -56,8 +65,11 @@
     "ok": "OK",
     "open": "OPEN",
     "overwrite": "OVERWRITE",
+    "refresh": "REFRESH",
     "rename": "RENAME",
+    "restore": "RESTORE",
     "save": "SAVE",
+    "send": "SEND",
     "set_current": "SET AS CURRENT",
     "teach": "TEACH",
     "upload": "UPLOAD",
@@ -82,8 +94,8 @@
   "cut": "Cut",
   "dashboard": {
     "charts": {
-     "2d": "2D Graph",
-     "3d": "3D Graph"
+      "2d": "2D Graph",
+      "3d": "3D Graph"
     },
     "err_file": "FILE NOT FOUND",
     "err_move": "Error {{code}}: {{msg}}",
@@ -126,7 +138,8 @@
       "msg": "This cannot be undone.",
       "title": "Delete Variable {{name}}?",
       "title_multi": "Delete {{num}} variables?"
-    }
+    },
+    "no-var": "No Variable is selected"
   },
   "decimal": "Decimal",
   "delete": "Delete",
@@ -142,11 +155,11 @@
   "disable": "Disable",
   "disabled": "Disabled",
   "disconnect": {
-    "title": "Cannot Connect to the Controller",
+    "title": "Connection to softMC was lost",
     "msg": "Check your network connection."
   },
   "dismiss": "DISMISS",
-  "domain": "Domain",
+  "domain": "Application",
   "done": "Done",
   "double": "Double",
   "doubles": "Doubles",
@@ -158,7 +171,13 @@
     "conn_mc": "Can't connect to softMC",
     "conn_ws": "Can't establish a websocket connection",
     "err": "Error",
+    "field_too_short": "Input is too short",
+    "firmware_update": {
+      "title": "Firmware Update Failed",
+      "msg": "We couldn't install the pacakge on the controller."
+    },
     "invalid_feature": "Invalid feature",
+    "invalid_full_name": "A Full name is made of a First AND Last name",
     "invalid_webserver": "Use web server v{{ver}} (current is {{current}})"
   },
   "errorHistory": {
@@ -187,6 +206,7 @@
     "tree": "Controller Files",
     "upload": "UPLOAD TO MC..."
   },
+  "filter": "Filter",
   "frame": "Motion Frame",
   "frames": {
     "calibration": {
@@ -219,11 +239,16 @@
     "grp": "Gripper",
     "new_ef": "New End Effector",
     "new_grp": "New Gripper",
+    "pay_ef": "End Effector Payload",
+    "pay_item": "Item Payload",
     "test": "Test Gripper",
     "use_tool": "Use Tool"
   },
   "hello": "Hello",
   "help": {
+    "bug": "Report a bug",
+    "bug_body": "Attach the downloaded ZIP file and other relevant files to this email",
+    "bug_desc": "Describe your bug/issue here, including steps to reproduce...",
     "code": "Code Examples",
     "contact": "Contact Support",
     "downloads": "Downloads",
@@ -267,8 +292,8 @@
     },
     "axes_max": "Max. Axes",
     "axes_real": "Real Axes",
-    "chart_ram": ["Used RAM","Free RAM"],
-    "chart_space": ["Used Space","Free Space"],
+    "chart_ram": ["Used RAM", "Free RAM"],
+    "chart_space": ["Used Space", "Free Space"],
     "features": "Features",
     "groups": "Groups Configuration",
     "platform": "Platform",
@@ -333,7 +358,7 @@
     "outputWord": "Output Word"
   },
   "interface": {
-   "title": "User Interface"
+    "title": "User Interface"
   },
   "invert": "Invert",
   "ios": {
@@ -350,7 +375,7 @@
     }
   },
   "jogScreen": {
-    "menu": ["Teach","Tool Align"],
+    "menu": ["Teach", "Tool Align"],
     "percision": "Percision",
     "settings": "Jog Settings",
     "speed": "Speed",
@@ -390,6 +415,11 @@
     "terms": "Terms Of Use",
     "title": "Legal",
     "thirdParty": "Third Party Open-Source Libraries"
+  },
+  "license": {
+    "accept": "I AGREE TO THE ABOVE TERMS AND CONDITIONS",
+    "reject": "REJECT",
+    "title": "ControlStudio+ License Agreement"
   },
   "loading": "Loading...",
   "location": "Location",
@@ -449,6 +479,7 @@
       },
       "calibrated": "Calibrated",
       "calibrated_not": "Not calibrated",
+      "calibrated_origin": "Calibrated Origin",
       "curr_index": "Current item index",
       "curr_pos": "Current Position",
       "dimensions_item": "Item Dimensions",
@@ -493,16 +524,34 @@
   "password_err": "Wrong password",
   "paste": "Paste",
   "payloads": {
+    "advanced": "Advanced Mode",
     "btn_create": "CREATE PAYLOAD",
     "current": "Current values",
     "delete_title": "Delete payload {{name}}?",
     "delete_msg": "This cannot be undone.",
+    "freq": "Frequencies",
+    "ident": {
+      "dialog": {
+        "title": "Caution",
+        "msg": "Payload Identification is about to begin. During this process, the robot will move to various positions in its working space. Make sure that the robot environment is clear of people, objects and other obstacles.",
+        "yes": "START IDENTIFICATION",
+        "no": "CANCEL"
+      },
+      "finish": "Moving robot to the original position...",
+      "moving": "Moving robot to start position...",
+      "title": "Robot is now performing Payload Identification",
+      "start": "START IDENTIFICATION...",
+      "subtitle": "During this process, the robot will move to various positions in its working space. Make sure that the robot environment is clear of people, objects and other obstacles."
+    },
     "inertia": "Inertia",
     "mass": "Mass",
     "name": "Payload Name",
     "new": "New Payload",
-    "offX": "X Offset",
-    "payload": "Payload"
+    "offX": "Radius Offset",
+    "payload": "Payload",
+    "relative_pos": "Amplitude",
+    "start_pos": "Start Position",
+    "time": "Duration"
   },
   "projectCommands": {
     "call": {
@@ -608,6 +657,12 @@
       "bp_lib": "Library breakpoints are not supported yet"
     },
     "btnCreate": "CREATE PROJECT",
+    "delete-dialog": {
+      "btn-delete": "DELETE SELECTED PROJECTS",
+      "input": "Select Projects to Delete",
+      "message": "The following projects will be removed from the system. This operation cannot be undone.",
+      "title": "Delete Projects"
+    },
     "name": "Project Name",
     "new": "New Project",
     "notification": {
@@ -621,12 +676,15 @@
       "app": "App",
       "app_create": "CREATE APP",
       "app_name": "App Name",
+      "autostart": "Run Project automatically",
       "backup": "Backup",
       "changing": "Changing project...",
       "controller": "Controller",
       "create": "Create",
-      "del_prj": "Delete project {{name}}?",
+      "del_prj": "Delete Project",
       "del_prj_msg": "All the project files will be removed permanently.",
+      "del_prj_other": "Delete other Project(s)",
+      "del_prj_title": "Delete project {{name}}?",
       "dep": "Dependency",
       "dialog_conflict": {
         "title": "Settings Conflict Detected",
@@ -695,6 +753,9 @@
   },
   "projectSettings": {
     "apps": {
+      "app_desc": "Application description",
+      "app_desc_none": "No application description",
+      "cyclic": "Cyclic",
       "desc": "Choose the applications to run when the project starts",
       "en": "Enable App",
       "id": "Remote ID",
@@ -805,7 +866,7 @@
     "restoring": "Restoring system from file",
     "success": "System restored successfully!",
     "home": "Home",
-    "insert_chart":"Motion Dashboard",
+    "insert_chart": "Motion Dashboard",
     "insert_comment": "Program editor",
     "3d_rotation": "3D Simulator",
     "touch_app": "Teach",
@@ -833,7 +894,7 @@
     "select": "Select a Robot",
     "selected": "Selected Robot",
     "series": "Series",
-    "title": "Robots",
+    "title": "System",
     "type": "Robot Type",
     "updating": "Updating Robot Configuration",
     "reference": {
@@ -896,14 +957,16 @@
     }
   },
   "select": "Select",
-  "simulative": "Simulative",
+  "simulative": "Simulated",
   "simulator": "3D Simulator",
   "simulator_screen": {
     "cube": "Cube",
+    "custom": "User Object",
     "cylinder": "Cylinder",
     "loading": "Loading Simulator...",
     "prop": "Property",
     "robot": "Robot",
+    "scene": "Scene",
     "sphere": "Sphere",
     "val": "Value"
   },
@@ -952,8 +1015,10 @@
     "unload": "Unload Task",
     "user": "User Tasks"
   },
+  "teach": "Teach",
   "teach_var": "Teach {{name}}?",
   "terminal": "Terminal",
+  "time_update": "softMC Date and Time is synced",
   "tool": "Tool",
   "tool_calib": {
     "calibrate_tool": "CALIBRATE TOOL",

@@ -1,314 +1,466 @@
 <div class="wrapper">
-  <mat-accordion *ngIf="prj.currProject.value">
-    <mat-expansion-panel #applicationsPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.apps.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.apps.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="applicationsPanel.expanded">
-        <div class="app-list">
-          <table>
-            <thead class="mat-subtitle-color">
-              <tr>
-                <td>{{'projectSettings.apps.en'|translate}}</td>
-                <td class="center-vertical">{{'projectSettings.apps.id'|translate}} <mat-icon
-                    matTooltip="{{'projectSettings.apps.id_tooltip'|translate}}">help</mat-icon>
-                </td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let app of prj.currProject.value.apps">
-                <td>
-                  <mat-checkbox color="primary" [checked]="app.active" (change)="toggleActiveApp(app)">{{app.name}}
-                  </mat-checkbox>
-                </td>
-                <td>
-                  <mat-form-field>
-                    <mat-select [value]="app.id" (selectionChange)="updateAppId(app,$event)">
-                      <mat-option [value]="-1">None</mat-option>
-                      <mat-option [value]="0">0 (0,0,0)</mat-option>
-                      <mat-option [value]="1">1 (0,0,1)</mat-option>
-                      <mat-option [value]="2">2 (0,1,0)</mat-option>
-                      <mat-option [value]="3">3 (0,1,1)</mat-option>
-                      <mat-option [value]="4">4 (1,0,0)</mat-option>
-                      <mat-option [value]="5">5 (1,0,1)</mat-option>
-                      <mat-option [value]="6">6 (1,1,0)</mat-option>
-                      <mat-option [value]="7">7 (1,1,1)</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #motionParametersPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.motion_params.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.motion_params.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="motionParametersPanel.expanded">
-        <mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
-          <input matInput placeholder="VCruise" [(ngModel)]="prj.currProject.value.settings.vcruise" type="number" virtualKeyboard ktype="numeric">
-          <span matSuffix>deg/sec</span>
-        </mat-form-field>
-        <mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
-          <input matInput placeholder="VTran" [(ngModel)]="prj.currProject.value.settings.vtran" type="number" virtualKeyboard ktype="numeric">
-          <span matSuffix>mm/sec</span>
-        </mat-form-field>
-        <h3>Blending Method</h3>
-        <mat-radio-group [(ngModel)]="prj.currProject.value.settings.blendingMethod"
-          (change)="prj.onProgramSettingChanged('blendingMethod')" style="margin-bottom: 8px; display: block;">
-          <mat-radio-button color="primary" [value]="0">None</mat-radio-button>
-          <mat-radio-button color="primary" [value]="1">Continous Path</mat-radio-button>
-          <mat-radio-button color="primary" [value]="2">SuperPosition</mat-radio-button>
-        </mat-radio-group>
-        <mat-slide-toggle color="primary" [(ngModel)]="prj.currProject.value.settings.overlap"
-          (change)="prj.onProgramSettingChanged('overlap')">Motion Overlap</mat-slide-toggle>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #motionFramesPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.motion_frames.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.motion_frames.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="motionFramesPanel.expanded">
-        <mat-form-field>
-          <mat-select placeholder="{{'tool'|translate}}" [(ngModel)]="prj.currProject.value.settings.tool"
-            (selectionChange)="prj.onProgramSettingChanged('tool')">
-            <mat-option *ngFor="let item of dataService.tools" value="{{item}}">{{item}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select placeholder="{{'base'|translate}}" [(ngModel)]="prj.currProject.value.settings.base"
-            (selectionChange)="prj.onProgramSettingChanged('base')">
-            <mat-option *ngFor="let item of dataService.bases" value="{{item}}">{{item}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select placeholder="{{'mt'|translate}}" [(ngModel)]="prj.currProject.value.settings.mtable"
-            (selectionChange)="prj.onProgramSettingChanged('mtable')">
-            <mat-option *ngFor="let item of dataService.machineTables" value="{{item}}">{{item}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select placeholder="{{'wp'|translate}}" [(ngModel)]="prj.currProject.value.settings.wpiece"
-            (selectionChange)="prj.onProgramSettingChanged('wpiece')">
-            <mat-option *ngFor="let item of dataService.workPieces" value="{{item}}">{{item}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #positionLimitsPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.pos.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.pos.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="positionLimitsPanel.expanded">
-        <table class="limits">
-          <tr *ngFor="let p of prj.currProject.value.settings.limits.position; let i=index;">
-            <td>J{{i+1}}</td>
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-             virtualKeyboard ktype="numeric"
-            (change)="prj.onLimitChanged(p.name+'min',$event,'J'+(i+1),p.min,p)"
-            (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'J'+(i+1),p.min,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-            virtualKeyboard ktype="numeric"
-            (change)="prj.onLimitChanged(p.name+'max',$event,'J'+(i+1),p.max,p)"
-            (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'J'+(i+1),p.max,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #wordLimitsPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.world.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.world.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="wordLimitsPanel.expanded">
-        <table class="limits">
-          <tr *ngFor="let p of prj.currProject.value.settings.limits.world">
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'min',$event,'world',p.min,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'world',p.min,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'max',$event,'world',p.max,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'world',p.max,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #toolLimitsPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.tool.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.tool.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="toolLimitsPanel.expanded">
-        <table class="limits">
-          <tr *ngFor="let p of prj.currProject.value.settings.limits.tool">
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'min',$event,'tool',p.min,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'tool',p.min,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'max',$event,'tool',p.max,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'tool',p.max,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #baseLimitsPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.base.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.base.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="baseLimitsPanel.expanded">
-        <table class="limits">
-          <tr *ngFor="let p of prj.currProject.value.settings.limits.base">
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-            virtualKeyboard ktype="numeric"
-            (change)="prj.onLimitChanged(p.name+'min',$event,'base',p.min,p)"
-            (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'base',p.min,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'max',$event,'base',p.max,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'base',p.max,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #machineTableLimitsPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.mt.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.mt.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="machineTableLimitsPanel.expanded">
-        <table class="limits">
-          <tr *ngFor="let p of prj.currProject.value.settings.limits.mt">
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'min',$event,'machinetable',p.min,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'machinetable',p.min,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'max',$event,'machinetable',p.max,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'machinetable',p.max,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #wordPieceLimitsPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.wp.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.wp.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="content" *ngIf="wordPieceLimitsPanel.expanded">
-        <table class="limits">
-          <tr *ngFor="let p of prj.currProject.value.settings.limits.wp">
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}min" [value]="p.min"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'min',$event,'workpiece',p.min,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'min',$event,'workpiece',p.min,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field>
-                <input type="number" matInput placeholder="{{p.name}}max" [value]="p.max"
-              virtualKeyboard ktype="numeric"
-              (change)="prj.onLimitChanged(p.name+'max',$event,'workpiece',p.max,p)"
-              (onKeyboardClose)="prj.onLimitChanged(p.name+'max',$event,'workpiece',p.max,p)">
-                <div matSuffix>{{p.unit}}</div>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel #archSettingsPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.arch.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.arch.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div *ngIf="archSettingsPanel.expanded">
-        <app-arch-setting></app-arch-setting>
-      </div>
-    </mat-expansion-panel>
+	<mat-accordion *ngIf="prj.currProject.value">
+		<mat-expansion-panel #applicationsPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.apps.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.apps.desc' | translate }}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="applicationsPanel.expanded">
+				<div class="app-list">
+					<table>
+						<thead class="mat-subtitle-color">
+							<tr>
+								<td>{{ 'projectSettings.apps.en' | translate }}</td>
+								<td class="center-vertical">
+									{{ 'projectSettings.apps.id' | translate }}
+									<mat-icon matTooltip="{{ 'projectSettings.apps.id_tooltip' | translate }}"
+										>help</mat-icon
+									>
+								</td>
+								<td>{{ 'projectSettings.apps.cyclic' | translate }}</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let app of prj.currProject.value.apps">
+								<td>
+									<mat-checkbox
+										color="primary"
+										[checked]="app.active"
+										(change)="toggleActiveApp(app, 'active')"
+										>{{ app.name }}
+									</mat-checkbox>
+								</td>
+								<td>
+									<mat-form-field>
+										<mat-select [value]="app.id" (selectionChange)="updateAppId(app, $event)">
+											<mat-option [value]="-1">None</mat-option>
+											<mat-option [value]="0">0 (0,0,0)</mat-option>
+											<mat-option [value]="1">1 (0,0,1)</mat-option>
+											<mat-option [value]="2">2 (0,1,0)</mat-option>
+											<mat-option [value]="3">3 (0,1,1)</mat-option>
+											<mat-option [value]="4">4 (1,0,0)</mat-option>
+											<mat-option [value]="5">5 (1,0,1)</mat-option>
+											<mat-option [value]="6">6 (1,1,0)</mat-option>
+											<mat-option [value]="7">7 (1,1,1)</mat-option>
+										</mat-select>
+									</mat-form-field>
+								</td>
+								<td>
+									<mat-checkbox
+										color="primary"
+										[checked]="app.cyclic"
+										(change)="toggleActiveApp(app, 'cyclic')"
+									></mat-checkbox>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #motionParametersPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.motion_params.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{
+					'projectSettings.motion_params.desc' | translate
+				}}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="motionParametersPanel.expanded">
+				<mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
+					<input
+						matInput
+						placeholder="VCruise"
+						[(ngModel)]="prj.currProject.value.settings.vcruise"
+						type="number"
+						virtualKeyboard
+						ktype="numeric"
+					/>
+					<span matSuffix>deg/sec</span>
+				</mat-form-field>
+				<mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
+					<input
+						matInput
+						placeholder="VTran"
+						[(ngModel)]="prj.currProject.value.settings.vtran"
+						type="number"
+						virtualKeyboard
+						ktype="numeric"
+					/>
+					<span matSuffix>mm/sec</span>
+				</mat-form-field>
+				<h3>Blending Method</h3>
+				<mat-radio-group
+					[(ngModel)]="prj.currProject.value.settings.blendingMethod"
+					(change)="prj.onProgramSettingChanged('blendingMethod')"
+					style="margin-bottom: 8px; display: block;"
+				>
+					<mat-radio-button color="primary" [value]="0">None</mat-radio-button>
+					<mat-radio-button color="primary" [value]="1">Continous Path</mat-radio-button>
+					<mat-radio-button color="primary" [value]="2">SuperPosition</mat-radio-button>
+				</mat-radio-group>
+				<mat-slide-toggle
+					color="primary"
+					[(ngModel)]="prj.currProject.value.settings.overlap"
+					(change)="prj.onProgramSettingChanged('overlap')"
+					>Motion Overlap</mat-slide-toggle
+				>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #motionFramesPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.motion_frames.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{
+					'projectSettings.motion_frames.desc' | translate
+				}}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="motionFramesPanel.expanded">
+				<mat-form-field>
+					<mat-select
+						placeholder="{{ 'tool' | translate }}"
+						[(ngModel)]="prj.currProject.value.settings.tool"
+						(selectionChange)="prj.onProgramSettingChanged('tool')"
+					>
+						<mat-option *ngFor="let item of dataService.tools" value="{{ item }}">{{
+							item
+						}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<mat-form-field>
+					<mat-select
+						placeholder="{{ 'base' | translate }}"
+						[(ngModel)]="prj.currProject.value.settings.base"
+						(selectionChange)="prj.onProgramSettingChanged('base')"
+					>
+						<mat-option *ngFor="let item of dataService.bases" value="{{ item }}">{{
+							item
+						}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<mat-form-field>
+					<mat-select
+						placeholder="{{ 'mt' | translate }}"
+						[(ngModel)]="prj.currProject.value.settings.mtable"
+						(selectionChange)="prj.onProgramSettingChanged('mtable')"
+					>
+						<mat-option *ngFor="let item of dataService.machineTables" value="{{ item }}">{{
+							item
+						}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<mat-form-field>
+					<mat-select
+						placeholder="{{ 'wp' | translate }}"
+						[(ngModel)]="prj.currProject.value.settings.wpiece"
+						(selectionChange)="prj.onProgramSettingChanged('wpiece')"
+					>
+						<mat-option *ngFor="let item of dataService.workPieces" value="{{ item }}">{{
+							item
+						}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #positionLimitsPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.pos.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.pos.desc' | translate }}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="positionLimitsPanel.expanded">
+				<table class="limits">
+					<tr *ngFor="let p of prj.currProject.value.settings.limits.position; let i = index">
+						<td>J{{ i + 1 }}</td>
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}min"
+									[value]="p.min"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'min', $event, 'J' + (i + 1), p.min, p)"
+									(onKeyboardClose)="
+										prj.onLimitChanged(p.name + 'min', $event, 'J' + (i + 1), p.min, p)
+									"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}max"
+									[value]="p.max"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'max', $event, 'J' + (i + 1), p.max, p)"
+									(onKeyboardClose)="
+										prj.onLimitChanged(p.name + 'max', $event, 'J' + (i + 1), p.max, p)
+									"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #wordLimitsPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.world.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{
+					'projectSettings.world.desc' | translate
+				}}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="wordLimitsPanel.expanded">
+				<table class="limits">
+					<tr *ngFor="let p of prj.currProject.value.settings.limits.world">
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}min"
+									[value]="p.min"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'min', $event, 'world', p.min, p)"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'min', $event, 'world', p.min, p)"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}max"
+									[value]="p.max"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'max', $event, 'world', p.max, p)"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'max', $event, 'world', p.max, p)"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #toolLimitsPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.tool.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.tool.desc' | translate }}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="toolLimitsPanel.expanded">
+				<table class="limits">
+					<tr *ngFor="let p of prj.currProject.value.settings.limits.tool">
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}min"
+									[value]="p.min"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'min', $event, 'tool', p.min, p)"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'min', $event, 'tool', p.min, p)"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}max"
+									[value]="p.max"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'max', $event, 'tool', p.max, p)"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'max', $event, 'tool', p.max, p)"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #baseLimitsPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.base.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.base.desc' | translate }}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="baseLimitsPanel.expanded">
+				<table class="limits">
+					<tr *ngFor="let p of prj.currProject.value.settings.limits.base">
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}min"
+									[value]="p.min"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'min', $event, 'base', p.min, p)"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'min', $event, 'base', p.min, p)"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}max"
+									[value]="p.max"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'max', $event, 'base', p.max, p)"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'max', $event, 'base', p.max, p)"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #machineTableLimitsPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.mt.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.mt.desc' | translate }}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="machineTableLimitsPanel.expanded">
+				<table class="limits">
+					<tr *ngFor="let p of prj.currProject.value.settings.limits.mt">
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}min"
+									[value]="p.min"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'min', $event, 'machinetable', p.min, p)"
+									(onKeyboardClose)="
+										prj.onLimitChanged(p.name + 'min', $event, 'machinetable', p.min, p)
+									"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}max"
+									[value]="p.max"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'max', $event, 'machinetable', p.max, p)"
+									(onKeyboardClose)="
+										prj.onLimitChanged(p.name + 'max', $event, 'machinetable', p.max, p)
+									"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #wordPieceLimitsPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.wp.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.wp.desc' | translate }}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div class="content" *ngIf="wordPieceLimitsPanel.expanded">
+				<table class="limits">
+					<tr *ngFor="let p of prj.currProject.value.settings.limits.wp">
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}min"
+									[value]="p.min"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'min', $event, 'workpiece', p.min, p)"
+									(onKeyboardClose)="
+										prj.onLimitChanged(p.name + 'min', $event, 'workpiece', p.min, p)
+									"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+						<td>
+							<mat-form-field>
+								<input
+									type="number"
+									matInput
+									placeholder="{{ p.name }}max"
+									[value]="p.max"
+									virtualKeyboard
+									ktype="numeric"
+									(change)="prj.onLimitChanged(p.name + 'max', $event, 'workpiece', p.max, p)"
+									(onKeyboardClose)="
+										prj.onLimitChanged(p.name + 'max', $event, 'workpiece', p.max, p)
+									"
+								/>
+								<div matSuffix>{{ p.unit }}</div>
+							</mat-form-field>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</mat-expansion-panel>
+		<mat-expansion-panel #archSettingsPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.arch.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.arch.desc' | translate }}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div *ngIf="archSettingsPanel.expanded">
+				<app-arch-setting></app-arch-setting>
+			</div>
+		</mat-expansion-panel>
 
-    <mat-expansion-panel #positionTriggerPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.position_trigger.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.position_trigger.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div *ngIf="positionTriggerPanel.expanded">
-        <app-position-trigger></app-position-trigger>
-      </div>
-    </mat-expansion-panel>
+		<mat-expansion-panel #positionTriggerPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{
+					'projectSettings.position_trigger.title' | translate
+				}}</mat-panel-title>
+				<mat-panel-description>{{
+					'projectSettings.position_trigger.desc' | translate
+				}}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div *ngIf="positionTriggerPanel.expanded">
+				<app-position-trigger></app-position-trigger>
+			</div>
+		</mat-expansion-panel>
 
-    <mat-expansion-panel #homeConfigPanel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{'projectSettings.home_config.title'|translate}}</mat-panel-title>
-        <mat-panel-description>{{'projectSettings.home_config.desc'|translate}}</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div *ngIf="homeConfigPanel.expanded">
-        <app-home-setting></app-home-setting>
-      </div>
-    </mat-expansion-panel>
-  </mat-accordion>
+		<mat-expansion-panel #homeConfigPanel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.home_config.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{
+					'projectSettings.home_config.desc' | translate
+				}}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div *ngIf="homeConfigPanel.expanded">
+				<app-home-setting></app-home-setting>
+			</div>
+		</mat-expansion-panel>
+	</mat-accordion>
 </div>

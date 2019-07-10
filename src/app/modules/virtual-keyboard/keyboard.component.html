@@ -1,19 +1,56 @@
 <div class="wrapper virtual-keyboard tablet-ui">
-  <mat-form-field style="width: 100%;">
-    <input disabled matInput placeholder="{{placeholder}}" type="{{inputType === 'password' ? 'password' : 'text'}}" [value]="currValue">
-    <button matSuffix mat-mini-fab (click)="accept()" color="primary">
-      <mat-icon>done</mat-icon>
-    </button>
-  </mat-form-field>
-  <div class="keyboard">
-    <div class="row" *ngFor="let row of layout">
-      <button 
-      mat-raised-button
-      *ngFor="let btn of row"
-        [innerHTML]="btnToHtml(btn)"
-        [ngClass]="{'space' : btn===' ', 'key-down': (btn==='arrow_upward' && _shiftMode) || (btn==='more' && _moreMode)}"
-        class="key"
-        (click)="onInput(btn)"></button>
-    </div>
-  </div>
+	<mat-form-field class="display">
+		<input
+			disabled
+			matInput
+			placeholder="{{ placeholder }}"
+			type="{{ inputType === 'password' ? 'password' : 'text' }}"
+			[value]="currValue"
+			#displayInput
+			(touchstart)="onInputTouch($event)"
+		/>
+		<div
+			class="cursor blink"
+			*ngIf="data.keyboardType !== 'numeric'"
+			[style.left.px]="cursorX"
+		></div>
+		<button
+			matSuffix
+			mat-mini-fab
+			(click)="up()"
+			color="accent"
+			*ngIf="data.showArrows && terminal.history.length > 0"
+		>
+			<mat-icon>arrow_upward</mat-icon>
+		</button>
+		<button
+			matSuffix
+			mat-mini-fab
+			(click)="down()"
+			color="accent"
+			*ngIf="data.showArrows && terminal.history.length > 0"
+		>
+			<mat-icon>arrow_downward</mat-icon>
+		</button>
+		<button matSuffix mat-fab (click)="accept()" color="primary">
+			<mat-icon>done</mat-icon>
+		</button>
+	</mat-form-field>
+	<div class="keyboard">
+		<div class="row" *ngFor="let row of layout">
+			<button
+				mat-raised-button
+				*ngFor="let btn of row"
+				[innerHTML]="btnToHtml(btn)"
+				[ngClass]="{
+					space: btn === ' ',
+					'key-down': (btn === 'arrow_upward' && _shiftMode) || (btn === 'more' && _moreMode)
+				}"
+				class="key"
+				(touchstart)="onInput(btn, $event)"
+				(touchend)="onKeyUp(btn, $event)"
+				(contextmenu)="$event.preventDefault()"
+			></button>
+		</div>
+	</div>
 </div>

@@ -136,6 +136,19 @@ mat-slide-toggle { display: block!important; }
   max-height: 200px;
 }
 
+/* FOR THE BACKDROP OVERLAY */
+.jog-panel-open .cdk-overlay-backdrop {
+  width: calc(100% - 250px);
+}
+.jog-panel-open .cdk-overlay-backdrop:after {
+  content: '';
+  position: absolute;
+  right: -250px;
+  width: 250px;
+  height: 64px;
+  background: rgba(0, 0, 0, 0.32);
+}
+
 /* ACE LINE HIGHLIGHTING STYLES */
 .line-highlight {
   position:absolute;

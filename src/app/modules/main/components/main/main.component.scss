@@ -14,13 +14,18 @@
   background: #fff;
   border-radius: 6px;
 }
-mat-toolbar { z-index: 2; }
-mat-toolbar span { 
+mat-toolbar {
+  z-index: 2;
+}
+mat-toolbar span {
   flex: 1;
   overflow: hidden;
   height: 100%;
 }
-mat-toolbar button, mat-toolbar > mat-icon { margin-right: 16px; }
+mat-toolbar button,
+mat-toolbar > mat-icon {
+  margin-right: 16px;
+}
 mat-toolbar mat-slide-toggle {
   margin-right: 16px;
   font-size: 16px;
@@ -36,8 +41,12 @@ mat-sidenav-content {
   display: flex;
   flex-direction: row;
 }
-mat-sidenav { background-color: #eee; }
-login-screen { flex: 1; }
+mat-sidenav {
+  background-color: #eee;
+}
+login-screen {
+  flex: 1;
+}
 .badge {
   border-radius: 50%;
   position: absolute;
@@ -53,7 +62,7 @@ login-screen { flex: 1; }
   justify-content: center;
   font-weight: bold;
 }
-.window .title { 
+.window .title {
   display: flex;
   align-items: center;
   font-size: 24px;
@@ -62,16 +71,20 @@ login-screen { flex: 1; }
   box-sizing: border-box;
   min-height: 60px;
 }
-.window .title span { flex: 1; }
-watch-window, notification-window, terminal-window {
+.window .title span {
+  flex: 1;
+}
+watch-window,
+notification-window,
+terminal-window {
   flex: 1;
   display: flex;
   overflow: hidden;
 }
 watch-window {
-  max-width: 450px;
   min-height: 0;
-  width: auto;
+  max-height: 400px;
+  width: 450px;
 }
 .window {
   position: absolute;
@@ -90,8 +103,10 @@ watch-window {
   width: 50%;
   height: 250px;
 }
-.hidden { visibility: hidden; }
-.emulator-settings { 
+.hidden {
+  visibility: hidden;
+}
+.emulator-settings {
   box-sizing: border-box;
   transition: max-width 200ms ease-in;
   max-width: 0;
@@ -103,17 +118,20 @@ watch-window {
   padding: 16px 24px;
   max-width: 250px;
 }
-.emulator-settings h2 { 
+.emulator-settings h2 {
   margin: 0 0 0 16px;
   font-size: 18px;
 }
-.emulator-settings mat-form-field { width: 100%; margin-top: 1em;}
-.jog-table-container { 
+.emulator-settings mat-form-field {
+  width: 100%;
+  margin-top: 1em;
+}
+.jog-table-container {
   background: #111;
   border-radius: 6px;
   height: 470px;
 }
-.jog-table { 
+.jog-table {
   font-size: 2em;
   font-weight: bold;
   width: 100%;
@@ -124,15 +142,19 @@ watch-window {
   table-layout: fixed;
 }
 .jog-table button.active {
-  -webkit-box-shadow: 0px 0px 128px 16px rgba(0,255,0,1);
-  -moz-box-shadow: 0px 0px 128px 16px rgba(0,255,0,1);
-  box-shadow: 0px 0px 128px 16px rgba(0,255,0,1);
+  -webkit-box-shadow: 0px 0px 128px 16px rgba(0, 255, 0, 1);
+  -moz-box-shadow: 0px 0px 128px 16px rgba(0, 255, 0, 1);
+  box-shadow: 0px 0px 128px 16px rgba(0, 255, 0, 1);
 }
-.indicator-on { 
-  background-color: lime!important;
-  color: #000!important;
+.indicator-on {
+  background-color: lime !important;
+  color: #000 !important;
 }
 .coordinate {
+  font-size: 12px;
+  margin-top: 8px;
+}
+.coordinate-tab {
   font-size: 16px;
   margin-top: 8px;
 }
@@ -155,9 +177,11 @@ coordinates {
   align-items: center;
   justify-content: center;
 }
-.remote mat-icon { margin-right: 8px; }
+.remote mat-icon {
+  margin-right: 8px;
+}
 .mode-selector {
-  margin-right: 16px;
+  margin-right: 24px;
 }
 .mode-selector .title {
   font-size: 16px;
@@ -169,8 +193,8 @@ main-menu {
   position: relative;
   display: block;
   overflow: hidden;
-  background-color: #FAFAFA;
-  transition: width 200ms ease-out, background-color .5s ease-out;
+  background-color: #fafafa;
+  transition: width 200ms ease-out, background-color 0.5s ease-out;
 }
 main-menu.menu-small {
   width: 60px;

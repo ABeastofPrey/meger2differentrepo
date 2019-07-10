@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: row;
 }
-.menu { 
+.menu {
   display: flex;
   background: #fff;
   align-items: center;
@@ -18,10 +18,13 @@
   display: flex;
   align-items: center;
 }
-.menu li:not(.disabled):hover, .dropdown-menu li:hover { background: #e0e0e0; }
+.menu li:not(.disabled):hover,
+.dropdown-menu li:hover {
+  background: #e0e0e0;
+}
 .menu li.selected:not(.disabled) {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  background: #fff!important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background: #fff !important;
 }
 .dropdown-container {
   position: absolute;
@@ -35,14 +38,17 @@
   position: absolute;
   border: 0;
   background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 10;
   top: 0;
   font-size: 13px;
 }
-.disabled, .item-disabled { color: #ccc; }
+.disabled,
 .item-disabled {
-  cursor: not-allowed!important;
+  color: #ccc;
+}
+.item-disabled {
+  cursor: not-allowed !important;
 }
 .dropdown-menu li {
   padding: 4px 8px;
@@ -52,7 +58,8 @@
   align-items: center;
   cursor: pointer;
 }
-.dropdown-menu mat-icon, .dropdown-menu img {
+.dropdown-menu mat-icon,
+.dropdown-menu img {
   font-size: 16px;
   margin-right: 8px;
   width: 16px;
@@ -68,7 +75,10 @@
   right: 0;
   bottom: 0;
 }
-.prj-buttons { display: flex; padding: 8px; }
+.prj-buttons {
+  display: flex;
+  padding: 8px;
+}
 .v-slider-container {
   flex: 1;
   padding: 0 16px;
@@ -98,22 +108,42 @@ mat-button-toggle {
   height: 100%;
   display: flex;
 }
-.menu1, .menu5 { left: 18px; }
-.menu2 { left: 84px; }
-.menu3 { left: 147px; }
-.menu4 { left: 192px; }
-.menu6 { left: 62px; }
+.menu1,
+.menu5 {
+  left: 18px;
+}
+.menu2 {
+  left: 84px;
+}
+.menu3 {
+  left: 147px;
+}
+.menu4 {
+  left: 192px;
+}
+.menu6 {
+  left: 62px;
+}
 
 ::ng-deep {
-  
   .tablet-ui program-toolbar {
-    .dropdown-menu { font-size: 16px; }
-    .dropdown-menu li { padding: 16px!important; }
-    .menu2 { left: 90px; }
-    .menu3 { left: 158px; }
-    .menu4 { left: 207px; }
+    .dropdown-menu {
+      font-size: 16px;
+    }
+    .dropdown-menu li {
+      padding: 16px !important;
+    }
+    .menu2 {
+      left: 90px;
+    }
+    .menu3 {
+      left: 158px;
+    }
+    .menu4 {
+      left: 207px;
+    }
   }
-  
+
   /* MAKE SLIDER THUMB ALWAYS VISIBLE */
   .mat-slider-thumb-label {
     transform: rotate(45deg) !important;

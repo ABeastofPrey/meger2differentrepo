@@ -1,4 +1,8 @@
 <tour-step-template></tour-step-template>
-<main [@fadeAnimation]="getRouterOutletState(o)" class="{{env.platform.name}}" [class.tablet-ui]="cmn.isTablet">
-  <router-outlet #o="outlet"></router-outlet>
+<main
+	[@fadeAnimation]="getRouterOutletState(o)"
+	class="{{ env.platform.name }}"
+	[class.tablet-ui]="cmn.isTablet"
+>
+	<router-outlet #o="outlet"></router-outlet>
 </main>

@@ -1,94 +1,108 @@
 import { NgModule } from '@angular/core';
-import {Routes} from '@angular/router';
-import {MainComponent} from './components/main/main.component';
-import {RouterModule} from '@angular/router';
-import {MainAuthResolver} from './main-auth-resolver.service';
-import {ProgramEditorComponent} from '../program-editor/components/program-editor/program-editor.component';
-import {HomeScreenComponent} from '../home-screen/components/home-screen/home-screen.component';
-import {PermissionGuardService} from '../configuration/permission-guard.service';
+import { Routes } from '@angular/router';
+import { MainComponent } from './components/main/main.component';
+import { RouterModule } from '@angular/router';
+import { MainAuthResolver } from './main-auth-resolver.service';
+import { ProgramEditorComponent } from '../program-editor/components/program-editor/program-editor.component';
+import { HomeScreenComponent } from '../home-screen/components/home-screen/home-screen.component';
+import { PermissionGuardService } from '../configuration/permission-guard.service';
 
 const routes: Routes = [
   {
     path: '',
     component: MainComponent,
     resolve: {
-      isAuthenticated: MainAuthResolver
+      isAuthenticated: MainAuthResolver,
     },
     children: [
       {
         path: '',
         component: HomeScreenComponent,
         canActivate: [PermissionGuardService],
-        data: { permission: 99 }
+        data: { permission: 99 },
       },
       {
         path: 'dashboard',
-        loadChildren: '../dashboard/dashboard.module#DashboardModule',
+        loadChildren: () =>
+          import('../dashboard/dashboard.module').then(m => m.DashboardModule),
         canActivate: [PermissionGuardService],
-        data: { permission: 99 }
+        data: { permission: 99 },
       },
       {
         path: 'projects',
         component: ProgramEditorComponent,
         canActivate: [PermissionGuardService],
-        data: { permission: 99 }
+        data: { permission: 99 },
       },
       {
         path: 'simulator',
-        loadChildren: '../simulator/simulator.module#SimulatorModule',
+        loadChildren: () =>
+          import('../simulator/simulator.module').then(m => m.SimulatorModule),
         canActivate: [PermissionGuardService],
-        data: { permission: 1 }
+        data: { permission: 1, requiresTP: true },
       },
       {
         path: 'teach',
-        loadChildren: '../tp/tp.module#TpModule',
+        loadChildren: () => import('../tp/tp.module').then(m => m.TpModule),
         canActivate: [PermissionGuardService],
-        data: { permission: 99 }
+        data: { permission: 99 },
       },
       {
         path: 'configuration',
-        loadChildren: '../configuration/configuration.module#ConfigurationModule',
+        loadChildren: () =>
+          import('../configuration/configuration.module').then(
+            m => m.ConfigurationModule
+          ),
         canActivate: [PermissionGuardService],
-        data: { permission: 99 }
+        data: { permission: 99 },
       },
       {
         path: 'tasks',
-        loadChildren: '../task-manager/task-manager.module#TaskManagerModule',
+        loadChildren: () =>
+          import('../task-manager/task-manager.module').then(
+            m => m.TaskManagerModule
+          ),
         canActivate: [PermissionGuardService],
-        data: { permission: 1 }
+        data: { permission: 1 },
       },
       {
         path: 'tools',
-        loadChildren: '../tools/tools.module#ToolsModule',
+        loadChildren: () =>
+          import('../tools/tools.module').then(m => m.ToolsModule),
         canActivate: [PermissionGuardService],
-        data: { permission: 1 }
+        data: { permission: 1 },
       },
       {
         path: 'errors',
-        loadChildren: '../error-history/error-history.module#ErrorHistoryModule',
+        loadChildren: () =>
+          import('../error-history/error-history.module').then(
+            m => m.ErrorHistoryModule
+          ),
         canActivate: [PermissionGuardService],
-        data: { permission: 99 }
+        data: { permission: 99 },
       },
       {
         path: 'log',
-        loadChildren: '../log-screen/log-screen.module#LogScreenModule',
+        loadChildren: () =>
+          import('../log-screen/log-screen.module').then(
+            m => m.LogScreenModule
+          ),
         canActivate: [PermissionGuardService],
-        data: { permission: 1 }
+        data: { permission: 1 },
       },
       {
         path: 'help',
-        loadChildren: '../help/help.module#HelpModule',
+        loadChildren: () =>
+          import('../help/help.module').then(m => m.HelpModule),
         canActivate: [PermissionGuardService],
-        data: { permission: 99 }
-      }
-    ]
-  }
+        data: { permission: 99 },
+      },
+    ],
+  },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes)
-  ],
-  exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class MainRoutingModule { }
+export class MainRoutingModule {}

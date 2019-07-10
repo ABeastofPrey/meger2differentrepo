@@ -15,7 +15,7 @@ const columns = ['archCol', 'departZCol', 'approachZCol'];
 @Component({
   selector: 'app-arch-setting',
   templateUrl: 'arch-setting.component.html',
-  styleUrls: ['arch-setting.component.css']
+  styleUrls: ['arch-setting.component.css'],
 })
 export class ArchSettingComponent implements OnInit, OnDestroy {
   public displayedColumns: string[] = columns;
@@ -30,11 +30,14 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     private asService: ArchSettingService,
     private terminalService: TerminalService,
     public snackBar: MatSnackBar,
-    private trn: TranslateService) {
-      this.subscription = this.terminalService.sentCommandEmitter.subscribe(cmd => {
+    private trn: TranslateService
+  ) {
+    this.subscription = this.terminalService.sentCommandEmitter.subscribe(
+      cmd => {
         this.getTableData();
-      });
-    }
+      }
+    );
+  }
 
   ngOnInit() {
     this.getTableData();
@@ -43,22 +46,35 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void { this.subscription.unsubscribe(); }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   public onFocus(event: any): void {
     this.previousValue = event.target.value;
   }
 
-  public async onBlur(event: any, index: string, changedValue: string, departOrApproach: '1' | '2'): Promise<void> {
-    if (this.previousValue === event.target.value) { return; }
+  public async onBlur(
+    event: any,
+    index: string,
+    changedValue: string,
+    departOrApproach: '1' | '2'
+  ): Promise<void> {
+    if (this.previousValue === event.target.value) {
+      return;
+    }
     if (!this.validator(event.target.value)) {
       event.target.value = this.previousValue;
-      this.snackBar.open(this.words['positiveNumTip'], '', { duration: 2000, });
+      this.snackBar.open(this.words['positiveNumTip'], '', { duration: 2000 });
       return;
     }
     try {
-      await this.asService.setArch(Number(index), Number(departOrApproach) as 1 | 2, Number(changedValue));
-      this.snackBar.open(this.words['valChangedTip'], '', { duration: 1500, });
+      await this.asService.setArch(
+        Number(index),
+        Number(departOrApproach) as 1 | 2,
+        Number(changedValue)
+      );
+      this.snackBar.open(this.words['valChangedTip'], '', { duration: 1500 });
     } catch (err) {
       console.error('Change value failed: ' + err.errString);
     }
@@ -67,7 +83,7 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
   public onKeyup(event: any): void {
     if (event.keyCode === 13) {
       event.target.blur();
-     }
+    }
   }
 
   public async onReset(event: any): Promise<void> {
@@ -85,13 +101,17 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
 
   private async getTableData(): Promise<void> {
     try {
-      this.dataSource = await this.asService.getInitTable() as ArchElement[];
+      this.dataSource = (await this.asService.getInitTable()) as ArchElement[];
     } catch (err) {
       console.error(err.errString);
     }
   }
 
   private validator(currentValue: string): boolean {
-    return ( (currentValue === '') || isNaN(Number(currentValue)) || Number(currentValue) < 0) ? false : true;
+    return currentValue === '' ||
+      isNaN(Number(currentValue)) ||
+      Number(currentValue) < 0
+      ? false
+      : true;
   }
 }

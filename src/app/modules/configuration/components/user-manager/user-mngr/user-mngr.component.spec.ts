@@ -8,9 +8,8 @@ describe('UserMngrComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserMngrComponent ]
-    })
-    .compileComponents();
+      declarations: [UserMngrComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

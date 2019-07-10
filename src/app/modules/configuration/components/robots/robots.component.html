@@ -1,70 +1,124 @@
 <div class="wrapper">
-  <mat-card>
-    <h2>
-      {{'robots.selected'|translate}}
-       <button mat-raised-button color="primary" class="btn-change" (click)="openRobotSelectionDialog()" [disabled]="!robot.types">
-          {{'robots.btnChange'|translate}}...
-        </button>
-    </h2>
-    <div *ngIf="robot.selectedRobot" class="selected" @fade>
-      <div>
-        <span class="mat-subtitle-color">{{'robots.name'|translate}}: </span>
-        {{robot.selectedRobot.name}}
-      </div>
-      <div>
-        <span class="mat-subtitle-color">{{'robots.type'|translate}}: </span>
-        {{robot.selectedRobot.type}}
-      </div>
-      <div>
-        <span class="mat-subtitle-color">{{'robots.bus'|translate}}: </span>
-        {{robot.selectedRobot.bus}}
-      </div>
-      <div>
-        <span class="mat-subtitle-color">{{'robots.max-payload'|translate}}: </span>
-        {{robot.selectedRobot.payload}} [Kg.]
-      </div>
-      <div>
-        <span class="mat-subtitle-color">{{'robots.part'|translate}}: </span>
-        {{robot.selectedRobot.part_number}}
-      </div>
-    </div>
-    <div *ngIf="robot.selectedRobot === null">{{'na'|translate}}</div>
-  </mat-card>
-  <mat-card *ngIf="robot.selectedRobot && stat.onlineStatus.value" style="min-height: 200px;">
-    <h2>{{'robots.params'|translate}}</h2>
-    <mat-tab-group animationDuration="0ms" backgroundColor="primary" color="accent">
-      <mat-tab label="{{'robots.disp'|translate}}">
-        <div class="container">
-          <div class="center-vertical" *ngFor="let d of disp; let i=index; trackBy:trackByFn">
-            <mat-form-field appearance="outline" class="disp">
-              <mat-label>J{{i+1}}</mat-label>
-              <input matInput [(ngModel)]="disp[i]" (change)="onSettingsKeyboardClose()" virtualKeyboard ktype="numeric" (onKeyboardClose)="onSettingsKeyboardClose()">
-              <span matSuffix *ngIf="units">[{{units[i]}}]</span>
-            </mat-form-field>
-            <button mat-raised-button color="primary" (click)="setHome(i+1)" class="btn-home center-vertical-horizontal">
-              <mat-icon>gps_fixed</mat-icon><span style="margin-left: 8px;">{{'robots.btnSetCurrent'|translate}}</span>
-            </button>
-          </div>
-        </div>
-      </mat-tab>
-      <mat-tab label="{{'robots.reference.title'|translate}}" #refMasteringTab>
-        <div *ngIf="refMasteringTab.isActive" class="container">
-          <app-reference-mastering></app-reference-mastering>
-        </div>
-      </mat-tab>
-      <mat-tab label="DH">
-        <div class="container">
-          <div class="images">
-            <img *ngIf="dh_img_path_1" src="assets/pics/dh/{{dh_img_path_1}}">
-            <img *ngIf="dh_img_path_2" src="assets/pics/dh/{{dh_img_path_2}}" style="align-self:flex-end;">
-          </div>
-          <mat-form-field appearance="outline" *ngFor="let d of dh; let i=index; trackBy:trackByFn" class="dh">
-            <mat-label>{{d.name}}</mat-label>
-            <input matInput [(ngModel)]="d.value" (change)="onSettingsKeyboardClose(i)" virtualKeyboard ktype="numeric" (onKeyboardClose)="onSettingsKeyboardClose()">
-            <span matSuffix>[mm]</span>
-          </mat-form-field>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
-  </mat-card>
+	<div class="robots">
+		<mat-card>
+			<h2>
+				{{ 'robots.selected' | translate }}
+				<button
+					mat-raised-button
+					color="primary"
+					class="btn-change"
+					(click)="openRobotSelectionDialog()"
+					[disabled]="!robot.types"
+				>
+					{{ 'robots.btnChange' | translate }}...
+				</button>
+			</h2>
+			<div *ngIf="robot.selectedRobot" class="selected" @fade>
+				<div>
+					<span class="mat-subtitle-color">{{ 'robots.name' | translate }}: </span>
+					{{ robot.selectedRobot.name }}
+				</div>
+				<div>
+					<span class="mat-subtitle-color">{{ 'robots.type' | translate }}: </span>
+					{{ robot.selectedRobot.type }}
+				</div>
+				<div>
+					<span class="mat-subtitle-color">{{ 'robots.bus' | translate }}: </span>
+					{{ robot.selectedRobot.bus }}
+				</div>
+				<div>
+					<span class="mat-subtitle-color">{{ 'robots.max-payload' | translate }}: </span>
+					{{ robot.selectedRobot.payload }} [Kg.]
+				</div>
+				<div>
+					<span class="mat-subtitle-color">{{ 'robots.part' | translate }}: </span>
+					{{ robot.selectedRobot.part_number }}
+				</div>
+			</div>
+			<div *ngIf="robot.selectedRobot === null">{{ 'na' | translate }}</div>
+		</mat-card>
+		<mat-card *ngIf="robot.selectedRobot && stat.onlineStatus.value" style="min-height: 200px;">
+			<h2>{{ 'robots.params' | translate }}</h2>
+			<mat-tab-group animationDuration="0ms" backgroundColor="primary" color="accent">
+				<mat-tab label="{{ 'robots.disp' | translate }}">
+					<div class="container">
+						<div class="center-vertical" *ngFor="let d of disp; let i = index; trackBy: trackByFn">
+							<mat-form-field appearance="outline" class="disp">
+								<mat-label>J{{ i + 1 }}</mat-label>
+								<input
+									matInput
+									[(ngModel)]="disp[i]"
+									(change)="onSettingsKeyboardClose()"
+									virtualKeyboard
+									ktype="numeric"
+									(onKeyboardClose)="onSettingsKeyboardClose()"
+								/>
+								<span matSuffix *ngIf="units">[{{ units[i] }}]</span>
+							</mat-form-field>
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="setHome(i + 1)"
+								class="btn-home center-vertical-horizontal"
+							>
+								<mat-icon>gps_fixed</mat-icon
+								><span style="margin-left: 8px;">{{ 'robots.btnSetCurrent' | translate }}</span>
+							</button>
+						</div>
+					</div>
+				</mat-tab>
+			    <mat-tab label="{{'robots.reference.title'|translate}}" #refMasteringTab>
+			      <div *ngIf="refMasteringTab.isActive" class="container">
+			        <app-reference-mastering></app-reference-mastering>
+			      </div>
+			    </mat-tab>
+				<mat-tab label="DH">
+					<div class="container">
+						<div class="images">
+							<img *ngIf="dh_img_path_1" src="assets/pics/dh/{{ dh_img_path_1 }}" />
+							<img
+								*ngIf="dh_img_path_2"
+								src="assets/pics/dh/{{ dh_img_path_2 }}"
+								style="align-self:flex-end;"
+							/>
+						</div>
+						<mat-form-field
+							appearance="outline"
+							*ngFor="let d of dh; let i = index; trackBy: trackByFn"
+							class="dh"
+						>
+							<mat-label>{{ d.name }}</mat-label>
+							<input
+								matInput
+								[(ngModel)]="d.value"
+								(change)="onSettingsKeyboardClose(i)"
+								virtualKeyboard
+								ktype="numeric"
+								(onKeyboardClose)="onSettingsKeyboardClose()"
+							/>
+							<span matSuffix>[mm]</span>
+						</mat-form-field>
+					</div>
+				</mat-tab>
+			</mat-tab-group>
+		</mat-card>
+	</div>
+	<mat-card class="system">
+		<h2>
+			{{ 'robots.title' | translate }}
+		</h2>
+		<div>
+			<mat-form-field appearance="outline">
+				<mat-label>{{ 'robots.name' | translate }}</mat-label>
+				<input
+					matInput
+					[(ngModel)]="sysName"
+					(change)="onNameChange()"
+					virtualKeyboard
+					ktype="text"
+					(onKeyboardClose)="onNameChange()"
+				/>
+			</mat-form-field>
+		</div>
+	</mat-card>
 </div>

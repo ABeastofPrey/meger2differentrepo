@@ -1,0 +1,36 @@
+<div class="mat-typography">
+	<div class="title primary-bg mat-elevation-z1">
+		{{ 'help.bug' | translate }}
+	</div>
+	<div class="content">
+		<mat-form-field appearance="outline" style="min-width: 500px;">
+			<textarea
+				matInput
+				placeholder="{{ 'help.bug_desc' | translate }}"
+				[formControl]="msg"
+				required
+				virtualKeyboard
+				ktype="text"
+				cdkTextareaAutosize
+				cdkAutosizeMinRows="3"
+				cdkAutosizeMaxRows="15"
+			>
+			</textarea>
+			<mat-error *ngIf="msg.invalid">{{ 'error.field_too_short' | translate }}</mat-error>
+		</mat-form-field>
+	</div>
+	<div class="buttons center-vertical">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-raised-button
+			color="primary"
+			[disabled]="isSending || msg.invalid"
+			(click)="report()"
+		>
+			<span *ngIf="!isSending">{{ 'button.send' | translate }}</span>
+			<mat-spinner diameter="36" *ngIf="isSending" color="primary"></mat-spinner>
+		</button>
+	</div>
+</div>

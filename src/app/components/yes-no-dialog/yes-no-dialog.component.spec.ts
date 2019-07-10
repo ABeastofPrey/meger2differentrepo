@@ -8,9 +8,8 @@ describe('YesNoDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ YesNoDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [YesNoDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

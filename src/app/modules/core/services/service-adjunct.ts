@@ -8,7 +8,9 @@ export const { Left, Right } = Either;
 
 export const { Just, Nothing } = Maybe;
 
-export interface Result { value: any; }
+export interface Result {
+  value: any;
+}
 
 export const errProp = prop('err');
 
@@ -20,9 +22,14 @@ export type handResult = (result: string) => any;
 
 export type handError = (err: ErrorFrame) => any;
 
-export const hasError: (res: MCQueryResponse) => boolean = compose(isNotNil, errProp);
+export const hasError: (res: MCQueryResponse) => boolean = compose(
+  isNotNil,
+  errProp
+);
 
-export const hasNoError: (res: MCQueryResponse) => boolean = complement(hasError);
+export const hasNoError: (res: MCQueryResponse) => boolean = complement(
+  hasError
+);
 
 /**
  * A curried function, register provided right and left handlder.
@@ -32,6 +39,22 @@ export const hasNoError: (res: MCQueryResponse) => boolean = complement(hasError
  * @param {MCQueryResponse} response the response.
  * @return {Result} the result.
  */
-export const handler = curry(function(rightHandler: handResult, leftHandler: handError, response: MCQueryResponse) {
-    return ifElse(hasNoError, compose(Right, rightHandler, resProp), compose(Left, leftHandler, errProp))(response);
+export const handler = curry(function(
+  rightHandler: handResult,
+  leftHandler: handError,
+  response: MCQueryResponse
+) {
+  return ifElse(
+    hasNoError,
+    compose(
+      Right,
+      rightHandler,
+      resProp
+    ),
+    compose(
+      Left,
+      leftHandler,
+      errProp
+    )
+  )(response);
 });

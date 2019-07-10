@@ -2,11 +2,18 @@ import { Injectable } from '@angular/core';
 
 import {
   WebsocketService,
-  MCQueryResponse
+  MCQueryResponse,
 } from '../../core/services/websocket.service';
 
-import { CustomIOType, IoOptions,
-  IoServiceCommand, HexValue, IoDirection, IoScope, CustomIoKey, IoKey
+import {
+  CustomIOType,
+  IoOptions,
+  IoServiceCommand,
+  HexValue,
+  IoDirection,
+  IoScope,
+  CustomIoKey,
+  IoKey,
 } from './io.service.enum';
 
 /**
@@ -51,7 +58,7 @@ export class IoService {
   /**
    * The map between io option and query command parameters.
    */
-  private ioOptionMap = new Map([
+  private ioOptionMap = new Map<any, any>([
     [IoOptions.AllInputs, { dio: IoDirection.Din, ioScope: IoScope.All }],
     [IoOptions.AllOutputs, { dio: IoDirection.Dout, ioScope: IoScope.All }],
     [IoOptions.DriveIoInputs, { dio: IoDirection.Din, ioScope: IoScope.Drv }],
@@ -64,8 +71,7 @@ export class IoService {
    * Constructor
    * @param ws The WebSocketService instance.
    */
-  constructor(private ws: WebsocketService) {
-  }
+  constructor(private ws: WebsocketService) {}
 
   /**
    * Query the IO list by different condition parameters.
@@ -110,7 +116,12 @@ export class IoService {
    * @param hex whether the value is hex.
    * @returns One promise instance contains add command.
    */
-  addCustomIo(tableIndex: number, selectType: CustomIOType, selectPort: number, hex: boolean) {
+  addCustomIo(
+    tableIndex: number,
+    selectType: CustomIOType,
+    selectPort: number,
+    hex: boolean
+  ) {
     let hexValue = hex ? HexValue.Hex : HexValue.Dec;
     let values = selectType.key.trim().split(' ');
     let type = values[0] === 'Input' ? IoDirection.Din : IoDirection.Dout;
@@ -128,7 +139,13 @@ export class IoService {
    * @param hex whether the value is hex.
    * @returns One promise instance contains modification command.
    */
-  modifyCustomIo(tableIndex: number, index: number, selectType: CustomIOType, selectPort: number, hex: boolean) {
+  modifyCustomIo(
+    tableIndex: number,
+    index: number,
+    selectType: CustomIOType,
+    selectPort: number,
+    hex: boolean
+  ) {
     let hexValue = hex ? HexValue.Hex : HexValue.Dec;
     let values = selectType.key.trim().split(' ');
     let type = values[0] === 'Input' ? IoDirection.Din : IoDirection.Dout;
@@ -201,7 +218,7 @@ export class IoService {
         array.push({
           port: element[IoKey.Index],
           value: element[IoKey.Value],
-          label: element[IoKey.Label]
+          label: element[IoKey.Label],
         });
       }
       return array;
@@ -226,7 +243,10 @@ export class IoService {
    * @param customIoPorts All available custom io ports.
    * @returns The custom IO value.
    */
-  getCustomIo(customIoTypes: CustomIOType[], customIoPorts: CustomIOPort): CustomIO {
+  getCustomIo(
+    customIoTypes: CustomIOType[],
+    customIoPorts: CustomIOPort
+  ): CustomIO {
     if (this.result.length) {
       let element = JSON.parse(this.result);
       let key = element[CustomIoKey.Type].replace(/\s/g, '');
@@ -234,8 +254,8 @@ export class IoService {
       let typeValue = null;
       for (let type of customIoTypes) {
         if (element[CustomIoKey.Type] === type.key) {
-             typeValue = type.value;
-             break;
+          typeValue = type.value;
+          break;
         }
       }
 
@@ -245,7 +265,7 @@ export class IoService {
         selectedType: { key: element[CustomIoKey.Type], value: typeValue },
         selectedPort: Number(element[CustomIoKey.Port]),
         value: element[CustomIoKey.Value],
-        label: element[CustomIoKey.Label]
+        label: element[CustomIoKey.Label],
       };
     }
     return null;
@@ -257,7 +277,10 @@ export class IoService {
    * @param customIoPorts All available custom io ports.
    * @returns All the custom IO values.
    */
-  getCustomIos(customIoTypes: CustomIOType[], customIoPorts: CustomIOPort): CustomIO[] {
+  getCustomIos(
+    customIoTypes: CustomIOType[],
+    customIoPorts: CustomIOPort
+  ): CustomIO[] {
     if (this.result.length) {
       let jsonObject = JSON.parse(this.result);
       let array = [];
@@ -266,10 +289,10 @@ export class IoService {
 
         let typeValue = null;
         for (let type of customIoTypes) {
-           if (element[CustomIoKey.Type] === type.key) {
+          if (element[CustomIoKey.Type] === type.key) {
             typeValue = type.value;
             break;
-           }
+          }
         }
 
         array.push({
@@ -278,7 +301,7 @@ export class IoService {
           selectedType: { key: element[CustomIoKey.Type], value: typeValue },
           selectedPort: element[CustomIoKey.Port],
           value: element[CustomIoKey.Value],
-          label: element[CustomIoKey.Label]
+          label: element[CustomIoKey.Label],
         });
       }
       return array;
@@ -294,7 +317,7 @@ export class IoService {
     if (this.result.length) {
       return JSON.parse(this.result);
     }
-     return [];
+    return [];
   }
 
   /**
@@ -319,7 +342,11 @@ export class IoService {
    * @param bitSize IO bit size.
    * @param hex Whether the value is hex.
    */
-  private getQueryIOCommand(option: IoOptions, bitSize: string, hex: boolean): string {
+  private getQueryIOCommand(
+    option: IoOptions,
+    bitSize: string,
+    hex: boolean
+  ): string {
     let dio = IoDirection.Din;
     let ioScope = IoScope.All;
 

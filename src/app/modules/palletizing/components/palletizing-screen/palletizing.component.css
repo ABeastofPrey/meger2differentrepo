@@ -16,11 +16,22 @@
   /* background: url('../../../../../assets/pics/pallet/servotronix_pallet.jpg'); */
   background-size: cover;
 }
-button { margin-top: 8px; }
-.menu-fab {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
+button {
+  margin-top: 8px;
+}
+.btn-add {
+  border-radius: 36px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.btn-add mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  align-self: flex-start;
+  margin-right: 16px;
 }
 .zoom-box {
   position: absolute;
@@ -30,7 +41,7 @@ button { margin-top: 8px; }
   z-index: 1;
 }
 .error-message {
-  background: #B71C1C;
+  background: #b71c1c;
   color: #fff;
   position: absolute;
   left: 0;
@@ -41,7 +52,7 @@ button { margin-top: 8px; }
   align-items: center;
   justify-content: center;
 }
-pallet-wizard { 
+pallet-wizard {
   overflow: auto;
   flex: 1;
 }

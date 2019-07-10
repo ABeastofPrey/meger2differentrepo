@@ -1,13 +1,19 @@
 <div class="mat-typography">
-  <h2>{{data.order}}</h2>
-  <mat-form-field>
-    <mat-select placeholder="Item Order" [value]="data.order" (selectionChange)="orderChange($event)">
-      <mat-option *ngFor="let item of data.items" [value]="item.order">
-        {{ item.order }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <div class="buttons">
-    <button mat-fab color="warn" (click)="delete()"><mat-icon>delete</mat-icon></button>
-  </div>
+	<h2>{{ data.order }}</h2>
+	<mat-form-field>
+		<mat-select
+			placeholder="Item Order"
+			[value]="data.order"
+			(selectionChange)="orderChange($event)"
+		>
+			<mat-option *ngFor="let item of data.items" [value]="item.order">
+				{{ item.order }}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<div class="buttons">
+		<button mat-fab color="warn" (click)="delete()">
+			<mat-icon>delete</mat-icon>
+		</button>
+	</div>
 </div>

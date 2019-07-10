@@ -8,9 +8,8 @@ describe('WhileDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WhileDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [WhileDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

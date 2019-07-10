@@ -8,9 +8,8 @@ describe('GripperSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GripperSelectorComponent ]
-    })
-    .compileComponents();
+      declarations: [GripperSelectorComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

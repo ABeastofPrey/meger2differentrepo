@@ -1,14 +1,29 @@
 <div class="mat-typography">
-  <div class="title mat-elevation-z1">
-    <mat-icon>add</mat-icon>&nbsp;&nbsp;{{'projects.toolbar.rename_prj'|translate}}
-  </div>
-  <div class="name-wrapper">
-    <mat-form-field>
-      <input matInput placeholder="{{'projects.toolbar.rename_prj_name'|translate}}" [(ngModel)]="name" virtualKeyboard ktype="text">
-    </mat-form-field>
-  </div>
-  <div class="actions">
-    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="rename()" [disabled]="!name || name.length === 0 || submitting">{{'button.rename'|translate}}</button>
-  </div>
+	<div class="title mat-elevation-z1">
+		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'projects.toolbar.rename_prj' | translate }}
+	</div>
+	<div class="name-wrapper">
+		<mat-form-field>
+			<input
+				matInput
+				placeholder="{{ 'projects.toolbar.rename_prj_name' | translate }}"
+				[(ngModel)]="name"
+				virtualKeyboard
+				ktype="text"
+			/>
+		</mat-form-field>
+	</div>
+	<div class="actions">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-button
+			color="primary"
+			(click)="rename()"
+			[disabled]="!name || name.length === 0 || submitting"
+		>
+			{{ 'button.rename' | translate }}
+		</button>
+	</div>
 </div>

@@ -4,7 +4,7 @@ import 'zone.js/dist/zone-testing';
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
 import 'hammerjs';
 
@@ -17,7 +17,11 @@ getTestBed().initTestEnvironment(
 );
 
 // Then we find all the tests.
-const programSettingsContext = require.context('./app/modules/program-editor/components/program-settings/', true, /\.spec\.ts$/);
+const programSettingsContext = require.context(
+  './app/modules/program-editor/components/program-settings/',
+  true,
+  /\.spec\.ts$/
+);
 // And load the modules.
 programSettingsContext.keys().map(programSettingsContext);
 
@@ -27,13 +31,25 @@ jumpDialogContext.keys().map(jumpDialogContext);
 const jump3DialogContext = require.context('./app/modules/program-editor/components/dialogs/jump3-dialog/', true, /\.spec\.ts$/);
 jump3DialogContext.keys().map(jump3DialogContext);
 
-const activationContext = require.context('./app/modules/help/components/activation/', true, /\.spec\.ts$/);
+const activationContext = require.context(
+  './app/modules/help/components/activation/',
+  true,
+  /\.spec\.ts$/
+);
 activationContext.keys().map(activationContext);
 
-const ioContext = require.context('./app/modules/configuration/components/io/', true, /\.spec\.ts$/);
+const ioContext = require.context(
+  './app/modules/configuration/components/io/',
+  true,
+  /\.spec\.ts$/
+);
 ioContext.keys().map(ioContext);
 
-const configurationServiceContext = require.context('./app/modules/configuration/services/', true, /\.spec\.ts$/);
+const configurationServiceContext = require.context(
+  './app/modules/configuration/services/',
+  true,
+  /\.spec\.ts$/
+);
 configurationServiceContext.keys().map(configurationServiceContext);
 
 const rmContext = require.context('./app/modules/configuration/components/reference-mastering/', true, /\.spec\.ts$/);

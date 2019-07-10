@@ -8,9 +8,8 @@ describe('TerminalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TerminalComponent ]
-    })
-    .compileComponents();
+      declarations: [TerminalComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

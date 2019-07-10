@@ -8,9 +8,8 @@ describe('DataScreenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataScreenComponent ]
-    })
-    .compileComponents();
+      declarations: [DataScreenComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,20 +1,16 @@
 import { NgModule } from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-import {AppsComponent} from './components/apps/apps.component';
+import { Routes, RouterModule } from '@angular/router';
+import { AppsComponent } from './components/apps/apps.component';
 
-const routes : Routes = [
+const routes: Routes = [
   {
     path: '',
-    component: AppsComponent
-  }
+    component: AppsComponent,
+  },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes)
-  ],
-  exports: [
-    RouterModule
-  ]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class ToolsRoutingModule { }
+export class ToolsRoutingModule {}

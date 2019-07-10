@@ -28,28 +28,33 @@ coordinates-display {
   width: 100%;
 }
 
-::ng-deep mat-form-field{ width: 95%; }
+::ng-deep mat-form-field {
+  width: 95%;
+}
 @media screen and (max-height: 800px) {
-  ::ng-deep .jog-parameter:nth-child(-n+4) mat-form-field{
+  ::ng-deep .jog-parameter:nth-child(-n + 4) mat-form-field {
     width: calc(49% - 6px);
   }
-  .mat-card-content, .content-teach {
+  .mat-card-content,
+  .content-teach {
     font-size: 1.3em;
   }
 }
 @media screen and (min-height: 680px) {
-  .mat-card-content, .content-teach {
+  .mat-card-content,
+  .content-teach {
     font-size: 1.5em;
   }
 }
 @media screen and (max-height: 480px) {
-  .mat-card-content, .content-teach {
+  .mat-card-content,
+  .content-teach {
     font-size: 1em;
   }
 }
 .mat-card {
   padding: 0;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
 }
 .mat-card-title {
   padding: 0.5em;
@@ -63,7 +68,7 @@ coordinates-display {
   font-size: 18px;
   flex: 1;
 }
-.mat-card-title button{
+.mat-card-title button {
   position: absolute;
   right: 1em;
   top: 0.5em;
@@ -81,7 +86,9 @@ coordinates-display {
   top: 0.5em;
 }
 
-.card-title-text { margin-left: 30px; }
+.card-title-text {
+  margin-left: 30px;
+}
 .menu-content {
   position: absolute;
   transform: translateX(0);
@@ -97,10 +104,16 @@ coordinates-display {
   overflow: auto;
   text-align: center;
 }
-.content-align button { width: 90%; }
+.content-align button {
+  width: 90%;
+}
 .content-teach {
   text-align: left;
   padding: 10px 1em 1em 1em;
 }
-.teach-button { width: 100%; }
-::ng-deep .teach-menu button { font-size: 1.5em; }
+.teach-button {
+  width: 100%;
+}
+::ng-deep .teach-menu button {
+  font-size: 1.5em;
+}

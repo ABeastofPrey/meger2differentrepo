@@ -8,9 +8,8 @@ describe('IoMappingScreenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IoMappingScreenComponent ]
-    })
-    .compileComponents();
+      declarations: [IoMappingScreenComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

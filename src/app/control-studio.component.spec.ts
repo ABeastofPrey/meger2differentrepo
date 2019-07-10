@@ -3,9 +3,7 @@ import { ControlStudioComponent } from './control-studio.component';
 describe('ControlStudioComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ControlStudioComponent
-      ],
+      declarations: [ControlStudioComponent],
     }).compileComponents();
   }));
   it('should create the app', async(() => {

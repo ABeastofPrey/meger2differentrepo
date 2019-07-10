@@ -1,17 +1,23 @@
 <div class="main mat-typography">
-  <div class="wrapper">
-    <div class="title">{{this.data}}</div>
-    <div class="content">
-      <mat-form-field>
-        <mat-select placeholder="{{'payloads.payload'|translate}}" [(ngModel)]="pay">
-          <mat-option disabled *ngIf="service.payloads.length === 0">{{'empty_list'|translate}}</mat-option>
-          <mat-option *ngFor="let p of service.payloads" [value]="p">{{p.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </div>
-  <div class="actions">
-    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="pay===null">{{'button.insert'|translate}}</button>
-  </div>
+	<div class="wrapper">
+		<div class="title">{{ this.data }}</div>
+		<div class="content">
+			<mat-form-field>
+				<mat-select placeholder="{{ 'payloads.payload' | translate }}" [(ngModel)]="pay">
+					<mat-option disabled *ngIf="service.payloads.length === 0">{{
+						'empty_list' | translate
+					}}</mat-option>
+					<mat-option *ngFor="let p of service.payloads" [value]="p">{{ p.name }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button mat-button color="primary" (click)="insert()" [disabled]="pay === null">
+			{{ 'button.insert' | translate }}
+		</button>
+	</div>
 </div>

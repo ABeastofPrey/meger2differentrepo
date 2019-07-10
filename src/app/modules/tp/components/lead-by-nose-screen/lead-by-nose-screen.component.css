@@ -13,12 +13,15 @@ mat-card {
   margin: 1em 0.5em 1em 0.5em;
   padding: 0;
   box-sizing: border-box;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
 }
 
-mat-card-title, mat-card-content { padding: 0.5em; }
+mat-card-title,
+mat-card-content {
+  padding: 0.5em;
+}
 mat-card-title {
   margin-bottom: 0;
   background: #00897b;
@@ -58,7 +61,7 @@ mat-card-content {
 }
 
 .separator {
-  border-bottom: 1px solid rgba(0,0,0,0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .lbn-enable-wrapper {
@@ -71,7 +74,7 @@ mat-card-content {
 .status {
   margin-top: 8px;
   margin-bottom: 1em;
-  border-bottom: 1px solid rgba(0,0,0,0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   line-height: 2;
   width: 95%;
 }
@@ -90,22 +93,27 @@ mat-card-content {
 ::ng-deep .inline-inputs mat-form-field {
   width: 100%;
 }
-::ng-deep mat-form-field{ width: 95%; }
+::ng-deep mat-form-field {
+  width: 95%;
+}
 @media screen and (max-height: 800px) {
-  ::ng-deep .jog-parameter:nth-child(-n+4) mat-form-field{
+  ::ng-deep .jog-parameter:nth-child(-n + 4) mat-form-field {
     width: calc(49% - 6px);
   }
-  .mat-card-content, .content-teach {
+  .mat-card-content,
+  .content-teach {
     font-size: 1.3em;
   }
 }
 @media screen and (min-height: 680px) {
-  .mat-card-content, .content-teach {
+  .mat-card-content,
+  .content-teach {
     font-size: 1.5em;
   }
 }
 @media screen and (max-height: 480px) {
-  .mat-card-content, .content-teach {
+  .mat-card-content,
+  .content-teach {
     font-size: 1em;
   }
 }

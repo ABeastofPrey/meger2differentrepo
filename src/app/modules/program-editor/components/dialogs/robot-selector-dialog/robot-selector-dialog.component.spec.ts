@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {RobotSelectorDialogComponent} from './robot-selector-dialog.component';
+import { RobotSelectorDialogComponent } from './robot-selector-dialog.component';
 
 describe('RobotSelectorDialogComponent', () => {
   let component: RobotSelectorDialogComponent;
@@ -7,9 +7,8 @@ describe('RobotSelectorDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RobotSelectorDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [RobotSelectorDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

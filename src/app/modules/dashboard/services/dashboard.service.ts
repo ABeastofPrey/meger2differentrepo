@@ -1,108 +1,115 @@
 import { Injectable } from '@angular/core';
-import {IPosition} from 'angular2-draggable';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {WebsocketService, MCQueryResponse} from '../../../modules/core/services/websocket.service';
-import {ScreenManagerService} from '../../../modules/core/services/screen-manager.service';
-import {ApiService} from '../../../modules/core/services/api.service';
-import {RecordGraphComponent} from '../components/record-graph/record-graph.component';
-import {RecordParams} from '../components/record-dialog/record-dialog.component';
-import {TourService} from 'ngx-tour-md-menu';
-import {ApplicationRef} from '@angular/core';
-import {NgZone} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
+import { IPosition } from 'angular2-draggable';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import {
+  WebsocketService,
+  MCQueryResponse,
+} from '../../../modules/core/services/websocket.service';
+import { ScreenManagerService } from '../../../modules/core/services/screen-manager.service';
+import { ApiService } from '../../../modules/core/services/api.service';
+import { RecordGraphComponent } from '../components/record-graph/record-graph.component';
+import { RecordParams } from '../components/record-dialog/record-dialog.component';
+import { TourService } from 'ngx-tour-md-menu';
+import { ApplicationRef } from '@angular/core';
+import { NgZone } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class DashboardService {
-  
   private _windows: DashboardWindow[] = [];
-  private is3D : boolean = false;
-  private isAdvanced : boolean = false;
-  private _busy : boolean = false;
+  private is3D: boolean = false;
+  private isAdvanced: boolean = false;
+  private _busy: boolean = false;
   private words: any;
-  
-  lastChartData : Graph[] = null;
-  
-  get busy() { return this._busy; }
-  
+
+  lastChartData: Graph[] = null;
+
+  get busy() {
+    return this._busy;
+  }
+
   get windows() {
     return this._windows;
   }
-  
-  findWindow(name:string) : number {
+
+  findWindow(name: string): number {
     for (let i = 0; i < this._windows.length; i++) {
-      if (this._windows[i].name === name)
-        return i;
+      if (this._windows[i].name === name) return i;
     }
     return -1;
   }
-  
-  add(params:DashboardInitParams) {
+
+  add(params: DashboardInitParams) {
     for (let w of this.windows) {
-      if (w.name === params.name)
-        return;
+      if (w.name === params.name) return;
     }
     this.windows.push(new DashboardWindow(params));
     this.save();
   }
-  
-  close(name:string) {
+
+  close(name: string) {
     let index = this.findWindow(name);
     if (index > -1) {
-      this._windows.splice(index,1);
+      this._windows.splice(index, 1);
       this.save();
     }
   }
 
   constructor(
-    private ws : WebsocketService,
-    private mgr : ScreenManagerService,
-    private dialog : MatDialog,
-    private api : ApiService,
+    private ws: WebsocketService,
+    private mgr: ScreenManagerService,
+    private dialog: MatDialog,
+    private api: ApiService,
     private snack: MatSnackBar,
     private tour: TourService,
     private zone: NgZone,
     private ref: ApplicationRef,
     private trn: TranslateService
   ) {
-    this.trn.get(['dashboard.err_file', 'dismiss','dashboard.charts.2d','dashboard.charts.3d']).subscribe(words=>{
-      this.words = words;
-    });
-    this.tour.start$.subscribe(start=>{
+    this.trn
+      .get([
+        'dashboard.err_file',
+        'dismiss',
+        'dashboard.charts.2d',
+        'dashboard.charts.3d',
+      ])
+      .subscribe(words => {
+        this.words = words;
+      });
+    this.tour.start$.subscribe(start => {
       localStorage.removeItem('dashboards');
     });
-    this.tour.end$.subscribe(end=>{
+    this.tour.end$.subscribe(end => {
       for (let i = 0; i < this._windows.length; i++) {
         if (this._windows[i].name === 'SCARA (Tour)') {
-          this._windows.splice(i,1);
+          this._windows.splice(i, 1);
           break;
         }
       }
     });
     let cache = localStorage.getItem('dashboards');
     if (cache) {
-      let windows : DashboardWindow[] = JSON.parse(cache);
+      let windows: DashboardWindow[] = JSON.parse(cache);
       for (let i = 0; i < windows.length; i++) {
         if (windows[i].name === 'SCARA (Tour)') {
-          windows.splice(i,1);
+          windows.splice(i, 1);
           break;
         }
       }
       this._windows = windows;
       this.resetWindows();
     }
-    this.zone.runOutsideAngular(()=>{
-      setInterval(()=>{
-        if (this.mgr.screen.name !== 'dashboard')
-          return;
+    this.zone.runOutsideAngular(() => {
+      setInterval(() => {
+        if (this.mgr.screen.name !== 'dashboard') return;
         for (let w of this.windows) {
-          if (w.name === 'SCARA (Tour)')
-            continue;
-          let promises : Promise<any>[] = [];
+          if (w.name === 'SCARA (Tour)') continue;
+          let promises: Promise<any>[] = [];
           promises.push(this.ws.query('?' + w.name + '.en'));
           for (let p of w.params) {
             promises.push(this.ws.query('?' + w.name + '.' + p.name));
           }
-          Promise.all(promises).then((ret:MCQueryResponse[])=>{
+          Promise.all(promises).then((ret: MCQueryResponse[]) => {
             if (ret[0].err) {
               this.close(w.name);
               this.ref.tick();
@@ -116,24 +123,24 @@ export class DashboardService {
             this.ref.tick();
           });
         }
-      },200);        
+      }, 200);
     });
   }
-  
+
   resetWindows() {
     for (let w of this._windows) {
       w.isRecording = false;
       w.recordingTime = 0;
     }
   }
-  
+
   save() {
     localStorage.setItem('dashboards', JSON.stringify(this._windows));
   }
-  
-  onChange(w: DashboardWindow, p:DashboardParam,v:any) {
+
+  onChange(w: DashboardWindow, p: DashboardParam, v: any) {
     let cmd = w.name + '.' + p.name + '=';
-    switch(v) {
+    switch (v) {
       case true:
       case false:
         cmd += v ? '1' : '0';
@@ -143,89 +150,93 @@ export class DashboardService {
     }
     this.ws.query(cmd);
   }
-  
-  showGraphDialog(is3D : boolean, isAdvanced : boolean, recName? : string) {
-    if (is3D !== null && (isAdvanced===null || !isAdvanced))
-      this.is3D = is3D;
-    else if (isAdvanced !== null)
-      this.isAdvanced = isAdvanced;
-    this.getRecordingData(recName).then((ret:boolean)=>{
+
+  showGraphDialog(is3D: boolean, isAdvanced: boolean, recName?: string) {
+    if (is3D !== null && (isAdvanced === null || !isAdvanced)) this.is3D = is3D;
+    else if (isAdvanced !== null) this.isAdvanced = isAdvanced;
+    this.getRecordingData(recName).then((ret: boolean) => {
       this._busy = false;
-      if (!ret)
-        return;
-      this.dialog.open(RecordGraphComponent,{
-        width: "90%",
-        height: "90%",
-        data: this.lastChartData
+      if (!ret) return;
+      this.dialog.open(RecordGraphComponent, {
+        width: '90%',
+        height: '90%',
+        data: this.lastChartData,
       });
     });
   }
-  
+
   private getRecordingData(recName: string) {
     this._busy = true;
-    return this.api.getRecordingCSV(recName).then((csv:string)=>{
+    return this.api.getRecordingCSV(recName).then((csv: string) => {
       if (csv === null) {
-        this.snack.open(this.words['dashboard.err_file'],this.words['dismiss']);
+        this.snack.open(
+          this.words['dashboard.err_file'],
+          this.words['dismiss']
+        );
         return false;
       }
       this.lastChartData = this.csvToGraphs(csv);
       return true;
     });
   }
-  
+
   /*
    * Returns TRACES array for PlotlyJS
    */
-  private csvToGraphs(csv:string) : Graph[] {
-    let newData : Graph[] = [];
+  private csvToGraphs(csv: string): Graph[] {
+    let newData: Graph[] = [];
     // parse CSR
-    let recLines = csv.split("\n");
-    let legends = recLines[0].split(",");
-    if (this.is3D && !this.isAdvanced) { // 3D GRAPH
-      let chartData : Graph3D = {
+    let recLines = csv.split('\n');
+    let legends = recLines[0].split(',');
+    if (this.is3D && !this.isAdvanced) {
+      // 3D GRAPH
+      let chartData: Graph3D = {
         mode: 'lines',
         name: this.words['dashboard.charts.3d'],
         x: [],
         y: [],
         z: [],
-        type: 'scatter3d'
+        type: 'scatter3d',
       };
       newData.push(chartData);
-    } else if (!this.isAdvanced) { // 2D
+    } else if (!this.isAdvanced) {
+      // 2D
       for (let legend of legends) {
         newData.push({
           mode: 'lines',
           name: legend,
           x: [],
-          y: []
+          y: [],
         });
       }
-    } else { // 2D ADVANCED
+    } else {
+      // 2D ADVANCED
       newData.push({
         mode: 'lines',
         name: this.words['dashboard.charts.2d'],
         x: [],
-        y: []
+        y: [],
       });
     }
-    for (let i=1; i<recLines.length; i++) {
-      if (recLines[i]!=="") {
-        let vals = recLines[i].slice(0,-1).split(",");
-        if (!this.is3D) { // 2D
-          if (this.isAdvanced) { // ADVANCED 2D
-            if (vals.length !== 2)
-              continue;
+    for (let i = 1; i < recLines.length; i++) {
+      if (recLines[i] !== '') {
+        let vals = recLines[i].slice(0, -1).split(',');
+        if (!this.is3D) {
+          // 2D
+          if (this.isAdvanced) {
+            // ADVANCED 2D
+            if (vals.length !== 2) continue;
             newData[0].x.push(Number(vals[0]));
             newData[0].y.push(Number(vals[1]));
           } else {
-            vals.forEach((val,index)=>{
-              newData[index].x.push(i*2);
+            vals.forEach((val, index) => {
+              newData[index].x.push(i * 2);
               newData[index].y.push(Number(val));
             });
           }
-        } else { //3D
-          if (vals.length !== 3)
-            continue;
+        } else {
+          //3D
+          if (vals.length !== 3) continue;
           newData[0].x.push(Number(vals[0]));
           newData[0].y.push(Number(vals[1]));
           (<Graph3D>newData[0]).z.push(Number(vals[2]));
@@ -234,7 +245,6 @@ export class DashboardService {
     }
     return newData;
   }
-
 }
 
 export class DashboardWindow {
@@ -242,42 +252,40 @@ export class DashboardWindow {
   axes: string[];
   enable: boolean = false;
   params: DashboardParam[] = [];
-  isExpanded : boolean = false;
+  isExpanded: boolean = false;
   cartesian: boolean = false;
-  target : number[];
+  target: number[];
   vel: number;
   acc: number;
   dec: number;
   jerk: number;
   pos: IPosition;
-  isGroup : boolean;
-  isRecording : boolean;
-  recordingParams : RecordParams;
-  recordingTime : number;
-  
+  isGroup: boolean;
+  isRecording: boolean;
+  recordingParams: RecordParams;
+  recordingTime: number;
+
   constructor(params: DashboardInitParams) {
     this.name = params.name;
     this.axes = params.axes;
     this.isGroup = params.axes.length > 1;
     this.target = new Array<number>(this.axes.length);
-    for (let i = 0; i < this.target.length; i++)
-      this.target[i] = 0;
+    for (let i = 0; i < this.target.length; i++) this.target[i] = 0;
   }
-  
 }
 
 export interface DashboardInitParams {
-  name : string;
-  axes : string[];
+  name: string;
+  axes: string[];
 }
 
 export class DashboardParam {
   name: string = null;
-  value : any = null;
-  base : string = 'DEC'; // DEC, HEX, BIN
-  inputType : string = 'INPUT'; // INPUT, TOGGLE, SLIDER
-  sliderMin : number = 0;
-  sliderMax : number = 100;
+  value: any = null;
+  base: string = 'DEC'; // DEC, HEX, BIN
+  inputType: string = 'INPUT'; // INPUT, TOGGLE, SLIDER
+  sliderMin: number = 0;
+  sliderMax: number = 100;
 }
 
 interface Graph {

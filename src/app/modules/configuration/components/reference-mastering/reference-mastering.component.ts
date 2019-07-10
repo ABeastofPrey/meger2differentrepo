@@ -39,7 +39,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     public isMoveingComplete: boolean = true;
     public moveCommand: string;
     private subscription: any;
-    @ViewChild('stepper') stepper: MatHorizontalStepper;
+    @ViewChild('stepper', {static: false}) stepper: MatHorizontalStepper;
 
     public hotJoint(index: number): boolean {
         if (!this.zeroAxis) { return false; }

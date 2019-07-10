@@ -10,10 +10,9 @@ import { AddVarComponent } from '../../add-var/add-var.component';
 @Component({
   selector: 'app-move-dialog',
   templateUrl: './move-dialog.component.html',
-  styleUrls: ['./move-dialog.component.css']
+  styleUrls: ['./move-dialog.component.css'],
 })
 export class MoveDialogComponent implements OnInit {
-
   private _location: TPVariable;
   private _locationIndex: number = -1;
   indexFrom: number = -1;
@@ -27,13 +26,17 @@ export class MoveDialogComponent implements OnInit {
   ptList: string[] = [];
   pts: string[] = [];
 
-  get locationIndex() { return this._locationIndex; }
+  get locationIndex() {
+    return this._locationIndex;
+  }
   set locationIndex(val: number) {
     this._locationIndex = val;
     this.prg.lastVarIndex = val;
   }
 
-  get location() { return this._location; }
+  get location() {
+    return this._location;
+  }
   set location(newLocation: TPVariable) {
     this._location = newLocation;
     this.rangeMode = false;
@@ -68,19 +71,20 @@ export class MoveDialogComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private mtService: PositionTriggerService
   ) {
-    this.withParams = typeof(this.data.params) !== 'undefined';
+    this.withParams = typeof this.data.params !== 'undefined';
     if (this.prg.lastVar && !this.withParams) {
       this._location = this.prg.lastVar;
       if (this._location.isArr && this.prg.lastVarIndex) {
         let index = this.prg.lastVarIndex;
-        this._locationIndex = (index < this._location.value.length) ? (index + 1) : 1;
+        this._locationIndex =
+          index < this._location.value.length ? index + 1 : 1;
         this.prg.lastVarIndex = this._locationIndex;
       }
     }
   }
 
   ngOnInit() {
-     this.mtService.plsNameList().then(nameList => {
+    this.mtService.plsNameList().then(nameList => {
       this.ptList = nameList;
     });
   }
@@ -92,11 +96,12 @@ export class MoveDialogComponent implements OnInit {
         this.advancedMode = true;
       }
       // PARSE MOTION ELEMENT
-      if (params['element'])
-        this.motionElement = params['element'] + ' ';
+      if (params['element']) this.motionElement = params['element'] + ' ';
       // PARSE TARGET
       if (params['target']) {
-        for (let v of this.dataService.joints.concat(this.dataService.locations)) {
+        for (let v of this.dataService.joints.concat(
+          this.dataService.locations
+        )) {
           if (v.name === params['target'].name) {
             this._location = v;
             this._locationIndex = params['target'].selectedIndex;
@@ -129,8 +134,7 @@ export class MoveDialogComponent implements OnInit {
   invalidBlending(): boolean {
     if (this.blending) {
       let n = Number(this.blending);
-      if (!isNaN(n) && (n<0 || n > 100))
-        return true;
+      if (!isNaN(n) && (n < 0 || n > 100)) return true;
     }
     return false;
   }
@@ -142,8 +146,7 @@ export class MoveDialogComponent implements OnInit {
     let name = this.location.name;
     let robot = this.motionElement ? this.motionElement + ' ' : '';
     if (this.location.isArr) {
-      if (!this.rangeMode)
-        names.push(name + '[' + this.locationIndex + ']');
+      if (!this.rangeMode) names.push(name + '[' + this.locationIndex + ']');
       else {
         for (var i = this.indexFrom; i <= this.indexTo; i++)
           names.push(name + '[' + i + ']');
@@ -151,16 +154,15 @@ export class MoveDialogComponent implements OnInit {
     } else {
       names.push(name);
     }
-    let vcruiseString = "";
+    let vcruiseString = '';
     if (this.vcruise && Number(this.vcruise) > 0)
-      vcruiseString = (this.data.moveS ? ' Vtran=' : ' Vcruise=')+this.vcruise;
-    let blendingString = "";
-    if (this.blending)
-      blendingString = ' BlendingPercentage=' + this.blending;
+      vcruiseString =
+        (this.data.moveS ? ' Vtran=' : ' Vcruise=') + this.vcruise;
+    let blendingString = '';
+    if (this.blending) blendingString = ' BlendingPercentage=' + this.blending;
     for (let i = 0; i < names.length; i++) {
       cmds += cmd + robot + names[i] + vcruiseString + blendingString;
-      if (i < names.length - 1)
-        cmds += '\n';
+      if (i < names.length - 1) cmds += '\n';
     }
     // add pls to cmds.
     if (complement(isEmpty(this.pts.length))) {
@@ -169,5 +171,4 @@ export class MoveDialogComponent implements OnInit {
     }
     this.dialogRef.close(cmds);
   }
-
 }

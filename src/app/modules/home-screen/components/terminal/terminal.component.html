@@ -1,43 +1,71 @@
 <div class="wrapper mat-typography" (click)="onClick($event)" *ngIf="login.isAdmin">
-  <!--<button mat-fab class="fab" (click)="openScriptDialog()" color="primary"><mat-icon>description</mat-icon></button>
+	<!--<button mat-fab class="fab" (click)="openScriptDialog()" color="primary"><mat-icon>description</mat-icon></button>
   <input type="file" accept=".trm, .TRM" #upload (change)="onUploadFilesChange($event)" class="file-input" />-->
-  <div class="terminal" #wrapper (contextmenu)="onContextMenu($event)">
-    <div class="editor" #editorDiv></div>
-    <div class="center-vertical">
-      <div style="margin: 0 8px 0 4px;">--></div>
-      <div class="editor" #editorLine></div>
-    </div>
-  </div>
-  <ul class="context-menu mat-title-color mat-elevation-z3" *ngIf="contextMenuShown" @fade [style.top.px]="contextMenuY" [style.left.px]="contextMenuX" (clickOutside)="contextMenuShown=false">
-    <button mat-button (mousedown)="clear($event)">
-      <div class="center-vertical">
-        <mat-icon>clear</mat-icon>
-        <span class="button-text">{{'clear_msgs'|translate}}</span>
-      </div>
-    </button>
-    <button mat-button (mousedown)="copy($event)" *ngIf="!cmn.isTablet && contextSelection && contextSelection.length > 0">
-      <div class="center-vertical">
-        <img src="assets/pics/icons/content-copy.png">
-        <span class="button-text">{{'copy'|translate}}</span>
-      </div>
-    </button>
-    <mat-divider></mat-divider>
-    <button mat-button (mousedown)="cut($event)" *ngIf="!cmn.isTablet && editor && editor.getSelectedText() && editor.getSelectedText().length > 0">
-      <div class="center-vertical">
-        <img src="assets/pics/icons/content-cut.png">
-        <span class="button-text">{{'cut'|translate}}</span>
-      </div>
-    </button>
-    <button mat-button (mousedown)="paste($event)" *ngIf="!cmn.isTablet">
-      <div class="center-vertical">
-        <img src="assets/pics/icons/content-paste.png">
-        <span class="button-text">{{'paste'|translate}}</span>
-      </div>
-    </button>
-  </ul>
+	<div class="terminal" #wrapper (contextmenu)="onContextMenu($event)">
+		<div class="editor" #editorDiv></div>
+		<div class="center-vertical">
+			<div style="margin: 0 8px 0 4px;">--></div>
+			<div class="editor" #editorLine></div>
+		</div>
+	</div>
+	<ul
+		class="context-menu mat-title-color mat-elevation-z3"
+		*ngIf="contextMenuShown"
+		@fade
+		[style.top.px]="contextMenuY"
+		[style.left.px]="contextMenuX"
+		(clickOutside)="contextMenuShown = false"
+	>
+		<button mat-button (mousedown)="clear($event)">
+			<div class="center-vertical">
+				<mat-icon>clear</mat-icon>
+				<span class="button-text">{{ 'clear_msgs' | translate }}</span>
+			</div>
+		</button>
+		<button
+			mat-button
+			(mousedown)="copy($event)"
+			*ngIf="!cmn.isTablet && contextSelection && contextSelection.length > 0"
+		>
+			<div class="center-vertical">
+				<img src="assets/pics/icons/content-copy.png" />
+				<span class="button-text">{{ 'copy' | translate }}</span>
+			</div>
+		</button>
+		<mat-divider></mat-divider>
+		<button
+			mat-button
+			(mousedown)="cut($event)"
+			*ngIf="
+				!cmn.isTablet && editor && editor.getSelectedText() && editor.getSelectedText().length > 0
+			"
+		>
+			<div class="center-vertical">
+				<img src="assets/pics/icons/content-cut.png" />
+				<span class="button-text">{{ 'cut' | translate }}</span>
+			</div>
+		</button>
+		<button mat-button (mousedown)="paste($event)" *ngIf="!cmn.isTablet">
+			<div class="center-vertical">
+				<img src="assets/pics/icons/content-paste.png" />
+				<span class="button-text">{{ 'paste' | translate }}</span>
+			</div>
+		</button>
+	</ul>
 </div>
 <div class="wrapper disabled" *ngIf="!login.isAdmin"></div>
 <mat-form-field class="hidden">
-  <input matInput placeholder="" [(ngModel)]="dummyText" virtualKeyboard ktype="text" #dummyInput (onKeyboardClose)="onDummyKeyboardClose()">
+	<input
+		matInput
+		placeholder=""
+		[(ngModel)]="dummyText"
+		virtualKeyboard
+		showArrows="true"
+		ktype="text"
+		#dummyInput
+		(onKeyboardClose)="onDummyKeyboardClose()"
+	/>
 </mat-form-field>
-<button mat-fab *ngIf="cmn.isTablet" class="fab" (click)="showKeyboard()"><mat-icon>keyboard</mat-icon></button>
+<button mat-fab *ngIf="cmn.isTablet" class="fab" (click)="showKeyboard()">
+	<mat-icon>keyboard</mat-icon>
+</button>

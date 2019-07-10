@@ -8,9 +8,8 @@ describe('DomainSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DomainSelectorComponent ]
-    })
-    .compileComponents();
+      declarations: [DomainSelectorComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('JogSettingsDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JogSettingsDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [JogSettingsDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

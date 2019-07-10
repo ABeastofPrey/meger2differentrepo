@@ -8,9 +8,8 @@ describe('DelayDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DelayDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [DelayDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

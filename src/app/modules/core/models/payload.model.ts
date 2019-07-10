@@ -14,11 +14,11 @@ export class Payload {
   j6_ident_vel: number;
   j6_ident_time: number;
   j6_ident_done: boolean;
-  
-  constructor(name: string, axes:number) {
+
+  constructor(name: string, axes: number) {
     this.name = name;
     this.refPos = [];
-    for (let i=0; i<axes; i++) {
+    for (let i = 0; i < axes; i++) {
       this.refPos.push({ value: 0 });
     }
   }

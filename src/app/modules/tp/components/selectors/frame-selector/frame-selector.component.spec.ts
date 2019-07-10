@@ -8,9 +8,8 @@ describe('FrameSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FrameSelectorComponent ]
-    })
-    .compileComponents();
+      declarations: [FrameSelectorComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -18,18 +18,25 @@
   padding: 24px;
   overflow: hidden;
 }
-mat-tree, .content-wrapper { 
+mat-tree,
+.content-wrapper {
   background: inherit;
   flex: 1;
   overflow: auto;
 }
-.mat-icon-button { width: auto; }
+.mat-icon-button {
+  width: auto;
+}
 .table-button {
   flex: 1;
   text-align: left;
 }
-.content-wrapper h1 { display: flex; }
-.content-wrapper h1 div { flex: 1; }
+.content-wrapper h1 {
+  display: flex;
+}
+.content-wrapper h1 div {
+  flex: 1;
+}
 .content {
   display: flex;
   flex-direction: column;
@@ -48,11 +55,15 @@ mat-tree, .content-wrapper {
     margin-bottom: 8px;
   }
 }
-.row > * { margin-right: 16px; }
+.row > * {
+  margin-right: 16px;
+}
 .new-node {
   background: #fff;
   margin-top: 8px;
   border-radius: 6px;
   padding: 8px;
 }
-.row mat-form-field { width: 100px; }
+.row mat-form-field:not(.payload) {
+  width: 100px;
+}

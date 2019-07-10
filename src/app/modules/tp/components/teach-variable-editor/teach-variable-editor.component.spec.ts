@@ -8,9 +8,8 @@ describe('TeachVariableEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TeachVariableEditorComponent ]
-    })
-    .compileComponents();
+      declarations: [TeachVariableEditorComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

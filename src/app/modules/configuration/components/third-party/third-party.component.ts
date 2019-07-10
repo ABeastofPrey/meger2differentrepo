@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 const GOOGLE_MIT = `The MIT License
 
@@ -21,14 +22,14 @@ const GOOGLE_MIT = `The MIT License
                     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
                     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
                     THE SOFTWARE.`;
-const NGX_MIT   = `Copyright (c) 2018 Olivier Combe
+const NGX_MIT = `Copyright (c) 2018 Olivier Combe
 
                     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
                     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
                     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`;
-const ARE_MIT   = `The MIT License (MIT)
+const ARE_MIT = `The MIT License (MIT)
 
                     Copyright (c) 2016 Matt Lewis
 
@@ -49,7 +50,7 @@ const ARE_MIT   = `The MIT License (MIT)
                     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
                     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
                     SOFTWARE.`;
-const APACHE    = `Apache-2.0
+const APACHE = `Apache-2.0
                                                 Apache License
                                           Version 2.0, January 2004
                                        http://www.apache.org/licenses/
@@ -251,7 +252,7 @@ const APACHE    = `Apache-2.0
                   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
                   See the License for the specific language governing permissions and
                   limitations under the License.`;
-const A2D_MIT   = `MIT License
+const A2D_MIT = `MIT License
 
                     Copyright (c) 2017 Xie, Ziyu
 
@@ -272,7 +273,7 @@ const A2D_MIT   = `MIT License
                     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
                     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
                     SOFTWARE.`;
-const QR_MIT    = `The MIT License (MIT)
+const QR_MIT = `The MIT License (MIT)
                     ---------------------
                     Copyright (c) 2018 - present Andreas Jacob (Cordobo)
 
@@ -293,7 +294,7 @@ const QR_MIT    = `The MIT License (MIT)
                     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
                     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
                     THE SOFTWARE.`;
-const CJS_MIT   = `Copyright (c) 2014-2019 Denis Pushkarev
+const CJS_MIT = `Copyright (c) 2014-2019 Denis Pushkarev
 
                     Permission is hereby granted, free of charge, to any person obtaining a copy
                     of this software and associated documentation files (the "Software"), to deal
@@ -312,7 +313,7 @@ const CJS_MIT   = `Copyright (c) 2014-2019 Denis Pushkarev
                     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
                     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
                     THE SOFTWARE.`;
-const CRJS_MIT  = `# License
+const CRJS_MIT = `# License
 
                     [The MIT License (MIT)](http://opensource.org/licenses/MIT)
 
@@ -336,7 +337,7 @@ const CRJS_MIT  = `# License
                     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
                     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
                     THE SOFTWARE.`;
-const HJS_MIT   = `The MIT License (MIT)
+const HJS_MIT = `The MIT License (MIT)
 
                     Copyright (C) 2011-2014 by Jorik Tangelder (Eight Media)
 
@@ -462,8 +463,8 @@ const QRCODEJS2_MIT = `The MIT License (MIT)
 
                       The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-                      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`;      
-const RAMDA_MIT   = `The MIT License (MIT)
+                      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`;
+const RAMDA_MIT = `The MIT License (MIT)
 
                       Copyright (c) 2013-2018 Scott Sauyet and Michael Hurley
 
@@ -516,7 +517,7 @@ const RAMDA_FAN_MIT = `Copyright 2017 Michael Hurley
                         The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
                         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`;
-const RXJS_APACHE   = `Apache-2.0
+const RXJS_APACHE = `Apache-2.0
                                                       Apache License
                                                 Version 2.0, January 2004
                                              http://www.apache.org/licenses/
@@ -718,7 +719,7 @@ const RXJS_APACHE   = `Apache-2.0
                         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
                         See the License for the specific language governing permissions and
                         limitations under the License.`;
-const SCR_MIT      = `MIT License
+const SCR_MIT = `MIT License
 
                         Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 
@@ -727,7 +728,7 @@ const SCR_MIT      = `MIT License
                         The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
                         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`;
-const TSLIB_APACHE  = `Apache License
+const TSLIB_APACHE = `Apache License
 
                         Version 2.0, January 2004
 
@@ -782,7 +783,7 @@ const TSLIB_APACHE  = `Apache License
                         9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
 
                         END OF TERMS AND CONDITIONS`;
-const WITHIN_ISC    = `Copyright (c) 2018, Craig Patik <http://patik.com>
+const WITHIN_ISC = `Copyright (c) 2018, Craig Patik <http://patik.com>
 
                         Permission to use, copy, modify, and/or distribute this software for any
                         purpose with or without fee is hereby granted, provided that the above
@@ -798,148 +799,165 @@ const WITHIN_ISC    = `Copyright (c) 2018, Craig Patik <http://patik.com>
 @Component({
   selector: 'app-third-party',
   templateUrl: './third-party.component.html',
-  styleUrls: ['./third-party.component.css']
+  styleUrls: ['./third-party.component.css'],
 })
 export class ThirdPartyComponent implements OnInit {
-  
   libs: Library[] = [];
-  
-  private getAngularMITLicenses(list: string[]) : Library[] {
+  license: string;
+
+  private getAngularMITLicenses(list: string[]): Library[] {
     let result: Library[] = [];
     for (let s of list) {
       result.push({
         name: s,
-        license: GOOGLE_MIT
+        license: GOOGLE_MIT,
       });
     }
     return result;
   }
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
+    // GET CS+ LICENSE
+    this.http
+      .get('assets/license/stx.html', { responseType: 'text' })
+      .subscribe(ret => {
+        this.license = ret;
+      });
+
     // Angular
-    this.libs.push(...this.getAngularMITLicenses([
-      '@angular/animations','@angular/cdk','@angular/common','@angular/core',
-      '@angular/material','@angular/platform-browser','@angular/router',
-      'zone.js'
-    ]));
+    this.libs.push(
+      ...this.getAngularMITLicenses([
+        '@angular/animations',
+        '@angular/cdk',
+        '@angular/common',
+        '@angular/core',
+        '@angular/material',
+        '@angular/platform-browser',
+        '@angular/router',
+        'zone.js',
+      ])
+    );
     // ngx-translate
-    this.libs.push(...[{
-      name: '@ngx-translate/core',
-      license: NGX_MIT
-    },{
-      name: '@ngx-translate/http-loader',
-      license: NGX_MIT
-    }]);
+    this.libs.push(
+      ...[
+        {
+          name: '@ngx-translate/core',
+          license: NGX_MIT,
+        },
+        {
+          name: '@ngx-translate/http-loader',
+          license: NGX_MIT,
+        },
+      ]
+    );
     // angular-resizable-element
     this.libs.push({
       name: '@angular-resizable-element',
-      license: ARE_MIT
+      license: ARE_MIT,
     });
     // angular-split
     this.libs.push({
       name: 'angular-split',
-      license: APACHE
+      license: APACHE,
     });
     // angular2-draggable
     this.libs.push({
       name: 'angular2-draggable',
-      license: A2D_MIT
+      license: A2D_MIT,
     });
     // angularx-qrcode
     this.libs.push({
       name: 'angularx-qrcode',
-      license: QR_MIT
+      license: QR_MIT,
     });
     //core-js
     this.libs.push({
       name: 'core-js',
-      license: CJS_MIT
+      license: CJS_MIT,
     });
     //crypto-js
     this.libs.push({
       name: 'crypto-js',
-      license: CRJS_MIT
+      license: CRJS_MIT,
     });
     // hammerjs
     this.libs.push({
       name: 'hammerjs',
-      license: HJS_MIT
+      license: HJS_MIT,
     });
     // jquery-ui-dist
     this.libs.push({
       name: 'jquery-ui-dist',
-      license: JUI_DIST_MIT
+      license: JUI_DIST_MIT,
     });
     //ng-click-outside
     this.libs.push({
       name: 'ng-click-outside',
-      license: NGC_OUT_MIT
+      license: NGC_OUT_MIT,
     });
     // ngx-scrollbar
     this.libs.push({
       name: 'ngx-scrollbar',
-      license: NGX_SCROLL_MIT
+      license: NGX_SCROLL_MIT,
     });
     // ngx-tour-core
     this.libs.push({
       name: 'ngx-tour-core',
-      license: NGX_TOUR_MIT
+      license: NGX_TOUR_MIT,
     });
     // ngx-tour-md-menu
     this.libs.push({
       name: 'ngx-tour-md-menu',
-      license: NGX_TOUR_MIT
+      license: NGX_TOUR_MIT,
     });
     // qrcodejs2
     this.libs.push({
       name: 'qrcodejs2',
-      license: QRCODEJS2_MIT
+      license: QRCODEJS2_MIT,
     });
     // ramda
     this.libs.push({
       name: 'ramda',
-      license: RAMDA_MIT
+      license: RAMDA_MIT,
     });
     // ramda-adjunct
     this.libs.push({
       name: 'ramda-adjunct',
-      license: RAMDA_ADJ_BSD
+      license: RAMDA_ADJ_BSD,
     });
     // ramda-fantasy
     this.libs.push({
       name: 'ramda-fantasy',
-      license: RAMDA_FAN_MIT
+      license: RAMDA_FAN_MIT,
     });
     // rxjs
     this.libs.push({
       name: 'rxjs',
-      license: RXJS_APACHE
+      license: RXJS_APACHE,
     });
     // rxjs-compat
     this.libs.push({
       name: 'rxjs-compat',
-      license: RXJS_APACHE
+      license: RXJS_APACHE,
     });
     // screenfull
     this.libs.push({
       name: 'screenfull',
-      license: SCR_MIT
+      license: SCR_MIT,
     });
     // tslib
     this.libs.push({
       name: 'tslib',
-      license: TSLIB_APACHE
+      license: TSLIB_APACHE,
     });
     // withinviewport
     this.libs.push({
       name: 'withinviewport',
-      license: WITHIN_ISC
+      license: WITHIN_ISC,
     });
-    
   }
-
 }
 
 interface Library {

@@ -1,15 +1,33 @@
 <div class="main mat-typography">
-  <div class="wrapper">
-    <div class="title">{{'projectCommands.if.title'|translate}}</div>
-    <div class="content">
-      <mat-form-field>
-        <input matInput placeholder="{{'projectCommands.if.condition'|translate}}" [(ngModel)]="expression" type="text" virtualKeyboard ktype="text">
-      </mat-form-field>
-      <mat-checkbox color="primary" [(ngModel)]="elseFlag">{{'projectCommands.if.else'|translate}}</mat-checkbox>
-    </div>
-  </div>
-  <div class="actions">
-    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="expression === null || expression.length === 0">{{'button.insert'|translate}}</button>
-  </div>
+	<div class="wrapper">
+		<div class="title">{{ 'projectCommands.if.title' | translate }}</div>
+		<div class="content">
+			<mat-form-field>
+				<input
+					matInput
+					placeholder="{{ 'projectCommands.if.condition' | translate }}"
+					[(ngModel)]="expression"
+					type="text"
+					virtualKeyboard
+					ktype="text"
+				/>
+			</mat-form-field>
+			<mat-checkbox color="primary" [(ngModel)]="elseFlag">{{
+				'projectCommands.if.else' | translate
+			}}</mat-checkbox>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-button
+			color="primary"
+			(click)="insert()"
+			[disabled]="expression === null || expression.length === 0"
+		>
+			{{ 'button.insert' | translate }}
+		</button>
+	</div>
 </div>

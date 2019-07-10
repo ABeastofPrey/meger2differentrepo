@@ -1,87 +1,149 @@
 <div class="wrapper">
-  <h1>{{'ios.mapping'|translate}}</h1>
-  <as-split direction="horizontal">
-    <as-split-area size="15">
-      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-        <mat-tree-node *matTreeNodeDef="let node">
-          <li class="mat-tree-node child-node" (click)="selectNode(node)">
-            {{node.name | translate}}
-          </li>
-        </mat-tree-node>
-        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
-          <li>
-            <div class="mat-tree-node module-node" matTreeNodeToggle>
-              <mat-icon>
-                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-              </mat-icon>
-              {{node.name|translate}}
-            </div>
-            <ul [class.invisible]="!treeControl.isExpanded(node)">
-              <ng-container matTreeNodeOutlet></ng-container>
-            </ul>
-          </li>
-        </mat-nested-tree-node>
-      </mat-tree>
-    </as-split-area>
-    <as-split-area size="85" style="display: flex;">
-      <div *ngIf="activeModule" class="io-table-wrapper">
-        <h2>{{activeModule.io.name}} > {{(activeModule.showInputs ? 'ios.inputs' : 'ios.outputs') | translate}}</h2>
-        <div class="io-table mat-elevation-z3">
-          <table>
-            <thead class="mat-subtitle-color">
-              <tr>
-                <td>{{'ios.table.0'|translate}}</td>
-                <td>{{'ios.table.1'|translate}}</td>
-                <td>{{'ios.table.2'|translate}}</td>
-                <td>{{'ios.table.3'|translate}}</td>
-                <td>{{'ios.table.4'|translate}}</td>
-              </tr>
-            </thead>
-            <tbody *ngIf="activeModule.showInputs">
-              <tr *ngFor="let io of activeModule.io.inputs" [class.invalid]="!io.valid">
-                <td>{{io.id}}</td>
-                <td>
-                  <mat-slide-toggle color="primary" [checked]="io.value" [disabled]="!io.simulated" (change)="toggleValue($event,io)"></mat-slide-toggle>
-                </td>
-                <td>
-                  <mat-form-field>
-                    <input type="text" matInput [value]="io.name" (change)="updateName($event,io)" maxlength="32" [disabled]="prj.activeProject" ktype="text" (onKeyboardClose)="updateName($event,io)">
-                  </mat-form-field>
-                </td>
-                <td>
-                  <mat-form-field>
-                    <input type="text" matInput [value]="io.description" (change)="updateDescription($event,io)" maxlength="80" [disabled]="prj.activeProject" ktype="text" (onKeyboardClose)="updateDescription($event,io)">
-                  </mat-form-field>
-                </td>
-                <td style="text-align: center;">
-                  <mat-checkbox color="accent" [checked]="io.simulated" [disabled]="io.id<24" (change)="toggleSimulated($event,io)" matTooltip="{{'ios.sim_tooltip'|translate}}" [matTooltipDisabled]="io.id>23"></mat-checkbox>
-                </td>
-              </tr>
-            </tbody>
-            <tbody *ngIf="!activeModule.showInputs">
-              <tr *ngFor="let io of activeModule.io.outputs">
-                <td>{{io.id}}</td>
-                <td>
-                  <mat-slide-toggle color="primary" [checked]="io.value" (change)="toggleValue($event,io)"></mat-slide-toggle>
-                </td>
-                <td>
-                  <mat-form-field>
-                    <input type="text" matInput [value]="io.name" (change)="updateName($event,io)" maxlength="32" [disabled]="prj.activeProject" ktype="text" (onKeyboardClose)="updateName($event,io)">
-                  </mat-form-field>
-                </td>
-                <td>
-                  <mat-form-field>
-                    <input type="text" matInput [value]="io.description" (change)="updateDescription($event,io)" maxlength="80" [disabled]="prj.activeProject" ktype="text" (onKeyboardClose)="updateDescription($event,io)">
-                  </mat-form-field>
-                </td>
-                <td style="text-align: center;">
-                  <mat-checkbox color="accent" [checked]="io.simulated" [disabled]="io.id<24" (change)="toggleSimulated($event,io)" matTooltip="{{'ios.sim_tooltip'|translate}}" [matTooltipDisabled]="io.id>23"></mat-checkbox>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </as-split-area>
-  </as-split>
+	<h1>{{ 'ios.mapping' | translate }}</h1>
+	<as-split direction="horizontal">
+		<as-split-area size="15">
+			<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+				<mat-tree-node *matTreeNodeDef="let node">
+					<li class="mat-tree-node child-node" (click)="selectNode(node)">
+						{{ node.name | translate }}
+					</li>
+				</mat-tree-node>
+				<mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
+					<li>
+						<div class="mat-tree-node module-node" matTreeNodeToggle>
+							<mat-icon>
+								{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+							</mat-icon>
+							{{ node.name | translate }}
+						</div>
+						<ul [class.invisible]="!treeControl.isExpanded(node)">
+							<ng-container matTreeNodeOutlet></ng-container>
+						</ul>
+					</li>
+				</mat-nested-tree-node>
+			</mat-tree>
+		</as-split-area>
+		<as-split-area size="85" style="display: flex;">
+			<div *ngIf="activeModule" class="io-table-wrapper">
+				<h2>
+					{{ activeModule.io.name }} >
+					{{ (activeModule.showInputs ? 'ios.inputs' : 'ios.outputs') | translate }}
+				</h2>
+				<div class="io-table mat-elevation-z3">
+					<table>
+						<thead class="mat-subtitle-color">
+							<tr>
+								<td>{{ 'ios.table.0' | translate }}</td>
+								<td>{{ 'ios.table.1' | translate }}</td>
+								<td>{{ 'ios.table.2' | translate }}</td>
+								<td>{{ 'ios.table.3' | translate }}</td>
+								<td>{{ 'ios.table.4' | translate }}</td>
+							</tr>
+						</thead>
+						<tbody *ngIf="activeModule.showInputs">
+							<tr *ngFor="let io of activeModule.io.inputs" [class.invalid]="!io.valid">
+								<td>{{ io.id }}</td>
+								<td>
+									<mat-slide-toggle
+										color="primary"
+										[checked]="io.value"
+										[disabled]="!io.simulated"
+										(change)="toggleValue($event, io)"
+									></mat-slide-toggle>
+								</td>
+								<td>
+									<mat-form-field>
+										<input
+											type="text"
+											matInput
+											[value]="io.name"
+											(change)="updateName($event, io)"
+											maxlength="32"
+											[disabled]="prj.activeProject"
+											ktype="text"
+											(onKeyboardClose)="updateName($event, io)"
+										/>
+									</mat-form-field>
+								</td>
+								<td>
+									<mat-form-field>
+										<input
+											type="text"
+											matInput
+											[value]="io.description"
+											(change)="updateDescription($event, io)"
+											maxlength="80"
+											[disabled]="prj.activeProject"
+											ktype="text"
+											(onKeyboardClose)="updateDescription($event, io)"
+										/>
+									</mat-form-field>
+								</td>
+								<td style="text-align: center;">
+									<mat-checkbox
+										color="accent"
+										[checked]="io.simulated"
+										[disabled]="io.id < 24"
+										(change)="toggleSimulated($event, io)"
+										matTooltip="{{ 'ios.sim_tooltip' | translate }}"
+										[matTooltipDisabled]="io.id > 23"
+									></mat-checkbox>
+								</td>
+							</tr>
+						</tbody>
+						<tbody *ngIf="!activeModule.showInputs">
+							<tr *ngFor="let io of activeModule.io.outputs">
+								<td>{{ io.id }}</td>
+								<td>
+									<mat-slide-toggle
+										color="primary"
+										[checked]="io.value"
+										(change)="toggleValue($event, io)"
+									></mat-slide-toggle>
+								</td>
+								<td>
+									<mat-form-field>
+										<input
+											type="text"
+											matInput
+											[value]="io.name"
+											(change)="updateName($event, io)"
+											maxlength="32"
+											[disabled]="prj.activeProject"
+											ktype="text"
+											(onKeyboardClose)="updateName($event, io)"
+										/>
+									</mat-form-field>
+								</td>
+								<td>
+									<mat-form-field>
+										<input
+											type="text"
+											matInput
+											[value]="io.description"
+											(change)="updateDescription($event, io)"
+											maxlength="80"
+											[disabled]="prj.activeProject"
+											ktype="text"
+											(onKeyboardClose)="updateDescription($event, io)"
+										/>
+									</mat-form-field>
+								</td>
+								<td style="text-align: center;">
+									<mat-checkbox
+										color="accent"
+										[checked]="io.simulated"
+										[disabled]="io.id < 24"
+										(change)="toggleSimulated($event, io)"
+										matTooltip="{{ 'ios.sim_tooltip' | translate }}"
+										[matTooltipDisabled]="io.id > 23"
+									></mat-checkbox>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</as-split-area>
+	</as-split>
 </div>

@@ -8,9 +8,8 @@ describe('MachineTableSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MachineTableSelectorComponent ]
-    })
-    .compileComponents();
+      declarations: [MachineTableSelectorComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

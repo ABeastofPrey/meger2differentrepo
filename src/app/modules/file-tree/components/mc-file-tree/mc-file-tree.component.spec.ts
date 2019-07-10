@@ -8,9 +8,8 @@ describe('McFileTreeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ McFileTreeComponent ]
-    })
-    .compileComponents();
+      declarations: [McFileTreeComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

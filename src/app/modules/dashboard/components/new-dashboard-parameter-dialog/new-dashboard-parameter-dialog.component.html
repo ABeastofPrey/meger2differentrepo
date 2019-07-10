@@ -1,42 +1,80 @@
 <div class="main mat-typography">
-  <div class="wrapper">
-    <div class="title primary-bg">{{'dashboard.new-param.title'|translate}}</div>
-    <div class="content">
-      <mat-form-field *ngIf="!cmn.isTablet">
-        <input type="text" placeholder="{{'parameter'|translate}}" matInput [formControl]="ctrl" [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
-          <mat-option *ngFor="let option of filteredOptions" [value]="option.text">
-            {{ option.text }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field *ngIf="cmn.isTablet">
-        <input type="text" placeholder="{{'parameter'|translate}}" matInput virtualKeyboard ktype="text" [(ngModel)]="newParam.name">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-select placeholder="{{'base'|translate}}" [(ngModel)]="newParam.base">
-          <mat-option value="DEC">{{'decimal'|translate}}</mat-option>
-          <mat-option value="HEX">{{'hexadecimal'|translate}}</mat-option>
-          <mat-option value="BIN">{{'binary'|translate}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-select placeholder="{{'inputs.type'|translate}}" [(ngModel)]="newParam.inputType">
-          <mat-option value="INPUT">{{'inputs.text'|translate}}</mat-option>
-          <mat-option value="TOGGLE">{{'inputs.toggle'|translate}}</mat-option>
-          <mat-option value="SLIDER">{{'inputs.slider'|translate}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field *ngIf="newParam.inputType === 'SLIDER'">
-        <input type="number" placeholder="{{'inputs.slider_min'|translate}}" matInput [(ngModel)]="newParam.sliderMin" virtualKeyboard ktype="numeric">
-      </mat-form-field>
-      <mat-form-field *ngIf="newParam.inputType === 'SLIDER'"> 
-        <input type="number" placeholder="{{'inputs.slider_max'|translate}}" matInput [(ngModel)]="newParam.sliderMax" virtualKeyboard ktype="numeric">
-      </mat-form-field>
-    </div>
-  </div>
-  <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="add()" [disabled]="newParam.name === null || !verifyOption(newParam.name)">{{'button.add'|translate}}</button>
-  </div>
+	<div class="wrapper">
+		<div class="title primary-bg">
+			{{ 'dashboard.new-param.title' | translate }}
+		</div>
+		<div class="content">
+			<mat-form-field *ngIf="!cmn.isTablet">
+				<input
+					type="text"
+					placeholder="{{ 'parameter' | translate }}"
+					matInput
+					[formControl]="ctrl"
+					[matAutocomplete]="auto"
+				/>
+				<mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
+					<mat-option *ngFor="let option of filteredOptions" [value]="option.text">
+						{{ option.text }}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+			<mat-form-field *ngIf="cmn.isTablet">
+				<input
+					type="text"
+					placeholder="{{ 'parameter' | translate }}"
+					matInput
+					virtualKeyboard
+					ktype="text"
+					[(ngModel)]="newParam.name"
+				/>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-select placeholder="{{ 'base' | translate }}" [(ngModel)]="newParam.base">
+					<mat-option value="DEC">{{ 'decimal' | translate }}</mat-option>
+					<mat-option value="HEX">{{ 'hexadecimal' | translate }}</mat-option>
+					<mat-option value="BIN">{{ 'binary' | translate }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-select placeholder="{{ 'inputs.type' | translate }}" [(ngModel)]="newParam.inputType">
+					<mat-option value="INPUT">{{ 'inputs.text' | translate }}</mat-option>
+					<mat-option value="TOGGLE">{{ 'inputs.toggle' | translate }}</mat-option>
+					<mat-option value="SLIDER">{{ 'inputs.slider' | translate }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field *ngIf="newParam.inputType === 'SLIDER'">
+				<input
+					type="number"
+					placeholder="{{ 'inputs.slider_min' | translate }}"
+					matInput
+					[(ngModel)]="newParam.sliderMin"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</mat-form-field>
+			<mat-form-field *ngIf="newParam.inputType === 'SLIDER'">
+				<input
+					type="number"
+					placeholder="{{ 'inputs.slider_max' | translate }}"
+					matInput
+					[(ngModel)]="newParam.sliderMax"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+			</mat-form-field>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button color="primary" mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-button
+			color="primary"
+			(click)="add()"
+			[disabled]="newParam.name === null || !verifyOption(newParam.name)"
+		>
+			{{ 'button.add' | translate }}
+		</button>
+	</div>
 </div>

@@ -1,19 +1,35 @@
 <div class="main mat-typography">
-  <div class="wrapper">
-    <div class="title">{{'projectCommands.dim.title'|translate}}</div>
-    <div class="content">
-      <mat-form-field>
-        <input matInput placeholder="{{'variables.name'|translate}}" [(ngModel)]="varName" type="text" virtualKeyboard ktype="text">
-      </mat-form-field>
-      <mat-select placeholder="{{'variables.type'|translate}}" [(ngModel)]="varType">
-        <mat-option value="long">{{'long'|translate}}</mat-option>
-        <mat-option value="double">{{'double'|translate}}</mat-option>
-        <mat-option value="string">{{'string'|translate}}</mat-option>
-      </mat-select>
-    </div>
-  </div>
-  <div class="actions">
-    <button mat-button (click)="cancel()">{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="insert()" [disabled]="this.varName == null || this.varType == null">{{'button.insert'|translate}}</button>
-  </div>
+	<div class="wrapper">
+		<div class="title">{{ 'projectCommands.dim.title' | translate }}</div>
+		<div class="content">
+			<mat-form-field>
+				<input
+					matInput
+					placeholder="{{ 'variables.name' | translate }}"
+					[(ngModel)]="varName"
+					type="text"
+					virtualKeyboard
+					ktype="text"
+				/>
+			</mat-form-field>
+			<mat-select placeholder="{{ 'variables.type' | translate }}" [(ngModel)]="varType">
+				<mat-option value="long">{{ 'long' | translate }}</mat-option>
+				<mat-option value="double">{{ 'double' | translate }}</mat-option>
+				<mat-option value="string">{{ 'string' | translate }}</mat-option>
+			</mat-select>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button (click)="cancel()">
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-button
+			color="primary"
+			(click)="insert()"
+			[disabled]="this.varName == null || this.varType == null"
+		>
+			{{ 'button.insert' | translate }}
+		</button>
+	</div>
 </div>

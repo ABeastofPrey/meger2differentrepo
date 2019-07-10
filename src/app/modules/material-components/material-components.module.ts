@@ -32,8 +32,9 @@ import {
   MatTreeModule,
   MatRippleModule,
   MatBadgeModule,
+  MatChipsModule,
 } from '@angular/material';
-  import {DragDropModule } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   imports: [
@@ -69,7 +70,8 @@ import {
     MatTreeModule,
     MatRippleModule,
     DragDropModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatChipsModule,
   ],
   exports: [
     MatButtonModule,
@@ -103,8 +105,9 @@ import {
     MatTreeModule,
     MatRippleModule,
     DragDropModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatChipsModule,
   ],
-  declarations: []
+  declarations: [],
 })
-export class MaterialComponentsModule { }
+export class MaterialComponentsModule {}

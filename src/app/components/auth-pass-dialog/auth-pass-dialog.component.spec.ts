@@ -8,9 +8,8 @@ describe('AuthPassDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AuthPassDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [AuthPassDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

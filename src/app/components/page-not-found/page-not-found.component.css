@@ -13,15 +13,17 @@
   transform: translateX(-50%) translateY(-50%);
   padding: 48px;
 }
-a { font-size: 16px; }
+a {
+  font-size: 16px;
+}
 .game {
   position: absolute;
   bottom: 0;
 }
 .game-background {
- position: absolute;
- height: 20px;
- background: rgb(10, 78, 78);
- width: 100%;
- bottom: 0;
+  position: absolute;
+  height: 20px;
+  background: rgb(10, 78, 78);
+  width: 100%;
+  bottom: 0;
 }

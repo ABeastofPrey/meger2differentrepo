@@ -1,24 +1,32 @@
 <mat-card>
-  <mat-card-title>{{'language'|translate}}</mat-card-title>
-  <mat-card-subtitle>{{'lang.subtitle'|translate}}</mat-card-subtitle>
-  <mat-card-content>
-    <mat-form-field>
-      <mat-select placeholder="{{'lang.selected'|translate}}" [value]="trn.currentLang" (selectionChange)="changeLang($event)">
-        <mat-option value="en">{{'lang.en'|translate}}</mat-option>
-        <mat-option value="cmn">{{'lang.cmn'|translate}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </mat-card-content>
+	<mat-card-title>{{ 'language' | translate }}</mat-card-title>
+	<mat-card-subtitle>{{ 'lang.subtitle' | translate }}</mat-card-subtitle>
+	<mat-card-content>
+		<mat-form-field>
+			<mat-select
+				placeholder="{{ 'lang.selected' | translate }}"
+				[value]="trn.currentLang"
+				(selectionChange)="changeLang($event)"
+			>
+				<mat-option value="en">{{ 'lang.en' | translate }}</mat-option>
+				<mat-option value="cmn">{{ 'lang.cmn' | translate }}</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</mat-card-content>
 </mat-card>
 <mat-card *ngIf="login.isSuper">
-  <mat-card-title>Theme</mat-card-title>
-  <mat-card-subtitle>Select ControlStudio+ theme</mat-card-subtitle>
-  <mat-card-content>
-    <mat-form-field>
-      <mat-select placeholder="Theme" [value]="env.platform.name" (selectionChange)="changeTheme($event)">
-        <mat-option value="{{env.platforms.Servotronix.name}}">Servotronix</mat-option>
-        <mat-option value="{{env.platforms.Kuka.name}}">Kuka</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </mat-card-content>
+	<mat-card-title>Theme</mat-card-title>
+	<mat-card-subtitle>Select ControlStudio+ theme</mat-card-subtitle>
+	<mat-card-content>
+		<mat-form-field>
+			<mat-select
+				placeholder="Theme"
+				[value]="env.platform.name"
+				(selectionChange)="changeTheme($event)"
+			>
+				<mat-option value="{{ env.platforms.Servotronix.name }}">Servotronix</mat-option>
+				<mat-option value="{{ env.platforms.Kuka.name }}">Kuka</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</mat-card-content>
 </mat-card>

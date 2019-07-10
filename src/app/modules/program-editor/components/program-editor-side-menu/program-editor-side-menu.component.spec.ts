@@ -8,9 +8,8 @@ describe('ProgramEditorSideMenuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProgramEditorSideMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [ProgramEditorSideMenuComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,5 +1,5 @@
 .card {
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 6px;
   padding: 8px;
   font-size: 12px;
@@ -8,8 +8,10 @@
   margin-right: 8px;
   pointer-events: none;
 }
-.row { 
+.row {
   display: flex;
   min-width: 80px;
 }
-.row > div { flex: 1; }
+.row > div {
+  flex: 1;
+}

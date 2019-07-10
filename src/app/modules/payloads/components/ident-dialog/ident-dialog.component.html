@@ -1,0 +1,15 @@
+<div class="mat-typography">
+	<h1>{{ 'payloads.ident.title' | translate }}</h1>
+	<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+	<h3>{{ 'payloads.ident.subtitle' | translate }}</h3>
+	<div class="wrapper">
+		<div class="time">
+			<div *ngIf="!started">{{ 'payloads.ident.moving' | translate }}</div>
+			<div *ngIf="started && !finished">{{ timeLeft }}</div>
+			<div *ngIf="finished">{{ 'payloads.ident.finish' | translate }}</div>
+		</div>
+		<button mat-fab color="warn" class="huge" (click)="stop()">
+			<mat-icon>power_settings_new</mat-icon>
+		</button>
+	</div>
+</div>

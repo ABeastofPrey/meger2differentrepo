@@ -1,19 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {Routes, RouterModule} from '@angular/router';
-import {HomeScreenComponent} from './components/home-screen/home-screen.component';
+import { Routes, RouterModule } from '@angular/router';
+import { HomeScreenComponent } from './components/home-screen/home-screen.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: HomeScreenComponent
-  }
+    component: HomeScreenComponent,
+  },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes)
-  ],
-  exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class HomeScreenRoutingModule { }
+export class HomeScreenRoutingModule {}

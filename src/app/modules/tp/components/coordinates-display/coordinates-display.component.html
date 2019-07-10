@@ -1,14 +1,14 @@
 <div class="wrapper">
-  <table style="table-layout: fixed;" id="coordinates">
-    <tr *ngFor="let coo of service.joints; trackBy: service.trackByValue; let i = index">
-      <td>{{service.locations[i].key}}</td>
-      <td>{{service.locations[i].value}}</td>
-      <td>{{coo.key}}</td>
-      <td>{{coo.value}}</td>
-    </tr>
-    <tr *ngIf="service.axisCoordinate !== null">
-      <td>{{service.axisCoordinate.key}}</td>
-      <td>{{service.axisCoordinate.value}}</td>
-    </tr>
-  </table>
+	<table style="table-layout: fixed;" id="coordinates">
+		<tr *ngFor="let coo of service.joints; trackBy: service.trackByValue; let i = index">
+			<td>{{ service.locations[i].key }}</td>
+			<td>{{ service.locations[i].value }}</td>
+			<td>{{ coo.key }}</td>
+			<td>{{ coo.value }}</td>
+		</tr>
+		<tr *ngIf="service.axisCoordinate !== null">
+			<td>{{ service.axisCoordinate.key }}</td>
+			<td>{{ service.axisCoordinate.value }}</td>
+		</tr>
+	</table>
 </div>

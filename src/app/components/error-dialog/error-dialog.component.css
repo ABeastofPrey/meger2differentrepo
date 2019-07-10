@@ -1,14 +1,15 @@
+h1 {
+  margin: 0;
+}
 .title {
   font-size: 20px;
   margin: -24px -24px 24px -24px;
   padding: 16px;
   font-weight: 500;
-  background-color: #00897b;
-  color: #fff;
 }
 .msg {
   font-size: 16px;
-  color: rgba(0,0,0,0.56);
+  color: rgba(0, 0, 0, 0.56);
   line-height: 1.5;
 }
 .actions {

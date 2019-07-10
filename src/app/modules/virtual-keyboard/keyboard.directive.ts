@@ -1,35 +1,49 @@
-import { Directive, ElementRef, Renderer2, HostListener, Component, Inject, Input, Output, EventEmitter} from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import {NgModel, FormControlName} from '@angular/forms';
-import {CommonService} from '../core/services/common.service';
-import {NgControl} from '@angular/forms';
-import {FormControl} from '@angular/forms';
-import {Optional} from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Renderer2,
+  HostListener,
+  Component,
+  Inject,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  OnInit,
+} from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { NgModel, FormControlName } from '@angular/forms';
+import { CommonService } from '../core/services/common.service';
+import { NgControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
+import { Optional } from '@angular/core';
+import { TerminalService } from '../home-screen/services/terminal.service';
 
 @Directive({
   selector: '[virtualKeyboard]',
-  providers: [NgModel,FormControlName]
+  providers: [NgModel, FormControlName],
 })
 export class KeyboardDirective {
-  
-  private _dialogOpen : boolean = false;
+  private _dialogOpen: boolean = false;
   private ref: MatDialogRef<KeyboardDialog>;
-  
+
   @Input() ktype: string;
+  @Input() showArrows: boolean;
+  @Input() enableLineDelete: boolean;
   @Output() onKeyboardClose: EventEmitter<any> = new EventEmitter();
-  
-  private _shiftMode : boolean = false;
-  
+  @Output() onLineDelete: EventEmitter<any> = new EventEmitter();
+
+  private _shiftMode: boolean = false;
+
   @HostListener('focus')
   onClick() {
-    if (!this.cmn.isTablet || this.ktype==='none' || this._dialogOpen) {
-      if (!this._dialogOpen)
-        this.el.nativeElement.readOnly = false;
+    if (!this.cmn.isTablet || this.ktype === 'none' || this._dialogOpen) {
+      if (!this._dialogOpen) this.el.nativeElement.readOnly = false;
       return;
     }
     this.el.nativeElement.blur();
     this.el.nativeElement.readOnly = true;
-    let selectedLayout : any = null;
+    let selectedLayout: any = null;
     switch (this.ktype) {
       case 'numeric':
         selectedLayout = layout_numeric;
@@ -49,15 +63,18 @@ export class KeyboardDirective {
         layout: selectedLayout,
         keyboardType: this.ktype,
         accept: [this.onKeyboardClose],
-        ctrl: this.ctrl
-      }
+        ctrl: this.ctrl,
+        showArrows: this.showArrows,
+        enableLineDelete: this.enableLineDelete,
+        onLineDelete: this.onLineDelete
+      },
     });
-    this.ref.afterClosed().subscribe(()=>{
+    this.ref.afterClosed().subscribe(() => {
       this.el.nativeElement.blur();
       this._dialogOpen = false;
     });
   }
-  
+
   constructor(
     public el: ElementRef,
     public dialog: MatDialog,
@@ -65,73 +82,172 @@ export class KeyboardDirective {
     private ngModel: NgModel,
     private cmn: CommonService,
     @Optional() private ctrl: NgControl,
-    private name: FormControlName){
-  }
-  
+    private name: FormControlName
+  ) {}
 }
 
 @Component({
   selector: 'keyboard-dialog',
   templateUrl: './keyboard.component.html',
-  styleUrls: ['./keyboard.component.scss']
+  styleUrls: ['./keyboard.component.scss'],
 })
-export class KeyboardDialog {
+export class KeyboardDialog implements OnInit {
   
   public ngModel: NgModel;
-  public placeholder : string;
-  public inputType : string;
+  public placeholder: string;
+  public inputType: string;
   public layout: any;
   public ctrl: FormControlName;
   public control: FormControl;
   public currValue: string = '';
   private onKeyboardClose: EventEmitter<any>[];
-  private _shiftMode : boolean = false;
-  private _moreMode : boolean = false;
+  private _shiftMode: boolean = false;
+  private _moreMode: boolean = false;
   private val: any;
+  private lastCmdIndex = -1;
+  private backKeyDown: boolean = false;
+  private _cursorPos: number = 0; // index of the letter the cursor is at
+  private cursorInitDone: boolean = false;
+
+  @ViewChild('displayInput', { static: true }) displayInput: ElementRef;
+
+  get cursorX() {
+    if (this.displayInput) {
+      const inputWidth = this.displayInput.nativeElement.offsetWidth;
+      const cursorPos = this._cursorPos * this.cmn.fontWidth;
+      return cursorPos <= inputWidth ? cursorPos : inputWidth;
+    } else {
+      return 0;
+    }
+  }
 
   constructor(
     public dialogRef: MatDialogRef<KeyboardDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.ngModel = typeof data.name.model === 'undefined' ? data.ngModel : data.name;
-      this.placeholder = data.el.getAttribute('placeholder');
-      this.inputType = data.el.getAttribute('type');
-      this.layout = data.layout;
-      this.onKeyboardClose = data.accept;
-      this.ctrl = data.name;
-      this.control = data.ctrl ? data.ctrl.control : null;
-      if (this.ctrl && this.ctrl.name) {
-        this.currValue = this.ctrl.value || '';
-        if (this.ctrl.valueChanges) {
-          this.ctrl.valueChanges.subscribe(val=>{
-            this.currValue = val;
-          });
-        }
-      } else if (this.control) {
-        this.currValue = this.control.value || '';
-        if (this.control.valueChanges) {
-          this.control.valueChanges.subscribe(val=>{
-            this.currValue = val;
-          });
-        }
-      } else {
-        this.currValue = this.ngModel.value || data.el.value || '';
-        if (this.ngModel) {
-          this.ngModel.valueChanges.subscribe(val=>{
-            this.currValue = val;
-          });
-        }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public terminal: TerminalService,
+    private cmn: CommonService
+  ) {}
+
+  ngOnInit() {
+    this.ngModel =
+      typeof this.data.name.model === 'undefined'
+        ? this.data.ngModel
+        : this.data.name;
+    this.placeholder = this.data.el.getAttribute('placeholder');
+    this.inputType = this.data.el.getAttribute('type');
+    this.layout = this.data.layout;
+    this.onKeyboardClose = this.data.accept;
+    this.ctrl = this.data.name;
+    this.control = this.data.ctrl ? this.data.ctrl.control : null;
+    if (this.ctrl && this.ctrl.name) {
+      this.currValue = this.ctrl.value || '';
+      this._cursorPos = this.currValue.length;
+      if (this.ctrl.valueChanges) {
+        this.ctrl.valueChanges.subscribe(val => {
+          this.currValue = val;
+          if (!this.cursorInitDone) {
+            this._cursorPos = this.currValue.length;
+            this.cursorInitDone = true;
+          }
+        });
+      }
+    } else if (this.control) {
+      this.currValue = this.control.value || '';
+      this._cursorPos = this.currValue.length;
+      if (this.control.valueChanges) {
+        this.control.valueChanges.subscribe(val => {
+          this.currValue = val;
+          if (!this.cursorInitDone) {
+            this._cursorPos = this.currValue.length;
+            this.cursorInitDone = true;
+          }
+        });
+      }
+    } else {
+      this.currValue = this.ngModel.value || this.data.el.value || '';
+      this._cursorPos = this.currValue.length;
+      if (this.ngModel) {
+        this.ngModel.valueChanges.subscribe(val => {
+          this.currValue = val;
+          if (!this.cursorInitDone) {
+            this._cursorPos = this.currValue.length;
+            this.cursorInitDone = true;
+          }
+        });
       }
     }
-    
-  onInput(key) {
-    var value: string = '' + ((this.control && this.control.value) || (this.ngModel && this.ngModel.value) || (this.ctrl && this.ctrl.value) || this.currValue || '');
-    if (value === 'undefined' || value === 'null')
-      value = '';
-    switch(key) {
+  }
+
+  onInputTouch(e: TouchEvent) {
+    const left = (e.target as HTMLElement).getBoundingClientRect().left;
+    const x = e.touches[0].clientX - left;
+    // find nearest position
+    this._cursorPos = Math.min(
+      Math.floor(Math.max(0, x / this.cmn.fontWidth)),
+      this.currValue.length
+    );
+  }
+
+  onKeyUp(key: string, e: MouseEvent) {
+    if (key === 'backspace') {
+      this.backKeyDown = false;
+    }
+    const target = e.target as HTMLElement;
+    if (target) {
+      const tag = target.tagName.toUpperCase();
+      if (tag === 'BUTTON') target.blur();
+      else if (tag === 'I') target.parentElement.blur();
+    }
+  }
+
+  onInput(key: string, e: MouseEvent) {
+    e.preventDefault();
+    const target = e.target as HTMLElement;
+    if (target) {
+      const tag = target.tagName.toUpperCase();
+      if (tag === 'BUTTON') target.focus();
+      else if (tag === 'I') target.parentElement.focus();
+    }
+    var value: string =
+      '' +
+      ((this.control && this.control.value) ||
+        (this.ngModel && this.ngModel.value) ||
+        (this.ctrl && this.ctrl.value) ||
+        this.currValue ||
+        '');
+    if (value === 'undefined' || value === 'null') value = '';
+    switch (key) {
       case 'backspace':
-        value = value.slice(0, -1);
-        if (value === '' && this.data.keyboardType === 'numeric')
-          value = '0';
+        if (value.length === 0) {
+          if (this.data.enableLineDelete) {
+            this.data.onLineDelete.emit();
+            this.accept(true);
+          }
+          return;
+        }
+        this.backKeyDown = true;
+        if (this.data.keyboardType === 'numeric') {
+          value = value.slice(0, -1);
+          if (value === '') value = '0';
+        } else if (this._cursorPos > 0) {
+          value =
+            value.slice(0, this._cursorPos - 1) + value.slice(this._cursorPos);
+          this._cursorPos--;
+          setTimeout(() => {
+            if (!this.backKeyDown) return;
+            const interval = setInterval(() => {
+              if (this.backKeyDown && this._cursorPos > 0) {
+                value =
+                  value.slice(0, this._cursorPos - 1) +
+                  value.slice(this._cursorPos);
+                this._cursorPos--;
+                this.setValue(value);
+              } else {
+                clearInterval(interval);
+              }
+            }, 100);
+          }, 400);
+        }
         break;
       case 'arrow_upward':
         this.layout = this._shiftMode ? layout_string : layout_string_shift;
@@ -144,30 +260,89 @@ export class KeyboardDialog {
         this._shiftMode = false;
         break;
       case 'keyboard_return':
+        this.setValue('\n');
         this.accept();
         break;
       default:
-        if (value === '0' && this.data.keyboardType === 'numeric' && key !== '.')
+        if (
+          value === '0' &&
+          this.data.keyboardType === 'numeric' &&
+          key !== '.'
+        )
           value = key;
-        else
+        else if (this.data.keyboardType === 'numeric') {
           value += key;
+        } else {
+          value =
+            value.substring(0, this._cursorPos) +
+            key +
+            value.substring(this._cursorPos);
+          this._cursorPos++;
+        }
         break;
     }
+    this.setValue(value);
+  }
+
+  down() {
+    if (this.terminal.history.length > 0) {
+      this.lastCmdIndex++;
+      if (this.lastCmdIndex >= this.terminal.history.length)
+        this.lastCmdIndex = 0;
+      let cmd: string = this.terminal.history[this.lastCmdIndex];
+      let cmdTmp: string = cmd;
+      while (
+        this.lastCmdIndex < this.terminal.history.length &&
+        (cmdTmp.trim().length === 0 || cmdTmp === this.val)
+      ) {
+        this.lastCmdIndex++;
+        if (this.lastCmdIndex < this.terminal.history.length)
+          cmdTmp = this.terminal.history[this.lastCmdIndex];
+      }
+      if (this.lastCmdIndex < this.terminal.history.length) cmd = cmdTmp;
+      this.setValue(cmd);
+      this._cursorPos = cmd.length;
+    }
+  }
+
+  up() {
+    if (this.terminal.history.length > 0) {
+      this.lastCmdIndex--;
+      if (this.lastCmdIndex < 0)
+        this.lastCmdIndex = this.terminal.history.length - 1;
+      let cmd: string = this.terminal.history[this.lastCmdIndex];
+      let cmdTmp: string = cmd;
+      while (
+        this.lastCmdIndex >= 0 &&
+        (cmdTmp.trim().length === 0 || cmdTmp === this.val)
+      ) {
+        this.lastCmdIndex--;
+        if (this.lastCmdIndex >= 0)
+          cmdTmp = this.terminal.history[this.lastCmdIndex];
+      }
+      if (this.lastCmdIndex > -1) cmd = cmdTmp;
+      this.setValue(cmd);
+      this._cursorPos = cmd.length;
+    }
+  }
+
+  setValue(value: string) {
     this.val = value;
     if (this.control) {
       this.control.setValue(value);
       return;
     }
     if (this.ngModel && this.ctrl && !this.ctrl.name) {
-      if (this.ngModel.value !== null)
-        this.ngModel.update.emit(value);
+      if (this.ngModel.value !== null) this.ngModel.update.emit(value);
       else {
         this.currValue = value;
-        if ((this.inputType === 'number' && !isNaN(Number(value))) || this.inputType !== 'number')
+        if (
+          (this.inputType === 'number' && !isNaN(Number(value))) ||
+          this.inputType !== 'number'
+        )
           this.data.el.value = value;
       }
-    }
-    else if (this.ctrl && this.ctrl.control) {
+    } else if (this.ctrl && this.ctrl.control) {
       this.ctrl.control.setValue(value);
     } else if (this.ctrl) {
       this.ctrl.valueAccessor.writeValue(value);
@@ -175,56 +350,55 @@ export class KeyboardDialog {
       this.data.el.value = value;
     }
   }
-  
-  accept() {
+
+  accept(fromLineDelete?: boolean) {
     this.dialogRef.close();
+    if (fromLineDelete) return;
     for (let e of this.onKeyboardClose) {
       if (e) {
         e.emit({
           target: {
-            value: this.val
-          }
+            value: this.val,
+          },
         });
       }
     }
   }
-  
-  btnToHtml(btn : string) {
-    if (btn.length === 1)
-      return btn;
+
+  btnToHtml(btn: string) {
+    if (btn.length === 1) return btn;
     return '<i class="material-icons">' + btn + '</i>';
   }
-
 }
 
 const layout_string = [
-  ['1','2','3','4','5','6','7','8','9','0'],
-  ['q','w','e','r','t','y','u','i','o','p'],
-  ['a','s','d','f','g','h','j','k','l'],
-  ['arrow_upward','z','x','c','v','b','n','m','backspace'],
-  ['more',' ','.','keyboard_return']
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+  ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+  ['arrow_upward', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'backspace'],
+  ['more', ' ', '.', '?', 'keyboard_return'],
 ];
 
 const layout_string_shift = [
-  ['1','2','3','4','5','6','7','8','9','0'],
-  ['Q','W','E','R','T','Y','U','I','O','P'],
-  ['A','S','D','F','G','H','J','K','L'],
-  ['arrow_upward','Z','X','C','V','B','N','M','backspace'],
-  ['more',' ','.','keyboard_return']
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+  ['arrow_upward', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'backspace'],
+  ['more', ' ', '.', '?', 'keyboard_return'],
 ];
-  
+
 const layout_string_more = [
-  ['+','*','/','=','_','-'],
-  ['!','@','#','$','%','^','&','~'],
-  ['(',')','[',']','\'','"',':',','],
-  ['arrow_upward','<','>','?','backspace'],
-  ['more',' ','.','keyboard_return']
+  ['+', '*', '/', '=', '_', '-'],
+  ['!', '@', '#', '$', '%', '^', '&', '~'],
+  ['(', ')', '[', ']', "'", '"', ':', ','],
+  ['arrow_upward', '<', '>', '?', 'backspace'],
+  ['more', ' ', '.', 'keyboard_return'],
 ];
-  
+
 const layout_numeric = [
-  ['1','2','3'],
-  ['4','5','6'],
-  ['7','8','9'],
-  ['.','0','-'],
-  ['backspace']
+  ['1', '2', '3'],
+  ['4', '5', '6'],
+  ['7', '8', '9'],
+  ['.', '0', '-'],
+  ['backspace'],
 ];

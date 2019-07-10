@@ -1,11 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {MCTask} from '../core';
+import { MCTask } from '../core';
 
 @Pipe({
-  name: 'taskFilter'
+  name: 'taskFilter',
 })
 export class TaskFilterPipe implements PipeTransform {
-
   transform(tasks: MCTask[], filter: boolean[]): any {
     if (!tasks || !filter) {
       return tasks;
@@ -19,5 +18,4 @@ export class TaskFilterPipe implements PipeTransform {
       return cond1 || cond2 || cond3 || cond4;
     });
   }
-
 }

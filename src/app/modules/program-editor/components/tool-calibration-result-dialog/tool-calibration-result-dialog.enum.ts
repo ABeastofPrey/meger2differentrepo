@@ -1,10 +1,9 @@
-
 export enum CalibrationMessage {
   CalibrationResult = 'Calibration Result',
   CalibrationSuccess = 'Calibration Success.',
   IsApplyDataToTool = 'Do you want to apply the following tool data for Tool',
   ResultOutOfScope = 'The determined calculation error exceeds the allowable limit 5mm.\n\
-  The use of this tool data can lead to undesirable behaviour.'
+  The use of this tool data can lead to undesirable behaviour.',
 }
 
 /**
@@ -12,7 +11,7 @@ export enum CalibrationMessage {
  */
 export enum CalibrationCommand {
   GetCalibrationResult = '?TP_TOOL_getResult',
-  ApplyCalibrationOnTool = '?TP_TOOL_applyCalibration'
+  ApplyCalibrationOnTool = '?TP_TOOL_applyCalibration',
 }
 
 /**
@@ -23,7 +22,7 @@ export enum CalibrationResultTableColumn {
   Unit = 'unit',
   Current = 'current',
   New = 'new',
-  Delta = 'delta'
+  Delta = 'delta',
 }
 
 /**
@@ -36,5 +35,5 @@ export enum CalibratedResultKey {
   New = 'new',
   Delta = 'delta',
   ToolValue = 'cur',
-  CalibrationValue = 'tab'
+  CalibrationValue = 'tab',
 }

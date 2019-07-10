@@ -8,9 +8,8 @@ describe('AddVarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddVarComponent ]
-    })
-    .compileComponents();
+      declarations: [AddVarComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

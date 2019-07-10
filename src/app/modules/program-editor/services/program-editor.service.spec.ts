@@ -5,11 +5,14 @@ import { ProgramEditorService } from './program-editor.service';
 describe('ProgramEditorService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ProgramEditorService]
+      providers: [ProgramEditorService],
     });
   });
 
-  it('should be created', inject([ProgramEditorService], (service: ProgramEditorService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should be created', inject(
+    [ProgramEditorService],
+    (service: ProgramEditorService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 });

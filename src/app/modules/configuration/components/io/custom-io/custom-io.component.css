@@ -27,7 +27,6 @@
 
 .custom-content-main {
   flex-basis: calc(100% - 100px);
-
 }
 
 .custom-table-container {
@@ -36,7 +35,7 @@
 }
 
 .custom-content-right {
-   flex-basis: 100px;
+  flex-basis: 100px;
 }
 
 .custom-add-button {
@@ -60,5 +59,5 @@
 }
 
 .mat-select-normal-place-holder ::ng-deep .mat-select-placeholder {
-   color: black;
+  color: black;
 }

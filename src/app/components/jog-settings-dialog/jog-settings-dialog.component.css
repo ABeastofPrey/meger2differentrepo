@@ -32,4 +32,6 @@
   width: 100%;
 }
 
-.indicator-on { color: lime; }
+.indicator-on {
+  color: lime;
+}

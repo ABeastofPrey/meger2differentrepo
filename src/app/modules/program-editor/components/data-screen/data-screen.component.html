@@ -1,84 +1,169 @@
-<div class='background wrapper'>
-  <button mat-fab color="primary" class="fixed-top-right mat-elevation-z5" [ngClass]="{'real-device':!data.isEmulator}" (click)="showAddDialog()"><mat-icon>add</mat-icon></button>
-  <mat-card class="data-filter mat-elevation-z3">
-    <mat-checkbox color="primary" [(ngModel)]="showJoints" [disabled]="!data.isRobotType">{{'joints'|translate}}</mat-checkbox>
-    <mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showLocations" [disabled]="!data.isRobotType">{{'locations'|translate}}</mat-checkbox>
-    <mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showLongs">{{'longs'|translate}}</mat-checkbox>
-    <mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showDoubles">{{'doubles'|translate}}</mat-checkbox>
-    <mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showStrings">{{'strings'|translate}}</mat-checkbox>
-  </mat-card>
-  <mat-table #table [dataSource]="dataSource" matSort class="data-table mat-elevation-z3" [style.background-color]="data.varRefreshInProgress ? '#ebebeb' : '#fff'">
-    <ng-container matColumnDef="select">
-      <mat-header-cell *matHeaderCellDef>
-        <mat-checkbox color="primary"
-                      (change)="$event ? masterToggle() : null"
-                      [checked]="selection.hasValue() && isAllSelected()"
-                      [indeterminate]="selection.hasValue() && !isAllSelected()">
-        </mat-checkbox>
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-        <mat-checkbox color="primary"
-                      (click)="$event.stopPropagation()"
-                      (change)="$event ? selection.toggle(row) : null"
-                      [checked]="selection.isSelected(row)">
-        </mat-checkbox>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header="name">{{'name'|translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.name}}<span *ngIf="element.isArr"> [...]</span></mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="typeStr">
-      <mat-header-cell *matHeaderCellDef mat-sort-header="typeStr">{{'type'|translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.typeStr}}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="arrIndex">
-      <mat-header-cell *matHeaderCellDef>{{'index'|translate}}</mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <mat-form-field *ngIf="element.isArr">
-          <mat-select placeholder="{{'index'|translate}}" [(ngModel)]="element.selectedIndex" (selectionChange)="rowClick(element,true)">
-            <mat-option *ngFor="let data of element.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <span *ngIf="!element.isArr">-</span>
-      </mat-cell>
-    </ng-container>
-    <mat-header-row *matHeaderRowDef="['select','name', 'typeStr', 'arrIndex']"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: ['select','name', 'typeStr', 'arrIndex']; let element;" (click)="rowClick(element)" [class.highlighted]="selectedVar && element.name === selectedVar.name"></mat-row>
-  </mat-table>
-  <mat-card class="mat-elevation-z3" style="height: auto;" *ngIf="selectedVar || selection.selected.length > 0" [class.refreshing]="this._varRefreshing">
-    <div class="var-name-and-actions">
-      <div class="var-name" *ngIf="selectedVar">
-        {{selectedVar.name}}{{selectedVar.isArr ? '['+selectedVar.selectedIndex+']':''}}
-      </div>
-      <button *ngIf="selectedVar && selectedVar.isPosition" mat-raised-button color="primary" style="margin-right: 24px;" (click)="teach()">{{'button.teach'|translate}}</button>
-      <button *ngIf="selectedVar" mat-raised-button color="warn" style="margin-right: 24px;" (click)="deleteSelected()">{{'dataScreen.del'|translate:selectedVar}}</button>
-      <button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">{{'button.delete_selected'|translate}}</button>
-      <div style="flex: 1; text-align: right;">
-        <button mat-mini-fab (click)="selectedVar=null" color="primary"><mat-icon>expand_more</mat-icon></button>
-      </div>
-    </div>
-    <div class="var-details" *ngIf="selectedVar">
-      <mat-form-field *ngFor="let val of this._value; let i = index" floatLabel="never" [style.width]="selectedVar.typeStr === 'STRING' ? '400px' : 'inherit'">
-        <span matPrefix style='font-weight: bold;'>{{this._legend[i]}}:&nbsp;&nbsp;</span>
-        <input
-        *ngIf="selectedVar.typeStr !== 'STRING'"
-        matInput
-        [placeholder]="this._legend[i]" 
-          [(ngModel)]="this._value[i].value"
-          (change)="onKeyboardClose()"
-           virtualKeyboard ktype="numeric"
-           (onKeyboardClose)="onKeyboardClose()"
-        >
-        <textarea matInput *ngIf="selectedVar.typeStr === 'STRING'"
-          [placeholder]="this._legend[i]"
-          [(ngModel)]="this._value[i].value"
-          virtualKeyboard ktype="text"
-          cdkTextareaAutosize
-          #autosize="cdkTextareaAutosize"
-          maxlength="80"
-          cdkAutosizeMinRows="1"></textarea>
-      </mat-form-field>
-    </div>
-  </mat-card>
+<div class="wrapper">
+	<div class="filter-menu mat-elevation-z1">
+		<button mat-raised-button color="primary" (click)="showAddDialog()" class="btn-add">
+			<mat-icon>add</mat-icon>
+			<span>{{ 'button.create' | translate }}</span>
+		</button>
+		<mat-checkbox color="primary" [(ngModel)]="showJoints" [disabled]="!data.isRobotType">
+			{{ 'joints' | translate }}
+		</mat-checkbox>
+		<mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showLocations" [disabled]="!data.isRobotType">
+			{{ 'locations' | translate }}
+		</mat-checkbox>
+		<mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showLongs">
+			{{ 'longs' | translate }}
+		</mat-checkbox>
+		<mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showDoubles">
+			{{ 'doubles' | translate }}
+		</mat-checkbox>
+		<mat-checkbox *ngIf="!useAsProjectPoints" color="primary" [(ngModel)]="showStrings">
+			{{ 'strings' | translate }}
+		</mat-checkbox>
+		<button
+			*ngIf="selection.selected.length > 0"
+			mat-raised-button
+			color="warn"
+			style="flex: 1 0 50px!important;"
+			(click)="deleteChecked()"
+		>
+			{{ 'button.delete_selected' | translate }}
+		</button>
+	</div>
+	<div class="table-wrapper">
+		<table
+			mat-table
+			#table
+			[dataSource]="dataSource"
+			matSort
+			class="data-table"
+			[style.background-color]="data.varRefreshInProgress ? '#ebebeb' : '#fff'"
+		>
+			<ng-container matColumnDef="select">
+				<th mat-header-cell *matHeaderCellDef>
+					<mat-checkbox
+						color="primary"
+						(change)="$event ? masterToggle() : null"
+						[checked]="selection.hasValue() && isAllSelected()"
+						[indeterminate]="selection.hasValue() && !isAllSelected()"
+						style="margin-right: 16px;"
+					>
+					</mat-checkbox>
+				</th>
+				<td mat-cell *matCellDef="let row">
+					<mat-checkbox
+						color="primary"
+						(click)="$event.stopPropagation()"
+						(change)="$event ? selection.toggle(row) : null"
+						[checked]="selection.isSelected(row)"
+						style="margin-right: 16px;"
+					>
+					</mat-checkbox>
+				</td>
+			</ng-container>
+			<ng-container matColumnDef="name">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header="name">
+					{{ 'name' | translate }}
+				</th>
+				>
+				<td mat-cell *matCellDef="let element">
+					{{ element.name }}<span *ngIf="element.isArr"> [...]</span>
+				</td>
+			</ng-container>
+			<ng-container matColumnDef="typeStr">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header="typeStr">
+					{{ 'type' | translate }}
+				</th>
+				>
+				<td mat-cell *matCellDef="let element">{{ element.typeStr }}</td>
+			</ng-container>
+			<ng-container matColumnDef="arrIndex">
+				<th mat-header-cell *matHeaderCellDef>{{ 'index' | translate }}</th>
+				>
+				<td mat-cell *matCellDef="let element">
+					<mat-form-field *ngIf="element.isArr" class="index-field" appearance="outline">
+						<mat-select
+							placeholder="{{ 'index' | translate }}"
+							[(ngModel)]="element.selectedIndex"
+							(selectionChange)="rowClick(element, true)"
+						>
+							<mat-option *ngFor="let data of element.value; let i = index" [value]="i + 1">{{
+								i + 1
+							}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<span *ngIf="!element.isArr">-</span>
+				</td>
+			</ng-container>
+			<ng-container *ngFor="let legend of this.legend; let i = index" [matColumnDef]="legend">
+				<th mat-header-cell *matHeaderCellDef>{{ legend }}</th>
+				>
+				<td mat-cell *matCellDef="let element">
+					<mat-form-field
+						appearance="outline"
+						floatLabel="never"
+						class="value-field"
+						*ngIf="selectedVar && element.name === selectedVar.name && this.value[i]"
+						[class.text-field]="element.typeStr === 'STRING'"
+					>
+						<input
+							*ngIf="selectedVar.typeStr !== 'STRING'"
+							matInput
+							[placeholder]="legend"
+							[(ngModel)]="this.value[i].value"
+							(change)="onKeyboardClose()"
+							virtualKeyboard
+							ktype="numeric"
+							(onKeyboardClose)="onKeyboardClose()"
+						/>
+						<textarea
+							matInput
+							*ngIf="selectedVar.typeStr === 'STRING'"
+							[placeholder]="this.legend[i]"
+							[(ngModel)]="this.value[i].value"
+							virtualKeyboard
+							ktype="text"
+							cdkTextareaAutosize
+							#autosize="cdkTextareaAutosize"
+							(change)="onKeyboardClose()"
+							(onKeyboardClose)="onKeyboardClose()"
+							maxlength="80"
+							cdkAutosizeMinRows="1"
+						></textarea>
+					</mat-form-field>
+				</td>
+			</ng-container>
+			<ng-container matColumnDef="actions">
+				<th mat-header-cell *matHeaderCellDef>
+					{{ 'actions' | translate }}
+				</th>
+				>
+				<td mat-cell *matCellDef="let element">
+					<button
+						*ngIf="element.isPosition"
+						mat-raised-button
+						color="primary"
+						style="margin-right: 24px;"
+						(click)="teach(element)"
+					>
+						{{ 'button.teach' | translate }}
+					</button>
+					<button
+						mat-raised-button
+						color="warn"
+						style="margin-right: 24px;"
+						(click)="deleteSelected(element)"
+					>
+						<mat-icon>delete</mat-icon>
+					</button>
+				</td>
+			</ng-container>
+			<tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
+			<tr
+				mat-row
+				*matRowDef="let row; columns: colsToDisplay; let element"
+				(click)="rowClick(element)"
+				[class.highlighted]="selectedVar && element.name === selectedVar.name"
+			></tr>
+		</table>
+	</div>
 </div>

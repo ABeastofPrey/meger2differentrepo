@@ -1,4 +1,6 @@
-.main { height: 100%; }
+.main {
+  height: 100%;
+}
 .wrapper {
   height: calc(100% - 36px);
   display: flex;
@@ -14,7 +16,7 @@
   font-size: 18px;
 }
 .actions {
-  border-top: 1px solid #E0E0E0;
+  border-top: 1px solid #e0e0e0;
   text-align: right;
   margin-top: 8px;
 }
@@ -22,4 +24,26 @@
   overflow: auto;
   text-align: center;
 }
-.content button { margin-right: 16px;}
+.content button {
+  margin-right: 16px;
+}
+.time {
+  max-width: 100px;
+  margin-right: 16px;
+}
+.indicator {
+  background: red;
+  -webkit-box-shadow: 0px 0px 16px 0px red;
+  -moz-box-shadow: 0px 0px 16px 0px red;
+  box-shadow: 0px 0px 16px 0px red;
+  width: 16px;
+  height: 16px;
+  border-radius: 16px;
+  margin: 16px;
+}
+.green {
+  background: lime;
+  -webkit-box-shadow: 0px 0px 16px 0px lime;
+  -moz-box-shadow: 0px 0px 16px 0px lime;
+  box-shadow: 0px 0px 16px 0px lime;
+}

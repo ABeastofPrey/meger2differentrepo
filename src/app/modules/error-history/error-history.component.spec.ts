@@ -8,9 +8,8 @@ describe('ErrorHistoryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ErrorHistoryComponent ]
-    })
-    .compileComponents();
+      declarations: [ErrorHistoryComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

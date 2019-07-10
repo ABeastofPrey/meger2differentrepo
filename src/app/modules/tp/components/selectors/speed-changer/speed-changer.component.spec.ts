@@ -8,9 +8,8 @@ describe('SpeedChangerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SpeedChangerComponent ]
-    })
-    .compileComponents();
+      declarations: [SpeedChangerComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

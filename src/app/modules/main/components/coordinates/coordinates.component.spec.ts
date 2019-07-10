@@ -8,9 +8,8 @@ describe('CoordinatesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CoordinatesComponent ]
-    })
-    .compileComponents();
+      declarations: [CoordinatesComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

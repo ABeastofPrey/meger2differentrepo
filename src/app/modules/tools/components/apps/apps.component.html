@@ -1,18 +1,28 @@
 <div class="wrapper">
-  <div class="title">{{'apps.title'|translate}}</div>
-  <input type="file" accept=".ipk, .rpm, .IPK, .RPM, .zip, .ZIP" #upload (change)="onUploadFilesChange($event)" class="file-input" />
-  <mat-card class="main">
-    <a *ngIf="!utils.IsKuka" href="/modbus/" target="_blank">
-      <mat-icon>perm_data_setting</mat-icon>
-      <div>{{'apps.modbus'|translate}}</div>
-    </a>
-    <a (click)="uploadIPK()" *ngIf="login.isAdmin">
-      <mat-icon>system_update</mat-icon>
-      <div>{{'apps.firmware'|translate}}...</div>
-    </a>
-    <a (click)="reboot()">
-      <mat-icon>power_settings_new</mat-icon>
-      <div>{{'apps.reboot'|translate}}</div>
-    </a>
-  </mat-card>
+	<div class="title">{{ 'apps.title' | translate }}</div>
+	<input
+		type="file"
+		accept=".ipk, .rpm, .IPK, .RPM, .zip, .ZIP"
+		#upload
+		(change)="onUploadFilesChange($event)"
+		class="file-input"
+	/>
+	<mat-card class="main">
+		<a *ngIf="!utils.IsKuka" href="/modbus/" target="_blank">
+			<mat-icon>perm_data_setting</mat-icon>
+			<div>{{ 'apps.modbus' | translate }}</div>
+		</a>
+		<a (click)="uploadIPK()" *ngIf="login.isAdmin">
+			<mat-icon>system_update</mat-icon>
+			<div>{{ 'apps.firmware' | translate }}...</div>
+		</a>
+		<a (click)="reboot()">
+			<mat-icon>power_settings_new</mat-icon>
+			<div>{{ 'apps.reboot' | translate }}...</div>
+		</a>
+		<a (click)="restore()" *ngIf="login.isAdmin">
+			<mat-icon>restore</mat-icon>
+			<div>{{ 'apps.restore.desc' | translate }}...</div>
+		</a>
+	</mat-card>
 </div>

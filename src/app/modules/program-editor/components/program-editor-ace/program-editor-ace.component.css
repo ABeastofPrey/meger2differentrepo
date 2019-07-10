@@ -18,19 +18,19 @@
   display: flex;
 }
 .disabled .ace_editor {
-  background: #eee!important;
+  background: #eee !important;
 }
 ::ng-deep .disabled .ace_active-line {
-  background: transparent!important;
+  background: transparent !important;
 }
 .hidden {
-  width: 0!important;
-  height: 0!important;
+  width: 0 !important;
+  height: 0 !important;
   position: absolute;
 }
 .fab {
   position: absolute;
-  right: 16px;
-  top: 16px;
+  right: 0;
+  top: 3px;
   z-index: 2;
 }

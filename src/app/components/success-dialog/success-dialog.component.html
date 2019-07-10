@@ -1,12 +1,14 @@
 <div class="mat-typography cover">
-  <div class="center-vertical">
-    <mat-icon color="primary" class="ok">check_circle</mat-icon>
-    <div>
-      <div class="tit primary">{{'success'|translate}}</div>
-      <div class="msg">{{data}}</div>
-    </div>
-  </div>
-  <div class="actions">
-    <button mat-button color="primary" mat-dialog-close>{{'button.ok'|translate}}</button>
-  </div>
+	<div class="center-vertical">
+		<mat-icon color="primary" class="ok">check_circle</mat-icon>
+		<div>
+			<div class="tit primary">{{ 'success' | translate }}</div>
+			<div class="msg">{{ data }}</div>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button color="primary" mat-dialog-close>
+			{{ 'button.ok' | translate }}
+		</button>
+	</div>
 </div>

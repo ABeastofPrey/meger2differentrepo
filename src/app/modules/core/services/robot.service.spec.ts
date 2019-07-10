@@ -5,7 +5,7 @@ import { RobotService } from './robot.service';
 describe('RobotService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RobotService]
+      providers: [RobotService],
     });
   });
 

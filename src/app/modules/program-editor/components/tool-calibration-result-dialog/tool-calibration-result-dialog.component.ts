@@ -1,14 +1,22 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatTableDataSource, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import {
+  MatTableDataSource,
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from '@angular/material';
 import { WebsocketService, MCQueryResponse } from '../../../core';
 
-import { CalibratedResultKey, CalibrationCommand, CalibrationResultTableColumn,
-  CalibrationMessage } from './tool-calibration-result-dialog.enum';
+import {
+  CalibratedResultKey,
+  CalibrationCommand,
+  CalibrationResultTableColumn,
+  CalibrationMessage,
+} from './tool-calibration-result-dialog.enum';
 
 @Component({
   selector: 'app-tool-calibration-result-dialog',
   templateUrl: './tool-calibration-result-dialog.component.html',
-  styleUrls: ['./tool-calibration-result-dialog.component.css']
+  styleUrls: ['./tool-calibration-result-dialog.component.css'],
 })
 /**
  * This class describes the logics to the tool calibration result dialog.
@@ -22,7 +30,7 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
     CalibrationResultTableColumn.Unit,
     CalibrationResultTableColumn.Current,
     CalibrationResultTableColumn.New,
-    CalibrationResultTableColumn.Delta
+    CalibrationResultTableColumn.Delta,
   ];
 
   /**
@@ -61,7 +69,9 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
    * @param data The input data to the dialog.
    * @param ws The WebsocketService instance.
    */
-  constructor(public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any,
+  constructor(
+    public dialogRef: MatDialogRef<any>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private ws: WebsocketService
   ) {
     this.calibrationResultSource = new MatTableDataSource([]);
@@ -76,11 +86,13 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
    *  The handler when the user clicks the apply button.
    */
   onApply() {
-    this.ws.query(CalibrationCommand.ApplyCalibrationOnTool + '("' + this.toolName + '")')
+    this.ws
+      .query(
+        CalibrationCommand.ApplyCalibrationOnTool + '("' + this.toolName + '")'
+      )
       .then((cmdRes: MCQueryResponse) => {
         this.dialogRef.close(true);
       });
-
   }
 
   /**
@@ -96,14 +108,16 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
   private initialize() {
     let array = [];
 
-    this.ws.query(CalibrationCommand.GetCalibrationResult).then((calibratedRes: MCQueryResponse) => {
+    this.ws
+      .query(CalibrationCommand.GetCalibrationResult)
+      .then((calibratedRes: MCQueryResponse) => {
+        array = this.getCalibrationResult(calibratedRes.result);
 
-      array = this.getCalibrationResult(calibratedRes.result);
+        this.calibrationResultSource.data = array;
 
-      this.calibrationResultSource.data = array;
-
-      this.calibrationOutOfScope = array[array.length - 1].new > this.calibrationDelta;
-    });
+        this.calibrationOutOfScope =
+          array[array.length - 1].new > this.calibrationDelta;
+      });
   }
 
   /**
@@ -116,7 +130,8 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
       let jsonObject = JSON.parse(result);
 
       let toolValueArray = jsonObject[CalibratedResultKey.ToolValue]
-                                .match(/[\d.-]+/g).map(Number);
+        .match(/[\d.-]+/g)
+        .map(Number);
 
       let calibrationValueArray = [];
       let calibrationValue = jsonObject[CalibratedResultKey.CalibrationValue];
@@ -127,9 +142,14 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
           name: element[CalibratedResultKey.Name],
           unit: element[CalibratedResultKey.Unit],
           current: index < toolValueArray.length ? toolValueArray[index] : null,
-          new: ((index > 1) && (index < toolValueArray.length))  ?
-                     toolValueArray[index] : element[CalibratedResultKey.New],
-          delta: index < toolValueArray.length ? element[CalibratedResultKey.New] - toolValueArray[index] : null
+          new:
+            index > 1 && index < toolValueArray.length
+              ? toolValueArray[index]
+              : element[CalibratedResultKey.New],
+          delta:
+            index < toolValueArray.length
+              ? element[CalibratedResultKey.New] - toolValueArray[index]
+              : null,
         });
       }
 

@@ -8,9 +8,8 @@ describe('ProgramEditorAceComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProgramEditorAceComponent ]
-    })
-    .compileComponents();
+      declarations: [ProgramEditorAceComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

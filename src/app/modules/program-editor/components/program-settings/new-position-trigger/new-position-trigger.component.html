@@ -1,17 +1,31 @@
 <div>
-    <div mat-dialog-content>
-        <mat-form-field>
-            <span matPrefix>{{namePrefix}} &nbsp;</span>
-            <input matInput
-          placeholder="{{'projectSettings.position_trigger.newPositionTrigger.namePlaceholder'|translate}}"
-          [(ngModel)]="name" [formControl]="nameControl" [errorStateMatcher]="nameMatcher"
-          (keydown)="onKeyDown($event.keyCode)" (keyup)="onKeyUp($event.keyCode)"
-          virtualKeyboard ktype="text">
-            <mat-error>{{'projectSettings.position_trigger.newPositionTrigger.requireErr'|translate}}</mat-error>
-        </mat-form-field>
-    </div>
-    <div mat-dialog-actions class="actions">
-        <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>{{'button.cancel'|translate}}</button>
-        <button mat-button color="primary" [disabled]="canNotCreate" (click)="close()">{{'button.create'|translate}}</button>
-    </div>
+	<div mat-dialog-content>
+		<mat-form-field>
+			<span matPrefix>{{ namePrefix }} &nbsp;</span>
+			<input
+				matInput
+				placeholder="{{
+					'projectSettings.position_trigger.newPositionTrigger.namePlaceholder' | translate
+				}}"
+				[(ngModel)]="name"
+				[formControl]="nameControl"
+				[errorStateMatcher]="nameMatcher"
+				(keydown)="onKeyDown($event.keyCode)"
+				(keyup)="onKeyUp($event.keyCode)"
+				virtualKeyboard
+				ktype="text"
+			/>
+			<mat-error>{{
+				'projectSettings.position_trigger.newPositionTrigger.requireErr' | translate
+			}}</mat-error>
+		</mat-form-field>
+	</div>
+	<div mat-dialog-actions class="actions">
+		<button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button mat-button color="primary" [disabled]="canNotCreate" (click)="close()">
+			{{ 'button.create' | translate }}
+		</button>
+	</div>
 </div>

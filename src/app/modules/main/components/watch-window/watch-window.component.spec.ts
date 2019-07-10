@@ -8,9 +8,8 @@ describe('WatchWindowComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WatchWindowComponent ]
-    })
-    .compileComponents();
+      declarations: [WatchWindowComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

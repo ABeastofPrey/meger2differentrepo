@@ -8,9 +8,8 @@ describe('SaveAsDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SaveAsDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [SaveAsDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

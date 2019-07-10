@@ -7,7 +7,7 @@ export enum IoOptions {
   DriveIoInputs = 'Drive IO Inputs',
   DriveIoOutputs = 'Drive IO Outputs',
   UserIoInputs = 'User IO Inputs',
-  UserIoOutputs = 'User IO Outputs'
+  UserIoOutputs = 'User IO Outputs',
 }
 
 /**
@@ -24,7 +24,7 @@ export interface IoOption {
 export enum IoFormatOptions {
   Bit = 'bit',
   Byte = 'byte',
-  Word = 'word'
+  Word = 'word',
 }
 
 /**
@@ -41,10 +41,10 @@ export interface IoFormatOption {
 export enum CustomIOTypes {
   InputBit = 'Input Bit',
   InputByte = 'Input Byte',
-  InputWord  = 'Input Word',
+  InputWord = 'Input Word',
   OutputBit = 'Output Bit',
   OutputByte = 'Output Byte',
-  OutputWord = 'Output Word'
+  OutputWord = 'Output Word',
 }
 
 /**
@@ -68,7 +68,7 @@ export enum IoServiceCommand {
   RemoveCustomIo = 'removeItem',
   QueryCustomTab = '?getTableName',
   SetCustomTabName = 'setTableName',
-  ClearCustomTab = 'clearTable'
+  ClearCustomTab = 'clearTable',
 }
 
 /**
@@ -76,7 +76,7 @@ export enum IoServiceCommand {
  */
 export enum HexValue {
   Hex = 'hex',
-  Dec = 'dec'
+  Dec = 'dec',
 }
 
 /**
@@ -84,7 +84,7 @@ export enum HexValue {
  */
 export enum IoDirection {
   Din = 'din',
-  Dout = 'dout'
+  Dout = 'dout',
 }
 
 /**
@@ -93,7 +93,7 @@ export enum IoDirection {
 export enum IoScope {
   All = 'all',
   Drv = 'drv',
-  Usr = 'usr'
+  Usr = 'usr',
 }
 
 /**
@@ -102,7 +102,7 @@ export enum IoScope {
 export enum IoKey {
   Index = 'index',
   Value = 'value',
-  Label = 'label'
+  Label = 'label',
 }
 
 /**
@@ -113,7 +113,7 @@ export enum CustomIoKey {
   Type = 'type',
   Port = 'port',
   Value = 'value',
-  Label = 'label'
+  Label = 'label',
 }
 
 /**
@@ -124,5 +124,5 @@ export enum IoTableColumn {
   Value = 'value',
   Label = 'label',
   Type = 'type',
-  Status = 'status'
+  Status = 'status',
 }

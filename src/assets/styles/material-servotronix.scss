@@ -1,8 +1,31 @@
 @import '~@angular/material/theming';
 
-$material-servotronix-primary: mat-palette($mat-teal, 600, 900, 400);
-$material-servotronix-accent:  mat-palette($mat-amber, A200, A100, A400);
+$primary-stx: #11826c;
+$stx-dark: #055548;
+$stx-light: #64d8cb;
+$accent-stx: (
+  500: #ffc332,
+  contrast: (
+    500: $dark-primary-text
+  )
+);
+
+$mat-servotronix: (
+  100: $stx-light,
+  500: $primary-stx,
+  800: $stx-dark,
+  contrast: (
+    100: $light-primary-text,
+    500: $light-primary-text,
+    800: $light-primary-text,
+  )
+);
+
+$material-servotronix-accent:  mat-palette($accent-stx);
 $material-servotronix-warn:    mat-palette($mat-red);
+$material-servotronix-primary: mat-palette($mat-servotronix, 500, 100, 800);
+
+$material-semi-black: rgba(0,0,0,0.54);
 
 $servotronix-theme: mat-light-theme($material-servotronix-primary, $material-servotronix-accent, $material-servotronix-warn);
 
@@ -15,19 +38,19 @@ $material-semi-black: rgba(0,0,0,0.54);
   .primary, main-menu li:hover:not(.disabled),
     main-menu li.selected:not(.disabled),
     .mat-form-field-appearance-outline .mat-form-field-outline-thick {
-    color: mat-color($material-servotronix-primary, 600);
+    color: mat-color($material-servotronix-primary, 500);
   }
   .primary-light {
     color: mat-color($material-servotronix-primary, 100);
   }
   .primary-bg-dark {
-    background-color: mat-color($material-servotronix-primary, 900);
+    background-color: mat-color($material-servotronix-primary, 800);
     color: #fff;
   }
   .primary-bg, .mat-button-toggle-checked, .virtual-keyboard .key-down,
-  .virtual-keyboard .key:active,
+  .virtual-keyboard .key:focus,
   .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label {
-    background-color: mat-color($material-servotronix-primary, 600);
+    background-color: mat-color($material-servotronix-primary, 500)!important;
     color: #fff!important;
   }
   .warn-bg {

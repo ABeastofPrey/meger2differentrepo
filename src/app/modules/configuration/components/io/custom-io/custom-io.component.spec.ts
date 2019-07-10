@@ -7,7 +7,10 @@ import { UnitTestModule } from '../../../../shared/unit-test.module';
 
 import { CustomIOComponent } from './custom-io.component';
 
-import { CustomIOTypes, CustomIOType } from './../../../services/io.service.enum';
+import {
+  CustomIOTypes,
+  CustomIOType,
+} from './../../../services/io.service.enum';
 import { IoService } from '../../../services/io.service';
 import { WebsocketService } from '../../../../core/services/websocket.service';
 
@@ -49,9 +52,8 @@ describe('CustomIOComponent', () => {
     TestBed.configureTestingModule({
       imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
       providers: [IoService, { provide: WebsocketService, useValue: spyObj }],
-      declarations: [CustomIOComponent]
-    })
-    .compileComponents();
+      declarations: [CustomIOComponent],
+    }).compileComponents();
 
     webSocketServiceSpy = TestBed.get(WebsocketService);
 
@@ -59,23 +61,22 @@ describe('CustomIOComponent', () => {
     let customIoPortQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       let promise = Promise.resolve(customIoPortQueryResponse);
-       promise.then(() => {
-          spyValue = createMockCustomIos();
-          let customIoQueryResponse = { result: spyValue, cmd: '', err: null };
-          webSocketServiceSpy.query.and.callFake(() => {
-              return Promise.resolve(customIoQueryResponse);
-          });
-       });
-       return promise;
-
+      let promise = Promise.resolve(customIoPortQueryResponse);
+      promise.then(() => {
+        spyValue = createMockCustomIos();
+        let customIoQueryResponse = { result: spyValue, cmd: '', err: null };
+        webSocketServiceSpy.query.and.callFake(() => {
+          return Promise.resolve(customIoQueryResponse);
+        });
       });
+      return promise;
+    });
   }));
 
   /**
    * Do the test initialization before it is running.
    */
-  beforeEach((done) => {
+  beforeEach(done => {
     fixture = TestBed.createComponent(CustomIOComponent);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
@@ -98,12 +99,20 @@ describe('CustomIOComponent', () => {
     expect(component.isDeleteEnable).toBe(false, 'delete button is disabled');
 
     expect(component.selectedRowInCustomTable).toBeNull();
-    expect(component.selectedIndexInCustomTable).toBe(-1, 'there is no row selected');
+    expect(component.selectedIndexInCustomTable).toBe(
+      -1,
+      'there is no row selected'
+    );
 
     expect(component.customDataSource.data).toBeTruthy();
-    expect(component.customDataSource.data.length).toBe(3, 'there are three rows');
-    expect(component.customDataSource.data[0].type.length).toBe(4, 'there are three types');
-
+    expect(component.customDataSource.data.length).toBe(
+      3,
+      'there are three rows'
+    );
+    expect(component.customDataSource.data[0].type.length).toBe(
+      4,
+      'there are three types'
+    );
   });
 
   /*********************************************************************************/
@@ -114,22 +123,32 @@ describe('CustomIOComponent', () => {
   it('select one row in the custom io table, delete button will be enabled', () => {
     expect(component).toBeTruthy();
     expect(component.selectedRowInCustomTable).toBeNull();
-    expect(component.selectedIndexInCustomTable).toBe(-1, 'there is no row selected');
+    expect(component.selectedIndexInCustomTable).toBe(
+      -1,
+      'there is no row selected'
+    );
 
     debugElement = fixture.debugElement;
     htmlElement = debugElement.nativeElement;
 
     const ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
     component.selectRowInCustomTable(component.customDataSource.data[0], 0);
     fixture.detectChanges();
 
-    expect(component.selectedIndexInCustomTable).toBe(0, 'the select index will be 0');
-    expect(component.selectedRowInCustomTable).toBe(component.customDataSource.data[component.selectedIndexInCustomTable],
-      'the first row is selected');
-
+    expect(component.selectedIndexInCustomTable).toBe(
+      0,
+      'the select index will be 0'
+    );
+    expect(component.selectedRowInCustomTable).toBe(
+      component.customDataSource.data[component.selectedIndexInCustomTable],
+      'the first row is selected'
+    );
   });
 
   /*********************************************************************************/
@@ -140,33 +159,50 @@ describe('CustomIOComponent', () => {
   it('add one row in the custom io table and the new row will be selected', () => {
     expect(component).toBeTruthy();
     expect(component.selectedRowInCustomTable).toBeNull();
-    expect(component.selectedIndexInCustomTable).toBe(-1, 'there is no row selected');
+    expect(component.selectedIndexInCustomTable).toBe(
+      -1,
+      'there is no row selected'
+    );
 
     debugElement = fixture.debugElement;
     htmlElement = debugElement.nativeElement;
 
     const ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
     let spyValue = createMockCustomIo();
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     component.addRowInCustomTable();
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(ioTable.children.length).toBe(5, 'there is one header and four rows');
-      expect(component.customDataSource.data.length).toBe(4, 'there are four rows');
+      expect(ioTable.children.length).toBe(
+        5,
+        'there is one header and four rows'
+      );
+      expect(component.customDataSource.data.length).toBe(
+        4,
+        'there are four rows'
+      );
 
-      expect(component.selectedRowInCustomTable).toBe(component.customDataSource.data[component.selectedIndexInCustomTable],
-        'the last row is selected');
-      expect(component.selectedIndexInCustomTable).toBe(3, 'the select index will be 3');
+      expect(component.selectedRowInCustomTable).toBe(
+        component.customDataSource.data[component.selectedIndexInCustomTable],
+        'the last row is selected'
+      );
+      expect(component.selectedIndexInCustomTable).toBe(
+        3,
+        'the select index will be 3'
+      );
     });
   });
 
@@ -179,78 +215,122 @@ describe('CustomIOComponent', () => {
   it('delete last row in the custom io table and then the new last row will be selected', () => {
     expect(component).toBeTruthy();
     expect(component.selectedRowInCustomTable).toBeNull();
-    expect(component.selectedIndexInCustomTable).toBe(-1, 'there is no row selected');
+    expect(component.selectedIndexInCustomTable).toBe(
+      -1,
+      'there is no row selected'
+    );
 
     debugElement = fixture.debugElement;
     htmlElement = debugElement.nativeElement;
 
     let ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
     let mcQueryResponse = { result: '', cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     let selectRow = ioTable.children.item(1);
     component.selectRowInCustomTable(selectRow, 2);
     fixture.detectChanges();
 
-    expect(component.selectedRowInCustomTable).toBe(selectRow, 'the last row is selected');
-    expect(component.selectedIndexInCustomTable).toBe(2, 'the select index will be 2');
+    expect(component.selectedRowInCustomTable).toBe(
+      selectRow,
+      'the last row is selected'
+    );
+    expect(component.selectedIndexInCustomTable).toBe(
+      2,
+      'the select index will be 2'
+    );
 
     component.deleteRowInCustomTable();
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(ioTable.children.length).toBe(3, 'there is one header and two rows');
-      expect(component.customDataSource.data.length).toBe(2, 'there are two rows');
+      expect(ioTable.children.length).toBe(
+        3,
+        'there is one header and two rows'
+      );
+      expect(component.customDataSource.data.length).toBe(
+        2,
+        'there are two rows'
+      );
 
-      expect(component.selectedIndexInCustomTable).toBe(1, 'the select index will be 1');
-      expect(component.selectedRowInCustomTable).toBe(component.customDataSource.data[component.selectedIndexInCustomTable],
-        'the last row is selected');
+      expect(component.selectedIndexInCustomTable).toBe(
+        1,
+        'the select index will be 1'
+      );
+      expect(component.selectedRowInCustomTable).toBe(
+        component.customDataSource.data[component.selectedIndexInCustomTable],
+        'the last row is selected'
+      );
     });
   });
 
-    /**
+  /**
    * deleteRowInCustomTable method test.
    * Delete one row not last and then the selected row will be null.
    */
   it('delete one row not last in the custom io table and then the selected row will be null', () => {
     expect(component).toBeTruthy();
     expect(component.selectedRowInCustomTable).toBeNull();
-    expect(component.selectedIndexInCustomTable).toBe(-1, 'there is no row selected');
+    expect(component.selectedIndexInCustomTable).toBe(
+      -1,
+      'there is no row selected'
+    );
 
     debugElement = fixture.debugElement;
     htmlElement = debugElement.nativeElement;
 
     let ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
     let mcQueryResponse = { result: '', cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     let selectRow = ioTable.children.item(1);
     component.selectRowInCustomTable(selectRow, 0);
     fixture.detectChanges();
 
-    expect(component.selectedRowInCustomTable).toBe(selectRow, 'the first row is selected');
-    expect(component.selectedIndexInCustomTable).toBe(0, 'the select index will be 0');
+    expect(component.selectedRowInCustomTable).toBe(
+      selectRow,
+      'the first row is selected'
+    );
+    expect(component.selectedIndexInCustomTable).toBe(
+      0,
+      'the select index will be 0'
+    );
 
     component.deleteRowInCustomTable();
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(ioTable.children.length).toBe(3, 'there is one header and two rows');
-      expect(component.customDataSource.data.length).toBe(2, 'there are two rows');
+      expect(ioTable.children.length).toBe(
+        3,
+        'there is one header and two rows'
+      );
+      expect(component.customDataSource.data.length).toBe(
+        2,
+        'there are two rows'
+      );
 
-      expect(component.selectedIndexInCustomTable).toBe(-1, 'the select index will be -1');
+      expect(component.selectedIndexInCustomTable).toBe(
+        -1,
+        'the select index will be -1'
+      );
       expect(component.selectedRowInCustomTable).toBeNull();
     });
   });
@@ -263,30 +343,43 @@ describe('CustomIOComponent', () => {
   it('if select io type or port on custom IO, the row will be changed to unselected', () => {
     expect(component).toBeTruthy();
     expect(component.selectedRowInCustomTable).toBeNull();
-    expect(component.selectedIndexInCustomTable).toBe(-1, 'there is no row selected');
+    expect(component.selectedIndexInCustomTable).toBe(
+      -1,
+      'there is no row selected'
+    );
 
     debugElement = fixture.debugElement;
     htmlElement = debugElement.nativeElement;
 
     const ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
     component.selectRowInCustomTable(component.customDataSource.data[0], 0);
     fixture.detectChanges();
 
-    expect(component.selectedIndexInCustomTable).toBe(0, 'the select index will be 0');
-    expect(component.selectedRowInCustomTable).toBe(component.customDataSource.data[component.selectedIndexInCustomTable],
-      'the first row is selected');
+    expect(component.selectedIndexInCustomTable).toBe(
+      0,
+      'the select index will be 0'
+    );
+    expect(component.selectedRowInCustomTable).toBe(
+      component.customDataSource.data[component.selectedIndexInCustomTable],
+      'the first row is selected'
+    );
 
     component.removeSelectionOnPortOrTypeChange(new Event(''));
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
-      expect(component.selectedIndexInCustomTable).toBe(-1, 'the select index will be -1');
+      expect(component.selectedIndexInCustomTable).toBe(
+        -1,
+        'the select index will be -1'
+      );
       expect(component.selectedRowInCustomTable).toBeNull();
     });
-
   });
 
   /*********************************************************************************/
@@ -302,23 +395,32 @@ describe('CustomIOComponent', () => {
 
     const ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
-    expect(ioTable.children.item(1).textContent).toBe('Output Bit2000 1 ', 'it is the first row.');
+    expect(ioTable.children.item(1).textContent).toBe(
+      'Output Bit2000 1 ',
+      'it is the first row.'
+    );
 
     let spyValue = createMockCustomIo(CustomIOTypes.OutputByte);
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     component.typeSelectionChange(0, CustomIOTypes.OutputByte);
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(ioTable.children.item(1).textContent).toBe('Output Byte2000 0  1 ', 'it is the first row.');
+      expect(ioTable.children.item(1).textContent).toBe(
+        'Output Byte2000 0  1 ',
+        'it is the first row.'
+      );
     });
   });
 
@@ -334,25 +436,33 @@ describe('CustomIOComponent', () => {
 
     const ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
-    expect(ioTable.children.item(1).textContent).toBe('Output Bit2000 1 ', 'it is the first row.');
+    expect(ioTable.children.item(1).textContent).toBe(
+      'Output Bit2000 1 ',
+      'it is the first row.'
+    );
 
     let spyValue = createMockCustomIo(CustomIOTypes.InputBit, 3000, '0', '1');
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     component.typeSelectionChange(0, CustomIOTypes.InputBit);
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(ioTable.children.item(1).textContent).toBe('Input Bit3000 1 ', 'it is the first row.');
+      expect(ioTable.children.item(1).textContent).toBe(
+        'Input Bit3000 1 ',
+        'it is the first row.'
+      );
     });
-
   });
 
   /*********************************************************************************/
@@ -368,25 +478,33 @@ describe('CustomIOComponent', () => {
 
     const ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
-    expect(ioTable.children.item(1).textContent).toBe('Output Bit2000 1 ', 'it is the first row.');
+    expect(ioTable.children.item(1).textContent).toBe(
+      'Output Bit2000 1 ',
+      'it is the first row.'
+    );
 
     let spyValue = createMockCustomIo(CustomIOTypes.OutputBit, 2001, '0', '1');
     let mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
-       return Promise.resolve(mcQueryResponse);
-      });
+      return Promise.resolve(mcQueryResponse);
+    });
 
     component.portSelectionChange(0, 2001);
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(ioTable.children.item(1).textContent).toBe('Output Bit2001 1 ', 'it is the first row.');
+      expect(ioTable.children.item(1).textContent).toBe(
+        'Output Bit2001 1 ',
+        'it is the first row.'
+      );
     });
-
   });
 
   /*********************************************************************************/
@@ -402,7 +520,10 @@ describe('CustomIOComponent', () => {
 
     const ioTable = htmlElement.querySelector('mat-table');
     expect(ioTable).toBeTruthy();
-    expect(ioTable.children.length).toBe(4, 'there is one header and three rows.');
+    expect(ioTable.children.length).toBe(
+      4,
+      'there is one header and three rows.'
+    );
 
     component.onClickRadioButtonInCustomIO(0, new Event(''));
     fixture.detectChanges();
@@ -411,9 +532,11 @@ describe('CustomIOComponent', () => {
       let row = ioTable.children.item(1);
       let cell = row.children.item(2);
       let input = cell.children.item(0) as HTMLInputElement;
-      expect(input.checked).toBe(true, 'the radio button should be checked after click');
+      expect(input.checked).toBe(
+        true,
+        'the radio button should be checked after click'
+      );
     });
-
   });
 
   /*********************************************************************************/
@@ -441,7 +564,12 @@ describe('CustomIOComponent', () => {
    * @param label The mock custom io label.
    * @returns The mock custom io.
    */
-  function createMockCustomIo(type = CustomIOTypes.OutputBit, port = 2000, value = '0', label = '1') {
+  function createMockCustomIo(
+    type = CustomIOTypes.OutputBit,
+    port = 2000,
+    value = '0',
+    label = '1'
+  ) {
     return `{"type":"${type}","port":${port},"value":"${value}","label":"${label}"}`;
   }
 

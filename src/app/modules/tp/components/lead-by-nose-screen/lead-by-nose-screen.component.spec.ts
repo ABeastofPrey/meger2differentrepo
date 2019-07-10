@@ -8,9 +8,8 @@ describe('LeadByNoseScreenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LeadByNoseScreenComponent ]
-    })
-    .compileComponents();
+      declarations: [LeadByNoseScreenComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

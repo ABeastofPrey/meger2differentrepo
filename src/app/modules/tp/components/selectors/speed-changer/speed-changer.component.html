@@ -1,16 +1,27 @@
-<div style="display: inline-block;">{{'jogScreen.speed'|translate}}: {{val}}</div>
-<mat-slider thumbLabel max="100" min="0" tickInterval="auto" value="{{val}}"
-  (change)="onChange($event)"  [disabled]="disabled"
-  >
+<div style="display: inline-block;">{{ 'jogScreen.speed' | translate }}: {{ val }}</div>
+<mat-slider
+	thumbLabel
+	max="100"
+	min="0"
+	tickInterval="auto"
+	value="{{ val }}"
+	(change)="onChange($event)"
+	[disabled]="disabled"
+>
 </mat-slider>
-<div [class.hidden]="val!==0.1" class="center-vertical">
-  <span>Incremental</span>
-  <mat-form-field class="short">
-    <mat-select  [disabled]="disabled" placeholder="{{'jogScreen.percision'|translate}}" [value]="data.jogIncrements" (selectionChange)="onIncChange($event)">
-      <mat-option value="SMALL">{{'jogScreen.speed_inc.s'|translate}}</mat-option>
-      <mat-option value="MEDIUM">{{'jogScreen.speed_inc.m'|translate}}</mat-option>
-      <mat-option value="LARGE">{{'jogScreen.speed_inc.l'|translate}}</mat-option>
-      <mat-option value="EXTRA_LARGE">{{'jogScreen.speed_inc.xl'|translate}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+<div [class.hidden]="val !== 0.1" class="center-vertical">
+	<span>Incremental</span>
+	<mat-form-field class="short">
+		<mat-select
+			[disabled]="disabled"
+			placeholder="{{ 'jogScreen.percision' | translate }}"
+			[value]="data.jogIncrements"
+			(selectionChange)="onIncChange($event)"
+		>
+			<mat-option value="SMALL">{{ 'jogScreen.speed_inc.s' | translate }}</mat-option>
+			<mat-option value="MEDIUM">{{ 'jogScreen.speed_inc.m' | translate }}</mat-option>
+			<mat-option value="LARGE">{{ 'jogScreen.speed_inc.l' | translate }}</mat-option>
+			<mat-option value="EXTRA_LARGE">{{ 'jogScreen.speed_inc.xl' | translate }}</mat-option>
+		</mat-select>
+	</mat-form-field>
 </div>

@@ -8,9 +8,8 @@ describe('ObjectPropertiesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ObjectPropertiesComponent ]
-    })
-    .compileComponents();
+      declarations: [ObjectPropertiesComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

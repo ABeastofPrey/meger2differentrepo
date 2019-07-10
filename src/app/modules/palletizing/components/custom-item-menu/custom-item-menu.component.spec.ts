@@ -8,9 +8,8 @@ describe('CustomItemMenuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CustomItemMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [CustomItemMenuComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,5 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+} from '@angular/material';
 import { DebugElement } from '@angular/core';
 
 import { SharedModule } from '../../../shared/shared.module';
@@ -11,7 +15,6 @@ import { CalibrationMessage } from './tool-calibration-result-dialog.enum';
  * It contains all the test specs to ToolCalibrationResultDialogComponent.
  */
 describe('ToolCalibrationResultDialogComponent', () => {
-
   /**
    * The ToolCalibrationResultDialogComponent instance.
    */
@@ -46,8 +49,8 @@ describe('ToolCalibrationResultDialogComponent', () => {
    * The mock dialog.
    */
   const dialogRef = {
-    close: jasmine.createSpy('close')
- };
+    close: jasmine.createSpy('close'),
+  };
 
   /**
    * Do the test initialization before it is running.
@@ -57,14 +60,13 @@ describe('ToolCalibrationResultDialogComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [SharedModule, MatDialogModule],
-      declarations: [ ToolCalibrationResultDialogComponent ],
+      declarations: [ToolCalibrationResultDialogComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: { toolName: toolName } },
         { provide: MatDialogRef, useValue: dialogRef },
-        { provide: WebsocketService, useValue: spyObj }
-    ]
-    })
-    .compileComponents();
+        { provide: WebsocketService, useValue: spyObj },
+      ],
+    }).compileComponents();
 
     webSocketServiceSpy = TestBed.get(WebsocketService);
 
@@ -73,14 +75,13 @@ describe('ToolCalibrationResultDialogComponent', () => {
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(resultQueryResponse);
-     });
-
+    });
   }));
 
   /**
    * Do the test initialization before it is running.
    */
-  beforeEach((done) => {
+  beforeEach(done => {
     fixture = TestBed.createComponent(ToolCalibrationResultDialogComponent);
 
     fixture.detectChanges();
@@ -103,14 +104,21 @@ describe('ToolCalibrationResultDialogComponent', () => {
     let pres = htmlElement.querySelectorAll('pre');
     expect(pres).toBeTruthy();
     expect(pres.length).toBe(2);
-    expect(pres.item(0).textContent).toBe(CalibrationMessage.IsApplyDataToTool + ' ' + toolName + '?');
+    expect(pres.item(0).textContent).toBe(
+      CalibrationMessage.IsApplyDataToTool + ' ' + toolName + '?'
+    );
     expect(pres.item(1).textContent).toBe(CalibrationMessage.ResultOutOfScope);
 
     let resultTable = htmlElement.querySelector('mat-table');
     expect(resultTable).toBeTruthy();
-    expect(resultTable.children.length).toBe(6, 'there is one header and five rows.');
-    expect(resultTable.textContent).toBe('CurrentNewDelta x  mm  0  -484.7536  -484.7536  y  mm  0  4.3401  4.3401  \
-z  mm  0  0  0  r  °  0  0  0  error  mm    11.9508   ');
+    expect(resultTable.children.length).toBe(
+      6,
+      'there is one header and five rows.'
+    );
+    expect(resultTable.textContent).toBe(
+      'CurrentNewDelta x  mm  0  -484.7536  -484.7536  y  mm  0  4.3401  4.3401  \
+z  mm  0  0  0  r  °  0  0  0  error  mm    11.9508   '
+    );
   });
 
   /**
@@ -123,7 +131,7 @@ z  mm  0  0  0  r  °  0  0  0  error  mm    11.9508   ');
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(resultQueryResponse);
-     });
+    });
 
     component.onApply();
     fixture.detectChanges();
@@ -131,7 +139,6 @@ z  mm  0  0  0  r  °  0  0  0  error  mm    11.9508   ');
     fixture.whenStable().then(() => {
       expect(component.dialogRef.close).toHaveBeenCalledWith(true);
     });
-
   });
 
   /**
@@ -144,7 +151,7 @@ z  mm  0  0  0  r  °  0  0  0  error  mm    11.9508   ');
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(resultQueryResponse);
-     });
+    });
 
     component.onCancel();
     fixture.detectChanges();
@@ -152,7 +159,6 @@ z  mm  0  0  0  r  °  0  0  0  error  mm    11.9508   ');
     fixture.whenStable().then(() => {
       expect(component.dialogRef.close).toHaveBeenCalledWith(false);
     });
-
   });
 
   /**

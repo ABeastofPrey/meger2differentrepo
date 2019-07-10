@@ -5,7 +5,7 @@ export class Io {
   description: string;
   valid: boolean;
   value: boolean;
-  
+
   constructor(ioString: string) {
     const innerParts = ioString.split(',');
     this.id = Number(innerParts[0]);

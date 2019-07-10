@@ -1,63 +1,71 @@
 .wrapper {
-  flex: 1;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 0.5em;
 }
-.main-wrapper {
-  flex: 1;
+.filter-menu {
   display: flex;
   flex-direction: row;
-  margin-bottom: 0.5em;
-  overflow: hidden;
-}
-.data-table {
-  flex:1;
-  overflow-y: auto;
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 0 1em;
-}
-.data-table .mat-cell, .data-table .mat-header-cell { padding: 0.5em; }
-.data-filter {
-  display: flex;
-  height: auto;
   padding: 16px;
   align-items: center;
 }
-.data-filter > * {
+.filter-menu > * {
   flex: 1;
 }
-.data-table .mat-column-select { overflow: initial; }
-.var-name-and-actions {
+.btn-add-wrapper {
   display: flex;
-  align-items: center;
+  justify-content: center;
+  margin: 24px;
 }
-.var-actions {
+.btn-add {
+  border-radius: 36px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 150px;
+  margin-right: 48px;
+  flex: 1 0 150px !important;
+}
+.btn-add mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  align-self: flex-start;
+  margin-right: 16px;
+}
+.data-table {
+  width: 100%;
+}
+.data-table tr:not(.highlighted):hover {
+  cursor: pointer;
+  background: #eee;
+}
+::ng-deep .data-table thead tr {
+  cursor: inherit !important;
+  background: inherit !important;
+}
+.table-wrapper {
+  overflow: auto;
   flex: 1;
-  text-align: right;
-  align-items: center;
-  text-align: center;
-  align-self: center;
 }
-.var-details {
-  margin-right: 1em;
-  display: flex;
-  align-items: center;
+.index-field {
+  max-width: 50px;
+  margin-bottom: -16px;
 }
-::ng-deep .var-details mat-form-field {
-  width: 112px;
-  margin-right: 8px;
-  margin-top: 12px;
-  margin-bottom: -24px;
+.value-field {
+  max-width: 90px;
+  margin-bottom: -16px;
 }
-.var-name {
+.text-field {
+  max-width: 250px !important;
+}
+.current {
   font-weight: bold;
-  font-size: 24px;
-  margin-right: 36px;
 }
-.data-table mat-row { cursor: pointer; }
-.current { font-weight: bold; }
-.refreshing { background-color: #ebebeb; }
+.refreshing {
+  background-color: #ebebeb;
+}
 .fixed-top-right {
   position: absolute;
   z-index: 5;

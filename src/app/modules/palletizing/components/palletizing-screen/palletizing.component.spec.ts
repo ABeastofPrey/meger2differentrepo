@@ -8,9 +8,8 @@ describe('PalletizingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PalletizingComponent ]
-    })
-    .compileComponents();
+      declarations: [PalletizingComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

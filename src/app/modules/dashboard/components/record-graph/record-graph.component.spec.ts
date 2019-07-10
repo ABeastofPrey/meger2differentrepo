@@ -8,9 +8,8 @@ describe('RecordGraphComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RecordGraphComponent ]
-    })
-    .compileComponents();
+      declarations: [RecordGraphComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

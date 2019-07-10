@@ -1,20 +1,31 @@
 .wrapper {
   height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
 }
-mat-tree { flex: 1; }
-mat-nested-tree-node, mat-tree-node {
+mat-tree {
+  flex: 1;
+}
+mat-nested-tree-node,
+mat-tree-node {
   min-height: auto;
   font-size: 14px;
   font-weight: 500;
 }
-.selected { background: #E0F2F1; }
-ul,li {
+.selected {
+  background: #e0f2f1;
+}
+ul,
+li {
   margin-top: 0;
   margin-bottom: 0;
   list-style-type: none;
   flex: 1;
 }
-ul, .leaf { padding-left: 16px; }
+ul,
+.leaf {
+  padding-left: 16px;
+}
 li > div {
   display: flex;
   flex-direction: row;
@@ -25,4 +36,6 @@ li > div {
   width: auto;
   text-align: left;
 }
-mat-icon { margin-right: 4px;}
+mat-icon {
+  margin-right: 4px;
+}

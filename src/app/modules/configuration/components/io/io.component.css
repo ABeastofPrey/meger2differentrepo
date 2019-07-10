@@ -4,18 +4,18 @@
   padding: 16px;
   box-sizing: border-box;
 }
-.content-full{
+.content-full {
   width: 100%;
 }
 
 .radio-option-group {
   width: 100%;
   text-align: justify;
-  text-align-last:justify;
+  text-align-last: justify;
 }
 
 .radio-option-button {
-  margin-left: 25%
+  margin-left: 25%;
 }
 
 .table-container {
@@ -76,5 +76,5 @@
 }
 
 .mat-select-normal-place-holder ::ng-deep .mat-select-placeholder {
-   color: black;
+  color: black;
 }

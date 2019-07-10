@@ -17,10 +17,14 @@ mat-form-field {
   padding: 1em;
 }
 
-.label { 
-  color: rgba(0, 0, 0, 0.54); 
+.label {
+  color: rgba(0, 0, 0, 0.54);
   margin-top: 8px;
 }
 
-table { margin-bottom: 8px; }
-td { padding: 8px; }
+table {
+  margin-bottom: 8px;
+}
+td {
+  padding: 8px;
+}

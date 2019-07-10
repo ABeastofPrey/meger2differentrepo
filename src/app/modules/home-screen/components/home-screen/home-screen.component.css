@@ -1,4 +1,6 @@
-mat-grid-list { height: calc(100% * 1.5); }
+mat-grid-list {
+  height: calc(100% * 1.5);
+}
 .wrapper {
   position: relative;
   padding: 16px;
@@ -41,12 +43,13 @@ mat-card-title {
   min-height: 30px;
   font-size: 24px;
 }
-terminal { 
+terminal {
   flex: 1;
   overflow: hidden;
   display: flex;
 }
-.title, .welcome {
+.title,
+.welcome {
   margin: -16px -16px 16px -16px !important;
 }
 .title {
@@ -57,14 +60,27 @@ terminal {
   min-height: 56px;
   box-sizing: border-box;
 }
-.title-1 { background: linear-gradient(60deg, #26c6da, #00acc1); }
-.title-2 { background: linear-gradient(60deg, #66bb6a, #43a047); }
-.title-3 { background: linear-gradient(60deg, #ffa726, #fb8c00); }
-.title-4 { background: linear-gradient(60deg, #311B92, #6200EA); }
-.info-line { margin-bottom: 6px;}
-.info-card .title mat-icon, .feature-line mat-icon { margin-right: 16px; }
+.title-1 {
+  background: linear-gradient(60deg, #26c6da, #00acc1);
+}
+.title-2 {
+  background: linear-gradient(60deg, #66bb6a, #43a047);
+}
+.title-3 {
+  background: linear-gradient(60deg, #ffa726, #fb8c00);
+}
+.title-4 {
+  background: linear-gradient(60deg, #311b92, #6200ea);
+}
+.info-line {
+  margin-bottom: 6px;
+}
+.info-card .title mat-icon,
+.feature-line mat-icon {
+  margin-right: 16px;
+}
 .feature-line {
-  line-height: 2; 
+  line-height: 2;
   border-bottom: 1px solid #ccc;
 }
 mat-card-content {
@@ -75,7 +91,7 @@ mat-card-content {
   margin-bottom: -8px;
   font-weight: bold;
 }
-.context-menu { 
+.context-menu {
   position: absolute;
   background: #fff;
   z-index: 6;
@@ -86,11 +102,11 @@ mat-card-content {
   height: 18px;
   margin-right: 8px;
 }
-.context-menu .button-text { 
+.context-menu .button-text {
   font-size: 13px;
   font-weight: 400;
 }
-.context-menu button { 
+.context-menu button {
   padding: 0 32px 0 8px;
   width: 100%;
   display: block;
@@ -102,6 +118,8 @@ mat-card-content {
 .graphs {
   overflow-y: auto;
   overflow-x: hidden;
-  margin: 0 -16px 0 -16px
+  margin: 0 -16px 0 -16px;
 }
-.feature-add { color: #fff; }
+.feature-add {
+  color: #fff;
+}

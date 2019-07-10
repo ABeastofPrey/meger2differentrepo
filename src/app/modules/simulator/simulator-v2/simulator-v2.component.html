@@ -1,0 +1,63 @@
+<div class="wrapper">
+	<div class="toolbar primary-bg mat-elevation-z3">
+		<button
+			mat-raised-button
+			color="accent"
+			matTooltip="{{ 'simulator_screen.cube' | translate }}"
+			(click)="addObject('Cube')"
+		>
+			<img src="assets/pics/icons/cube.png" />
+			<mat-icon class="badge primary-bg mat-elevation-z3">add</mat-icon>
+		</button>
+		<button
+			mat-raised-button
+			color="accent"
+			matTooltip="{{ 'simulator_screen.sphere' | translate }}"
+			(click)="addObject('Sphere')"
+		>
+			<img src="assets/pics/icons/sphere.png" />
+			<mat-icon class="badge primary-bg mat-elevation-z3">add</mat-icon>
+		</button>
+		<button
+			mat-raised-button
+			color="accent"
+			matTooltip="{{ 'simulator_screen.cylinder' | translate }}"
+			(click)="addObject('Cylinder')"
+		>
+			<img src="assets/pics/icons/cylinder.png" />
+			<mat-icon class="badge primary-bg mat-elevation-z3">add</mat-icon>
+		</button>
+		<button
+			mat-raised-button
+			color="accent"
+			matTooltip="{{ 'simulator_screen.custom' | translate }}"
+			(click)="addObject('Custom')"
+		>
+			<img src="assets/pics/icons/custom.png" />
+			<mat-icon class="badge primary-bg mat-elevation-z3">add</mat-icon>
+		</button>
+		<div class="separator"></div>
+		<mat-slide-toggle color="accent" [(ngModel)]="showTrace">Trace</mat-slide-toggle>
+	</div>
+	<as-split direction="horizontal">
+		<as-split-area size="15" class="side-panel">
+			<as-split direction="vertical">
+				<as-split-area size="35">
+					<objects-list></objects-list>
+				</as-split-area>
+				<as-split-area size="65">
+					<object-properties [lastSelectedNode]="sim.selected"></object-properties>
+				</as-split-area>
+			</as-split>
+		</as-split-area>
+		<as-split-area size="85" class="gradient-stx">
+			<lib-app-simulator
+				*ngIf="robots.selectedRobot"
+				#simulator
+				[trace]="showTrace"
+				[roboturl]="robots.get3DModelPath(robots.selectedRobot.part_number)"
+				[jntValues]="jointsAsArr"
+			></lib-app-simulator>
+		</as-split-area>
+	</as-split>
+</div>

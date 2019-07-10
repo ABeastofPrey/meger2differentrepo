@@ -8,9 +8,8 @@ describe('GripperTestDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GripperTestDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [GripperTestDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

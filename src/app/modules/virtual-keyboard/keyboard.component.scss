@@ -9,22 +9,59 @@
   margin-right: -24px;
   margin-bottom: -24px;
 }
+.display {
+  width: 100%;
+  font-size: 24px;
+  font-family: monospace;
+}
+.display button {
+  margin-left: 24px;
+}
 .keyboard button {
   min-width: auto;
   margin: 2px;
   display: flex;
   box-shadow: 0 0 0 0;
   border-radius: 6px;
-  background-color: #FAFAFA;
-  color: black;
+  background-color: #fafafa;
+  color: #000;
 }
-.row { display: flex; }
-.space { width: 200px; }
-::ng-deep .virtual-keyboard .mat-input-element:disabled { color: #000; }
-::ng-deep .virtual-keyboard .mat-form-field-underline { display: none; }
-::ng-deep .tablet-ui .keyboard button { 
+.row {
+  display: flex;
+}
+.space {
+  width: 200px;
+}
+::ng-deep .virtual-keyboard .mat-input-element:disabled {
+  color: #000;
+}
+::ng-deep .virtual-keyboard .mat-form-field-underline {
+  display: none;
+}
+::ng-deep .tablet-ui .keyboard button {
   line-height: 48px;
   padding: 0 24px;
   font-size: 16px;
   min-height: 48px;
+}
+.blink {
+  animation: blink-animation 1s steps(2, start) infinite;
+  -webkit-animation: blink-animation 1s steps(2, start) infinite;
+}
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+.cursor {
+  width: 2px;
+  background: #888;
+  height: 24px;
+  position: absolute;
+  top: 12px;
 }

@@ -1,4 +1,4 @@
-import {Io} from "./io.model";
+import { Io } from './io.model';
 
 export class IoModule {
   name: string;
@@ -16,27 +16,24 @@ export class IoModule {
     this.firstOutput = Number(parts[3]);
     this.lastOutput = Number(parts[4]);
   }
-  
+
   setInputs(inputString: string) {
     const parts = inputString.split(';');
-    let inputs : Io[] = [];
+    let inputs: Io[] = [];
     for (let p of parts) {
-      if (p.length === 0)
-        continue;
+      if (p.length === 0) continue;
       inputs.push(new Io(p));
     }
     this.inputs = inputs;
   }
-  
+
   setOutputs(outputString: string) {
     const parts = outputString.split(';');
-    let outputs : Io[] = [];
+    let outputs: Io[] = [];
     for (let p of parts) {
-      if (p.length === 0)
-        continue;
+      if (p.length === 0) continue;
       outputs.push(new Io(p));
     }
     this.outputs = outputs;
   }
-  
 }

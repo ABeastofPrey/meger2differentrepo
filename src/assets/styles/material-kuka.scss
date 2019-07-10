@@ -65,6 +65,11 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
       color: mat-color($material-kuka-primary);
     }
   }
+  
+  .warn-bg {
+    background-color: mat-color($material-kuka-warn)!important;
+    color: #fff;
+  }
 
   /* Here is the style difinition of content portion.
    *
@@ -97,7 +102,7 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   }
 
   .primary-bg, .mat-button-toggle-checked, .virtual-keyboard .key-down,
-  .virtual-keyboard .key:active,
+  .virtual-keyboard .key:focus,
   .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label {
     background-color: mat-color($material-kuka-primary, 600)!important;
     color: $light-primary-text !important;

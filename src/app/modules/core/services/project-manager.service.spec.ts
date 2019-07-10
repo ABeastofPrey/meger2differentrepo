@@ -5,11 +5,14 @@ import { ProjectManagerService } from './project-manager.service';
 describe('ProjectManagerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ProjectManagerService]
+      providers: [ProjectManagerService],
     });
   });
 
-  it('should be created', inject([ProjectManagerService], (service: ProjectManagerService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should be created', inject(
+    [ProjectManagerService],
+    (service: ProjectManagerService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 });

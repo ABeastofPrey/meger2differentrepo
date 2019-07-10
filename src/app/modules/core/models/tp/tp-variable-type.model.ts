@@ -1,1 +1,7 @@
-export enum TPVariableType{JOINT,LOCATION,DOUBLE,LONG,STRING};
+export enum TPVariableType {
+  JOINT,
+  LOCATION,
+  DOUBLE,
+  LONG,
+  STRING,
+}

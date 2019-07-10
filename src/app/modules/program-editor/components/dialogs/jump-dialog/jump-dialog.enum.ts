@@ -8,7 +8,7 @@ export enum JumpParameterErrorKey {
   InValidAcceleration = 'inValidAcceleration',
   NotIntegerArcNumber = 'notIntegerArcNumber',
   InValidArcNumber = 'inValidArcNumber',
-  InValidBlending = 'inValidBlending'
+  InValidBlending = 'inValidBlending',
 }
 
 /**
@@ -21,5 +21,5 @@ export enum JumpParameter {
   Speed = 'InValidSpeed',
   Acceleration = 'InValidAcceleration',
   ArcNumber = 'InValidArcNumber',
-  Blending = 'InValidBlending'
+  Blending = 'InValidBlending',
 }

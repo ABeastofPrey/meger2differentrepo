@@ -8,9 +8,8 @@ describe('ProgramToolbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProgramToolbarComponent ]
-    })
-    .compileComponents();
+      declarations: [ProgramToolbarComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

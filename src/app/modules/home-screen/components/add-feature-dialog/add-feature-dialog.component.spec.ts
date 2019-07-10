@@ -8,9 +8,8 @@ describe('AddFeatureDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddFeatureDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [AddFeatureDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

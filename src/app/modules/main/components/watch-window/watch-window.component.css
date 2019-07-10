@@ -2,12 +2,24 @@
   overflow: auto;
   flex: 1;
 }
-.content table { width: 100%; }
-thead td { padding: 8px; font-weight: 500; }
-.content td { border: 1px solid #ccc; }
-tbody td {padding: 4px;}
-.content tr td:first-child { text-align: center; }
-.content input, .content select {
+.content table {
+  width: 100%;
+}
+thead td {
+  padding: 8px;
+  font-weight: 500;
+}
+.content td {
+  border: 1px solid #ccc;
+}
+tbody td {
+  padding: 4px;
+}
+.content tr td:first-child {
+  text-align: center;
+}
+.content input,
+.content select {
   border: 0;
   outline: 0;
   width: 100%;

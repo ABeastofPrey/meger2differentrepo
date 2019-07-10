@@ -8,9 +8,8 @@ describe('GripperScreenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GripperScreenComponent ]
-    })
-    .compileComponents();
+      declarations: [GripperScreenComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

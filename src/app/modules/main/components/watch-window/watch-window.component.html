@@ -1,30 +1,57 @@
 <div class="content">
-  <table>
-    <thead class="mat-title-color">
-      <tr>
-        <td></td>
-        <td style="width: 100px;">{{'watch.name' | translate}}</td>
-        <td style="width: 70px;">{{'watch.context' | translate}}</td>
-        <td>Value</td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><mat-icon>add</mat-icon></td>
-        <td><input type="text" [(ngModel)]="watch.newVarName" (keyup.enter)="watch.addVar()" (clickOutside)="onBlur()" virtualKeyboard ktype="text" (onKeyboardClose)="watch.addVar()"></td>
-        <td>
-          <select [(ngModel)]="watch.newVarContext" #context>
-            <option *ngFor="let c of watch.contexts" [value]="c">{{c}}</option>
-          </select>
-        </td>
-        <td><input type="text" readonly="true"></td>
-      </tr>
-      <tr *ngFor="let v of watch.vars; let i=index;">
-        <td><button mat-icon-button color="warn" (mousedown)="watch.delete(i)"><mat-icon>delete</mat-icon></button></td>
-        <td>{{v.name}}</td>
-        <td>{{v.context}}</td>
-        <td>{{v.value}}</td>
-      </tr>
-    </tbody>
-  </table>
+	<table style="table-layout: fixed;">
+		<thead class="mat-title-color">
+			<tr>
+				<td style="width: 32px;"></td>
+				<td style="width: 32px;"></td>
+				<td style="width: 100px;">{{ 'watch.name' | translate }}</td>
+				<td style="width: 150px;">{{ 'watch.context' | translate }}</td>
+				<td>Value</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let v of watch.vars; let i = index">
+				<td>
+					<button
+						mat-icon-button
+						color="warn"
+						(click)="watch.delete(i)"
+						[disabled]="i === watch.vars.length - 1"
+					>
+						<mat-icon>delete</mat-icon>
+					</button>
+				</td>
+				<td>
+					<button
+						mat-icon-button
+						color="primary"
+						(click)="watch.toggleActive(v)"
+						[class.disabled]="!v.active"
+					>
+						<mat-icon>{{ v.active ? 'visibility' : 'visibility_off' }}</mat-icon>
+					</button>
+				</td>
+				<td>
+					<input
+						type="text"
+						[(ngModel)]="v.name"
+						(focusout)="onBlur(v)"
+						(keyup.enter)="onBlur(v, $event)"
+						virtualKeyboard
+						ktype="text"
+						(onKeyboardClose)="onBlur(v)"
+						[id]="'var-' + i"
+					/>
+				</td>
+				<td>
+					<select [(ngModel)]="v.context" #context>
+						<option *ngFor="let c of watch.contexts" [value]="c">
+							{{ c }}
+						</option>
+					</select>
+				</td>
+				<td>{{ v.value }}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

@@ -7,6 +7,6 @@ import { TPVariable } from '../../../../core/models/tp/tp-variable.model';
  */
 export class DataNotArrayPipe implements PipeTransform {
   transform(allData: TPVariable[]) {
-    return allData.filter(data => !(data.isArr));
+    return allData.filter(data => !data.isArr);
   }
 }

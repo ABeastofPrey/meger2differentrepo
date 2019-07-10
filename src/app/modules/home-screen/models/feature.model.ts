@@ -2,12 +2,10 @@ export class Feature {
   name: string = '';
   code: string = '';
   hash: string;
-  
-  constructor() {
-  }
-  
+
+  constructor() {}
+
   toString() {
-    return this.name + ';' + this.name + ';' + this.code + ';' +
-          this.hash;
+    return this.name + ';' + this.name + ';' + this.code + ';' + this.hash;
   }
 }

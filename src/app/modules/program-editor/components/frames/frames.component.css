@@ -9,15 +9,24 @@
   display: flex;
   flex-direction: column;
 }
-.current { font-weight: bold; }
+.current {
+  font-weight: bold;
+}
 .data-table {
   overflow-y: auto;
   background-color: rgba(255, 255, 255, 0.95);
   padding: 0 1em;
 }
-.data-table .mat-cell, .data-table .mat-header-cell { padding: 0.5em; }
-.data-table .mat-column-select { overflow: initial; }
-.data-table mat-row { cursor: pointer; }
+.data-table .mat-cell,
+.data-table .mat-header-cell {
+  padding: 0.5em;
+}
+.data-table .mat-column-select {
+  overflow: initial;
+}
+.data-table mat-row {
+  cursor: pointer;
+}
 .buttons {
   display: flex;
   align-items: center;
@@ -57,7 +66,7 @@
   padding-bottom: 16px;
 }
 .data-card {
-  flex:1;
+  flex: 1;
   height: auto;
 }
 .dont-flex {

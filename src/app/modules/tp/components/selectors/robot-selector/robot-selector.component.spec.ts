@@ -8,9 +8,8 @@ describe('RobotSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RobotSelectorComponent ]
-    })
-    .compileComponents();
+      declarations: [RobotSelectorComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

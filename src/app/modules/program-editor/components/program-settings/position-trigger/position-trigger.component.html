@@ -1,70 +1,110 @@
 <div class="position-trigger-container">
-    <button mat-fab color="primary" class="mat-elevation-z5 add-new-btn" (click)="createPls()" [disabled]="data.length >= 20">
-        <mat-icon>add</mat-icon>
-    </button>
-    <mat-table [dataSource]="data" class="mat-elevation-z8 position-trigger-table">
-        <!-- checkbox -->
-        <ng-container matColumnDef="{{columns[0]}}">
-            <mat-header-cell *matHeaderCellDef>
-                <mat-checkbox color="primary" [(ngModel)]="isAllChecked" [indeterminate]="partialChecked" (change)="toggleAll($event)"></mat-checkbox>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <mat-checkbox color="primary" [(ngModel)]="element.checked"></mat-checkbox>
-            </mat-cell>
-        </ng-container>
-        <!-- name -->
-        <ng-container matColumnDef="{{columns[1]}}">
-            <mat-header-cell *matHeaderCellDef>{{'projectSettings.position_trigger.nameCol'|translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let element" [title]="element.name">{{element.name}}</mat-cell>
-        </ng-container>
-        <!-- output -->
-        <ng-container matColumnDef="{{columns[2]}}">
-            <mat-header-cell *matHeaderCellDef>{{'projectSettings.position_trigger.outputCol'|translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <mat-form-field>
-                    <mat-select [(ngModel)]="element.selectedOutput" (selectionChange)="updatePls(element)">
-                        <mat-option *ngFor="let option of element.output" [value]="option">{{option}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </mat-cell>
-        </ng-container>
-        <!-- state -->
-        <ng-container matColumnDef="{{columns[3]}}">
-            <mat-header-cell *matHeaderCellDef>{{'projectSettings.position_trigger.StateCol'|translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <mat-form-field>
-                    <mat-select [(ngModel)]="element.selectedState" (selectionChange)="updatePls(element)">
+	<button
+		mat-fab
+		color="primary"
+		class="mat-elevation-z5 add-new-btn"
+		(click)="createPls()"
+		[disabled]="data.length >= 20"
+	>
+		<mat-icon>add</mat-icon>
+	</button>
+	<mat-table [dataSource]="data" class="mat-elevation-z8 position-trigger-table">
+		<!-- checkbox -->
+		<ng-container matColumnDef="{{ columns[0] }}">
+			<mat-header-cell *matHeaderCellDef>
+				<mat-checkbox
+					color="primary"
+					[(ngModel)]="isAllChecked"
+					[indeterminate]="partialChecked"
+					(change)="toggleAll($event)"
+				></mat-checkbox>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				<mat-checkbox color="primary" [(ngModel)]="element.checked"></mat-checkbox>
+			</mat-cell>
+		</ng-container>
+		<!-- name -->
+		<ng-container matColumnDef="{{ columns[1] }}">
+			<mat-header-cell *matHeaderCellDef>{{
+				'projectSettings.position_trigger.nameCol' | translate
+			}}</mat-header-cell>
+			<mat-cell *matCellDef="let element" [title]="element.name">{{ element.name }}</mat-cell>
+		</ng-container>
+		<!-- output -->
+		<ng-container matColumnDef="{{ columns[2] }}">
+			<mat-header-cell *matHeaderCellDef>{{
+				'projectSettings.position_trigger.outputCol' | translate
+			}}</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				<mat-form-field>
+					<mat-select [(ngModel)]="element.selectedOutput" (selectionChange)="updatePls(element)">
+						<mat-option *ngFor="let option of element.output" [value]="option">{{
+							option
+						}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</mat-cell>
+		</ng-container>
+		<!-- state -->
+		<ng-container matColumnDef="{{ columns[3] }}">
+			<mat-header-cell *matHeaderCellDef>{{
+				'projectSettings.position_trigger.StateCol' | translate
+			}}</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				<mat-form-field>
+					<mat-select [(ngModel)]="element.selectedState" (selectionChange)="updatePls(element)">
                         <mat-option *ngFor="let option of element.state" [value]="option">
                             {{(option === 1) ? ('projectSettings.position_trigger.stateColTrue'|translate) : ('projectSettings.position_trigger.stateColFalse'|translate)}}
                         </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </mat-cell>
-        </ng-container>
-        <!-- from -->
-        <ng-container matColumnDef="{{columns[4]}}">
-            <mat-header-cell *matHeaderCellDef>{{'projectSettings.position_trigger.FromCol'|translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <mat-form-field>
-                    <mat-select [(ngModel)]="element.selectedFrom" (selectionChange)="updatePls(element)">
+					</mat-select>
+				</mat-form-field>
+			</mat-cell>
+		</ng-container>
+		<!-- from -->
+		<ng-container matColumnDef="{{ columns[4] }}">
+			<mat-header-cell *matHeaderCellDef>{{
+				'projectSettings.position_trigger.FromCol' | translate
+			}}</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				<mat-form-field>
+					<mat-select [(ngModel)]="element.selectedFrom" (selectionChange)="updatePls(element)">
                         <mat-option *ngFor="let option of element.from" [value]="option">
                             {{(option === 0) ? ('projectSettings.position_trigger.fromColStart'|translate) : ('projectSettings.position_trigger.fromColEnd'|translate)}}
                         </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </mat-cell>
-        </ng-container>
-        <!-- distance -->
-        <ng-container matColumnDef="{{columns[5]}}">
-            <mat-header-cell *matHeaderCellDef>{{'projectSettings.position_trigger.valueCol'|translate}} [mm/ms/%]</mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <mat-form-field>
-                  <input matInput type="text" [(ngModel)]="element.distance" (focus)="onFocus(element.distance)" (blur)="onBlur(element)" virtualKeyboard ktype="text" (onKeyboardClose)="onBlur(element)"/>
-                </mat-form-field>
-            </mat-cell>
-        </ng-container>
-        <mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: columns;"></mat-row>
-    </mat-table>
-    <button class="delete-btn" mat-raised-button color="warn" (click)="deletePls()" [disabled]="!hasChecked">{{'projectSettings.position_trigger.deleteBtn'|translate}}</button>
+					</mat-select>
+				</mat-form-field>
+			</mat-cell>
+		</ng-container>
+		<!-- distance -->
+		<ng-container matColumnDef="{{ columns[5] }}">
+			<mat-header-cell *matHeaderCellDef
+				>{{ 'projectSettings.position_trigger.valueCol' | translate }} [mm/ms/%]</mat-header-cell
+			>
+			<mat-cell *matCellDef="let element">
+				<mat-form-field>
+					<input
+						matInput
+						type="text"
+						[(ngModel)]="element.distance"
+						(focus)="onFocus(element.distance)"
+						(blur)="onBlur(element)"
+						virtualKeyboard
+						ktype="text"
+						(onKeyboardClose)="onBlur(element)"
+					/>
+				</mat-form-field>
+			</mat-cell>
+		</ng-container>
+		<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+		<mat-row *matRowDef="let row; columns: columns"></mat-row>
+	</mat-table>
+	<button
+		class="delete-btn"
+		mat-raised-button
+		color="warn"
+		(click)="deletePls()"
+		[disabled]="!hasChecked"
+	>
+		{{ 'projectSettings.position_trigger.deleteBtn' | translate }}
+	</button>
 </div>

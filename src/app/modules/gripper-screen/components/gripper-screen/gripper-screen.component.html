@@ -1,113 +1,267 @@
 <div class="wrapper">
-  <div class="side-menu mat-elevation-z3">
-    <div style="margin-bottom: 16px;">{{data.gripperLibVer}}</div>
-    <button *ngIf="!login.isOperator" mat-raised-button color="primary" (click)="addNewItem(null)"><mat-icon>add</mat-icon>{{'grippers.new_ef'|translate}}</button>
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-        <button mat-icon-button class="table-button" (click)="setContent(node)">
-          <mat-icon style="margin-right: 16px;" color="accent">subdirectory_arrow_right</mat-icon>
-          <span>{{node.item}}</span>
-        </button>
-        <button mat-icon-button color="warn" *ngIf="!login.isOperator" (click)="deleteNode(node)" style="width: 40px;"><mat-icon>delete</mat-icon></button>
-      </mat-tree-node>
-      <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-        <button mat-icon-button matTreeNodeToggle class="table-button" (click)="setContent(node)">
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-          <mat-icon style="margin-right: 16px;" color="primary">settings_input_component</mat-icon>
-          <span style="margin-right: 16px;">{{node.item}}</span>
-        </button>
-        <button mat-raised-button color="primary" *ngIf="!login.isOperator" (click)="addNewItem(node)"><mat-icon>add</mat-icon>{{'grippers.new_grp'|translate}}</button>
-        <button mat-icon-button color="warn" *ngIf="!login.isOperator" (click)="deleteNode(node)" style="width: 40px;"><mat-icon>delete</mat-icon></button>
-      </mat-tree-node>
-    </mat-tree>
-  </div>
-  <div class="gripper-data">
-    <div *ngIf="selectedNode" class="content-wrapper">
-      <h1>
-        <div>
-          {{(selectedNode.nodeType==='ef' ? 'grippers.ef' : 'grippers.grp')|translate}}:&nbsp;
-          {{selectedNode.item}}
-        </div>
-        <button *ngIf="selectedNode.nodeType==='grp'" mat-raised-button color="primary" (click)="test()">
-          <mat-icon>build</mat-icon> {{'grippers.btnTest'|translate}}
-        </button>
-      </h1>
-      <div *ngIf="selectedNode.nodeType==='grp'" class="content">
-        <h4 class="mat-subtitle-color" style="margin-top: -24px;">{{selectedNode.parent.item}} > {{selectedNode.item}}</h4>
-        <div class="row">
-          <mat-form-field>
-            <mat-select placeholder="dOut Command 1" [(ngModel)]="selectedNode.cmd1" (selectionChange)="updateGripperCmd(1)" [disabled]="login.isOperator">
-              <mat-option *ngIf="database.outputs.length === 0" disabled>{{'empty_list'|translate}}</mat-option>
-              <mat-option *ngFor="let o of database.outputs" [value]="o">{{o}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-checkbox color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.cmd1_invert" (change)="updateGripperCmd(1)">{{'invert'|translate}}</mat-checkbox>
-        </div>
-        <h2>Sleep Time:</h2>
-        <div class="row">
-          <mat-form-field>
-            <input matInput [disabled]="login.isOperator" 
-              placeholder="{{'open'|translate}}"
-              [(ngModel)]="selectedNode.sleep_open"
-              type="number"
-              (change)="updateGripperSleep('OPEN')"
-              (onKeyboardClose)="updateGripperSleep('OPEN')"
-              virtualKeyboard ktype="numeric"
-            >
-            <span matSuffix>ms.</span>
-          </mat-form-field>
-          <mat-form-field>
-            <input [disabled]="login.isOperator" matInput
-          placeholder="{{'close'|translate}}"
-          [(ngModel)]="selectedNode.sleep_close"
-          type="number" (change)="updateGripperSleep('CLOSE')"
-          virtualKeyboard ktype="numeric"
-          (onKeyboardClose)="updateGripperSleep('CLOSE')">
-            <span matSuffix>ms.</span>
-          </mat-form-field>
-        </div>
-        <h2>{{'optional'|translate}}:</h2>
-        <div class="row">
-          <mat-form-field>
-            <mat-select placeholder="dOut Command 2" [(ngModel)]="selectedNode.cmd2" (selectionChange)="updateGripperCmd(2)" [disabled]="login.isOperator || !selectedNode.cmd2_enabled">
-              <mat-option *ngIf="database.outputs.length === 0" disabled>{{'empty_list'|translate}}</mat-option>
-              <mat-option *ngFor="let o of database.outputs" [value]="o">{{o}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-checkbox color="primary" [(ngModel)]="selectedNode.cmd2_invert" (change)="updateGripperCmd(2)" [disabled]="login.isOperator || !selectedNode.cmd2_enabled">{{'invert'|translate}}</mat-checkbox>
-          <mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.cmd2_enabled">{{'enable'|translate}}</mat-slide-toggle>
-        </div>
-        <div class="row">
-          <mat-form-field>
-            <mat-select placeholder="dIn Feedback 1" [(ngModel)]="selectedNode.fb1" (selectionChange)="updateGripperFb(1)" [disabled]="login.isOperator || !selectedNode.fb1_enabled">
-              <mat-option *ngIf="database.inputs.length === 0" disabled>{{'empty_list'|translate}}</mat-option>
-              <mat-option *ngFor="let o of database.inputs" [value]="o">{{o}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-checkbox color="primary" [(ngModel)]="selectedNode.fb1_invert" [disabled]="login.isOperator || !selectedNode.fb1_enabled" (change)="updateGripperFb(1)">{{'invert'|translate}}</mat-checkbox>
-          <mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb1_enabled">{{'enable'|translate}}</mat-slide-toggle>
-        </div> 
-        <div class="row">
-          <mat-form-field>
-            <mat-select placeholder="dIn Feedback 2" [(ngModel)]="selectedNode.fb2" (selectionChange)="updateGripperFb(2)" [disabled]="login.isOperator || !selectedNode.fb2_enabled">
-              <mat-option *ngIf="database.inputs.length === 0" disabled>{{'empty_list'|translate}}</mat-option>
-              <mat-option *ngFor="let o of database.inputs" [value]="o">{{o}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-checkbox color="primary" [(ngModel)]="selectedNode.fb2_invert" [disabled]="login.isOperator || !selectedNode.fb2_enabled" (change)="updateGripperFb(2)">{{'invert'|translate}}</mat-checkbox>
-          <mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb2_enabled">{{'enable'|translate}}</mat-slide-toggle>
-        </div>
-        <div class="row">
-          <mat-form-field>
-            <mat-select placeholder="{{'tool'|translate}}" [(ngModel)]="selectedNode.tool" [disabled]="login.isOperator || !selectedNode.useTool" (selectionChange)="updateGripperTool($event)">
-              <mat-option *ngFor="let t of data.tools" value="{{t}}">{{t}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.useTool" (change)="updateGripperUseTool($event)">{{'grippers.use_tool'|translate}}</mat-slide-toggle>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="side-menu mat-elevation-z3">
+		<div style="margin-bottom: 16px;">{{ data.gripperLibVer }}</div>
+		<button *ngIf="!login.isOperator" mat-raised-button color="primary" (click)="addNewItem(null)">
+			<div class="center-vertical-horizontal">
+				<mat-icon>add</mat-icon>{{ 'grippers.new_ef' | translate }}
+			</div>
+		</button>
+		<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+			<mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+				<button mat-icon-button class="table-button" (click)="setContent(node)">
+					<mat-icon style="margin-right: 16px;" color="accent">subdirectory_arrow_right</mat-icon>
+					<span>{{ node.item }}</span>
+				</button>
+				<button
+					mat-icon-button
+					color="warn"
+					*ngIf="!login.isOperator"
+					(click)="deleteNode(node)"
+					style="width: 40px;"
+				>
+					<mat-icon>delete</mat-icon>
+				</button>
+			</mat-tree-node>
+			<mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+				<button mat-icon-button matTreeNodeToggle class="table-button" (click)="setContent(node)">
+					<mat-icon class="mat-icon-rtl-mirror">
+						{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+					</mat-icon>
+					<mat-icon style="margin-right: 16px;" color="primary">settings_input_component</mat-icon>
+					<span style="margin-right: 16px;">{{ node.item }}</span>
+				</button>
+				<button
+					mat-raised-button
+					color="primary"
+					*ngIf="!login.isOperator"
+					(click)="addNewItem(node)"
+				>
+					<mat-icon>add</mat-icon>{{ 'grippers.new_grp' | translate }}
+				</button>
+				<button
+					mat-icon-button
+					color="warn"
+					*ngIf="!login.isOperator"
+					(click)="deleteNode(node)"
+					style="width: 40px;"
+				>
+					<mat-icon>delete</mat-icon>
+				</button>
+			</mat-tree-node>
+		</mat-tree>
+	</div>
+	<div class="gripper-data">
+		<div *ngIf="selectedNode" class="content-wrapper">
+			<h1>
+				<div>
+					{{ (selectedNode.nodeType === 'ef' ? 'grippers.ef' : 'grippers.grp') | translate }}:&nbsp;
+					{{ selectedNode.item }}
+				</div>
+				<button
+					*ngIf="selectedNode.nodeType === 'grp'"
+					mat-raised-button
+					color="primary"
+					(click)="test()"
+					[disabled]="selectedNode.cmd1 === null || selectedNode.cmd1.length === 0"
+				>
+					<mat-icon>build</mat-icon> {{ 'grippers.btnTest' | translate }}
+				</button>
+			</h1>
+			<div *ngIf="selectedNode.nodeType === 'ef'" class="content">
+				<div class="row">
+					<h3 class="mat-subtitle-color" style="margin-right: 16px;">
+						{{ 'projectTree.Payloads' | translate }}
+					</h3>
+					<mat-form-field class="payload">
+						<mat-select
+							placeholder="{{ 'grippers.pay_ef' | translate }}"
+							[(ngModel)]="selectedNode.payload"
+							(selectionChange)="updatePayload()"
+							[disabled]="login.isOperator"
+						>
+							<mat-option *ngIf="data.payloads.length === 0" disabled>{{
+								'empty_list' | translate
+							}}</mat-option>
+							<mat-option *ngFor="let p of data.payloads" [value]="p">{{ p.name }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-form-field class="payload">
+						<mat-select
+							placeholder="{{ 'grippers.pay_item' | translate }}"
+							[(ngModel)]="selectedNode.payloadItem"
+							(selectionChange)="updatePayloadItem()"
+							[disabled]="login.isOperator"
+						>
+							<mat-option *ngIf="data.payloads.length === 0" disabled>{{
+								'empty_list' | translate
+							}}</mat-option>
+							<mat-option *ngFor="let p of data.payloads" [value]="p">{{ p.name }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+			</div>
+			<div *ngIf="selectedNode.nodeType === 'grp'" class="content">
+				<h4 class="mat-subtitle-color" style="margin-top: -24px;">
+					{{ selectedNode.parent.item }} > {{ selectedNode.item }}
+				</h4>
+				<div class="row">
+					<mat-form-field>
+						<mat-select
+							placeholder="dOut Command 1"
+							[(ngModel)]="selectedNode.cmd1"
+							(selectionChange)="updateGripperCmd(1)"
+							[disabled]="login.isOperator"
+						>
+							<mat-option *ngIf="database.outputs.length === 0" disabled>{{
+								'empty_list' | translate
+							}}</mat-option>
+							<mat-option *ngFor="let o of database.outputs" [value]="o">{{ o }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-checkbox
+						color="primary"
+						[disabled]="login.isOperator"
+						[(ngModel)]="selectedNode.cmd1_invert"
+						(change)="updateGripperCmd(1)"
+						>{{ 'invert' | translate }}</mat-checkbox
+					>
+				</div>
+				<h2>Sleep Time:</h2>
+				<div class="row">
+					<mat-form-field>
+						<input
+							matInput
+							[disabled]="login.isOperator"
+							placeholder="{{ 'open' | translate }}"
+							[(ngModel)]="selectedNode.sleep_open"
+							type="number"
+							(change)="updateGripperSleep('OPEN')"
+							(onKeyboardClose)="updateGripperSleep('OPEN')"
+							virtualKeyboard
+							ktype="numeric"
+						/>
+						<span matSuffix>ms.</span>
+					</mat-form-field>
+					<mat-form-field>
+						<input
+							[disabled]="login.isOperator"
+							matInput
+							placeholder="{{ 'close' | translate }}"
+							[(ngModel)]="selectedNode.sleep_close"
+							type="number"
+							(change)="updateGripperSleep('CLOSE')"
+							virtualKeyboard
+							ktype="numeric"
+							(onKeyboardClose)="updateGripperSleep('CLOSE')"
+						/>
+						<span matSuffix>ms.</span>
+					</mat-form-field>
+				</div>
+				<h2>{{ 'optional' | translate }}:</h2>
+				<div class="row">
+					<mat-form-field>
+						<mat-select
+							placeholder="dOut Command 2"
+							[(ngModel)]="selectedNode.cmd2"
+							(selectionChange)="updateGripperCmd(2)"
+							[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
+						>
+							<mat-option *ngIf="database.outputs.length === 0" disabled>{{
+								'empty_list' | translate
+							}}</mat-option>
+							<mat-option *ngFor="let o of database.outputs" [value]="o">{{ o }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-checkbox
+						color="primary"
+						[(ngModel)]="selectedNode.cmd2_invert"
+						(change)="updateGripperCmd(2)"
+						[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
+						>{{ 'invert' | translate }}</mat-checkbox
+					>
+					<mat-slide-toggle
+						color="primary"
+						[disabled]="login.isOperator"
+						[(ngModel)]="selectedNode.cmd2_enabled"
+						>{{ 'enable' | translate }}</mat-slide-toggle
+					>
+				</div>
+				<div class="row">
+					<mat-form-field>
+						<mat-select
+							placeholder="dIn Feedback 1"
+							[(ngModel)]="selectedNode.fb1"
+							(selectionChange)="updateGripperFb(1)"
+							[disabled]="login.isOperator || !selectedNode.fb1_enabled"
+						>
+							<mat-option *ngIf="database.inputs.length === 0" disabled>{{
+								'empty_list' | translate
+							}}</mat-option>
+							<mat-option *ngFor="let o of database.inputs" [value]="o">{{ o }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-checkbox
+						color="primary"
+						[(ngModel)]="selectedNode.fb1_invert"
+						[disabled]="login.isOperator || !selectedNode.fb1_enabled"
+						(change)="updateGripperFb(1)"
+						>{{ 'invert' | translate }}</mat-checkbox
+					>
+					<mat-slide-toggle
+						color="primary"
+						[disabled]="login.isOperator"
+						[(ngModel)]="selectedNode.fb1_enabled"
+						>{{ 'enable' | translate }}</mat-slide-toggle
+					>
+				</div>
+				<div class="row">
+					<mat-form-field>
+						<mat-select
+							placeholder="dIn Feedback 2"
+							[(ngModel)]="selectedNode.fb2"
+							(selectionChange)="updateGripperFb(2)"
+							[disabled]="login.isOperator || !selectedNode.fb2_enabled"
+						>
+							<mat-option *ngIf="database.inputs.length === 0" disabled>{{
+								'empty_list' | translate
+							}}</mat-option>
+							<mat-option *ngFor="let o of database.inputs" [value]="o">{{ o }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-checkbox
+						color="primary"
+						[(ngModel)]="selectedNode.fb2_invert"
+						[disabled]="login.isOperator || !selectedNode.fb2_enabled"
+						(change)="updateGripperFb(2)"
+						>{{ 'invert' | translate }}</mat-checkbox
+					>
+					<mat-slide-toggle
+						color="primary"
+						[disabled]="login.isOperator"
+						[(ngModel)]="selectedNode.fb2_enabled"
+						>{{ 'enable' | translate }}</mat-slide-toggle
+					>
+				</div>
+				<div class="row">
+					<mat-form-field>
+						<mat-select
+							placeholder="{{ 'tool' | translate }}"
+							[(ngModel)]="selectedNode.tool"
+							[disabled]="login.isOperator || !selectedNode.useTool"
+							(selectionChange)="updateGripperTool($event)"
+						>
+							<mat-option *ngFor="let t of data.tools" value="{{ t }}">{{ t }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-slide-toggle
+						color="primary"
+						[disabled]="login.isOperator"
+						[(ngModel)]="selectedNode.useTool"
+						(change)="updateGripperUseTool($event)"
+						>{{ 'grippers.use_tool' | translate }}</mat-slide-toggle
+					>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

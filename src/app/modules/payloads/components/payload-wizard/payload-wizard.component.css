@@ -8,8 +8,11 @@
 .menu {
   padding: 24px 16px 0 16px;
   z-index: 1;
-  background: #FAFAFA;
+  background: #fafafa;
   flex: 0;
+}
+.menu mat-form-field {
+  max-width: 100px;
 }
 mat-horizontal-stepper {
   flex: 1;
@@ -17,10 +20,19 @@ mat-horizontal-stepper {
   flex-direction: column;
   overflow: hidden;
 }
-.menu-fab {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
+.btn-add {
+  border-radius: 36px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.btn-add mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  align-self: flex-start;
+  margin-right: 16px;
 }
 ::ng-deep .wizard .mat-horizontal-content-container {
   padding: 0 24px;
@@ -36,8 +48,12 @@ mat-form-field {
   max-width: 300px;
   font-size: 24px;
 }
-.input-normal { max-width: 90px; }
-.input-wide { max-width: 195px!important; }
+.input-normal {
+  max-width: 90px;
+}
+.input-wide {
+  max-width: 195px !important;
+}
 .input-small {
   max-width: 45px;
   margin-top: 8px;
@@ -53,12 +69,14 @@ mat-form-field {
   font-size: 24px;
   flex: 1;
 }
-.content { padding: 1em; }
-.label { 
-  color: rgba(0, 0, 0, 0.54); 
+.content {
+  padding: 1em;
+}
+.label {
+  color: rgba(0, 0, 0, 0.54);
   margin-top: 8px;
 }
-.step-wrapper  {
+.step-wrapper {
   display: flex;
   min-height: 305px;
 }
@@ -76,7 +94,10 @@ mat-form-field {
   height: 100%;
   max-width: 250px;
 }
-h2, h3 { margin:0; }
+h2,
+h3 {
+  margin: 0;
+}
 .inline {
   display: flex;
   align-items: center;
@@ -97,4 +118,32 @@ h2, h3 { margin:0; }
   display: flex;
   flex-direction: column;
   padding: 16px;
+  flex: 1;
+  overflow: auto;
+}
+.temp-scara-wizard > mat-form-field {
+  max-width: 200px;
+}
+.wizard-header {
+  display: flex;
+  justify-content: center;
+}
+.advanced-table {
+  margin-top: 16px;
+  max-width: 600px;
+}
+.advanced-table thead {
+  line-height: 24px;
+  font-weight: bold;
+  font-size: 16px;
+}
+.advanced-table tbody mat-form-field {
+  max-width: 100px;
+}
+.advanced-table .table-end {
+  border-top: 1px solid #ccc;
+}
+.advanced-table .table-end button {
+  width: 100%;
+  height: 48px;
 }

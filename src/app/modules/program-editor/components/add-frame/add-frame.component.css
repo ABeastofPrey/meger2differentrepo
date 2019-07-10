@@ -19,5 +19,9 @@
   align-items: flex-start;
   flex-direction: column;
 }
-.name-wrapper mat-form-field { width: 100%; }
-.values mat-form-field { width: 100px; }
+.name-wrapper mat-form-field {
+  width: 100%;
+}
+.values mat-form-field {
+  width: 100px;
+}

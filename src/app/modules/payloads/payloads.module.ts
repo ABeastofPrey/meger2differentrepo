@@ -1,24 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {PayloadWizardComponent} from './components/payload-wizard/payload-wizard.component';
-import {SharedModule} from '../shared/shared.module';
+import { PayloadWizardComponent } from './components/payload-wizard/payload-wizard.component';
+import { SharedModule } from '../shared/shared.module';
 import { NewPayloadDialogComponent } from './components/new-payload-dialog/new-payload-dialog.component';
+import { IdentDialogComponent } from './components/ident-dialog/ident-dialog.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedModule
-  ],
+  imports: [CommonModule, SharedModule],
   declarations: [
     PayloadWizardComponent,
-    NewPayloadDialogComponent
+    NewPayloadDialogComponent,
+    IdentDialogComponent,
   ],
-  entryComponents:[
-    PayloadWizardComponent,
-    NewPayloadDialogComponent
-  ],
-  exports: [
-    PayloadWizardComponent
-  ]
+  entryComponents: [NewPayloadDialogComponent, IdentDialogComponent],
+  exports: [PayloadWizardComponent],
 })
-export class PayloadsModule { }
+export class PayloadsModule {}

@@ -8,9 +8,8 @@ describe('ToolCalibrationDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ToolCalibrationDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [ToolCalibrationDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

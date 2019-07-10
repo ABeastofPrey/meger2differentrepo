@@ -8,9 +8,8 @@ describe('SleepDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SleepDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [SleepDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

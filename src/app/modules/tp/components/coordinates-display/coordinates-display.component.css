@@ -8,7 +8,7 @@ table tr td:nth-child(odd) {
   font-weight: bold;
 }
 
-table tr td:nth-child(n+3) {
+table tr td:nth-child(n + 3) {
   text-align: right;
 }
 

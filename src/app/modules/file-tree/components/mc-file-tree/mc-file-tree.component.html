@@ -1,58 +1,95 @@
 <div class="tree-wrapper">
-  <mat-form-field class="search">
-    <input matInput type="text" [(ngModel)]="filterByString" (change)="filterData()" (ngModelChange)="onSearchChange()" [disabled]="isRefreshing" #searchInput virtualKeyboard ktype="text">
-    <mat-icon matPrefix>search</mat-icon>
-  </mat-form-field>
-  <mat-slide-toggle class="checkbox_en" color="primary" [(ngModel)]="enableSelect">{{'checkbox_enable'|translate}}</mat-slide-toggle>
-  <div class="center-vertical-horizontal">
-    <img src="assets/pics/{{env.platform.spinner}}" *ngIf="isRefreshing">
-  </div>
-  <mat-tree class="mobile-scrollbar" [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
-    <mat-tree-node *matTreeNodeDef="let node;">
-      <li (contextmenu)="openContextMenu($event,node)" class="leaf">
-        <div (click)="openFile(node)" [class.selected]="lastSelectedNode === node">
-          <mat-checkbox class="checklist-leaf-node" *ngIf="enableSelect"
-        [checked]="prj.checklistSelection.isSelected(node)"
-        (change)="leafSelectionToggle(node,$event)" (click)="$event.stopPropagation()"></mat-checkbox>
-          <mat-icon color="primary">insert_drive_file</mat-icon>
-          <span>{{node.name}}</span>
-        </div>
-      </li>
-    </mat-tree-node>
-    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
-      <li class="mat-typography" (contextmenu)="openContextMenu($event,node)">
-        <div [class.selected]="lastSelectedNode === node" (click)="toggleNode(node);">
-          <mat-icon>
-            {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-          <mat-checkbox *ngIf="enableSelect"
-        [checked]="descendantsAllSelected(node)"
-        [indeterminate]="descendantsPartiallySelected(node)"
-        (change)="nodeSelectionToggle(node)" (click)="$event.stopPropagation()"></mat-checkbox>
-          <mat-icon class="primary-light">
-            {{nestedTreeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
-          </mat-icon>
-          <span>{{node.name}}
-          </span>
-        </div>
-        <ul [class.invisible]="!nestedTreeControl.isExpanded(node)">
-          <ng-container matTreeNodeOutlet></ng-container>
-        </ul>
-      </li>
-    </mat-nested-tree-node>
-  </mat-tree>
+	<mat-form-field class="search">
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="filterByString"
+			(change)="filterData()"
+			(ngModelChange)="onSearchChange()"
+			[disabled]="isRefreshing"
+			#searchInput
+			virtualKeyboard
+			ktype="text"
+		/>
+		<mat-icon matPrefix>search</mat-icon>
+	</mat-form-field>
+	<mat-slide-toggle class="checkbox_en" color="primary" [(ngModel)]="enableSelect">{{
+		'checkbox_enable' | translate
+	}}</mat-slide-toggle>
+	<div class="center-vertical-horizontal">
+		<img src="assets/pics/{{ env.platform.spinner }}" *ngIf="isRefreshing" />
+	</div>
+	<mat-tree
+		class="mobile-scrollbar"
+		[dataSource]="nestedDataSource"
+		[treeControl]="nestedTreeControl"
+	>
+		<mat-tree-node *matTreeNodeDef="let node">
+			<li (contextmenu)="openContextMenu($event, node)" class="leaf">
+				<div (click)="openFile(node)" [class.selected]="lastSelectedNode === node">
+					<mat-checkbox
+						class="checklist-leaf-node"
+						*ngIf="enableSelect"
+						[checked]="prj.checklistSelection.isSelected(node)"
+						(change)="leafSelectionToggle(node, $event)"
+						(click)="$event.stopPropagation()"
+					></mat-checkbox>
+					<mat-icon color="primary">insert_drive_file</mat-icon>
+					<span>{{ node.name }}</span>
+				</div>
+			</li>
+		</mat-tree-node>
+		<mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
+			<li class="mat-typography" (contextmenu)="openContextMenu($event, node)">
+				<div [class.selected]="lastSelectedNode === node" (click)="toggleNode(node)">
+					<mat-icon>
+						{{ nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+					</mat-icon>
+					<mat-checkbox
+						*ngIf="enableSelect"
+						[checked]="descendantsAllSelected(node)"
+						[indeterminate]="descendantsPartiallySelected(node)"
+						(change)="nodeSelectionToggle(node)"
+						(click)="$event.stopPropagation()"
+					></mat-checkbox>
+					<mat-icon class="primary-light">
+						{{ nestedTreeControl.isExpanded(node) ? 'folder_open' : 'folder' }}
+					</mat-icon>
+					<span>{{ node.name }} </span>
+				</div>
+				<ul [class.invisible]="!nestedTreeControl.isExpanded(node)">
+					<ng-container matTreeNodeOutlet></ng-container>
+				</ul>
+			</li>
+		</mat-nested-tree-node>
+	</mat-tree>
 </div>
-<div class="menu-backdrop" *ngIf="menuVisible" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault()">
-  <div class="menu-wrapper">
-    <div class="menu mat-elevation-z3" [style.top]="menuTop" [style.left]="menuLeft">
-      <div>
-        <button mat-button (click)="newFile(lastSelectedNode)"><mat-icon>note_add</mat-icon>{{'projects.toolbar.new_file'|translate}}...</button>
-        <button mat-button (click)="newFolder(lastSelectedNode)"><mat-icon>create_new_folder</mat-icon>{{'projects.toolbar.new_folder'|translate}}...</button>
-      </div>
-      <mat-divider></mat-divider>
-      <div>
-        <button mat-button (click)="moveHere(lastSelectedNode)" [disabled]="prj.checklistSelection.selected.length === 0"><mat-icon>arrow_forward</mat-icon>Move selected items</button>
-      </div>
-    </div>
-  </div>
+<div
+	class="menu-backdrop"
+	*ngIf="menuVisible"
+	(click)="closeContextMenu()"
+	(contextmenu)="$event.preventDefault()"
+>
+	<div class="menu-wrapper">
+		<div class="menu mat-elevation-z3" [style.top]="menuTop" [style.left]="menuLeft">
+			<div>
+				<button mat-button (click)="newFile(lastSelectedNode)">
+					<mat-icon>note_add</mat-icon>{{ 'projects.toolbar.new_file' | translate }}...
+				</button>
+				<button mat-button (click)="newFolder(lastSelectedNode)">
+					<mat-icon>create_new_folder</mat-icon>{{ 'projects.toolbar.new_folder' | translate }}...
+				</button>
+			</div>
+			<mat-divider></mat-divider>
+			<div>
+				<button
+					mat-button
+					(click)="moveHere(lastSelectedNode)"
+					[disabled]="prj.checklistSelection.selected.length === 0"
+				>
+					<mat-icon>arrow_forward</mat-icon>Move selected items
+				</button>
+			</div>
+		</div>
+	</div>
 </div>

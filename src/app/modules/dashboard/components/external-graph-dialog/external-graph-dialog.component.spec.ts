@@ -8,9 +8,8 @@ describe('ExternalGraphDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExternalGraphDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [ExternalGraphDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

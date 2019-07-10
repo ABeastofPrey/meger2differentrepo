@@ -3,7 +3,9 @@
   height: 100%;
   display: flex;
 }
-.toolbar button { margin: 0 16px 16px 0; }
+.toolbar button {
+  margin: 0 16px 16px 0;
+}
 .container {
   position: relative;
   margin: 16px;
@@ -11,6 +13,7 @@
 }
 .item {
   border: 1px solid black;
+  background: #004d40;
   box-sizing: border-box;
 }
 .item-preview {
@@ -25,9 +28,11 @@
   overflow: hidden;
   font-size: 18px;
 }
-.itemError { background-color: red;}
+.itemError {
+  background-color: red;
+}
 .item-untouched {
-  background-color: yellow!important;
+  background-color: yellow !important;
 }
 .file-input {
   visibility: hidden;

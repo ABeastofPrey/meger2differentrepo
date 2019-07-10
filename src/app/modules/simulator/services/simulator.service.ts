@@ -1,102 +1,122 @@
 import { Injectable } from '@angular/core';
-import {TreeNode} from '../models/tree-node.model';
-import {BehaviorSubject} from 'rxjs';
-import {TranslateService} from '@ngx-translate/core';
+import { SceneObject, Box, Cylinder, SimulatorScene } from 'stxsim-ng';
+import { BehaviorSubject } from 'rxjs';
+import { DataService, WebsocketService, MCQueryResponse } from '../../core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SimulatorService {
-  
-  customObjectsMapper : Map<TreeNode,any> = new Map();
-  data: BehaviorSubject<TreeNode[]> = new BehaviorSubject([]);
-  lastSelectedNode: BehaviorSubject<TreeNode> = new BehaviorSubject(null);
-  
-  private words: any;
+  data: BehaviorSubject<SceneObject[]> = new BehaviorSubject([]);
+  scene: SimulatorScene = SimulatorScene.getInstance();
 
-  constructor(private trn: TranslateService) {
-    this.trn.get('simulator_screen').subscribe(words=>{
-      this.words = words;
-    });
-    let data : TreeNode[] = [];
-    let node = new TreeNode(this.words['robot'],'Robot',null);
-    data.push(node);
-    this.data.next(data);
+  private _selected: SceneObject = null;
+  get selected() {
+    return this._selected;
   }
-  
-  getAvailableName(objType:string) {
-    let lastSuffix : number = 0;
-    this.customObjectsMapper.forEach((val: any,key: TreeNode)=>{
-      if (key.name.indexOf(objType + '_') === 0) {
-        let n = Number(key.name.substring(objType.length + 1));
-        if (n > lastSuffix)
-          lastSuffix = n;
-      }
-    });
-    lastSuffix += 1;
-    return objType + '_' + lastSuffix;
+  set selected(val: SceneObject) {
+    this._selected = val;
   }
-  
-  addNode(node:TreeNode) {
-    let data = this.data.value;
-    data.push(node);
-    this.data.next(data);
+
+  constructor(private dataService: DataService, private ws: WebsocketService) {}
+
+  getScene() {
+    this.data.next([]);
+    while (this.scene.children.length > 0) {
+      const c = this.scene.children[0];
+      this.scene.removeChild(c);
+    }
+    // ADD DEMO OBJECTS
+    const box = new Box();
+    box.position.set(0, 1, 0.05);
+    box.scale.set(0.1, 0.1, 0.1);
+    box.name = 'Box1';
+    const cyl = new Cylinder();
+    cyl.position.set(1, 0, 0.2);
+    cyl.scale.set(0.1, 0.4, 0.1);
+    cyl.eulerXYZ.set(Math.PI / 2, 0, 0);
+    cyl.name = 'Cylinder1';
+    this.scene.addChild(box);
+    this.scene.addChild(cyl);
+    this.data.next(this.scene.children);
+    this.refreshPallets();
   }
-  
-  onObjectParamChanged(val:any, node:TreeNode, changeType: string) {
-    let obj = this.customObjectsMapper.get(node);
-    let diff: number;
-    if (obj) {
-      switch (changeType) {
-        case 'pos_x':
-          diff = val - obj.position.x;
-          for (let child of node.children) {
-            let childObject = this.customObjectsMapper.get(child);
-            if (childObject) {
-              childObject.position.x += diff;
-            }
-          }
-          obj.position.x = val;
-          break;
-        case 'pos_y':
-          diff = val - obj.position.y;
-          for (let child of node.children) {
-            let childObject = this.customObjectsMapper.get(child);
-            if (childObject) {
-              childObject.position.y += diff;
-            }
-          }
-          obj.position.y = val;
-          break;
-        case 'pos_z':
-          diff = val - obj.position.z;
-          for (let child of node.children) {
-            let childObject = this.customObjectsMapper.get(child);
-            if (childObject) {
-              childObject.position.z += diff;
-            }
-          }
-          obj.position.z = val;
-          break;
-        case 'rot_x':
-          obj.rotation.x = val * Math.PI / 180;
-          break;
-        case 'rot_y':
-          obj.rotation.y = val * Math.PI / 180;
-          break;
-        case 'rot_z':
-          obj.rotation.z = val * Math.PI / 180;
-          break;
-        case 'scale_x':
-          obj.scale.x = val;
-          break;
-        case 'scale_y':
-          obj.scale.y = val;
-          break;
-        case 'scale_z':
-          obj.scale.z = val;
-          break;
-      }
+
+  private refreshPallets() {
+    let promises = [];
+    for (let p of this.dataService.pallets) {
+      promises.push(this.ws.query('?plt_get_origin("' + p.name + '")'));
+    }
+    return Promise.all(promises)
+      .then((rets: MCQueryResponse[]) => {
+        promises = [];
+        for (let i = 0; i < rets.length; i++) {
+          const ret = rets[i];
+          if (ret.result.length === 3)
+            // NO ORIGIN
+            continue;
+          const origin = ret.result
+            .substring(2, ret.result.length - 1)
+            .split(',')
+            .map((s, i) => {
+              const n = Number(s);
+              const num = isNaN(n) ? 0 : n;
+              return i < 3 ? num / 1000 : num;
+            });
+          promises.push(this.addPallet(i, origin));
+        }
+        return Promise.all(promises);
+      })
+      .then(() => {
+        this.data.next(this.scene.children);
+      });
+  }
+
+  private addPallet(i: number, origin: number[]) {
+    const p = this.dataService.pallets[i];
+    return this.ws
+      .query('?plt_get_pallet_size("' + p.name + '")')
+      .then((ret: MCQueryResponse) => {
+        if (ret.result.length === 0) return;
+        const sizes: number[] = ret.result.split(',').map(s => {
+          const n = Number(s);
+          return isNaN(n) ? 0 : n * 0.001;
+        });
+        // FIND CENTER
+        // calculate distance from origin to center
+        const R = Math.sqrt(Math.pow(sizes[0], 2) + Math.pow(sizes[1], 2)) / 2;
+        const A = Math.atan(sizes[1] / sizes[0]);
+        const THETA = (origin[3] * Math.PI) / 180;
+        const X = origin[0] + R * Math.cos(A + THETA);
+        const Y = origin[1] + R * Math.sin(A + THETA);
+        const correctedPosition = [X, Y, origin[2] + 0.15]; // 150 for SCARA ONLY!! TODO: CHANGE!!
+        const box = new Box();
+        box.position.set(
+          correctedPosition[0],
+          correctedPosition[1],
+          correctedPosition[2]
+        );
+        box.eulerXYZ.set(0, 0, THETA);
+        box.scale.set(sizes[0], sizes[1], 0.0001);
+        box.name = 'Pallet_' + this.dataService.pallets[i].name;
+        this.scene.addChild(box);
+      });
+  }
+
+  onObjectParamChanged(e: Event, changeType: string) {
+    const el = e.target as HTMLInputElement;
+    switch (changeType) {
+      case 'pos_x':
+        console.log(el.value);
+        break;
+    }
+  }
+
+  deleteSelected() {
+    if (this.selected) {
+      this.scene.removeChild(this.selected);
+      this.data.next(this.scene.children);
+      this.selected = null;
     }
   }
 }

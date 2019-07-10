@@ -1,37 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../modules/core/services/utils.service';
 
-const lbnTab = 'lbn', hGTab = 'handguiding';
+const lbnTab = 'lbn',
+  hGTab = 'handguiding';
 const TABS = ['jog', lbnTab, hGTab];
 
 @Component({
   selector: 'app-tp',
   templateUrl: './tp.component.html',
-  styleUrls: ['./tp.component.css']
+  styleUrls: ['./tp.component.css'],
 })
 export class TpComponent implements OnInit {
-  
-  tabs : Tab[];
+  tabs: Tab[];
 
-  constructor(
-    private trn: TranslateService,
-    public utils: UtilsService
-  ) {
+  constructor(private trn: TranslateService, public utils: UtilsService) {
     this.trn.get('jogScreen.tabs').subscribe(words => {
       let tabs: Tab[] = [];
       for (let t of TABS) {
         tabs.push({
           path: t,
-          label: words[t]
+          label: words[t],
         });
       }
       this.tabs = tabs;
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   /**
    * For lbn tab, if the robot is Scara, then it shouldn't display.
@@ -42,8 +38,8 @@ export class TpComponent implements OnInit {
    * @memberof TpComponent
    */
   public shouldShow(tabPath: string): boolean {
-    const isLbn = _tabPath => (_tabPath === lbnTab) ? true : false;
-    const isHandGuiding = _tabPath => ( _tabPath === hGTab) ? true : false;
+    const isLbn = _tabPath => (_tabPath === lbnTab ? true : false);
+    const isHandGuiding = _tabPath => (_tabPath === hGTab ? true : false);
     if (isLbn(tabPath)) {
       return this.utils.IsScara ? false : true;
     } else if (isHandGuiding(tabPath)) {
@@ -52,7 +48,6 @@ export class TpComponent implements OnInit {
       return true;
     }
   }
-
 }
 
 interface Tab {

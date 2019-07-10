@@ -8,9 +8,8 @@ describe('NewLibDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewLibDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [NewLibDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

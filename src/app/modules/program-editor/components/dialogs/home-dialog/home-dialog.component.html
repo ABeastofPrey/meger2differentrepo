@@ -1,15 +1,26 @@
 <div class="mat-typography">
-    <h1 class="title">{{'projectCommands.goHome.title'|translate}}</h1>
-    <div mat-dialog-content>
-        <mat-form-field>
-            <input matInput placeholder="{{'projectCommands.goHome.vCruisePh'|translate}}" [(ngModel)]="velocity"
-            [formControl]="control" [errorStateMatcher]="matcher" virtualKeyboard ktype="numeric"/>
-            <span matSuffix>deg/s</span>
-            <mat-error> {{errorMessage}} </mat-error>
-        </mat-form-field>
-    </div>
-    <div mat-dialog-actions class="actions">
-        <button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>{{'button.cancel'|translate}}</button>
-        <button mat-button color="primary" [disabled]="cannotInsert" (click)="emitCmd()">{{'button.insert'|translate}}</button>
-    </div>
+	<h1 class="title">{{ 'projectCommands.goHome.title' | translate }}</h1>
+	<div mat-dialog-content>
+		<mat-form-field>
+			<input
+				matInput
+				placeholder="{{ 'projectCommands.goHome.vCruisePh' | translate }}"
+				[(ngModel)]="velocity"
+				[formControl]="control"
+				[errorStateMatcher]="matcher"
+				virtualKeyboard
+				ktype="numeric"
+			/>
+			<span matSuffix>deg/s</span>
+			<mat-error> {{ errorMessage }} </mat-error>
+		</mat-form-field>
+	</div>
+	<div mat-dialog-actions class="actions">
+		<button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button mat-button color="primary" [disabled]="cannotInsert" (click)="emitCmd()">
+			{{ 'button.insert' | translate }}
+		</button>
+	</div>
 </div>

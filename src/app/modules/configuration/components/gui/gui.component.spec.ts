@@ -8,9 +8,8 @@ describe('GuiComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GuiComponent ]
-    })
-    .compileComponents();
+      declarations: [GuiComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

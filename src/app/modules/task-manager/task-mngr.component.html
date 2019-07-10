@@ -1,38 +1,79 @@
 <div class="wrapper">
-  <div class="toolbar mat-elevation-z3">
-    <div class="center-vertical">
-      <button mat-raised-button color="primary" (click)="kill()" matTooltip="{{'tasks.kill'|translate}}"><mat-icon>stop</mat-icon></button>
-      <button mat-raised-button color="primary" (click)="run()" matTooltip="{{'tasks.run'|translate}}"><mat-icon>play_arrow</mat-icon></button>
-      <button mat-raised-button color="primary" (click)="idle()" matTooltip="{{'tasks.idle'|translate}}"><mat-icon>pause</mat-icon></button>
-      <button mat-raised-button color="primary" (click)="unload()" matTooltip="{{'tasks.unload'|translate}}"><mat-icon>eject</mat-icon></button>
-      <button mat-raised-button color="warn" (click)="resetAll()">{{'tasks.reset'|translate}}</button>
-    </div>
-    <div class="center-vertical" style="margin-top: 16px;">
-      {{'tasks.display'|translate}}:
-      <mat-checkbox color="primary" [(ngModel)]="filterPrograms">{{'tasks.prg'|translate}}</mat-checkbox>
-      <mat-checkbox color="primary" [(ngModel)]="filterLibs">{{'tasks.lib'|translate}}</mat-checkbox>
-      <mat-checkbox color="primary" [(ngModel)]="filterGlobalLibs">{{'tasks.lib_g'|translate}}</mat-checkbox>
-      <mat-checkbox color="primary" [(ngModel)]="filterUser">{{'tasks.user'|translate}}</mat-checkbox>
-    </div>
-  </div>
-  <table class="mat-elevation-z3">
-    <tr class="mat-subtitle-color">
-      <td>{{'tasks.name'|translate}}</td>
-      <td>{{'tasks.state'|translate}}</td>
-      <td>{{'tasks.priority'|translate}}</td>
-    </tr>
-    <tr 
-      *ngFor="let t of task.tasks | taskFilter:[filterPrograms,filterLibs,filterGlobalLibs]; let i=index;"
-      class="mat-title-color"
-      (mousedown)="onSelectionStart(i)" 
-      (mouseenter)="onSelection(i)" 
-      (mouseup)="onSelectionEnd()"
-      [class.primary-bg]="isSelected(i)"
-      (dblclick)="openFile(t)"
-    >
-      <td>{{t.name}}</td>
-      <td [colSpan]="t.priority ? 1 : 2">{{t.state}}</td>
-      <td *ngIf="t.priority">{{t.priority}}</td>
-    </tr>
-  </table>
+	<div class="toolbar mat-elevation-z3">
+		<div class="center-vertical">
+			<button
+				mat-raised-button
+				color="primary"
+				(click)="kill()"
+				matTooltip="{{ 'tasks.kill' | translate }}"
+			>
+				<mat-icon>stop</mat-icon>
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				(click)="run()"
+				matTooltip="{{ 'tasks.run' | translate }}"
+			>
+				<mat-icon>play_arrow</mat-icon>
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				(click)="idle()"
+				matTooltip="{{ 'tasks.idle' | translate }}"
+			>
+				<mat-icon>pause</mat-icon>
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				(click)="unload()"
+				matTooltip="{{ 'tasks.unload' | translate }}"
+			>
+				<mat-icon>eject</mat-icon>
+			</button>
+			<button mat-raised-button color="warn" (click)="resetAll()">
+				{{ 'tasks.reset' | translate }}
+			</button>
+		</div>
+		<div class="center-vertical" style="margin-top: 16px;">
+			{{ 'tasks.display' | translate }}:
+			<mat-checkbox color="primary" [(ngModel)]="filterPrograms">{{
+				'tasks.prg' | translate
+			}}</mat-checkbox>
+			<mat-checkbox color="primary" [(ngModel)]="filterLibs">{{
+				'tasks.lib' | translate
+			}}</mat-checkbox>
+			<mat-checkbox color="primary" [(ngModel)]="filterGlobalLibs">{{
+				'tasks.lib_g' | translate
+			}}</mat-checkbox>
+			<mat-checkbox color="primary" [(ngModel)]="filterUser">{{
+				'tasks.user' | translate
+			}}</mat-checkbox>
+		</div>
+	</div>
+	<table class="mat-elevation-z3">
+		<tr class="mat-subtitle-color">
+			<td>{{ 'tasks.name' | translate }}</td>
+			<td>{{ 'tasks.state' | translate }}</td>
+			<td>{{ 'tasks.priority' | translate }}</td>
+		</tr>
+		<tr
+			*ngFor="
+				let t of task.tasks | taskFilter: [filterPrograms, filterLibs, filterGlobalLibs];
+				let i = index
+			"
+			class="mat-title-color"
+			(mousedown)="onSelectionStart(i)"
+			(mouseenter)="onSelection(i)"
+			(mouseup)="onSelectionEnd()"
+			[class.primary-bg]="isSelected(i)"
+			(dblclick)="openFile(t)"
+		>
+			<td>{{ t.name }}</td>
+			<td [colSpan]="t.priority ? 1 : 2">{{ t.state }}</td>
+			<td *ngIf="t.priority">{{ t.priority }}</td>
+		</tr>
+	</table>
 </div>

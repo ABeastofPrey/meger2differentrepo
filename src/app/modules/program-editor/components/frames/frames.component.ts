@@ -1,31 +1,36 @@
 import { Component, OnInit } from '@angular/core';
-import {DataService, WebsocketService, MCQueryResponse} from '../../../core';
-import {TPVariable} from '../../../core/models/tp/tp-variable.model';
-import {MatTableDataSource, MatDialog, MatSnackBar} from '@angular/material';
-import {SelectionModel} from '@angular/cdk/collections';
-import {TPVariableType} from '../../../core/models/tp/tp-variable-type.model';
-import {AddFrameComponent} from '../add-frame/add-frame.component';
-import {FOUR_AXES_LOCATION, SIX_AXES_LOCATION} from '../../../core/models/tp/location-format.model';
-import {YesNoDialogComponent} from '../../../../components/yes-no-dialog/yes-no-dialog.component';
-import {ComponentType} from '@angular/cdk/portal';
-import {ToolCalibrationDialogComponent} from '../tool-calibration-dialog/tool-calibration-dialog.component';
-import {FrameCalibrationDialogComponent} from '../frame-calibration-dialog/frame-calibration-dialog.component';
-import {TranslateService} from '@ngx-translate/core';
+import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
+import { TPVariable } from '../../../core/models/tp/tp-variable.model';
+import { MatTableDataSource, MatDialog, MatSnackBar } from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
+import { TPVariableType } from '../../../core/models/tp/tp-variable-type.model';
+import { AddFrameComponent } from '../add-frame/add-frame.component';
+import {
+  FOUR_AXES_LOCATION,
+  SIX_AXES_LOCATION,
+} from '../../../core/models/tp/location-format.model';
+import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
+import { ComponentType } from '@angular/cdk/portal';
+import { ToolCalibrationDialogComponent } from '../tool-calibration-dialog/tool-calibration-dialog.component';
+import { FrameCalibrationDialogComponent } from '../frame-calibration-dialog/frame-calibration-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'frames',
   templateUrl: './frames.component.html',
-  styleUrls: ['./frames.component.css']
+  styleUrls: ['./frames.component.css'],
 })
 export class FramesComponent implements OnInit {
-  
   currTabIndex: number = 0;
   selectedVar: TPVariable = null;
   dataSource: MatTableDataSource<TPVariable> = new MatTableDataSource();
-  selection:SelectionModel<TPVariable>=new SelectionModel<TPVariable>(true,[]);
-  
-  private _legend : string[] = [];
-  private _value : any[] = [];
+  selection: SelectionModel<TPVariable> = new SelectionModel<TPVariable>(
+    true,
+    []
+  );
+
+  private _legend: string[] = [];
+  private _value: any[] = [];
   private currFrameType: string = 'tool';
   private _calibrationDialogShowing: boolean = false;
   private words: any;
@@ -37,18 +42,24 @@ export class FramesComponent implements OnInit {
     private snack: MatSnackBar,
     private trn: TranslateService
   ) {
-    this.trn.get([
-      'changeOK','value','frames.delete.msg','button.delete','button.cancel'
-    ]).subscribe(words=>{
-      this.words = words;
-    });
+    this.trn
+      .get([
+        'changeOK',
+        'value',
+        'frames.delete.msg',
+        'button.delete',
+        'button.cancel',
+      ])
+      .subscribe(words => {
+        this.words = words;
+      });
   }
-  
+
   ngOnInit() {
     this.dataSource.data = this.getData();
   }
-  
-  private getData() : TPVariable[] {
+
+  private getData(): TPVariable[] {
     let data: string[] = null;
     let result: TPVariable[] = [];
     switch (this.currTabIndex) {
@@ -69,43 +80,46 @@ export class FramesComponent implements OnInit {
         this.currFrameType = 'wp';
         break;
     }
-    if (data === null)
-      return null;
+    if (data === null) return null;
     for (let frame of data) {
-      result.push(new TPVariable(TPVariableType.LOCATION,frame));
+      result.push(new TPVariable(TPVariableType.LOCATION, frame));
     }
     return result;
   }
-  
-  onTabChange(newTab:number) {
+
+  onTabChange(newTab: number) {
     this.selectedVar = null;
     this.currTabIndex = newTab;
     this.dataSource.data = this.getData();
     this.selection.clear();
   }
-  
+
   onKeyboardClose() {
     let fullname = this.selectedVar.name;
     if (this.selectedVar.isArr)
       fullname += '[' + this.selectedVar.selectedIndex + ']';
     let value = '';
-    for (var i=0; i<this._value.length; i++) {
+    for (var i = 0; i < this._value.length; i++) {
       value += this._value[i].value;
-      if (i<this._value.length-1)
-        value += ',';
+      if (i < this._value.length - 1) value += ',';
     }
-    const cmd = '?TP_EDIT_FRAME("' + this.currFrameType + '","' + fullname +
-                '","' + value + '")';
-    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-      this.rowClick(this.selectedVar,true); // REFRESH DATA
+    const cmd =
+      '?TP_EDIT_FRAME("' +
+      this.currFrameType +
+      '","' +
+      fullname +
+      '","' +
+      value +
+      '")';
+    this.ws.query(cmd).then((ret: MCQueryResponse) => {
+      this.rowClick(this.selectedVar, true); // REFRESH DATA
       if (ret.result === '0')
-        this.snack.open(this.words['changeOK'],null,{duration: 2000});
-      else
-        console.log(ret.cmd + '>>>' + ret.result);
+        this.snack.open(this.words['changeOK'], null, { duration: 2000 });
+      else console.log(ret.cmd + '>>>' + ret.result);
     });
   }
-  
-  isElementCurrent(name : string) {
+
+  isElementCurrent(name: string) {
     let currElement = null;
     switch (this.currTabIndex) {
       case 0:
@@ -121,14 +135,12 @@ export class FramesComponent implements OnInit {
         currElement = this.data.selectedWorkPiece;
         break;
     }
-    if (currElement === null)
-      return false;
+    if (currElement === null) return false;
     const i = currElement.indexOf('[');
-    if (i > 0)
-      currElement = currElement.substring(0,i);
+    if (i > 0) currElement = currElement.substring(0, i);
     return name === currElement;
   }
-  
+
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -138,70 +150,80 @@ export class FramesComponent implements OnInit {
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
-    this.isAllSelected() ?
-        this.selection.clear() :
-      this.dataSource.data.forEach((row : TPVariable) => this.selection.select(row));
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.data.forEach((row: TPVariable) =>
+          this.selection.select(row)
+        );
   }
-  
+
   rowClick(element: TPVariable, forceRefresh) {
-    if (!forceRefresh && this.selectedVar && this.selectedVar.name === element.name)
+    if (
+      !forceRefresh &&
+      this.selectedVar &&
+      this.selectedVar.name === element.name
+    )
       return;
     this.selectedVar = element;
     let fullname = this.selectedVar.name;
     if (this.selectedVar.isArr)
       fullname += '[' + this.selectedVar.selectedIndex + ']';
-    const cmd = '?tp_get_frame_value("'+fullname+'","'+this.currFrameType+'")';
-    this.ws.query(cmd).then((ret:MCQueryResponse)=>{
+    const cmd =
+      '?tp_get_frame_value("' + fullname + '","' + this.currFrameType + '")';
+    this.ws.query(cmd).then((ret: MCQueryResponse) => {
       this._value = [];
       this._legend = [];
       if (ret.err) {
         return;
       }
       var valuesString = ret.result;
-      if (valuesString.indexOf("#") === 0)
+      if (valuesString.indexOf('#') === 0)
         valuesString = valuesString.substr(1);
-      if (valuesString.indexOf(",") === -1) {
+      if (valuesString.indexOf(',') === -1) {
         this._legend = [this.words['value']];
-        this._value = [{value:valuesString.trim()}];
+        this._value = [{ value: valuesString.trim() }];
         return;
       }
-      var values = valuesString.substr(1,valuesString.length-2).split(",");
+      var values = valuesString.substr(1, valuesString.length - 2).split(',');
       var newLegend = [];
-      for (var i=0; i<values.length; i++) {
-        this._value[i] = {value:values[i].trim()};
+      for (var i = 0; i < values.length; i++) {
+        this._value[i] = { value: values[i].trim() };
         if (this.selectedVar.varType === TPVariableType.JOINT)
-          newLegend.push('J' + (i+1));
+          newLegend.push('J' + (i + 1));
       }
       if (newLegend.length === 0) {
         switch (this.selectedVar.varType) {
           case TPVariableType.LOCATION:
-            newLegend = (values.length === 4) ? 
-              FOUR_AXES_LOCATION : SIX_AXES_LOCATION;
+            newLegend =
+              values.length === 4 ? FOUR_AXES_LOCATION : SIX_AXES_LOCATION;
             break;
         }
       }
       this._legend = newLegend;
     });
   }
-  
+
   create() {
-    this.dialog.open(AddFrameComponent,{
-      data: this.currTabIndex
-    }).afterClosed().subscribe(ret=>{
-      if (ret) {
-        var queries = [
-          this.data.refreshBases(),
-          this.data.refreshTools(),
-          this.data.refreshMachineTables(),
-          this.data.refreshWorkPieces()
-        ];
-        Promise.all(queries).then(()=>{
-          this.dataSource.data = this.getData();
-        });
-      }
-    });
+    this.dialog
+      .open(AddFrameComponent, {
+        data: this.currTabIndex,
+      })
+      .afterClosed()
+      .subscribe(ret => {
+        if (ret) {
+          var queries = [
+            this.data.refreshBases(),
+            this.data.refreshTools(),
+            this.data.refreshMachineTables(),
+            this.data.refreshWorkPieces(),
+          ];
+          Promise.all(queries).then(() => {
+            this.dataSource.data = this.getData();
+          });
+        }
+      });
   }
-  
+
   setAsCurrent() {
     let fullname = this.selectedVar.name;
     if (this.selectedVar.isArr)
@@ -221,88 +243,102 @@ export class FramesComponent implements OnInit {
         break;
     }
   }
-  
+
   deleteSelected() {
-    this.trn.get('frames.delete.title', this.selectedVar).subscribe(word=>{
-      this.dialog.open(YesNoDialogComponent,{
-        data: {
-          title: word,
-          msg: this.words['frames.delete.msg'],
-          yes: this.words['button.delete'],
-          no: this.words['button.cancel']
-        }
-      }).afterClosed().subscribe(ret=>{
-        if (ret) {
-          let cmd = '?TP_REMOVE_FRAME("' + this.currFrameType + '","' + 
-                    this.selectedVar.name + '")';
-          this.ws.query(cmd).then((ret: MCQueryResponse)=>{
-            if (ret.result === '0') {
-              this.selectedVar = null;
-              var queries = [
-                this.data.refreshBases(),
-                this.data.refreshTools(),
-                this.data.refreshMachineTables(),
-                this.data.refreshWorkPieces()
-              ];
-              Promise.all(queries).then(()=>{
-                this.dataSource.data = this.getData();
-              });
-            }
-          });
-        }
-      });;
-    });
-  }
-  
-  deleteChecked() {
-    this.trn.get('frames.delete.title_multi', {
-      num:this.selection.selected.length
-    }).subscribe(word=>{
-      let ref = this.dialog.open(YesNoDialogComponent,{
-        data: {
-          title: word,
-          msg: this.words['frames.delete.msg'],
-          yes: this.words['button.delete'],
-          no: this.words['button.cancel']
-        }
-      }).afterClosed().subscribe(ret=>{
-        if (ret) {
-          let queries : Promise<any>[] = [];
-          for (let v of this.selection.selected)
-            queries.push(this.ws.query('?TP_REMOVE_FRAME("'+v.name+'")'));
-          Promise.all(queries).then(()=>{
-            this.selectedVar = null;
-            var dataQueries = [
-              this.data.refreshBases(),
-              this.data.refreshTools()
-            ];
-            Promise.all(dataQueries).then(()=>{
-              this.data.refreshVariables();
+    this.trn.get('frames.delete.title', this.selectedVar).subscribe(word => {
+      this.dialog
+        .open(YesNoDialogComponent, {
+          data: {
+            title: word,
+            msg: this.words['frames.delete.msg'],
+            yes: this.words['button.delete'],
+            no: this.words['button.cancel'],
+          },
+        })
+        .afterClosed()
+        .subscribe(ret => {
+          if (ret) {
+            let cmd =
+              '?TP_REMOVE_FRAME("' +
+              this.currFrameType +
+              '","' +
+              this.selectedVar.name +
+              '")';
+            this.ws.query(cmd).then((ret: MCQueryResponse) => {
+              if (ret.result === '0') {
+                this.selectedVar = null;
+                var queries = [
+                  this.data.refreshBases(),
+                  this.data.refreshTools(),
+                  this.data.refreshMachineTables(),
+                  this.data.refreshWorkPieces(),
+                ];
+                Promise.all(queries).then(() => {
+                  this.dataSource.data = this.getData();
+                });
+              }
             });
-          });
-        }
-      });
-    });
-  }
-  
-  showCalibrationDialog() {
-    if (this._calibrationDialogShowing)
-      return;
-    this._calibrationDialogShowing = true;
-    let dialog: ComponentType<any> = this.currTabIndex === 0 ? 
-      ToolCalibrationDialogComponent : FrameCalibrationDialogComponent;
-    let ref = this.dialog.open(dialog,{
-      width: '450px',
-      data: {
-        variable: this.selectedVar,
-        frameType: this.currFrameType
-      },
-      hasBackdrop: false
-    });
-    ref.afterClosed().subscribe(()=>{
-      this._calibrationDialogShowing = false;
-      this.rowClick(this.selectedVar,true); // REFRESH SELECTED VAR DATA
+          }
+        });
     });
   }
 
+  deleteChecked() {
+    this.trn
+      .get('frames.delete.title_multi', {
+        num: this.selection.selected.length,
+      })
+      .subscribe(word => {
+        let ref = this.dialog
+          .open(YesNoDialogComponent, {
+            data: {
+              title: word,
+              msg: this.words['frames.delete.msg'],
+              yes: this.words['button.delete'],
+              no: this.words['button.cancel'],
+            },
+          })
+          .afterClosed()
+          .subscribe(ret => {
+            if (ret) {
+              let queries: Promise<any>[] = [];
+              for (let v of this.selection.selected)
+                queries.push(
+                  this.ws.query('?TP_REMOVE_FRAME("' + v.name + '")')
+                );
+              Promise.all(queries).then(() => {
+                this.selectedVar = null;
+                var dataQueries = [
+                  this.data.refreshBases(),
+                  this.data.refreshTools(),
+                ];
+                Promise.all(dataQueries).then(() => {
+                  this.data.refreshVariables();
+                });
+              });
+            }
+          });
+      });
+  }
+
+  showCalibrationDialog() {
+    if (this._calibrationDialogShowing) return;
+    this._calibrationDialogShowing = true;
+    let dialog: ComponentType<any> =
+      this.currTabIndex === 0
+        ? ToolCalibrationDialogComponent
+        : FrameCalibrationDialogComponent;
+    let ref = this.dialog.open(dialog, {
+      width: '450px',
+      data: {
+        variable: this.selectedVar,
+        frameType: this.currFrameType,
+      },
+      hasBackdrop: false,
+    });
+    ref.afterClosed().subscribe(() => {
+      this._calibrationDialogShowing = false;
+      this.rowClick(this.selectedVar, true); // REFRESH SELECTED VAR DATA
+    });
+  }
 }

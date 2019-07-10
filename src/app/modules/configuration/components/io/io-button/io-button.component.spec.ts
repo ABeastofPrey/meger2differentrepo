@@ -3,7 +3,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { IoButtonComponent } from './io-button.component';
 
-
 describe('IoButtonComponent', () => {
   let component: IoButtonComponent;
   let fixture: ComponentFixture<IoButtonComponent>;
@@ -11,9 +10,8 @@ describe('IoButtonComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule],
-      declarations: [ IoButtonComponent ]
-    })
-    .compileComponents();
+      declarations: [IoButtonComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

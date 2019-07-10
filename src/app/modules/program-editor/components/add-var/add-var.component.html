@@ -1,60 +1,104 @@
 <div class="mat-typography">
-  <div class="title mat-elevation-z1">
-    <mat-icon>add</mat-icon>&nbsp;&nbsp;{{'variables.new'|translate}}
-  </div>
-  <div class="name-wrapper">
-    <mat-form-field>
-      <input matInput placeholder="{{'variables.name'|translate}}" [(ngModel)]="name" maxlength="32" virtualKeyboard ktype="text">
-    </mat-form-field>
-    <mat-form-field *ngIf="!data.domainIsFrame">
+	<div class="title mat-elevation-z1">
+		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'variables.new' | translate }}
+	</div>
+	<div class="name-wrapper">
+		<mat-form-field>
+			<input
+				matInput
+				placeholder="{{ 'variables.name' | translate }}"
+				[(ngModel)]="name"
+				maxlength="32"
+				virtualKeyboard
+				ktype="text"
+			/>
+		</mat-form-field>
+		<mat-form-field *ngIf="!data.domainIsFrame">
       <mat-select placeholder="{{'variables.type'|translate}}" [(ngModel)]="varType" (selectionChange)="onTypeChange()">
         <mat-option *ngIf="isHotOption(0) && data.isRobotType" value="JOINT">{{'joint'|translate}}</mat-option>
         <mat-option *ngIf="isHotOption(1) && data.isRobotType" value="LOCATION">{{'location'|translate}}</mat-option>
         <mat-option *ngIf="isHotOption(2)" value="LONG">{{'long'|translate}}</mat-option>
         <mat-option *ngIf="isHotOption(3)" value="DOUBLE">{{'double'|translate}}</mat-option>
         <mat-option *ngIf="isHotOption(4)" value="STRING">{{'string'|translate}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+			</mat-select>
+		</mat-form-field>
     <mat-checkbox *ngIf="canUseArray" color="primary" [(ngModel)]="isArray">{{'arr'|translate}}</mat-checkbox>
-    <mat-form-field *ngIf="isArray" style="margin-top: 8px;">
-      <input matInput placeholder="{{'arr_size'|translate}}" [(ngModel)]="arrSize" virtualKeyboard ktype="numeric">
-    </mat-form-field>
-    <div *ngIf="!isArray && varType" style="margin-top: 8px;">
-      <div class="label">{{'values'|translate}}</div>
-      <div *ngIf="varType === 'JOINT'" class="values">
-        <mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
-          <span matPrefix style='font-weight: bold;'>J{{i+1}}:&nbsp;&nbsp;</span>
-          <input matInput [placeholder]="'J' + (i+1)" [(ngModel)]="this.values[i]" virtualKeyboard ktype="numeric">
-        </mat-form-field>
-      </div>
-      <div *ngIf="varType === 'LOCATION'" class="values">
-        <mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
-          <span matPrefix style='font-weight: bold;'>{{coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i]}}:&nbsp;&nbsp;</span>
-          <input
-        matInput
-        [placeholder]="coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i]"
-            [(ngModel)]="this.values[i]" virtualKeyboard ktype="numeric">
-        </mat-form-field>
-      </div>
-      <div *ngIf="varType && varType !== 'LOCATION' && varType !== 'JOINT'" class="values">
-        <mat-form-field floatLabel="never" style="width: inherit;">
-          <span matPrefix style='font-weight: bold;'>{{'value'|translate}}:&nbsp;&nbsp;</span>
-          <input *ngIf="varType !== 'STRING'" matInput [placeholder]="Value"
-            [(ngModel)]="this.values[0]" virtualKeyboard ktype="numeric">
-          <textarea matInput *ngIf="varType === 'STRING'"
-            [placeholder]="Value"
-            [(ngModel)]="this.values[0]"
-            virtualKeyboard ktype="text"
-            cdkTextareaAutosize
-            #autosize="cdkTextareaAutosize"
-            maxlength="80"
-            cdkAutosizeMinRows="1"></textarea>
-        </mat-form-field>
-      </div>
-    </div>
-  </div>
-  <div class="actions">
-    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" (click)="add()" [disabled]="!name || !varType">{{'variables.btn_create'|translate}}</button>
-  </div>
+		<mat-form-field *ngIf="isArray" style="margin-top: 8px;">
+			<input
+				matInput
+				placeholder="{{ 'arr_size' | translate }}"
+				[(ngModel)]="arrSize"
+				virtualKeyboard
+				ktype="numeric"
+			/>
+		</mat-form-field>
+		<div *ngIf="!isArray && varType" style="margin-top: 8px;">
+			<div class="label">{{ 'values' | translate }}</div>
+			<div *ngIf="varType === 'JOINT'" class="values">
+				<mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
+					<span matPrefix style="font-weight: bold;">J{{ i + 1 }}:&nbsp;&nbsp;</span>
+					<input
+						matInput
+						[placeholder]="'J' + (i + 1)"
+						[(ngModel)]="this.values[i]"
+						virtualKeyboard
+						ktype="numeric"
+					/>
+				</mat-form-field>
+			</div>
+			<div *ngIf="varType === 'LOCATION'" class="values">
+				<mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
+					<span matPrefix style="font-weight: bold;"
+						>{{ coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i] }}:&nbsp;&nbsp;</span
+					>
+					<input
+						matInput
+						[placeholder]="coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i]"
+						[(ngModel)]="this.values[i]"
+						virtualKeyboard
+						ktype="numeric"
+					/>
+				</mat-form-field>
+			</div>
+			<div *ngIf="varType && varType !== 'LOCATION' && varType !== 'JOINT'" class="values">
+				<mat-form-field floatLabel="never" style="width: inherit;">
+					<span matPrefix style="font-weight: bold;">{{ 'value' | translate }}:&nbsp;&nbsp;</span>
+					<input
+						*ngIf="varType !== 'STRING'"
+						matInput
+						[placeholder]="Value"
+						[(ngModel)]="this.values[0]"
+						virtualKeyboard
+						ktype="numeric"
+					/>
+					<textarea
+						matInput
+						*ngIf="varType === 'STRING'"
+						[placeholder]="Value"
+						[(ngModel)]="this.values[0]"
+						virtualKeyboard
+						ktype="text"
+						cdkTextareaAutosize
+						#autosize="cdkTextareaAutosize"
+						maxlength="80"
+						cdkAutosizeMinRows="1"
+					></textarea>
+				</mat-form-field>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-button
+			color="primary"
+			[disabled]="!name || !varType"
+			[clickOnce]="add"
+			[clickOnceContext]="this"
+		>
+			{{ 'variables.btn_create' | translate }}
+		</button>
+	</div>
 </div>

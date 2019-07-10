@@ -8,9 +8,8 @@ describe('NewDashboardParameterDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewDashboardParameterDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [NewDashboardParameterDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

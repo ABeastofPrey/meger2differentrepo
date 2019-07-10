@@ -3,6 +3,7 @@ export interface User {
     username: string;
     fullName: string;
     permission: number;
+    license: boolean;
   };
   token: string;
 }

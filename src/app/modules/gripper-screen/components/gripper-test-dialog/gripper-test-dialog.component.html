@@ -1,18 +1,38 @@
 <div class="main mat-typography">
-  <div class="wrapper">
-    <div class="title">{{'grippers.test'|translate}} {{data.grp}}</div>
-    <div class="content">
-      <button mat-raised-button color="primary" (click)="open()">{{'button.open'|translate}} {{data.grp}}</button>
-      <button mat-raised-button color="primary" (click)="close()">{{'button.close'|translate}} {{data.grp}}</button>
-      <h3 style="margin-top: 16px;">{{'grippers.cycle'|translate}}</h3>
-      <mat-form-field>
-        <input matInput placeholder="{{'grippers.cycle_time'|translate}}" type="number" [(ngModel)]="time" virtualKeyboard ktype="numeric">
-        <span matSuffix>ms.</span>
-      </mat-form-field>
-      <button mat-raised-button color="primary" (click)="cycle()">{{'grippers.btnCycle'|translate}}</button>
-    </div>
-  </div>
-  <div class="actions">
-    <button mat-button color="primary" matDialogClose>{{'button.close'|translate}}</button>
-  </div>
+	<div class="wrapper">
+		<div class="title">{{ 'grippers.test' | translate }} {{ data.grp }}</div>
+		<div class="content">
+			<button mat-raised-button color="primary" (click)="open()">
+				{{ 'button.open' | translate }} {{ data.grp }}
+			</button>
+			<button mat-raised-button color="primary" (click)="close()">
+				{{ 'button.close' | translate }} {{ data.grp }}
+			</button>
+			<h3 style="margin-top: 16px;">{{ 'grippers.cycle' | translate }}</h3>
+			<mat-form-field class="time">
+				<input
+					matInput
+					placeholder="{{ 'grippers.cycle_time' | translate }}"
+					type="number"
+					[(ngModel)]="time"
+					(change)="onCycleChange()"
+					virtualKeyboard
+					ktype="numeric"
+				/>
+				<span matSuffix>ms.</span>
+			</mat-form-field>
+			<button mat-raised-button color="primary" (click)="cycle()">
+				{{ 'grippers.btnCycle' | translate }}
+			</button>
+			<div class="center-vertical">
+				<span>{{ 'status' | translate }}:</span>
+				<div class="indicator" [class.green]="status"></div>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button color="primary" matDialogClose>
+			{{ 'button.close' | translate }}
+		</button>
+	</div>
 </div>

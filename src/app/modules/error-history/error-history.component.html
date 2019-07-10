@@ -1,22 +1,45 @@
 <div class="buttons center-vertical-horizontal">
-  <button mat-raised-button color="primary" (click)="clearErrors()">{{'errorHistory.button.clear'|translate}}</button>
-  <button mat-raised-button color="primary" (click)="clearDrive()">{{'errorHistory.button.clear_drive'|translate}}</button>
-  <button mat-raised-button color="primary" (click)="acknowledge()">{{'acknowledge'|translate}}</button>
+	<button mat-raised-button color="primary" (click)="clearErrors()">
+		{{ 'errorHistory.button.clear' | translate }}
+	</button>
+	<button mat-raised-button color="primary" (click)="clearDrive()">
+		{{ 'errorHistory.button.clear_drive' | translate }}
+	</button>
+	<button mat-raised-button color="primary" (click)="acknowledge()">
+		{{ 'acknowledge' | translate }}
+	</button>
 </div>
 <mat-accordion>
-  <mat-expansion-panel *ngFor="let e of errors" class="error-panel">
-    <mat-expansion-panel-header>
-      <div class="error-wrapper">
-        <div class="icon severity-error" [ngClass]="{'severity-note':e.severity==='NOTE','severity-info':e.severity==='INFO'}"><mat-icon>info</mat-icon></div>
-        <div class="error-short">
-          <div class="error-time">{{e.date + ' ' + e.time}}</div>
-          <div class="error-short-desc">{{e.code + ' ' + e.message}}</div>
-        </div>
-      </div>
-    </mat-expansion-panel-header>
-    <div><b>Task:</b>&nbsp;{{e.task}}</div>
-    <div><b>File:</b>&nbsp;<span *ngIf="login.isAdmin && e.file.indexOf('.')>0" matRipple [matRippleRadius]="16" class="link" (mousedown)="goToError(e.file)">{{e.file}}</span><span *ngIf="!login.isAdmin || e.file.indexOf('.')===-1">{{e.file}}</span></div>
-    <div><b>Line:</b>&nbsp;{{e.line}}</div>
-    <div><b>Module:</b>&nbsp;{{e.module}}</div>
-  </mat-expansion-panel>
+	<mat-expansion-panel *ngFor="let e of errors" class="error-panel">
+		<mat-expansion-panel-header>
+			<div class="error-wrapper">
+				<div
+					class="icon severity-error"
+					[ngClass]="{
+						'severity-note': e.severity === 'NOTE',
+						'severity-info': e.severity === 'INFO'
+					}"
+				>
+					<mat-icon>info</mat-icon>
+				</div>
+				<div class="error-short">
+					<div class="error-time">{{ e.date + ' ' + e.time }}</div>
+					<div class="error-short-desc">{{ e.code + ' ' + e.message }}</div>
+				</div>
+			</div>
+		</mat-expansion-panel-header>
+		<div><b>Task:</b>&nbsp;{{ e.task }}</div>
+		<div>
+			<b>File:</b>&nbsp;<span
+				*ngIf="login.isAdmin && e.file.indexOf('.') > 0"
+				matRipple
+				[matRippleRadius]="16"
+				class="link"
+				(mousedown)="goToError(e.file)"
+				>{{ e.file }}</span
+			><span *ngIf="!login.isAdmin || e.file.indexOf('.') === -1">{{ e.file }}</span>
+		</div>
+		<div><b>Line:</b>&nbsp;{{ e.line }}</div>
+		<div><b>Module:</b>&nbsp;{{ e.module }}</div>
+	</mat-expansion-panel>
 </mat-accordion>

@@ -1,15 +1,18 @@
-.title { 
+.title {
   padding: 6px 12px;
   font-size: 24px;
   min-width: 200px;
   font-weight: bold;
 }
-.move-content, .params-container { 
+.move-content,
+.params-container {
   border: 1px solid #eee;
   padding: 4px;
 }
-.params-title { min-width: 120px;}
-.content { 
+.params-title {
+  min-width: 120px;
+}
+.content {
   padding: 12px;
   display: flex;
   background-color: #fff;
@@ -46,4 +49,7 @@
 .wrapper {
   position: absolute;
 }
-.params-list mat-form-field, mat-slider { width: 100%;}
+.params-list mat-form-field,
+mat-slider {
+  width: 100%;
+}

@@ -4,7 +4,9 @@
   padding: 16px;
   box-sizing: border-box;
 }
-.mat-column-select { overflow: initial; }
+.mat-column-select {
+  overflow: initial;
+}
 .toolbar {
   margin-bottom: 8px;
   background-color: #eee;

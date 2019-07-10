@@ -8,9 +8,8 @@ describe('ToolSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ToolSelectorComponent ]
-    })
-    .compileComponents();
+      declarations: [ToolSelectorComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

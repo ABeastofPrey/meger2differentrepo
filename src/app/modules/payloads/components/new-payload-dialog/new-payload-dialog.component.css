@@ -1,4 +1,6 @@
-.main { height: 100%; }
+.main {
+  height: 100%;
+}
 .wrapper {
   height: calc(100% - 36px);
   display: flex;

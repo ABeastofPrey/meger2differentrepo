@@ -1,0 +1,44 @@
+<div class="wrapper mat-typography">
+	<mat-toolbar color="primary">
+		{{ 'projects.delete-dialog.title' | translate }}
+	</mat-toolbar>
+	<div class="content">
+		{{ 'projects.delete-dialog.message' | translate }}
+		<mat-form-field class="chip-field">
+			<mat-chip-list #chipList>
+				<mat-chip
+					*ngFor="let project of selected"
+					selectable="false"
+					removable="true"
+					(removed)="remove(project)"
+				>
+					{{ project }}
+					<mat-icon matChipRemove>cancel</mat-icon>
+				</mat-chip>
+				<input
+					placeholder="{{ 'projects.delete-dialog.input' | translate }}"
+					#prjInput
+					[formControl]="prjCtrl"
+					[matAutocomplete]="auto"
+					[matChipInputFor]="chipList"
+					[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+					matChipInputAddOnBlur="true"
+					(matChipInputTokenEnd)="add($event)"
+				/>
+			</mat-chip-list>
+			<mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelected($event)">
+				<mat-option *ngFor="let project of projects" [value]="project">
+					{{ project }}
+				</mat-option>
+			</mat-autocomplete>
+		</mat-form-field>
+	</div>
+	<div class="footer">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button mat-button color="warn" (click)="delete()">
+			{{ 'projects.delete-dialog.btn-delete' | translate }}
+		</button>
+	</div>
+</div>

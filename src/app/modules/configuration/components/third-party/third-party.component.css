@@ -10,6 +10,21 @@
   line-height: 20px;
   font-family: monospace;
 }
+.license-cs {
+  font-size: 12px;
+  font-family: monospace;
+}
+::ng-deep .license-cs .center {
+  text-align: center;
+}
+::ng-deep .license-cs .bold {
+  font-weight: bold;
+  font-size: 14px;
+}
+::ng-deep .license-cs h1 {
+  font-size: 16px;
+  font-weight: bold;
+}
 .header {
   padding: 12px 24px;
   border-radius: px;

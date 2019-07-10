@@ -1,6 +1,11 @@
 <mat-form-field [floatLabel]="prompt ? 'never' : 'auto'">
-  <span *ngIf="prompt" matPrefix style='font-weight: bold;'>{{prompt}}&nbsp;&nbsp;</span>
-  <mat-select placeholder="{{'domain'|translate}}" [(ngModel)]="dataService.selectedDomain" [disabled]="disabled" (selectionChange)="onChange()">
-    <mat-option *ngFor="let item of dataService.domains" value="{{item}}">{{item}}</mat-option>
-  </mat-select>
+	<span *ngIf="prompt" matPrefix style="font-weight: bold;">{{ prompt }}&nbsp;&nbsp;</span>
+	<mat-select
+		placeholder="{{ 'domain' | translate }}"
+		[(ngModel)]="dataService.selectedDomain"
+		[disabled]="disabled"
+		(selectionChange)="onChange()"
+	>
+		<mat-option *ngFor="let item of dataService.domains" value="{{ item }}">{{ item }}</mat-option>
+	</mat-select>
 </mat-form-field>

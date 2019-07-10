@@ -6,23 +6,27 @@
   padding: 16px;
   box-sizing: border-box;
 }
-.content div, .content span { user-select: text; }
-.context-menu { 
+.content div,
+.content span {
+  user-select: text;
+}
+.context-menu {
   position: absolute;
   background: #fff;
   z-index: 6;
 }
-.context-menu mat-icon, .context-menu img {
+.context-menu mat-icon,
+.context-menu img {
   font-size: 18px;
   width: 18px;
   height: 18px;
   margin-right: 8px;
 }
-.context-menu .button-text { 
+.context-menu .button-text {
   font-size: 13px;
   font-weight: 400;
 }
-.context-menu button { 
+.context-menu button {
   padding: 0 32px 0 8px;
   display: block;
   width: 100%;

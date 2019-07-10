@@ -1,0 +1,56 @@
+<div class="mat-typography">
+	<div class="title primary-bg mat-elevation-z1">
+		{{ 'apps.restore.title' | translate }}
+	</div>
+	<div class="content">
+		<mat-radio-group [(ngModel)]="mode">
+			<mat-radio-button value="1">{{ 'apps.restore.default' | translate }}</mat-radio-button>
+			<mat-radio-button value="2" [disabled]="selectedRobot === null">{{
+				'apps.restore.robot' | translate
+			}}</mat-radio-button>
+		</mat-radio-group>
+		<div class="robot center-vertical" *ngIf="mode === '2'">
+			<div>
+				<div>
+					<span style="font-weight: bold;">{{ 'robots.selected' | translate }}:&nbsp;</span>
+					<span>{{ selectedRobot.name }} ({{ selectedRobot.bus }})</span>
+				</div>
+				<div>
+					<span style="font-weight: bold;">{{ 'robots.part' | translate }}:&nbsp;</span>
+					<span>{{ selectedRobot.part_number }}</span>
+				</div>
+			</div>
+			<button mat-raised-button color="primary" style="margin-left: 24px;" (click)="changeRobot()">
+				{{ 'robots.btnChange' | translate }}...
+			</button>
+		</div>
+		<div class="warn" *ngIf="mode === '2'">
+			{{ 'apps.restore.msg' | translate }}
+		</div>
+	</div>
+	<mat-form-field appearance="fill" class="confirm">
+		<mat-label>{{ 'password_confirm' | translate }} ({{ username }})</mat-label>
+		<input
+			matInput
+			placeholder="{{ 'password' | translate }}"
+			type="password"
+			[(ngModel)]="password"
+			virtualKeyboard
+			ktype="text"
+		/>
+		<mat-icon matSuffix>security</mat-icon>
+	</mat-form-field>
+	<div class="buttons">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-raised-button
+			color="warn"
+			[disabled]="busy || password.length === 0"
+			(click)="restore()"
+		>
+			{{ 'button.restore' | translate }}
+		</button>
+	</div>
+</div>

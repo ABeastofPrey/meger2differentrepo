@@ -8,9 +8,8 @@ describe('DimDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DimDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [DimDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

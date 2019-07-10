@@ -1,17 +1,17 @@
-import {TPVariableType} from "./tp-variable-type.model";
+import { TPVariableType } from './tp-variable-type.model';
 
 export class TPVariable {
   name: string;
   value: any = null;
   isArr: boolean = false;
   varType: TPVariableType = null;
-  isPosition : boolean = false;
-  typeStr : string = null;
-  selectedIndex : number = 1;
-  
+  isPosition: boolean = false;
+  typeStr: string = null;
+  selectedIndex: number = 1;
+
   constructor(varType: TPVariableType, str?: string) {
     this.varType = varType;
-    switch(varType) {
+    switch (varType) {
       case TPVariableType.JOINT:
         this.typeStr = 'JOINT';
         this.isPosition = true;
@@ -36,15 +36,14 @@ export class TPVariable {
       return;
     }
     var index = str.indexOf('[');
-    if (index === -1)
-      this.name = str;
+    if (index === -1) this.name = str;
     else {
-      this.name = str.substring(0,index);
+      this.name = str.substring(0, index);
       this.isArr = true;
-      str = str.substring(index + 1, str.length-1);
+      str = str.substring(index + 1, str.length - 1);
       var arrSize = parseInt(str);
       this.value = new Array<TPVariable>(arrSize);
-      for (var i=0; i<arrSize; i++) {
+      for (var i = 0; i < arrSize; i++) {
         this.value[i] = new TPVariable(varType);
       }
     }

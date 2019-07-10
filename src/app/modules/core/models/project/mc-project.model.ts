@@ -1,28 +1,27 @@
-import {TPVariable} from "../tp/tp-variable.model";
+import { TPVariable } from '../tp/tp-variable.model';
 
 export class MCProject {
-  name : string;
+  name: string;
   dependencies: string[] = [];
   macros: Macro[] = [];
   settings: ProjectSettings;
   errors: {
-    id: number,
-    name: string
+    id: number;
+    name: string;
   }[] = [];
   apps: App[] = [];
-  
+
   constructor(name: string) {
     this.name = name;
     this.settings = new ProjectSettings();
   }
-  
+
   /*
    * STRING IS IN FORMAT: APP1,0;APP2,1;...
    */
-  initAppsFromString(str:string) {
+  initAppsFromString(str: string) {
     this.apps = [];
-    if (str.length === 0)
-      return;
+    if (str.length === 0) return;
     const apps = str.split(';');
     for (let app of apps) {
       const parts = app.split(',');
@@ -32,7 +31,9 @@ export class MCProject {
         active: parts[1] === '1',
         data: [],
         status: -1,
-        id: -1
+        id: -1,
+        cyclic: parts[2] === '1',
+        desc: ''
       });
     }
   }
@@ -45,33 +46,56 @@ export class App {
   data: TPVariable[];
   status: number;
   id: number;
+  cyclic: boolean;
+  desc: string; // Description of the app
 }
 
 export class ProjectSettings {
   vcruise: number;
   vtran: number;
   vrate: number;
-  blendingMethod : number;
+  blendingMethod: number;
   tool: string;
   base: string;
   mtable: string;
   wpiece: string;
   overlap: boolean;
   limits: LimitsObject = new LimitsObject();
+  autoStart: boolean;
 }
 
 class LimitsObject {
   position: Limit[];
-  world: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];
-  tool: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];;
-  base: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];;
-  mt: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];;
-  wp: Limit[] = [new Limit('X','mm'),new Limit('Y','mm'),new Limit('Z','mm')];;
+  world: Limit[] = [
+    new Limit('X', 'mm'),
+    new Limit('Y', 'mm'),
+    new Limit('Z', 'mm'),
+  ];
+  tool: Limit[] = [
+    new Limit('X', 'mm'),
+    new Limit('Y', 'mm'),
+    new Limit('Z', 'mm'),
+  ];
+  base: Limit[] = [
+    new Limit('X', 'mm'),
+    new Limit('Y', 'mm'),
+    new Limit('Z', 'mm'),
+  ];
+  mt: Limit[] = [
+    new Limit('X', 'mm'),
+    new Limit('Y', 'mm'),
+    new Limit('Z', 'mm'),
+  ];
+  wp: Limit[] = [
+    new Limit('X', 'mm'),
+    new Limit('Y', 'mm'),
+    new Limit('Z', 'mm'),
+  ];
 }
 
 export class Macro {
-  key:string;
-  app:string;
+  key: string;
+  app: string;
 }
 
 export class Limit {
@@ -79,7 +103,7 @@ export class Limit {
   min: number;
   max: number;
   units: string;
-  
+
   constructor(name, units) {
     this.name = name;
     this.units = units;

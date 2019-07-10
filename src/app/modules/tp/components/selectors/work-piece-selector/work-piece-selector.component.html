@@ -1,5 +1,11 @@
 <mat-form-field>
-  <mat-select placeholder="{{'wp'|translate}}" [(ngModel)]="dataService.selectedWorkPiece" [disabled]="disabled">
-    <mat-option *ngFor="let item of dataService.workPieces" value="{{item}}">{{item}}</mat-option>
-  </mat-select>
+	<mat-select
+		placeholder="{{ 'wp' | translate }}"
+		[(ngModel)]="dataService.selectedWorkPiece"
+		[disabled]="disabled"
+	>
+		<mat-option *ngFor="let item of dataService.workPieces" value="{{ item }}">{{
+			item
+		}}</mat-option>
+	</mat-select>
 </mat-form-field>

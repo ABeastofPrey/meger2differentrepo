@@ -8,9 +8,8 @@ describe('PalletPickerDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PalletPickerDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [PalletPickerDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

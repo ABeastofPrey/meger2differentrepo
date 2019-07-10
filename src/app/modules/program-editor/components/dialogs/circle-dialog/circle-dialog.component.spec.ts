@@ -8,9 +8,8 @@ describe('CircleDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CircleDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [CircleDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

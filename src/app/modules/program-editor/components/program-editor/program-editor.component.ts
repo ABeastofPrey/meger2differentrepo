@@ -1,51 +1,86 @@
 import { Component, OnInit } from '@angular/core';
-import {ProgramEditorService, TASKSTATE_NOTLOADED, TASKSTATE_RUNNING, TASKSTATE_STOPPED, TASKSTATE_ERROR, TASKSTATE_READY, TASKSTATE_KILLED} from '../../services/program-editor.service';
-import {DataService, ProjectManagerService, LoginService} from '../../../core';
-import {CommonService} from '../../../core/services/common.service';
+import {
+  ProgramEditorService,
+  TASKSTATE_NOTLOADED,
+  TASKSTATE_RUNNING,
+  TASKSTATE_STOPPED,
+  TASKSTATE_ERROR,
+  TASKSTATE_READY,
+  TASKSTATE_KILLED,
+} from '../../services/program-editor.service';
+import {
+  DataService,
+  ProjectManagerService,
+  LoginService,
+  WebsocketService,
+  MCQueryResponse,
+} from '../../../core';
+import { CommonService } from '../../../core/services/common.service';
 import { projectPoints } from '../program-editor-side-menu/program-editor-side-menu.component';
 
 @Component({
   selector: 'program-editor',
   templateUrl: './program-editor.component.html',
-  styleUrls: ['./program-editor.component.scss']
+  styleUrls: ['./program-editor.component.scss'],
 })
 export class ProgramEditorComponent implements OnInit {
-  public pPoints = projectPoints;
+  
+  pPoints = projectPoints;
+  appDescEditMode: boolean = false;
 
   constructor(
-    public service : ProgramEditorService,
+    public service: ProgramEditorService,
     public data: DataService,
     public prj: ProjectManagerService,
     public login: LoginService,
-    public cmn: CommonService
-  ) { }
+    public cmn: CommonService,
+    private ws: WebsocketService
+  ) {}
 
   ngOnInit() {
-    this.prj.currProject.subscribe(prj=>{
-      if (prj)
-        this.prj.getProjectStatus();
+    this.prj.currProject.subscribe(prj => {
+      if (prj) this.prj.getProjectStatus();
     });
   }
-  
+
   ngOnDestroy() {
     this.prj.stopStatusRefresh();
+    this.service.mode = 'editor';
+  }
+
+  onDragEnd() {
+    this.service.onDragEnd();
   }
   
-  onDragEnd() { this.service.onDragEnd(); }
-  
+  onAppDescSave() {
+    this.appDescEditMode = !this.appDescEditMode;
+    if (!this.appDescEditMode) {
+      const app = this.service.fileRef.name;
+      const prj = this.prj.currProject.value.name;
+      const desc = this.service.fileRef.desc;
+      const cmd = '?PRJ_SET_APP_DESCRIPTION("' + prj + '","' + app + '","'
+                + desc + '")';
+      this.ws.query(cmd).then((ret:MCQueryResponse)=>{
+        console.log(ret);
+      });
+    }
+  }
+
   get isStepDisabled() {
     const code = this.service.status.statusCode;
-    return code === this.taskStates[0] || code === this.taskStates[1] ||
-          code === this.taskStates[5];
+    return (
+      code !== TASKSTATE_STOPPED &&
+      code !== TASKSTATE_ERROR &&
+      code !== TASKSTATE_READY
+    );
   }
-  
+
   taskStates = [
     TASKSTATE_NOTLOADED,
     TASKSTATE_RUNNING,
     TASKSTATE_STOPPED,
     TASKSTATE_ERROR,
     TASKSTATE_READY,
-    TASKSTATE_KILLED
+    TASKSTATE_KILLED,
   ];
-
 }

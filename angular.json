@@ -31,9 +31,6 @@
             "scripts": [
               "src/assets/scripts/plotly-latest.min.js",
               "src/assets/scripts/numeric.min.js",
-              "src/assets/scripts/threejs/three.min.js",
-              "src/assets/scripts/threejs/OrbitControls.js",
-              "src/assets/scripts/threejs/app.js",
               "src/assets/scripts/isomer.min.js",
               "node_modules/ace-builds/src-min/ace.js",
               "src/assets/scripts/ace/theme-cs.js",
@@ -127,8 +124,7 @@
             "styles": [
               "src/styles.scss",
               "src/assets/styles/material-kuka.scss",
-              "src/assets/styles/material-servotronix.scss",
-              "node_modules/ngx-draggable-widget/NgDraggableWidget.css"
+              "src/assets/styles/material-servotronix.scss"
             ],
             "assets": [
               "src/assets",

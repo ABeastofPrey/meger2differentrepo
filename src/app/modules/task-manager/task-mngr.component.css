@@ -7,15 +7,21 @@ table tr:first-child {
   border-bottom: 1px solid #ccc;
   font-weight: 600;
 }
-td { padding: 8px; }
+td {
+  padding: 8px;
+}
 .toolbar {
   margin-bottom: 8px;
   background-color: #eee;
   padding: 16px 24px;
 }
-.toolbar button { margin-right: 16px; }
+.toolbar button {
+  margin-right: 16px;
+}
 .primary-bg {
   color: #fff;
   font-weight: 500;
 }
-.toolbar mat-checkbox { margin-left: 16px; }
+.toolbar mat-checkbox {
+  margin-left: 16px;
+}

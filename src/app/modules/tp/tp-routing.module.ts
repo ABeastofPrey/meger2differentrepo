@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import {TpComponent} from './tp.component';
-import {Routes, RouterModule} from '@angular/router';
-import {LeadByNoseScreenComponent} from './components/lead-by-nose-screen/lead-by-nose-screen.component';
-import {JogScreenComponent} from './components/jogscreen/jogscreen.component';
+import { TpComponent } from './tp.component';
+import { Routes, RouterModule } from '@angular/router';
+import { LeadByNoseScreenComponent } from './components/lead-by-nose-screen/lead-by-nose-screen.component';
+import { JogScreenComponent } from './components/jogscreen/jogscreen.component';
 import { HandGuidingComponent } from './components/hand-guiding/hand-guiding.component';
 
 const routes: Routes = [
@@ -12,25 +12,26 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'jog'
+        redirectTo: 'jog',
       },
       {
         path: 'lbn',
-        component: LeadByNoseScreenComponent
+        component: LeadByNoseScreenComponent,
       },
       {
         path: 'jog',
-        component: JogScreenComponent
-      }, {
+        component: JogScreenComponent,
+      },
+      {
         path: 'handguiding',
-        component: HandGuidingComponent
-      }
-    ]
-  }
+        component: HandGuidingComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class TpRoutingModule { }
+export class TpRoutingModule {}

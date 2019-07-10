@@ -8,9 +8,8 @@ describe('NewDependencyDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewDependencyDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [NewDependencyDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

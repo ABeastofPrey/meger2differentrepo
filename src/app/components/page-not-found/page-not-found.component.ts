@@ -1,22 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
-import {environment} from '../../../environments/environment';
-import {ElementRef} from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { ElementRef } from '@angular/core';
 
-const BOXES_OFFSET : number = 10;
-const SPEED : number = 3;
+const BOXES_OFFSET: number = 10;
+const SPEED: number = 3;
 
 @Component({
   selector: 'app-page-not-found',
   templateUrl: './page-not-found.component.html',
-  styleUrls: ['./page-not-found.component.css']
+  styleUrls: ['./page-not-found.component.css'],
 })
 export class PageNotFoundComponent implements OnInit {
+  constructor(private _location: Location) {}
 
-  constructor(private _location: Location) { }
-  
   public env = environment;
-  
+
   // GAME
   private isDrawCalled: boolean = false;
   private started: boolean = false;
@@ -24,14 +23,14 @@ export class PageNotFoundComponent implements OnInit {
   private boxes: Box[] = [];
   private grp: Gripper = new Gripper();
   private gameOver: boolean = false;
-  @ViewChild('game') game: ElementRef;
-  
-  back() { this._location.back(); }
+  @ViewChild('game', { static: false }) game: ElementRef;
 
-  ngOnInit() {
-    
+  back() {
+    this._location.back();
   }
-  
+
+  ngOnInit() {}
+
   draw() {
     if (this.game.nativeElement.getContext) {
       if (!this.started) {
@@ -46,7 +45,11 @@ export class PageNotFoundComponent implements OnInit {
       ctx.fillText('Score:' + this.score, 20, 36);
       // WRITE INSTRUCTIONS
       ctx.font = '16px serif';
-      ctx.fillText('Use UP/DOWN arrows to pick all boxes on the conveyor.', 20, 56);
+      ctx.fillText(
+        'Use UP/DOWN arrows to pick all boxes on the conveyor.',
+        20,
+        56
+      );
       // ADD CONVEYOR
       ctx.fillStyle = 'rgb(10, 78, 78)';
       ctx.fillRect(0, 280, 600, 20);
@@ -73,10 +76,10 @@ export class PageNotFoundComponent implements OnInit {
       // DRAW BOXES AND CHECK FOR COLLISION
       ctx.translate(0, BOXES_OFFSET);
       ctx.fillStyle = '#C0C0C0';
-      let filteredBoxes = this.boxes.filter(function(box){
+      let filteredBoxes = this.boxes.filter(function(box) {
         return !box.remove;
       });
-      for (let i=0; i<filteredBoxes.length; i++) {
+      for (let i = 0; i < filteredBoxes.length; i++) {
         let b = filteredBoxes[i];
         if (b.xPos === 121) {
           b.remove = true;
@@ -85,8 +88,7 @@ export class PageNotFoundComponent implements OnInit {
         ctx.fillStyle = b.success ? 'lime' : '#C0C0C0';
         ctx.fillRect(b.xPos, b.yPos, b.width, b.height);
         // Check for collision
-        if (b.cleared)
-          continue;
+        if (b.cleared) continue;
         if (b.xPos + b.width < this.grp.xPos) {
           b.cleared = true;
           continue;
@@ -107,63 +109,67 @@ export class PageNotFoundComponent implements OnInit {
         }
       }
       ctx.fillStyle = '#C0C0C0';
-      if (this.gameOver)
-        return;
+      if (this.gameOver) return;
       // ADD NEW BOXES
-      let lastBox = this.boxes[this.boxes.length-1];
-      let distance = ((Math.random() * 100) + 1) * 20;
-      if (lastBox.xPos < (600 - lastBox.width - distance)) {
+      let lastBox = this.boxes[this.boxes.length - 1];
+      let distance = (Math.random() * 100 + 1) * 20;
+      if (lastBox.xPos < 600 - lastBox.width - distance) {
         this.boxes.push(new Box());
       }
       ctx.restore();
-      window.requestAnimationFrame(()=>{
+      window.requestAnimationFrame(() => {
         this.draw();
       });
     } else {
       alert('NO CONTEXT FOUND');
     }
   }
-  
+
   init() {
     this.boxes.push(new Box());
-    window.addEventListener("keydown", e=>{
-      this.onKeyDown(e);
-    }, false);
+    window.addEventListener(
+      'keydown',
+      e => {
+        this.onKeyDown(e);
+      },
+      false
+    );
     this.started = true;
     this.draw();
   }
-  
+
   onKeyDown(e: KeyboardEvent) {
-    if (e.keyCode === 40) // keydown
+    if (e.keyCode === 40)
+      // keydown
       this.grp.yPos += this.grp.yPos >= 180 ? 0 : SPEED;
-    else if (e.keyCode === 38) // keyup
+    else if (e.keyCode === 38)
+      // keyup
       this.grp.yPos -= this.grp.yPos <= 115 ? 0 : SPEED;
   }
-  
+
   onCanvasClick() {
     if (!this.isDrawCalled) {
-      window.requestAnimationFrame(()=>{
+      window.requestAnimationFrame(() => {
         this.draw();
       });
       this.isDrawCalled = true;
     }
   }
-
 }
 
 class Box {
-  width = ((Math.random() * 3) + 1) * 20;
-  height = ((Math.random() * 3) + 1) * 20;
+  width = (Math.random() * 3 + 1) * 20;
+  height = (Math.random() * 3 + 1) * 20;
   xPos = 600;
   yPos = 300 - this.height;
   cleared = false;
   touchable = false;
   success = false;
   remove = false;
-};
-class Gripper  {
+}
+class Gripper {
   yPos = 140;
   xPos = 180;
   height = 100;
   width = 10;
-};
+}

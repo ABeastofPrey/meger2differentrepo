@@ -1,1 +1,3 @@
-.wrapper { height: calc(100% - 48px); }
+.wrapper {
+  height: calc(100% - 48px);
+}

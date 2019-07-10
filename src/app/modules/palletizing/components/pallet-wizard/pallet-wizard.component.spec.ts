@@ -8,9 +8,8 @@ describe('PalletWizardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PalletWizardComponent ]
-    })
-    .compileComponents();
+      declarations: [PalletWizardComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

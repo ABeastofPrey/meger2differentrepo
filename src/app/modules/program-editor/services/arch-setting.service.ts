@@ -1,13 +1,15 @@
 import { ArchApi } from './arch-setting.constants';
 import { Injectable } from '@angular/core';
-import { WebsocketService, MCQueryResponse } from '../../../modules/core/services/websocket.service';
+import {
+  WebsocketService,
+  MCQueryResponse,
+} from '../../../modules/core/services/websocket.service';
 import { ArchElement } from '../components/program-settings/arch-setting/arch-setting.component';
-import {ErrorFrame} from '../../core/models/error-frame.model';
+import { ErrorFrame } from '../../core/models/error-frame.model';
 
 @Injectable()
 export class ArchSettingService {
-
-  constructor(private ws: WebsocketService) { }
+  constructor(private ws: WebsocketService) {}
 
   public getInitTable(): Promise<ErrorFrame | Array<ArchElement>> {
     return this.queryWithApi(`${ArchApi.JP_getTable}`);
@@ -26,14 +28,24 @@ export class ArchSettingService {
    * @returns {(Promise<ErrorFrame | Array<ArchElement>>)}
    * @memberof ArchSettingService
    */
-  public setArch(index: number, departOrApproach: 1 | 2, value: number): Promise<ErrorFrame | Array<ArchElement>> {
-    return this.queryWithApi(`${ArchApi.JP_setArch}(${index}, ${departOrApproach}, ${value})`);
+  public setArch(
+    index: number,
+    departOrApproach: 1 | 2,
+    value: number
+  ): Promise<ErrorFrame | Array<ArchElement>> {
+    return this.queryWithApi(
+      `${ArchApi.JP_setArch}(${index}, ${departOrApproach}, ${value})`
+    );
   }
 
-  private queryWithApi(queryStr: string): Promise<ErrorFrame | Array<ArchElement>> {
+  private queryWithApi(
+    queryStr: string
+  ): Promise<ErrorFrame | Array<ArchElement>> {
     return new Promise((resolve, reject) => {
       this.ws.query(queryStr).then((res: MCQueryResponse) => {
-        return (res && res.err) ? reject(res.err) : resolve(res.result && JSON.parse(res.result));
+        return res && res.err
+          ? reject(res.err)
+          : resolve(res.result && JSON.parse(res.result));
       });
     });
   }

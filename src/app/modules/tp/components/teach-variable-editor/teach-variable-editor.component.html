@@ -1,17 +1,23 @@
 <div *ngIf="teach.value">
-  <mat-form-field *ngFor="let val of teach.value; let i = index" floatLabel="never">
-    <span matPrefix style='font-weight: bold;'>{{teach.legend[i]|translate}}:&nbsp;&nbsp;</span>
-    <input *ngIf="teach.selectedTeachVariable.typeStr !== 'STRING'"
-      matInput virtualKeyboard ktype="numeric"
-      [(ngModel)]="teach.value[i].value"
-      (change)="teach.onKeyboardClose()"
-      (onKeyboardClose)="teach.onKeyboardClose()"
-    >
-    <input *ngIf="teach.selectedTeachVariable.typeStr === 'STRING'"
-      matInput virtualKeyboard ktype="text"
-      [(ngModel)]="teach.value[i].value"
-      (change)="teach.onKeyboardClose()"
-      (onKeyboardClose)="teach.onKeyboardClose()"
-    >
-  </mat-form-field>
+	<mat-form-field *ngFor="let val of teach.value; let i = index" floatLabel="never">
+		<span matPrefix style="font-weight: bold;">{{ teach.legend[i] | translate }}:&nbsp;&nbsp;</span>
+		<input
+			*ngIf="teach.selectedTeachVariable.typeStr !== 'STRING'"
+			matInput
+			virtualKeyboard
+			ktype="numeric"
+			[(ngModel)]="teach.value[i].value"
+			(change)="teach.onKeyboardClose()"
+			(onKeyboardClose)="teach.onKeyboardClose()"
+		/>
+		<input
+			*ngIf="teach.selectedTeachVariable.typeStr === 'STRING'"
+			matInput
+			virtualKeyboard
+			ktype="text"
+			[(ngModel)]="teach.value[i].value"
+			(change)="teach.onKeyboardClose()"
+			(onKeyboardClose)="teach.onKeyboardClose()"
+		/>
+	</mat-form-field>
 </div>

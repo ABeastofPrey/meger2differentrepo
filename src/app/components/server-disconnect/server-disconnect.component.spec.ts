@@ -8,9 +8,8 @@ describe('ServerDisconnectComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ServerDisconnectComponent ]
-    })
-    .compileComponents();
+      declarations: [ServerDisconnectComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

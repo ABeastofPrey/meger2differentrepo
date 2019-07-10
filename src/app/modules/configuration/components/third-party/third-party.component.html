@@ -1,23 +1,27 @@
 <div class="wrapper">
-  <div class="header primary-bg mat-elevation-z1">{{'legal.terms'|translate}}</div>
-  <div class="content mat-elevation-z1">
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>ControlStudio+</mat-panel-title>
-          <mat-panel-description>{{'legal.terms'|translate}}</mat-panel-description>
-        </mat-expansion-panel-header>
-        <div class="license">Terms goes here...</div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
-  <div class="header primary-bg mat-elevation-z1">{{'legal.thirdParty'|translate}}</div>
-  <mat-accordion>
-    <mat-expansion-panel *ngFor="let lib of libs">
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{lib.name}}</mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class="license">{{lib.license}}</div>
-    </mat-expansion-panel>
-  </mat-accordion>
+	<div class="header primary-bg mat-elevation-z1">
+		{{ 'legal.terms' | translate }}
+	</div>
+	<div class="content mat-elevation-z1">
+		<mat-accordion>
+			<mat-expansion-panel>
+				<mat-expansion-panel-header>
+					<mat-panel-title>ControlStudio+</mat-panel-title>
+					<mat-panel-description>{{ 'legal.terms' | translate }}</mat-panel-description>
+				</mat-expansion-panel-header>
+				<div class="license-cs" [innerHTML]="license"></div>
+			</mat-expansion-panel>
+		</mat-accordion>
+	</div>
+	<div class="header primary-bg mat-elevation-z1">
+		{{ 'legal.thirdParty' | translate }}
+	</div>
+	<mat-accordion>
+		<mat-expansion-panel *ngFor="let lib of libs">
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ lib.name }}</mat-panel-title>
+			</mat-expansion-panel-header>
+			<div class="license">{{ lib.license }}</div>
+		</mat-expansion-panel>
+	</mat-accordion>
 </div>

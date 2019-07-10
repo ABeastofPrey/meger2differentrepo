@@ -1,10 +1,14 @@
-.wrapper { padding: 16px;}
+.wrapper {
+  padding: 16px;
+}
 h2 {
   font-weight: 500;
   margin: 0;
 }
-h3 { margin: 0}
-.content { 
+h3 {
+  margin: 0;
+}
+.content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -18,13 +22,13 @@ h3 { margin: 0}
   margin-left: 16px;
   width: 75px;
 }
-.app-list thead { 
+.app-list thead {
   font-weight: bold;
   font-size: 13px;
 }
 .app-list table {
   text-align: left;
-  min-width: 200px;
+  min-width: 250px;
 }
 .app-list mat-icon {
   font-size: 18px;
@@ -32,10 +36,19 @@ h3 { margin: 0}
   height: 18px;
   margin-left: 4px;
 }
-.content .mat-radio-button { margin-right: 16px; }
-mat-panel-title, mat-panel-description { flex-basis: 0; }
-.limits td { padding: 8px; }
-.limits mat-form-field { margin-bottom: -16px; }
+.content .mat-radio-button {
+  margin-right: 16px;
+}
+mat-panel-title,
+mat-panel-description {
+  flex-basis: 0;
+}
+.limits td {
+  padding: 8px;
+}
+.limits mat-form-field {
+  margin-bottom: -16px;
+}
 
 .arch-setting-wrapper {
   align-items: stretch;

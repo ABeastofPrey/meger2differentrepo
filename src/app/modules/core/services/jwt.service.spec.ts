@@ -5,7 +5,7 @@ import { JwtService } from './jwt.service';
 describe('JwtService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [JwtService]
+      providers: [JwtService],
     });
   });
 

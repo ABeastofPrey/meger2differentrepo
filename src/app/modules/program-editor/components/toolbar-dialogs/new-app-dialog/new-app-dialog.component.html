@@ -1,14 +1,32 @@
 <div class="mat-typography">
-  <div class="title mat-elevation-z1">
-    <mat-icon>add</mat-icon>&nbsp;&nbsp;{{'projects.toolbar.new_app'|translate}}
-  </div>
-  <div class="name-wrapper">
-    <mat-form-field>
-      <input matInput placeholder="{{'projects.toolbar.app_name'|translate}}" [(ngModel)]="name" (keyup.enter)="create()" virtualKeyboard ktype="text" (onKeyboardClose)="create()">
-    </mat-form-field>
-  </div>
-  <div class="actions">
-    <button mat-button mat-dialog-close>{{'button.cancel'|translate}}</button>
-    <button mat-button color="primary" type="submit" (click)="create()" [disabled]="isValueInvalid()">{{'projects.toolbar.app_create'|translate}}</button>
-  </div>
+	<div class="title mat-elevation-z1">
+		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'projects.toolbar.new_app' | translate }}
+	</div>
+	<div class="name-wrapper">
+		<mat-form-field>
+			<input
+				matInput
+				placeholder="{{ 'projects.toolbar.app_name' | translate }}"
+				[(ngModel)]="name"
+				(keyup.enter)="create()"
+				virtualKeyboard
+				ktype="text"
+				(onKeyboardClose)="create()"
+			/>
+		</mat-form-field>
+	</div>
+	<div class="actions">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button
+			mat-button
+			color="primary"
+			type="submit"
+			(click)="create()"
+			[disabled]="isValueInvalid()"
+		>
+			{{ 'projects.toolbar.app_create' | translate }}
+		</button>
+	</div>
 </div>

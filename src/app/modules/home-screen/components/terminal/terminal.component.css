@@ -1,4 +1,5 @@
-.wrapper, .terminal {
+.wrapper,
+.terminal {
   height: 100%;
   width: 100%;
   overflow: auto;
@@ -6,7 +7,8 @@
 .disabled {
   cursor: not-allowed;
 }
-.terminal div, .terminal input {
+.terminal div,
+.terminal input {
   user-select: text;
   font-family: monospace;
 }
@@ -28,26 +30,27 @@ input {
   bottom: 0;
 }
 .hidden {
-  width: 0!important;
-  height: 0!important;
+  width: 0 !important;
+  height: 0 !important;
 }
-.context-menu { 
+.context-menu {
   position: absolute;
   background: #fff;
   z-index: 6;
 }
-.context-menu mat-icon, .context-menu img {
+.context-menu mat-icon,
+.context-menu img {
   font-size: 18px;
   width: 18px;
   height: 18px;
   margin-right: 8px;
 }
 
-.context-menu .button-text { 
+.context-menu .button-text {
   font-size: 13px;
   font-weight: 400;
 }
-.context-menu button { 
+.context-menu button {
   padding: 0 32px 0 8px;
   display: block;
   width: 100%;
@@ -56,7 +59,9 @@ input {
   display: flex;
   align-items: center;
 }
-.editor { flex: 1; }
+.editor {
+  flex: 1;
+}
 .row {
   flex: 1;
   cursor: text;

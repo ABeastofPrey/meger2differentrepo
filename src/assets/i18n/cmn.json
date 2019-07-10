@@ -81,8 +81,8 @@
   "cut": "剪切",
   "dashboard": {
     "charts": {
-     "2d": "2D图",
-     "3d": "3D图"
+      "2d": "2D图",
+      "3d": "3D图"
     },
     "err_file": "文件未找到",
     "err_move": "错误{{code}}: {{msg}}",
@@ -194,12 +194,7 @@
       "set": "以当前为设置",
       "title": "校准"
     },
-    "create": [
-      "创建工具",
-      "创建基坐标",
-      "创建工件台",
-      "创建工件"
-    ],
+    "create": ["创建工具", "创建基坐标", "创建工件台", "创建工件"],
     "delete": {
       "msg": "不能被撤销.",
       "title": "删除{{name}}?",
@@ -256,8 +251,8 @@
   "home": {
     "axes_max": "最大轴数",
     "axes_real": "实际轴数",
-    "chart_ram": ["已使用内存","空闲内存"],
-    "chart_space": ["已使用空间","空闲空间"],
+    "chart_ram": ["已使用内存", "空闲内存"],
+    "chart_space": ["已使用空间", "空闲空间"],
     "features": "特征",
     "groups": "群组 配置",
     "platform": "平台",
@@ -322,7 +317,7 @@
     "outputWord": "输出 字"
   },
   "interface": {
-   "title": "用户接口"
+    "title": "用户接口"
   },
   "invert": "反转",
   "ios": {
@@ -339,7 +334,7 @@
     }
   },
   "jogScreen": {
-    "menu": ["示教","工具对齐"],
+    "menu": ["示教", "工具对齐"],
     "percision": "精度",
     "settings": "点动设置",
     "speed": "速度",
@@ -789,7 +784,7 @@
     "restoring": "从文件中恢复系统",
     "success": "系统恢复成功!",
     "home": "主页",
-    "insert_chart":"运动看板",
+    "insert_chart": "运动看板",
     "insert_comment": "项目编辑器",
     "3d_rotation": "3D仿真",
     "touch_app": "示教",

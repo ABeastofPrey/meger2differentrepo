@@ -1,84 +1,212 @@
 <div class="flex-full background-image">
-  <mat-grid-list cols="3" rowHeight="fit" style='height: 100%;'>
-    <mat-grid-tile [colspan]="login.isViewer || login.isOperator ? 2 : 1">
-      <mat-card class="jog-screen-card mat-elevation-z3">
-        <mat-card-title class="mat-toolbar mat-primary mat-elevation-z1">
-          <span class="title-text">{{'jogScreen.settings'|translate}}</span>
-        </mat-card-title>
-        <mat-card-content class="jog-parameters">
-          <robot-selector class="jog-parameter" [disabled]="login.isViewer || login.isOperator"></robot-selector>
-          <frame-selector class="jog-parameter" *ngIf="data.isRobotType" [disabled]="login.isViewer || login.isOperator"></frame-selector>
-          <tool-selector class="jog-parameter" *ngIf="data.tools.length > 0 && data.isRobotType" [disabled]="login.isViewer || login.isOperator"></tool-selector>
-          <base-selector class="jog-parameter" *ngIf="data.bases.length > 0 && data.isRobotType" [disabled]="login.isViewer || login.isOperator"></base-selector>
-          <machine-table-selector class="jog-parameter" *ngIf="data.isRobotType" [disabled]="login.isViewer || login.isOperator"></machine-table-selector>
-          <work-piece-selector class="jog-parameter" *ngIf="data.isRobotType" [disabled]="login.isViewer || login.isOperator"></work-piece-selector>
-          <domain-selector class="jog-parameter" [disabled]="login.isViewer || login.isOperator"></domain-selector>
-          <speed-changer class="jog-parameter" [disabled]="login.isViewer || login.isOperator"></speed-changer>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="1">
-      <mat-card class="jog-screen-card mat-elevation-z3" style="position: relative;">
-        <coordinates-display></coordinates-display>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="1" *ngIf="!login.isViewer && !login.isOperator">
-      <mat-card class="jog-screen-card mat-elevation-z3">
-        <mat-card-title
-          class="mat-toolbar mat-primary mat-elevation-z1"
-          [@menuState]="menuTypes[selectedMenuTypeIndex].name">
-          <mat-icon class="card-title-icon">
-            {{menuTypes[selectedMenuTypeIndex].icon}}
-          </mat-icon>
-          <span class="card-title-text">
-            {{menuTypes[selectedMenuTypeIndex].i18}}
-          </span>
-          <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="data.robotType === 'PUMA'">
-            <mat-icon>menu</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu" [overlapTrigger]="false">
-            <button
-              mat-menu-item
-              *ngFor="let mType of menuTypes; let i=index"
-              (click)="onChange(i)">
-              <mat-icon>{{mType.icon}}</mat-icon>
-              <span>{{mType.i18}}</span>
-            </button>
-          </mat-menu>
-        </mat-card-title>
-        <div class="menu-content" [@menuContent]="menuTypes[selectedMenuTypeIndex].i18">
-          <div class="inner-content content-teach">
-            <mat-form-field
-              [style.maxWidth]="(teach.selectedTeachVariable && teach.selectedTeachVariable.isArr) ? '50%' : '100%'">
-              <mat-select placeholder="{{'jogScreen.var'|translate}}" [(ngModel)]="teach.selectedTeachVariable" [disabled]="data.varRefreshInProgress" id="jog_screen_variable">
-                <mat-option *ngIf="this.data.joints.length===0 && this.data.locations.length === 0 && this.data.longs.length === 0 && this.data.doubles.length === 0 && this.data.strings.length === 0" disabled>{{'jogScreen.var_none'|translate}}</mat-option>
-                <mat-optgroup label="{{'joints'|translate}}" *ngIf="this.data.joints.length > 0"><mat-option *ngFor="let data of this.data.joints" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
-                <mat-optgroup label="{{'locations'|translate}}" *ngIf="this.data.locations.length > 0"><mat-option *ngFor="let data of this.data.locations" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
-                <mat-optgroup label="{{'longs'|translate}}" *ngIf="this.data.longs.length > 0"><mat-option *ngFor="let data of this.data.longs" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
-                <mat-optgroup label="{{'doubles'|translate}}" *ngIf="this.data.doubles.length > 0"><mat-option *ngFor="let data of this.data.doubles" [value]="data">{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option></mat-optgroup>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field style="max-width: 45%;" *ngIf="teach.selectedTeachVariable && teach.selectedTeachVariable.isArr">
-              <mat-select placeholder="{{'index'|translate}}" [(ngModel)]="teach.selectedTeachVariableIndex">
-                <mat-option *ngFor="let data of teach.selectedTeachVariable.value; let i=index" [value]="i+1">{{i+1}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <teach-variable-editor></teach-variable-editor>
-            <button mat-raised-button color="primary" (menuOpened)="onTeachMenuOpen(true)" (menuClosed)="onTeachMenuOpen(false)" [matMenuTriggerFor]="teachMenu" class="teach-button" [disabled]="teach.fullName == null || teach.selectedTeachVariable.typeStr === 'STRING' || (data.isRobotType !== teach.selectedTeachVariable.isPosition)"><mat-icon *ngIf="!isTeachMenuOpen">menu</mat-icon><mat-icon *ngIf="isTeachMenuOpen">close</mat-icon></button>
-            <mat-menu #teachMenu="matMenu" [overlapTrigger]="false" class="teach-menu">
-              <button mat-menu-item (click)="teach.teach()">{{'button.teach'|translate}}</button>
-              <button mat-menu-item (click)="$event.stopPropagation()" (mousedown)="teach.move(false)" (mouseup)="teach.stop()" (touchstart)="teach.move(false)" (touchend)="teach.stop()" (mouseout)="teach.stop()">{{'button.move'|translate}}</button>
-              <button mat-menu-item (click)="$event.stopPropagation()" (mousedown)="teach.move(true)" (mouseup)="teach.stop()" (touchstart)="teach.move(true)" (touchend)="teach.stop()" (mouseout)="teach.stop()">{{'button.moves'|translate}}</button>
-            </mat-menu>
-          </div>
-          <div class="inner-content content-align">
-            <p style='text-align: left;'>{{'jogScreen.tool_align'|translate}}</p>
-            <div>
-              <button mat-raised-button color="primary" (click)="$event.stopPropagation()" (mousedown)="align()" (mouseup)="stop()" (touchstart)="align()" (touchend)="stop()">{{'jogScreen.tool_align'|translate}}</button>
-            </div>
-          </div>
-        </div>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+	<mat-grid-list cols="3" rowHeight="fit" style="height: 100%;">
+		<mat-grid-tile [colspan]="login.isViewer || login.isOperator ? 2 : 1">
+			<mat-card class="jog-screen-card mat-elevation-z3">
+				<mat-card-title class="mat-toolbar mat-primary mat-elevation-z1">
+					<span class="title-text">{{ 'jogScreen.settings' | translate }}</span>
+				</mat-card-title>
+				<mat-card-content class="jog-parameters">
+					<robot-selector
+						class="jog-parameter"
+						[disabled]="login.isViewer || login.isOperator"
+					></robot-selector>
+					<frame-selector
+						class="jog-parameter"
+						*ngIf="data.isRobotType"
+						[disabled]="login.isViewer || login.isOperator"
+					></frame-selector>
+					<tool-selector
+						class="jog-parameter"
+						*ngIf="data.tools.length > 0 && data.isRobotType"
+						[disabled]="login.isViewer || login.isOperator"
+					></tool-selector>
+					<base-selector
+						class="jog-parameter"
+						*ngIf="data.bases.length > 0 && data.isRobotType"
+						[disabled]="login.isViewer || login.isOperator"
+					></base-selector>
+					<machine-table-selector
+						class="jog-parameter"
+						*ngIf="data.isRobotType"
+						[disabled]="login.isViewer || login.isOperator"
+					></machine-table-selector>
+					<work-piece-selector
+						class="jog-parameter"
+						*ngIf="data.isRobotType"
+						[disabled]="login.isViewer || login.isOperator"
+					></work-piece-selector>
+					<domain-selector
+						class="jog-parameter"
+						[disabled]="login.isViewer || login.isOperator"
+					></domain-selector>
+					<speed-changer
+						class="jog-parameter"
+						[disabled]="login.isViewer || login.isOperator"
+					></speed-changer>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
+		<mat-grid-tile colspan="1">
+			<mat-card class="jog-screen-card mat-elevation-z3" style="position: relative;">
+				<coordinates-display></coordinates-display>
+			</mat-card>
+		</mat-grid-tile>
+		<mat-grid-tile colspan="1" *ngIf="!login.isViewer && !login.isOperator">
+			<mat-card class="jog-screen-card mat-elevation-z3">
+				<mat-card-title
+					class="mat-toolbar mat-primary mat-elevation-z1"
+					[@menuState]="menuTypes[selectedMenuTypeIndex].name"
+				>
+					<mat-icon class="card-title-icon">
+						{{ menuTypes[selectedMenuTypeIndex].icon }}
+					</mat-icon>
+					<span class="card-title-text">
+						{{ menuTypes[selectedMenuTypeIndex].i18 }}
+					</span>
+					<button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="data.robotType === 'PUMA'">
+						<mat-icon>menu</mat-icon>
+					</button>
+					<mat-menu #menu="matMenu" [overlapTrigger]="false">
+						<button
+							mat-menu-item
+							*ngFor="let mType of menuTypes; let i = index"
+							(click)="onChange(i)"
+						>
+							<mat-icon>{{ mType.icon }}</mat-icon>
+							<span>{{ mType.i18 }}</span>
+						</button>
+					</mat-menu>
+				</mat-card-title>
+				<div class="menu-content" [@menuContent]="menuTypes[selectedMenuTypeIndex].i18">
+					<div class="inner-content content-teach">
+						<mat-form-field
+							[style.maxWidth]="
+								teach.selectedTeachVariable && teach.selectedTeachVariable.isArr ? '50%' : '100%'
+							"
+						>
+							<mat-select
+								placeholder="{{ 'jogScreen.var' | translate }}"
+								[(ngModel)]="teach.selectedTeachVariable"
+								[disabled]="data.varRefreshInProgress"
+								id="jog_screen_variable"
+							>
+								<mat-option
+									*ngIf="
+										this.data.joints.length === 0 &&
+										this.data.locations.length === 0 &&
+										this.data.longs.length === 0 &&
+										this.data.doubles.length === 0 &&
+										this.data.strings.length === 0
+									"
+									disabled
+									>{{ 'jogScreen.var_none' | translate }}</mat-option
+								>
+								<mat-optgroup label="{{ 'joints' | translate }}" *ngIf="this.data.joints.length > 0"
+									><mat-option *ngFor="let data of this.data.joints" [value]="data"
+										>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
+									></mat-optgroup
+								>
+								<mat-optgroup
+									label="{{ 'locations' | translate }}"
+									*ngIf="this.data.locations.length > 0"
+									><mat-option *ngFor="let data of this.data.locations" [value]="data"
+										>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
+									></mat-optgroup
+								>
+								<mat-optgroup label="{{ 'longs' | translate }}" *ngIf="this.data.longs.length > 0"
+									><mat-option *ngFor="let data of this.data.longs" [value]="data"
+										>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
+									></mat-optgroup
+								>
+								<mat-optgroup
+									label="{{ 'doubles' | translate }}"
+									*ngIf="this.data.doubles.length > 0"
+									><mat-option *ngFor="let data of this.data.doubles" [value]="data"
+										>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
+									></mat-optgroup
+								>
+							</mat-select>
+						</mat-form-field>
+						<mat-form-field
+							style="max-width: 45%;"
+							*ngIf="teach.selectedTeachVariable && teach.selectedTeachVariable.isArr"
+						>
+							<mat-select
+								placeholder="{{ 'index' | translate }}"
+								[(ngModel)]="teach.selectedTeachVariableIndex"
+							>
+								<mat-option
+									*ngFor="let data of teach.selectedTeachVariable.value; let i = index"
+									[value]="i + 1"
+									>{{ i + 1 }}</mat-option
+								>
+							</mat-select>
+						</mat-form-field>
+						<teach-variable-editor></teach-variable-editor>
+						<button
+							mat-raised-button
+							color="primary"
+							(menuOpened)="onTeachMenuOpen(true)"
+							(menuClosed)="onTeachMenuOpen(false)"
+							[matMenuTriggerFor]="teachMenu"
+							class="teach-button"
+							[disabled]="
+								teach.fullName == null ||
+								teach.selectedTeachVariable.typeStr === 'STRING' ||
+								data.isRobotType !== teach.selectedTeachVariable.isPosition
+							"
+						>
+							<mat-icon *ngIf="!isTeachMenuOpen">menu</mat-icon
+							><mat-icon *ngIf="isTeachMenuOpen">close</mat-icon>
+						</button>
+						<mat-menu #teachMenu="matMenu" [overlapTrigger]="false" class="teach-menu">
+							<button mat-menu-item (click)="teach.teach()">
+								{{ 'button.teach' | translate }}
+							</button>
+							<button
+								mat-menu-item
+								(click)="$event.stopPropagation()"
+								(mousedown)="teach.move(false)"
+								(mouseup)="teach.stop()"
+								(touchstart)="teach.move(false)"
+								(touchend)="teach.stop()"
+								(mouseout)="teach.stop()"
+							>
+								{{ 'button.move' | translate }}
+							</button>
+							<button
+								mat-menu-item
+								(click)="$event.stopPropagation()"
+								(mousedown)="teach.move(true)"
+								(mouseup)="teach.stop()"
+								(touchstart)="teach.move(true)"
+								(touchend)="teach.stop()"
+								(mouseout)="teach.stop()"
+							>
+								{{ 'button.moves' | translate }}
+							</button>
+						</mat-menu>
+					</div>
+					<div class="inner-content content-align">
+						<p style="text-align: left;">
+							{{ 'jogScreen.tool_align' | translate }}
+						</p>
+						<div>
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="$event.stopPropagation()"
+								(mousedown)="align()"
+								(mouseup)="stop()"
+								(touchstart)="align()"
+								(touchend)="stop()"
+							>
+								{{ 'jogScreen.tool_align' | translate }}
+							</button>
+						</div>
+					</div>
+				</div>
+			</mat-card>
+		</mat-grid-tile>
+	</mat-grid-list>
 </div>

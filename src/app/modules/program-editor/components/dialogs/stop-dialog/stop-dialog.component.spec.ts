@@ -8,9 +8,8 @@ describe('StopDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StopDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [StopDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

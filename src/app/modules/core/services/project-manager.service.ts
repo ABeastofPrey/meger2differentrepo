@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import {MCProject, Limit} from '../models/project/mc-project.model';
-import {WebsocketService, MCQueryResponse} from './websocket.service';
-import {BehaviorSubject} from 'rxjs';
-import {EventEmitter} from '@angular/core';
-import {DataService} from './data.service';
-import {MatSnackBar} from '@angular/material';
-import {ScreenManagerService} from './screen-manager.service';
-import {TranslateService} from '@ngx-translate/core';
-import {SelectionModel} from '@angular/cdk/collections';
-import {TreeNode} from '../../file-tree/components/mc-file-tree/mc-file-tree.component';
-import {TpStatService} from './tp-stat.service';
+import { MCProject, Limit } from '../models/project/mc-project.model';
+import { WebsocketService, MCQueryResponse } from './websocket.service';
+import { BehaviorSubject } from 'rxjs';
+import { EventEmitter } from '@angular/core';
+import { DataService } from './data.service';
+import { MatSnackBar } from '@angular/material';
+import { ScreenManagerService } from './screen-manager.service';
+import { TranslateService } from '@ngx-translate/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import { TreeNode } from '../../file-tree/components/mc-file-tree/mc-file-tree.component';
+import { TpStatService } from './tp-stat.service';
 
 /*
  * THIS SERVICE MANAGES THE PROJECTS IN THE PROJECT EDITOR, BUT ALSO MANAGES
@@ -18,19 +18,18 @@ import {TpStatService} from './tp-stat.service';
  */
 @Injectable()
 export class ProjectManagerService {
-  
   currProject: BehaviorSubject<MCProject> = new BehaviorSubject(null);
   onExpand: EventEmitter<string> = new EventEmitter();
-  onExpandLib: EventEmitter<{app:string,lib:string}> = new EventEmitter();
+  onExpandLib: EventEmitter<{ app: string; lib: string }> = new EventEmitter();
   fileRefreshNeeded: EventEmitter<any> = new EventEmitter();
   onAppStatusChange: BehaviorSubject<any> = new BehaviorSubject(null);
   activeProject: boolean = false; // TRUE IF ONE APP IS LOADED AND NOT KILLED
   isLoading: boolean = false;
   checklistSelection = new SelectionModel<TreeNode>(true /* multiple */);
-  
+
   private interval: any;
   private oldStat: string = null;
-  
+
   private words: any;
 
   constructor(
@@ -41,10 +40,10 @@ export class ProjectManagerService {
     private trn: TranslateService,
     private stat: TpStatService
   ) {
-    this.trn.get('changeOK').subscribe(words=>{
+    this.trn.get('changeOK').subscribe(words => {
       this.words = words;
     });
-    this.data.dataLoaded.subscribe(ret=>{
+    this.data.dataLoaded.subscribe(ret => {
       if (ret) {
         this.getCurrentProject();
       } else {
@@ -52,144 +51,164 @@ export class ProjectManagerService {
         this.currProject.next(null);
       }
     });
-    this.ws.isConnected.subscribe(stat=>{
+    this.ws.isConnected.subscribe(stat => {
       if (!stat) {
         this.reset();
       }
     });
-    this.stat.onlineStatus.subscribe(stat=>{
+    this.stat.onlineStatus.subscribe(stat => {
       if (!stat) {
         this.reset();
       }
     });
   }
-  
+
   reset() {
     this.stopStatusRefresh();
     this.currProject.next(null);
     this.oldStat = null;
   }
-  
+
   stopStatusRefresh() {
-    if (this.interval)
-      clearInterval(this.interval);
+    if (this.interval) clearInterval(this.interval);
   }
-  
+
   getProjectStatus() {
-    if (this.interval)
-      clearInterval(this.interval);
+    if (this.interval) clearInterval(this.interval);
     this.activeProject = false;
     let waiting: boolean = false;
-    this.interval = setInterval(()=>{
-      if (waiting)
-        return;
+    this.interval = setInterval(() => {
+      if (waiting) return;
       if (this.currProject.value) {
         waiting = true;
-        return this.ws.query('cyc3,' + this.currProject.value.name)
-        .then((ret: MCQueryResponse)=>{
-          waiting = false;
-          if (this.oldStat === ret.result)
-            return;
-          this.oldStat = ret.result;
-          if (ret.result.length === 0) {
-            this.activeProject = false;
-            for (let app of this.currProject.value.apps) {
-              app.status = -1;
+        return this.ws
+          .query('cyc3,' + this.currProject.value.name)
+          .then((ret: MCQueryResponse) => {
+            waiting = false;
+            if (this.oldStat === ret.result) return;
+            this.oldStat = ret.result;
+            if (ret.result.length === 0) {
+              this.activeProject = false;
+              for (let app of this.currProject.value.apps) {
+                app.status = -1;
+              }
+              this.onAppStatusChange.next(null);
+              return;
             }
-            this.onAppStatusChange.next(null);
-            return;
-          }
-          let status = ret.result.split(',');
-          let i=0;
-          let activeProject = false;
-          while (status.length > 0 || i < this.currProject.value.apps.length) {
-            if (this.currProject.value.apps[i] && !this.currProject.value.apps[i].active) {
+            let status = ret.result.split(',');
+            let i = 0;
+            let activeProject = false;
+            while (
+              status.length > 0 ||
+              i < this.currProject.value.apps.length
+            ) {
+              if (
+                this.currProject.value.apps[i] &&
+                !this.currProject.value.apps[i].active
+              ) {
+                i++;
+                continue;
+              }
+              const code = Number(status.shift());
+              if (this.currProject.value.apps[i])
+                this.currProject.value.apps[i].status = code;
+              if (code !== -1) activeProject = true;
               i++;
-              continue;
             }
-            const code = Number(status.shift());
-            if (this.currProject.value.apps[i])
-              this.currProject.value.apps[i].status = code;
-            if (code !== -1)
-              activeProject = true;
-            i++;
-          }
-          this.activeProject = activeProject;
-          if (this.activeProject)
-            this.mgr.closeControls();
-          this.onAppStatusChange.next(null);
-        });
+            this.activeProject = activeProject;
+            if (this.activeProject) this.mgr.closeControls();
+            this.onAppStatusChange.next(null);
+          });
       } else {
         clearInterval(this.interval);
       }
-    },200);
+    }, 200);
   }
-  
-  
+
   /* Refreshes the app list and lib list for the given project.
    *  Params: MCPRoject   - project to refresh
    *          existing  - TRUE if refresh is done for an existing project
    */
-  refreshAppList(proj: MCProject, existing: boolean) : Promise<any> {
+  refreshAppList(proj: MCProject, existing: boolean): Promise<any> {
     const projName = proj.name;
     if (existing) {
       this.isLoading = true;
       this.stopStatusRefresh();
     }
-    return this.ws.query('?prj_get_app_list("' + projName + '")')
-    .then((ret:MCQueryResponse)=>{
-      proj.initAppsFromString(ret.result);
-      let promises : Promise<any>[] = [];
-      const cmd = '?prj_get_app_libraries_list("' + projName + '","';
-      for (let app of proj.apps) {
-        promises.push(this.ws.query(cmd + app.name + '")'));
-      }
-      return Promise.all(promises);
-    }).then((ret:MCQueryResponse[])=>{
-      for (let i = 0; i < proj.apps.length; i++) {
-        if (ret[i].result.length > 0) {
-          proj.apps[i].libs = ret[i].result.split(',');
+    return this.ws
+      .query('?prj_get_app_list("' + projName + '")')
+      .then((ret: MCQueryResponse) => {
+        proj.initAppsFromString(ret.result);
+        let promises: Promise<any>[] = [];
+        const cmd = '?prj_get_app_libraries_list("' + projName + '","';
+        for (let app of proj.apps) {
+          promises.push(this.ws.query(cmd + app.name + '")'));
         }
-      }
-      return this.refreshAppIds(proj);
-    }).then(()=>{
-      if (existing) {
-        this.getProjectStatus(); // RESTART PROJECT STATUS QUERY
-        this.isLoading = false;
-        this.currProject.next(proj);
-      }
-    });
-  }
-  
-  getCurrentProject() : Promise<any> {
-    return this.ws.query('?prj_get_current_project').then((ret:MCQueryResponse)=>{
-      if (ret.err || !this.stat.onlineStatus.value)
-        return Promise.resolve(null);
-      this.isLoading = true;
-      const projName = ret.result;
-      let proj = new MCProject(projName);
-      return this.refreshAppList(proj, false).then(()=>{
-        return this.loadProgramSettings(proj);
-      }).then(()=>{
-        this.isLoading = false;
-        this.currProject.next(proj);
+        return Promise.all(promises);
+      })
+      .then((ret: MCQueryResponse[]) => {
+        for (let i = 0; i < proj.apps.length; i++) {
+          if (ret[i].result.length > 0) {
+            proj.apps[i].libs = ret[i].result.split(',');
+          }
+        }
+        return this.refreshAppIds(proj);
+      })
+      .then(() => {
+        if (existing) {
+          this.getProjectStatus(); // RESTART PROJECT STATUS QUERY
+          this.isLoading = false;
+          this.currProject.next(proj);
+        }
       });
-    });
   }
-  
+
+  getCurrentProject(): Promise<any> {
+    return this.ws
+      .query('?prj_get_current_project')
+      .then((ret: MCQueryResponse) => {
+        if (ret.err || !this.stat.onlineStatus.value)
+          return Promise.resolve(null);
+        this.isLoading = true;
+        const projName = ret.result;
+        let proj = new MCProject(projName);
+        return this.refreshAppList(proj, false)
+          .then(() => {
+            return this.loadProgramSettings(proj);
+          })
+          .then(() => {
+            this.isLoading = false;
+            this.currProject.next(proj);
+          });
+      });
+  }
+
   private refreshAppIds(proj: MCProject): Promise<any> {
     let promises: Promise<any>[] = [];
     for (let app of proj.apps) {
       promises.push(this.ws.query('?TP_GET_APP_ID("' + app.name + '")'));
+      promises.push(this.ws.query('?PRJ_GET_APP_DESCRIPTION("' + proj.name + '","' + app.name + '")'));
     }
-    return Promise.all(promises).then((results:MCQueryResponse[])=>{
-      for (let i = 0; i < results.length; i++) {
-        proj.apps[i].id = Number(results[i].result);
+    return Promise.all(promises).then((results: MCQueryResponse[]) => {
+      for (let i = 0; i < results.length; i+=2) {
+        proj.apps[i/2].id = Number(results[i].result);
+        proj.apps[i/2].desc = results[i+1].result;
       }
     });
   }
-  
-  private loadProgramSettings(proj: MCProject) : Promise<any> {
+
+  toggleAutoStart() {
+    const prj = this.currProject.value;
+    const newVal = prj.settings.autoStart ? 0 : 1;
+    const cmd = '?PRJ_SET_AUTO_START("' + prj.name + '",' + newVal + ')';
+    this.ws.query(cmd).then((ret: MCQueryResponse) => {
+      if (ret.result === '0') {
+        prj.settings.autoStart = !prj.settings.autoStart;
+      }
+    });
+  }
+
+  private loadProgramSettings(proj: MCProject): Promise<any> {
     let promises: Promise<any>[] = [
       this.ws.query('?TP_GET_PROJECT_PARAMETER("vcruise","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("vtran","")'),
@@ -199,142 +218,159 @@ export class ProjectManagerService {
       this.ws.query('?TP_GET_PROJECT_PARAMETER("machinetable","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("workpiece","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("MOTIONOVERLAP","")'),
-      this.ws.query('?TP_GET_PROJECT_VRATE')
+      this.ws.query('?TP_GET_PROJECT_VRATE'),
+      this.ws.query('?PRJ_GET_AUTO_START("' + proj.name + '")'),
     ];
-    return Promise.all(promises).then((results:MCQueryResponse[])=>{
-      if (results[0].err === null && results[0].result.length > 0) {
-        let n = Number(results[0].result);
-        if (!isNaN(n))
-          proj.settings.vcruise = n;
-      }
-      if (results[1].err === null && results[1].result.length > 0) {
-        let n = Number(results[1].result);
-        if (!isNaN(n))
-          proj.settings.vtran = n;
-      }
-      if (results[2].err === null && results[2].result.length > 0) {
-        let n = Number(results[2].result);
-        if (!isNaN(n))
-          proj.settings.blendingMethod = n;
-      }
-      if (results[3].err === null && results[3].result.length > 0) {
-        proj.settings.tool = results[3].result;
-      }
-      if (results[4].err === null && results[4].result.length > 0) {
-        proj.settings.base = results[4].result;
-      }
-      if (results[5].err === null && results[5].result.length > 0) {
-        proj.settings.mtable = results[5].result;
-      }
-      if (results[6].err === null && results[6].result.length > 0) {
-        proj.settings.wpiece = results[6].result;
-      }
-      proj.settings.overlap = results[7].result === '1';
-      proj.settings.vrate = Number(results[8].result);
-      let posArr : Limit[] = [];
-      let promises : Promise<any>[] = [];
-      for (let j = 1; j <= this.data.locationDescriptions.length; j++) {
-        const unit = (j === 3 && this.data.robotType === 'SCARA') ? 'mm' : 'deg';
-        posArr.push(new Limit('P',unit));
-        promises.push(this.ws.query('?TP_GET_PROJECT_PARAMETER("PMIN","'+j+'")'));
-        promises.push(this.ws.query('?TP_GET_PROJECT_PARAMETER("PMAX","'+j+'")'));
-      }
-      proj.settings.limits.position = posArr;
-      return Promise.all(promises);
-    }).then((ret: MCQueryResponse[])=>{
-      for (let j = 0; j < ret.length; j++) {
-        const i = Math.floor(j/2);
-        if (j%2 === 0)
-          proj.settings.limits.position[i].min = Number(ret[j].result);
-        else
-          proj.settings.limits.position[i].max = Number(ret[j].result);
-      }
-      const promises = [
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","BASE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","BASE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","BASE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","BASE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","BASE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","BASE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","TOOL")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","TOOL")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","TOOL")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","TOOL")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","TOOL")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","TOOL")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","WORKPIECE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","WORKPIECE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","WORKPIECE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","WORKPIECE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","WORKPIECE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","WORKPIECE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","MACHINETABLE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","MACHINETABLE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","MACHINETABLE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","MACHINETABLE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","MACHINETABLE")'),
-        this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","MACHINETABLE")')
-      ];
-      return Promise.all(promises).then((ret:MCQueryResponse[])=>{
-        // WORLD
-        proj.settings.limits.world[0].min = Number(ret[0].result);
-        proj.settings.limits.world[0].max = Number(ret[1].result);
-        proj.settings.limits.world[1].min = Number(ret[2].result);
-        proj.settings.limits.world[1].max = Number(ret[3].result);
-        proj.settings.limits.world[2].min = Number(ret[4].result);
-        proj.settings.limits.world[2].max = Number(ret[5].result);
-        // BASE
-        proj.settings.limits.base[0].min = Number(ret[6].result);
-        proj.settings.limits.base[0].max = Number(ret[7].result);
-        proj.settings.limits.base[1].min = Number(ret[8].result);
-        proj.settings.limits.base[1].max = Number(ret[9].result);
-        proj.settings.limits.base[2].min = Number(ret[10].result);
-        proj.settings.limits.base[2].max = Number(ret[11].result);
-        // TOOL
-        proj.settings.limits.tool[0].min = Number(ret[12].result);
-        proj.settings.limits.tool[0].max = Number(ret[13].result);
-        proj.settings.limits.tool[1].min = Number(ret[14].result);
-        proj.settings.limits.tool[1].max = Number(ret[15].result);
-        proj.settings.limits.tool[2].min = Number(ret[16].result);
-        proj.settings.limits.tool[2].max = Number(ret[17].result);
-        // WORKPIECE
-        proj.settings.limits.wp[0].min = Number(ret[18].result);
-        proj.settings.limits.wp[0].max = Number(ret[19].result);
-        proj.settings.limits.wp[1].min = Number(ret[20].result);
-        proj.settings.limits.wp[1].max = Number(ret[21].result);
-        proj.settings.limits.wp[2].min = Number(ret[22].result);
-        proj.settings.limits.wp[2].max = Number(ret[23].result);
-        // MACHINETABLE
-        proj.settings.limits.mt[0].min = Number(ret[24].result);
-        proj.settings.limits.mt[0].max = Number(ret[25].result);
-        proj.settings.limits.mt[1].min = Number(ret[26].result);
-        proj.settings.limits.mt[1].max = Number(ret[27].result);
-        proj.settings.limits.mt[2].min = Number(ret[28].result);
-        proj.settings.limits.mt[2].max = Number(ret[29].result);
+    return Promise.all(promises)
+      .then((results: MCQueryResponse[]) => {
+        if (results[0].err === null && results[0].result.length > 0) {
+          let n = Number(results[0].result);
+          if (!isNaN(n)) proj.settings.vcruise = n;
+        }
+        if (results[1].err === null && results[1].result.length > 0) {
+          let n = Number(results[1].result);
+          if (!isNaN(n)) proj.settings.vtran = n;
+        }
+        if (results[2].err === null && results[2].result.length > 0) {
+          let n = Number(results[2].result);
+          if (!isNaN(n)) proj.settings.blendingMethod = n;
+        }
+        if (results[3].err === null && results[3].result.length > 0) {
+          proj.settings.tool = results[3].result;
+        }
+        if (results[4].err === null && results[4].result.length > 0) {
+          proj.settings.base = results[4].result;
+        }
+        if (results[5].err === null && results[5].result.length > 0) {
+          proj.settings.mtable = results[5].result;
+        }
+        if (results[6].err === null && results[6].result.length > 0) {
+          proj.settings.wpiece = results[6].result;
+        }
+        proj.settings.overlap = results[7].result === '1';
+        proj.settings.vrate = Number(results[8].result);
+        proj.settings.autoStart = results[9].result === '1';
+        let posArr: Limit[] = [];
+        let promises: Promise<any>[] = [];
+        for (let j = 1; j <= this.data.locationDescriptions.length; j++) {
+          const unit =
+            j === 3 && this.data.robotType === 'SCARA' ? 'mm' : 'deg';
+          posArr.push(new Limit('P', unit));
+          promises.push(
+            this.ws.query('?TP_GET_PROJECT_PARAMETER("PMIN","' + j + '")')
+          );
+          promises.push(
+            this.ws.query('?TP_GET_PROJECT_PARAMETER("PMAX","' + j + '")')
+          );
+        }
+        proj.settings.limits.position = posArr;
+        return Promise.all(promises);
+      })
+      .then((ret: MCQueryResponse[]) => {
+        for (let j = 0; j < ret.length; j++) {
+          const i = Math.floor(j / 2);
+          if (j % 2 === 0)
+            proj.settings.limits.position[i].min = Number(ret[j].result);
+          else proj.settings.limits.position[i].max = Number(ret[j].result);
+        }
+        const promises = [
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","BASE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","BASE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","BASE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","BASE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","BASE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","BASE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","TOOL")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","TOOL")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","TOOL")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","TOOL")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","TOOL")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","TOOL")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","WORKPIECE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","WORKPIECE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","WORKPIECE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","WORKPIECE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","WORKPIECE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","WORKPIECE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMIN","MACHINETABLE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("XMAX","MACHINETABLE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMIN","MACHINETABLE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("YMAX","MACHINETABLE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMIN","MACHINETABLE")'),
+          this.ws.query('?TP_GET_PROJECT_PARAMETER("ZMAX","MACHINETABLE")'),
+        ];
+        return Promise.all(promises).then((ret: MCQueryResponse[]) => {
+          // WORLD
+          proj.settings.limits.world[0].min = Number(ret[0].result);
+          proj.settings.limits.world[0].max = Number(ret[1].result);
+          proj.settings.limits.world[1].min = Number(ret[2].result);
+          proj.settings.limits.world[1].max = Number(ret[3].result);
+          proj.settings.limits.world[2].min = Number(ret[4].result);
+          proj.settings.limits.world[2].max = Number(ret[5].result);
+          // BASE
+          proj.settings.limits.base[0].min = Number(ret[6].result);
+          proj.settings.limits.base[0].max = Number(ret[7].result);
+          proj.settings.limits.base[1].min = Number(ret[8].result);
+          proj.settings.limits.base[1].max = Number(ret[9].result);
+          proj.settings.limits.base[2].min = Number(ret[10].result);
+          proj.settings.limits.base[2].max = Number(ret[11].result);
+          // TOOL
+          proj.settings.limits.tool[0].min = Number(ret[12].result);
+          proj.settings.limits.tool[0].max = Number(ret[13].result);
+          proj.settings.limits.tool[1].min = Number(ret[14].result);
+          proj.settings.limits.tool[1].max = Number(ret[15].result);
+          proj.settings.limits.tool[2].min = Number(ret[16].result);
+          proj.settings.limits.tool[2].max = Number(ret[17].result);
+          // WORKPIECE
+          proj.settings.limits.wp[0].min = Number(ret[18].result);
+          proj.settings.limits.wp[0].max = Number(ret[19].result);
+          proj.settings.limits.wp[1].min = Number(ret[20].result);
+          proj.settings.limits.wp[1].max = Number(ret[21].result);
+          proj.settings.limits.wp[2].min = Number(ret[22].result);
+          proj.settings.limits.wp[2].max = Number(ret[23].result);
+          // MACHINETABLE
+          proj.settings.limits.mt[0].min = Number(ret[24].result);
+          proj.settings.limits.mt[0].max = Number(ret[25].result);
+          proj.settings.limits.mt[1].min = Number(ret[26].result);
+          proj.settings.limits.mt[1].max = Number(ret[27].result);
+          proj.settings.limits.mt[2].min = Number(ret[28].result);
+          proj.settings.limits.mt[2].max = Number(ret[29].result);
+        });
       });
-    });
   }
-  
-  onLimitChanged(name:string,e:Event,paramType:string,prevValue:number,limit:Limit) {
+
+  onLimitChanged(
+    name: string,
+    e: Event,
+    paramType: string,
+    prevValue: number,
+    limit: Limit
+  ) {
     const target: any = e.target;
-    const cmd = '?TP_SET_PROJECT_PARAMETER("' + name + '","' + paramType + '","' +
-        target.value + '")';
-    this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+    const cmd =
+      '?TP_SET_PROJECT_PARAMETER("' +
+      name +
+      '","' +
+      paramType +
+      '","' +
+      target.value +
+      '")';
+    this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result === '0') {
-        this.snack.open(this.words,'',{duration:1500});
-        this.updateModel(name,limit,target.value);
+        this.snack.open(this.words, '', { duration: 1500 });
+        this.updateModel(name, limit, target.value);
       } else {
         target.value = prevValue;
       }
     });
   }
-  
+
   private updateModel(name: string, limit: Limit, newVal: number) {
     if (name.endsWith('min')) {
       limit.min = newVal;
@@ -342,8 +378,8 @@ export class ProjectManagerService {
       limit.max = newVal;
     }
   }
-  
-  onProgramSettingChanged(setting:string) {
+
+  onProgramSettingChanged(setting: string) {
     let cmd = '?TP_SET_PROJECT_PARAMETER(';
     const settings = this.currProject.value.settings;
     switch (setting) {
@@ -375,8 +411,8 @@ export class ProjectManagerService {
       default:
         return;
     }
-    this.ws.query(cmd).then(()=>{
-      this.snack.open(this.words,'',{duration:1500});
+    this.ws.query(cmd).then(() => {
+      this.snack.open(this.words, '', { duration: 1500 });
       switch (setting) {
         case 'tool':
           this.data.refreshTools();

@@ -12,13 +12,13 @@ export interface Platform {
 export const Kuka: Platform = {
   name: 'kuka',
   logo: 'kuka.png',
-  spinner: 'kuka-spinner.gif' // Must be 64 by 64 px
+  spinner: 'kuka-spinner.gif', // Must be 64 by 64 px
 };
 
 export const Servotronix: Platform = {
   name: 'stx',
   logo: 'stx.png',
-  spinner: 'logo_only.gif' // Must be 64 by 64 px
+  spinner: 'logo_only.gif', // Must be 64 by 64 px
 };
 
 export const Platforms = {
@@ -29,12 +29,11 @@ export const Platforms = {
 export const environment = {
   production: false,
   appName: 'ControlStudio+',
-  api_url: 'http://10.4.20.31:1207',
-  ip: '10.4.20.31',
+  api_url: 'http://10.4.20.45:1207',
+  ip: '10.4.20.45',
   tp_ver: '1.3.1.0',
-  gui_ver: '1.1.2',
-  compatible_webserver_ver: '3.1.2',
+  gui_ver: '1.1.3-dev',
+  compatible_webserver_ver: '3.1.4',
   platform: Platforms.Kuka,
-  platforms: Platforms
+  platforms: Platforms,
 };
-

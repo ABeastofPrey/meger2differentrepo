@@ -1,0 +1,27 @@
+.wrapper {
+  margin: -24px;
+  background: #eee;
+}
+.content {
+  padding: 16px;
+}
+.license {
+  max-height: 500px;
+  overflow: auto;
+  margin-bottom: 16px;
+  font-family: monospace;
+  font-size: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+  background: #fff;
+}
+button {
+  margin-right: 16px;
+}
+::ng-deep .license .center {
+  text-align: center;
+}
+::ng-deep .license .bold {
+  font-weight: bold;
+  font-size: 18px;
+}

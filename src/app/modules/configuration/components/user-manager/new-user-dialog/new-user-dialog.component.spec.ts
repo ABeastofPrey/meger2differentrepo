@@ -8,9 +8,8 @@ describe('NewUserDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewUserDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [NewUserDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

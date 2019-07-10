@@ -8,9 +8,8 @@ describe('PalletLevelDesignerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PalletLevelDesignerComponent ]
-    })
-    .compileComponents();
+      declarations: [PalletLevelDesignerComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

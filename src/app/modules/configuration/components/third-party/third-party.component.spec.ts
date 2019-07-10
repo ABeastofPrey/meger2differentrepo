@@ -8,9 +8,8 @@ describe('ThirdPartyComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ThirdPartyComponent ]
-    })
-    .compileComponents();
+      declarations: [ThirdPartyComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

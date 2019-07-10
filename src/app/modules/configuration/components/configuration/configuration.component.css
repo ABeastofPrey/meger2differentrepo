@@ -5,8 +5,12 @@
   height: 100%;
   overflow: hidden;
 }
-.mat-icon { margin-right: 8px; }
-.mat-tab-link { min-width: auto; }
+.mat-icon {
+  margin-right: 8px;
+}
+.mat-tab-link {
+  min-width: auto;
+}
 ::ng-deep router-outlet.configuration ~ * {
   overflow: auto;
 }
