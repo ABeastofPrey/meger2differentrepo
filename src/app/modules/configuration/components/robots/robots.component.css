@@ -14,7 +14,7 @@
 mat-card {
   margin-bottom: 16px;
 }
-.selected {
+.selected-robot {
   line-height: 2;
 }
 .btn-change {

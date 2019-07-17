@@ -1,3 +1,4 @@
+import { environment } from './../../../../../environments/environment';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LoginService } from '../../../../modules/core/services/login.service';
 import {
@@ -11,7 +12,7 @@ import { WebsocketService } from '../../../../modules/core/services/websocket.se
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
-import { MCQueryResponse } from '../../../core';
+import { MCQueryResponse, DataService } from '../../../core';
 import { FactoryRestoreComponent } from '../factory-restore/factory-restore.component';
 
 @Component({
@@ -20,6 +21,32 @@ import { FactoryRestoreComponent } from '../factory-restore/factory-restore.comp
   styleUrls: ['./apps.component.css'],
 })
 export class AppsComponent implements OnInit {
+  /**
+   * The key to store the upgrade version in the local storage.
+   */
+  private readonly OSVersion: string = 'osVersion';
+  /**
+   * The key to store the gui version in the local storage.
+   */
+  private readonly GUIVersion: string = 'guiVersion';
+  /**
+   * The key to store the web server version in the local storage.
+   */
+  private readonly WebServerVersion: string = 'webServerVersion';
+  /**
+   * The key to store the softMC version in the local storage.
+   */
+  private readonly SoftMCVersion: string = 'softMCVersion';
+  /**
+   * The key to store the library version in the local storage.
+   */
+  private readonly LibraryVersion: string = 'libraryVersion';
+
+  /**
+   * The query to get the os upgrade version.
+   */
+  private readonly OSVersionQuery: string = '?vi_getreleaseversion';
+
   @ViewChild('upload', { static: false }) uploadInput: ElementRef;
 
   private words: any;
@@ -31,7 +58,8 @@ export class AppsComponent implements OnInit {
     private snack: MatSnackBar,
     private ws: WebsocketService,
     private trn: TranslateService,
-    public utils: UtilsService
+    public utils: UtilsService,
+    public data: DataService
   ) {
     this.trn.get('apps').subscribe(words => {
       this.words = words;
@@ -84,8 +112,28 @@ export class AppsComponent implements OnInit {
     });
   }
 
+  /**
+   * Store the version information before OS upgrade.
+   */
+  private storeVersionInfo() {
+    this.ws.query(this.OSVersionQuery).then((result: MCQueryResponse) => {
+      localStorage.removeItem(this.OSVersion);
+      localStorage.setItem(this.OSVersion, result.result);
+      localStorage.removeItem(this.GUIVersion);
+      localStorage.setItem(this.GUIVersion, environment.gui_ver);
+      localStorage.removeItem(this.WebServerVersion);
+      localStorage.setItem(this.WebServerVersion, this.data.JavaVersion);
+      localStorage.removeItem(this.SoftMCVersion);
+      localStorage.setItem(this.SoftMCVersion, this.data.MCVersion);
+      localStorage.removeItem(this.LibraryVersion);
+      localStorage.setItem(this.LibraryVersion, this.data.cabinetVer);
+    });
+
+  }
+
   onUploadFilesChange(e: any) {
     const file: File = e.target.files[0];
+    this.storeVersionInfo();
     if (file && file.name.toUpperCase() === 'MCU_FW.ZIP') {
       let dialog = this.dialog.open(UpdateDialogComponent, {
         disableClose: true,

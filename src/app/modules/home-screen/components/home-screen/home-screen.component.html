@@ -97,9 +97,31 @@
 					<mat-icon>info</mat-icon>{{ 'home.software' | translate }}
 				</div>
 				<mat-card-content>
-					<div class="info-line">
+					<div *ngIf="!utils.IsKuka" class="info-line">
 						<div class="mat-subtitle-color">{{ 'home.ver' | translate }}</div>
 						<div class="mat-title-color">{{ groupManager.sysInfo.ver }}</div>
+					</div>
+					<div *ngIf="utils.IsKuka" class="info-line">
+						<div class="mat-subtitle-color">{{ 'home.ver' | translate }}</div>
+						<div>
+							<span>KUKA Control Studio &nbsp; {{mainVer[0]}}</span>
+							<div>
+								<span class="dot-span"></span>
+								<span>SoftMC &nbsp; {{data.MCVersion}}</span>
+							</div>
+							<div>
+								<span class="dot-span"></span>
+								<span>Web Server &nbsp; {{data.JavaVersion}}</span>
+							</div>
+							<div>
+								<span class="dot-span"></span>
+								<span>GUI &nbsp; {{guiVer}}</span>
+							</div>
+							<div>
+								<span class="dot-span"></span>
+								<span>Library 1.0 &nbsp; {{data.cabinetVer}}</span>
+							</div>
+						</div>
 					</div>
 					<div class="info-line">
 						<div class="mat-subtitle-color">

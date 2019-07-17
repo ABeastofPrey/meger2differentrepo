@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div *ngIf="!util.IsKuka" class="wrapper">
 	<mat-card>
 		<mat-card-title>{{ 'about.title' | translate }}</mat-card-title>
 		<mat-card-subtitle>{{ 'about.subtitle' | translate }}</mat-card-subtitle>
@@ -63,3 +63,4 @@
 		</mat-card-content>
 	</mat-card>
 </div>
+<app-version *ngIf="util.IsKuka"></app-version>

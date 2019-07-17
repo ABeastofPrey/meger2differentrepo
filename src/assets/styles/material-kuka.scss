@@ -3,6 +3,8 @@
 $base-Sunrise: #ff7300;
 $primary-Sunrise: #ff7300;
 $matted-Sunrise: #ffe6d9;
+$light-Gray-Sunrise: #D1D3D5;
+$dark-Gray-Sunrise: #A4A7AA;
 
 $base-Connect: #ff5800;
 $primary-Connect: #ff5800;
@@ -25,6 +27,8 @@ $mat-kuka: (
     700: $base-KSS,
     800: $primary-KSS,
     900: $matted-Sunrise,
+    1000: $light-Gray-Sunrise,
+    1100: $dark-Gray-Sunrise,
     contrast: (
       100: $light-primary-text,
       200: $light-primary-text,
@@ -35,6 +39,8 @@ $mat-kuka: (
       700: $light-primary-text,
       800: $light-primary-text,
       900: $light-primary-text,
+      1000: $light-primary-text,
+      1100: $light-primary-text,
     )
   );
 
@@ -149,5 +155,26 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   }
   .create-point-option:hover {
     background: mat-color($material-kuka-primary, 900) !important;
+  }
+  .kuka-bgc-light-gray {
+    background-color: mat-color($material-kuka-primary, 1000);
+  }
+  .kuka-bgc-dark-gray {
+    background-color: mat-color($material-kuka-primary, 1100);
+  }
+  .kuka-font-light-gray {
+    color: mat-color($material-kuka-primary, 1000);
+  }
+  .kuka-font-dark-gray {
+    color: mat-color($material-kuka-primary, 1100);
+  }
+  
+  .dot-span {
+    display: inline-block;
+    height: 6px;
+    width: 6px;
+    border-radius: 5px;
+    margin: 1px 7px 1px 0;
+    background-color: mat-color($material-kuka-primary, 1000);
   }
 }

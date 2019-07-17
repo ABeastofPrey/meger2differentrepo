@@ -28,6 +28,7 @@ export const environment = {
   ip: window.location.hostname,
   tp_ver: '1.3.1.0',
   gui_ver: '1.1.3-internal',
+  gui_date: '2018-08-08',
   compatible_webserver_ver: '3.1.4',
   platform: Platforms.Kuka,
   platforms: Platforms,

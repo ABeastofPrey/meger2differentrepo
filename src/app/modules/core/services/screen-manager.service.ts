@@ -1,3 +1,5 @@
+import { OSUpgradeSuccessDialogComponent } from './../../../components/osupgrade-success-dialog/osupgrade-success-dialog.component';
+import { environment } from './../../../../environments/environment';
 import { Injectable, EventEmitter } from '@angular/core';
 import { LoginService } from './login.service';
 import { TpStatService } from './tp-stat.service';
@@ -10,9 +12,83 @@ import { BehaviorSubject } from 'rxjs';
 import { ApiService } from './api.service';
 import { ErrorDialogComponent } from '../../../components/error-dialog/error-dialog.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { UtilsService } from './utils.service';
+import { WebsocketService, MCQueryResponse } from './websocket.service';
+import { OSUpgradeErrorDialogComponent } from './../../../components/osupgrade-error-dialog/osupgrade-error-dialog.component';
 
 @Injectable()
 export class ScreenManagerService {
+  /**
+   * The key to store the upgrade version in the local storage.
+   */
+  private readonly OSVersion: string = 'osVersion';
+  /**
+   * The key to store the gui version in the local storage.
+   */
+  private readonly GUIVersion: string = 'guiVersion';
+  /**
+   * The key to store the web server version in the local storage.
+   */
+  private readonly WebServerVersion: string = 'webServerVersion';
+  /**
+   * The key to store the softMC version in the local storage.
+   */
+  private readonly SoftMCVersion: string = 'softMCVersion';
+  /**
+   * The key to store the library version in the local storage.
+   */
+  private readonly LibraryVersion: string = 'libraryVersion';
+
+  /**
+   * The key to get the version string in the translation.
+   */
+  private readonly Version: string = 'version';
+
+  /**
+   * The key to get the title string of success dialog in the translation.
+   */
+  private readonly SuccessDialogTitle: string = 'successDialogTitle';
+
+  /**
+   * The key to get the message string of success dialog in the translation.
+   */
+  private readonly SuccessDialogMsg: string = 'successDialogMsg';
+
+  /**
+   * The key to get the title string of error dialog in the translation.
+   */
+  private readonly ErrorDialogTitle: string = 'errorDialogTitle';
+
+  /**
+   * The key to get the message string of error dialog in the translation.
+   */
+  private readonly ErrorDialogMsg: string = 'errorDialogMsg';
+
+  /**
+   * The query to get the os upgrade version.
+   */
+  private readonly SoftMCVersionQuery: string = '?ver';
+
+  /**
+   * The query to get the os upgrade version.
+   */
+  private readonly WebServerVersionQuery: string = 'java_ver';
+
+    /**
+   * The query to get the os upgrade version.
+   */
+  private readonly LibraryVersionQuery: string = '?system_version';
+
+  /**
+   * The query to get the os upgrade version.
+   */
+  private readonly OSVersionQuery: string = '?vi_getreleaseversion';
+
+  /**
+   * The version query map for different os component.
+   */
+  private readonly VersionQueryMap: any = {};
+
   openedControls: boolean = false;
   controlsAnimating: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -132,8 +208,12 @@ export class ScreenManagerService {
     private trn: TranslateService,
     private cmn: CommonService,
     private api: ApiService,
+    private utils: UtilsService,
+    private webSocketService: WebsocketService,
     private container: OverlayContainer
   ) {
+    this.initVersionQueryMap();
+
     // HANDLE CDK CONTAINER WHEN JOG PANEL IS OPENED
     this.dialog.afterOpened.subscribe(dialog => {
       const data = dialog._containerInstance._config.data;
@@ -161,6 +241,7 @@ export class ScreenManagerService {
         'restore.success',
         'home.addFeature.success',
         'error.firmware_update',
+        this.Version
       ])
       .subscribe(words => {
         this.words = words;
@@ -185,18 +266,26 @@ export class ScreenManagerService {
           break;
       }
       if (fromPath !== 'firmware') {
-        this.showFromDialog(msg);
+          this.showFromDialog(msg);
       } else {
         this.api.getPkgdResult().then(result => {
           if (result) {
-            this.showFromDialog(msg);
+            if (this.utils.IsKuka) {
+              this.showOSUpgradeSuccessDialog();
+            } else {
+              this.showFromDialog(msg);
+            }
           } else {
-            this.dialog.open(ErrorDialogComponent, {
-              data: {
-                title: this.words['error.firmware_update']['title'],
-                message: this.words['error.firmware_update']['msg'],
-              },
-            });
+            if (this.utils.IsKuka) {
+               this.showOSUpgradeErrorDialog();
+            } else {
+              this.dialog.open(ErrorDialogComponent, {
+                data: {
+                  title: this.words['error.firmware_update']['title'],
+                  message: this.words['error.firmware_update']['msg']
+                },
+              });
+            }
           }
         });
       }
@@ -230,9 +319,67 @@ export class ScreenManagerService {
     });
   }
 
+  /**
+   * Initialize the version query map.
+   */
+  private initVersionQueryMap() {
+    this.VersionQueryMap[this.OSVersion] = this.OSVersionQuery;
+    this.VersionQueryMap[this.SoftMCVersion] = this.SoftMCVersionQuery;
+    this.VersionQueryMap[this.WebServerVersion] = this.WebServerVersionQuery;
+    this.VersionQueryMap[this.LibraryVersion] = this.LibraryVersionQuery;
+  }
+
+  /**
+   * Show the error dialog if the os upgrade is failed.
+   */
+  private showOSUpgradeErrorDialog() {
+    let dialogData = {
+      title: this.words[this.Version][this.ErrorDialogTitle],
+      message: this.words[this.Version][this.ErrorDialogMsg] + localStorage.getItem(this.OSVersion),
+      guiVersion: localStorage.getItem(this.GUIVersion),
+      webServerVersion: localStorage.getItem(this.WebServerVersion),
+      softMCVersion: localStorage.getItem(this.SoftMCVersion),
+      libraryVersion: localStorage.getItem(this.LibraryVersion)
+    };
+    this.dialog.open(OSUpgradeErrorDialogComponent, {
+      data: dialogData
+    });
+  }
+
+  /**
+   * Show the success dialog if the os upgrade is successful.
+   */
+  private showOSUpgradeSuccessDialog() {
+    let promises = [
+      this.webSocketService.query(this.VersionQueryMap[this.SoftMCVersion]),
+      this.webSocketService.query(this.VersionQueryMap[this.WebServerVersion]),
+      this.webSocketService.query(this.VersionQueryMap[this.LibraryVersion]),
+      this.webSocketService.query(this.VersionQueryMap[this.OSVersion])
+    ];
+    Promise.all(promises)
+      .then((results: MCQueryResponse[]) => {
+        this.dialog.open(OSUpgradeSuccessDialogComponent, {
+          data: {
+            title: this.words[this.Version][this.SuccessDialogTitle],
+            msg: this.words[this.Version][this.SuccessDialogMsg] + results[3].result,
+            guiVersion: environment.gui_ver,
+            webServerVersion: results[1].result,
+            softMCVersion: results[0].result,
+            libraryVersion: results[2].result
+          }
+        });
+        this.router.navigate(['.'], {
+          relativeTo: this.route,
+          queryParams: {},
+        });
+      });
+  }
+
   private showFromDialog(msg: string) {
     this.dialog.open(SuccessDialogComponent, {
-      data: msg,
+      data: {
+        msg: msg
+      }
     });
     this.router.navigate(['.'], {
       relativeTo: this.route,

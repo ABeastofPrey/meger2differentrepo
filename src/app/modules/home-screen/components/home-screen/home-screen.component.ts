@@ -16,6 +16,10 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { AddFeatureDialogComponent } from '../add-feature-dialog/add-feature-dialog.component';
 import { Feature } from '../../models/feature.model';
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
+import { ifElse, then, compose, split } from 'ramda';
+import { hasNoError, resProp } from '../../../core/services/service-adjunct';
+import { DataService } from '../../../core';
+import { environment } from '../../../../../environments/environment';
 
 declare var Plotly;
 
@@ -58,12 +62,15 @@ export class HomeScreenComponent implements OnInit {
   viewInit: boolean = false;
   profileSrc: string;
   contextSelection: string = null;
+  public mainVer: string[] = [];
+  public guiVer: string = environment.gui_ver;
 
   private sub: Subscription = null;
   private chartInit: boolean = false;
   private words: any;
 
   constructor(
+    public data: DataService,
     public login: LoginService,
     public notification: NotificationService,
     public groupManager: GroupManagerService,
@@ -208,6 +215,10 @@ export class HomeScreenComponent implements OnInit {
         if (!stat) this.updateCharts();
       });
     });
+
+    this.getMainVersion().then(res => {
+      this.mainVer = res;
+    });
   }
 
   ngAfterViewInit() {
@@ -284,5 +295,14 @@ export class HomeScreenComponent implements OnInit {
           });
         }
       });
+  }
+
+    private async getMainVersion(): Promise<string[]> {
+      const query = () => this.ws.query('?vi_getreleaseversion');
+      const logErr = err => { console.log(err); return []; };
+      const splitWithSemicolon = split(';');
+      const parser = compose(splitWithSemicolon, resProp);
+      const handler = ifElse(hasNoError, parser, logErr);
+      return compose(then(handler), query)();
   }
 }

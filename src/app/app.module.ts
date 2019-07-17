@@ -16,6 +16,8 @@ import { AuthPassDialogComponent } from './components/auth-pass-dialog/auth-pass
 import { LicenseDialogComponent } from './components/license-dialog/license-dialog.component';
 import { TpDialogComponent } from './components/tp-dialog/tp-dialog.component';
 import { RobotSelectionComponent } from './components/robot-selection/robot-selection.component';
+import { OSUpgradeErrorDialogComponent } from './components/osupgrade-error-dialog/osupgrade-error-dialog.component';
+import { OSUpgradeSuccessDialogComponent } from './components/osupgrade-success-dialog/osupgrade-success-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,8 @@ import { RobotSelectionComponent } from './components/robot-selection/robot-sele
     LicenseDialogComponent,
     TpDialogComponent,
     RobotSelectionComponent,
+    OSUpgradeErrorDialogComponent,
+    OSUpgradeSuccessDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,6 +53,8 @@ import { RobotSelectionComponent } from './components/robot-selection/robot-sele
     LicenseDialogComponent,
     TpDialogComponent,
     RobotSelectionComponent,
+    OSUpgradeErrorDialogComponent,
+    OSUpgradeSuccessDialogComponent
   ],
 })
 export class AppModule {}

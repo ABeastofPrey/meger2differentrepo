@@ -1,8 +1,15 @@
 <div class="wrapper">
 	<div class="title">{{ 'apps.title' | translate }}</div>
-	<input
+	<input *ngIf="!utils.IsKuka"
 		type="file"
 		accept=".ipk, .rpm, .IPK, .RPM, .zip, .ZIP"
+		#upload
+		(change)="onUploadFilesChange($event)"
+		class="file-input"
+  />
+  <input *ngIf="utils.IsKuka"
+		type="file"
+		accept=".zip, .ZIP"
 		#upload
 		(change)="onUploadFilesChange($event)"
 		class="file-input"

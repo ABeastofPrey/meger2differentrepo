@@ -1,12 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-  MatDialogModule,
-} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material';
 import { DebugElement } from '@angular/core';
 
 import { SharedModule } from '../../../shared/shared.module';
+import { UnitTestModule } from './../../../shared/unit-test.module';
 import { WebsocketService } from '../../../core/services';
 import { ToolCalibrationResultDialogComponent } from './tool-calibration-result-dialog.component';
 import { CalibrationMessage } from './tool-calibration-result-dialog.enum';
@@ -59,7 +56,7 @@ describe('ToolCalibrationResultDialogComponent', () => {
     const spyObj = jasmine.createSpyObj('WebSocketService', ['query']);
 
     TestBed.configureTestingModule({
-      imports: [SharedModule, MatDialogModule],
+      imports: [SharedModule, UnitTestModule, MatDialogModule],
       declarations: [ToolCalibrationResultDialogComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: { toolName: toolName } },
@@ -115,10 +112,8 @@ describe('ToolCalibrationResultDialogComponent', () => {
       6,
       'there is one header and five rows.'
     );
-    expect(resultTable.textContent).toBe(
-      'CurrentNewDelta x  mm  0  -484.7536  -484.7536  y  mm  0  4.3401  4.3401  \
-z  mm  0  0  0  r  °  0  0  0  error  mm    11.9508   '
-    );
+    expect(resultTable.textContent).toBe('currentnewdeltax mm  0  -484.7536  -484.7536 y mm  0  4.3401  4.3401 ' +
+    'z mm  0  0  0 r °  0  0  0 Error mm    11.9508   ');
   });
 
   /**

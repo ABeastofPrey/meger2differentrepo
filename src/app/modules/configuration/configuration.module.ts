@@ -20,6 +20,8 @@ import { PermissionGuardService } from './permission-guard.service';
 import { ThirdPartyComponent } from './components/third-party/third-party.component';
 import { ReferenceMasteringComponent } from './components/reference-mastering/reference-mastering.component';
 import { ReferenceMasteringService } from './services/reference-mastering.service';
+import { VersionComponent } from './components/version/version.component';
+import { ReleaseNoteComponent } from './components/version/release-note/release-note.component';
 
 @NgModule({
   imports: [CommonModule, SharedModule, ConfigurationRoutingModule],
@@ -37,7 +39,9 @@ import { ReferenceMasteringService } from './services/reference-mastering.servic
     AboutComponent,
     TopologyComponent,
     ThirdPartyComponent,
-    ReferenceMasteringComponent
+    ReferenceMasteringComponent,
+    VersionComponent,
+    ReleaseNoteComponent
   ],
   providers: [
     IoService,
@@ -47,7 +51,8 @@ import { ReferenceMasteringService } from './services/reference-mastering.servic
   ],
   entryComponents: [
     NewUserDialogComponent,
-    GraphComponent
+    GraphComponent,
+    ReleaseNoteComponent
   ]
 })
 export class ConfigurationModule {}

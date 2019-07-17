@@ -25,11 +25,20 @@ const programSettingsContext = require.context(
 // And load the modules.
 programSettingsContext.keys().map(programSettingsContext);
 
+const resultDialogContext = require.context('./app/modules/program-editor/components/tool-calibration-result-dialog/', true, /\.spec\.ts$/);
+resultDialogContext.keys().map(resultDialogContext);
+
 const jumpDialogContext = require.context('./app/modules/program-editor/components/dialogs/jump-dialog/', true, /\.spec\.ts$/);
 jumpDialogContext.keys().map(jumpDialogContext);
 
 const jump3DialogContext = require.context('./app/modules/program-editor/components/dialogs/jump3-dialog/', true, /\.spec\.ts$/);
 jump3DialogContext.keys().map(jump3DialogContext);
+
+const osUpgradeSuccessDialogContext = require.context('./app/components/osupgrade-success-dialog/', true, /\.spec\.ts$/);
+osUpgradeSuccessDialogContext.keys().map(osUpgradeSuccessDialogContext);
+
+const osUpgradeErrorDialogContext = require.context('./app/components/osupgrade-error-dialog/', true, /\.spec\.ts$/);
+osUpgradeErrorDialogContext.keys().map(osUpgradeErrorDialogContext);
 
 const activationContext = require.context(
   './app/modules/help/components/activation/',
@@ -54,3 +63,7 @@ configurationServiceContext.keys().map(configurationServiceContext);
 
 const rmContext = require.context('./app/modules/configuration/components/reference-mastering/', true, /\.spec\.ts$/);
 rmContext.keys().map(rmContext);
+
+
+const versionContext = require.context('./app/modules/configuration/components/version/', true, /\.spec\.ts$/);
+versionContext.keys().map(versionContext);

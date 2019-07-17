@@ -5,7 +5,7 @@
 	<div class="content">
 		<mat-spinner color="primary" *ngIf="license === null"></mat-spinner>
 		<div #container class="license mat-elevation-z3" *ngIf="license" [innerHTML]="license"></div>
-		<div style="text-align: center;">
+		<div *ngIf="!useInKukaAbout" style="text-align: center;">
 			<button mat-button color="warn" mat-dialog-close>
 				{{ 'license.reject' | translate }}
 			</button>
@@ -13,5 +13,10 @@
 				{{ 'license.accept' | translate }}
 			</button>
 		</div>
+        <div *ngIf="useInKukaAbout" style="text-align: right; width: 100%;">
+            <button mat-raised-button color="primary" mat-dialog-close>
+                {{ 'button.ok' | translate }}
+            </button>
+        </div>
 	</div>
 </div>
