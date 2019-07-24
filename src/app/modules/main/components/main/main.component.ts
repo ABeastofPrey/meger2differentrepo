@@ -31,6 +31,7 @@ import {
 import { RobotService } from '../../../core/services/robot.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../core/services/common.service';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'app-main',
@@ -108,7 +109,8 @@ export class MainComponent implements OnInit {
     public prj: ProjectManagerService,
     private robot: RobotService,
     private trn: TranslateService,
-    public cmn: CommonService
+    public cmn: CommonService,
+    public utils: UtilsService
   ) {
     this.trn.onLangChange.subscribe(event => {
       this.refreshLang();

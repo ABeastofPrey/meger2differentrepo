@@ -10,10 +10,10 @@
 		<button mat-icon-button (click)="toggleMenu()" tourAnchor="menu">
 			<mat-icon>menu</mat-icon>
 		</button>
-		<span class="center-vertical">
-			<img src="assets/pics/{{ env.platform.logo }}" class="img-logo" />
-			{{ appName }}
-		</span>
+		<div class="center-vertical main-header">
+			<img src="assets/pics/{{ env.platform.logo }}" class="img-logo" [class.kuka-logo]="utils.IsKuka"/>
+			<span *ngIf="!utils.IsKuka">{{ appName }}</span>
+		</div>
 		<mat-icon *ngIf="stat.systemErrorCode < 0" [matTooltip]="'Error ' + stat.systemErrorCode"
 			>warning</mat-icon
 		>

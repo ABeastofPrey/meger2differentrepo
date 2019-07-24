@@ -1,14 +1,7 @@
 <div class="wrapper mat-typography" [@login]="ws.connected ? 'in' : 'out'" [@init]="compInit ? 'in' : 'out'">
-	<div
-		class="login-card mat-elevation-z3"
-		[@cardIsToolbar]="ws.connected ? 'toolbar' : 'card'"
-		[class.card-full]="!cmn.isTablet"
-	>
-		<div
-			class="primary-bg toolbar center-vertical-horizontal"
-			@fade
-			*ngIf="ws.connected || isSubmitting"
-		>
+	<div class="login-card mat-elevation-z3" [@cardIsToolbar]="ws.connected ? 'toolbar' : 'card'"
+		[class.card-full]="!cmn.isTablet">
+		<div class="primary-bg toolbar center-vertical-horizontal" @fade *ngIf="ws.connected || isSubmitting">
 			<div *ngIf="!ws.connected" @fade>
 				<mat-spinner color="accent"></mat-spinner>
 				<h2>{{ 'connecting' | translate }}...</h2>
@@ -17,12 +10,8 @@
 		<header [style.background-image]="'url(' + loginBgImgUrl + ')'">
 			<div class="black-overlay"></div>
 			<div class="center-vertical" style="z-index: 2;">
-				<img
-					[ngStyle]="{ opacity: utils.IsKuka ? 0 : 100 }"
-					src="assets/pics/logo_cs.png"
-					height="100"
-					width="100"
-				/>
+				<img [ngStyle]="{ opacity: utils.IsKuka ? 0 : 100 }" src="assets/pics/logo_cs.png" height="100"
+					width="100" />
 				<div>
 					<div class="title">{{ appName }}</div>
 					<div class="subtitle">v{{ ver }}</div>
@@ -35,32 +24,17 @@
 					<mat-form-field appearance="outline">
 						<mat-label>{{ 'userManager.username' | translate }}</mat-label>
 						<mat-icon class="mat-primary" matPrefix>person</mat-icon>
-						<input
-							matInput
-							placeholder="{{ 'userManager.username' | translate }}"
-							formControlName="username"
-							virtualKeyboard
-							ktype="text"
-						/>
+						<input matInput placeholder="{{ 'userManager.username' | translate }}"
+							formControlName="username" virtualKeyboard ktype="text" />
 					</mat-form-field>
 					<mat-form-field appearance="outline">
 						<mat-label>{{ 'password' | translate }}</mat-label>
 						<mat-icon class="mat-primary" matPrefix>security</mat-icon>
-						<input
-							matInput
-							placeholder="{{ 'password' | translate }}"
-							type="password"
-							formControlName="password"
-							virtualKeyboard
-							ktype="password"
-						/>
+						<input matInput placeholder="{{ 'password' | translate }}" type="password"
+							formControlName="password" virtualKeyboard ktype="password" />
 					</mat-form-field>
-					<button
-						mat-raised-button
-						color="primary"
-						type="submit"
-						[disabled]="!authForm.valid || !isVersionOK || isSubmitting"
-					>
+					<button mat-raised-button color="primary" type="submit"
+						[disabled]="!authForm.valid || !isVersionOK || isSubmitting">
 						{{ 'button.login' | translate }}
 					</button>
 					<div class="error" *ngIf="errors.error">{{ errors.error }}</div>

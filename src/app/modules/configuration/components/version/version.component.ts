@@ -30,6 +30,7 @@ export class VersionComponent implements OnInit {
     public visableLibs: ILib[] = [];
     public guiVer: string = environment.gui_ver;
     public guiDate: string = environment.gui_date;
+    public appNameKuka: string = environment.appName_Kuka;
     public pageSize = 10;
     public mainVer: string[] = [];
     public libVer: string;

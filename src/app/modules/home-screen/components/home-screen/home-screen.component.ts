@@ -64,6 +64,7 @@ export class HomeScreenComponent implements OnInit {
   contextSelection: string = null;
   public mainVer: string[] = [];
   public guiVer: string = environment.gui_ver;
+  public appNameKuka: string = environment.appName_Kuka;
 
   private sub: Subscription = null;
   private chartInit: boolean = false;

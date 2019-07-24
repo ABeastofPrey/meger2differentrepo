@@ -24,6 +24,7 @@ export const Platforms = {
 export const environment = {
   production: true,
   appName: 'ControlStudio+',
+  appName_Kuka: 'KUKA.ControlStudio',
   api_url: 'http://' + window.location.hostname + ':1207',
   ip: window.location.hostname,
   tp_ver: '1.3.1.0',

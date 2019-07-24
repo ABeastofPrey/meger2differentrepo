@@ -87,7 +87,7 @@ export class LoginScreenComponent implements OnInit {
   authForm: FormGroup;
   errors: Errors = { error: null };
   isVersionOK: boolean = true;
-  appName: string = environment.appName;
+  appName: string = '';
   platform: string = null;
   compInit: boolean = false;
 
@@ -112,6 +112,7 @@ export class LoginScreenComponent implements OnInit {
     public cmn: CommonService,
     private ref: ApplicationRef
   ) {
+    this.appName = utils.IsKuka ? environment.appName_Kuka : environment.appName;
   }
 
   submitForm() {
