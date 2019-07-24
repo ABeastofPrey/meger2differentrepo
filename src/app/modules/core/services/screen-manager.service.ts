@@ -65,29 +65,24 @@ export class ScreenManagerService {
   private readonly ErrorDialogMsg: string = 'errorDialogMsg';
 
   /**
-   * The query to get the os upgrade version.
+   * The file to store OS upgrade version.
    */
-  private readonly SoftMCVersionQuery: string = '?ver';
+  private readonly VERSIONDAT = 'VERSION.DAT';
 
   /**
-   * The query to get the os upgrade version.
+   * The query to get softMC version.
    */
-  private readonly WebServerVersionQuery: string = 'java_ver';
-
-    /**
-   * The query to get the os upgrade version.
-   */
-  private readonly LibraryVersionQuery: string = '?system_version';
+  private readonly SoftMCVersionQuery = '?ver';
 
   /**
-   * The query to get the os upgrade version.
+   * The query to get web server version.
    */
-  private readonly OSVersionQuery: string = '?vi_getreleaseversion';
+  private readonly WebServerVersionQuery = 'java_ver';
 
   /**
-   * The version query map for different os component.
+   * The query to get library version.
    */
-  private readonly VersionQueryMap: any = {};
+  private readonly LibraryVersionQuery = '?system_version';
 
   openedControls: boolean = false;
   controlsAnimating: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -212,8 +207,6 @@ export class ScreenManagerService {
     private webSocketService: WebsocketService,
     private container: OverlayContainer
   ) {
-    this.initVersionQueryMap();
-
     // HANDLE CDK CONTAINER WHEN JOG PANEL IS OPENED
     this.dialog.afterOpened.subscribe(dialog => {
       const data = dialog._containerInstance._config.data;
@@ -266,7 +259,7 @@ export class ScreenManagerService {
           break;
       }
       if (fromPath !== 'firmware') {
-          this.showFromDialog(msg);
+        this.showFromDialog(msg);
       } else {
         this.api.getPkgdResult().then(result => {
           if (result) {
@@ -277,7 +270,7 @@ export class ScreenManagerService {
             }
           } else {
             if (this.utils.IsKuka) {
-               this.showOSUpgradeErrorDialog();
+              this.showOSUpgradeErrorDialog();
             } else {
               this.dialog.open(ErrorDialogComponent, {
                 data: {
@@ -320,16 +313,6 @@ export class ScreenManagerService {
   }
 
   /**
-   * Initialize the version query map.
-   */
-  private initVersionQueryMap() {
-    this.VersionQueryMap[this.OSVersion] = this.OSVersionQuery;
-    this.VersionQueryMap[this.SoftMCVersion] = this.SoftMCVersionQuery;
-    this.VersionQueryMap[this.WebServerVersion] = this.WebServerVersionQuery;
-    this.VersionQueryMap[this.LibraryVersion] = this.LibraryVersionQuery;
-  }
-
-  /**
    * Show the error dialog if the os upgrade is failed.
    */
   private showOSUpgradeErrorDialog() {
@@ -350,21 +333,36 @@ export class ScreenManagerService {
    * Show the success dialog if the os upgrade is successful.
    */
   private showOSUpgradeSuccessDialog() {
-    let promises = [
-      this.webSocketService.query(this.VersionQueryMap[this.SoftMCVersion]),
-      this.webSocketService.query(this.VersionQueryMap[this.WebServerVersion]),
-      this.webSocketService.query(this.VersionQueryMap[this.LibraryVersion]),
-      this.webSocketService.query(this.VersionQueryMap[this.OSVersion])
-    ];
-    Promise.all(promises)
-      .then((results: MCQueryResponse[]) => {
+    let isGetRes = false;
+    let count = 20;
+    const getRes = () => {
+      let promises = [
+        this.webSocketService.query(this.WebServerVersionQuery),
+        this.webSocketService.query(this.SoftMCVersionQuery),
+        this.webSocketService.query(this.LibraryVersionQuery),
+        this.api.getFile(this.VERSIONDAT)
+      ];
+      Promise.all(promises).then((results: MCQueryResponse[]) => {
+        isGetRes = true;
+        for (let i = 0; i < 4; i++) {
+          if (!results[3]) {
+            this.showOSUpgradeErrorDialog();
+            return;
+          }
+
+          if (results[i].err) {
+            this.showOSUpgradeErrorDialog();
+            return;
+          }
+        }
+
         this.dialog.open(OSUpgradeSuccessDialogComponent, {
           data: {
             title: this.words[this.Version][this.SuccessDialogTitle],
-            msg: this.words[this.Version][this.SuccessDialogMsg] + results[3].result,
+            msg: this.words[this.Version][this.SuccessDialogMsg] + results[3],
             guiVersion: environment.gui_ver,
-            webServerVersion: results[1].result,
-            softMCVersion: results[0].result,
+            webServerVersion: results[0].result,
+            softMCVersion: results[1].result,
             libraryVersion: results[2].result
           }
         });
@@ -373,6 +371,17 @@ export class ScreenManagerService {
           queryParams: {},
         });
       });
+    };
+
+    const checkIsGetRes = setInterval(() => {
+      if (count === 0 || isGetRes) {
+        clearInterval(checkIsGetRes);
+      } else {
+        getRes();
+      }
+      console.log(count);
+      count--;
+    }, 500);
   }
 
   private showFromDialog(msg: string) {
