@@ -23,6 +23,10 @@ const fakeData = {
 
 const spyWs = {
     query: (para) => {
+        if (para === '?VI_getLibraryVersion') {
+            const res = '[{"name":"TP Library","ver":"v1.3.9;2019-06-31","desc":"This library holds TP module specific data and functions"},{"name":"Pallet Library","ver":"v1.2.3;2019-06-31","desc":"This library holds PALLET module specific data and functions"},{"name":"Gripper Library","ver":"v1.2.0;2019-05-23","desc":"This library holds GRIPPER module specific data and functions"},{"name":"Payload Library","ver":"v1.1.0;2019-05-23","desc":"This library holds PAYLOAD module specific data and functions"},{"name":"Lead By Nose Library","ver":"v1.0.1;2019-03-11","desc":"This library holds LBN module specific data and functions"},{"name":"I/O Mapping Library","ver":"v1.0.1;2019-05-14","desc":"This library holds I/O module specific data and functions"},{"name":"MCU Library","ver":"v1.0.6;2019-05-22","desc":"This library holds MCU module specific data and functions"}]';
+            return Promise.resolve({ result: res, cmd: 'This is cmd', err: null });
+        }
         if (para === '?vi_getreleaseversion') {
             const res = { result: 'v1.0.1;2018-09-12', cmd: 'This is cmd', err: null };
             return Promise.resolve(res);
@@ -63,7 +67,7 @@ describe('VersionComponent', () => {
     it('should retrieve and assemble data', async(() => {
         fixture.detectChanges();
         fixture.whenStable().then(() => {
-            expect(component.libVer).toBe('2018-09-22');
+            expect(component.libVer).toBe('2019-06-31');
         });
     }));
 
