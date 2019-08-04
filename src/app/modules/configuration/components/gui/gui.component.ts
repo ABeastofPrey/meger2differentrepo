@@ -34,7 +34,8 @@ export class GuiComponent implements OnInit {
   changeTheme(e: MatSelectChange) {
     const newVal: string = e.value;
     // change document title
-    document.title = (e.value === 'kuka') ? environment.appName_Kuka : environment.appName;
+    document.title =
+      e.value === 'kuka' ? environment.appName_Kuka : environment.appName;
     this.api.setTheme(newVal.toLowerCase()).then(() => {
       // check if it worked
       return this.cmn.refreshTheme();

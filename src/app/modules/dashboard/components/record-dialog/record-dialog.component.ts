@@ -19,7 +19,7 @@ export class RecordDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DashboardWindow,
-    public ref: MatDialogRef<any>
+    public ref: MatDialogRef<RecordParams>
   ) {}
 
   ngOnInit() {
@@ -29,14 +29,25 @@ export class RecordDialogComponent implements OnInit {
 
   record() {
     localStorage.setItem('recDuration', '' + this.duration);
+    let graphType: string;
+    switch (this.recMode) {
+      case '1':
+        graphType = '2d';
+        break;
+      case '2':
+        graphType = '2da';
+        break;
+      case '3':
+        graphType = '3d';
+        break;
+    }
     this.ref.close({
       duration: this.duration,
       override: this.override,
-      is3D: this.recMode === '3',
+      graphType: graphType,
       x: this.recMode === '2' ? this.x2D : this.x,
       y: this.recMode === '2' ? this.y2D : this.y,
       z: this.z,
-      advanced: this.recMode === '2',
     });
   }
 }
@@ -44,8 +55,7 @@ export class RecordDialogComponent implements OnInit {
 export interface RecordParams {
   duration: number;
   override: boolean;
-  is3D: boolean;
-  advanced: boolean;
+  graphType: string;
   x: string;
   y: string;
   z: string;

@@ -54,7 +54,7 @@ const disableWhenProjectActive = [
   'PALLETS',
   'GRIPPERS',
   'PAYLOADS',
-  projectPoints.toUpperCase()
+  projectPoints.toUpperCase(),
 ];
 
 @Component({
@@ -236,6 +236,11 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     const projName = this.currProject.name;
     if (n.type !== 'File') this.service.close();
     if (n.type === 'Data') {
+      if (this.data.selectedDomain === n.parent.name) {
+        this.service.mode = 'data';
+        return;
+      }
+      this.service.busy = true;
       this.ws
         .query('?tp_set_application("' + n.parent.name + '")')
         .then(() => {
@@ -243,6 +248,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         })
         .then(() => {
           this.service.mode = 'data';
+          this.service.busy = false;
         });
       return;
     }
@@ -378,10 +384,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           this.ws.query(cmd).then((ret: MCQueryResponse) => {
             if (ret.err || ret.result !== '0') return;
             this.service.close();
-            this.prj.refreshAppList(prj, true).then(() => {
-              const path = prj.name + '/' + name + '/';
-              this.service.setFile(name + '.UPG', path, null, -1);
-            });
+            this.service.mode = null;
+            this.prj.refreshAppList(prj, true);
           });
         }
       });
@@ -503,13 +507,16 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       }
       apps.children.push(appNode);
     }
+    apps.children = apps.children.sort((n1, n2) => {
+      return n1.name < n2.name ? -1 : 1;
+    });
     let deps = new TreeNode('', 'Dependencies', p.name, null);
     for (let dep of p.dependencies) {
       deps.children.push(new TreeNode(dep, 'Dependency', p.name, deps));
     }
     let macros = new TreeNode('', 'Macros', p.name, null);
     let settings = new TreeNode('', 'Settings', p.name, null);
-    let pPoints = new TreeNode('', projectPoints, p.name,null);
+    let pPoints = new TreeNode('', projectPoints, p.name, null);
     let errors = new TreeNode('', 'Errors', p.name, null);
     let frames = new TreeNode('', 'Frames', p.name, null);
     let pallets = new TreeNode('', 'Pallets', p.name, null);

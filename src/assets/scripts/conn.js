@@ -62,7 +62,7 @@ function MCConnection() {
   var ws = null;
   var MCPORT = 3010;
   var IP = self.location.hostname;
-  //var IP = '10.4.20.45';
+  //var IP = '10.4.20.51';
   var reset = true;
   var isConnected = false;
 
@@ -84,8 +84,8 @@ function MCConnection() {
         console.log(e);
       };
       ws.onclose = function(event) {
-        worker.postMessage({ serverMsg: true, msg: 2, clean: event.wasClean }); // ONCLOSE MESSAGE
-        console.log('WEBSOCKET CLOSED');
+        worker.postMessage({ serverMsg: true, msg: 2, clean: event.wasClean, code: event.code }); // ONCLOSE MESSAGE
+        console.log('WEBSOCKET CLOSED',event);
         isConnected = false;
       };
       ws.onmessage = function(msg) {
@@ -99,6 +99,7 @@ function MCConnection() {
           worker.postMessage({ serverMsg: false, msg: jsonMessage });
         } catch (err) {
           console.log('INVALID JSON FROM MC WEB SERVER', err);
+          console.log('json string:' + msg.data);
         }
       };
       setTimeout(function() {

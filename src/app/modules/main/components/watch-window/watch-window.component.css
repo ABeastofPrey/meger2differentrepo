@@ -25,3 +25,6 @@ tbody td {
   width: 100%;
   min-width: 60px;
 }
+.disable-record {
+  color: #ccc !important;
+}

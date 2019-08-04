@@ -1,3 +1,15 @@
+h2 {
+  margin: 16px 16px 0;
+  padding: 0;
+}
+.wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+mat-list {
+  flex: 1;
+}
 .profile-pic {
   width: 36px !important;
   height: 36px !important;

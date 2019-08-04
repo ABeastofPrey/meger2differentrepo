@@ -9,6 +9,8 @@ import {
   MCQueryResponse,
 } from '../../../../modules/core/services/websocket.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
   selector: 'new-dashboard-dialog',
@@ -20,6 +22,7 @@ export class NewDashboardDialogComponent implements OnInit {
   selectedElement: DashboardInitParams = null;
 
   private words: any;
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     private ws: WebsocketService,
@@ -27,11 +30,19 @@ export class NewDashboardDialogComponent implements OnInit {
     private snack: MatSnackBar,
     public dialogRef: MatDialogRef<any>,
     private trn: TranslateService
-  ) {
+  ) {}
+
+  add() {
+    if (this.dashboard.findWindow(this.selectedElement.name) === -1)
+      this.dialogRef.close(this.selectedElement);
+    else this.snack.open(this.words, '', { duration: 1500 });
+  }
+
+  ngOnInit() {
     this.trn.get('dashboard.new.err').subscribe(words => {
       this.words = words;
     });
-    this.ws.isConnected.subscribe(stat => {
+    this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) {
         let promises = [
           this.ws.query('?grouplist'),
@@ -61,11 +72,8 @@ export class NewDashboardDialogComponent implements OnInit {
     });
   }
 
-  add() {
-    if (this.dashboard.findWindow(this.selectedElement.name) === -1)
-      this.dialogRef.close(this.selectedElement);
-    else this.snack.open(this.words, '', { duration: 1500 });
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
-
-  ngOnInit() {}
 }

@@ -4,7 +4,6 @@
 			matInput
 			type="text"
 			[(ngModel)]="filterByString"
-			(change)="filterData()"
 			(ngModelChange)="onSearchChange()"
 			[disabled]="isRefreshing"
 			#searchInput
@@ -19,11 +18,7 @@
 	<div class="center-vertical-horizontal">
 		<img src="assets/pics/{{ env.platform.spinner }}" *ngIf="isRefreshing" />
 	</div>
-	<mat-tree
-		class="mobile-scrollbar"
-		[dataSource]="nestedDataSource"
-		[treeControl]="nestedTreeControl"
-	>
+	<mat-tree class="mobile-scrollbar" [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
 		<mat-tree-node *matTreeNodeDef="let node">
 			<li (contextmenu)="openContextMenu($event, node)" class="leaf">
 				<div (click)="openFile(node)" [class.selected]="lastSelectedNode === node">
@@ -64,20 +59,21 @@
 		</mat-nested-tree-node>
 	</mat-tree>
 </div>
-<div
-	class="menu-backdrop"
-	*ngIf="menuVisible"
-	(click)="closeContextMenu()"
-	(contextmenu)="$event.preventDefault()"
->
+<div class="menu-backdrop" *ngIf="menuVisible" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault()">
 	<div class="menu-wrapper">
-		<div class="menu mat-elevation-z3" [style.top]="menuTop" [style.left]="menuLeft">
+		<div class="menu mat-elevation-z3" [style.top]="menuTop" [style.left]="menuLeft" #menuDiv>
 			<div>
 				<button mat-button (click)="newFile(lastSelectedNode)">
 					<mat-icon>note_add</mat-icon>{{ 'projects.toolbar.new_file' | translate }}...
 				</button>
 				<button mat-button (click)="newFolder(lastSelectedNode)">
 					<mat-icon>create_new_folder</mat-icon>{{ 'projects.toolbar.new_folder' | translate }}...
+				</button>
+				<button mat-button (click)="copy(lastSelectedNode)">
+					<mat-icon>file_copy</mat-icon>{{ 'copy' | translate }}...
+				</button>
+				<button mat-button color="warn" (click)="delete(lastSelectedNode)">
+					<mat-icon>delete</mat-icon>{{ 'delete' | translate }}...
 				</button>
 			</div>
 			<mat-divider></mat-divider>

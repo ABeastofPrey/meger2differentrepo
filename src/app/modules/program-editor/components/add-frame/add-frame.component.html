@@ -1,7 +1,5 @@
 <div class="mat-typography">
-	<div class="title mat-elevation-z1">
-		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'frames.new.' + data | translate }}
-	</div>
+	<div class="title mat-elevation-z1"><mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'frames.new.' + data | translate }}</div>
 	<div class="name-wrapper">
 		<mat-form-field>
 			<input
@@ -26,13 +24,16 @@
 		<div *ngIf="!isArray" style="margin-top: 8px;">
 			<div class="label">{{ 'values' | translate }}</div>
 			<div class="values">
-				<mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
+				<mat-form-field
+					*ngFor="let legend of dataService.robotCoordinateType.legends; let i = index"
+					floatLabel="never"
+				>
 					<span matPrefix style="font-weight: bold;"
-						>{{ coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i] }}:&nbsp;&nbsp;</span
+						>{{ dataService.robotCoordinateType.legends[i] }}:&nbsp;&nbsp;</span
 					>
 					<input
 						matInput
-						[placeholder]="coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i]"
+						[placeholder]="dataService.robotCoordinateType.legends[i]"
 						[(ngModel)]="this.values[i]"
 						virtualKeyboard
 						ktype="numeric"
@@ -45,13 +46,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			(click)="add()"
-			[disabled]="!name"
-			style="text-transform: uppercase;"
-		>
+		<button mat-button color="primary" (click)="add()" [disabled]="!name" style="text-transform: uppercase;">
 			{{ 'frames.create.' + data | translate }}
 		</button>
 	</div>

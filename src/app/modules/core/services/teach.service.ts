@@ -3,11 +3,8 @@ import { MatSnackBar } from '@angular/material';
 import { TPVariable } from '../../core/models/tp/tp-variable.model';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { TPVariableType } from '../../core/models/tp/tp-variable-type.model';
-import {
-  FOUR_AXES_LOCATION,
-  SIX_AXES_LOCATION,
-} from '../../core/models/tp/location-format.model';
 import { TranslateService } from '@ngx-translate/core';
+import { DataService } from './data.service';
 
 @Injectable()
 export class TeachService {
@@ -45,7 +42,11 @@ export class TeachService {
         this._selectedTeachVariableIndex = null;
       }
       this._selectedTeachVariable = val;
-      if (val.isArr && this._selectedTeachVariableIndex === null) {
+      if (
+        val.isArr &&
+        (this._selectedTeachVariableIndex === null ||
+          typeof this._selectedTeachVariableIndex === 'undefined')
+      ) {
         this._value = [];
         this._fullName = null;
         return;
@@ -63,31 +64,37 @@ export class TeachService {
           if (ret.err) {
             return;
           }
-          var valuesString = ret.result;
+          let valuesString = ret.result;
           if (valuesString.indexOf('#') === 0)
             valuesString = valuesString.substr(1);
           if (valuesString.indexOf(',') === -1) {
-            this._legend = ['value'];
+            this._legend = [this.words['value']];
             this._value = [{ value: valuesString.trim() }];
             return;
           }
-          var values = valuesString
+          const parts: string[] = valuesString
             .substr(1, valuesString.length - 2)
-            .split(',');
-          var newLegend = [];
-          for (var i = 0; i < values.length; i++) {
-            this.value[i] = { value: values[i].trim() };
-            if (val.varType === TPVariableType.JOINT)
+            .split(';');
+          const values = parts[0].split(',');
+          let flags = parts[1] ? parts[1].split(',') : [];
+          if (this.selectedTeachVariable.varType === TPVariableType.LOCATION) {
+            const len = this.data.robotCoordinateType.flags.length;
+            for (let i = flags.length; i < len; i++) {
+              flags[i] = '0';
+            }
+          }
+          const total = values.concat(flags);
+          let newLegend: string[] = [];
+          for (let i = 0; i < total.length; i++) {
+            this._value[i] = { value: total[i].trim() };
+            if (this.selectedTeachVariable.varType === TPVariableType.JOINT)
               newLegend.push('J' + (i + 1));
           }
           if (newLegend.length === 0) {
-            switch (val.varType) {
+            switch (this.selectedTeachVariable.varType) {
               case TPVariableType.LOCATION:
-                newLegend =
-                  values.length === 4 ? FOUR_AXES_LOCATION : SIX_AXES_LOCATION;
+                newLegend = this.data.robotCoordinateType.all;
                 break;
-              default:
-                newLegend.push('value');
             }
           }
           this._legend = newLegend;
@@ -133,29 +140,44 @@ export class TeachService {
   constructor(
     private ws: WebsocketService,
     private snackBar: MatSnackBar,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private data: DataService
   ) {
     this.trn.get(['changeOK']).subscribe(words => {
       this.words = words;
+    });
+    this.data.teachServiceNeedsReset.subscribe(() => {
+      this.reset();
     });
   }
 
   onKeyboardClose() {
     try {
-      var position = '';
-      for (var i = 0; i < this.value.length; i++) {
-        position += this.value[i].value;
-        if (i < this.value.length - 1) position += ',';
+      const fullname = this._fullName;
+      const val = this._value as { value: number }[];
+      const size = Math.min(
+        val.length,
+        this.data.robotCoordinateType.legends.length
+      );
+      let value = val
+        .slice(0, size)
+        .map(v => {
+          return v.value;
+        })
+        .join();
+      if (this._selectedTeachVariable.varType === TPVariableType.LOCATION) {
+        value +=
+          ';' +
+          val
+            .slice(size)
+            .map(v => {
+              return v.value;
+            })
+            .join();
       }
-      var cmd_set =
-        '?tp_setpnt("' +
-        this._fullName +
-        '","' +
-        this._selectedTeachVariable.typeStr +
-        '","' +
-        position +
-        '")';
-      this.ws.query(cmd_set).then((ret: MCQueryResponse) => {
+      let cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
+      this.ws.query(cmd).then((ret: MCQueryResponse) => {
+        console.log(cmd);
         this.selectedTeachVariable = this.selectedTeachVariable;
         if (ret.result === '0')
           this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });

@@ -4,9 +4,11 @@
 			<div
 				class="profile-pic"
 				(click)="showUploadWindow()"
-				[class.clickable]="login.getCurrentUser().user.username !== 'admin'"
+				[class.clickable]="
+					login.getCurrentUser().user.username !== 'admin' && login.getCurrentUser().user.username !== 'super'
+				"
 			>
-				<img [src]="profileSrc" />
+				<img [src]="busy ? 'assets/pics/' + env.platform.spinner : profileSrc" />
 			</div>
 			<div class="user-info">
 				<div class="name primary">{{ 'hello' | translate }}, {{ login.fName }}!</div>
@@ -26,7 +28,7 @@
 			[ngClass]="{
 				primary: mgr.screen === s,
 				selected: mgr.screen === s,
-				disabled: (s.requiresTpLib && !tpOnline) || (s.autoModeOnly && stat.mode !== 'A')
+				disabled: mgr.isScreenDisabled(s)
 			}"
 		>
 			<mat-icon>{{ s.icon }}</mat-icon>

@@ -19,11 +19,7 @@
 	<mat-card-subtitle>Select ControlStudio+ theme</mat-card-subtitle>
 	<mat-card-content>
 		<mat-form-field>
-			<mat-select
-				placeholder="Theme"
-				[value]="env.platform.name"
-				(selectionChange)="changeTheme($event)"
-			>
+			<mat-select placeholder="Theme" [value]="env.platform.name" (selectionChange)="changeTheme($event)">
 				<mat-option value="{{ env.platforms.Servotronix.name }}">Servotronix</mat-option>
 				<mat-option value="{{ env.platforms.Kuka.name }}">Kuka</mat-option>
 			</mat-select>

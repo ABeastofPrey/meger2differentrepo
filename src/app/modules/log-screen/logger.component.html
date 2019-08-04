@@ -1,10 +1,19 @@
-<mat-list>
-	<h3 mat-subheader>{{ 'softMC_log' | translate }}</h3>
-	<mat-list-item *ngFor="let l of log">
-		<div class="profile-pic" mat-list-icon>
-			<img [src]="l.profilePic" />
-		</div>
-		<p mat-line class="mat-subtitle-color">{{ l.username }} | {{ l.time | date }}</p>
-		<h4 mat-line class="mat-title-color">{{ l.msg }}</h4>
-	</mat-list-item>
-</mat-list>
+<h2 mat-subheader>{{ 'softMC_log' | translate }}</h2>
+<div class="wrapper">
+	<mat-list>
+		<mat-list-item *ngFor="let l of log">
+			<div class="profile-pic" mat-list-icon>
+				<img [src]="l.profilePic" />
+			</div>
+			<p mat-line class="mat-subtitle-color">{{ l.username }} | {{ l.time | date }}</p>
+			<h4 mat-line class="mat-title-color">{{ l.msg }}</h4>
+		</mat-list-item>
+	</mat-list>
+	<mat-list style="border-left: 1px solid #ccc;" *ngIf="stat.errorHistory.length">
+		<h3 mat-subheader>TP</h3>
+		<mat-list-item *ngFor="let e of stat.errorHistory" style="border-bottom: 1px solid #ccc;">
+			<p mat-line class="mat-subtitle-color">{{ e.time | date: 'HH:mm:ss' }}</p>
+			<p mat-line class="mat-title-color">{{ e.err }}</p>
+		</mat-list-item>
+	</mat-list>
+</div>

@@ -8,9 +8,12 @@ import { MainRoutingModule } from './main-routing.module';
 import { MainAuthResolver } from './main-auth-resolver.service';
 import { TerminalWindowComponent } from './components/terminal-window/terminal-window.component';
 import { HomeScreenModule } from '../home-screen/home-screen.module';
-import { CoordinatesComponent } from './components/coordinates/coordinates.component';
 import { ProgramEditorModule } from '../program-editor/program-editor.module';
 import { PermissionGuardService } from '../configuration/permission-guard.service';
+import { RecordGraphComponent } from '../../components/record-graph/record-graph.component';
+import { GraphDerivativeComponent } from '../../components/graph-derivative/graph-derivative.component';
+import { FileSelectorDialogComponent } from '../../components/file-selector-dialog/file-selector-dialog.component';
+import { StxsimNgModule } from 'stxsim-ng';
 
 @NgModule({
   imports: [
@@ -18,6 +21,7 @@ import { PermissionGuardService } from '../configuration/permission-guard.servic
     MainRoutingModule,
     HomeScreenModule,
     ProgramEditorModule,
+    StxsimNgModule,
   ],
   declarations: [
     MainComponent,
@@ -25,8 +29,15 @@ import { PermissionGuardService } from '../configuration/permission-guard.servic
     NotificationWindowComponent,
     WatchWindowComponent,
     TerminalWindowComponent,
-    CoordinatesComponent,
+    RecordGraphComponent,
+    GraphDerivativeComponent,
+    FileSelectorDialogComponent,
   ],
   providers: [MainAuthResolver, PermissionGuardService],
+  entryComponents: [
+    RecordGraphComponent,
+    GraphDerivativeComponent,
+    FileSelectorDialogComponent,
+  ],
 })
 export class MainModule {}

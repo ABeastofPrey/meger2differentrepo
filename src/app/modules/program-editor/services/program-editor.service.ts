@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  EventEmitter,
-  ApplicationRef,
-  NgZone,
-} from '@angular/core';
+import { Injectable, EventEmitter, NgZone } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import {
   MCFile,
@@ -48,6 +43,7 @@ export class ProgramEditorService {
   fileRef: any = null; // A reference to the project file which is active
   backtrace: Backtrace = null; // The last backtrace
   isLib: boolean = false; // True if the active file is a library
+  busy: boolean = false; // TRUE WHEN THE SERVICE IS BUSY (I.E: LOADING APP)
 
   // TABS
   tabs: FileTab[] = [];
@@ -153,7 +149,7 @@ export class ProgramEditorService {
 
   onTabChange(i: number) {
     const tab = this.tabs[i];
-    this.setFile(tab.file, tab.path, null, -1);
+    if (tab) this.setFile(tab.file, tab.path, null, -1);
   }
 
   setFile(f: string, path: string, ref: any, line: number, bt?: Backtrace) {
@@ -330,6 +326,7 @@ export class ProgramEditorService {
 
   load() {
     if (this.activeFile === null) return;
+    this.busy = true;
     const path = this.activeFilePath || '';
     this.api
       .uploadToPath(
@@ -350,6 +347,7 @@ export class ProgramEditorService {
               .then((ret: MCQueryResponse) => {
                 if (ret.result !== '0') this.getTRNERR(null);
                 else this.errors = [];
+                this.busy = false;
               });
             return;
           }
@@ -358,6 +356,7 @@ export class ProgramEditorService {
             .then((ret: MCQueryResponse) => {
               if (ret.err) this.getTRNERR(ret.err.errMsg);
               else this.errors = [];
+              this.busy = false;
             });
         } else {
           const words = [
@@ -383,6 +382,7 @@ export class ProgramEditorService {
                 );
                 break;
             }
+            this.busy = false;
           });
         }
       });
@@ -410,28 +410,39 @@ export class ProgramEditorService {
 
   kill() {
     if (this.activeFile === null) return;
+    this.busy = true;
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
-      this.ws.query('?tp_reset_app("' + prj + '","' + file + '")');
+      this.ws.query('?tp_reset_app("' + prj + '","' + file + '")').then(() => {
+        this.busy = false;
+      });
       return;
     }
-    this.ws.query('KillTask ' + this.activeFile);
+    this.ws.query('KillTask ' + this.activeFile).then(() => {
+      this.busy = false;
+    });
   }
 
   idle() {
     if (this.activeFile === null) return;
+    this.busy = true;
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
-      this.ws.query('?tp_pause_app("' + prj + '","' + file + '")');
+      this.ws.query('?tp_pause_app("' + prj + '","' + file + '")').then(() => {
+        this.busy = false;
+      });
       return;
     }
-    this.ws.query('IdleTask ' + this.activeFile);
+    this.ws.query('IdleTask ' + this.activeFile).then(() => {
+      this.busy = false;
+    });
   }
 
   unload() {
     if (this.activeFile === null) return;
+    this.busy = true;
     this.ws.query('KillTask ' + this.activeFile).then(() => {
       this.ws
         .query('Unload ' + this.activeFile)
@@ -439,43 +450,65 @@ export class ProgramEditorService {
           if (ret.result.length > 0) {
             this.snack.open(ret.result, '', { duration: 2000 });
           }
+          this.busy = false;
         });
     });
   }
 
   stepOver() {
     if (this.activeFile === null) return;
+    this.busy = true;
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
-      this.ws.query('?tp_step_over_app("' + prj + '","' + file + '")');
+      this.ws
+        .query('?tp_step_over_app("' + prj + '","' + file + '")')
+        .then(() => {
+          this.busy = false;
+        });
       return;
     }
-    this.ws.query('StepOver ' + this.activeFile);
+    this.ws.query('StepOver ' + this.activeFile).then(() => {
+      this.busy = false;
+    });
   }
 
   stepInto() {
     if (this.activeFile === null) return;
+    this.busy = true;
     this.stepMode = true;
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
-      this.ws.query('?tp_step_in_app("' + prj + '","' + file + '")');
+      this.ws
+        .query('?tp_step_in_app("' + prj + '","' + file + '")')
+        .then(() => {
+          this.busy = false;
+        });
       return;
     }
-    this.ws.query('StepIn ' + this.activeFile);
+    this.ws.query('StepIn ' + this.activeFile).then(() => {
+      this.busy = false;
+    });
   }
 
   stepOut() {
     if (this.activeFile === null) return;
+    this.busy = true;
     this.stepMode = true;
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
-      this.ws.query('?tp_step_out_app("' + prj + '","' + file + '")');
+      this.ws
+        .query('?tp_step_out_app("' + prj + '","' + file + '")')
+        .then(() => {
+          this.busy = false;
+        });
       return;
     }
-    this.ws.query('StepOut ' + this.activeFile);
+    this.ws.query('StepOut ' + this.activeFile).then(() => {
+      this.busy = false;
+    });
   }
 
   download() {
@@ -513,7 +546,8 @@ export class ProgramEditorService {
     let cmd: string;
     if (this.isLib) {
       cmd = '?' + file + '.dummyVariable';
-    } else if (this.stat.onlineStatus.value) { // TP.LIB ONLINE
+    } else if (this.stat.onlineStatus.value) {
+      // TP.LIB ONLINE
       cmd = 'cyc4,' + file;
     } else {
       cmd = '?' + file + '.status';

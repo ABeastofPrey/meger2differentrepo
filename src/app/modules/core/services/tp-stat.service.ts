@@ -8,7 +8,6 @@ import {
   MatDialog,
   MatSnackBar,
   MatButtonToggleChange,
-  MatButtonToggle,
 } from '@angular/material';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { ErrorDialogComponent } from '../../../components/error-dialog/error-dialog.component';
@@ -38,9 +37,13 @@ const refreshRate = 200;
 @Injectable()
 export class TpStatService {
   modeChanged: EventEmitter<any> = new EventEmitter();
+  onProjectLoaded: EventEmitter<boolean> = new EventEmitter();
   onlineStatus: BehaviorSubject<boolean> = new BehaviorSubject(false);
   get jogEnabled() {
     return this.mode !== 'A';
+  }
+  get errorHistory() {
+    return this._tpStatErrorHistory;
   }
 
   private _online: boolean = false;
@@ -51,7 +54,7 @@ export class TpStatService {
   private lastErrString: string = null;
   private _virtualDeadman: boolean = false;
   private _virtualModeSelector: string = 'A';
-
+  private _tpStatErrorHistory: TpStatError[] = [];
   private words: any;
 
   _enabled: boolean;
@@ -120,11 +123,16 @@ export class TpStatService {
     return this._switch;
   }
   set mode(mode: string) {
+    if (!environment.production) console.log(this.mode + ' --> ' + mode);
     let oldStat = this.mode;
+    if (oldStat === mode) return;
     this.ws
       .query('?tp_set_switch_mode("' + mode + '")')
       .then((ret: MCQueryResponse) => {
+        if (!environment.production) console.log(ret);
         if (ret.result !== '0') {
+          console.log(ret);
+          console.log('oldStat:' + oldStat);
           this._virtualModeSelector = oldStat;
           this._switch = this._virtualModeSelector;
           if (this._switch == null) {
@@ -201,8 +209,11 @@ export class TpStatService {
         this._deadman = this._virtualDeadman;
       else this._deadman = stat.DEADMAN == 1;
 
-      if (typeof stat.SWITCH === 'undefined') {
-        this._switch = this._virtualModeSelector;
+      if (typeof stat.SWITCH === 'undefined' || !this.cmn.isTablet) {
+        if (this._switch !== this._virtualModeSelector) {
+          this._switch = this._virtualModeSelector;
+          this.modeChanged.emit(this._switch);
+        }
       } else {
         if (this._switch !== stat.SWITCH) this.modeChanged.emit(this._switch);
         this._switch = stat.SWITCH;
@@ -212,6 +223,10 @@ export class TpStatService {
         this.lastErrString = this.errorString;
         const err = this.errorString.trim();
         if (err.length > 0) {
+          this._tpStatErrorHistory.push({
+            time: new Date().getTime(),
+            err: err,
+          });
           this.zone.run(() => {
             setTimeout(() => {
               this.snack
@@ -308,16 +323,6 @@ export class TpStatService {
     private cmn: CommonService,
     private login: LoginService
   ) {
-    this.onlineStatus.subscribe(stat => {
-      if (stat) {
-        // TP ONLINE
-        const cmd = '?tp_set_language("' + this.trn.currentLang + '")';
-        this.ws.query(cmd).then((ret: MCQueryResponse) => {
-          if (ret.err || ret.result !== '0')
-            console.log('LANG ERR', ret.result);
-        });
-      }
-    });
     this.trn
       .get(['acknowledge', 'offline', 'online', 'password_err'])
       .subscribe(words => {
@@ -337,28 +342,47 @@ export class TpStatService {
       } else if (this._online) {
         this.onlineStatus.next(false);
         this._online = false;
+        this._tpStatErrorHistory = [];
       }
     });
     this.onlineStatus.subscribe(stat => {
       if (stat) {
         // TP_VER is OK
-        // START KEEPALIVE
-        this.interval = this.ws.send(
-          'cyc0',
-          true,
-          (res: string, cmd, err) => {
-            if (err && this._online) {
-              this.ws.clearInterval(this.interval);
-              this.onlineStatus.next(false);
-              this._online = false;
-              this.startTpLibChecker();
-            } else if (!err) {
-              this.updateState(res);
-            }
-          },
-          refreshRate
-        );
+        const cmd = '?tp_set_language("' + this.trn.currentLang + '")';
+        this.ws.query(cmd).then((ret: MCQueryResponse) => {
+          if (ret.err || ret.result !== '0')
+            console.log('LANG ERR', ret.result);
+        });
       }
     });
+    this.onProjectLoaded.subscribe(loaded => {
+      this.ws.clearInterval(this.interval);
+      if (loaded) this.startKeepAlive();
+    });
   }
+
+  private startKeepAlive() {
+    // START KEEPALIVE
+    this.ws.clearInterval(this.interval);
+    this.interval = this.ws.send(
+      'cyc0',
+      true,
+      (res: string, cmd, err) => {
+        if (err && this._online) {
+          this.ws.clearInterval(this.interval);
+          this.onlineStatus.next(false);
+          this._online = false;
+          this.startTpLibChecker();
+        } else if (!err) {
+          this.updateState(res);
+        }
+      },
+      refreshRate
+    );
+  }
+}
+
+interface TpStatError {
+  time: number;
+  err: string;
 }

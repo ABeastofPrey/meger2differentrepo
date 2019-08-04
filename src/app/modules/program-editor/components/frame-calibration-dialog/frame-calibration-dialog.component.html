@@ -1,11 +1,11 @@
 <div class="mat-typography" style="margin: -24px;">
 	<div class="header mat-toolbar mat-primary mat-elevation-z3">
-		<button mat-button (click)="closeDialog()">
-			<mat-icon>close</mat-icon>
-		</button>
 		<div class="title">
 			{{ ('frames.calibration.title' | translate) + ' ' + varName }}
 		</div>
+		<button mat-button (click)="closeDialog()">
+			<mat-icon>close</mat-icon>
+		</button>
 	</div>
 	<div class="content">
 		<table>
@@ -28,12 +28,7 @@
 			<tr>
 				<td>{{ 'frames.calibration.posX' | translate }}</td>
 				<td>
-					<button
-						mat-raised-button
-						color="primary"
-						(click)="teach(2)"
-						[disabled]="!positionOK[0] || positionOK[1]"
-					>
+					<button mat-raised-button color="primary" (click)="teach(2)" [disabled]="!positionOK[0] || positionOK[1]">
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>
@@ -49,12 +44,7 @@
 			<tr>
 				<td>{{ 'frames.calibration.posY' | translate }}</td>
 				<td>
-					<button
-						mat-raised-button
-						color="primary"
-						(click)="teach(3)"
-						[disabled]="!positionOK[1] || positionOK[2]"
-					>
+					<button mat-raised-button color="primary" (click)="teach(3)" [disabled]="!positionOK[1] || positionOK[2]">
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>
@@ -69,9 +59,7 @@
 			</tr>
 		</table>
 
-		<mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{
-			'frames.calibration.set' | translate
-		}}</mat-checkbox>
+		<mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{ 'frames.calibration.set' | translate }}</mat-checkbox>
 		<div style="width: 100%; text-align: center; margin-top: 16px;">
 			<button
 				mat-raised-button

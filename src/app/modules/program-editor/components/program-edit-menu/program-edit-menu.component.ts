@@ -247,11 +247,10 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_move(moves: boolean, params?: any) {
     let ref = this.dialog.open(MoveDialogComponent, {
       width: '400px',
-        data: {moveS: moves, params: params},
-        disableClose: true
-      }
-    );
-    ref.afterClosed().subscribe((cmd:string)=>{
+      data: { moveS: moves, params: params },
+      disableClose: true,
+    });
+    ref.afterClosed().subscribe((cmd: string) => {
       if (cmd) {
         if (params) {
           let index = params['line']; // Line index
@@ -265,11 +264,10 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_circle(angle: boolean, params?: any) {
     let ref = this.dialog.open(CircleDialogComponent, {
       width: '400px',
-        data: {angle: angle, params: params},
-        disableClose: true
-      }
-    );
-    ref.afterClosed().subscribe((cmd:string)=>{
+      data: { angle: angle, params: params },
+      disableClose: true,
+    });
+    ref.afterClosed().subscribe((cmd: string) => {
       if (cmd) {
         if (params) {
           let index = params['line']; // Line index

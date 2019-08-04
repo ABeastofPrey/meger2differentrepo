@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { MCProject, Limit } from '../models/project/mc-project.model';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { BehaviorSubject } from 'rxjs';
@@ -38,18 +38,21 @@ export class ProjectManagerService {
     private snack: MatSnackBar,
     private mgr: ScreenManagerService,
     private trn: TranslateService,
-    private stat: TpStatService
+    private stat: TpStatService,
+    private zone: NgZone
   ) {
     this.trn.get('changeOK').subscribe(words => {
       this.words = words;
     });
     this.data.dataLoaded.subscribe(ret => {
-      if (ret) {
-        this.getCurrentProject();
-      } else {
-        clearInterval(this.interval);
-        this.currProject.next(null);
-      }
+      this.zone.run(() => {
+        if (ret) {
+          this.getCurrentProject();
+        } else {
+          clearInterval(this.interval);
+          this.currProject.next(null);
+        }
+      });
     });
     this.ws.isConnected.subscribe(stat => {
       if (!stat) {
@@ -67,6 +70,7 @@ export class ProjectManagerService {
     this.stopStatusRefresh();
     this.currProject.next(null);
     this.oldStat = null;
+    this.stat.onProjectLoaded.emit(false);
   }
 
   stopStatusRefresh() {
@@ -75,7 +79,7 @@ export class ProjectManagerService {
 
   getProjectStatus() {
     if (this.interval) clearInterval(this.interval);
-    this.activeProject = false;
+    this.oldStat = null;
     let waiting: boolean = false;
     this.interval = setInterval(() => {
       if (waiting) return;
@@ -89,6 +93,7 @@ export class ProjectManagerService {
             this.oldStat = ret.result;
             if (ret.result.length === 0) {
               this.activeProject = false;
+              this.mgr.projectActiveStatusChange.next(this.activeProject);
               for (let app of this.currProject.value.apps) {
                 app.status = -1;
               }
@@ -112,10 +117,13 @@ export class ProjectManagerService {
               const code = Number(status.shift());
               if (this.currProject.value.apps[i])
                 this.currProject.value.apps[i].status = code;
-              if (code !== -1) activeProject = true;
+              if (code !== -1) {
+                activeProject = true;
+              }
               i++;
             }
             this.activeProject = activeProject;
+            this.mgr.projectActiveStatusChange.next(this.activeProject);
             if (this.activeProject) this.mgr.closeControls();
             this.onAppStatusChange.next(null);
           });
@@ -177,22 +185,34 @@ export class ProjectManagerService {
             return this.loadProgramSettings(proj);
           })
           .then(() => {
+            return this.refreshDependencies(proj);
+          })
+          .then(() => {
             this.isLoading = false;
             this.currProject.next(proj);
+            this.stat.onProjectLoaded.emit(true);
           });
       });
+  }
+
+  private refreshDependencies(proj: MCProject): Promise<any> {
+    return Promise.resolve();
   }
 
   private refreshAppIds(proj: MCProject): Promise<any> {
     let promises: Promise<any>[] = [];
     for (let app of proj.apps) {
       promises.push(this.ws.query('?TP_GET_APP_ID("' + app.name + '")'));
-      promises.push(this.ws.query('?PRJ_GET_APP_DESCRIPTION("' + proj.name + '","' + app.name + '")'));
+      promises.push(
+        this.ws.query(
+          '?PRJ_GET_APP_DESCRIPTION("' + proj.name + '","' + app.name + '")'
+        )
+      );
     }
     return Promise.all(promises).then((results: MCQueryResponse[]) => {
-      for (let i = 0; i < results.length; i+=2) {
-        proj.apps[i/2].id = Number(results[i].result);
-        proj.apps[i/2].desc = results[i+1].result;
+      for (let i = 0; i < results.length; i += 2) {
+        proj.apps[i / 2].id = Number(results[i].result);
+        proj.apps[i / 2].desc = results[i + 1].result;
       }
     });
   }

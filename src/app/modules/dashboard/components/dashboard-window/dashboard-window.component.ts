@@ -156,13 +156,13 @@ export class DashboardWindowComponent implements OnInit {
       if (params) {
         this.dashboard.lastChartData = null;
         let varList: string[] = [];
-        if (!params.advanced && params.is3D) {
+        if (params.graphType === '3d') {
           varList = [
             this.params.name + '.' + params.x,
             this.params.name + '.' + params.y,
             this.params.name + '.' + params.z,
           ];
-        } else if (params.advanced) {
+        } else if (params.graphType === '2da') {
           varList = [
             this.params.name + '.' + params.x,
             this.params.name + '.' + params.y,
@@ -194,9 +194,12 @@ export class DashboardWindowComponent implements OnInit {
             let interval = setInterval(() => {
               time += 200;
               this.params.recordingTime = (time / params.duration) * 100;
-              if (this.params.recordingTime >= 100 || !this.params.isRecording) {
+              if (
+                this.params.recordingTime >= 100 ||
+                !this.params.isRecording
+              ) {
                 clearInterval(interval);
-                this.onRecordFinish(params.is3D, params.advanced);
+                this.onRecordFinish(params.graphType);
                 this.params.recordingTime = 0;
               }
             }, 200);
@@ -212,11 +215,11 @@ export class DashboardWindowComponent implements OnInit {
     this.ws.query('RecordClose');
   }
 
-  onRecordFinish(is3D: boolean, isAdvanced: boolean) {
+  onRecordFinish(graphType: string) {
     this.stop();
     setTimeout(() => {
       // ALLOW TIME FOR RECORDING TO CLOSE FILE
-      this.dashboard.showGraphDialog(is3D, isAdvanced);
+      this.dashboard.showGraphDialog(graphType);
     }, 400);
   }
 }

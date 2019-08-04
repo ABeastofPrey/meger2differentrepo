@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RecordGraphComponent } from './record-graph.component';
+import { TpLoadingComponent } from './tp-loading.component';
 
-describe('RecordGraphComponent', () => {
-  let component: RecordGraphComponent;
-  let fixture: ComponentFixture<RecordGraphComponent>;
+describe('TpLoadingComponent', () => {
+  let component: TpLoadingComponent;
+  let fixture: ComponentFixture<TpLoadingComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RecordGraphComponent],
+      declarations: [TpLoadingComponent],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RecordGraphComponent);
+    fixture = TestBed.createComponent(TpLoadingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

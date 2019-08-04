@@ -6,7 +6,7 @@ import { environment as env } from '../../../environments/environment';
 @Component({
   selector: 'app-license-dialog',
   templateUrl: './license-dialog.component.html',
-  styleUrls: ['./license-dialog.component.css']
+  styleUrls: ['./license-dialog.component.css'],
 })
 export class LicenseDialogComponent implements OnInit {
   license: string = null;

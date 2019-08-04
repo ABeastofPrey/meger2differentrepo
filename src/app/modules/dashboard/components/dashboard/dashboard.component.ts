@@ -5,7 +5,7 @@ import { ExternalGraphDialogComponent } from '../external-graph-dialog/external-
 import { DashboardService } from '../../services/dashboard.service';
 import { ApiService } from '../../../../modules/core/services/api.service';
 import { TourService } from 'ngx-tour-md-menu';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import {
   trigger,
   transition,
@@ -16,6 +16,7 @@ import {
   query,
 } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
   selector: 'dashboard-screen',
@@ -35,7 +36,7 @@ import { TranslateService } from '@ngx-translate/core';
   ],
 })
 export class DashboardComponent implements OnInit {
-  private sub: Subscription;
+  private notifier: Subject<boolean> = new Subject();
   private words: any;
 
   constructor(
@@ -51,14 +52,15 @@ export class DashboardComponent implements OnInit {
     this.trn.get(['dashboard.err_file', 'dismiss']).subscribe(words => {
       this.words = words;
     });
-    this.sub = this.tour.stepShow$.subscribe(step => {
+    this.tour.stepShow$.pipe(takeUntil(this.notifier)).subscribe(step => {
       if (step.anchorId === 'dashboard-fab') {
         setTimeout(() => {
           this.dashboard.add({
             name: 'SCARA (Tour)',
             axes: ['A1', 'A2', 'A3', 'A4'],
           });
-          this.sub.unsubscribe();
+          this.notifier.next(true);
+          this.notifier.unsubscribe();
         }, 200);
       }
     });

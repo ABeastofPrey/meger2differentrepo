@@ -1,19 +1,9 @@
 <div class="wrapper">
 	<div class="toolbar center-vertical mat-elevation-z3" *ngIf="login.isAdmin">
-		<button
-			mat-raised-button
-			color="primary"
-			(click)="create()"
-			matTooltip="{{ 'userManager.new' | translate }}"
-		>
+		<button mat-raised-button color="primary" (click)="create()" matTooltip="{{ 'userManager.new' | translate }}">
 			<mat-icon>person_add</mat-icon>
 		</button>
-		<button
-			mat-raised-button
-			color="warn"
-			[disabled]="selection.selected.length === 0"
-			(click)="deleteSelected()"
-		>
+		<button mat-raised-button color="warn" [disabled]="selection.selected.length === 0" (click)="deleteSelected()">
 			<mat-icon>delete_forever</mat-icon>
 		</button>
 	</div>
@@ -41,9 +31,7 @@
 			</mat-cell>
 		</ng-container>
 		<ng-container matColumnDef="pic">
-			<mat-header-cell *matHeaderCellDef>{{
-				'userManager.profilePic' | translate
-			}}</mat-header-cell>
+			<mat-header-cell *matHeaderCellDef>{{ 'userManager.profilePic' | translate }}</mat-header-cell>
 			<mat-cell *matCellDef="let element">
 				<div class="profile-pic">
 					<img [src]="element.pic" />

@@ -13,9 +13,7 @@
 								<td>{{ 'projectSettings.apps.en' | translate }}</td>
 								<td class="center-vertical">
 									{{ 'projectSettings.apps.id' | translate }}
-									<mat-icon matTooltip="{{ 'projectSettings.apps.id_tooltip' | translate }}"
-										>help</mat-icon
-									>
+									<mat-icon matTooltip="{{ 'projectSettings.apps.id_tooltip' | translate }}">help</mat-icon>
 								</td>
 								<td>{{ 'projectSettings.apps.cyclic' | translate }}</td>
 							</tr>
@@ -23,10 +21,7 @@
 						<tbody>
 							<tr *ngFor="let app of prj.currProject.value.apps">
 								<td>
-									<mat-checkbox
-										color="primary"
-										[checked]="app.active"
-										(change)="toggleActiveApp(app, 'active')"
+									<mat-checkbox color="primary" [checked]="app.active" (change)="toggleActiveApp(app, 'active')"
 										>{{ app.name }}
 									</mat-checkbox>
 								</td>
@@ -61,9 +56,7 @@
 		<mat-expansion-panel #motionParametersPanel>
 			<mat-expansion-panel-header>
 				<mat-panel-title>{{ 'projectSettings.motion_params.title' | translate }}</mat-panel-title>
-				<mat-panel-description>{{
-					'projectSettings.motion_params.desc' | translate
-				}}</mat-panel-description>
+				<mat-panel-description>{{ 'projectSettings.motion_params.desc' | translate }}</mat-panel-description>
 			</mat-expansion-panel-header>
 			<div class="content" *ngIf="motionParametersPanel.expanded">
 				<mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
@@ -109,9 +102,7 @@
 		<mat-expansion-panel #motionFramesPanel>
 			<mat-expansion-panel-header>
 				<mat-panel-title>{{ 'projectSettings.motion_frames.title' | translate }}</mat-panel-title>
-				<mat-panel-description>{{
-					'projectSettings.motion_frames.desc' | translate
-				}}</mat-panel-description>
+				<mat-panel-description>{{ 'projectSettings.motion_frames.desc' | translate }}</mat-panel-description>
 			</mat-expansion-panel-header>
 			<div class="content" *ngIf="motionFramesPanel.expanded">
 				<mat-form-field>
@@ -120,9 +111,7 @@
 						[(ngModel)]="prj.currProject.value.settings.tool"
 						(selectionChange)="prj.onProgramSettingChanged('tool')"
 					>
-						<mat-option *ngFor="let item of dataService.tools" value="{{ item }}">{{
-							item
-						}}</mat-option>
+						<mat-option *ngFor="let item of dataService.tools" value="{{ item }}">{{ item }}</mat-option>
 					</mat-select>
 				</mat-form-field>
 				<mat-form-field>
@@ -131,9 +120,7 @@
 						[(ngModel)]="prj.currProject.value.settings.base"
 						(selectionChange)="prj.onProgramSettingChanged('base')"
 					>
-						<mat-option *ngFor="let item of dataService.bases" value="{{ item }}">{{
-							item
-						}}</mat-option>
+						<mat-option *ngFor="let item of dataService.bases" value="{{ item }}">{{ item }}</mat-option>
 					</mat-select>
 				</mat-form-field>
 				<mat-form-field>
@@ -142,9 +129,7 @@
 						[(ngModel)]="prj.currProject.value.settings.mtable"
 						(selectionChange)="prj.onProgramSettingChanged('mtable')"
 					>
-						<mat-option *ngFor="let item of dataService.machineTables" value="{{ item }}">{{
-							item
-						}}</mat-option>
+						<mat-option *ngFor="let item of dataService.machineTables" value="{{ item }}">{{ item }}</mat-option>
 					</mat-select>
 				</mat-form-field>
 				<mat-form-field>
@@ -153,9 +138,7 @@
 						[(ngModel)]="prj.currProject.value.settings.wpiece"
 						(selectionChange)="prj.onProgramSettingChanged('wpiece')"
 					>
-						<mat-option *ngFor="let item of dataService.workPieces" value="{{ item }}">{{
-							item
-						}}</mat-option>
+						<mat-option *ngFor="let item of dataService.workPieces" value="{{ item }}">{{ item }}</mat-option>
 					</mat-select>
 				</mat-form-field>
 			</div>
@@ -179,9 +162,7 @@
 									virtualKeyboard
 									ktype="numeric"
 									(change)="prj.onLimitChanged(p.name + 'min', $event, 'J' + (i + 1), p.min, p)"
-									(onKeyboardClose)="
-										prj.onLimitChanged(p.name + 'min', $event, 'J' + (i + 1), p.min, p)
-									"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'min', $event, 'J' + (i + 1), p.min, p)"
 								/>
 								<div matSuffix>{{ p.unit }}</div>
 							</mat-form-field>
@@ -196,9 +177,7 @@
 									virtualKeyboard
 									ktype="numeric"
 									(change)="prj.onLimitChanged(p.name + 'max', $event, 'J' + (i + 1), p.max, p)"
-									(onKeyboardClose)="
-										prj.onLimitChanged(p.name + 'max', $event, 'J' + (i + 1), p.max, p)
-									"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'max', $event, 'J' + (i + 1), p.max, p)"
 								/>
 								<div matSuffix>{{ p.unit }}</div>
 							</mat-form-field>
@@ -210,9 +189,7 @@
 		<mat-expansion-panel #wordLimitsPanel>
 			<mat-expansion-panel-header>
 				<mat-panel-title>{{ 'projectSettings.world.title' | translate }}</mat-panel-title>
-				<mat-panel-description>{{
-					'projectSettings.world.desc' | translate
-				}}</mat-panel-description>
+				<mat-panel-description>{{ 'projectSettings.world.desc' | translate }}</mat-panel-description>
 			</mat-expansion-panel-header>
 			<div class="content" *ngIf="wordLimitsPanel.expanded">
 				<table class="limits">
@@ -353,9 +330,7 @@
 									virtualKeyboard
 									ktype="numeric"
 									(change)="prj.onLimitChanged(p.name + 'min', $event, 'machinetable', p.min, p)"
-									(onKeyboardClose)="
-										prj.onLimitChanged(p.name + 'min', $event, 'machinetable', p.min, p)
-									"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'min', $event, 'machinetable', p.min, p)"
 								/>
 								<div matSuffix>{{ p.unit }}</div>
 							</mat-form-field>
@@ -370,9 +345,7 @@
 									virtualKeyboard
 									ktype="numeric"
 									(change)="prj.onLimitChanged(p.name + 'max', $event, 'machinetable', p.max, p)"
-									(onKeyboardClose)="
-										prj.onLimitChanged(p.name + 'max', $event, 'machinetable', p.max, p)
-									"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'max', $event, 'machinetable', p.max, p)"
 								/>
 								<div matSuffix>{{ p.unit }}</div>
 							</mat-form-field>
@@ -399,9 +372,7 @@
 									virtualKeyboard
 									ktype="numeric"
 									(change)="prj.onLimitChanged(p.name + 'min', $event, 'workpiece', p.min, p)"
-									(onKeyboardClose)="
-										prj.onLimitChanged(p.name + 'min', $event, 'workpiece', p.min, p)
-									"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'min', $event, 'workpiece', p.min, p)"
 								/>
 								<div matSuffix>{{ p.unit }}</div>
 							</mat-form-field>
@@ -416,9 +387,7 @@
 									virtualKeyboard
 									ktype="numeric"
 									(change)="prj.onLimitChanged(p.name + 'max', $event, 'workpiece', p.max, p)"
-									(onKeyboardClose)="
-										prj.onLimitChanged(p.name + 'max', $event, 'workpiece', p.max, p)
-									"
+									(onKeyboardClose)="prj.onLimitChanged(p.name + 'max', $event, 'workpiece', p.max, p)"
 								/>
 								<div matSuffix>{{ p.unit }}</div>
 							</mat-form-field>
@@ -439,12 +408,8 @@
 
 		<mat-expansion-panel #positionTriggerPanel>
 			<mat-expansion-panel-header>
-				<mat-panel-title>{{
-					'projectSettings.position_trigger.title' | translate
-				}}</mat-panel-title>
-				<mat-panel-description>{{
-					'projectSettings.position_trigger.desc' | translate
-				}}</mat-panel-description>
+				<mat-panel-title>{{ 'projectSettings.position_trigger.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.position_trigger.desc' | translate }}</mat-panel-description>
 			</mat-expansion-panel-header>
 			<div *ngIf="positionTriggerPanel.expanded">
 				<app-position-trigger></app-position-trigger>
@@ -454,9 +419,7 @@
 		<mat-expansion-panel #homeConfigPanel>
 			<mat-expansion-panel-header>
 				<mat-panel-title>{{ 'projectSettings.home_config.title' | translate }}</mat-panel-title>
-				<mat-panel-description>{{
-					'projectSettings.home_config.desc' | translate
-				}}</mat-panel-description>
+				<mat-panel-description>{{ 'projectSettings.home_config.desc' | translate }}</mat-panel-description>
 			</mat-expansion-panel-header>
 			<div *ngIf="homeConfigPanel.expanded">
 				<app-home-setting></app-home-setting>

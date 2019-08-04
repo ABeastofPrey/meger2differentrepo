@@ -10,7 +10,8 @@
 				placeholder="{{ data.placeholder }}"
 				[(ngModel)]="val"
 				virtualKeyboard
-				ktype="password"
+				[type]="data.type || 'text'"
+				[ktype]="data.type === 'number' ? 'numeric' : 'text'"
 				(onKeyboardClose)="create()"
 			/>
 			<span matSuffix *ngIf="data.suffix">{{ data.suffix }}</span>
@@ -20,12 +21,7 @@
 		<button mat-button color="primary" mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			(click)="create()"
-			[disabled]="val === null || val.length === 0"
-		>
+		<button mat-button color="primary" (click)="create()" [disabled]="!isValOk">
 			{{ data.accept }}
 		</button>
 	</div>

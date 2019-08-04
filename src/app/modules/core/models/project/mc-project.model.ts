@@ -33,7 +33,7 @@ export class MCProject {
         status: -1,
         id: -1,
         cyclic: parts[2] === '1',
-        desc: ''
+        desc: '',
       });
     }
   }

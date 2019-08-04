@@ -17,12 +17,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			(click)="rename()"
-			[disabled]="!name || name.length === 0 || submitting"
-		>
+		<button mat-button color="primary" (click)="rename()" [disabled]="!name || name.length === 0 || submitting">
 			{{ 'button.rename' | translate }}
 		</button>
 	</div>

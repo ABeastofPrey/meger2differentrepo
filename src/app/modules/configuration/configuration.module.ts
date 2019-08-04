@@ -41,18 +41,18 @@ import { ReleaseNoteComponent } from './components/version/release-note/release-
     ThirdPartyComponent,
     ReferenceMasteringComponent,
     VersionComponent,
-    ReleaseNoteComponent
+    ReleaseNoteComponent,
   ],
   providers: [
     IoService,
     TopologyService,
     ReferenceMasteringService,
-    PermissionGuardService
+    PermissionGuardService,
   ],
   entryComponents: [
     NewUserDialogComponent,
     GraphComponent,
-    ReleaseNoteComponent
-  ]
+    ReleaseNoteComponent,
+  ],
 })
 export class ConfigurationModule {}

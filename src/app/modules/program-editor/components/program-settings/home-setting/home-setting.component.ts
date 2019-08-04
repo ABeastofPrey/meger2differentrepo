@@ -18,6 +18,8 @@ import { Either } from 'ramda-fantasy';
 import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { Subject } from 'rxjs';
 
 const transferNum = ifElse(isEmpty, identity, Number);
 
@@ -33,10 +35,9 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
   private preValue: number | string;
   private preIndex: number;
   private min: number;
-  private max;
-  number;
-  private subscription: any;
+  private max: number;
   private words: any;
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     private service: HomeSettingService,
@@ -44,12 +45,12 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     private trn: TranslateService
   ) {
-    this.subscription = this.terminalService.sentCommandEmitter.subscribe(
-      cmd => {
+    this.terminalService.sentCommandEmitter
+      .pipe(takeUntil(this.notifier))
+      .subscribe(cmd => {
         this.retrieveOrder();
         this.retrievePosition();
-      }
-    );
+      });
   }
 
   ngOnInit(): void {
@@ -61,7 +62,8 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   private async retrievePosition(): Promise<void> {

@@ -12,21 +12,14 @@
 					ktype="text"
 				/>
 			</mat-form-field>
-			<mat-checkbox color="primary" [(ngModel)]="elseFlag">{{
-				'projectCommands.if.else' | translate
-			}}</mat-checkbox>
+			<mat-checkbox color="primary" [(ngModel)]="elseFlag">{{ 'projectCommands.if.else' | translate }}</mat-checkbox>
 		</div>
 	</div>
 	<div class="actions">
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			(click)="insert()"
-			[disabled]="expression === null || expression.length === 0"
-		>
+		<button mat-button color="primary" (click)="insert()" [disabled]="expression === null || expression.length === 0">
 			{{ 'button.insert' | translate }}
 		</button>
 	</div>

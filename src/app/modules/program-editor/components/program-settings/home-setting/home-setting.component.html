@@ -2,9 +2,7 @@
 	<!-- home position -->
 	<div class="home-position">
 		<span class="group-head">{{ 'projectSettings.home_config.homePosition' | translate }}</span>
-		<span *ngIf="positionList.length !== 0">{{
-			'projectSettings.home_config.degree' | translate
-		}}</span>
+		<span *ngIf="positionList.length !== 0">{{ 'projectSettings.home_config.degree' | translate }}</span>
 		<div class="items-container">
 			<mat-form-field *ngFor="let p of positionList; let i = index">
 				<span matPrefix>J{{ i + 1 }}: &nbsp;</span>
@@ -20,12 +18,7 @@
 				/>
 			</mat-form-field>
 		</div>
-		<button
-			*ngIf="positionList.length !== 0"
-			mat-raised-button
-			class="read-btn"
-			(click)="readCurrentPosition()"
-		>
+		<button *ngIf="positionList.length !== 0" mat-raised-button class="read-btn" (click)="readCurrentPosition()">
 			{{ 'projectSettings.home_config.curPositionBtn' | translate }}
 		</button>
 	</div>

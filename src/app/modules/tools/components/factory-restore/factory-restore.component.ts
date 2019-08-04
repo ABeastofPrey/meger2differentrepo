@@ -11,6 +11,8 @@ import {
 } from '../../../core';
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
   selector: 'app-factory-restore',
@@ -24,6 +26,7 @@ export class FactoryRestoreComponent implements OnInit {
   busy: boolean = false; // true when the dialog is busy checking user password
 
   private words: any;
+  private notifier: Subject<boolean> = new Subject();
 
   private _username: string;
   get username() {
@@ -40,13 +43,20 @@ export class FactoryRestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.robots.changed.subscribe((robot: RobotModel) => {
-      this.selectedRobot = robot;
-    });
+    this.robots.changed
+      .pipe(takeUntil(this.notifier))
+      .subscribe((robot: RobotModel) => {
+        this.selectedRobot = robot;
+      });
     this._username = this.login.getCurrentUser().user.username;
     this.trn.get('apps.restore').subscribe(words => {
       this.words = words;
     });
+  }
+
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   changeRobot() {
@@ -73,7 +83,10 @@ export class FactoryRestoreComponent implements OnInit {
           id: 'update',
         });
         // RESET LIBRARIES
-        const cmd = '?FACTORY_RESET_SELECT_ROBOT("' + this.selectedRobot.part_number + '",0)';
+        const cmd =
+          '?FACTORY_RESET_SELECT_ROBOT("' +
+          this.selectedRobot.part_number +
+          '",0)';
         //const cmd = '?0'; // TODO: REPLACE THIS
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
           if (ret.result === '0') {

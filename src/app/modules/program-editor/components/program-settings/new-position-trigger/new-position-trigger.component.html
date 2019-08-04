@@ -4,9 +4,7 @@
 			<span matPrefix>{{ namePrefix }} &nbsp;</span>
 			<input
 				matInput
-				placeholder="{{
-					'projectSettings.position_trigger.newPositionTrigger.namePlaceholder' | translate
-				}}"
+				placeholder="{{ 'projectSettings.position_trigger.newPositionTrigger.namePlaceholder' | translate }}"
 				[(ngModel)]="name"
 				[formControl]="nameControl"
 				[errorStateMatcher]="nameMatcher"
@@ -15,9 +13,7 @@
 				virtualKeyboard
 				ktype="text"
 			/>
-			<mat-error>{{
-				'projectSettings.position_trigger.newPositionTrigger.requireErr' | translate
-			}}</mat-error>
+			<mat-error>{{ 'projectSettings.position_trigger.newPositionTrigger.requireErr' | translate }}</mat-error>
 		</mat-form-field>
 	</div>
 	<div mat-dialog-actions class="actions">

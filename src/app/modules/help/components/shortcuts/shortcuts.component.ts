@@ -35,6 +35,10 @@ export class ShortcutsComponent implements OnInit {
           keys: 'CTRL + SPACE',
           desc: 'help.shortcuts.desc_autocomplete',
         },
+        {
+          keys: 'CTRL + /',
+          desc: 'help.shortcuts.toggle_comment',
+        },
       ],
     },
     {

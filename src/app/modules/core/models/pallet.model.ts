@@ -45,6 +45,7 @@ export class Pallet {
   retExceed: boolean = false;
   appExceed: boolean = false;
   dataFile: string = null;
+  flags: number[] = [0, 0, 0];
 }
 
 export class PalletLocation {
@@ -54,6 +55,7 @@ export class PalletLocation {
   yaw: number = null;
   pitch: number = null;
   roll: number = null;
+  flags: number[] = null;
 
   public toString = (): string => {
     return (

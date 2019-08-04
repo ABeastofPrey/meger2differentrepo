@@ -1,10 +1,10 @@
 <div class="mat-typography" style="margin: -24px;">
 	<div class="header mat-toolbar mat-primary mat-elevation-z3">
-		<button mat-button (click)="closeDialog()">
-			<mat-icon>close</mat-icon>
-		</button>
 		<div class="title">{{ ('calibrate' | translate) + ' ' + varName }}</div>
 	</div>
+	<button mat-button (click)="closeDialog()">
+		<mat-icon>close</mat-icon>
+	</button>
 	<div class="content">
 		<mat-radio-group [(ngModel)]="calibType" style="font-size: 1.5em;">
 			<mat-radio-button value="MULTIPLE_POINTS" style="margin-right: 1em;">{{
@@ -22,10 +22,8 @@
 		<div class="inner-content--wrapper">
 			<div *ngIf="calibType === 'MULTIPLE_POINTS'">
 				<div class="points-container">
-					<span [class.good]="pointsAdded >= maxPoints" [class.bad]="pointsAdded < maxPoints"
-						>{{ pointsAdded }} </span
-					><span *ngIf="pointsAdded < maxPoints">/ {{ maxPoints }} </span
-					>{{ 'tool_calib.pnts' | translate }}
+					<span [class.good]="pointsAdded >= maxPoints" [class.bad]="pointsAdded < maxPoints">{{ pointsAdded }} </span
+					><span *ngIf="pointsAdded < maxPoints">/ {{ maxPoints }} </span>{{ 'tool_calib.pnts' | translate }}
 				</div>
 				<div class="points-button-container">
 					<button

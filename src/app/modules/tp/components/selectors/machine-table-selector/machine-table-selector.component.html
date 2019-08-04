@@ -1,11 +1,5 @@
 <mat-form-field>
-	<mat-select
-		placeholder="{{ 'mt' | translate }}"
-		[(ngModel)]="dataService.selectedMachineTable"
-		[disabled]="disabled"
-	>
-		<mat-option *ngFor="let item of dataService.machineTables" value="{{ item }}">{{
-			item
-		}}</mat-option>
+	<mat-select placeholder="{{ 'mt' | translate }}" [(ngModel)]="dataService.selectedMachineTable" [disabled]="disabled">
+		<mat-option *ngFor="let item of dataService.machineTables" value="{{ item }}">{{ item }}</mat-option>
 	</mat-select>
 </mat-form-field>

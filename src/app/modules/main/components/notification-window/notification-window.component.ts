@@ -5,6 +5,8 @@ import { ErrorFrame } from '../../../core/models/error-frame.model';
 import { ProgramEditorService } from '../../../program-editor/services/program-editor.service';
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'notification-window',
@@ -32,6 +34,8 @@ export class NotificationWindowComponent implements OnInit {
   contextMenuY: number = 0;
   contextSelection: string = null;
 
+  private notifier: Subject<boolean> = new Subject();
+
   constructor(
     public notification: NotificationService,
     public login: LoginService,
@@ -41,10 +45,17 @@ export class NotificationWindowComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.notification.newMessage.subscribe(() => {
-      const objDiv = this.msgContainer.nativeElement;
-      objDiv.scrollTop = objDiv.scrollHeight;
-    });
+    this.notification.newMessage
+      .pipe(takeUntil(this.notifier))
+      .subscribe(() => {
+        const objDiv = this.msgContainer.nativeElement;
+        objDiv.scrollTop = objDiv.scrollHeight;
+      });
+  }
+
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   onContextMenu(e: MouseEvent) {

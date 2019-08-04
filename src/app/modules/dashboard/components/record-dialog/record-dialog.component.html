@@ -25,15 +25,9 @@
 				}}</mat-radio-button>
 			</mat-radio-group>
 			<div style="margin-top: 16px;" *ngIf="recMode === '3'">
-				<mat-form-field
-					><input placeholder="X" matInput [(ngModel)]="x" virtualKeyboard ktype="text"
-				/></mat-form-field>
-				<mat-form-field
-					><input placeholder="Y" matInput [(ngModel)]="y" virtualKeyboard ktype="text"
-				/></mat-form-field>
-				<mat-form-field
-					><input placeholder="Z" matInput [(ngModel)]="z" virtualKeyboard ktype="text"
-				/></mat-form-field>
+				<mat-form-field><input placeholder="X" matInput [(ngModel)]="x" virtualKeyboard ktype="text"/></mat-form-field>
+				<mat-form-field><input placeholder="Y" matInput [(ngModel)]="y" virtualKeyboard ktype="text"/></mat-form-field>
+				<mat-form-field><input placeholder="Z" matInput [(ngModel)]="z" virtualKeyboard ktype="text"/></mat-form-field>
 			</div>
 			<div style="margin-top: 16px;" *ngIf="recMode === '2'">
 				<mat-form-field
@@ -58,12 +52,7 @@
 				duration === null ||
 				duration < 10 ||
 				(recMode === '3' &&
-					(x === null ||
-						y === null ||
-						z === null ||
-						x.length === 0 ||
-						y.length === 0 ||
-						z.length === 0)) ||
+					(x === null || y === null || z === null || x.length === 0 || y.length === 0 || z.length === 0)) ||
 				(recMode === '2' && (x2D === null || y2D === null || x2D.length === 0 || y2D.length === 0))
 			"
 		>

@@ -2,9 +2,7 @@
 	<div class="wrapper">
 		<div class="title">{{ 'grippers.test' | translate }} {{ data.grp }}</div>
 		<div class="content">
-			<button mat-raised-button color="primary" (click)="open()">
-				{{ 'button.open' | translate }} {{ data.grp }}
-			</button>
+			<button mat-raised-button color="primary" (click)="open()">{{ 'button.open' | translate }} {{ data.grp }}</button>
 			<button mat-raised-button color="primary" (click)="close()">
 				{{ 'button.close' | translate }} {{ data.grp }}
 			</button>

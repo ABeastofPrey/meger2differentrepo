@@ -1,5 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MatInput, MatInputModule, MatDialog } from '@angular/material';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MatInput,
+  MatInputModule,
+  MatDialog,
+} from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
@@ -18,7 +24,6 @@ import { UnitTestModule } from '../../../../shared/unit-test.module';
  * It contains all the test specs to JumpDialogComponent.
  */
 describe('JumpDialogComponent', () => {
-
   /**
    * The JumpDialogComponent instance
    */
@@ -43,24 +48,33 @@ describe('JumpDialogComponent', () => {
    * The mock DataService instance.
    */
   let dataService = {
-    locations: [{
-      value: null, isArr: false, varType: 1, isPosition: true, name: 'P1', typeStr: 'LOCATION', selectedIndex: 1
-    }]
+    locations: [
+      {
+        value: null,
+        isArr: false,
+        varType: 1,
+        isPosition: true,
+        name: 'P1',
+        typeStr: 'LOCATION',
+        selectedIndex: 1,
+        dataLoaded: false
+      },
+    ],
   };
 
   /**
    * The mock ProgramEditorService instance.
    */
   let programEditorService = {
-    lastVar: TPVariable
+    lastVar: TPVariable,
   };
 
   /**
    * The mock dialog.
    */
   let dialogRef = {
-    close: jasmine.createSpy('close')
- };
+    close: jasmine.createSpy('close'),
+  };
 
   /**
    * The WebSocketService spy instance.
@@ -77,27 +91,32 @@ describe('JumpDialogComponent', () => {
         return {
           afterClosed: () => {
             return {
-              subscribe: (cb) => {
+              subscribe: cb => {
                 cb('P1');
-              }
+              },
             };
-          }
+          },
         };
-      }
+      },
     };
 
     TestBed.configureTestingModule({
-      imports: [SharedModule, MatDialogModule, MatInputModule, BrowserAnimationsModule, UnitTestModule],
-      declarations: [ JumpDialogComponent, DataNotArrayPipe],
+      imports: [
+        SharedModule,
+        MatDialogModule,
+        MatInputModule,
+        BrowserAnimationsModule,
+        UnitTestModule,
+      ],
+      declarations: [JumpDialogComponent, DataNotArrayPipe],
       providers: [
         { provide: MatDialogRef, useValue: dialogRef },
         { provide: WebsocketService, useValue: spyObj },
         { provide: MatDialog, useValue: dummyDialog },
         { provide: DataService, useValue: dataService },
         { provide: ProgramEditorService, useValue: programEditorService },
-    ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
 
     webSocketServiceSpy = TestBed.get(WebsocketService);
 
@@ -107,29 +126,32 @@ describe('JumpDialogComponent', () => {
       }
 
       if (cmd.includes('VELOCITYMAX')) {
-        return cmd.includes('SCARA1') ?
-         Promise.resolve({ result: '200', cmd: '', err: null }) : Promise.resolve({ result: '100', cmd: '', err: null });
+        return cmd.includes('SCARA1')
+          ? Promise.resolve({ result: '200', cmd: '', err: null })
+          : Promise.resolve({ result: '100', cmd: '', err: null });
       }
       if (cmd.includes('ACCELERATIONMAX')) {
-        return cmd.includes('SCARA1') ?
-         Promise.resolve({ result: '200', cmd: '', err: null }) : Promise.resolve({ result: '100', cmd: '', err: null });
+        return cmd.includes('SCARA1')
+          ? Promise.resolve({ result: '200', cmd: '', err: null })
+          : Promise.resolve({ result: '100', cmd: '', err: null });
       }
       if (cmd.includes('ZMAX')) {
-        return cmd.includes('SCARA1') ?
-         Promise.resolve({ result: '200', cmd: '', err: null }) : Promise.resolve({ result: '100', cmd: '', err: null });
+        return cmd.includes('SCARA1')
+          ? Promise.resolve({ result: '200', cmd: '', err: null })
+          : Promise.resolve({ result: '100', cmd: '', err: null });
       }
       if (cmd.includes('ZMIN')) {
-        return cmd.includes('SCARA1') ?
-         Promise.resolve({ result: '20', cmd: '', err: null }) : Promise.resolve({ result: '10', cmd: '', err: null });
+        return cmd.includes('SCARA1')
+          ? Promise.resolve({ result: '20', cmd: '', err: null })
+          : Promise.resolve({ result: '10', cmd: '', err: null });
       }
-
-     });
+    });
   }));
 
   /**
    * Do the test initialization before it is running.
    */
-  beforeEach((done) => {
+  beforeEach(done => {
     fixture = TestBed.createComponent(JumpDialogComponent);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
@@ -154,12 +176,18 @@ describe('JumpDialogComponent', () => {
     htmlElement = debugElement.nativeElement;
     let selectList = htmlElement.querySelectorAll('mat-select');
     expect(selectList.length).toBe(2);
-    expect(selectList.item(0).getAttribute('ng-reflect-model')).toBe('SCARA', 'the motion element is first one by default');
+    expect(selectList.item(0).getAttribute('ng-reflect-model')).toBe(
+      'SCARA',
+      'the motion element is first one by default'
+    );
     expect(selectList.item(1).getAttribute('ng-reflect-model')).toBeNull();
 
     let slideToggle = htmlElement.querySelector('mat-slide-toggle');
     expect(slideToggle).toBeTruthy();
-    expect(slideToggle.getAttribute('ng-reflect-disabled')).toBe('true', 'the advanced mode is disabled by default');
+    expect(slideToggle.getAttribute('ng-reflect-disabled')).toBe(
+      'true',
+      'the advanced mode is disabled by default'
+    );
   });
 
   /**
@@ -178,8 +206,10 @@ describe('JumpDialogComponent', () => {
     htmlElement = debugElement.nativeElement;
     let selectList = htmlElement.querySelectorAll('mat-select');
     expect(selectList.length).toBe(2);
-    expect(selectList.item(0).getAttribute('ng-reflect-model')).toBe('SCARA1', 'the motion element is first one by default');
-
+    expect(selectList.item(0).getAttribute('ng-reflect-model')).toBe(
+      'SCARA1',
+      'the motion element is first one by default'
+    );
   });
 
   /**
@@ -214,17 +244,19 @@ describe('JumpDialogComponent', () => {
     expect(component).toBeTruthy();
     expect(component.motionRobot).toBe('SCARA');
 
-    expect(component.requiredFormControls[JumpParameter.DestinationFrame].untouched).toBe(true,
-            'the destination frame window is untouched as default');
-    expect(component.requiredFormControls[JumpParameter.DestinationFrame].status).toBe('INVALID',
-          'the destination frame validation is unsuccessful');
+    expect(
+      component.requiredFormControls[JumpParameter.DestinationFrame].untouched
+    ).toBe(true, 'the destination frame window is untouched as default');
+    expect(
+      component.requiredFormControls[JumpParameter.DestinationFrame].status
+    ).toBe('INVALID', 'the destination frame validation is unsuccessful');
 
     component.insert();
     fixture.detectChanges();
 
-    expect(component.requiredFormControls[JumpParameter.DestinationFrame].untouched).toBe(false,
-            'the destination frame window is touched as default');
-
+    expect(
+      component.requiredFormControls[JumpParameter.DestinationFrame].untouched
+    ).toBe(false, 'the destination frame window is touched as default');
   });
 
   /**
@@ -237,8 +269,9 @@ describe('JumpDialogComponent', () => {
     component.location = dataService.locations[0];
     fixture.detectChanges();
 
-    expect(component.requiredFormControls[JumpParameter.DestinationFrame].status).toBe('VALID',
-            'the destination frame validation is successful');
+    expect(
+      component.requiredFormControls[JumpParameter.DestinationFrame].status
+    ).toBe('VALID', 'the destination frame validation is successful');
 
     debugElement = fixture.debugElement;
     let inputList = debugElement.queryAll(By.directive(MatInput));
@@ -248,9 +281,10 @@ describe('JumpDialogComponent', () => {
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
-      expect(component.dialogRef.close).toHaveBeenCalledWith('jump(SCARA, "P1", -1, 0xffff, -1, -1, -1)');
+      expect(component.dialogRef.close).toHaveBeenCalledWith(
+        'jump(SCARA, "P1", -1, 0xffff, -1, -1, -1)'
+      );
     });
-
   });
 
   /**
@@ -264,16 +298,18 @@ describe('JumpDialogComponent', () => {
     component.advancedMode = true;
     fixture.detectChanges();
 
-    expect(component.requiredFormControls[JumpParameter.DestinationFrame].status).toBe('VALID',
-            'the destination frame validation is successful');
+    expect(
+      component.requiredFormControls[JumpParameter.DestinationFrame].status
+    ).toBe('VALID', 'the destination frame validation is successful');
 
     component.insert();
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
-      expect(component.dialogRef.close).toHaveBeenCalledWith('jump(SCARA, "P1", -1, 0xffff, -1, -1, -1)');
+      expect(component.dialogRef.close).toHaveBeenCalledWith(
+        'jump(SCARA, "P1", -1, 0xffff, -1, -1, -1)'
+      );
     });
-
   });
 
   /**
@@ -293,31 +329,46 @@ describe('JumpDialogComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.advancedFormControls[JumpParameter.ArcNumber].status).toBe('INVALID',
-            'the arc number validation is unsuccessful');
-    expect(component.advancedFormControls[JumpParameter.LimitZ].status).toBe('INVALID',
-    'the limit z validation is unsuccessful');
-    expect(component.advancedFormControls[JumpParameter.Speed].status).toBe('INVALID',
-    'the speed validation is unsuccessful');
-    expect(component.advancedFormControls[JumpParameter.Acceleration].status).toBe('INVALID',
-    'the acceleration validation is unsuccessful');
-    expect(component.advancedFormControls[JumpParameter.Blending].status).toBe('INVALID',
-    'the blending validation is unsuccessful');
+    expect(component.advancedFormControls[JumpParameter.ArcNumber].status).toBe(
+      'INVALID',
+      'the arc number validation is unsuccessful'
+    );
+    expect(component.advancedFormControls[JumpParameter.LimitZ].status).toBe(
+      'INVALID',
+      'the limit z validation is unsuccessful'
+    );
+    expect(component.advancedFormControls[JumpParameter.Speed].status).toBe(
+      'INVALID',
+      'the speed validation is unsuccessful'
+    );
+    expect(
+      component.advancedFormControls[JumpParameter.Acceleration].status
+    ).toBe('INVALID', 'the acceleration validation is unsuccessful');
+    expect(component.advancedFormControls[JumpParameter.Blending].status).toBe(
+      'INVALID',
+      'the blending validation is unsuccessful'
+    );
 
     component.insert();
     fixture.detectChanges();
 
-    expect(component.advancedFormControls[JumpParameter.ArcNumber].untouched).toBe(false,
-      'the arc number window is touched as default');
-    expect(component.advancedFormControls[JumpParameter.LimitZ].untouched).toBe(false,
-        'the limit z window is touched as default');
-    expect(component.advancedFormControls[JumpParameter.Speed].untouched).toBe(false,
-        'the speed window is touched as default');
-    expect(component.advancedFormControls[JumpParameter.Acceleration].untouched).toBe(false,
-          'the accleration window is touched as default');
-    expect(component.advancedFormControls[JumpParameter.Blending].untouched).toBe(false,
-          'the blending window is touched as default');
-
+    expect(
+      component.advancedFormControls[JumpParameter.ArcNumber].untouched
+    ).toBe(false, 'the arc number window is touched as default');
+    expect(component.advancedFormControls[JumpParameter.LimitZ].untouched).toBe(
+      false,
+      'the limit z window is touched as default'
+    );
+    expect(component.advancedFormControls[JumpParameter.Speed].untouched).toBe(
+      false,
+      'the speed window is touched as default'
+    );
+    expect(
+      component.advancedFormControls[JumpParameter.Acceleration].untouched
+    ).toBe(false, 'the accleration window is touched as default');
+    expect(
+      component.advancedFormControls[JumpParameter.Blending].untouched
+    ).toBe(false, 'the blending window is touched as default');
   });
 
   /**
@@ -332,11 +383,10 @@ describe('JumpDialogComponent', () => {
     fixture.whenStable().then(() => {
       expect(component.dialogRef.close).toHaveBeenCalledWith();
     });
-
   });
 
   it('should create new point', () => {
-      component.createPoint();
-      expect(component.location.name).toEqual('P1');
-    });
+    component.createPoint();
+    expect(component.location.name).toEqual('P1');
+  });
 });

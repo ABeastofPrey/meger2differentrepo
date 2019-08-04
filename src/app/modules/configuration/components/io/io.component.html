@@ -1,151 +1,225 @@
 <div class="tab-view">
-  <mat-tab-group disableRipple='true' (selectedTabChange)="onSelectedTabChange($event)" [selectedIndex]="selected.value"
-    (selectedIndexChange)="selected.setValue($event)">
-    <mat-tab label="{{'io.standardView'|translate}}">
-      <div class="center-vertical">
-        <div class="content">
-          <div>
-            <mat-form-field class="content-full">
-              <mat-select placeholder="" [(ngModel)]="leftSelected.key" (selectionChange)="onViewSelectionChange('left')">
-                <mat-option *ngFor="let option of ioOptions" [value]="option.key">
-                  {{option.value}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-radio-group class="radio-option-group" [(ngModel)]="leftRadioOptions.key" (change)="onViewSelectionChange('left')">
-              <mat-radio-button color="primary" [value]="radioButtonOptions[0].key">{{radioButtonOptions[0].value}}</mat-radio-button>
-              <mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[1].key">{{radioButtonOptions[1].value}}</mat-radio-button>
-              <mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[2].key">{{radioButtonOptions[2].value}}</mat-radio-button>
-            </mat-radio-group>
-          </div>
-          <div class="table-container">
-            <mat-table [dataSource]="leftDataSource" class="io-table" matSort>
-              <ng-container matColumnDef="{{IoTableColumnReference.Port}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>
-                  {{ leftRadioOptions.value }}
-                </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.port}} </mat-cell>
-              </ng-container>
+	<mat-tab-group
+		disableRipple="true"
+		(selectedTabChange)="onSelectedTabChange($event)"
+		[selectedIndex]="selected.value"
+		(selectedIndexChange)="selected.setValue($event)"
+	>
+		<mat-tab label="{{ 'io.standardView' | translate }}">
+			<div class="center-vertical">
+				<div class="content">
+					<div>
+						<mat-form-field class="content-full">
+							<mat-select
+								placeholder=""
+								[(ngModel)]="leftSelected.key"
+								(selectionChange)="onViewSelectionChange('left')"
+							>
+								<mat-option *ngFor="let option of ioOptions" [value]="option.key">
+									{{ option.value }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+					<div>
+						<mat-radio-group
+							class="radio-option-group"
+							[(ngModel)]="leftRadioOptions.key"
+							(change)="onViewSelectionChange('left')"
+						>
+							<mat-radio-button color="primary" [value]="radioButtonOptions[0].key">{{
+								radioButtonOptions[0].value
+							}}</mat-radio-button>
+							<mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[1].key">{{
+								radioButtonOptions[1].value
+							}}</mat-radio-button>
+							<mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[2].key">{{
+								radioButtonOptions[2].value
+							}}</mat-radio-button>
+						</mat-radio-group>
+					</div>
+					<div class="table-container">
+						<mat-table [dataSource]="leftDataSource" class="io-table" matSort>
+							<ng-container matColumnDef="{{ IoTableColumnReference.Port }}">
+								<mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{ leftRadioOptions.value }}
+								</mat-header-cell>
+								<mat-cell *matCellDef="let element">
+									{{ element.port }}
+								</mat-cell>
+							</ng-container>
 
-              <ng-container matColumnDef="{{IoTableColumnReference.Value}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>
-                 <span *ngIf="leftRadioOptions.key === IoFormatOptionsReference.Bit">
-                    {{'io.status'|translate}}
-                 </span>
-                 <span *ngIf="leftRadioOptions.key !== IoFormatOptionsReference.Bit">
-                    {{'io.value'|translate}}
-                 </span>
-                </mat-header-cell>
-                <ng-container *ngIf="leftRadioOptions.key === IoFormatOptionsReference.Bit">
-                  <mat-cell color="primary" *matCellDef="let element">
-                    <io-button [status]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'left')" [disabled]="login.isViewer"></io-button>
-                  </mat-cell>
-                </ng-container>
-                <ng-container *ngIf="leftRadioOptions.key !== IoFormatOptionsReference.Bit">
-                  <mat-cell color="primary" *matCellDef="let element"> {{element.value}} </mat-cell>
-                </ng-container>
-              </ng-container>
+							<ng-container matColumnDef="{{ IoTableColumnReference.Value }}">
+								<mat-header-cell *matHeaderCellDef mat-sort-header>
+									<span *ngIf="leftRadioOptions.key === IoFormatOptionsReference.Bit">
+										{{ 'io.status' | translate }}
+									</span>
+									<span *ngIf="leftRadioOptions.key !== IoFormatOptionsReference.Bit">
+										{{ 'io.value' | translate }}
+									</span>
+								</mat-header-cell>
+								<ng-container *ngIf="leftRadioOptions.key === IoFormatOptionsReference.Bit">
+									<mat-cell color="primary" *matCellDef="let element">
+										<io-button
+											[status]="element.value === '1'"
+											(click)="onClickRadioButtonInIO(element.port, 'left')"
+											[disabled]="login.isViewer"
+										></io-button>
+									</mat-cell>
+								</ng-container>
+								<ng-container *ngIf="leftRadioOptions.key !== IoFormatOptionsReference.Bit">
+									<mat-cell color="primary" *matCellDef="let element">
+										{{ element.value }}
+									</mat-cell>
+								</ng-container>
+							</ng-container>
 
-              <ng-container matColumnDef="{{IoTableColumnReference.Label}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'io.label'|translate}} </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                  {{element.label}}
-                </mat-cell>
-              </ng-container>
+							<ng-container matColumnDef="{{ IoTableColumnReference.Label }}">
+								<mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{ 'io.label' | translate }}
+								</mat-header-cell>
+								<mat-cell *matCellDef="let element">
+									{{ element.label }}
+								</mat-cell>
+							</ng-container>
 
-              <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-            </mat-table>
-          </div>
-        </div>
-        <div class="content">
-          <div>
-            <mat-form-field class="content-full">
-              <mat-select placeholder="" [(ngModel)]="rightSelected.key" (selectionChange)="onViewSelectionChange('right')">
-                <mat-option *ngFor="let option of ioOptions" [value]="option.key">
-                  {{option.value}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-radio-group class="radio-option-group" [(ngModel)]="rightRadioOptions.key" (change)="onViewSelectionChange('right')">
-              <mat-radio-button color="primary" [value]="radioButtonOptions[0].key">{{radioButtonOptions[0].value}}</mat-radio-button>
-              <mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[1].key">{{radioButtonOptions[1].value}}</mat-radio-button>
-              <mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[2].key">{{radioButtonOptions[2].value}}</mat-radio-button>
-            </mat-radio-group>
-          </div>
+							<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+							<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+						</mat-table>
+					</div>
+				</div>
+				<div class="content">
+					<div>
+						<mat-form-field class="content-full">
+							<mat-select
+								placeholder=""
+								[(ngModel)]="rightSelected.key"
+								(selectionChange)="onViewSelectionChange('right')"
+							>
+								<mat-option *ngFor="let option of ioOptions" [value]="option.key">
+									{{ option.value }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+					<div>
+						<mat-radio-group
+							class="radio-option-group"
+							[(ngModel)]="rightRadioOptions.key"
+							(change)="onViewSelectionChange('right')"
+						>
+							<mat-radio-button color="primary" [value]="radioButtonOptions[0].key">{{
+								radioButtonOptions[0].value
+							}}</mat-radio-button>
+							<mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[1].key">{{
+								radioButtonOptions[1].value
+							}}</mat-radio-button>
+							<mat-radio-button color="primary" class="radio-option-button" [value]="radioButtonOptions[2].key">{{
+								radioButtonOptions[2].value
+							}}</mat-radio-button>
+						</mat-radio-group>
+					</div>
 
-          <div class="table-container">
-            <mat-table [dataSource]="rightDataSource" class="io-table" matSort>
-              <ng-container matColumnDef="{{IoTableColumnReference.Port}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>
-                  {{ rightRadioOptions.value }}
-                </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.port}} </mat-cell>
-              </ng-container>
+					<div class="table-container">
+						<mat-table [dataSource]="rightDataSource" class="io-table" matSort>
+							<ng-container matColumnDef="{{ IoTableColumnReference.Port }}">
+								<mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{ rightRadioOptions.value }}
+								</mat-header-cell>
+								<mat-cell *matCellDef="let element">
+									{{ element.port }}
+								</mat-cell>
+							</ng-container>
 
-              <ng-container matColumnDef="{{IoTableColumnReference.Value}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>
-                    <span *ngIf="rightRadioOptions.key === IoFormatOptionsReference.Bit">
-                        {{'io.status'|translate}}
-                     </span>
-                     <span *ngIf="rightRadioOptions.key !== IoFormatOptionsReference.Bit">
-                        {{'io.value'|translate}}
-                     </span>
-                </mat-header-cell>
-                <ng-container *ngIf="rightRadioOptions.key === IoFormatOptionsReference.Bit">
-                  <mat-cell color="primary" *matCellDef="let element">
-                    <io-button [status]="element.value === '1'" (click)="onClickRadioButtonInIO(element.port, 'right')" [disabled]="login.isViewer"></io-button>
-                  </mat-cell>
-                </ng-container>
-                <ng-container *ngIf="rightRadioOptions.key !== IoFormatOptionsReference.Bit">
-                  <mat-cell color="primary" *matCellDef="let element"> {{element.value}} </mat-cell>
-                </ng-container>
-              </ng-container>
+							<ng-container matColumnDef="{{ IoTableColumnReference.Value }}">
+								<mat-header-cell *matHeaderCellDef mat-sort-header>
+									<span *ngIf="rightRadioOptions.key === IoFormatOptionsReference.Bit">
+										{{ 'io.status' | translate }}
+									</span>
+									<span *ngIf="rightRadioOptions.key !== IoFormatOptionsReference.Bit">
+										{{ 'io.value' | translate }}
+									</span>
+								</mat-header-cell>
+								<ng-container *ngIf="rightRadioOptions.key === IoFormatOptionsReference.Bit">
+									<mat-cell color="primary" *matCellDef="let element">
+										<io-button
+											[status]="element.value === '1'"
+											(click)="onClickRadioButtonInIO(element.port, 'right')"
+											[disabled]="login.isViewer"
+										></io-button>
+									</mat-cell>
+								</ng-container>
+								<ng-container *ngIf="rightRadioOptions.key !== IoFormatOptionsReference.Bit">
+									<mat-cell color="primary" *matCellDef="let element">
+										{{ element.value }}
+									</mat-cell>
+								</ng-container>
+							</ng-container>
 
-              <ng-container matColumnDef="{{IoTableColumnReference.Label}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> {{'io.label'|translate}} </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                  {{element.label}}
-                </mat-cell>
-              </ng-container>
-              <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-            </mat-table>
-          </div>
-        </div>
-      </div>
-      <div class="hexadecimal-option">
-        <mat-checkbox color="primary" [(ngModel)]="hex" (change)="onViewSelectionChange('all')">{{'io.hexadecimal'|translate}}</mat-checkbox>
-      </div>
-    </mat-tab>
-    <mat-tab *ngFor="let tab of tabs; let index = index" class="content" #myTab>
-      <ng-template mat-tab-label>
-        <input *ngIf="!myTab.isActive" matInput [(ngModel)]="customViewFormControl[index].value"/>
-        <input *ngIf="myTab.isActive" matInput placeholder="" [(ngModel)]="customViewFormControl[index].value" (keydown)="tabLabelChange($event)"
-          [formControl]="customViewFormControl[index]" (change)="tabLabelNameChange(index, customViewFormControl[index].value)"
-              virtualKeyboard ktype="text" (onKeyboardClose)="tabLabelNameChange(index, customViewFormControl[index].value)" required>
-        <mat-error *ngIf="customViewFormControl[index].hasError('required')">
-          {{'io.invalidName'|translate}}
-        </mat-error>
-      </ng-template>
-      <app-custom-io [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
-    </mat-tab>
-  </mat-tab-group>
+							<ng-container matColumnDef="{{ IoTableColumnReference.Label }}">
+								<mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{ 'io.label' | translate }}
+								</mat-header-cell>
+								<mat-cell *matCellDef="let element">
+									{{ element.label }}
+								</mat-cell>
+							</ng-container>
+							<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+							<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+						</mat-table>
+					</div>
+				</div>
+			</div>
+			<div class="hexadecimal-option">
+				<mat-checkbox color="primary" [(ngModel)]="hex" (change)="onViewSelectionChange('all')">{{
+					'io.hexadecimal' | translate
+				}}</mat-checkbox>
+			</div>
+		</mat-tab>
+		<mat-tab *ngFor="let tab of tabs; let index = index" class="content" #myTab>
+			<ng-template mat-tab-label>
+				<input *ngIf="!myTab.isActive" matInput [(ngModel)]="customViewFormControl[index].value" />
+				<input
+					*ngIf="myTab.isActive"
+					matInput
+					placeholder=""
+					[(ngModel)]="customViewFormControl[index].value"
+					(keydown)="tabLabelChange($event)"
+					[formControl]="customViewFormControl[index]"
+					(change)="tabLabelNameChange(index, customViewFormControl[index].value)"
+					virtualKeyboard
+					ktype="text"
+					(onKeyboardClose)="tabLabelNameChange(index, customViewFormControl[index].value)"
+					required
+				/>
+				<mat-error *ngIf="customViewFormControl[index].hasError('required')">
+					{{ 'io.invalidName' | translate }}
+				</mat-error>
+			</ng-template>
+			<app-custom-io [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
+		</mat-tab>
+	</mat-tab-group>
 
-  <div class='tab-button'>
-    <button mat-button class='custom-button mat-button-no-hover-background' [disabled]="tabs.length >= 3" (click)="addCustomTab()"
-      disableRipple='true'>
-      <mat-icon>add</mat-icon>
-      {{'io.addView'|translate}}
-    </button>
-    <button mat-button class='custom-button mat-button-no-hover-background' [disabled]="tabs.length === 0 ||  customTabDeleteIndex === 0"
-      (click)="deleteCustomTab()" disableRipple='true'>
-      <mat-icon>delete</mat-icon>
-      {{'io.delView'|translate}}
-    </button>
-  </div>
+	<div class="tab-button">
+		<button
+			mat-button
+			class="custombutton mat-button-no-hover-background"
+			[disabled]="tabs.length >= 3"
+			(click)="addCustomTab()"
+			disableRipple="true"
+		>
+			<mat-icon>add</mat-icon>
+			{{ 'io.addView' | translate }}
+		</button>
+		<button
+			mat-button
+			class="custom-button mat-button-no-hover-background"
+			[disabled]="tabs.length === 0 || customTabDeleteIndex === 0"
+			(click)="deleteCustomTab()"
+			disableRipple="true"
+		>
+			<mat-icon>delete</mat-icon>
+			{{ 'io.delView' | translate }}
+		</button>
+	</div>
 </div>

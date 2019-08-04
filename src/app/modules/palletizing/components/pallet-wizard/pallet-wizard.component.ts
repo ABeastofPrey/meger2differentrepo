@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  Inject,
   ViewChild,
   ElementRef,
   HostListener,
@@ -31,7 +30,7 @@ import { PalletLocation } from '../../../core/models/pallet.model';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {UtilsService} from '../../../core/services/utils.service';
+import { UtilsService } from '../../../core/services/utils.service';
 
 declare var Isomer: any;
 
@@ -55,7 +54,6 @@ const kukaColor = new Color(255, 115, 0);
   styleUrls: ['./pallet-wizard.component.css'],
 })
 export class PalletWizardComponent implements OnInit {
-
   @Output() closed = new EventEmitter();
 
   loading: boolean = true;
@@ -95,7 +93,6 @@ export class PalletWizardComponent implements OnInit {
     public dataService: DataService,
     private ws: WebsocketService,
     private _formBuilder: FormBuilder,
-    private snack: MatSnackBar,
     private dialog: MatDialog,
     private api: ApiService,
     private utils: UtilsService,
@@ -152,7 +149,7 @@ export class PalletWizardComponent implements OnInit {
           this.dataService.selectedRobot +
           ')'
       ),
-      this.ws.query('?PLT_GET_ENTRY_POSITION("' + name + '")'),
+      this.ws.query('printPoint PLT_GET_ENTRY_POSITION("' + name + '")'),
       this.ws.query('?PLT_GET_HANDLING_DIRECTION("' + name + '","APPROACH")'),
       this.ws.query('?PLT_GET_HANDLING_DIRECTION("' + name + '","RETRACT")'),
       this.ws.query(
@@ -176,6 +173,7 @@ export class PalletWizardComponent implements OnInit {
       this.ws.query('?PLT_GET_PALLET_SIZE("' + name + '")'),
       this.ws.query('?PLT_GET_CUSTOM_PALLET_DATA_FILE("' + name + '")'),
       this.ws.query('?PLT_GET_NUMBER_OF_LEVELS("' + name + '")'),
+      this.ws.query('?PLT_GET_CONFIGURATION_FLAGS("' + name + '")'),
     ];
     return Promise.all(queries).then((ret: MCQueryResponse[]) => {
       this.dataService.selectedPallet.orderList =
@@ -266,26 +264,47 @@ export class PalletWizardComponent implements OnInit {
         ? null
         : ret[25].result;
       this.dataService.selectedPallet.levels = Number(ret[26].result) || 0;
+      const flags = ret[27].result.split(',');
+      this.dataService.selectedPallet.flags = flags.map(val => {
+        return Number(val);
+      });
+      if (
+        this.dataService.selectedPallet.flags.some(f => {
+          return isNaN(f);
+        })
+      ) {
+        return Promise.all(
+          flags.map(f => {
+            return this.ws.query('?' + f);
+          })
+        ).then((ret: MCQueryResponse[]) => {
+          this.dataService.selectedPallet.flags = ret.map(r => {
+            return Number(r.result);
+          });
+        });
+      }
     });
   }
 
   private parseLocation(loc: string): PalletLocation {
     var result = new PalletLocation();
-    if (loc === '#{}') return result;
+    if (loc === '#{}' || loc === '#{ ;}') return result;
     loc = loc
       .substring(2)
       .slice(0, -1)
       .trim();
-    const parts = loc.split(',');
-    result.x = Number(parts[0]);
-    result.y = Number(parts[1]);
-    result.z = Number(parts[2]);
+    const parts = loc.split(';');
+    const pos = parts[0].split(',');
+    const flags = parts[1] ? parts[1].split(',') : [];
+    result.x = Number(pos[0]);
+    result.y = Number(pos[1]);
+    result.z = Number(pos[2]);
     if (this.dataService.robotType === 'SCARA') {
-      result.roll = Number(parts[3]);
+      result.roll = Number(pos[3]);
     } else {
-      result.yaw = Number(parts[3]);
-      result.pitch = Number(parts[4]);
-      result.roll = Number(parts[5]);
+      result.yaw = Number(pos[3]);
+      result.pitch = Number(pos[4]);
+      result.roll = Number(pos[5]);
     }
     return result;
   }
@@ -345,7 +364,9 @@ export class PalletWizardComponent implements OnInit {
       .then((ret: MCQueryResponse) => {
         if (ret.result === '0') {
           this.ws
-            .query('?PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","o")')
+            .query(
+              'Printpoint PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","o")'
+            )
             .then((ret: MCQueryResponse) => {
               this.dataService.selectedPallet.origin = this.parseLocation(
                 ret.result
@@ -403,7 +424,7 @@ export class PalletWizardComponent implements OnInit {
       .then((ret: MCQueryResponse) => {
         if (ret.result === '0') {
           this.ws
-            .query('?PLT_GET_ENTRY_POSITION("' + pallet.name + '")')
+            .query('printPoint PLT_GET_ENTRY_POSITION("' + pallet.name + '")')
             .then((ret: MCQueryResponse) => {
               this.dataService.selectedPallet.entry = this.parseLocation(
                 ret.result
@@ -909,7 +930,7 @@ export class PalletWizardComponent implements OnInit {
         y +
         ',' +
         z +
-        ')';
+        ',0,0,0)';
       return this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if (ret.err || ret.result !== '0') {
           this.step2.controls['originX'].setErrors({ invalidOrigin: true });
@@ -932,7 +953,11 @@ export class PalletWizardComponent implements OnInit {
     let x = changed === 'x' ? control.value : pos.x;
     let y = changed === 'y' ? control.value : pos.y;
     let z = changed === 'z' ? control.value : pos.z;
-    if (x !== null && y !== null && z !== null) {
+    if (
+      typeof x !== 'undefined' &&
+      typeof y !== 'undefined' &&
+      typeof z !== 'undefined'
+    ) {
       if (!control.touched && !control.dirty) return Promise.resolve(null);
       const cmd =
         '?PLT_FRAME_CALIBRATION_SET("' +
@@ -943,6 +968,7 @@ export class PalletWizardComponent implements OnInit {
         y +
         ',' +
         z +
+        ',0,0,0' +
         ')';
       return this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if (ret.err || ret.result !== '0') {
@@ -977,6 +1003,7 @@ export class PalletWizardComponent implements OnInit {
         y +
         ',' +
         z +
+        ',0,0,0' +
         ')';
       return this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if (ret.err || ret.result !== '0') {
@@ -995,6 +1022,27 @@ export class PalletWizardComponent implements OnInit {
     return Promise.resolve(null);
   }
 
+  private validateFlag(flag: number, control: AbstractControl) {
+    const pal = this.dataService.selectedPallet;
+    if (
+      pal.flags.some(f => {
+        return isNaN(f);
+      })
+    )
+      return Promise.resolve(null);
+    const flags = pal.flags.join(',');
+    const cmd =
+      '?PLT_SET_CONFIGURATION_FLAGS("' + pal.name + '",' + flags + ')';
+    return this.ws.query(cmd).then((ret: MCQueryResponse) => {
+      if (ret.err || ret.result !== '0') {
+        this.step3.controls['flag' + flag].setErrors({ invalidFlag: true });
+        return { invalidFlag: true };
+      }
+      this.step3.controls['flag' + flag].setErrors(null);
+      return Promise.resolve(null);
+    });
+  }
+
   private validateEntry(changed: string, control: AbstractControl) {
     var pos = this.dataService.selectedPallet.entry;
     let x = changed === 'x' ? control.value : pos.x;
@@ -1010,7 +1058,11 @@ export class PalletWizardComponent implements OnInit {
         else return Promise.resolve(null);
       }
       loc +=
-        roll + '},' + 'robottype(' + this.dataService.selectedRobot + '.Here))';
+        roll +
+        ';0,0,0},' +
+        'robottype(' +
+        this.dataService.selectedRobot +
+        '.Here))';
       var cmd =
         '?PLT_SET_ENTRY_POSITION("' +
         this.dataService.selectedPallet.name +
@@ -1258,7 +1310,15 @@ export class PalletWizardComponent implements OnInit {
       ],
       roll: ['', [Validators.required], this.validateEntry.bind(this, 'roll')],
       entryEnable: ['', []],
+      flag0: ['', [Validators.required], this.validateFlag.bind(this, 0)],
+      flag1: ['', [Validators.required], this.validateFlag.bind(this, 1)],
+      flag2: ['', [Validators.required], this.validateFlag.bind(this, 2)],
     });
+    // disable unused flags
+    const len = this.dataService.robotCoordinateType.flags.length;
+    for (let i = len; i < 3; i++) {
+      this.step3.controls['flag' + i].disable();
+    }
     this.step4 = this._formBuilder.group({
       app_off_v: [
         '',
@@ -1484,7 +1544,6 @@ export class PalletWizardComponent implements OnInit {
   }
 
   onWindowResize() {
-    console.log(this.container);
     if (typeof this.container === 'undefined') {
       if (this.designer) this.designer.refresh();
       if (this.designer2) this.designer2.refresh();
@@ -1492,7 +1551,6 @@ export class PalletWizardComponent implements OnInit {
     }
     this.getPreviewSize();
     let element: any = this.container.nativeElement;
-    console.log(element);
     if (typeof element === 'undefined') return;
     var x = 0;
     var y = 0;
@@ -1526,15 +1584,18 @@ export class PalletWizardComponent implements OnInit {
     this.iso = new Isomer(canvas);
     this.iso.add(data.floor, floor); // add floor
     if (this.utils.IsKuka) {
-    for (let item of data.items) {
-        this.iso.add(item.shape, (item.z%2===0) ? kukaColor : kukaColor2);
+      for (let item of data.items) {
+        this.iso.add(item.shape, item.z % 2 === 0 ? kukaColor : kukaColor2);
       }
     }
 
     if (!this.utils.IsKuka) {
       for (let item of data.items) {
-        this.iso.add(item.shape, (item.z%2===0) ? servotronixColor : servotronixColor2);
-    }
+        this.iso.add(
+          item.shape,
+          item.z % 2 === 0 ? servotronixColor : servotronixColor2
+        );
+      }
     }
     this.isPreview1Showing = true;
   }

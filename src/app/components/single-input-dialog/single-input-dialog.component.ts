@@ -7,16 +7,22 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./single-input-dialog.component.css'],
 })
 export class SingleInputDialogComponent implements OnInit {
-  val: string = null;
+  val: any = null;
 
   constructor(
     private dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.data.initialValue) this.val = this.data.initialValue;
+  }
+
+  get isValOk() {
+    return this.val && (this.val.length || !isNaN(this.val));
+  }
 
   create() {
-    if (this.val && this.val.length > 0) this.dialogRef.close(this.val);
+    if (this.isValOk) this.dialogRef.close(this.val);
   }
 }

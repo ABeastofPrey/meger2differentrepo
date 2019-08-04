@@ -84,7 +84,8 @@ terminal-window {
 watch-window {
   min-height: 0;
   max-height: 400px;
-  width: 450px;
+  width: 605px;
+  flex-direction: column;
 }
 .window {
   position: absolute;
@@ -102,6 +103,20 @@ watch-window {
 .window-large {
   width: 50%;
   height: 250px;
+}
+lib-app-simulator {
+  flex: 1;
+  display: flex;
+}
+.window-sim {
+  width: 400px;
+  height: 300px;
+}
+.sim-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .hidden {
   visibility: hidden;
@@ -209,5 +224,21 @@ main-menu.menu-small {
   width: 100%;
 }
 .kuka-logo {
-  height: 64px!important;
+  height: 64px !important;
+}
+.recording {
+  animation: blink 1s infinite;
+  -webkit-animation: blink 1s infinite;
+}
+@keyframes blink {
+  from {
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+      0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+  }
+
+  to {
+    -webkit-box-shadow: 0px 0px 8px 3px rgba(255, 0, 0, 1);
+    -moz-box-shadow: 0px 0px 8px 3px rgba(255, 0, 0, 1);
+    box-shadow: 0px 0px 8px 3px rgba(255, 0, 0, 1);
+  }
 }

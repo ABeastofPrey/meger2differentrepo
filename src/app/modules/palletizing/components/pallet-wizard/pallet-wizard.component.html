@@ -26,10 +26,7 @@
 									}}</mat-option>
 								</mat-select>
 							</mat-form-field>
-							<mat-form-field
-								class="input-normal"
-								*ngIf="dataService.selectedPallet.type === 'GRID'"
-							>
+							<mat-form-field class="input-normal" *ngIf="dataService.selectedPallet.type === 'GRID'">
 								<mat-select
 									placeholder="{{ 'pallets.wizard.order' | translate }}"
 									[(ngModel)]="dataService.selectedPallet.order"
@@ -37,11 +34,9 @@
 									required
 									(selectionChange)="onWindowResize()"
 								>
-									<mat-option
-										*ngFor="let o of dataService.selectedPallet.orderList"
-										value="{{ o }}"
-										>{{ o }}</mat-option
-									>
+									<mat-option *ngFor="let o of dataService.selectedPallet.orderList" value="{{ o }}">{{
+										o
+									}}</mat-option>
 								</mat-select>
 							</mat-form-field>
 						</div>
@@ -195,20 +190,13 @@
 								>
 							</div>
 						</div>
-						<div
-							*ngIf="
-								dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile
-							"
-						>
+						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile">
 							<h3>{{ 'pallets.wizard.curr_index' | translate }}:</h3>
 							<mat-error *ngIf="step1.controls['index'].hasError('invalidIndex')">{{
 								'pallets.wizard.invalid_val' | translate
 							}}</mat-error>
 							<mat-radio-group formControlName="index">
-								<mat-radio-button
-									value="full"
-									color="primary"
-									*ngIf="dataService.selectedPallet.type === 'GRID'"
+								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'"
 									>{{ 'pallets.wizard.index_full' | translate }} ({{
 										dataService.selectedPallet.items_x *
 											dataService.selectedPallet.items_y *
@@ -241,18 +229,10 @@
 						*ngIf="dataService.selectedPallet.type === 'GRID'"
 					>
 						<img
-							*ngIf="
-								dataService.selectedPallet.order &&
-								!isPreview1Showing &&
-								step1.controls['index'].value === null
-							"
+							*ngIf="dataService.selectedPallet.order && !isPreview1Showing && step1.controls['index'].value === null"
 							src="assets/pics/pallet/{{ dataService.selectedPallet.order.toLowerCase() }}.png"
 						/>
-						<canvas
-							#palletPreviewStep1
-							width="{{ previewWidth }}"
-							height="{{ previewHeight }}"
-						></canvas>
+						<canvas #palletPreviewStep1 width="{{ previewWidth }}" height="{{ previewHeight }}"></canvas>
 						<div *ngIf="abnormalItemCount" class="error-message">
 							{{ 'pallets.wizard.3d_disable' | translate }}
 						</div>
@@ -316,9 +296,7 @@
 								{{ 'button.calibrate' | translate }}
 							</button>
 						</div>
-						<div *ngIf="originResult">
-							{{ 'calibrated_origin' | translate }}:&nbsp; {{ originResult }}
-						</div>
+						<div *ngIf="originResult">{{ 'calibrated_origin' | translate }}:&nbsp; {{ originResult }}</div>
 						<img height="260" width="430" src="assets/pics/pallet/{{ originPicName }}" />
 					</div>
 					<div class="step-content" (mouseleave)="setOriginPic(0)">
@@ -487,7 +465,7 @@
 				<ng-template matStepLabel>{{ 'pallets.wizard.entry' | translate }}</ng-template>
 				<div class="step-wrapper">
 					<div class="step-content">
-						<div style="display: flex; align-items: center;">
+						<div class="center-vertical">
 							<h2>{{ 'pallets.wizard.entry_pos' | translate }}</h2>
 							<mat-slide-toggle
 								[(ngModel)]="dataService.selectedPallet.entryEnabled"
@@ -574,6 +552,32 @@
 							/></mat-form-field>
 						</div>
 					</div>
+					<div class="step-content">
+						<h2>{{ 'pallets.wizard.conf' | translate }}:</h2>
+						<mat-form-field
+							*ngFor="let f of dataService.robotCoordinateType.flags; let i = index"
+							style="max-width:250px;"
+						>
+							<mat-label>{{ f }}</mat-label>
+							<mat-select [formControlName]="'flag' + i" [(ngModel)]="dataService.selectedPallet.flags[i]">
+								<div *ngIf="f === 'Arm'">
+									<mat-option [value]="0">AUTO</mat-option>
+									<mat-option [value]="1">LEFTY</mat-option>
+									<mat-option [value]="2">RIGHTY</mat-option>
+								</div>
+								<div *ngIf="f === 'Elbow'">
+									<mat-option [value]="0">AUTO</mat-option>
+									<mat-option [value]="1">BELOW</mat-option>
+									<mat-option [value]="2">ABOVE</mat-option>
+								</div>
+								<div *ngIf="f === 'Wrist'">
+									<mat-option [value]="0">AUTO</mat-option>
+									<mat-option [value]="1">NOFLIP</mat-option>
+									<mat-option [value]="2">FLIP</mat-option>
+								</div>
+							</mat-select>
+						</mat-form-field>
+					</div>
 					<img src="assets/pics/pallet/entry.png" />
 				</div>
 			</form>
@@ -622,55 +626,16 @@
 						>
 						<h3>{{ 'pallets.wizard.app_dir' | translate }}:</h3>
 						<div class="direction-picker">
-							<mat-radio-group
-								[(ngModel)]="dataService.selectedPallet.approach_direction"
-								formControlName="app_dir"
-							>
-								<mat-radio-button
-									value="-X+Y+Z"
-									style="left: 0; top: 0;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+Y+Z"
-									style="left: 85px; top: 0;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+X+Y+Z"
-									style="left: 180px; top: 0;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="-X+Z"
-									style="left: 0; top: 56px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+Z"
-									style="left: 85px; top: 56px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+X+Z"
-									style="left: 180px; top: 56px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="-X-Y+Z"
-									style="left: 0; top: 120px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="-Y+Z"
-									style="left: 85px; top: 120px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+X-Y+Z"
-									style="left: 180px; top: 120px;"
-									color="primary"
-								></mat-radio-button>
+							<mat-radio-group [(ngModel)]="dataService.selectedPallet.approach_direction" formControlName="app_dir">
+								<mat-radio-button value="-X+Y+Z" style="left: 0; top: 0;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+Y+Z" style="left: 85px; top: 0;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+X+Y+Z" style="left: 180px; top: 0;" color="primary"></mat-radio-button>
+								<mat-radio-button value="-X+Z" style="left: 0; top: 56px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+Z" style="left: 85px; top: 56px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+X+Z" style="left: 180px; top: 56px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="-X-Y+Z" style="left: 0; top: 120px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="-Y+Z" style="left: 85px; top: 120px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+X-Y+Z" style="left: 180px; top: 120px;" color="primary"></mat-radio-button>
 							</mat-radio-group>
 						</div>
 					</div>
@@ -714,55 +679,16 @@
 						>
 						<h3>{{ 'pallets.wizard.ret_dir' | translate }}:</h3>
 						<div class="direction-picker">
-							<mat-radio-group
-								[(ngModel)]="dataService.selectedPallet.retract_direction"
-								formControlName="ret_dir"
-							>
-								<mat-radio-button
-									value="-X+Y+Z"
-									style="left: 0; top: 0;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+Y+Z"
-									style="left: 85px; top: 0;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+X+Y+Z"
-									style="left: 180px; top: 0;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="-X+Z"
-									style="left: 0; top: 56px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+Z"
-									style="left: 85px; top: 56px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+X+Z"
-									style="left: 180px; top: 56px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="-X-Y+Z"
-									style="left: 0; top: 120px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="-Y+Z"
-									style="left: 85px; top: 120px;"
-									color="primary"
-								></mat-radio-button>
-								<mat-radio-button
-									value="+X-Y+Z"
-									style="left: 180px; top: 120px;"
-									color="primary"
-								></mat-radio-button>
+							<mat-radio-group [(ngModel)]="dataService.selectedPallet.retract_direction" formControlName="ret_dir">
+								<mat-radio-button value="-X+Y+Z" style="left: 0; top: 0;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+Y+Z" style="left: 85px; top: 0;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+X+Y+Z" style="left: 180px; top: 0;" color="primary"></mat-radio-button>
+								<mat-radio-button value="-X+Z" style="left: 0; top: 56px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+Z" style="left: 85px; top: 56px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+X+Z" style="left: 180px; top: 56px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="-X-Y+Z" style="left: 0; top: 120px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="-Y+Z" style="left: 85px; top: 120px;" color="primary"></mat-radio-button>
+								<mat-radio-button value="+X-Y+Z" style="left: 180px; top: 120px;" color="primary"></mat-radio-button>
 							</mat-radio-group>
 						</div>
 					</div>

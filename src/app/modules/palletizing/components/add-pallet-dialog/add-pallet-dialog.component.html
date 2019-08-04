@@ -13,16 +13,12 @@
 			<div>
 				<mat-form-field>
 					<mat-select placeholder="{{ 'pallets.type' | translate }}" [(ngModel)]="palletType">
-						<mat-option *ngFor="let t of dataService.palletTypeOptions" value="{{ t }}">{{
-							t
-						}}</mat-option>
+						<mat-option *ngFor="let t of dataService.palletTypeOptions" value="{{ t }}">{{ t }}</mat-option>
 					</mat-select>
 				</mat-form-field>
 			</div>
 			<div>
-				<mat-checkbox [(ngModel)]="showWizard" color="primary">{{
-					'pallets.wizard_open' | translate
-				}}</mat-checkbox>
+				<mat-checkbox [(ngModel)]="showWizard" color="primary">{{ 'pallets.wizard_open' | translate }}</mat-checkbox>
 			</div>
 		</div>
 	</div>

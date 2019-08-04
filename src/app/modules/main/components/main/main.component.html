@@ -11,12 +11,10 @@
 			<mat-icon>menu</mat-icon>
 		</button>
 		<div class="center-vertical main-header">
-			<img src="assets/pics/{{ env.platform.logo }}" class="img-logo" [class.kuka-logo]="utils.IsKuka"/>
+			<img src="assets/pics/{{ env.platform.logo }}" class="img-logo" [class.kuka-logo]="utils.IsKuka" />
 			<span *ngIf="!utils.IsKuka">{{ appName }}</span>
 		</div>
-		<mat-icon *ngIf="stat.systemErrorCode < 0" [matTooltip]="'Error ' + stat.systemErrorCode"
-			>warning</mat-icon
-		>
+		<mat-icon *ngIf="stat.systemErrorCode < 0" [matTooltip]="'Error ' + stat.systemErrorCode">warning</mat-icon>
 		<div class="remote" *ngIf="!cmn.isTablet && stat.mode === 'R'">
 			<mat-icon>settings_remote</mat-icon>
 			REMOTE MODE
@@ -28,11 +26,7 @@
 			>warning</mat-icon
 		>
 		<div class="mode-selector mat-elevation-z3" *ngIf="tpOnline && stat.mode && cmn.isTablet">
-			<mat-button-toggle-group
-				[value]="stat.mode"
-				(change)="stat.changeMode($event)"
-				[disabled]="login.isViewer"
-			>
+			<mat-button-toggle-group [value]="stat.mode" (change)="stat.changeMode($event)" [disabled]="login.isViewer">
 				<mat-button-toggle value="T1">T1</mat-button-toggle>
 				<mat-button-toggle value="T2">T2</mat-button-toggle>
 				<mat-button-toggle value="A">A</mat-button-toggle>
@@ -56,6 +50,17 @@
 		>
 			<mat-icon>power_settings_new</mat-icon>
 		</button>
+		<button
+			mat-mini-fab
+			class="rec-button"
+			[disabled]="login.isViewer || !data.dataLoaded.value"
+			[class.recording]="rec.recording"
+			color="accent"
+			(click)="rec.toggle()"
+			matTooltip="{{ (rec.recording ? 'simulator_screen.stop' : 'simulator_screen.record') | translate }}"
+		>
+			<mat-icon>{{ rec.recording ? 'stop' : 'fiber_manual_record' }}</mat-icon>
+		</button>
 		<div [matTooltip]="jogTooltip">
 			<button
 				mat-mini-fab
@@ -73,13 +78,16 @@
 				<mat-icon>touch_app</mat-icon>
 			</button>
 		</div>
+		<button mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow()" tourAnchor="watch">
+			<mat-icon>update</mat-icon>
+		</button>
 		<button
 			mat-mini-fab
-			matTooltip="{{ 'watch.title' | translate }}"
-			(click)="watch.toggleWindow()"
-			tourAnchor="watch"
+			matTooltip="{{ 'simulator' | translate }}"
+			(click)="toggleSimulator()"
+			[disabled]="!cooService.coosLoaded.value"
 		>
-			<mat-icon>update</mat-icon>
+			<mat-icon>3d_rotation</mat-icon>
 		</button>
 		<button
 			mat-mini-fab
@@ -92,20 +100,10 @@
 		>
 			<mat-icon>notifications</mat-icon>
 		</button>
-		<button
-			*ngIf="login.isAdmin"
-			mat-mini-fab
-			matTooltip="{{ 'terminal' | translate }}"
-			(click)="toggleTerminal()"
-		>
+		<button *ngIf="login.isAdmin" mat-mini-fab matTooltip="{{ 'terminal' | translate }}" (click)="toggleTerminal()">
 			<mat-icon>featured_play_list</mat-icon>
 		</button>
-		<button
-			mat-mini-fab
-			color="warn"
-			(click)="login.logout()"
-			matTooltip="{{ 'button.logout' | translate }}"
-		>
+		<button mat-mini-fab color="warn" (click)="login.logout()" matTooltip="{{ 'button.logout' | translate }}">
 			<mat-icon>exit_to_app</mat-icon>
 		</button>
 	</mat-toolbar>
@@ -128,11 +126,7 @@
 				<div style="flex:1; overflow-x: hidden;">
 					<router-outlet></router-outlet>
 				</div>
-				<mat-card
-					class="emulator-settings"
-					[class.open]="screenManager.openedControls"
-					style="flex:1;"
-				>
+				<mat-card class="emulator-settings" [class.open]="screenManager.openedControls" style="flex:1;">
 					<div class="center-vertical" style="margin-bottom: 8px;">
 						<button
 							mat-mini-fab
@@ -153,9 +147,7 @@
 							color="warn"
 							[class.indicator-on]="stat.enabled"
 							(click)="stat.toggleEnabled()"
-							matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{
-								data.selectedRobot
-							}}"
+							matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}"
 							style="margin-right: 16px;"
 						>
 							<mat-icon>power_settings_new</mat-icon>
@@ -169,10 +161,7 @@
 						<div class="jog-table-container mat-elevation-z5" id="jog-container">
 							<table
 								class="jog-table"
-								*ngIf="
-									(cooService.axisCoordinate === null && cooService.jointKeys) ||
-									cooService.locationKeys
-								"
+								*ngIf="(cooService.axisCoordinate === null && cooService.jointKeys) || cooService.locationKeys"
 							>
 								<tr
 									*ngFor="
@@ -286,7 +275,7 @@
 	>
 		<div class="title primary-bg" #handleWatch>
 			<span>{{ 'watch.title' | translate }}</span>
-			<button mat-icon-button color="accent" (click)="watch.toggleWindow()">
+			<button mat-icon-button style="color: #fff;" (click)="watch.toggleWindow()">
 				<mat-icon>close</mat-icon>
 			</button>
 		</div>
@@ -312,5 +301,41 @@
 			</button>
 		</div>
 		<terminal-window></terminal-window>
+	</div>
+	<div
+		#simWindow
+		(started)="onWindowMoving(simWindow)"
+		*ngIf="simOpen"
+		class="window window-sim mat-elevation-z6"
+		style="left: 20%; top: 20%"
+		ngDraggable
+		ngResizable
+		rzContainment="#container"
+		[bounds]="container"
+		inBounds="true"
+		[handle]="handleSim"
+	>
+		<div class="sim-wrapper">
+			<div class="title primary-bg" #handleSim>
+				<span>{{ 'simulator' | translate }}</span>
+				<button mat-icon-button color="accent" (click)="toggleSimulator()">
+					<mat-icon>close</mat-icon>
+				</button>
+			</div>
+			<lib-app-simulator
+				*ngIf="robot.selectedRobot"
+				[debug]="false"
+				[backgroundColor]="sim.bgColor"
+				[traceColor]="sim.traceColor"
+				#simulator
+				[trace]="showTrace"
+				[roboturl]="robot.get3DModelPath(robot.selectedRobot.part_number)"
+				[jntValues]="cooService.jointsAsArr"
+				(onload)="simLoaded = true"
+			></lib-app-simulator>
+			<div [class.hidden]="simLoaded" class="spinner mat-elevation-z6">
+				<img src="assets/pics/{{ env.platform.spinner }}" />
+			</div>
+		</div>
 	</div>
 </div>

@@ -1,0 +1,11 @@
+<div class="wrapper mat-typography center-vertical-horizontal">
+	<div class="container">
+		<img src="assets/pics/{{ env.platform.spinner }}" />
+		<div class="loader">
+			<div class="fill"></div>
+		</div>
+		<div class="Loading" *ngIf="firstUnloadedStep.length > 0">
+			{{ 'loading' | translate }} {{ firstUnloadedStep | translate }}
+		</div>
+	</div>
+</div>

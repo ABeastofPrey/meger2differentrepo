@@ -8,7 +8,7 @@ import {
   MatSnackBar,
 } from '@angular/material';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { of as ofObservable, Observable, BehaviorSubject } from 'rxjs';
+import { of as ofObservable, Observable, BehaviorSubject, Subject } from 'rxjs';
 import { GripperTestDialogComponent } from '../gripper-test-dialog/gripper-test-dialog.component';
 import {
   WebsocketService,
@@ -20,6 +20,7 @@ import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-n
 import { SingleInputDialogComponent } from '../../../../components/single-input-dialog/single-input-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { Payload } from '../../../core/models/payload.model';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 /**
  * Node for to-do item
@@ -160,6 +161,7 @@ export class GripperScreenComponent implements OnInit {
   selectedNode: GripperTableNode = null;
 
   private words: any;
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     public data: DataService,
@@ -168,37 +170,7 @@ export class GripperScreenComponent implements OnInit {
     private dialog: MatDialog,
     private trn: TranslateService,
     public login: LoginService
-  ) {
-    const words = [
-      'add',
-      'grippers.ef',
-      'grippers.grp',
-      'delete',
-      'name',
-      'button.delete',
-      'button.cancel',
-    ];
-    this.trn.get(words).subscribe(words => {
-      this.words = words;
-    });
-    this.treeFlattener = new MatTreeFlattener(
-      this.transformer,
-      this.getLevel,
-      this.isExpandable,
-      this.getChildren
-    );
-    this.treeControl = new FlatTreeControl<GripperTableFlatNode>(
-      this.getLevel,
-      this.isExpandable
-    );
-    this.dataSource = new MatTreeFlatDataSource(
-      this.treeControl,
-      this.treeFlattener
-    );
-    database.dataChange.subscribe(data => {
-      this.dataSource.data = data;
-    });
-  }
+  ) {}
 
   getLevel = (node: GripperTableFlatNode) => {
     return node.level;
@@ -482,9 +454,41 @@ export class GripperScreenComponent implements OnInit {
     this.ws.query(cmd + '("' + ef + '","' + grp + '",' + val + ')');
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const words = [
+      'add',
+      'grippers.ef',
+      'grippers.grp',
+      'delete',
+      'name',
+      'button.delete',
+      'button.cancel',
+    ];
+    this.trn.get(words).subscribe(words => {
+      this.words = words;
+    });
+    this.treeFlattener = new MatTreeFlattener(
+      this.transformer,
+      this.getLevel,
+      this.isExpandable,
+      this.getChildren
+    );
+    this.treeControl = new FlatTreeControl<GripperTableFlatNode>(
+      this.getLevel,
+      this.isExpandable
+    );
+    this.dataSource = new MatTreeFlatDataSource(
+      this.treeControl,
+      this.treeFlattener
+    );
+    this.database.dataChange.pipe(takeUntil(this.notifier)).subscribe(data => {
+      this.dataSource.data = data;
+    });
+  }
 
   ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
     let promises: Promise<any>[] = [];
     for (let ef of this.database.data) {
       if (ef.nodeType === 'ef') {

@@ -1,7 +1,5 @@
 <div class="mat-typography">
-	<div class="title mat-elevation-z1">
-		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'variables.new' | translate }}
-	</div>
+	<div class="title mat-elevation-z1"><mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'variables.new' | translate }}</div>
 	<div class="name-wrapper">
 		<mat-form-field>
 			<input
@@ -14,15 +12,21 @@
 			/>
 		</mat-form-field>
 		<mat-form-field *ngIf="!data.domainIsFrame">
-      <mat-select placeholder="{{'variables.type'|translate}}" [(ngModel)]="varType" (selectionChange)="onTypeChange()">
-        <mat-option *ngIf="isHotOption(0) && data.isRobotType" value="JOINT">{{'joint'|translate}}</mat-option>
-        <mat-option *ngIf="isHotOption(1) && data.isRobotType" value="LOCATION">{{'location'|translate}}</mat-option>
-        <mat-option *ngIf="isHotOption(2)" value="LONG">{{'long'|translate}}</mat-option>
-        <mat-option *ngIf="isHotOption(3)" value="DOUBLE">{{'double'|translate}}</mat-option>
-        <mat-option *ngIf="isHotOption(4)" value="STRING">{{'string'|translate}}</mat-option>
+			<mat-select
+				placeholder="{{ 'variables.type' | translate }}"
+				[(ngModel)]="varType"
+				(selectionChange)="onTypeChange()"
+			>
+				<mat-option *ngIf="isHotOption(0) && data.isRobotType" value="JOINT">{{ 'joint' | translate }}</mat-option>
+				<mat-option *ngIf="isHotOption(1) && data.isRobotType" value="LOCATION">{{
+					'location' | translate
+				}}</mat-option>
+				<mat-option *ngIf="isHotOption(2)" value="LONG">{{ 'long' | translate }}</mat-option>
+				<mat-option *ngIf="isHotOption(3)" value="DOUBLE">{{ 'double' | translate }}</mat-option>
+				<mat-option *ngIf="isHotOption(4)" value="STRING">{{ 'string' | translate }}</mat-option>
 			</mat-select>
 		</mat-form-field>
-    <mat-checkbox *ngIf="canUseArray" color="primary" [(ngModel)]="isArray">{{'arr'|translate}}</mat-checkbox>
+		<mat-checkbox *ngIf="canUseArray" color="primary" [(ngModel)]="isArray">{{ 'arr' | translate }}</mat-checkbox>
 		<mat-form-field *ngIf="isArray" style="margin-top: 8px;">
 			<input
 				matInput
@@ -37,27 +41,37 @@
 			<div *ngIf="varType === 'JOINT'" class="values">
 				<mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
 					<span matPrefix style="font-weight: bold;">J{{ i + 1 }}:&nbsp;&nbsp;</span>
-					<input
-						matInput
-						[placeholder]="'J' + (i + 1)"
-						[(ngModel)]="this.values[i]"
-						virtualKeyboard
-						ktype="numeric"
-					/>
+					<input matInput [placeholder]="'J' + (i + 1)" [(ngModel)]="this.values[i]" virtualKeyboard ktype="numeric" />
 				</mat-form-field>
 			</div>
 			<div *ngIf="varType === 'LOCATION'" class="values">
-				<mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
-					<span matPrefix style="font-weight: bold;"
-						>{{ coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i] }}:&nbsp;&nbsp;</span
-					>
+				<mat-form-field *ngFor="let legend of data.robotCoordinateType.all; let i = index" floatLabel="never">
+					<span matPrefix style="font-weight: bold;">{{ legend }}:&nbsp;&nbsp;</span>
 					<input
+						*ngIf="i < data.robotCoordinateType.legends.length"
 						matInput
-						[placeholder]="coos.joints.length === 4 ? FOUR_AXES[i] : SIX_AXES[i]"
+						[placeholder]="legend"
 						[(ngModel)]="this.values[i]"
 						virtualKeyboard
 						ktype="numeric"
 					/>
+					<mat-select *ngIf="i >= data.robotCoordinateType.legends.length" [(ngModel)]="this.values[i]">
+						<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Arm'">
+							<mat-option value="0">AUTO</mat-option>
+							<mat-option value="1">LEFTY</mat-option>
+							<mat-option value="2">RIGHTY</mat-option>
+						</div>
+						<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Elbow'">
+							<mat-option value="0">AUTO</mat-option>
+							<mat-option value="1">BELOW</mat-option>
+							<mat-option value="2">ABOVE</mat-option>
+						</div>
+						<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Wrist'">
+							<mat-option value="0">AUTO</mat-option>
+							<mat-option value="1">NOFLIP</mat-option>
+							<mat-option value="2">FLIP</mat-option>
+						</div>
+					</mat-select>
 				</mat-form-field>
 			</div>
 			<div *ngIf="varType && varType !== 'LOCATION' && varType !== 'JOINT'" class="values">
@@ -91,13 +105,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			[disabled]="!name || !varType"
-			[clickOnce]="add"
-			[clickOnceContext]="this"
-		>
+		<button mat-button color="primary" [disabled]="!name || !varType" [clickOnce]="add" [clickOnceContext]="this">
 			{{ 'variables.btn_create' | translate }}
 		</button>
 	</div>

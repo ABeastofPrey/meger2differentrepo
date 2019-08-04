@@ -1,4 +1,10 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgZone,
+  ViewChild,
+  HostListener,
+} from '@angular/core';
 import {
   NotificationService,
   LoginService,
@@ -32,6 +38,11 @@ import { RobotService } from '../../../core/services/robot.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../core/services/common.service';
 import { UtilsService } from '../../../core/services/utils.service';
+import { RecordService } from '../../../core/services/record.service';
+import { TpLoadingComponent } from '../../../../components/tp-loading/tp-loading.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { SimulatorService } from '../../../core/services/simulator.service';
 
 @Component({
   selector: 'app-main',
@@ -76,12 +87,15 @@ import { UtilsService } from '../../../core/services/utils.service';
 })
 export class MainComponent implements OnInit {
   isRouterLoading: boolean = false;
+  simLoaded: boolean = false;
   mouseDownIndex: number = 0;
   screenWidth: number;
   tpOnline: boolean = false;
   terminalOpen: boolean = false;
+  simOpen: boolean = false;
   appName: string = environment.appName;
   lastWindowsZindex = 5;
+  env = environment;
 
   @ViewChild('drawer', { static: true }) drawer: MatSidenav;
 
@@ -90,8 +104,7 @@ export class MainComponent implements OnInit {
   private jogInterval: any;
   private motionFlag: boolean = false;
   private words: any;
-
-  public env = environment;
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     public notification: NotificationService,
@@ -110,12 +123,22 @@ export class MainComponent implements OnInit {
     private robot: RobotService,
     private trn: TranslateService,
     public cmn: CommonService,
-    public utils: UtilsService
+    public utils: UtilsService,
+    public rec: RecordService,
+    public sim: SimulatorService
   ) {
-    this.trn.onLangChange.subscribe(event => {
+    this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(event => {
       this.refreshLang();
     });
     this.refreshLang();
+    this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
+      if (stat) {
+        this.dialog.open(TpLoadingComponent, {
+          disableClose: true,
+          height: '300px',
+        });
+      }
+    });
   }
 
   private refreshLang() {
@@ -124,15 +147,20 @@ export class MainComponent implements OnInit {
     });
   }
 
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.screenWidth = window.innerWidth;
+  }
+
   ngOnInit() {
     this.screenWidth = window.innerWidth;
-    window.addEventListener('resize', () => {
-      this.screenWidth = window.innerWidth;
+    this.prj.currProject.pipe(takeUntil(this.notifier)).subscribe(prj => {
+      if (prj) this.prj.getProjectStatus();
     });
-    this.drawer.openedChange.subscribe(() => {
+    this.drawer.openedChange.pipe(takeUntil(this.notifier)).subscribe(() => {
       window.dispatchEvent(new Event('resize'));
     });
-    this.router.events.subscribe(event => {
+    this.router.events.pipe(takeUntil(this.notifier)).subscribe(event => {
       if (event instanceof RouteConfigLoadStart) {
         this.isRouterLoading = true;
       } else if (event instanceof RouteConfigLoadEnd) {
@@ -140,7 +168,7 @@ export class MainComponent implements OnInit {
       }
     });
     this.robot.init();
-    this.stat.onlineStatus.subscribe(stat => {
+    this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
       this.tpOnline = stat;
       if (!stat) {
         // TP LIB IS NOT AVAILABLE
@@ -164,34 +192,39 @@ export class MainComponent implements OnInit {
         }
       }
     });
-    this.login.isAuthenticated.subscribe(auth => {
-      if (!auth) this.router.navigateByUrl('/login');
-    });
+    this.login.isAuthenticated
+      .pipe(takeUntil(this.notifier))
+      .subscribe(auth => {
+        if (!auth) this.router.navigateByUrl('/login');
+      });
     // IF NOT CONNECTED AFTER 2 seconds - redirect...
     setTimeout(() => {
       if (!this.ws.connected) this.router.navigateByUrl('/login');
     }, 2000);
-    this._zone.runOutsideAngular(() => {
-      document.onmousemove = e => {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const x = e.pageX,
-          y = e.pageY;
-        if (x <= 0 || x >= w || y <= 0 || y >= h) this.mouseUp(null);
-      };
-    });
+  }
+
+  @HostListener('window:mousemove.out-zone', ['$event'])
+  onMouseMove(e: MouseEvent) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const x = e.pageX,
+      y = e.pageY;
+    if (x <= 0 || x >= w || y <= 0 || y >= h) this.mouseUp(null);
+  }
+
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   onWindowMoving(el: any) {
     this.lastWindowsZindex++;
     el.style.zIndex = this.lastWindowsZindex;
   }
-  
+
   toggleMenu() {
-    if (!this.cmn.isTablet)
-      this.screenManager.toggleMenu();
-    else
-      this.drawer.toggle();
+    if (!this.cmn.isTablet) this.screenManager.toggleMenu();
+    else this.drawer.toggle();
   }
 
   mouseDown(i: number, e?: Event) {
@@ -234,6 +267,7 @@ export class MainComponent implements OnInit {
     ) {
       return;
     }
+    if (this.stat.mode !== 'T1' && this.stat.mode !== 'T2') return;
     if (this.jogButtonPressed || this.stat.isMoving) {
       this.motionFlag = false;
       this.ws.send('?tp_jog(0)', true);
@@ -249,6 +283,14 @@ export class MainComponent implements OnInit {
 
   toggleTerminal() {
     this.terminalOpen = !this.terminalOpen;
+  }
+
+  toggleSimulator() {
+    this.simOpen = !this.simOpen;
+    if (!this.simOpen) {
+      // closed
+      this.simLoaded = false;
+    }
   }
 
   get jogTooltip(): string {

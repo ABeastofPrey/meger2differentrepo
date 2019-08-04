@@ -6,41 +6,41 @@ import { ReleaseNoteComponent } from './release-note.component';
 import { HttpClient } from '@angular/common/http';
 
 const fakeHttp = {
-    get: () => {
-        return {
-            subscribe: (cb) => {
-                cb('release note');
-            }
-        };
-    }
+  get: () => {
+    return {
+      subscribe: cb => {
+        cb('release note');
+      },
+    };
+  },
 };
 
 describe('ReleaseNoteComponent', () => {
-    let component: ReleaseNoteComponent;
-    let fixture: ComponentFixture<ReleaseNoteComponent>;
+  let component: ReleaseNoteComponent;
+  let fixture: ComponentFixture<ReleaseNoteComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [ReleaseNoteComponent],
-            imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
-            providers: [{ provide: HttpClient, useValue: fakeHttp }]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ReleaseNoteComponent],
+      imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
+      providers: [{ provide: HttpClient, useValue: fakeHttp }],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ReleaseNoteComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ReleaseNoteComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should retrive release note file', async(() => {
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(component.releaseNote).toBe('release note');
     });
-
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
-    it('should retrive release note file', async(() => {
-        fixture.detectChanges();
-        fixture.whenStable().then(() => {
-            expect(component.releaseNote).toBe('release note');
-        });
-    }));
+  }));
 });

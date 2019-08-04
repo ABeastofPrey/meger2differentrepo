@@ -50,8 +50,11 @@ export class BugReportComponent implements OnInit {
       this.ws.query('?errorhistory'),
     ];
     Promise.all(promises).then((ret: MCQueryResponse[]) => {
-      const info = '\n\n---------------------------------------------------------------------------------------------------\n' +
-        ret[0].result + '\n' + ret[1].result +
+      const info =
+        '\n\n---------------------------------------------------------------------------------------------------\n' +
+        ret[0].result +
+        '\n' +
+        ret[1].result +
         '\n---------------------------------------------------------------------------------------------------\n' +
         'Cabinet:\t\t\t' +
         data.cabinetVer +
@@ -84,18 +87,23 @@ export class BugReportComponent implements OnInit {
         data.mcuVer +
         '\n\n';
       const user = this.login.getCurrentUser().user;
-      const userInfo = user.fullName + '(' + user.username + '): ' + user.permission;
-      this.trn.get('help.bug_body').subscribe(body=>{
-        body = encodeURIComponent(body + '\n\n------------------------------------------------------\n\n' + this.msg.value);
-        const url = 
-          'mailto://csbugs@servotronix.com?subject=ControlStudio+%20Bug%20Report&body='
-          + body;
-        this.api.bugReport(info, userInfo, ret[2].result).then(ret=>{
+      const userInfo =
+        user.fullName + '(' + user.username + '): ' + user.permission;
+      this.trn.get('help.bug_body').subscribe(body => {
+        body = encodeURIComponent(
+          body +
+            '\n\n------------------------------------------------------\n\n' +
+            this.msg.value
+        );
+        const url =
+          'mailto://csbugs@servotronix.com?subject=ControlStudio+%20Bug%20Report&body=' +
+          body;
+        this.api.bugReport(info, userInfo, ret[2].result).then(ret => {
           if (ret) {
             this.api.downloadSysZip();
-            setTimeout(()=>{
+            setTimeout(() => {
               window.location.href = url;
-            },7000);
+            }, 7000);
           }
         });
         this.isSending = false;

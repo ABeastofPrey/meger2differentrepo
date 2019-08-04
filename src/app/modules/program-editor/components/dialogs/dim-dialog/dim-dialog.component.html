@@ -23,12 +23,7 @@
 		<button mat-button (click)="cancel()">
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			(click)="insert()"
-			[disabled]="this.varName == null || this.varType == null"
-		>
+		<button mat-button color="primary" (click)="insert()" [disabled]="this.varName == null || this.varType == null">
 			{{ 'button.insert' | translate }}
 		</button>
 	</div>

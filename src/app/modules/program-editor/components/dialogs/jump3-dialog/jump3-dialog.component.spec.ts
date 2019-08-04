@@ -4,23 +4,44 @@ import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { Jump3DialogService } from '../../../services/jump3-dialog.service';
-import { Jump3DialogComponent, ParameterErrorStateMatcher } from './jump3-dialog.component';
+import {
+  Jump3DialogComponent,
+  ParameterErrorStateMatcher,
+} from './jump3-dialog.component';
 import { range, map } from 'ramda';
 import * as Faker from 'faker';
 
 describe('Jump3DialogComponent', () => {
   let component: Jump3DialogComponent;
   let fixture: ComponentFixture<Jump3DialogComponent>;
-  const jump3DialogService = jasmine.createSpyObj('Jump3DialogService',
-    ['retriveMotionElements', 'retriveDestFrames', 'retriveVolocityMax', 'retriveAccelearationMax']);
-  const fakeMotions = map(Faker.random.word, range(0, Faker.random.number({ min: 2, max: 5 })));
-  const fakeDestFra = map(Faker.random.word, range(0, Faker.random.number({ min: 2, max: 5 })));
+  const jump3DialogService = jasmine.createSpyObj('Jump3DialogService', [
+    'retriveMotionElements',
+    'retriveDestFrames',
+    'retriveVolocityMax',
+    'retriveAccelearationMax',
+  ]);
+  const fakeMotions = map(
+    Faker.random.word,
+    range(0, Faker.random.number({ min: 2, max: 5 }))
+  );
+  const fakeDestFra = map(
+    Faker.random.word,
+    range(0, Faker.random.number({ min: 2, max: 5 }))
+  );
   const fakeVMax = Faker.random.number({ min: 5, max: 10 });
   const fakeAMax = Faker.random.number({ min: 15, max: 999 });
-  const motionElemSyp = jump3DialogService.retriveMotionElements.and.returnValue(fakeMotions);
-  const destFramesSyp = jump3DialogService.retriveDestFrames.and.returnValue(fakeDestFra);
-  const volocityMxSyp = jump3DialogService.retriveVolocityMax.and.returnValue(fakeVMax);
-  const accelearMxSyp = jump3DialogService.retriveVolocityMax.and.returnValue(fakeAMax);
+  const motionElemSyp = jump3DialogService.retriveMotionElements.and.returnValue(
+    fakeMotions
+  );
+  const destFramesSyp = jump3DialogService.retriveDestFrames.and.returnValue(
+    fakeDestFra
+  );
+  const volocityMxSyp = jump3DialogService.retriveVolocityMax.and.returnValue(
+    fakeVMax
+  );
+  const accelearMxSyp = jump3DialogService.retriveVolocityMax.and.returnValue(
+    fakeAMax
+  );
 
   const fakeDalog = jasmine.createSpyObj('MatDialogRef', ['close']);
   const closeSpy = fakeDalog.close;
@@ -29,13 +50,13 @@ describe('Jump3DialogComponent', () => {
       return {
         afterClosed: () => {
           return {
-            subscribe: (cb) => {
+            subscribe: cb => {
               cb(true);
-            }
+            },
           };
-        }
+        },
       };
-    }
+    },
   };
 
   beforeEach(async(() => {
@@ -45,11 +66,10 @@ describe('Jump3DialogComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: fakeDalog },
         { provide: MatDialog, useValue: dummyDialog },
-        { provide: Jump3DialogService, useValue: jump3DialogService }
+        { provide: Jump3DialogService, useValue: jump3DialogService },
       ],
-      imports: [SharedModule, BrowserAnimationsModule, UnitTestModule]
-    })
-      .compileComponents();
+      imports: [SharedModule, BrowserAnimationsModule, UnitTestModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -124,7 +144,9 @@ describe('Jump3DialogComponent', () => {
       const requiredControl = component.requiredPars[0].control;
       requiredControl.markAsTouched();
       expect(component.enableAdvanced).toBe(false);
-      expect(component.errorMessage(requiredControl)).toBe('This field is required');
+      expect(component.errorMessage(requiredControl)).toBe(
+        'This field is required'
+      );
     });
   }));
 
@@ -132,13 +154,13 @@ describe('Jump3DialogComponent', () => {
     fixture.detectChanges();
     const control = {
       hasError: key => {
-        return (key === 'limit') ? true : false;
+        return key === 'limit' ? true : false;
       },
       errors: {
         limit: {
-          msg: 'good'
-        }
-      }
+          msg: 'good',
+        },
+      },
     };
     fixture.whenStable().then(() => {
       const hasErr = component.errorMessage(control as any);

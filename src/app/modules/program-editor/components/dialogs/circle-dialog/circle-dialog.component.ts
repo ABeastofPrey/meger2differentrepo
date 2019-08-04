@@ -95,24 +95,37 @@ export class CircleDialogComponent implements OnInit {
     const preCPoint = this.circlePoint;
     const preTPoint = this.targetPoint;
     const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
-    this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
-      let _point = this.locations.find(x => x.name === addedVar);
-      _point = _point ? _point : this.joints.find(x => x.name === addedVar);
-      if (type === 'circle') {
-        this.circlePoint = _point;
-        const preJIdx = preTPoint ? this.joints.findIndex(x => x.name === preTPoint.name) : -1;
-        const preLIdx = preTPoint ? this.locations.findIndex(x => x.name === preTPoint.name) : -1;
-        this.targetPoint = (preJIdx !== -1) ? this.joints[preJIdx] : this.locations[preLIdx];
-      } else if (type === 'target') {
-        this.targetPoint = _point;
-        const preJIdx = preCPoint ? this.joints.findIndex(x => x.name === preCPoint.name) : -1;
-        const preLIdx = preCPoint ? this.locations.findIndex(x => x.name === preCPoint.name) : -1;
-        this.circlePoint = (preJIdx !== -1) ? this.joints[preJIdx] : this.locations[preLIdx];
-      }
-    });
+    this.dialog
+      .open(AddVarComponent, option)
+      .afterClosed()
+      .subscribe(addedVar => {
+        let _point = this.locations.find(x => x.name === addedVar);
+        _point = _point ? _point : this.joints.find(x => x.name === addedVar);
+        if (type === 'circle') {
+          this.circlePoint = _point;
+          const preJIdx = preTPoint
+            ? this.joints.findIndex(x => x.name === preTPoint.name)
+            : -1;
+          const preLIdx = preTPoint
+            ? this.locations.findIndex(x => x.name === preTPoint.name)
+            : -1;
+          this.targetPoint =
+            preJIdx !== -1 ? this.joints[preJIdx] : this.locations[preLIdx];
+        } else if (type === 'target') {
+          this.targetPoint = _point;
+          const preJIdx = preCPoint
+            ? this.joints.findIndex(x => x.name === preCPoint.name)
+            : -1;
+          const preLIdx = preCPoint
+            ? this.locations.findIndex(x => x.name === preCPoint.name)
+            : -1;
+          this.circlePoint =
+            preJIdx !== -1 ? this.joints[preJIdx] : this.locations[preLIdx];
+        }
+      });
   }
 
-  invalidBlending() : boolean {
+  invalidBlending(): boolean {
     if (this.blending) {
       let n = Number(this.blending);
       if (!isNaN(n) && (n < 0 || n > 100)) return true;

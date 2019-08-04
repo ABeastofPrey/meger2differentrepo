@@ -4,14 +4,10 @@
 		<div
 			class="item"
 			[style.height]="
-				(rotation % 180 === 0
-					? pallet.item_size_y / normalizePreview
-					: pallet.item_size_x / normalizePreview) + 'px'
+				(rotation % 180 === 0 ? pallet.item_size_y / normalizePreview : pallet.item_size_x / normalizePreview) + 'px'
 			"
 			[style.width]="
-				(rotation % 180 === 0
-					? pallet.item_size_x / normalizePreview
-					: pallet.item_size_y / normalizePreview) + 'px'
+				(rotation % 180 === 0 ? pallet.item_size_x / normalizePreview : pallet.item_size_y / normalizePreview) + 'px'
 			"
 		></div>
 		<h2 style="margin-top: 8px;">Options</h2>
@@ -31,13 +27,7 @@
 				<mat-icon>save</mat-icon>
 			</button>
 		</div>
-		<input
-			type="file"
-			accept=".DAT, .dat"
-			#upload
-			(change)="onUploadFilesChange($event)"
-			class="file-input"
-		/>
+		<input type="file" accept=".DAT, .dat" #upload (change)="onUploadFilesChange($event)" class="file-input" />
 	</div>
 	<div class="container" #container>
 		<div
@@ -45,14 +35,10 @@
 			*ngFor="let item of items"
 			#customItem
 			[style.height]="
-				(item.r % 180 === 0
-					? pallet.item_size_y / normalizeItem
-					: pallet.item_size_x / normalizeItem) + 'px'
+				(item.r % 180 === 0 ? pallet.item_size_y / normalizeItem : pallet.item_size_x / normalizeItem) + 'px'
 			"
 			[style.width]="
-				(item.r % 180 === 0
-					? pallet.item_size_x / normalizeItem
-					: pallet.item_size_y / normalizeItem) + 'px'
+				(item.r % 180 === 0 ? pallet.item_size_x / normalizeItem : pallet.item_size_y / normalizeItem) + 'px'
 			"
 			[draggableItem]="item"
 			(shortclick)="showMenu(item)"

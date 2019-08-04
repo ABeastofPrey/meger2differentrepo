@@ -25,3 +25,6 @@ mat-form-field {
   display: block;
   width: 100%;
 }
+mat-radio-button {
+  margin-right: 16px;
+}

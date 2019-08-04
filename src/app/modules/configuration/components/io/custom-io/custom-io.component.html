@@ -1,75 +1,131 @@
 <div class="custom-view">
-  <div class='custom-content-container'>
-      <div class="custom-content-main">
-        <mat-table #customTable class="custom-table-container io-table" [dataSource]="customDataSource">
-          <ng-container matColumnDef="{{IoTableColumnReference.Type}}">
-            <mat-header-cell *matHeaderCellDef> {{'io.type' | translate}} </mat-header-cell>
-            <ng-container>
-              <mat-cell color="primary" *matCellDef="let element; let i = index">
-                <mat-select [(value)]="element.selectedType.key" placeholder={{element.selectedType.key}} class="mat-select-normal-place-holder"
-                  (click)="removeSelectionOnPortOrTypeChange($event)" (selectionChange)="typeSelectionChange(i, $event.value)"
-                  disableRipple="true">
-                  <mat-option *ngFor="let type of element.type" [value]="type.key">
-                    {{type.value}}
-                  </mat-option>
-                </mat-select>
-              </mat-cell>
-            </ng-container>
-          </ng-container>
+	<div class="custom-content-container">
+		<div class="custom-content-main">
+			<mat-table #customTable class="custom-table-container io-table" [dataSource]="customDataSource">
+				<ng-container matColumnDef="{{ IoTableColumnReference.Type }}">
+					<mat-header-cell *matHeaderCellDef>
+						{{ 'io.type' | translate }}
+					</mat-header-cell>
+					<ng-container>
+						<mat-cell color="primary" *matCellDef="let element; let i = index">
+							<mat-select
+								[(value)]="element.selectedType.key"
+								placeholder="{{ element.selectedType.key }}"
+								class="mat-select-normal-place-holder"
+								(click)="removeSelectionOnPortOrTypeChange($event)"
+								(selectionChange)="typeSelectionChange(i, $event.value)"
+								disableRipple="true"
+							>
+								<mat-option *ngFor="let type of element.type" [value]="type.key">
+									{{ type.value }}
+								</mat-option>
+							</mat-select>
+						</mat-cell>
+					</ng-container>
+				</ng-container>
 
-          <ng-container matColumnDef="{{IoTableColumnReference.Port}}">
-            <mat-header-cell *matHeaderCellDef> {{'io.port' | translate}} </mat-header-cell>
-            <ng-container>
-              <mat-cell color="primary" *matCellDef="let element; let i = index">
-                <mat-select [(value)]="element.selectedPort" placeholder={{element.selectedPort}} class="mat-select-normal-place-holder"
-                  (click)="removeSelectionOnPortOrTypeChange($event)" (selectionChange)="portSelectionChange(i, $event.value)"
-                  disableRipple="true">
-                  <mat-option *ngFor="let port of element.port" [value]="port">
-                    {{port}}
-                  </mat-option>
-                </mat-select>
-              </mat-cell>
-            </ng-container>
-          </ng-container>
+				<ng-container matColumnDef="{{ IoTableColumnReference.Port }}">
+					<mat-header-cell *matHeaderCellDef>
+						{{ 'io.port' | translate }}
+					</mat-header-cell>
+					<ng-container>
+						<mat-cell color="primary" *matCellDef="let element; let i = index">
+							<mat-select
+								[(value)]="element.selectedPort"
+								placeholder="{{ element.selectedPort }}"
+								class="mat-select-normal-place-holder"
+								(click)="removeSelectionOnPortOrTypeChange($event)"
+								(selectionChange)="portSelectionChange(i, $event.value)"
+								disableRipple="true"
+							>
+								<mat-option *ngFor="let port of element.port" [value]="port">
+									{{ port }}
+								</mat-option>
+							</mat-select>
+						</mat-cell>
+					</ng-container>
+				</ng-container>
 
-          <ng-container matColumnDef="{{IoTableColumnReference.Value}}">
-            <mat-header-cell *matHeaderCellDef> {{'io.status' | translate}} </mat-header-cell>
-            <mat-cell color="primary" *matCellDef="let element; let i = index;">
-              <ng-container *ngIf="element.selectedType.key === CustomIOTypeReference.InputBit || element.selectedType.key === CustomIOTypeReference.OutputBit ">
-                <input type="radio" [name]="i" [checked]="element.value === '1'" (click)="onClickRadioButtonInCustomIO(i, $event)">
-              </ng-container>
-              <ng-container *ngIf="element.selectedType.key != CustomIOTypeReference.InputBit && element.selectedType.key != CustomIOTypeReference.OutputBit ">
-                {{element.value}}
-              </ng-container>
-            </mat-cell>
-          </ng-container>
+				<ng-container matColumnDef="{{ IoTableColumnReference.Value }}">
+					<mat-header-cell *matHeaderCellDef>
+						{{ 'io.status' | translate }}
+					</mat-header-cell>
+					<mat-cell color="primary" *matCellDef="let element; let i = index">
+						<ng-container
+							*ngIf="
+								element.selectedType.key === CustomIOTypeReference.InputBit ||
+								element.selectedType.key === CustomIOTypeReference.OutputBit
+							"
+						>
+							<input
+								type="radio"
+								[name]="i"
+								[checked]="element.value === '1'"
+								(click)="onClickRadioButtonInCustomIO(i, $event)"
+							/>
+						</ng-container>
+						<ng-container
+							*ngIf="
+								element.selectedType.key != CustomIOTypeReference.InputBit &&
+								element.selectedType.key != CustomIOTypeReference.OutputBit
+							"
+						>
+							{{ element.value }}
+						</ng-container>
+					</mat-cell>
+				</ng-container>
 
-          <ng-container matColumnDef="{{IoTableColumnReference.Label}}">
-            <mat-header-cell *matHeaderCellDef> {{'io.label' | translate}} </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.label}} </mat-cell>
-          </ng-container>
+				<ng-container matColumnDef="{{ IoTableColumnReference.Label }}">
+					<mat-header-cell *matHeaderCellDef>
+						{{ 'io.label' | translate }}
+					</mat-header-cell>
+					<mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
+				</ng-container>
 
-          <mat-header-row *matHeaderRowDef="customDisplayedColumns; sticky: true"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: customDisplayedColumns; let i = index;" (click)="selectRowInCustomTable(row, i)"
-            [ngClass]="{'custom-selected-row': row === selectedRowInCustomTable }"></mat-row>
-        </mat-table>
+				<mat-header-row *matHeaderRowDef="customDisplayedColumns; sticky: true"></mat-header-row>
+				<mat-row
+					*matRowDef="let row; columns: customDisplayedColumns; let i = index"
+					(click)="selectRowInCustomTable(row, i)"
+					[ngClass]="{
+						'custom-selected-row': row === selectedRowInCustomTable
+					}"
+				></mat-row>
+			</mat-table>
+		</div>
+		<div class="custom-content-right">
+			<button
+				mat-button
+				class="custom-button mat-button-no-hover-background"
+				[ngClass]="{
+					'custom-add-button': isAddEnable,
+					'custom-add-button-disable': !isAddEnable
+				}"
+				(click)="addRowInCustomTable()"
+				[disabled]="!isAddEnable"
+				disableRipple="true"
+			>
+				<mat-icon>add</mat-icon>{{ 'io.addRow' | translate }}
+			</button>
 
+			<button
+				mat-button
+				class="custom-button mat-button-no-hover-background"
+				[ngClass]="{
+					'custom-del-button': isDeleteEnable,
+					'custom-del-button-disable': !isDeleteEnable
+				}"
+				(click)="deleteRowInCustomTable()"
+				[disabled]="!isDeleteEnable"
+				disableRipple="true"
+			>
+				<mat-icon>delete</mat-icon>{{ 'io.delRow' | translate }}
+			</button>
+		</div>
+	</div>
 
-      </div>
-      <div class="custom-content-right">
-        <button mat-button class="custom-button mat-button-no-hover-background" [ngClass]="{'custom-add-button': isAddEnable,'custom-add-button-disable': !isAddEnable}"
-        (click)="addRowInCustomTable()" [disabled]="!isAddEnable" disableRipple="true">
-        <mat-icon>add</mat-icon>{{'io.addRow'|translate}}
-      </button>
-
-      <button mat-button class="custom-button mat-button-no-hover-background" [ngClass]="{'custom-del-button': isDeleteEnable,'custom-del-button-disable': !isDeleteEnable}"
-        (click)="deleteRowInCustomTable()" [disabled]="!isDeleteEnable" disableRipple="true">
-        <mat-icon>delete</mat-icon>{{'io.delRow'|translate}}
-      </button>
-      </div>
-  </div>
-
-  <div class="hexadecimal-option">
-    <mat-checkbox color="primary" [(ngModel)]="customHex" (change)="customHexChanged()">{{'io.hexadecimal'|translate}}</mat-checkbox>
-  </div>
+	<div class="hexadecimal-option">
+		<mat-checkbox color="primary" [(ngModel)]="customHex" (change)="customHexChanged()">{{
+			'io.hexadecimal' | translate
+		}}</mat-checkbox>
+	</div>
 </div>

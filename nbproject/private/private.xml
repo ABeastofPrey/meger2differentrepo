@@ -3,8 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Omri/Scara-Apps-GUI/src/app/modules/configuration/components/io/custom-io/custom-io.component.spec.ts</file>
-            <file>file:/C:/Omri/Scara-Apps-GUI/TESTS-Chrome_75.0.3770_(Windows_7.0.0).xml</file>
+            <file>file:/C:/Omri/Scara-Apps-GUI/src/app/modules/program-editor/components/dialogs/jump-dialog/jump-dialog.component.spec.ts</file>
+            <file>file:/C:/Omri/Scara-Apps-GUI/src/app/modules/program-editor/components/program-settings/position-trigger/position-trigger.component.spec.ts</file>
         </group>
     </open-files>
 </project-private>

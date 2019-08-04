@@ -76,6 +76,7 @@ export class WebsocketService {
     this.socketQueue = [];
     this._isTimeout.next(false);
     this._isConnected.next(false);
+    this.notification.clear();
   }
 
   constructor(
@@ -127,6 +128,19 @@ export class WebsocketService {
                 }
                 for (let ref of this.dialog.openDialogs) {
                   if (ref.id !== 'update' && ref.id !== 'system') ref.close();
+                }
+                if (e.data.code === 4003) {
+                  this._zone.run(() => {
+                    this.dialog
+                      .open(ErrorDialogComponent, {
+                        data: this.words,
+                        id: 'system',
+                      })
+                      .afterClosed()
+                      .subscribe(() => {
+                        this.router.navigateByUrl('/login');
+                      });
+                  });
                 }
                 this.reset();
                 break;
@@ -234,21 +248,6 @@ export class WebsocketService {
       } else {
         // Other Server announcements
         this.notification.onAsyncMessage(data['msg']);
-        if (data['msg'] === 'No avilable ports') {
-          this.reset();
-          this._zone.run(() => {
-            this.dialog
-              .open(ErrorDialogComponent, {
-                width: '250px',
-                data: this.words,
-                id: 'system',
-              })
-              .afterClosed()
-              .subscribe(() => {
-                this.router.navigateByUrl('/login');
-              });
-          });
-        }
       }
     }
     if (

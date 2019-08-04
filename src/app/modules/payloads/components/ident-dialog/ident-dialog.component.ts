@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { WebsocketService } from '../../../core';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-ident-dialog',
@@ -12,6 +14,8 @@ export class IdentDialogComponent implements OnInit {
   started: boolean = false;
   finished: boolean = false;
 
+  private notifier: Subject<boolean> = new Subject();
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<boolean>,
@@ -20,9 +24,14 @@ export class IdentDialogComponent implements OnInit {
 
   ngOnInit() {
     this.timeLeft = this.data.duration;
-    this.ws.isConnected.subscribe(ret => {
+    this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(ret => {
       if (!ret) this.dialogRef.close(false);
     });
+  }
+
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   start() {

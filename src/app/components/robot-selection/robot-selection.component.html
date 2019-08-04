@@ -14,9 +14,7 @@
 		<mat-form-field>
 			<mat-select placeholder="{{ 'robots.axes' | translate }}" #axes [disabled]="!rtype.value">
 				<mat-option *ngFor="let ax of rtype.value" [value]="ax">{{ ax.axes }}</mat-option>
-				<mat-option *ngIf="rtype.value && rtype.value.length === 0">{{
-					'robots.no-axes' | translate
-				}}</mat-option>
+				<mat-option *ngIf="rtype.value && rtype.value.length === 0">{{ 'robots.no-axes' | translate }}</mat-option>
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field>
@@ -32,9 +30,7 @@
 		<mat-form-field>
 			<mat-select placeholder="{{ 'robots.model' | translate }}" [disabled]="!series.value" #model>
 				<div *ngIf="series.value">
-					<mat-option *ngFor="let m of series.value.models" [value]="m"
-						>{{ m.name }} ({{ m.bus }})</mat-option
-					>
+					<mat-option *ngFor="let m of series.value.models" [value]="m">{{ m.name }} ({{ m.bus }})</mat-option>
 					<mat-option *ngIf="series.value.models && series.value.models.length === 0">{{
 						'robots.no-models' | translate
 					}}</mat-option>

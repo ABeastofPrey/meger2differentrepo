@@ -15,7 +15,6 @@ export class LoginService {
   public currentUser = this.currentUserSubject
     .asObservable()
     .pipe(distinctUntilChanged());
-
   private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
 
@@ -138,7 +137,8 @@ export class LoginService {
     this.purgeAuth();
     const params = serverDisconnected ? { serverDisconnected: 'true' } : {};
     this.router.navigate(['/login'], { queryParams: params });
-    this.snack._openedSnackBarRef.dismiss();
+    const ref = this.snack._openedSnackBarRef;
+    if (ref) ref.dismiss();
   }
 
   constructor(

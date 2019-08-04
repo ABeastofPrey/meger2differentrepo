@@ -6,12 +6,7 @@
 		{{ 'projects.delete-dialog.message' | translate }}
 		<mat-form-field class="chip-field">
 			<mat-chip-list #chipList>
-				<mat-chip
-					*ngFor="let project of selected"
-					selectable="false"
-					removable="true"
-					(removed)="remove(project)"
-				>
+				<mat-chip *ngFor="let project of selected" selectable="false" removable="true" (removed)="remove(project)">
 					{{ project }}
 					<mat-icon matChipRemove>cancel</mat-icon>
 				</mat-chip>

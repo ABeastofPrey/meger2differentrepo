@@ -26,6 +26,7 @@
     "jquery-ui-dist": "^1.12.1",
     "lodash": "^4.17.11",
     "ng-click-outside": "^4.0.0",
+    "ngx-color-picker": "^8.1.0",
     "ngx-scrollbar": "^4.2.0",
     "ngx-tour-core": "^4.0.1",
     "ngx-tour-md-menu": "^4.0.1",
@@ -34,7 +35,7 @@
     "ramda-fantasy": "^0.8.0",
     "rxjs-compat": "^6.5.2",
     "screenfull": "^4.2.0",
-    "stxsim-ng": "0.0.11"
+    "stxsim-ng": "0.0.33"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.800.0",
@@ -45,6 +46,7 @@
     "@angular/compiler": "8.0.0",
     "@angular/compiler-cli": "8.0.0",
     "@angular/core": "8.0.0",
+    "@angular/flex-layout": "^8.0.0-beta.26",
     "@angular/forms": "8.0.0",
     "@angular/language-service": "8.0.0",
     "@angular/material": "^8.0.0",

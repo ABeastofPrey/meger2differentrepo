@@ -23,12 +23,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-raised-button
-			color="primary"
-			[disabled]="isSending || msg.invalid"
-			(click)="report()"
-		>
+		<button mat-raised-button color="primary" [disabled]="isSending || msg.invalid" (click)="report()">
 			<span *ngIf="!isSending">{{ 'button.send' | translate }}</span>
 			<mat-spinner diameter="36" *ngIf="isSending" color="primary"></mat-spinner>
 		</button>

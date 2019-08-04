@@ -1,24 +1,16 @@
 <div class="wrapper mat-typography">
-	<ul
-		class="menu mat-elevation-z1"
-		*ngIf="prgService.modeToggle === 'prj'"
-		(click)="toggleFocus($event)"
-	>
+	<ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'prj'" (click)="toggleFocus($event)">
 		<li
 			(mouseenter)="currMenu = 1"
 			[class.selected]="onFocus && currMenu === 1"
-			[class.disabled]="
-				this.prj.currProject.value === null || prj.activeProject || login.isOperator
-			"
+			[class.disabled]="this.prj.currProject.value === null || prj.activeProject || login.isOperator"
 		>
 			{{ 'projectTree.prj' | translate }}
 		</li>
 		<li
 			(mouseenter)="currMenu = 2"
 			[class.selected]="onFocus && currMenu === 2"
-			[class.disabled]="
-				this.prj.currProject.value === null || prj.activeProject || login.isOperator
-			"
+			[class.disabled]="this.prj.currProject.value === null || prj.activeProject || login.isOperator"
 		>
 			{{ 'projects.toolbar.create' | translate }}
 		</li>
@@ -38,23 +30,11 @@
 			{{ 'projects.toolbar.run' | translate }}
 		</li>
 	</ul>
-	<ul
-		class="menu mat-elevation-z1"
-		*ngIf="prgService.modeToggle === 'mc'"
-		(click)="toggleFocus($event)"
-	>
-		<li
-			(mouseenter)="currMenu = 5"
-			[class.selected]="onFocus && currMenu === 5"
-			[class.disabled]="false"
-		>
+	<ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'mc'" (click)="toggleFocus($event)">
+		<li (mouseenter)="currMenu = 5" [class.selected]="onFocus && currMenu === 5" [class.disabled]="false">
 			{{ 'projects.toolbar.file' | translate }}
 		</li>
-		<li
-			(mouseenter)="currMenu = 6"
-			[class.selected]="onFocus && currMenu === 6"
-			[class.disabled]="false"
-		>
+		<li (mouseenter)="currMenu = 6" [class.selected]="onFocus && currMenu === 6" [class.disabled]="false">
 			{{ 'projects.toolbar.controller' | translate }}
 		</li>
 	</ul>
@@ -68,12 +48,7 @@
 		>
 			<mat-icon>stop</mat-icon>
 		</button>
-		<button
-			(click)="run()"
-			mat-raised-button
-			color="primary"
-			matTooltip="{{ 'projects.toolbar.run_prj' | translate }}"
-		>
+		<button (click)="run()" mat-raised-button color="primary" matTooltip="{{ 'projects.toolbar.run_prj' | translate }}">
 			<mat-icon>play_arrow</mat-icon>
 		</button>
 	</ul>
@@ -98,10 +73,7 @@
 		</button>
 	</ul>
 	<ul class="mat-elevation-z1" *ngIf="login.isAdmin">
-		<mat-button-toggle-group
-			[(ngModel)]="prgService.modeToggle"
-			(change)="currMenu = 0; onFocus = false"
-		>
+		<mat-button-toggle-group [(ngModel)]="prgService.modeToggle" (change)="currMenu = 0; onFocus = false">
 			<mat-button-toggle value="prj">{{ 'projectTree.prj' | translate }}</mat-button-toggle>
 			<mat-button-toggle value="mc">{{ 'projectTree.cnt' | translate }}</mat-button-toggle>
 		</mat-button-toggle-group>
@@ -113,29 +85,15 @@
 	(click)="onFocus = false"
 >
 	<ul class="dropdown-menu menu1" *ngIf="currMenu === 1 && !prj.activeProject && !login.isOperator">
-		<li (click)="new()">
-			<mat-icon>note_add</mat-icon>{{ 'projects.toolbar.new' | translate }}...
-		</li>
-		<li (click)="open()">
-			<mat-icon>create_new_folder</mat-icon>{{ 'projects.toolbar.open' | translate }}...
-		</li>
+		<li (click)="new()"><mat-icon>note_add</mat-icon>{{ 'projects.toolbar.new' | translate }}...</li>
+		<li (click)="open()"><mat-icon>create_new_folder</mat-icon>{{ 'projects.toolbar.open' | translate }}...</li>
 		<div class="seperator"></div>
-		<li (click)="export()">
-			<mat-icon>cloud_download</mat-icon>{{ 'projects.toolbar.export' | translate }}...
-		</li>
-		<li (click)="doImport(false)">
-			<mat-icon>cloud_upload</mat-icon>{{ 'projects.toolbar.import' | translate }}...
-		</li>
+		<li (click)="export()"><mat-icon>cloud_download</mat-icon>{{ 'projects.toolbar.export' | translate }}...</li>
+		<li (click)="doImport(false)"><mat-icon>cloud_upload</mat-icon>{{ 'projects.toolbar.import' | translate }}...</li>
 		<div class="seperator"></div>
-		<li (click)="saveAs()">
-			<mat-icon>save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...
-		</li>
-		<li (click)="rename()">
-			<mat-icon>edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}...
-		</li>
-		<li (click)="delete()" class="warn">
-			<mat-icon>delete</mat-icon>{{ 'projects.toolbar.del_prj' | translate }}...
-		</li>
+		<li (click)="saveAs()"><mat-icon>save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...</li>
+		<li (click)="rename()"><mat-icon>edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}...</li>
+		<li (click)="delete()" class="warn"><mat-icon>delete</mat-icon>{{ 'projects.toolbar.del_prj' | translate }}...</li>
 		<div class="seperator"></div>
 		<li (click)="deleteOthers()" class="warn">
 			<mat-icon>delete</mat-icon>{{ 'projects.toolbar.del_prj_other' | translate }}...
@@ -147,51 +105,34 @@
 	>
 		<li (click)="newApp()"><mat-icon>add</mat-icon>{{ 'projects.toolbar.app' | translate }}...</li>
 		<li (click)="newLib()"><mat-icon>add</mat-icon>{{ 'projects.toolbar.lib' | translate }}...</li>
-		<li style="cursor: not-allowed;">
-			<mat-icon>add</mat-icon>{{ 'projects.toolbar.dep' | translate }}...
-		</li>
+		<li style="cursor: not-allowed;"><mat-icon>add</mat-icon>{{ 'projects.toolbar.dep' | translate }}...</li>
 	</ul>
 	<ul
 		class="dropdown-menu menu3"
-		*ngIf="
-			currMenu === 3 && prgService.mode === 'editor' && !prj.activeProject && !login.isOperator
-		"
+		*ngIf="currMenu === 3 && prgService.mode === 'editor' && !prj.activeProject && !login.isOperator"
 	>
 		<li (click)="undo()"><mat-icon>undo</mat-icon>{{ 'projects.toolbar.undo' | translate }}</li>
 		<li (click)="redo()"><mat-icon>redo</mat-icon>{{ 'projects.toolbar.redo' | translate }}</li>
 		<div class="seperator"></div>
-		<li (click)="find()">
-			<mat-icon>find_in_page</mat-icon>{{ 'projects.toolbar.find' | translate }}...
-		</li>
-		<li (click)="replace()">
-			<mat-icon>find_replace</mat-icon>{{ 'projects.toolbar.replace' | translate }}...
-		</li>
+		<li (click)="find()"><mat-icon>find_in_page</mat-icon>{{ 'projects.toolbar.find' | translate }}...</li>
+		<li (click)="replace()"><mat-icon>find_replace</mat-icon>{{ 'projects.toolbar.replace' | translate }}...</li>
 	</ul>
 	<ul class="dropdown-menu menu4" *ngIf="currMenu === 4 && this.prj.currProject.value">
 		<li (click)="$event.stopImmediatePropagation(); prj.toggleAutoStart()">
-			<mat-icon>{{
-				prj.currProject.value.settings.autoStart ? 'check_box' : 'check_box_outline_blank'
-			}}</mat-icon>
+			<mat-icon>{{ prj.currProject.value.settings.autoStart ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
 			{{ 'projects.toolbar.autostart' | translate }}
 		</li>
 		<mat-divider></mat-divider>
-		<li (click)="run()">
-			<mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run_prj' | translate }}
-		</li>
+		<li (click)="run()"><mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run_prj' | translate }}</li>
 		<li (click)="stop()"><mat-icon>stop</mat-icon>{{ 'projects.toolbar.stop_prj' | translate }}</li>
 		<mat-divider></mat-divider>
 		<li (click)="toggleRemote()">
 			<mat-icon>open_in_new</mat-icon
-			>{{
-				(stat.mode === 'R' ? 'projects.toolbar.remote_disable' : 'projects.toolbar.remote_enable')
-					| translate
-			}}
+			>{{ (stat.mode === 'R' ? 'projects.toolbar.remote_disable' : 'projects.toolbar.remote_enable') | translate }}
 		</li>
 	</ul>
 	<ul class="dropdown-menu menu5" *ngIf="currMenu === 5">
-		<li (click)="newFile()">
-			<mat-icon>note_add</mat-icon>{{ 'projects.toolbar.new_file' | translate }}...
-		</li>
+		<li (click)="newFile()"><mat-icon>note_add</mat-icon>{{ 'projects.toolbar.new_file' | translate }}...</li>
 		<li (click)="newFolder()">
 			<mat-icon>create_new_folder</mat-icon>{{ 'projects.toolbar.new_folder' | translate }}...
 		</li>
@@ -199,36 +140,20 @@
 		<li (click)="showUploadDialog()">
 			<mat-icon>cloud_upload</mat-icon>{{ 'projects.toolbar.upload' | translate }}...
 		</li>
-		<li
-			(click)="downloadFiles(true)"
-			[class.item-disabled]="prj.checklistSelection.selected.length === 0"
-		>
+		<li (click)="downloadFiles(true)" [class.item-disabled]="prj.checklistSelection.selected.length === 0">
 			<mat-icon>cloud_download</mat-icon>{{ 'projects.toolbar.menu_download_files' | translate }}...
 		</li>
 		<div class="seperator"></div>
-		<li
-			(click)="deleteFiles()"
-			[class.item-disabled]="prj.checklistSelection.selected.length === 0"
-		>
+		<li (click)="deleteFiles()" [class.item-disabled]="prj.checklistSelection.selected.length === 0">
 			<mat-icon>delete</mat-icon>{{ 'projects.toolbar.menu_delete_files' | translate }}...
 		</li>
 	</ul>
 	<ul class="dropdown-menu menu6" *ngIf="currMenu === 6">
-		<li (click)="downloadFiles(false)">
-			<mat-icon>backup</mat-icon>{{ 'projects.toolbar.backup' | translate }}...
-		</li>
-		<li (click)="doImport(true)">
-			<mat-icon>restore</mat-icon>{{ 'projects.toolbar.restore' | translate }}...
-		</li>
+		<li (click)="downloadFiles(false)"><mat-icon>backup</mat-icon>{{ 'projects.toolbar.backup' | translate }}...</li>
+		<li (click)="doImport(true)"><mat-icon>restore</mat-icon>{{ 'projects.toolbar.restore' | translate }}...</li>
 	</ul>
 </div>
-<input
-	type="file"
-	accept=".zip, .ZIP"
-	#upload
-	(change)="onUploadProjectFile($event)"
-	class="file-input"
-/>
+<input type="file" accept=".zip, .ZIP" #upload (change)="onUploadProjectFile($event)" class="file-input" />
 <input
 	type="file"
 	accept=".UPG, .PRG, .ULB, .LIB, .DAT, .TXT, .VAR, .DEF, .BLK, .TPS, .OBJ, .LOG"

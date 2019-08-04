@@ -2,13 +2,9 @@
 	<div class="wrapper">
 		<div class="title">{{ this.data.title | translate }}</div>
 		<div class="content">
-			<mat-slide-toggle
-				*ngIf="!data.must"
-				[(ngModel)]="advancedMode"
-				style="margin-bottom: 8px;"
-				color="primary"
-				>{{ 'advanced' | translate }}</mat-slide-toggle
-			>
+			<mat-slide-toggle *ngIf="!data.must" [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary">{{
+				'advanced' | translate
+			}}</mat-slide-toggle>
 			<mat-form-field *ngIf="advancedMode">
 				<mat-select placeholder="{{ 'motion_element' | translate }}" [(ngModel)]="motionElement">
 					<mat-option *ngFor="let e of dataService.robots" [value]="e">{{ e }}</mat-option>
@@ -20,12 +16,7 @@
 		<button mat-button (click)="cancel()">
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			(click)="insert()"
-			[disabled]="this.motionElement == null && this.data.must"
-		>
+		<button mat-button color="primary" (click)="insert()" [disabled]="this.motionElement == null && this.data.must">
 			{{ 'button.insert' | translate }}
 		</button>
 	</div>

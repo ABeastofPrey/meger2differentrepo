@@ -10,16 +10,12 @@
 				</mat-select>
 			</mat-form-field>
 			<mat-radio-group [(ngModel)]="option">
-				<mat-radio-button value="full" color="primary">{{
-					'pallets.wizard.index_full' | translate
-				}}</mat-radio-button>
+				<mat-radio-button value="full" color="primary">{{ 'pallets.wizard.index_full' | translate }}</mat-radio-button>
 				<mat-radio-button value="empty" color="primary">{{
 					'pallets.wizard.index_empty' | translate
 				}}</mat-radio-button>
 				<mat-radio-button value="custom" color="primary">
-					<span *ngIf="pallet === null || option !== 'custom'">{{
-						'pallets.wizard.index_custom' | translate
-					}}</span>
+					<span *ngIf="pallet === null || option !== 'custom'">{{ 'pallets.wizard.index_custom' | translate }}</span>
 					<mat-form-field class="input-normal" *ngIf="pallet !== null && option === 'custom'">
 						<input
 							matInput

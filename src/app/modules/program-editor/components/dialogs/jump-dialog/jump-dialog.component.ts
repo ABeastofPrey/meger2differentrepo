@@ -1,7 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, ErrorStateMatcher, MatDialog } from '@angular/material';
-import { FormControl, Validators, FormGroupDirective, NgForm, ValidatorFn, AbstractControl,
-  ValidationErrors } from '@angular/forms';
+import {
+  FormControl,
+  Validators,
+  FormGroupDirective,
+  NgForm,
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 
 import { TPVariable } from '../../../../core/models/tp/tp-variable.model';
 import { DataService, MCQueryResponse } from '../../../../core/services';
@@ -15,7 +22,10 @@ import { AddVarComponent } from '../../add-var/add-var.component';
  * The class to define the error matcher for the validation form.
  */
 export class ParameterErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(
+    control: FormControl | null,
+    form: FormGroupDirective | NgForm | null
+  ): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.touched || isSubmitted));
   }
@@ -24,13 +34,12 @@ export class ParameterErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-jump-dialog',
   templateUrl: './jump-dialog.component.html',
-  styleUrls: ['./jump-dialog.component.css']
+  styleUrls: ['./jump-dialog.component.css'],
 })
 /**
  * This class describes the logics to insert jump command into the user program.
  */
 export class JumpDialogComponent implements OnInit {
-
   private words: any = {};
 
   /**
@@ -107,10 +116,10 @@ export class JumpDialogComponent implements OnInit {
    * The form controls for the required parameter.
    */
   requiredFormControls = {
-    [JumpParameter.MotionElement]: new FormControl('', [
-     Validators.required]),
+    [JumpParameter.MotionElement]: new FormControl('', [Validators.required]),
     [JumpParameter.DestinationFrame]: new FormControl('', [
-     Validators.required])
+      Validators.required,
+    ]),
   };
 
   /**
@@ -118,28 +127,42 @@ export class JumpDialogComponent implements OnInit {
    */
   advancedFormControls = {
     [JumpParameter.ArcNumber]: new FormControl('', [
-      this.createValidator(1, 7, JumpParameterErrorKey.NotIntegerArcNumber,
+      this.createValidator(
+        1,
+        7,
+        JumpParameterErrorKey.NotIntegerArcNumber,
         (value: Number, min: Number, max: Number): boolean => {
           return Number(value) % 1 === 0 ? true : false;
-        }),
-      this.createValidator(1, 7, JumpParameterErrorKey.InValidArcNumber,
+        }
+      ),
+      this.createValidator(
+        1,
+        7,
+        JumpParameterErrorKey.InValidArcNumber,
         (value: Number, min: Number, max: Number): boolean => {
           return value >= min && value <= max ? true : false;
-        })
-     ]),
-   [JumpParameter.Blending]: new FormControl('', [
-     this.createValidator(0, 100, JumpParameterErrorKey.InValidBlending,
-      (value: Number, min: Number, max: Number): boolean => {
-        return value >= min && value <= max ? true : false;
-      })
-    ])
+        }
+      ),
+    ]),
+    [JumpParameter.Blending]: new FormControl('', [
+      this.createValidator(
+        0,
+        100,
+        JumpParameterErrorKey.InValidBlending,
+        (value: Number, min: Number, max: Number): boolean => {
+          return value >= min && value <= max ? true : false;
+        }
+      ),
+    ]),
   };
 
   /**
    * Get the destination location.
    * @returns The destination location.
    */
-  get location() { return this.jumpLocation; }
+  get location() {
+    return this.jumpLocation;
+  }
 
   get locations(): TPVariable[] {
     return this.dataService.locations.filter(x => !x.isArr);
@@ -161,22 +184,24 @@ export class JumpDialogComponent implements OnInit {
    * @param prgService The program service instance.
    * @param ws The websocket service instance.
    */
-  constructor(public dataService: DataService,
+  constructor(
+    public dataService: DataService,
     public dialogRef: MatDialogRef<any>,
     private prgService: ProgramEditorService,
     private ws: WebsocketService,
     private trn: TranslateService,
     private dialog: MatDialog,
-    private cd: ChangeDetectorRef) {
-      this.trn.get(['projectCommands.jump']).subscribe(words => {
-        this.words = words['projectCommands.jump'];
-        this.errorMessages = {
-          [JumpParameterErrorKey.NotIntegerArcNumber]: `${this.words['intRange']} [1, 7].`,
-          [JumpParameterErrorKey.InValidArcNumber]: `${this.words['intRange']} [1, 7].`,
-          [JumpParameterErrorKey.InValidBlending]: `${this.words['numRange']} [0, 100].`
-        };
-      });
-    }
+    private cd: ChangeDetectorRef
+  ) {
+    this.trn.get(['projectCommands.jump']).subscribe(words => {
+      this.words = words['projectCommands.jump'];
+      this.errorMessages = {
+        [JumpParameterErrorKey.NotIntegerArcNumber]: `${this.words['intRange']} [1, 7].`,
+        [JumpParameterErrorKey.InValidArcNumber]: `${this.words['intRange']} [1, 7].`,
+        [JumpParameterErrorKey.InValidBlending]: `${this.words['numRange']} [0, 100].`,
+      };
+    });
+  }
 
   ngOnInit() {
     this.ws.query('?TP_GET_ROBOT_LIST').then((ret: MCQueryResponse) => {
@@ -194,10 +219,13 @@ export class JumpDialogComponent implements OnInit {
 
   public createPoint(): void {
     const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
-    this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
-      this.location = this.locations.find(x => x.name === addedVar);
-      this.cd.detectChanges();
-    });
+    this.dialog
+      .open(AddVarComponent, option)
+      .afterClosed()
+      .subscribe(addedVar => {
+        this.location = this.locations.find(x => x.name === addedVar);
+        this.cd.detectChanges();
+      });
   }
 
   /**
@@ -239,15 +267,18 @@ export class JumpDialogComponent implements OnInit {
     if (isValid) {
       let cmd = '';
       if (this.advancedMode) {
-        cmd = `jump(${this.motionRobot}, "${this.location.name}", ${this.arcNumber ? this.arcNumber : -1 }, \
-${this.limitZ ? this.limitZ : '0xffff'}, ${this.blending ? this.blending : -1}, ${this.speed ? this.speed : -1}, \
+        cmd = `jump(${this.motionRobot}, "${this.location.name}", ${
+          this.arcNumber ? this.arcNumber : -1
+        }, \
+${this.limitZ ? this.limitZ : '0xffff'}, ${
+          this.blending ? this.blending : -1
+        }, ${this.speed ? this.speed : -1}, \
 ${this.acceleration ? this.acceleration : -1})`;
       } else {
         cmd = `jump(${this.motionRobot}, "${this.location.name}", -1, 0xffff, -1, -1, -1)`;
       }
       this.dialogRef.close(cmd);
     }
-
   }
 
   /**
@@ -256,13 +287,15 @@ ${this.acceleration ? this.acceleration : -1})`;
    * @returns The validation error message.
    */
   getErrors(formControl: FormControl) {
-      if (formControl.errors) {
-        for (let errorKey of Object.keys(this.errorMessages)) {
-          if (formControl.hasError(errorKey[0].toLowerCase() + errorKey.slice(1))) {
-            return this.errorMessages[errorKey];
-           }
-         }
+    if (formControl.errors) {
+      for (let errorKey of Object.keys(this.errorMessages)) {
+        if (
+          formControl.hasError(errorKey[0].toLowerCase() + errorKey.slice(1))
+        ) {
+          return this.errorMessages[errorKey];
+        }
       }
+    }
   }
 
   /**
@@ -285,7 +318,7 @@ ${this.acceleration ? this.acceleration : -1})`;
    * The handler when the motion element is changed.
    */
   onMotionElementChanged() {
-     this.initializeLimitAndValidation();
+    this.initializeLimitAndValidation();
   }
 
   /**
@@ -294,8 +327,8 @@ ${this.acceleration ? this.acceleration : -1})`;
   onAdvancedModeChanged() {
     if (!this.advancedMode) {
       for (let formControl of Object.values(this.advancedFormControls)) {
-          formControl.setValue(null);
-          formControl.markAsUntouched();
+        formControl.setValue(null);
+        formControl.markAsUntouched();
       }
     }
   }
@@ -305,7 +338,6 @@ ${this.acceleration ? this.acceleration : -1})`;
    */
   private initializeLimitAndValidation() {
     if (this.motionRobot && this.motionRobot.length) {
-
       this.initializeSpeedLimitAndValidation();
       this.initializeAccLimitAndValidation();
       this.initializeZLimitAndValidation();
@@ -316,38 +348,57 @@ ${this.acceleration ? this.acceleration : -1})`;
    * Initialize the acceleration limit and validation.
    */
   private initializeAccLimitAndValidation() {
-    this.ws.query(`?${this.motionRobot}.ACCELERATIONMAX`).then((ret: MCQueryResponse) => {
-      if (ret.err || ret.result.length === 0) {
-        return;
-      }
-      this.accelerationMax = Math.floor(Number(ret.result));
-      this.errorMessages[JumpParameterErrorKey.InValidAcceleration] = `${this.words['numRange']} (0, ${this.accelerationMax})`;
-      this.advancedFormControls[JumpParameter.Acceleration] = new FormControl('', [
-        this.createValidator(0, this.accelerationMax, JumpParameterErrorKey.InValidAcceleration,
-          (value: Number, min: Number, max: Number): boolean => {
-          return value > min && value < max ? true : false;
-        })
-      ]);
-    });
+    this.ws
+      .query(`?${this.motionRobot}.ACCELERATIONMAX`)
+      .then((ret: MCQueryResponse) => {
+        if (ret.err || ret.result.length === 0) {
+          return;
+        }
+        this.accelerationMax = Math.floor(Number(ret.result));
+        this.errorMessages[
+          JumpParameterErrorKey.InValidAcceleration
+        ] = `${this.words['numRange']} (0, ${this.accelerationMax})`;
+        this.advancedFormControls[JumpParameter.Acceleration] = new FormControl(
+          '',
+          [
+            this.createValidator(
+              0,
+              this.accelerationMax,
+              JumpParameterErrorKey.InValidAcceleration,
+              (value: Number, min: Number, max: Number): boolean => {
+                return value > min && value < max ? true : false;
+              }
+            ),
+          ]
+        );
+      });
   }
 
   /**
    * Initialize the speed limit and validation.
    */
   private initializeSpeedLimitAndValidation() {
-    this.ws.query(`?${this.motionRobot}.VELOCITYMAX`).then((ret: MCQueryResponse) => {
-      if (ret.err || ret.result.length === 0) {
-        return;
-      }
-      this.speedMax = Math.floor(Number(ret.result));
-      this.errorMessages[JumpParameterErrorKey.InValidSpeed] = `${this.words['numRange']} (0, ${this.speedMax})`;
-      this.advancedFormControls[JumpParameter.Speed] = new FormControl('', [
-        this.createValidator(0, this.speedMax, JumpParameterErrorKey.InValidSpeed,
-          (value: Number, min: Number, max: Number): boolean => {
-          return value > min && value < max ? true : false;
-        })
-      ]);
-    });
+    this.ws
+      .query(`?${this.motionRobot}.VELOCITYMAX`)
+      .then((ret: MCQueryResponse) => {
+        if (ret.err || ret.result.length === 0) {
+          return;
+        }
+        this.speedMax = Math.floor(Number(ret.result));
+        this.errorMessages[
+          JumpParameterErrorKey.InValidSpeed
+        ] = `${this.words['numRange']} (0, ${this.speedMax})`;
+        this.advancedFormControls[JumpParameter.Speed] = new FormControl('', [
+          this.createValidator(
+            0,
+            this.speedMax,
+            JumpParameterErrorKey.InValidSpeed,
+            (value: Number, min: Number, max: Number): boolean => {
+              return value > min && value < max ? true : false;
+            }
+          ),
+        ]);
+      });
   }
 
   /**
@@ -367,14 +418,19 @@ ${this.acceleration ? this.acceleration : -1})`;
           return;
         }
         this.limitZMin = Math.floor(Number(zMinRet.result));
-        this.errorMessages[JumpParameterErrorKey.InValidLimitZ] =
-          `${this.words['numRange']} [${this.limitZMin}, ${this.limitZMax}]`;
+        this.errorMessages[
+          JumpParameterErrorKey.InValidLimitZ
+        ] = `${this.words['numRange']} [${this.limitZMin}, ${this.limitZMax}]`;
 
         this.advancedFormControls[JumpParameter.LimitZ] = new FormControl('', [
-          this.createValidator(this.limitZMin, this.limitZMax, JumpParameterErrorKey.InValidLimitZ,
+          this.createValidator(
+            this.limitZMin,
+            this.limitZMax,
+            JumpParameterErrorKey.InValidLimitZ,
             (value: Number, min: Number, max: Number): boolean => {
-            return value >= min && value <= max ? true : false;
-          })
+              return value >= min && value <= max ? true : false;
+            }
+          ),
         ]);
       });
     });
@@ -388,14 +444,20 @@ ${this.acceleration ? this.acceleration : -1})`;
    * @param validateFunction The method to do the validation.
    * @returns ValidatorFn instance.
    */
-  private createValidator(min: Number, max: Number, errorKey: JumpParameterErrorKey,
-                             validateFunction: (value: Number, min: Number, max: Number) => boolean): ValidatorFn {
+  private createValidator(
+    min: Number,
+    max: Number,
+    errorKey: JumpParameterErrorKey,
+    validateFunction: (value: Number, min: Number, max: Number) => boolean
+  ): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') {
         return null;
       }
       const accelerationValue = Number(control.value);
-      return validateFunction(accelerationValue, min, max) ? null : {[errorKey]: true};
+      return validateFunction(accelerationValue, min, max)
+        ? null
+        : { [errorKey]: true };
     };
   }
 }

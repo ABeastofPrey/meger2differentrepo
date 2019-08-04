@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
-import { TeachService } from './teach.service';
 import { TPVariable } from '../../core/models/tp/tp-variable.model';
 import { TPVariableType } from '../../core/models/tp/tp-variable-type.model';
 import { TpStatService } from './tp-stat.service';
@@ -12,6 +11,7 @@ import { LoginService } from './login.service';
 import { CommonService } from './common.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar, MatSlideToggleChange } from '@angular/material';
+import { RobotCoordinateType } from '../models/robot-coordinate-type.model';
 
 //declare var Blockly:any;
 
@@ -22,6 +22,8 @@ export class DataService {
   public dataLoaded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
+
+  teachServiceNeedsReset: Subject<void> = new Subject();
 
   private words: any;
 
@@ -58,6 +60,7 @@ export class DataService {
   private _isRobotType: boolean = true;
   private _locationDescriptions: string[];
   private _robotType: string = null;
+  private _robotCoordinateType: RobotCoordinateType = null;
   get robots() {
     return this._robots;
   }
@@ -69,6 +72,9 @@ export class DataService {
   }
   get locationDescriptions() {
     return this._locationDescriptions;
+  }
+  get robotCoordinateType() {
+    return this._robotCoordinateType;
   }
   get selectedRobot() {
     return this._selectedRobot;
@@ -83,17 +89,19 @@ export class DataService {
           this._selectedRobot = oldRobot;
           return Promise.reject(ret.result);
         }
-        this.teach.reset();
+        this.teachServiceNeedsReset.next();
         //Blockly.selectedRobot = this._selectedRobot;
         const promises: any = Promise.all([
           this.ws.query('?tp_is_robot_type'),
           this.ws.query('?TP_GET_MOTION_ELEMENT_TYPE'),
+          this.ws.query('?TP_GET_ROBOT_COORDINATES_TYPE'),
         ]);
         return promises;
       })
       .then((ret: MCQueryResponse[]) => {
         this._isRobotType = ret[0].result !== '0';
         this._robotType = ret[1].result;
+        this._robotCoordinateType = new RobotCoordinateType(ret[2].result);
         this.refreshData();
       })
       .catch(() => {});
@@ -186,7 +194,7 @@ export class DataService {
       .then((ret: MCQueryResponse) => {
         if (ret.err || ret.result !== '0') this._selectedDomain = oldDomain;
         else {
-          this.teach.reset();
+          this.teachServiceNeedsReset.next();
           this.refreshVariables();
           this._domainIsFrame = DOMAIN_FRAMES.includes(val);
         }
@@ -440,7 +448,9 @@ export class DataService {
   private addJoint(data: TPVariable): void {
     this._joints.push(data);
   }
-  private addPJoint(data : TPVariable) : void { this._pJoints.push(data); }
+  private addPJoint(data: TPVariable): void {
+    this._pJoints.push(data);
+  }
   private addLocation(data: TPVariable): void {
     this._locations.push(data);
   }
@@ -647,16 +657,18 @@ export class DataService {
               return Promise.resolve(null);
             }
             this._selectedRobot = this.robots[0];
-            this.teach.reset();
+            this.teachServiceNeedsReset.next();
             //Blockly.selectedRobot = this._selectedRobot;
             return Promise.all([
               this.ws.query('?tp_is_robot_type'),
               this.ws.query('?TP_GET_MOTION_ELEMENT_TYPE'),
+              this.ws.query('?TP_GET_ROBOT_COORDINATES_TYPE'),
             ]);
           })
           .then((ret: MCQueryResponse[]) => {
             this._isRobotType = ret[0].result !== '0';
             this._robotType = ret[1].result;
+            this._robotCoordinateType = new RobotCoordinateType(ret[2].result);
           })
           .catch(() => {});
       });
@@ -755,7 +767,6 @@ export class DataService {
 
   constructor(
     private ws: WebsocketService,
-    private teach: TeachService,
     private cmn: CommonService,
     private stat: TpStatService,
     private login: LoginService,
@@ -788,8 +799,7 @@ export class DataService {
       this.ws.query('?TP_ENTER("' + TP_TYPE + '")'),
       this.ws.query('?TP_SET_STAT_FORMAT(2)'),
     ];
-
-    this.teach.reset();
+    this.teachServiceNeedsReset.next();
     this.reset();
     this.ws
       .query('?TP_SET_PERMISSION(' + this.login.permissionCode + ')')
@@ -840,8 +850,6 @@ export class DataService {
       this.ws.query('?ver'),
       this.ws.query('java_ver'),
       this.ws.query('?TP_GET_JOG_INCREMENT_SIZE'),
-      this.ws.query('?sys.date'),
-      this.ws.query('?sys.time'),
     ];
     return Promise.all(promises)
       .then((results: MCQueryResponse[]) => {
@@ -854,33 +862,6 @@ export class DataService {
         this._MCVersion = results[7].result;
         this._JavaVersion = results[8].result;
         this._jogIncrements = results[9].result;
-        const MCDate = results[10].result;
-        const MCTime = results[11].result.split(':').map(part => {
-          return Number(part);
-        });
-        // IF DATE OR TIME ARE TOO FAR AWAY - UPDATE THEM
-        let timeChanged: boolean = false;
-        if (MCDate !== dateString) {
-          this.ws.query('sys.date = "' + dateString + '"');
-          timeChanged = true;
-        }
-        const minMinutes = date.getMinutes() - 1;
-        const maxMinutes = date.getMinutes() + 1;
-        if (
-          MCTime[0] !== date.getHours() ||
-          MCTime[1] < minMinutes ||
-          MCTime[1] > maxMinutes
-        ) {
-          this.ws.query('sys.time = "' + timeString + '"');
-          timeChanged = true;
-        }
-        if (timeChanged) {
-          this.snack.open(
-            this.words['time_update'],
-            this.words['button.refresh'],
-            { duration: 1500 }
-          );
-        }
         try {
           this._keyboardFormat = JSON.parse(results[6].result);
         } catch (err) {
@@ -931,7 +912,7 @@ export class DataService {
       this.ws.query('?TP_GET_LONGS("")'),
       this.ws.query('?TP_GET_DOUBLES("")'),
       this.ws.query('?TP_GET_STRINGS("")'),
-      this.ws.query('?tp_get_project_joints("ALL")')
+      this.ws.query('?tp_get_project_joints("ALL")'),
     ];
     return Promise.all(promises).then((result: MCQueryResponse[]) => {
       // ADD JOINTS
@@ -977,9 +958,9 @@ export class DataService {
       // ADD Project joits
       this._pJoints.length = 0;
       var data = result[5].result.split(',');
-      data.forEach((name:string)=>{
+      data.forEach((name: string) => {
         if (name.length > 0)
-          this.addPJoint(new TPVariable(TPVariableType.JOINT,name));
+          this.addPJoint(new TPVariable(TPVariableType.JOINT, name));
       });
 
       this._varRefreshInProgress = false;

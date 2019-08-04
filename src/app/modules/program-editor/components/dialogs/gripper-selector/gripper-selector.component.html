@@ -3,14 +3,8 @@
 		<div class="title">{{ this.data | translate }}</div>
 		<div class="content">
 			<mat-form-field>
-				<mat-select
-					placeholder="{{ 'grippers.ef' | translate }}"
-					[(ngModel)]="ef"
-					(selectionChange)="resetGrp()"
-				>
-					<mat-option *ngFor="let endEffector of endEffectors" [value]="endEffector">{{
-						endEffector.name
-					}}</mat-option>
+				<mat-select placeholder="{{ 'grippers.ef' | translate }}" [(ngModel)]="ef" (selectionChange)="resetGrp()">
+					<mat-option *ngFor="let endEffector of endEffectors" [value]="endEffector">{{ endEffector.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field *ngIf="ef">

@@ -9,8 +9,6 @@ import { environment } from '../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { CommonService } from './modules/core/services/common.service';
 
-const isKuka = (environment.platform.name === environment.platforms.Kuka.name) ? true : false;
-
 @Component({
   selector: 'control-studio',
   templateUrl: './control-studio.component.html',
@@ -32,10 +30,7 @@ export class ControlStudioComponent {
     private lang: LangService,
     private overlayContainer: OverlayContainer
   ) {
-    // change document title
-    document.title = isKuka ? environment.appName_Kuka : environment.appName;
-
-    overlayContainer
+    this.overlayContainer
       .getContainerElement()
       .classList.add(this.env.platform.name);
     if (this.cmn.isTablet)

@@ -36,9 +36,7 @@
 		<button
 			mat-button
 			(mousedown)="cut($event)"
-			*ngIf="
-				!cmn.isTablet && editor && editor.getSelectedText() && editor.getSelectedText().length > 0
-			"
+			*ngIf="!cmn.isTablet && editor && editor.getSelectedText() && editor.getSelectedText().length > 0"
 		>
 			<div class="center-vertical">
 				<img src="assets/pics/icons/content-cut.png" />

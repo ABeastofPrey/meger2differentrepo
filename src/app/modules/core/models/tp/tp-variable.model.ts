@@ -9,6 +9,12 @@ export class TPVariable {
   typeStr: string = null;
   selectedIndex: number = 1;
 
+  get dataLoaded() {
+    const v = this.value;
+    const i = this.selectedIndex;
+    return this.isArr ? v && v[i].value : v;
+  }
+
   constructor(varType: TPVariableType, str?: string) {
     this.varType = varType;
     switch (varType) {

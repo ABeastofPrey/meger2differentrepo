@@ -1,8 +1,32 @@
 <div *ngIf="teach.value">
 	<mat-form-field *ngFor="let val of teach.value; let i = index" floatLabel="never">
 		<span matPrefix style="font-weight: bold;">{{ teach.legend[i] | translate }}:&nbsp;&nbsp;</span>
+		<mat-select
+			*ngIf="teach.selectedTeachVariable.typeStr === 'LOCATION' && i >= data.robotCoordinateType.legends.length"
+			[(ngModel)]="teach.value[i].value"
+			(selectionChange)="teach.onKeyboardClose()"
+		>
+			<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Arm'">
+				<mat-option value="0">AUTO</mat-option>
+				<mat-option value="1">LEFTY</mat-option>
+				<mat-option value="2">RIGHTY</mat-option>
+			</div>
+			<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Elbow'">
+				<mat-option value="0">AUTO</mat-option>
+				<mat-option value="1">BELOW</mat-option>
+				<mat-option value="2">ABOVE</mat-option>
+			</div>
+			<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Wrist'">
+				<mat-option value="0">AUTO</mat-option>
+				<mat-option value="1">NOFLIP</mat-option>
+				<mat-option value="2">FLIP</mat-option>
+			</div>
+		</mat-select>
 		<input
-			*ngIf="teach.selectedTeachVariable.typeStr !== 'STRING'"
+			*ngIf="
+				(teach.selectedTeachVariable.typeStr !== 'STRING' && teach.selectedTeachVariable.typeStr !== 'LOCATION') ||
+				(teach.selectedTeachVariable.typeStr === 'LOCATION' && i < data.robotCoordinateType.legends.length)
+			"
 			matInput
 			virtualKeyboard
 			ktype="numeric"

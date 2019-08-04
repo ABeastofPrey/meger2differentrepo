@@ -11,3 +11,15 @@
   border-bottom: 1px solid #ccc;
   max-width: 75px;
 }
+.title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.title span {
+  flex: 1;
+}
+.name {
+  font-size: 14px;
+  width: calc(100% - 48px);
+  margin: 0 8px -16px 0;
+}

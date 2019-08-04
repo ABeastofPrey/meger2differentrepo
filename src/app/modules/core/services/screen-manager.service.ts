@@ -1,6 +1,6 @@
 import { OSUpgradeSuccessDialogComponent } from './../../../components/osupgrade-success-dialog/osupgrade-success-dialog.component';
 import { environment } from './../../../../environments/environment';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { LoginService } from './login.service';
 import { TpStatService } from './tp-stat.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -86,6 +86,9 @@ export class ScreenManagerService {
 
   openedControls: boolean = false;
   controlsAnimating: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  projectActiveStatusChange: BehaviorSubject<boolean> = new BehaviorSubject(
+    false
+  );
 
   private tpOnline: boolean = false;
   private words: any;
@@ -126,6 +129,7 @@ export class ScreenManagerService {
       permission: 99,
       url: 'teach',
       requiresTpLib: true,
+      requiresInactiveProject: true,
     },
     //{icon: 'insert_comment', name:'blockly', permission: 1, url: 'blockly'},
     {
@@ -157,12 +161,15 @@ export class ScreenManagerService {
   set screen(s: ControlStudioScreen) {
     if (
       typeof s === 'undefined' ||
+      this.isScreenDisabled(s) ||
       (s.requiresTpLib && !this.tpOnline) ||
       (s.autoModeOnly && this.stat.mode !== 'A')
     ) {
       this._screen = this.screens[0];
       this.router.navigateByUrl('/');
-    } else this._screen = s;
+    } else {
+      this._screen = s;
+    }
   }
 
   toggleControls() {
@@ -182,6 +189,26 @@ export class ScreenManagerService {
     setTimeout(() => {
       this.controlsAnimating.next(false);
     }, 300);
+  }
+
+  isScreenDisabled(s: ControlStudioScreen) {
+    const tpOnline = this.stat.onlineStatus.value;
+    const activeProject = this.projectActiveStatusChange.value;
+    const cond1 =
+      (s.requiresTpLib && !tpOnline) ||
+      (s.autoModeOnly && this.stat.mode !== 'A');
+    const cond2 = s.requiresInactiveProject && activeProject;
+    switch (s.url) {
+      case 'teach':
+        return (
+          cond1 ||
+          cond2 ||
+          this.controlsAnimating.value ||
+          (this.cmn.isTablet && this.stat.mode !== 'T1')
+        );
+      default:
+        return cond1 || cond2;
+    }
   }
 
   closeControls() {
@@ -234,7 +261,7 @@ export class ScreenManagerService {
         'restore.success',
         'home.addFeature.success',
         'error.firmware_update',
-        this.Version
+        this.Version,
       ])
       .subscribe(words => {
         this.words = words;
@@ -275,7 +302,7 @@ export class ScreenManagerService {
               this.dialog.open(ErrorDialogComponent, {
                 data: {
                   title: this.words['error.firmware_update']['title'],
-                  message: this.words['error.firmware_update']['msg']
+                  message: this.words['error.firmware_update']['msg'],
                 },
               });
             }
@@ -291,6 +318,15 @@ export class ScreenManagerService {
           this.controlsAnimating.next(false);
           if (this.stat.mode === mode) {
             this.openedControls = false;
+          }
+        }, 300);
+      } else {
+        if (this.openedControls) return;
+        this.controlsAnimating.next(true);
+        setTimeout(() => {
+          this.controlsAnimating.next(false);
+          if (this.stat.mode === mode) {
+            this.openedControls = true;
           }
         }, 300);
       }
@@ -310,6 +346,31 @@ export class ScreenManagerService {
         this.router.navigateByUrl('/');
       }
     });
+    this.projectActiveStatusChange.subscribe(val => {
+      if (val && this.screen.requiresInactiveProject) {
+        this.screen = this.screens[0];
+        this.router.navigateByUrl('/');
+      }
+    });
+    this.router.events.subscribe((e: any) => {
+      let navUrl: string = e.urlAfterRedirects;
+      if (!navUrl) return;
+      if (navUrl === '/') navUrl = '';
+      const currScreenUrl = this._screen.url === '/' ? '' : this._screen.url;
+      if (
+        !navUrl.startsWith(currScreenUrl) ||
+        (currScreenUrl === '' && navUrl !== currScreenUrl)
+      ) {
+        this._screen = this._screens.find(s => {
+          const url = s.url === '/' ? '' : s.url;
+          if (url === '' && navUrl.substring(1) !== '') return false;
+          if (url === navUrl || navUrl.substring(1).startsWith(url)) {
+            return true;
+          }
+          return false;
+        });
+      }
+    });
   }
 
   /**
@@ -318,14 +379,16 @@ export class ScreenManagerService {
   private showOSUpgradeErrorDialog() {
     let dialogData = {
       title: this.words[this.Version][this.ErrorDialogTitle],
-      message: this.words[this.Version][this.ErrorDialogMsg] + localStorage.getItem(this.OSVersion),
+      message:
+        this.words[this.Version][this.ErrorDialogMsg] +
+        localStorage.getItem(this.OSVersion),
       guiVersion: localStorage.getItem(this.GUIVersion),
       webServerVersion: localStorage.getItem(this.WebServerVersion),
       softMCVersion: localStorage.getItem(this.SoftMCVersion),
-      libraryVersion: localStorage.getItem(this.LibraryVersion)
+      libraryVersion: localStorage.getItem(this.LibraryVersion),
     };
     this.dialog.open(OSUpgradeErrorDialogComponent, {
-      data: dialogData
+      data: dialogData,
     });
   }
 
@@ -340,7 +403,7 @@ export class ScreenManagerService {
         this.webSocketService.query(this.WebServerVersionQuery),
         this.webSocketService.query(this.SoftMCVersionQuery),
         this.webSocketService.query(this.LibraryVersionQuery),
-        this.api.getFile(this.VERSIONDAT)
+        this.api.getFile(this.VERSIONDAT),
       ];
       Promise.all(promises).then((results: MCQueryResponse[]) => {
         isGetRes = true;
@@ -363,8 +426,8 @@ export class ScreenManagerService {
             guiVersion: environment.gui_ver,
             webServerVersion: results[0].result,
             softMCVersion: results[1].result,
-            libraryVersion: results[2].result
-          }
+            libraryVersion: results[2].result,
+          },
         });
         this.router.navigate(['.'], {
           relativeTo: this.route,
@@ -386,9 +449,7 @@ export class ScreenManagerService {
 
   private showFromDialog(msg: string) {
     this.dialog.open(SuccessDialogComponent, {
-      data: {
-        msg: msg
-      }
+      data: msg,
     });
     this.router.navigate(['.'], {
       relativeTo: this.route,
@@ -404,4 +465,5 @@ export interface ControlStudioScreen {
   url: string;
   requiresTpLib?: boolean;
   autoModeOnly?: boolean;
+  requiresInactiveProject?: boolean;
 }

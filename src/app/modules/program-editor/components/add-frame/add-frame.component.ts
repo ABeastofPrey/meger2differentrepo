@@ -1,8 +1,4 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {
-  FOUR_AXES_LOCATION,
-  SIX_AXES_LOCATION,
-} from '../../../core/models/tp/location-format.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {
   WebsocketService,
@@ -19,8 +15,6 @@ import {
 export class AddFrameComponent implements OnInit {
   name: string;
   values: any[];
-  FOUR_AXES: string[] = FOUR_AXES_LOCATION;
-  SIX_AXES: string[] = SIX_AXES_LOCATION;
   isArray: boolean = false;
   arrSize: number = 0;
 
@@ -28,7 +22,7 @@ export class AddFrameComponent implements OnInit {
     public dialogRef: MatDialogRef<AddFrameComponent>,
     public coos: CoordinatesService,
     private ws: WebsocketService,
-    private dataService: DataService,
+    public dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: number
   ) {}
 

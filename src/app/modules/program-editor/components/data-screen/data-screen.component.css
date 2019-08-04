@@ -10,8 +10,8 @@
   padding: 16px;
   align-items: center;
 }
-.filter-menu > * {
-  flex: 1;
+.filter-menu > *:not(:last-child) {
+  margin-right: 48px;
 }
 .btn-add-wrapper {
   display: flex;
@@ -23,9 +23,6 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  max-width: 150px;
-  margin-right: 48px;
-  flex: 1 0 150px !important;
 }
 .btn-add mat-icon {
   font-size: 36px;
@@ -36,10 +33,10 @@
 }
 .data-table {
   width: 100%;
+  table-layout: fixed;
 }
-.data-table tr:not(.highlighted):hover {
-  cursor: pointer;
-  background: #eee;
+.data-table.busy {
+  background-color: #ccc;
 }
 ::ng-deep .data-table thead tr {
   cursor: inherit !important;

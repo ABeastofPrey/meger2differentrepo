@@ -24,7 +24,6 @@ import { projectPoints } from '../program-editor-side-menu/program-editor-side-m
   styleUrls: ['./program-editor.component.scss'],
 })
 export class ProgramEditorComponent implements OnInit {
-  
   pPoints = projectPoints;
   appDescEditMode: boolean = false;
 
@@ -37,30 +36,25 @@ export class ProgramEditorComponent implements OnInit {
     private ws: WebsocketService
   ) {}
 
-  ngOnInit() {
-    this.prj.currProject.subscribe(prj => {
-      if (prj) this.prj.getProjectStatus();
-    });
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
-    this.prj.stopStatusRefresh();
     this.service.mode = 'editor';
   }
 
   onDragEnd() {
     this.service.onDragEnd();
   }
-  
+
   onAppDescSave() {
     this.appDescEditMode = !this.appDescEditMode;
     if (!this.appDescEditMode) {
       const app = this.service.fileRef.name;
       const prj = this.prj.currProject.value.name;
       const desc = this.service.fileRef.desc;
-      const cmd = '?PRJ_SET_APP_DESCRIPTION("' + prj + '","' + app + '","'
-                + desc + '")';
-      this.ws.query(cmd).then((ret:MCQueryResponse)=>{
+      const cmd =
+        '?PRJ_SET_APP_DESCRIPTION("' + prj + '","' + app + '","' + desc + '")';
+      this.ws.query(cmd).then((ret: MCQueryResponse) => {
         console.log(ret);
       });
     }

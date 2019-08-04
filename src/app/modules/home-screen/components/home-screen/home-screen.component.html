@@ -1,22 +1,66 @@
 <div class="wrapper">
+	<div class="header">
+		<div class="header-box primary-bg-dark center-vertical">
+			<mat-icon>access_time</mat-icon>
+			<span>{{ date }}&nbsp;&nbsp;{{ time }}</span>
+		</div>
+		<div class="header-box primary-bg-dark center-vertical" style="min-width: 155px;">
+			<mat-icon>local_library</mat-icon>
+			<span
+				>TP: {{ (stat.onlineStatus.value ? 'online' : 'offline') | translate }} ({{
+					stat.mode || ('na' | translate)
+				}})</span
+			>
+		</div>
+		<div class="header-box primary-bg-dark center-vertical">
+			<mat-icon>devices</mat-icon>
+			<span>{{ 'system_state.state' | translate }}: {{ 'system_state.' + stat.systemErrorCode | translate }}</span>
+		</div>
+		<div class="header-box primary-bg-dark center-vertical">
+			<mat-icon>comment</mat-icon>
+			<span style="flex:1;"
+				>{{ 'projectTree.prj' | translate }}:
+				{{ (prj.currProject.value ? prj.currProject.value.name : 'na') | translate }}</span
+			>
+		</div>
+		<div class="header-box primary-bg-dark center-vertical">
+			<mat-icon>group_work</mat-icon>
+			<span
+				>{{ 'robot' | translate }}:
+				{{
+					(robot.selectedRobot ? robot.selectedRobot.name + ' (' + robot.selectedRobot.bus + ')' : 'na') | translate
+				}}</span
+			>
+		</div>
+	</div>
 	<mat-grid-list cols="12" rowHeight="fit">
 		<mat-grid-tile colspan="3" rowspan="1">
 			<mat-card>
 				<mat-card-header>
-					<div mat-card-avatar style="background-size: cover;"
-						[style.background-image]="'url(' + profileSrc + ')'"></div>
-					<mat-card-title><b>{{ 'home.welcome' | translate }}, {{ login.fName }}!</b></mat-card-title>
+					<div
+						mat-card-avatar
+						style="background-size: cover;"
+						[style.background-image]="'url(' + profileSrc + ')'"
+					></div>
+					<mat-card-title
+						><b>{{ 'home.welcome' | translate }}, {{ login.fName }}!</b></mat-card-title
+					>
 					<mat-card-subtitle>{{ login.permission | translate }}</mat-card-subtitle>
 				</mat-card-header>
-				<div mat-card-image *ngIf="mcImage !== '' && viewInit" class="center-vertical-horizontal"
-					[style.background-image]="'url(' + mcImage + ')'" @scaleIn>
-					<div *ngIf="simulated" class="primary-bg mat-elevation-z3 simulated"
-						matTooltip="{{ 'home.virtual_controller' | translate }}">
-						{{ 'home.virtual' | translate }}
+				<div
+					mat-card-image
+					*ngIf="mcImage !== '' && viewInit"
+					class="center-vertical-horizontal"
+					[style.background-image]="'url(' + mcImage + ')'"
+					@scaleIn
+				>
+					<div *ngIf="simulated" class="primary-bg mat-elevation-z3 simulated">
+						{{ 'home.virtual_controller' | translate }}
 					</div>
 				</div>
 				<p>
-					{{ 'home.port' | translate }} <b>{{ ws.port }}</b>.
+					{{ 'home.port' | translate }} <b>{{ ws.port }}</b
+					>.
 				</p>
 			</mat-card>
 		</mat-grid-tile>
@@ -27,7 +71,7 @@
 		</mat-grid-tile>
 		<mat-grid-tile colspan="3" rowspan="2">
 			<mat-card class="info-card" *ngIf="groupManager.sysInfo" @fade>
-				<div class="center-vertical title title-3">
+				<div class="center-vertical title primary-bg-dark">
 					<mat-icon>perm_device_information</mat-icon>{{ 'home.system' | translate }}
 				</div>
 				<div class="center-vertical" style="margin-bottom: 8px;">
@@ -46,16 +90,21 @@
 				<mat-card-content #msgLogContainer style="user-select: text;">{{
 					notification.notifications
 				}}</mat-card-content>
-				<ul class="context-menu mat-title-color mat-elevation-z3" *ngIf="contextMenuShown" @fade
-					[style.top.px]="contextMenuY" [style.left.px]="contextMenuX" (clickOutside)="onMessageLogClick()">
+				<ul
+					class="context-menu mat-title-color mat-elevation-z3"
+					*ngIf="contextMenuShown"
+					@fade
+					[style.top.px]="contextMenuY"
+					[style.left.px]="contextMenuX"
+					(clickOutside)="onMessageLogClick()"
+				>
 					<button mat-button (click)="clear()">
 						<div class="center-vertical">
 							<mat-icon>clear</mat-icon>
 							<span class="button-text">{{ 'clear_msgs' | translate }}</span>
 						</div>
 					</button>
-					<button mat-button (mousedown)="copy($event)"
-						*ngIf="contextSelection && contextSelection.length > 0">
+					<button mat-button (mousedown)="copy($event)" *ngIf="contextSelection && contextSelection.length > 0">
 						<div class="center-vertical">
 							<img src="assets/pics/icons/content-copy.png" />
 							<span class="button-text">{{ 'copy' | translate }}</span>
@@ -66,7 +115,7 @@
 		</mat-grid-tile>
 		<mat-grid-tile colspan="3" rowspan="1" tourAnchor="sys-info">
 			<mat-card class="info-card" *ngIf="groupManager.sysInfo" @fade>
-				<div class="center-vertical title title-1">
+				<div class="center-vertical title primary-bg-dark">
 					<mat-icon>info</mat-icon>{{ 'home.software' | translate }}
 				</div>
 				<mat-card-content>
@@ -77,22 +126,22 @@
 					<div *ngIf="utils.IsKuka" class="info-line">
 						<div class="mat-subtitle-color">{{ 'home.ver' | translate }}</div>
 						<div>
-							<span>{{appNameKuka}} &nbsp; {{mainVer[0]}}</span>
+							<span>{{ appNameKuka }} &nbsp; {{ mainVer[0] }}</span>
 							<div>
 								<span class="dot-span"></span>
-								<span>SoftMC &nbsp; {{data.MCVersion}}</span>
+								<span>SoftMC &nbsp; {{ data.MCVersion }}</span>
 							</div>
 							<div>
 								<span class="dot-span"></span>
-								<span>Web Server &nbsp; {{data.JavaVersion}}</span>
+								<span>Web Server &nbsp; {{ data.JavaVersion }}</span>
 							</div>
 							<div>
 								<span class="dot-span"></span>
-								<span>GUI &nbsp; {{guiVer}}</span>
+								<span>GUI &nbsp; {{ guiVer }}</span>
 							</div>
 							<div>
 								<span class="dot-span"></span>
-								<span>Library 1.0 &nbsp; {{data.cabinetVer}}</span>
+								<span>Library 1.0 &nbsp; {{ data.cabinetVer }}</span>
 							</div>
 						</div>
 					</div>
@@ -125,7 +174,7 @@
 		</mat-grid-tile>
 		<mat-grid-tile colspan="3" rowspan="1">
 			<mat-card class="info-card" *ngIf="groupManager.sysInfo">
-				<div class="center-vertical title title-2">
+				<div class="center-vertical title primary-bg-dark">
 					<mat-icon>touch_app</mat-icon>
 					<span style="flex:1;">{{ 'home.features' | translate }}</span>
 					<button mat-icon-button class="feature-add" *ngIf="login.isAdmin" (click)="addFeature()">
@@ -142,7 +191,7 @@
 		</mat-grid-tile>
 		<mat-grid-tile colspan="3" rowspan="1">
 			<mat-card class="info-card">
-				<div class="center-vertical title title-4">
+				<div class="center-vertical title primary-bg-dark">
 					<mat-icon>group_work</mat-icon>{{ 'home.groups' | translate }}
 				</div>
 				<mat-card-content class="mat-subtitle-color">

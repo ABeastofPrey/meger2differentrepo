@@ -1,0 +1,21 @@
+<div class="mat-typography">
+	<div class="title mat-elevation-z1"><mat-icon>folder</mat-icon>&nbsp;&nbsp;{{ 'files.open' | translate }}</div>
+	<div class="name-wrapper">
+		<mat-form-field>
+			<mat-label>{{ 'files.name' | translate }}</mat-label>
+			<mat-select [(ngModel)]="selected">
+				<mat-option *ngFor="let f of files" [value]="f">
+					{{ f }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	<div class="actions">
+		<button mat-button color="primary" mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button mat-raised-button color="primary" (click)="open()" [disabled]="selected === null">
+			{{ 'button.open' | translate }}
+		</button>
+	</div>
+</div>

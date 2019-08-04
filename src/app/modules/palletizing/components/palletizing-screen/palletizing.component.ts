@@ -201,13 +201,16 @@ export class PalletizingComponent implements OnInit {
     this.iso.add(data.floor, floor); // add floor
     if (this.utils.IsKuka) {
       for (let item of data.items) {
-        this.iso.add(item.shape, (item.z%2===0) ? kukaColor : kukaColor2);
+        this.iso.add(item.shape, item.z % 2 === 0 ? kukaColor : kukaColor2);
       }
     }
 
     if (!this.utils.IsKuka) {
       for (let item of data.items) {
-        this.iso.add(item.shape, (item.z%2===0) ? servotronixColor : servotronixColor2);
+        this.iso.add(
+          item.shape,
+          item.z % 2 === 0 ? servotronixColor : servotronixColor2
+        );
       }
     }
   }

@@ -9,18 +9,8 @@
 			#displayInput
 			(touchstart)="onInputTouch($event)"
 		/>
-		<div
-			class="cursor blink"
-			*ngIf="data.keyboardType !== 'numeric'"
-			[style.left.px]="cursorX"
-		></div>
-		<button
-			matSuffix
-			mat-mini-fab
-			(click)="up()"
-			color="accent"
-			*ngIf="data.showArrows && terminal.history.length > 0"
-		>
+		<div class="cursor blink" *ngIf="data.keyboardType !== 'numeric'" [style.left.px]="cursorX"></div>
+		<button matSuffix mat-mini-fab (click)="up()" color="accent" *ngIf="data.showArrows && terminal.history.length > 0">
 			<mat-icon>arrow_upward</mat-icon>
 		</button>
 		<button

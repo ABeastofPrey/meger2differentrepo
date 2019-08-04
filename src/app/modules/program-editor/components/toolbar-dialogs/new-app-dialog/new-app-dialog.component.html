@@ -19,13 +19,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			type="submit"
-			(click)="create()"
-			[disabled]="isValueInvalid()"
-		>
+		<button mat-button color="primary" type="submit" (click)="create()" [disabled]="isValueInvalid()">
 			{{ 'projects.toolbar.app_create' | translate }}
 		</button>
 	</div>

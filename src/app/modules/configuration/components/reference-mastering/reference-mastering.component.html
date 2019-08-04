@@ -1,318 +1,463 @@
-<div class="mastering" [ngStyle]="{'margin-top': (stepper.selectedIndex === 0) ? '-50px' : 0}">
-    <div [ngStyle]="{'opacity': (stepper.selectedIndex === 0) ? 1 : 0}" class="stepper-head-cover"></div>
-    <mat-horizontal-stepper [linear]="true" #stepper>
-        <mat-step [stepControl]="firstFormGroup">
-            <form [formGroup]="firstFormGroup">
-                <ng-template matStepLabel>{{'robots.mastering.mainHead'|translate}}</ng-template>
-                <mat-table [dataSource]="tableData" class="mat-elevation-z8 mastering-table">
-                    <ng-container matColumnDef="{{tableColumns[0]}}">
-                        <mat-header-cell *matHeaderCellDef>{{'robots.mastering.axis'|translate}}</mat-header-cell>
-                        <mat-cell *matCellDef="let element">{{'robots.mastering.j'|translate}} {{element.index}} </mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="{{tableColumns[1]}}">
-                        <mat-header-cell *matHeaderCellDef>{{'robots.mastering.position'|translate}}</mat-header-cell>
-                        <mat-cell *matCellDef="let element">{{element.position}}</mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="{{tableColumns[2]}}">
-                        <mat-header-cell *matHeaderCellDef>{{'robots.mastering.offset'|translate}}</mat-header-cell>
-                        <mat-cell *matCellDef="let element">{{element.offset}}</mat-cell>
-                    </ng-container>
-                    <mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: tableColumns;"></mat-row>
-                </mat-table>
-                <mat-card class="mastering-setting-card">
-                    <mat-card-content>
-                        <div class="mastering-setting">
-                            <mat-form-field>
-                                <mat-label>{{'robots.mastering.refPoint'|translate}}</mat-label>
-                                <mat-select required formControlName="firstCtrl" required [(ngModel)]="selectedPoint" (selectionChange)="selectionChange($event)">
-                                    <mat-option *ngFor="let point of referencePoints" [value]="point">
-                                        {{point}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="firstFormGroup.controls.firstCtrl.hasError('required')">{{'robots.mastering.refError'|translate}}</mat-error>
-                                <!-- <mat-hint>Reference point is required.</mat-hint> -->
-                            </mat-form-field>
-                            <div class="mastering-setting-buttons">
-                                <button *ngIf="isBasicMode" mat-raised-button color="primary" [disabled]="isInvalidForm(firstFormGroup) || canNotUse()" (click)="changeMode()">{{'robots.mastering.basicMaster'|translate}}</button>
-                                <button *ngIf="!isBasicMode" mat-stroked-button color="primary" [disabled]="isInvalidForm(firstFormGroup) || canNotUse()" (click)="changeMode(true)">{{'robots.mastering.basicMaster'|translate}}</button>
-                                <button *ngIf="isBasicMode" mat-stroked-button color="primary" [disabled]="isInvalidForm(firstFormGroup) || canNotUse()" (click)="changeMode(true)">{{'robots.mastering.enhancedMaster'|translate}}</button>
-                                <button *ngIf="!isBasicMode" mat-raised-button color="primary" [disabled]="isInvalidForm(firstFormGroup) || canNotUse()" (click)="changeMode()">{{'robots.mastering.enhancedMaster'|translate}}</button>
-                            </div>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
-            </form>
-        </mat-step>
-        <mat-step>
-            <form>
-                <mat-card *ngIf="isBasicMode" class="mastering-card">
-                    <ng-template matStepLabel>{{'robots.mastering.selectJoint'|translate}}</ng-template>
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.selectJointH'|translate}}</mat-card-title>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <label class="zero-radio-group-label">{{'robots.mastering.pickJoints'|translate}}</label>
-                        <mat-radio-group class="zero-radio-group" [(ngModel)]="zeroAxis" [ngModelOptions]="{standalone: true}">
-                            <mat-radio-button value="[1, 0, 0, 0]" class="zero-radio-button">{{'robots.mastering.j'|translate}}1</mat-radio-button>
-                            <mat-radio-button value="[0, 1, 0, 0]" class="zero-radio-button">{{'robots.mastering.j'|translate}}2</mat-radio-button>
-                            <mat-radio-button value="[0, 0, 1, 0]" class="zero-radio-button">{{'robots.mastering.j'|translate}}3</mat-radio-button>
-                            <mat-radio-button value="[0, 0, 1, 1]" class="zero-radio-button">{{'robots.mastering.j'|translate}}3&{{'robots.mastering.j'|translate}}4</mat-radio-button>
-                            <mat-radio-button value="[1, 1, 1, 1]" class="zero-radio-button">{{'robots.mastering.all'|translate}}</mat-radio-button>
-                        </mat-radio-group>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button matStepperPrevious color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button color="primary" matStepperNext [disabled]="!zeroAxis">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-                <mat-card *ngIf="!isBasicMode" class="mastering-card">
-                    <ng-template matStepLabel>{{'robots.mastering.basicConfirm'|translate}}</ng-template>
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.emjh'|translate}} 2</mat-card-title>
-                        <mat-card-subtitle>
-                            {{'robots.mastering.emjsh1'|translate}} <br/>
-                            {{'robots.mastering.emjsh2'|translate}}
-                        </mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                        
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button matStepperPrevious color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button matStepperNext color="primary">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-            </form>
-        </mat-step>
-        <mat-step>
-            <form>
-                <mat-card *ngIf="isBasicMode" class="mastering-card">
-                    <ng-template matStepLabel>{{'robots.mastering.j20'|translate}}</ng-template>
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.bmj'|translate}}
-                            <span *ngIf="hotJoint(0)"> 1</span>
-                            <span *ngIf="hotJoint(1)"> 2</span>
-                            <span *ngIf="hotJoint(2)"> 3</span>
-                            <span *ngIf="hotJoint(3)"> 4</span>
-                        </mat-card-title>
-                        <mat-card-subtitle>{{'robots.mastering.bmjsh'|translate}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <div class="roughly-images-container">
-                            <div *ngIf="hotJoint(0)" class="joint-container">
-                                <div class="joint-desc">
-                                    <h2><strong>0 {{'robots.mastering.pulsePosition'|translate}} #1:</strong></h2>
-                                    <p>{{'robots.mastering.pulsePositionContent1'|translate}}</p>
-                                </div>
-                                <img src="assets/pics/j1.png"/>
-                            </div>
-                            <div *ngIf="hotJoint(1)" class="joint-container">
-                                <div class="joint-desc">
-                                    <h2><strong>0 {{'robots.mastering.pulsePosition'|translate}} #2:</strong></h2>
-                                    <p>{{'robots.mastering.pulsePositionContent2'|translate}}</p>
-                                </div>
-                                <img src="assets/pics/j2.png"/>
-                            </div>
-                            <div *ngIf="hotJoint(2)" class="joint-container">
-                                <div class="joint-desc">
-                                    <h2><strong>0 {{'robots.mastering.pulsePosition'|translate}} #3:</strong></h2>
-                                    <p>{{'robots.mastering.pulsePositionContent3'|translate}}</p>
-                                </div>
-                                <img src="assets/pics/j3.png"/>
-                            </div>
-                            <div *ngIf="hotJoint(3)" class="joint-container">
-                                <div class="joint-desc">
-                                    <h2><strong>0 {{'robots.mastering.pulsePosition'|translate}} #4:</strong></h2>
-                                    <p>{{'robots.mastering.pulsePositionContent4'|translate}}</p>
-                                </div>
-                                <img src="assets/pics/j4.png"/>
-                            </div>
-                        </div>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button matStepperPrevious color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button (click)="masterZero()" color="primary">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-                <mat-card *ngIf="!isBasicMode" class="mastering-card">
-                    <ng-template matStepLabel>{{'robots.mastering.j2t'|translate}}</ng-template>
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.emj2h'|translate}}</mat-card-title>
-                        <mat-card-subtitle>{{'robots.mastering.emj2sh'|translate}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <div class="jog-point-img">
-                            <img src="assets/pics/jp2.jpg" alt="">
-                            <img src="assets/pics/jpr.png" alt="">
-                        </div>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button matStepperPrevious color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button (click)="recordPoint()" color="primary">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-            </form>
-        </mat-step>
+<div class="mastering" [ngStyle]="{ 'margin-top': stepper.selectedIndex === 0 ? '-50px' : 0 }">
+	<div [ngStyle]="{ opacity: stepper.selectedIndex === 0 ? 1 : 0 }" class="stepper-head-cover"></div>
+	<mat-horizontal-stepper [linear]="true" #stepper>
+		<mat-step [stepControl]="firstFormGroup">
+			<form [formGroup]="firstFormGroup">
+				<ng-template matStepLabel>{{ 'robots.mastering.mainHead' | translate }}</ng-template>
+				<mat-table [dataSource]="tableData" class="mat-elevation-z8 mastering-table">
+					<ng-container matColumnDef="{{ tableColumns[0] }}">
+						<mat-header-cell *matHeaderCellDef>{{ 'robots.mastering.axis' | translate }}</mat-header-cell>
+						<mat-cell *matCellDef="let element">{{ 'robots.mastering.j' | translate }} {{ element.index }} </mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="{{ tableColumns[1] }}">
+						<mat-header-cell *matHeaderCellDef>{{ 'robots.mastering.position' | translate }}</mat-header-cell>
+						<mat-cell *matCellDef="let element">{{ element.position }}</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="{{ tableColumns[2] }}">
+						<mat-header-cell *matHeaderCellDef>{{ 'robots.mastering.offset' | translate }}</mat-header-cell>
+						<mat-cell *matCellDef="let element">{{ element.offset }}</mat-cell>
+					</ng-container>
+					<mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: tableColumns"></mat-row>
+				</mat-table>
+				<mat-card class="mastering-setting-card">
+					<mat-card-content>
+						<div class="mastering-setting">
+							<mat-form-field>
+								<mat-label>{{ 'robots.mastering.refPoint' | translate }}</mat-label>
+								<mat-select
+									required
+									formControlName="firstCtrl"
+									required
+									[(ngModel)]="selectedPoint"
+									(selectionChange)="selectionChange($event)"
+								>
+									<mat-option *ngFor="let point of referencePoints" [value]="point">
+										{{ point }}
+									</mat-option>
+								</mat-select>
+								<mat-error *ngIf="firstFormGroup.controls.firstCtrl.hasError('required')">{{
+									'robots.mastering.refError' | translate
+								}}</mat-error>
+								<!-- <mat-hint>Reference point is required.</mat-hint> -->
+							</mat-form-field>
+							<div class="mastering-setting-buttons">
+								<button
+									*ngIf="isBasicMode"
+									mat-raised-button
+									color="primary"
+									[disabled]="isInvalidForm(firstFormGroup) || canNotUse()"
+									(click)="changeMode()"
+								>
+									{{ 'robots.mastering.basicMaster' | translate }}
+								</button>
+								<button
+									*ngIf="!isBasicMode"
+									mat-stroked-button
+									color="primary"
+									[disabled]="isInvalidForm(firstFormGroup) || canNotUse()"
+									(click)="changeMode(true)"
+								>
+									{{ 'robots.mastering.basicMaster' | translate }}
+								</button>
+								<button
+									*ngIf="isBasicMode"
+									mat-stroked-button
+									color="primary"
+									[disabled]="isInvalidForm(firstFormGroup) || canNotUse()"
+									(click)="changeMode(true)"
+								>
+									{{ 'robots.mastering.enhancedMaster' | translate }}
+								</button>
+								<button
+									*ngIf="!isBasicMode"
+									mat-raised-button
+									color="primary"
+									[disabled]="isInvalidForm(firstFormGroup) || canNotUse()"
+									(click)="changeMode()"
+								>
+									{{ 'robots.mastering.enhancedMaster' | translate }}
+								</button>
+							</div>
+						</div>
+					</mat-card-content>
+				</mat-card>
+			</form>
+		</mat-step>
+		<mat-step>
+			<form>
+				<mat-card *ngIf="isBasicMode" class="mastering-card">
+					<ng-template matStepLabel>{{ 'robots.mastering.selectJoint' | translate }}</ng-template>
+					<mat-card-header>
+						<mat-card-title>{{ 'robots.mastering.selectJointH' | translate }}</mat-card-title>
+					</mat-card-header>
+					<mat-card-content>
+						<label class="zero-radio-group-label">{{ 'robots.mastering.pickJoints' | translate }}</label>
+						<mat-radio-group class="zero-radio-group" [(ngModel)]="zeroAxis" [ngModelOptions]="{ standalone: true }">
+							<mat-radio-button value="[1, 0, 0, 0]" class="zero-radio-button"
+								>{{ 'robots.mastering.j' | translate }}1</mat-radio-button
+							>
+							<mat-radio-button value="[0, 1, 0, 0]" class="zero-radio-button"
+								>{{ 'robots.mastering.j' | translate }}2</mat-radio-button
+							>
+							<mat-radio-button value="[0, 0, 1, 0]" class="zero-radio-button"
+								>{{ 'robots.mastering.j' | translate }}3</mat-radio-button
+							>
+							<mat-radio-button value="[0, 0, 1, 1]" class="zero-radio-button"
+								>{{ 'robots.mastering.j' | translate }}3&{{ 'robots.mastering.j' | translate }}4</mat-radio-button
+							>
+							<mat-radio-button value="[1, 1, 1, 1]" class="zero-radio-button">{{
+								'robots.mastering.all' | translate
+							}}</mat-radio-button>
+						</mat-radio-group>
+					</mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button matStepperPrevious color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button color="primary" matStepperNext [disabled]="!zeroAxis">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+				<mat-card *ngIf="!isBasicMode" class="mastering-card">
+					<ng-template matStepLabel>{{ 'robots.mastering.basicConfirm' | translate }}</ng-template>
+					<mat-card-header>
+						<mat-card-title>{{ 'robots.mastering.emjh' | translate }} 2</mat-card-title>
+						<mat-card-subtitle>
+							{{ 'robots.mastering.emjsh1' | translate }} <br />
+							{{ 'robots.mastering.emjsh2' | translate }}
+						</mat-card-subtitle>
+					</mat-card-header>
+					<mat-card-content> </mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button matStepperPrevious color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button matStepperNext color="primary">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+			</form>
+		</mat-step>
+		<mat-step>
+			<form>
+				<mat-card *ngIf="isBasicMode" class="mastering-card">
+					<ng-template matStepLabel>{{ 'robots.mastering.j20' | translate }}</ng-template>
+					<mat-card-header>
+						<mat-card-title
+							>{{ 'robots.mastering.bmj' | translate }}
+							<span *ngIf="hotJoint(0)"> 1</span>
+							<span *ngIf="hotJoint(1)"> 2</span>
+							<span *ngIf="hotJoint(2)"> 3</span>
+							<span *ngIf="hotJoint(3)"> 4</span>
+						</mat-card-title>
+						<mat-card-subtitle>{{ 'robots.mastering.bmjsh' | translate }}</mat-card-subtitle>
+					</mat-card-header>
+					<mat-card-content>
+						<div class="roughly-images-container">
+							<div *ngIf="hotJoint(0)" class="joint-container">
+								<div class="joint-desc">
+									<h2>
+										<strong
+											>0
+											{{ 'robots.mastering.pulsePosition' | translate }}
+											#1:</strong
+										>
+									</h2>
+									<p>
+										{{ 'robots.mastering.pulsePositionContent1' | translate }}
+									</p>
+								</div>
+								<img src="assets/pics/j1.png" />
+							</div>
+							<div *ngIf="hotJoint(1)" class="joint-container">
+								<div class="joint-desc">
+									<h2>
+										<strong
+											>0
+											{{ 'robots.mastering.pulsePosition' | translate }}
+											#2:</strong
+										>
+									</h2>
+									<p>
+										{{ 'robots.mastering.pulsePositionContent2' | translate }}
+									</p>
+								</div>
+								<img src="assets/pics/j2.png" />
+							</div>
+							<div *ngIf="hotJoint(2)" class="joint-container">
+								<div class="joint-desc">
+									<h2>
+										<strong
+											>0
+											{{ 'robots.mastering.pulsePosition' | translate }}
+											#3:</strong
+										>
+									</h2>
+									<p>
+										{{ 'robots.mastering.pulsePositionContent3' | translate }}
+									</p>
+								</div>
+								<img src="assets/pics/j3.png" />
+							</div>
+							<div *ngIf="hotJoint(3)" class="joint-container">
+								<div class="joint-desc">
+									<h2>
+										<strong
+											>0
+											{{ 'robots.mastering.pulsePosition' | translate }}
+											#4:</strong
+										>
+									</h2>
+									<p>
+										{{ 'robots.mastering.pulsePositionContent4' | translate }}
+									</p>
+								</div>
+								<img src="assets/pics/j4.png" />
+							</div>
+						</div>
+					</mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button matStepperPrevious color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button (click)="masterZero()" color="primary">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+				<mat-card *ngIf="!isBasicMode" class="mastering-card">
+					<ng-template matStepLabel>{{ 'robots.mastering.j2t' | translate }}</ng-template>
+					<mat-card-header>
+						<mat-card-title>{{ 'robots.mastering.emj2h' | translate }}</mat-card-title>
+						<mat-card-subtitle>{{ 'robots.mastering.emj2sh' | translate }}</mat-card-subtitle>
+					</mat-card-header>
+					<mat-card-content>
+						<div class="jog-point-img">
+							<img src="assets/pics/jp2.jpg" alt="" />
+							<img src="assets/pics/jpr.png" alt="" />
+						</div>
+					</mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button matStepperPrevious color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button (click)="recordPoint()" color="primary">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+			</form>
+		</mat-step>
 
-        <mat-step>
-            <form>
-                <mat-card *ngIf="isBasicMode" class="mastering-card">
-                    <ng-template matStepLabel>{{'robots.mastering.j2r'|translate}}</ng-template>
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.bmj'|translate}}
-                            <span *ngIf="hotJoint(0)"> 1</span>
-                            <span *ngIf="hotJoint(1)"> 2</span>
-                            <span *ngIf="hotJoint(2)"> 3</span>
-                            <span *ngIf="hotJoint(3)"> 4</span>
-                        </mat-card-title>
-                        <mat-card-subtitle>{{'robots.mastering.bmjsh2'|translate}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                    <div class="jog-point-img">
-                        <img src="assets/pics/jp1.jpg" alt="">
-                    </div>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button (click)="stepBackAndReset()" color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button matStepperNext color="primary">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-                <!-- Command to Reference Point in left hand form -->
-                <mat-card *ngIf="!isBasicMode" class="mastering-card">
-                    <ng-template matStepLabel>{{'robots.mastering.ipbc'|translate}}</ng-template>
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.emj2h'|translate}}</mat-card-title>
-                        <mat-card-subtitle>{{'robots.mastering.emj2sh2'|translate}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <div class="advanced-command-jog">
-                            <img src="assets/pics/jpl.png" alt="">
-                            <button mat-raised-button color="primary" (click)="moveToRef(false)">{{'robots.mastering.converse'|translate}}</button>
-                            <br />
-                            <p>
-                                {{'robots.mastering.complexJogTip'|translate}}
-                            </p>
-                        </div>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button matStepperPrevious color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button matStepperNext color="primary" [disabled]="!isMoveingComplete">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-            </form>
-        </mat-step>
+		<mat-step>
+			<form>
+				<mat-card *ngIf="isBasicMode" class="mastering-card">
+					<ng-template matStepLabel>{{ 'robots.mastering.j2r' | translate }}</ng-template>
+					<mat-card-header>
+						<mat-card-title
+							>{{ 'robots.mastering.bmj' | translate }}
+							<span *ngIf="hotJoint(0)"> 1</span>
+							<span *ngIf="hotJoint(1)"> 2</span>
+							<span *ngIf="hotJoint(2)"> 3</span>
+							<span *ngIf="hotJoint(3)"> 4</span>
+						</mat-card-title>
+						<mat-card-subtitle>{{ 'robots.mastering.bmjsh2' | translate }}</mat-card-subtitle>
+					</mat-card-header>
+					<mat-card-content>
+						<div class="jog-point-img">
+							<img src="assets/pics/jp1.jpg" alt="" />
+						</div>
+					</mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button (click)="stepBackAndReset()" color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button matStepperNext color="primary">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+				<!-- Command to Reference Point in left hand form -->
+				<mat-card *ngIf="!isBasicMode" class="mastering-card">
+					<ng-template matStepLabel>{{ 'robots.mastering.ipbc' | translate }}</ng-template>
+					<mat-card-header>
+						<mat-card-title>{{ 'robots.mastering.emj2h' | translate }}</mat-card-title>
+						<mat-card-subtitle>{{ 'robots.mastering.emj2sh2' | translate }}</mat-card-subtitle>
+					</mat-card-header>
+					<mat-card-content>
+						<div class="advanced-command-jog">
+							<img src="assets/pics/jpl.png" alt="" />
+							<button mat-raised-button color="primary" (click)="moveToRef(false)">
+								{{ 'robots.mastering.converse' | translate }}
+							</button>
+							<br />
+							<p>
+								{{ 'robots.mastering.complexJogTip' | translate }}
+							</p>
+						</div>
+					</mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button matStepperPrevious color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button matStepperNext color="primary" [disabled]="!isMoveingComplete">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+			</form>
+		</mat-step>
 
-        <mat-step>
-            <form>
-                <mat-card *ngIf="isBasicMode" class="mastering-card">
-                    <ng-template matStepLabel>{{'robots.mastering.mbc'|translate}}</ng-template>
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.bmj'|translate}}
-                            <span *ngIf="hotJoint(0)"> 1</span>
-                            <span *ngIf="hotJoint(1)"> 2</span>
-                            <span *ngIf="hotJoint(2)"> 3</span>
-                            <span *ngIf="hotJoint(3)"> 4</span>
-                        </mat-card-title>
-                        <mat-card-subtitle>{{'robots.mastering.bmjsh3'|translate}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <div>
-                            <div>
-                                <span class="command-span">{{moveCommand}}</span>
-                                <button mat-raised-button color="primary" (click)="moveToRef()">{{'button.excute'|translate}}</button>
-                            </div>
-                            <br />
-                            <p>
-                                {{'robots.mastering.complexJogTip'|translate}}
-                            </p>
-                        </div>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button matStepperPrevious color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button matStepperNext color="primary" [disabled]="!isMoveingComplete">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-                <!-- Jog to Reference Point in left hand form -->
-                <mat-card *ngIf="!isBasicMode" class="mastering-card">
-                    <ng-template matStepLabel>{{'robots.mastering.aj'|translate}}</ng-template>
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.emj2h'|translate}}</mat-card-title>
-                        <mat-card-subtitle>{{'robots.mastering.emj2sh3'|translate}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <div class="jog-point-img">
-                            <img src="assets/pics/jp2.jpg" alt="">
-                        </div>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button matStepperPrevious color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button (click)="masterLeftRight()" color="primary">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-            </form>
-        </mat-step>
-        <mat-step *ngIf="isBasicMode">
-            <form>
-                <ng-template matStepLabel>{{'robots.mastering.aj'|translate}}</ng-template>
-                <mat-card class="mastering-card">
-                    <mat-card-header>
-                        <mat-card-title>{{'robots.mastering.bmj'|translate}}
-                            <span *ngIf="hotJoint(0)"> 1</span>
-                            <span *ngIf="hotJoint(1)"> 2</span>
-                            <span *ngIf="hotJoint(2)"> 3</span>
-                            <span *ngIf="hotJoint(3)"> 4</span>
-                        </mat-card-title>
-                        <mat-card-subtitle>{{'robots.mastering.ajsh'|translate}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <div class="jog-point-img">
-                            <img src="assets/pics/jp2.jpg" alt="">
-                        </div>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <button mat-stroked-button (click)="cancel()" color="primary">{{'button.cancel'|translate}}</button>
-                        <button mat-raised-button matStepperPrevious color="primary">{{'button.previous'|translate}}</button>
-                        <button mat-raised-button (click)="masterFinal()" color="primary">{{'button.next'|translate}}</button>
-                    </mat-card-actions>
-                </mat-card>
-            </form>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>{{'robots.mastering.confirm'|translate}}</ng-template>
-            <mat-card class="mastering-card">
-                <mat-card-header>
-                    <mat-card-title *ngIf="isBasicMode">{{'robots.mastering.bmj'|translate}}
-                        <span *ngIf="hotJoint(0)"> 1</span>
-                        <span *ngIf="hotJoint(1)"> 2</span>
-                        <span *ngIf="hotJoint(2)"> 3</span>
-                        <span *ngIf="hotJoint(3)"> 4</span>
-                    </mat-card-title>
-                    <mat-card-title *ngIf="!isBasicMode">{{'robots.mastering.emj2h'|translate}}</mat-card-title>
-                    <mat-card-subtitle>{{'robots.mastering.congratulations'|translate}}</mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>
-                        {{'robots.mastering.congratulationsContent1'|translate}}
-                        <span *ngIf="hotJoint(0)"> 1</span>
-                        <span *ngIf="hotJoint(1)"> 2</span>
-                        <span *ngIf="hotJoint(2)"> 3</span>
-                        <span *ngIf="hotJoint(3)"> 4</span>
-                        {{'robots.mastering.congratulationsContent2'|translate}}
-                    </p>
-                </mat-card-content>
-                <mat-card-actions>
-                    <button mat-raised-button (click)="finish()" color="primary">{{'button.finish'|translate}}</button>
-                </mat-card-actions>
-            </mat-card>
-        </mat-step>
-    </mat-horizontal-stepper>
+		<mat-step>
+			<form>
+				<mat-card *ngIf="isBasicMode" class="mastering-card">
+					<ng-template matStepLabel>{{ 'robots.mastering.mbc' | translate }}</ng-template>
+					<mat-card-header>
+						<mat-card-title
+							>{{ 'robots.mastering.bmj' | translate }}
+							<span *ngIf="hotJoint(0)"> 1</span>
+							<span *ngIf="hotJoint(1)"> 2</span>
+							<span *ngIf="hotJoint(2)"> 3</span>
+							<span *ngIf="hotJoint(3)"> 4</span>
+						</mat-card-title>
+						<mat-card-subtitle>{{ 'robots.mastering.bmjsh3' | translate }}</mat-card-subtitle>
+					</mat-card-header>
+					<mat-card-content>
+						<div>
+							<div>
+								<span class="command-span">{{ moveCommand }}</span>
+								<button mat-raised-button color="primary" (click)="moveToRef()">
+									{{ 'button.excute' | translate }}
+								</button>
+							</div>
+							<br />
+							<p>
+								{{ 'robots.mastering.complexJogTip' | translate }}
+							</p>
+						</div>
+					</mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button matStepperPrevious color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button matStepperNext color="primary" [disabled]="!isMoveingComplete">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+				<!-- Jog to Reference Point in left hand form -->
+				<mat-card *ngIf="!isBasicMode" class="mastering-card">
+					<ng-template matStepLabel>{{ 'robots.mastering.aj' | translate }}</ng-template>
+					<mat-card-header>
+						<mat-card-title>{{ 'robots.mastering.emj2h' | translate }}</mat-card-title>
+						<mat-card-subtitle>{{ 'robots.mastering.emj2sh3' | translate }}</mat-card-subtitle>
+					</mat-card-header>
+					<mat-card-content>
+						<div class="jog-point-img">
+							<img src="assets/pics/jp2.jpg" alt="" />
+						</div>
+					</mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button matStepperPrevious color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button (click)="masterLeftRight()" color="primary">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+			</form>
+		</mat-step>
+		<mat-step *ngIf="isBasicMode">
+			<form>
+				<ng-template matStepLabel>{{ 'robots.mastering.aj' | translate }}</ng-template>
+				<mat-card class="mastering-card">
+					<mat-card-header>
+						<mat-card-title
+							>{{ 'robots.mastering.bmj' | translate }}
+							<span *ngIf="hotJoint(0)"> 1</span>
+							<span *ngIf="hotJoint(1)"> 2</span>
+							<span *ngIf="hotJoint(2)"> 3</span>
+							<span *ngIf="hotJoint(3)"> 4</span>
+						</mat-card-title>
+						<mat-card-subtitle>{{ 'robots.mastering.ajsh' | translate }}</mat-card-subtitle>
+					</mat-card-header>
+					<mat-card-content>
+						<div class="jog-point-img">
+							<img src="assets/pics/jp2.jpg" alt="" />
+						</div>
+					</mat-card-content>
+					<mat-card-actions>
+						<button mat-stroked-button (click)="cancel()" color="primary">
+							{{ 'button.cancel' | translate }}
+						</button>
+						<button mat-raised-button matStepperPrevious color="primary">
+							{{ 'button.previous' | translate }}
+						</button>
+						<button mat-raised-button (click)="masterFinal()" color="primary">
+							{{ 'button.next' | translate }}
+						</button>
+					</mat-card-actions>
+				</mat-card>
+			</form>
+		</mat-step>
+		<mat-step>
+			<ng-template matStepLabel>{{ 'robots.mastering.confirm' | translate }}</ng-template>
+			<mat-card class="mastering-card">
+				<mat-card-header>
+					<mat-card-title *ngIf="isBasicMode"
+						>{{ 'robots.mastering.bmj' | translate }}
+						<span *ngIf="hotJoint(0)"> 1</span>
+						<span *ngIf="hotJoint(1)"> 2</span>
+						<span *ngIf="hotJoint(2)"> 3</span>
+						<span *ngIf="hotJoint(3)"> 4</span>
+					</mat-card-title>
+					<mat-card-title *ngIf="!isBasicMode">{{ 'robots.mastering.emj2h' | translate }}</mat-card-title>
+					<mat-card-subtitle>{{ 'robots.mastering.congratulations' | translate }}</mat-card-subtitle>
+				</mat-card-header>
+				<mat-card-content>
+					<p>
+						{{ 'robots.mastering.congratulationsContent1' | translate }}
+						<span *ngIf="hotJoint(0)"> 1</span>
+						<span *ngIf="hotJoint(1)"> 2</span>
+						<span *ngIf="hotJoint(2)"> 3</span>
+						<span *ngIf="hotJoint(3)"> 4</span>
+						{{ 'robots.mastering.congratulationsContent2' | translate }}
+					</p>
+				</mat-card-content>
+				<mat-card-actions>
+					<button mat-raised-button (click)="finish()" color="primary">
+						{{ 'button.finish' | translate }}
+					</button>
+				</mat-card-actions>
+			</mat-card>
+		</mat-step>
+	</mat-horizontal-stepper>
 </div>

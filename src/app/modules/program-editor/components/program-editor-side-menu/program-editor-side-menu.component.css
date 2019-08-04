@@ -3,6 +3,12 @@
   background: #fff;
   overflow: hidden;
 }
+.busy,
+.busy * {
+  cursor: progress;
+  background-color: #eee;
+  user-select: none;
+}
 .project-tree {
   overflow: auto;
 }

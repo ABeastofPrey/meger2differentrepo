@@ -3,7 +3,7 @@ import { ControlStudioComponent } from './control-studio.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { ControlStudioRoutingModule } from './control-studio-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, EventManager } from '@angular/platform-browser';
 import { MainModule } from './modules/main/main.module';
 import { CoreModule } from './modules/core/core.module';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -18,6 +18,8 @@ import { TpDialogComponent } from './components/tp-dialog/tp-dialog.component';
 import { RobotSelectionComponent } from './components/robot-selection/robot-selection.component';
 import { OSUpgradeErrorDialogComponent } from './components/osupgrade-error-dialog/osupgrade-error-dialog.component';
 import { OSUpgradeSuccessDialogComponent } from './components/osupgrade-success-dialog/osupgrade-success-dialog.component';
+import { TpLoadingComponent } from './components/tp-loading/tp-loading.component';
+import { CustomEventManager } from './modules/core/strategies/listener-outside-angular.strategy';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { OSUpgradeSuccessDialogComponent } from './components/osupgrade-success-
     RobotSelectionComponent,
     OSUpgradeErrorDialogComponent,
     OSUpgradeSuccessDialogComponent,
+    TpLoadingComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,7 +57,9 @@ import { OSUpgradeSuccessDialogComponent } from './components/osupgrade-success-
     TpDialogComponent,
     RobotSelectionComponent,
     OSUpgradeErrorDialogComponent,
-    OSUpgradeSuccessDialogComponent
+    OSUpgradeSuccessDialogComponent,
+    TpLoadingComponent,
   ],
+  providers: [{ provide: EventManager, useClass: CustomEventManager }],
 })
 export class AppModule {}

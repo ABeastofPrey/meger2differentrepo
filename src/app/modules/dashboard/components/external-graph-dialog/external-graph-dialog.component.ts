@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { DashboardService } from '../../services/dashboard.service';
-import {ApiService} from '../../../core';
+import { ApiService } from '../../../core';
 
 @Component({
   selector: 'app-external-graph-dialog',
@@ -9,8 +9,7 @@ import {ApiService} from '../../../core';
   styleUrls: ['./external-graph-dialog.component.css'],
 })
 export class ExternalGraphDialogComponent implements OnInit {
-  
-  is3D: boolean = false;
+  graphType: string = '2d';
   files: string[] = [];
   selectedFile: string = null;
 
@@ -21,15 +20,14 @@ export class ExternalGraphDialogComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.api.getRecordingFiles().then((files:string[])=>{
+    this.api.getRecordingFiles().then((files: string[]) => {
       this.files = files;
-      if (files.length === 1)
-        this.selectedFile = files[0];
+      if (files.length === 1) this.selectedFile = files[0];
     });
   }
 
   show() {
     this.ref.close();
-    this.dashboard.showGraphDialog(this.is3D, null, this.selectedFile);
+    this.dashboard.showGraphDialog(this.graphType, this.selectedFile);
   }
 }

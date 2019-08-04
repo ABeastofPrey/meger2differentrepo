@@ -14,7 +14,6 @@
   display: flex;
 }
 .actions {
-  height: 52px;
   display: flex;
   padding: 8px 8px 8px 24px;
   justify-content: flex-end;

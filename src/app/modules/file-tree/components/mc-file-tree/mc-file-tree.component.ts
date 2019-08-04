@@ -11,7 +11,7 @@ import {
   UploadResult,
   LoginService,
 } from '../../../core';
-import { of, Subscription } from 'rxjs';
+import { of, Subscription, Subject } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { FileFilterService } from '../../file-filter.service';
 import { ProgramEditorService } from '../../../program-editor/services/program-editor.service';
@@ -19,6 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { NewFileDialogComponent } from '../new-file-dialog/new-file-dialog.component';
 import { SingleInputDialogComponent } from '../../../../components/single-input-dialog/single-input-dialog.component';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
   selector: 'mc-file-tree',
@@ -27,7 +28,7 @@ import { SingleInputDialogComponent } from '../../../../components/single-input-
 })
 export class McFileTreeComponent implements OnInit {
   @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
-
+  @ViewChild('menuDiv', { static: false }) menuDiv: ElementRef;
   nestedTreeControl: NestedTreeControl<TreeNode>;
   nestedDataSource: MatTreeNestedDataSource<TreeNode>;
   unfilteredDataSource: TreeNode[];
@@ -43,8 +44,9 @@ export class McFileTreeComponent implements OnInit {
   menuVisible: boolean = false;
   menuLeft: string = '0';
   menuTop: string = '0';
+  private menuHeight: number = 0;
 
-  private sub: Subscription;
+  private notifier: Subject<boolean> = new Subject();
   private lastSearchTimeout: any = null;
   private words: any;
 
@@ -60,10 +62,12 @@ export class McFileTreeComponent implements OnInit {
   ) {
     this.trn
       .get([
+        'copy',
         'error.err',
         'dismiss',
         'success',
         'projects.toolbar.new_folder',
+        'projects.toolbar.copy_name',
         'projectTree.dirty',
         'button.save',
         'button.discard',
@@ -72,42 +76,69 @@ export class McFileTreeComponent implements OnInit {
         'projects.toolbar',
         'button.overwrite',
         'button.discard',
+        'button.copy',
+        'button.delete',
+        'button.cancel',
+        'are_you_sure',
+        'files.confirm_delete',
+        'files.success_delete',
+        'files.err_delete',
       ])
       .subscribe(words => {
         this.words = words;
       });
-    this.filterService.filteredData.subscribe((data: TreeNode[]) => {
-      if (this.nestedDataSource) {
-        this.nestedDataSource.data = data;
-        this.nestedTreeControl.dataNodes = data;
-        this.nestedTreeControl.expandAll();
-        if (this.isRefreshing) {
-          this.isRefreshing = false;
+    this.filterService.filteredData
+      .pipe(takeUntil(this.notifier))
+      .subscribe((data: TreeNode[]) => {
+        if (this.nestedDataSource) {
+          this.nestedDataSource.data = data;
+          this.nestedTreeControl.dataNodes = data;
+          this.nestedTreeControl.expandAll();
+          if (this.isRefreshing) {
+            this.isRefreshing = false;
+          }
+          setTimeout(() => {
+            (<HTMLElement>document.activeElement).blur();
+          }, 0);
         }
-        setTimeout(() => {
-          (<HTMLElement>document.activeElement).blur();
-        }, 0);
-      }
-    });
+      });
   }
 
   ngOnInit() {
-    this.sub = this.prj.fileRefreshNeeded.subscribe(() => {
+    this.prj.fileRefreshNeeded.pipe(takeUntil(this.notifier)).subscribe(() => {
       this.refreshFiles();
     });
     this.refreshFiles();
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   openContextMenu(event: MouseEvent, node: TreeNode) {
     event.preventDefault();
     event.stopImmediatePropagation();
     this.lastSelectedNode = node;
-    this.menuLeft = event.pageX + 5 + 'px';
-    this.menuTop = event.pageY + 5 + 'px';
+    let x = event.pageX + 5;
+    let y = event.pageY + 5;
+    if (this.menuHeight > 0) {
+      this.updateMenuPosition(x, y);
+    } else {
+      this.menuVisible = true;
+      setTimeout(() => {
+        this.menuHeight = this.menuDiv.nativeElement.clientHeight - 5;
+        this.updateMenuPosition(x, y);
+      }, 200);
+    }
+  }
+
+  private updateMenuPosition(x: number, y: number) {
+    if (window.innerHeight - y < this.menuHeight) {
+      y = window.innerHeight - this.menuHeight - 15;
+    }
+    this.menuLeft = x + 'px';
+    this.menuTop = y + 5 + 'px';
     this.menuVisible = true;
   }
 
@@ -116,7 +147,7 @@ export class McFileTreeComponent implements OnInit {
   }
 
   onSearchChange() {
-    if (this.lastSearchTimeout) clearTimeout(this.lastSearchTimeout);
+    clearTimeout(this.lastSearchTimeout);
     const curr = this.filterByString;
     this.lastSearchTimeout = setTimeout(() => {
       if (curr === this.filterByString)
@@ -416,6 +447,97 @@ export class McFileTreeComponent implements OnInit {
       }
     });
   }
+
+  copy(node: TreeNode) {
+    if (node.name === 'SSMC' || node.name === 'FWCONFIG') return false;
+    const i = node.name.lastIndexOf('.');
+    const nameOnly = i === -1 ? node.name : node.name.substring(0, i);
+    const copyName =
+      nameOnly + '_COPY' + (i === -1 ? '' : node.name.substring(i));
+    this.dialog
+      .open(SingleInputDialogComponent, {
+        data: {
+          icon: 'file_copy',
+          title: this.words['copy'],
+          placeholder: this.words['projects.toolbar.copy_name'],
+          initialValue: copyName,
+          accept: this.words['button.copy'],
+        },
+      })
+      .afterClosed()
+      .subscribe((name: string) => {
+        if (!name || name.indexOf('/') !== -1) return;
+        name = name.toUpperCase();
+        const j = name.lastIndexOf('.');
+        if (j !== i) return;
+        if (j !== -1) {
+          const ext = name.substring(j + 1).trim();
+          if (ext.length === 0 || !node.name.endsWith(ext)) return;
+        }
+        const fromPath = node.decodedPath;
+        const toPath =
+          (node.parent && node.parent.decodedPath
+            ? node.parent.decodedPath
+            : '') + name;
+        this.api.copy(fromPath, toPath).then(result => {
+          if (result) {
+            this.snack.open(this.words['success'], this.words['dismiss'], {
+              duration: 1500,
+            });
+            this.prj.fileRefreshNeeded.emit();
+          } else {
+            this.snack.open(this.words['error.err'], this.words['dismiss'], {
+              duration: 2000,
+            });
+          }
+        });
+      });
+  }
+
+  private deleteRecursive(n: TreeNode): Promise<any> {
+    let arr: Promise<any>[] = [];
+    if (n.isFolder) {
+      for (let c of n.children) {
+        arr = arr.concat(this.deleteRecursive(c));
+      }
+    }
+    return Promise.all(arr).then(() => {
+      return this.api.deleteFile(n.path);
+    });
+  }
+
+  /*
+   * Deletes a file or folder
+   */
+  delete(n: TreeNode) {
+    let ref = this.dialog.open(YesNoDialogComponent, {
+      data: {
+        title: this.words['are_you_sure'],
+        msg: this.words['files.confirm_delete'],
+        yes: this.words['button.delete'],
+        no: this.words['button.cancel'],
+      },
+    });
+    ref.afterClosed().subscribe(ret => {
+      if (ret) {
+        if (
+          !n.isFolder &&
+          this.service.tabs.some(t => {
+            return t.file === n.name;
+          })
+        ) {
+          this.service.close();
+        }
+        this.deleteRecursive(n).then(ret => {
+          const msg = ret
+            ? this.words['files.success_delete']
+            : this.words['files.err_delete'];
+          this.snack.open(msg, '', { duration: 2000 });
+          if (ret) this.prj.fileRefreshNeeded.emit();
+        });
+      }
+    });
+  }
 }
 
 export class TreeNode {
@@ -468,7 +590,8 @@ export class TreeNode {
     }
     this.path = path;
     // SET DECODED PATH
-    this.decodedPath = path.replace(new RegExp('\\$\\$', 'g'), '/') + '/';
+    this.decodedPath = path.replace(new RegExp('\\$\\$', 'g'), '/');
+    if (this.isFolder) this.decodedPath += '/';
   }
 }
 

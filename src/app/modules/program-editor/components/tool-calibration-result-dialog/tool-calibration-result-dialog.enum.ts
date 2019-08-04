@@ -3,7 +3,7 @@ export enum CalibrationMessage {
   CalibrationSuccess = 'Calibration Success.',
   IsApplyDataToTool = 'Do you want to apply the following tool data for Tool',
   ResultOutOfScope = 'The determined calculation error exceeds the allowable limit 5mm.\n' +
-  'The use of this tool data can lead to undesirable behaviour.'
+    'The use of this tool data can lead to undesirable behaviour.',
 }
 
 /**

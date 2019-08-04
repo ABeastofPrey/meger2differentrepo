@@ -17,10 +17,10 @@
 				<mat-header-cell *matHeaderCellDef></mat-header-cell>
 				<ng-container>
 					<mat-cell color="primary" *matCellDef="let element">
-            <div [ngSwitch]="element.name">
-              <span *ngSwitchCase="'error'">{{"tool_calib.error"|translate }}</span>
-              <span *ngSwitchDefault>{{element.name}}</span>
-            </div>
+						<div [ngSwitch]="element.name">
+							<span *ngSwitchCase="'error'">{{ 'tool_calib.error' | translate }}</span>
+							<span *ngSwitchDefault>{{ element.name }}</span>
+						</div>
 					</mat-cell>
 				</ng-container>
 			</ng-container>

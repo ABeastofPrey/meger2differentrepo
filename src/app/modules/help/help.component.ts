@@ -17,6 +17,8 @@ import { then, compose, identity, or, useWith, equals, ifElse } from 'ramda';
 import { isNilOrEmpty } from 'ramda-adjunct';
 import { MD5 } from 'crypto-js';
 import { BugReportComponent } from './components/bug-report/bug-report.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
   selector: 'help-screen',
@@ -28,14 +30,14 @@ export class HelpComponent implements OnInit {
   public env = environment;
   public isActivated: boolean = false;
 
+  private notifier: Subject<boolean> = new Subject();
+
   constructor(
     private tour: TourService,
     private stat: TpStatService,
     private dialog: MatDialog,
     private actService: ActivationService,
-    public utils: UtilsService,
-    private ws: WebsocketService,
-    private data: DataService
+    public utils: UtilsService
   ) {}
 
   get isNotKuka(): boolean {
@@ -48,8 +50,8 @@ export class HelpComponent implements OnInit {
     }
   }
 
-  async ngOnInit() {
-    this.stat.onlineStatus.subscribe(stat => {
+  ngOnInit() {
+    this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
       this.online = stat;
     });
 
@@ -57,6 +59,11 @@ export class HelpComponent implements OnInit {
     if (this.utils.IsKuka) {
       this.checkActivationStatus();
     }
+  }
+
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   showShortcuts() {

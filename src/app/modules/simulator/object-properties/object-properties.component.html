@@ -1,10 +1,24 @@
 <div *ngIf="lastSelectedNode" style="margin: 8px;">
-	<h2>{{ lastSelectedNode.name }}</h2>
-	<table class="full">
+	<div class="title center-vertical">
+		<mat-form-field appearance="outline" class="name">
+			<input
+				matInput
+				[(ngModel)]="lastSelectedNode.name"
+				virtualKeyboard
+				ktype="text"
+				[disabled]="lastSelectedNode.name.startsWith('Pallet_')"
+			/>
+		</mat-form-field>
+		<button mat-icon-button color="warn" (click)="sim.deleteSelected()">
+			<mat-icon>delete</mat-icon>
+		</button>
+	</div>
+	<table class="full" *ngIf="!lastSelectedNode.name.startsWith('Pallet_')">
 		<thead>
 			<tr>
 				<td>{{ 'simulator_screen.prop' | translate }}</td>
 				<td>{{ 'simulator_screen.val' | translate }}</td>
+				<td></td>
 			</tr>
 		</thead>
 		<tr>
@@ -12,72 +26,78 @@
 			<td>
 				<input
 					type="number"
-					[(ngModel)]="lastSelectedNode.position.x"
+					[(ngModel)]="lastSelectedNode.positionMM.x"
 					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_x')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
 			</td>
+			<td>mm</td>
 		</tr>
 		<tr>
 			<td>POS_Y</td>
 			<td>
 				<input
 					type="number"
-					[(ngModel)]="lastSelectedNode.position.y"
+					[(ngModel)]="lastSelectedNode.positionMM.y"
 					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_y')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
 			</td>
+			<td>mm</td>
 		</tr>
 		<tr>
 			<td>POS_Z</td>
 			<td>
 				<input
 					type="number"
-					[(ngModel)]="lastSelectedNode.position.z"
+					[(ngModel)]="lastSelectedNode.positionMM.z"
 					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_z')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
 			</td>
+			<td>mm</td>
 		</tr>
 		<tr>
 			<td>ROT_X</td>
 			<td>
 				<input
 					type="number"
-					[(ngModel)]="lastSelectedNode.eulerXYZ.x"
+					[(ngModel)]="lastSelectedNode.eulerXYZDeg.x"
 					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_x')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
 			</td>
+			<td>deg</td>
 		</tr>
 		<tr>
 			<td>ROT_Y</td>
 			<td>
 				<input
 					type="number"
-					[(ngModel)]="lastSelectedNode.eulerXYZ.y"
+					[(ngModel)]="lastSelectedNode.eulerXYZDeg.y"
 					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_y')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
 			</td>
+			<td>deg</td>
 		</tr>
 		<tr>
 			<td>ROT_Z</td>
 			<td>
 				<input
 					type="number"
-					[(ngModel)]="lastSelectedNode.eulerXYZ.z"
+					[(ngModel)]="lastSelectedNode.eulerXYZDeg.z"
 					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_z')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
 			</td>
+			<td>deg</td>
 		</tr>
 		<tr>
 			<td>SCALE_X</td>
@@ -90,6 +110,7 @@
 					ktype="numeric"
 				/>
 			</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>SCALE_Y</td>
@@ -102,6 +123,7 @@
 					ktype="numeric"
 				/>
 			</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>SCALE_Z</td>
@@ -114,6 +136,19 @@
 					ktype="numeric"
 				/>
 			</td>
+			<td></td>
+		</tr>
+		<tr *ngIf="lastSelectedNode.color">
+			<td>Color</td>
+			<td
+				class="color-select"
+				[colorPicker]="'#' + lastSelectedNode.color"
+				(colorPickerChange)="onColorChange($event)"
+				[style.background]="'#' + lastSelectedNode.color"
+			>
+				{{ lastSelectedNode.color }}
+			</td>
+			<td></td>
 		</tr>
 	</table>
 </div>

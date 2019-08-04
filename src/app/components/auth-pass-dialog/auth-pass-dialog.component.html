@@ -19,12 +19,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-button
-			color="primary"
-			(click)="confirm()"
-			[disabled]="val === null || val.length === 0"
-		>
+		<button mat-button color="primary" (click)="confirm()" [disabled]="val === null || val.length === 0">
 			{{ 'button.confirm' | translate }}
 		</button>
 	</div>

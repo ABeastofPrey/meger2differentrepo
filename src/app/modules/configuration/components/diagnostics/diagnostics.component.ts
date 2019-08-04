@@ -8,8 +8,9 @@ import {
 } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from '../../../core';
 import { GraphComponent, GraphData } from '../graph/graph.component';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Component({
   selector: 'app-diagnostics',
@@ -21,12 +22,11 @@ export class DiagnosticsComponent implements OnInit {
   state: string = '1';
   isRefreshing: boolean = false;
   interval: any;
-  sub: Subscription;
-
-  public env = environment;
-
+  env = environment;
   @ViewChild('container', { read: ViewContainerRef, static: false })
   ref: ViewContainerRef;
+
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     private ws: WebsocketService,
@@ -34,13 +34,14 @@ export class DiagnosticsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.sub = this.ws.isConnected.subscribe(stat => {
+    this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) this.refresh();
     });
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   private getGraphsFromText() {

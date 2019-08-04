@@ -36,6 +36,8 @@ import {
 import { Either, Maybe } from 'ramda-fantasy';
 import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { Subject } from 'rxjs';
 
 export interface IPositionTrigger {
   name: string;
@@ -165,8 +167,9 @@ export const combineNames: (x: IPositionTrigger[]) => string = compose(
 })
 export class PositionTriggerComponent implements OnInit, OnDestroy {
   private preDistance: number;
-  private subscription: any;
   private positiveNumTip: string;
+  private notifier: Subject<boolean> = new Subject();
+
   public data: IPositionTrigger[] = []; // table data source.
   public get columns(): ReadonlyArray<string> {
     return initColumns();
@@ -188,12 +191,14 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
     private service: PositionTriggerService,
     private trn: TranslateService
   ) {
-    this.service.broadcaster.subscribe(this.assembleData.bind(this));
-    this.subscription = this.terminalService.sentCommandEmitter.subscribe(
-      cmd => {
+    this.service.broadcaster
+      .pipe(takeUntil(this.notifier))
+      .subscribe(this.assembleData.bind(this));
+    this.terminalService.sentCommandEmitter
+      .pipe(takeUntil(this.notifier))
+      .subscribe(cmd => {
         this.assembleData();
-      }
-    );
+      });
   }
 
   ngOnInit(): void {
@@ -207,7 +212,8 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   public toggleAll(event: any): void {

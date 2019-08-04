@@ -66,7 +66,7 @@ export class KeyboardDirective {
         ctrl: this.ctrl,
         showArrows: this.showArrows,
         enableLineDelete: this.enableLineDelete,
-        onLineDelete: this.onLineDelete
+        onLineDelete: this.onLineDelete,
       },
     });
     this.ref.afterClosed().subscribe(() => {
@@ -92,7 +92,6 @@ export class KeyboardDirective {
   styleUrls: ['./keyboard.component.scss'],
 })
 export class KeyboardDialog implements OnInit {
-  
   public ngModel: NgModel;
   public placeholder: string;
   public inputType: string;
@@ -391,7 +390,7 @@ const layout_string_more = [
   ['+', '*', '/', '=', '_', '-'],
   ['!', '@', '#', '$', '%', '^', '&', '~'],
   ['(', ')', '[', ']', "'", '"', ':', ','],
-  ['arrow_upward', '<', '>', '?', 'backspace'],
+  ['{', '}', '<', '>', '?', 'backspace'],
   ['more', ' ', '.', 'keyboard_return'],
 ];
 

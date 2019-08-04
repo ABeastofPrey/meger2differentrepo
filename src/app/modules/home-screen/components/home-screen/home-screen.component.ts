@@ -1,14 +1,22 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  HostListener,
+} from '@angular/core';
 import { LoginService } from '../../../../modules/core/services/login.service';
 import { NotificationService } from '../../../../modules/core/services/notification.service';
 import { ApiService } from '../../../../modules/core/services/api.service';
 import { GroupManagerService } from '../../../../modules/core/services/group-manager.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import {
   ScreenManagerService,
   WebsocketService,
   MCQueryResponse,
+  TpStatService,
+  ProjectManagerService,
 } from '../../../core';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
@@ -20,6 +28,9 @@ import { ifElse, then, compose, split } from 'ramda';
 import { hasNoError, resProp } from '../../../core/services/service-adjunct';
 import { DataService } from '../../../core';
 import { environment } from '../../../../../environments/environment';
+import { Router } from '@angular/router';
+import { RobotService } from '../../../core/services/robot.service';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 declare var Plotly;
 
@@ -66,9 +77,14 @@ export class HomeScreenComponent implements OnInit {
   public guiVer: string = environment.gui_ver;
   public appNameKuka: string = environment.appName_Kuka;
 
-  private sub: Subscription = null;
   private chartInit: boolean = false;
   private words: any;
+  private timeInterval: any;
+  private notifier: Subject<boolean> = new Subject();
+
+  // Header Info
+  date: string;
+  time: string;
 
   constructor(
     public data: DataService,
@@ -81,7 +97,11 @@ export class HomeScreenComponent implements OnInit {
     private trn: TranslateService,
     private utils: UtilsService,
     private dialog: MatDialog,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    public stat: TpStatService,
+    public prj: ProjectManagerService,
+    private router: Router,
+    public robot: RobotService
   ) {}
 
   private getSelection(): string {
@@ -110,9 +130,7 @@ export class HomeScreenComponent implements OnInit {
     if (this.groupManager.sysInfo.ver.indexOf('SIM') === 0) {
       this.simulated = true;
       mc += '703';
-    }
-    else if (cpu.indexOf('E3825') !== -1)
-      mc += '703';
+    } else if (cpu.indexOf('E3825') !== -1) mc += '703';
     else if (cpu.indexOf('CPUS = 2') !== -1) {
       mc += '302';
     } else if (
@@ -191,6 +209,11 @@ export class HomeScreenComponent implements OnInit {
     this.profileSrc = this.api.getProfilePic(
       this.login.getCurrentUser().user.username
     );
+    this.api.profilePicChanged.subscribe(() => {
+      this.profileSrc = this.api.getProfilePic(
+        this.login.getCurrentUser().user.username
+      );
+    });
     const wordsArr = [
       'home.chart_ram',
       'home.chart_space',
@@ -200,25 +223,51 @@ export class HomeScreenComponent implements OnInit {
     ];
     this.trn.get(wordsArr).subscribe(words => {
       this.words = words;
-      this.notification.newMessage.subscribe(() => {
-        const objDiv = this.msgContainer.nativeElement;
-        objDiv.scrollTop = objDiv.scrollHeight;
-      });
-      this.sub = this.groupManager.sysInfoLoaded.subscribe(loaded => {
-        if (loaded) {
-          this.afterSysInfoLoaded();
-        }
-      });
-      window.addEventListener('resize', () => {
-        this.updateCharts();
-      });
-      this.screenMngr.controlsAnimating.subscribe(stat => {
-        if (!stat) this.updateCharts();
-      });
+      this.notification.newMessage
+        .pipe(takeUntil(this.notifier))
+        .subscribe(() => {
+          const objDiv = this.msgContainer.nativeElement;
+          objDiv.scrollTop = objDiv.scrollHeight;
+        });
+      this.groupManager.sysInfoLoaded
+        .pipe(takeUntil(this.notifier))
+        .subscribe(loaded => {
+          if (loaded) {
+            this.afterSysInfoLoaded();
+          }
+        });
+      this.screenMngr.controlsAnimating
+        .pipe(takeUntil(this.notifier))
+        .subscribe(stat => {
+          if (!stat) this.updateCharts();
+        });
     });
 
     this.getMainVersion().then(res => {
       this.mainVer = res;
+    });
+    this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat => {
+      if (!stat) return;
+      this.ws.query('?sys.date').then((ret: MCQueryResponse) => {
+        this.date = ret.result;
+      });
+      clearInterval(this.timeInterval);
+      this.refreshTime();
+      this.timeInterval = setInterval(() => {
+        this.refreshTime();
+      }, 60000);
+    });
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.updateCharts();
+  }
+
+  private refreshTime() {
+    this.ws.query('?sys.time').then((ret: MCQueryResponse) => {
+      const i = ret.result.lastIndexOf(':');
+      this.time = ret.result.substring(0, i);
     });
   }
 
@@ -229,7 +278,8 @@ export class HomeScreenComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if (this.sub) this.sub.unsubscribe();
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   onContextMenu(e: MouseEvent) {
@@ -298,12 +348,25 @@ export class HomeScreenComponent implements OnInit {
       });
   }
 
-    private async getMainVersion(): Promise<string[]> {
-      const query = () => this.ws.query('?vi_getreleaseversion');
-      const logErr = err => { console.log(err); return []; };
-      const splitWithSemicolon = split(';');
-      const parser = compose(splitWithSemicolon, resProp);
-      const handler = ifElse(hasNoError, parser, logErr);
-      return compose(then(handler), query)();
+  private async getMainVersion(): Promise<string[]> {
+    const query = () => this.ws.query('?vi_getreleaseversion');
+    const logErr = err => {
+      console.log(err);
+      return [];
+    };
+    const splitWithSemicolon = split(';');
+    const parser = compose(
+      splitWithSemicolon,
+      resProp
+    );
+    const handler = ifElse(hasNoError, parser, logErr);
+    return compose(
+      then(handler),
+      query
+    )();
+  }
+
+  goToProject() {
+    this.router.navigateByUrl('/projects');
   }
 }

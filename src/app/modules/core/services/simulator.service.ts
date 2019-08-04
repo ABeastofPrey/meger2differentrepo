@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import { SceneObject, Box, Cylinder, SimulatorScene } from 'stxsim-ng';
+import { SceneObject, Box, Cylinder, SceneService, Sphere } from 'stxsim-ng';
 import { BehaviorSubject } from 'rxjs';
-import { DataService, WebsocketService, MCQueryResponse } from '../../core';
+import { WebsocketService, MCQueryResponse } from './websocket.service';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SimulatorService {
   data: BehaviorSubject<SceneObject[]> = new BehaviorSubject([]);
-  scene: SimulatorScene = SimulatorScene.getInstance();
+  bgColor: string = '#7c99b7';
+  traceColor: string = '#ffff00';
 
   private _selected: SceneObject = null;
   get selected() {
@@ -18,7 +20,15 @@ export class SimulatorService {
     this._selected = val;
   }
 
-  constructor(private dataService: DataService, private ws: WebsocketService) {}
+  get scene() {
+    return this.service.simulatorScene;
+  }
+
+  constructor(
+    private dataService: DataService,
+    private ws: WebsocketService,
+    private service: SceneService
+  ) {}
 
   getScene() {
     this.data.next([]);
@@ -26,26 +36,14 @@ export class SimulatorService {
       const c = this.scene.children[0];
       this.scene.removeChild(c);
     }
-    // ADD DEMO OBJECTS
-    const box = new Box();
-    box.position.set(0, 1, 0.05);
-    box.scale.set(0.1, 0.1, 0.1);
-    box.name = 'Box1';
-    const cyl = new Cylinder();
-    cyl.position.set(1, 0, 0.2);
-    cyl.scale.set(0.1, 0.4, 0.1);
-    cyl.eulerXYZ.set(Math.PI / 2, 0, 0);
-    cyl.name = 'Cylinder1';
-    this.scene.addChild(box);
-    this.scene.addChild(cyl);
-    this.data.next(this.scene.children);
     this.refreshPallets();
   }
 
   private refreshPallets() {
     let promises = [];
     for (let p of this.dataService.pallets) {
-      promises.push(this.ws.query('?plt_get_origin("' + p.name + '")'));
+      if (p.isFrameCalibrated)
+        promises.push(this.ws.query('?plt_get_origin("' + p.name + '")'));
     }
     return Promise.all(promises)
       .then((rets: MCQueryResponse[]) => {
@@ -91,7 +89,7 @@ export class SimulatorService {
         const Y = origin[1] + R * Math.sin(A + THETA);
         const correctedPosition = [X, Y, origin[2] + 0.15]; // 150 for SCARA ONLY!! TODO: CHANGE!!
         const box = new Box();
-        box.position.set(
+        box.positionMM.set(
           correctedPosition[0],
           correctedPosition[1],
           correctedPosition[2]
@@ -101,6 +99,39 @@ export class SimulatorService {
         box.name = 'Pallet_' + this.dataService.pallets[i].name;
         this.scene.addChild(box);
       });
+  }
+
+  addObject(objType: string) {
+    let obj;
+    switch (objType) {
+      default:
+        console.log(objType);
+        break;
+      case 'Cube':
+        obj = new Box();
+        obj.positionMM.set(500, 0, 50);
+        obj.scale.set(0.1, 0.1, 0.1);
+        obj.name = 'Untitled Box';
+        this.scene.addChild(obj);
+        break;
+      case 'Sphere':
+        obj = new Sphere();
+        obj.positionMM.set(500, 0, 50);
+        obj.scale.set(0.1, 0.1, 0.1);
+        obj.name = 'Untitled Sphere';
+        this.scene.addChild(obj);
+        break;
+      case 'Cylinder':
+        obj = new Cylinder();
+        obj.positionMM.set(500, 0, 50);
+        obj.scale.set(0.1, 0.1, 0.1);
+        obj.name = 'Untitled Cylinder';
+        obj.eulerXYZDeg.set(90, 0, 0);
+        this.scene.addChild(obj);
+        break;
+    }
+    if (obj) this.selected = obj;
+    this.data.next(this.scene.children);
   }
 
   onObjectParamChanged(e: Event, changeType: string) {

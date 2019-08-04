@@ -1,0 +1,18 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.toolbar {
+  margin: -24px -24px 16px -24px;
+  height: 48px;
+  padding: 8px;
+  font-size: 18px;
+}
+.deg {
+  width: 100px;
+}
+mat-form-field {
+  margin-right: 16px;
+}

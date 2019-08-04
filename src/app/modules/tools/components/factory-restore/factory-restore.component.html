@@ -44,12 +44,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button
-			mat-raised-button
-			color="warn"
-			[disabled]="busy || password.length === 0"
-			(click)="restore()"
-		>
+		<button mat-raised-button color="warn" [disabled]="busy || password.length === 0" (click)="restore()">
 			{{ 'button.restore' | translate }}
 		</button>
 	</div>

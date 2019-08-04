@@ -1,9 +1,10 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material';
-import { of as observableOf } from 'rxjs';
-import { SimulatorService } from '../services/simulator.service';
+import { of as observableOf, Subject } from 'rxjs';
 import { SceneObject } from 'stxsim-ng';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { SimulatorService } from '../../core/services/simulator.service';
 
 @Component({
   selector: 'objects-list',
@@ -13,8 +14,9 @@ import { SceneObject } from 'stxsim-ng';
 export class ObjectsListComponent implements OnInit {
   nestedTreeControl: NestedTreeControl<SceneObject>;
   nestedDataSource: MatTreeNestedDataSource<SceneObject>;
-
   draggedNode: SceneObject;
+
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(private sim: SimulatorService) {}
 
@@ -29,9 +31,14 @@ export class ObjectsListComponent implements OnInit {
       this._getChildren
     );
     this.nestedDataSource = new MatTreeNestedDataSource();
-    this.sim.data.subscribe(data => {
+    this.sim.data.pipe(takeUntil(this.notifier)).subscribe(data => {
       this.nestedDataSource.data = data;
     });
+  }
+
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   hasNestedChild = (_: number, nodeData: SceneObject) => {
@@ -42,14 +49,14 @@ export class ObjectsListComponent implements OnInit {
     return observableOf(node.children);
   };
 
-  /*private isParentNode(node: SceneObject, parent: SceneObject): boolean {
+  private isParentNode(node: SceneObject, parent: SceneObject): boolean {
     let currParent = node;
     while (currParent) {
       if (currParent === parent) return true;
       currParent = currParent.parent;
     }
     return false;
-  }*/
+  }
 
   onObjectDragStart(e: DragEvent, node: SceneObject) {
     e.dataTransfer.effectAllowed = 'move';
@@ -57,39 +64,32 @@ export class ObjectsListComponent implements OnInit {
   }
 
   onDragOverObject(e: DragEvent, node: SceneObject) {
-    /*if (
+    if (
       this.isParentNode(node, this.draggedNode) ||
       node === this.draggedNode.parent
-    )
-      return this.sim.lastSelectedNode.next(null);
+    ) {
+      this.sim.selected = null;
+      return;
+    }
     e.preventDefault();
     e.stopImmediatePropagation();
     e.dataTransfer.dropEffect = 'move';
     if (node) this.nestedTreeControl.expand(node);
-    this.sim.lastSelectedNode.next(node);*/
+    this.sim.selected = node;
   }
 
   onObjectDrop(e: DragEvent, node: SceneObject) {
-    /*f (
+    if (
       this.isParentNode(node, this.draggedNode) ||
       node === this.draggedNode.parent
     )
       return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    let data = this.nestedDataSource.data;
-    if (node) node.children.push(this.draggedNode);
-    else data.push(this.draggedNode);
-    if (this.draggedNode.parent) {
-      const i = this.draggedNode.parent.children.indexOf(this.draggedNode);
-      if (i !== -1) this.draggedNode.parent.children.splice(i, 1);
-    } else {
-      const i = data.indexOf(this.draggedNode);
-      if (i !== -1) data.splice(i, 1);
-    }
-    this.draggedNode.parent = node;
+    node = node || this.sim.scene;
+    node.addChild(this.draggedNode);
     this.nestedDataSource.data = null;
-    this.nestedDataSource.data = data;*/
+    this.nestedDataSource.data = this.sim.scene.children;
   }
 
   selectNode(node: SceneObject) {

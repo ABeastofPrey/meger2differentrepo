@@ -3,6 +3,8 @@ import { ArchSettingService } from '../../../services/arch-setting.service';
 import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 export interface ArchElement {
   index: number;
@@ -23,8 +25,8 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
 
   private previousValue: string;
   private currentValue: string;
-  private subscription: any;
   private words: any;
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     private asService: ArchSettingService,
@@ -32,11 +34,11 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     private trn: TranslateService
   ) {
-    this.subscription = this.terminalService.sentCommandEmitter.subscribe(
-      cmd => {
+    this.terminalService.sentCommandEmitter
+      .pipe(takeUntil(this.notifier))
+      .subscribe(cmd => {
         this.getTableData();
-      }
-    );
+      });
   }
 
   ngOnInit() {
@@ -47,7 +49,8 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   public onFocus(event: any): void {

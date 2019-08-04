@@ -5,10 +5,6 @@ import { MatTableDataSource, MatDialog, MatSnackBar } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TPVariableType } from '../../../core/models/tp/tp-variable-type.model';
 import { AddFrameComponent } from '../add-frame/add-frame.component';
-import {
-  FOUR_AXES_LOCATION,
-  SIX_AXES_LOCATION,
-} from '../../../core/models/tp/location-format.model';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { ComponentType } from '@angular/cdk/portal';
 import { ToolCalibrationDialogComponent } from '../tool-calibration-dialog/tool-calibration-dialog.component';
@@ -194,8 +190,7 @@ export class FramesComponent implements OnInit {
       if (newLegend.length === 0) {
         switch (this.selectedVar.varType) {
           case TPVariableType.LOCATION:
-            newLegend =
-              values.length === 4 ? FOUR_AXES_LOCATION : SIX_AXES_LOCATION;
+            newLegend = this.data.robotCoordinateType.legends;
             break;
         }
       }

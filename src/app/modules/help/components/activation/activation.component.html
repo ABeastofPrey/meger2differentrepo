@@ -12,10 +12,7 @@
 				ktype="numeric"
 			/>
 			<mat-error
-				*ngIf="
-					(control.hasError('minlength') || control.hasError('maxlength')) &&
-					!control.hasError('required')
-				"
+				*ngIf="(control.hasError('minlength') || control.hasError('maxlength')) && !control.hasError('required')"
 			>
 				{{ 'help.activation.lengthErr' | translate }}
 			</mat-error>

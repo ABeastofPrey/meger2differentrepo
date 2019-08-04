@@ -1,8 +1,4 @@
-<div
-	class="wrapper"
-	(dragover)="onDragOverObject($event, null)"
-	(drop)="onObjectDrop($event, null)"
->
+<div class="wrapper" (dragover)="onDragOverObject($event, null)" (drop)="onObjectDrop($event, null)">
 	<h2>{{ 'simulator_screen.scene' | translate }}</h2>
 	<mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
 		<mat-tree-node *matTreeNodeDef="let node">

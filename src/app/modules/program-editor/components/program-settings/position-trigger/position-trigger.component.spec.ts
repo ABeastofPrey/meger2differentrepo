@@ -49,6 +49,7 @@ import {
 } from 'ramda';
 import { Either } from 'ramda-fantasy';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
+import {of} from 'rxjs';
 
 const { Left, Right } = Either;
 
@@ -105,7 +106,7 @@ describe('PositionTriggerComponent', () => {
     Left('delete failed.')
   );
   const createPlsSpy = fakeService.createPls;
-  fakeService.broadcaster = { subscribe: () => {} };
+  fakeService.broadcaster = new EventEmitter();
   const fakeMatSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
   const openSpy = fakeMatSnackBar.open;
   const fakeMatDialog = jasmine.createSpyObj('MatDialog', ['']);

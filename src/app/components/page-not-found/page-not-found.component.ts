@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { Location } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { ElementRef } from '@angular/core';
@@ -127,17 +127,11 @@ export class PageNotFoundComponent implements OnInit {
 
   init() {
     this.boxes.push(new Box());
-    window.addEventListener(
-      'keydown',
-      e => {
-        this.onKeyDown(e);
-      },
-      false
-    );
     this.started = true;
     this.draw();
   }
 
+  @HostListener('window:keydown', ['$event'])
   onKeyDown(e: KeyboardEvent) {
     if (e.keyCode === 40)
       // keydown

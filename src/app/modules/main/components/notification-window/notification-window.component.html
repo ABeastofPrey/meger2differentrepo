@@ -5,9 +5,7 @@
 			<div *ngIf="n.msg">{{ n.msg }}</div>
 			<div *ngIf="n.err">
 				Error: {{ n.err.errCode }}, "{{ n.err.errMsg }}", Task:
-				<span matRipple [matRippleRadius]="16" class="link" (mousedown)="goToError(n.err)">{{
-					n.err.errTask
-				}}</span
+				<span matRipple [matRippleRadius]="16" class="link" (mousedown)="goToError(n.err)">{{ n.err.errTask }}</span
 				>, Line: {{ n.err.errLine }}, Module: {{ n.err.errModule }}
 			</div>
 		</div>
@@ -27,11 +25,7 @@
 			<span class="button-text">{{ 'clear_msgs' | translate }}</span>
 		</div>
 	</button>
-	<button
-		mat-button
-		(mousedown)="copy($event)"
-		*ngIf="contextSelection && contextSelection.length > 0"
-	>
+	<button mat-button (mousedown)="copy($event)" *ngIf="contextSelection && contextSelection.length > 0">
 		<div class="center-vertical">
 			<img src="assets/pics/icons/content-copy.png" />
 			<span class="button-text">{{ 'copy' | translate }}</span>

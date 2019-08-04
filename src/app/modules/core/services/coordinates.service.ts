@@ -2,8 +2,6 @@ import { Injectable, NgZone, ApplicationRef } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { DataService } from './data.service';
-import { ScreenManagerService } from './screen-manager.service';
-import { ProjectManagerService } from './project-manager.service';
 import { EventEmitter } from '@angular/core';
 
 const POLL_INTERVAL: number = 100;
@@ -125,25 +123,16 @@ export class CoordinatesService {
     private ws: WebsocketService,
     private _zone: NgZone,
     private ref: ApplicationRef,
-    private data: DataService,
-    private mgr: ScreenManagerService,
-    private prj: ProjectManagerService
+    private data: DataService
   ) {
     this.data.dataLoaded.subscribe(stat => {
       if (stat && this.interval === null) {
         //LOADED and INTERVAL ISN'T SET
         this._zone.runOutsideAngular(() => {
           this.interval = setInterval(() => {
-            if (
-              this.coosLoaded.value &&
-              !this.mgr.openedControls &&
-              this.mgr.screen &&
-              this.mgr.screen.url !== 'simulator' &&
-              this.mgr.screen.url !== 'teach' &&
-              !this.prj.activeProject
-            )
-              return;
+            //const now = new Date().getTime();
             this.ws.query('cyc2').then((result: MCQueryResponse) => {
+              // console.log(new Date().getTime() - now);
               if (result.err || result.result.length === 0) {
                 clearInterval(this.interval);
                 return;

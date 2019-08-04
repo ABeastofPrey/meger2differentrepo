@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RobotService } from '../../../core/services/robot.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
@@ -14,6 +14,11 @@ import { RobotModel } from '../../../core/models/robot.model';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
 import { RobotSelectionComponent } from '../../../../components/robot-selection/robot-selection.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+
+declare var Plotly;
+const MAXVAL = 3000;
 
 @Component({
   selector: 'app-robots',
@@ -40,10 +45,14 @@ export class RobotsComponent implements OnInit {
   dh_img_path_2: string;
 
   // SYSTEM
-  sysName: string = 'N/A';
+  sysName: string = null;
+  @ViewChild('mcu', { static: false }) mcu: HTMLElement;
+  mcuThreshold: number;
+  private mcuInterval: any;
 
   private word_ok: string;
   private word_updating: string;
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     public robot: RobotService,
@@ -62,7 +71,7 @@ export class RobotsComponent implements OnInit {
       this.word_ok = words['changeOK'];
       this.word_updating = words['robots.updating'];
     });
-    this.data.dataLoaded.subscribe(stat => {
+    this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) {
         switch (this.data.robotType) {
           case 'PUMA':
@@ -75,6 +84,7 @@ export class RobotsComponent implements OnInit {
         }
         this.refreshDisp();
         this.refreshDH();
+        this.initMCU();
         this.ws.query('?sys.name').then((ret: MCQueryResponse) => {
           this.sysName = ret.result;
         });
@@ -82,8 +92,81 @@ export class RobotsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
+  }
+
+  onThresholdUpdate() {
+    const cmd = '?MCU_SET_FanThresholdFromUser(' + this.mcuThreshold + ')';
+    this.ws.query(cmd).then(() => {
+      this.initMCU();
+    });
+  }
+
+  initMCU() {
+    //clearInterval(this.mcuInterval);
+    this.ws.query('?MCU_GET_FAN_THRESHOLD').then((ret: MCQueryResponse) => {
+      this.mcuThreshold = Number(ret.result);
+      //this.mcuInterval = setInterval(()=>{
+      this.ws
+        .query('?MCU_SEND_GETFANVALUE_COMMAND')
+        .then((ret: MCQueryResponse) => {
+          let val = Number(ret.result);
+          if (val === -1 && !isNaN(val)) {
+            clearInterval(this.mcuInterval);
+            this.generateMcuChart(0);
+            return;
+          }
+          this.generateMcuChart(val);
+        });
+      //},2000);
+    });
+  }
+
+  private generateMcuChart(val: number) {
+    const color = val >= this.mcuThreshold ? '#ff0000' : '#00ff00';
+    const trace1 = {
+      x: ['MCU Fan'],
+      y: [val],
+      name: 'MCU Fan Level',
+      type: 'bar',
+      marker: { color: [color] },
+    };
+    const trace2 = {
+      x: ['MCU Fan'],
+      y: [MAXVAL - val],
+      hoverinfo: 'skip',
+      type: 'bar',
+      marker: { color: ['#cccccc'] },
+    };
+    const data = [trace1, trace2];
+    const layout = {
+      barmode: 'stack',
+      showlegend: false,
+      title: 'MCU Fan',
+      annotations: [
+        {
+          x: 0,
+          y: this.mcuThreshold,
+          xref: 'x',
+          yref: 'y',
+          text: 'Threshold',
+          showarrow: true,
+          arrowhead: 7,
+          ax: 70,
+          ay: 0,
+        },
+      ],
+    };
+    Plotly.newPlot('mcu', data, layout, {
+      responsive: true,
+      displayModeBar: false,
+    });
+  }
+
   onNameChange() {
-    this.ws.query('sys.name = "' + this.sysName + '"');
+    this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName + '")');
     this.snack.open(this.word_ok, '', { duration: 1500 });
   }
 

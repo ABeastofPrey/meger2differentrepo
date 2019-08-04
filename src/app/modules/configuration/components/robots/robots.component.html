@@ -67,26 +67,18 @@
 						</div>
 					</div>
 				</mat-tab>
-			    <mat-tab label="{{'robots.reference.title'|translate}}" #refMasteringTab>
-			      <div *ngIf="refMasteringTab.isActive" class="container">
-			        <app-reference-mastering></app-reference-mastering>
-			      </div>
-			    </mat-tab>
+				<mat-tab label="{{ 'robots.reference.title' | translate }}" #refMasteringTab>
+					<div *ngIf="refMasteringTab.isActive" class="container">
+						<app-reference-mastering></app-reference-mastering>
+					</div>
+				</mat-tab>
 				<mat-tab label="DH">
 					<div class="container">
 						<div class="images">
 							<img *ngIf="dh_img_path_1" src="assets/pics/dh/{{ dh_img_path_1 }}" />
-							<img
-								*ngIf="dh_img_path_2"
-								src="assets/pics/dh/{{ dh_img_path_2 }}"
-								style="align-self:flex-end;"
-							/>
+							<img *ngIf="dh_img_path_2" src="assets/pics/dh/{{ dh_img_path_2 }}" style="align-self:flex-end;" />
 						</div>
-						<mat-form-field
-							appearance="outline"
-							*ngFor="let d of dh; let i = index; trackBy: trackByFn"
-							class="dh"
-						>
+						<mat-form-field appearance="outline" *ngFor="let d of dh; let i = index; trackBy: trackByFn" class="dh">
 							<mat-label>{{ d.name }}</mat-label>
 							<input
 								matInput
@@ -107,7 +99,7 @@
 		<h2>
 			{{ 'robots.title' | translate }}
 		</h2>
-		<div>
+		<div *ngIf="sysName">
 			<mat-form-field appearance="outline">
 				<mat-label>{{ 'robots.name' | translate }}</mat-label>
 				<input
@@ -119,6 +111,21 @@
 					(onKeyboardClose)="onNameChange()"
 				/>
 			</mat-form-field>
+			<mat-form-field appearance="outline">
+				<mat-label>{{ 'robots.mcu.fan-threshold' | translate }}</mat-label>
+				<input
+					matInput
+					[(ngModel)]="mcuThreshold"
+					(change)="onThresholdUpdate()"
+					virtualKeyboard
+					ktype="numeric"
+					(onKeyboardClose)="onThresholdUpdate()"
+				/>
+			</mat-form-field>
 		</div>
+		<button *ngIf="sysName" mat-fab color="primary" class="refresh-mcu" (click)="initMCU()">
+			<mat-icon>refresh</mat-icon>
+		</button>
+		<div #mcu id="mcu"></div>
 	</mat-card>
 </div>

@@ -61,6 +61,7 @@
     "change": "CHANGE",
     "close": "CLOSE",
     "confirm": "CONFIRM",
+    "copy": "CREATE COPY",
     "create": "CREATE",
     "delete": "DELETE",
     "delete_selected": "DELETE SELECTED",
@@ -75,6 +76,7 @@
     "ok": "OK",
     "open": "OPEN",
     "overwrite": "OVERWRITE",
+    "record": "RECORD",
     "refresh": "REFRESH",
     "rename": "RENAME",
     "restore": "RESTORE",
@@ -153,6 +155,8 @@
   },
   "decimal": "Decimal",
   "delete": "Delete",
+  "derivative": "Derivative",
+  "derivative_deg": "Degree",
   "diagnostics": {
     "devices": "Devices State",
     "master": "Master State",
@@ -175,6 +179,7 @@
   "doubles": "Doubles",
   "duration": "Duration",
   "edit": "Edit",
+  "element": "Element",
   "empty_list": "List is empty",
   "enable": "Enable",
   "error": {
@@ -211,6 +216,7 @@
     "modified": "Last Modified",
     "name": "File Name",
     "no_file": "No File Selected",
+    "open": "Open File",
     "success_delete": "Success. All files were deleted.",
     "success_upload": "Success. All files were uploaded.",
     "tree": "Controller Files",
@@ -273,7 +279,8 @@
       "desc_terminal_down": "Go to next command",
       "desc_terminal_up": "Go to previous command",
       "editor": "Program Editor",
-      "terminal": "Terminal"
+      "terminal": "Terminal",
+      "toggle_comment": "Comment/Uncomment line"
     },
     "soon": "Coming Soon",
     "title": "softMC Help Center",
@@ -311,7 +318,7 @@
     "software": "Software",
     "system": "System",
     "ver": "Version",
-    "virtual": "VIRTUAL CONTROLLER",
+    "virtual_controller": "VIRTUAL CONTROLLER",
     "virtual_tooltip": "This controller runs on VirtualBox",
     "welcome": "Welcome"
   },
@@ -431,7 +438,7 @@
     "reject": "REJECT",
     "title": "ControlStudio+ License Agreement"
   },
-  "loading": "Loading...",
+  "loading": "Loading",
   "location": "Location",
   "locations": "Locations",
   "long": "Long",
@@ -490,6 +497,7 @@
       "calibrated": "Calibrated",
       "calibrated_not": "Not calibrated",
       "calibrated_origin": "Calibrated Origin",
+      "conf": "Configuration Flags",
       "curr_index": "Current item index",
       "curr_pos": "Current Position",
       "dimensions_item": "Item Dimensions",
@@ -690,6 +698,7 @@
       "backup": "Backup",
       "changing": "Changing project...",
       "controller": "Controller",
+      "copy_name": "New name",
       "create": "Create",
       "del_prj": "Delete Project",
       "del_prj_msg": "All the project files will be removed permanently.",
@@ -887,6 +896,7 @@
     "list": "Log",
     "help_outline": "Help"
   },
+  "robot": "Robot",
   "robots": {
     "axes": "Robot Axes",
     "btnChange": "CHANGE ROBOT",
@@ -894,6 +904,11 @@
     "bus": "Bus Type",
     "disp": "Mastering",
     "max-payload": "Max Payload",
+    "mcu": {
+      "fan": "MCU Fan",
+      "fan-threshold": "MCU Fan Threshold",
+      "threshold": "Threshold"
+    },
     "model": "Model",
     "name": "Name",
     "no-axes": "No axes found",
@@ -973,11 +988,16 @@
     "cube": "Cube",
     "custom": "User Object",
     "cylinder": "Cylinder",
-    "loading": "Loading Simulator...",
+    "load_rec": "LOAD RECORDING...",
+    "loading": "Loading...",
     "prop": "Property",
+    "rec_close": "CLOSE RECORDING",
+    "record": "Record Motion",
     "robot": "Robot",
     "scene": "Scene",
+    "simulation": "Scene",
     "sphere": "Sphere",
+    "stop": "Stop recording",
     "val": "Value"
   },
   "softMC_log": "softMC Log",
@@ -997,6 +1017,10 @@
   "string": "String",
   "strings": "Strings",
   "success": "Success!",
+  "system_state": {
+    "1000": "ONLINE",
+    "state": "System State"
+  },
   "tabs": {
     "configuration": "System Configuration",
     "dashboard": "Motion Dashboard",

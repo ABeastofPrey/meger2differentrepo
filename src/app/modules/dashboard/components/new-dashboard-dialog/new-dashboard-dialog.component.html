@@ -10,9 +10,7 @@
 					<mat-option *ngIf="!motionElements || motionElements.length === 0" disabled>{{
 						'motion_elements_empty' | translate
 					}}</mat-option>
-					<mat-option *ngFor="let element of motionElements" [value]="element">{{
-						element.name
-					}}</mat-option>
+					<mat-option *ngFor="let element of motionElements" [value]="element">{{ element.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 		</div>

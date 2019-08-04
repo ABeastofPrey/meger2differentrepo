@@ -16,7 +16,12 @@ import { LoginService } from '../../../core';
 import { MatInput } from '@angular/material';
 import { trim, equals, complement, compose } from 'ramda';
 
-const isNotEmptyStr = complement(compose(equals(''), trim));
+const isNotEmptyStr = complement(
+  compose(
+    equals(''),
+    trim
+  )
+);
 declare var ace;
 
 @Component({
@@ -201,7 +206,8 @@ export class TerminalComponent implements OnInit {
     this.changeFlag = true;
     this.terminal.send(this.cmd).then(() => {
       // tslint:disable-next-line
-      isNotEmptyStr(this.cmd) && this.terminal.sentCommandEmitter.emit(this.cmd);
+      isNotEmptyStr(this.cmd) &&
+        this.terminal.sentCommandEmitter.emit(this.cmd);
       this.cmd = '';
       this.lastCmdIndex = -1;
       setTimeout(() => {

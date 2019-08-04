@@ -1,0 +1,27 @@
+<div class="wrapper mat-typography">
+	<div class="primary-bg toolbar center-vertical">
+		<span style="flex:1;">
+			{{ 'derivative' | translate }}
+		</span>
+		<button mat-icon-button mat-dialog-close><mat-icon>close</mat-icon></button>
+	</div>
+	<div class="content">
+		<mat-form-field class="deg">
+			<mat-label>{{ 'derivative_deg' | translate }}</mat-label>
+			<mat-select [(ngModel)]="deg">
+				<mat-option [value]="1">1</mat-option>
+				<mat-option [value]="2">2</mat-option>
+				<mat-option [value]="3">3</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>{{ 'element' | translate }}</mat-label>
+			<mat-select [(ngModel)]="dataIndex">
+				<mat-option *ngFor="let d of data; let i = index" [value]="i">{{ d.name }}</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<button mat-button color="primary" (click)="done()">
+			{{ 'derivative' | translate | uppercase }}
+		</button>
+	</div>
+</div>

@@ -11,15 +11,15 @@ const routes: Routes = [
   {
     path: '',
     component: MainComponent,
-    resolve: {
-      isAuthenticated: MainAuthResolver,
-    },
     children: [
       {
         path: '',
         component: HomeScreenComponent,
         canActivate: [PermissionGuardService],
         data: { permission: 99 },
+        resolve: {
+          isAuthenticated: MainAuthResolver,
+        },
       },
       {
         path: 'dashboard',

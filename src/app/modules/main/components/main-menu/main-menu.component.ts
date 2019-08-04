@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { MatSnackBar, MatDrawer } from '@angular/material';
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   ApiService,
   LoginService,
-  UploadResult,
   ScreenManagerService,
   TpStatService,
   ControlStudioScreen,
@@ -12,6 +10,9 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../core/services/common.service';
+import { environment } from '../../../../../environments/environment';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'main-menu',
@@ -24,6 +25,15 @@ export class MainMenuComponent implements OnInit {
 
   profileSrc: string;
   tpOnline: boolean = false;
+  env = environment;
+
+  private notifier: Subject<boolean> = new Subject();
+
+  /* TRUE when menu is busy (i.e: when uploading profile pic) */
+  private _busy: boolean = false;
+  get busy() {
+    return this._busy;
+  }
 
   constructor(
     public login: LoginService,
@@ -37,7 +47,7 @@ export class MainMenuComponent implements OnInit {
   ) {}
 
   onClick(s: ControlStudioScreen) {
-    if (s.requiresTpLib && !this.tpOnline) return;
+    if (this.mgr.isScreenDisabled(s)) return;
     if (this.mgr.screen.url === s.url) return;
     this.mgr.screen = s;
     if (this.cmn.isTablet) this.drawer.close();
@@ -46,7 +56,7 @@ export class MainMenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.stat.onlineStatus.subscribe(stat => {
+    this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
       this.tpOnline = stat;
     });
     this.profileSrc = this.api.getProfilePic(
@@ -66,19 +76,27 @@ export class MainMenuComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
+  }
+
   showUploadWindow() {
-    if (this.login.getCurrentUser().user.username !== 'admin')
+    const username = this.login.getCurrentUser().user.username;
+    if (username !== 'admin' && username !== 'super')
       this.uploadInput.nativeElement.click();
   }
 
   onUploadImage(event: any) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
+      this._busy = true;
       let file: File = fileList[0];
       this.api
         .uploadProfilePic(file, this.login.getCurrentUser().user.username)
         .then((ret: boolean) => {
           if (ret) {
+            this.api.refreshProfilePic();
             this.trn.get('files.success_upload').subscribe(word => {
               this.snack.open(word, '', { duration: 2000 });
             });
@@ -92,6 +110,7 @@ export class MainMenuComponent implements OnInit {
                 this.snack.open(word, '', { duration: 2000 });
               });
           }
+          this._busy = false;
         });
     }
   }

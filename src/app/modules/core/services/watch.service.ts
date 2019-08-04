@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { TaskService, MCTask } from './task.service';
 import { LoginService } from './login.service';
+import { environment } from '../../../../environments/environment';
 
 const GLOBAL = '_Global';
 
@@ -14,6 +15,7 @@ export class WatchService {
 
   private _windowOpen: boolean = false;
   private interval: any;
+  private env = environment;
 
   get windowOpen() {
     return this._windowOpen;
@@ -64,14 +66,18 @@ export class WatchService {
 
   start() {
     this.task.getList().then((list: MCTask[]) => {
-      for (let t of list) {
-        if (
-          (t.name.endsWith('LIB') || t.name.endsWith('PRG')) &&
-          !this.login.isAdmin
-        )
-          continue;
-        this.contexts.push(t.name);
-      }
+      this.contexts = list
+        .filter(t => {
+          return (
+            this.login.isAdmin ||
+            (!t.name.endsWith('LIB') && !t.name.endsWith('PRG'))
+          );
+        })
+        .map(t => {
+          return t.name;
+        })
+        .sort();
+      this.contexts.unshift(GLOBAL);
     });
     this.interval = setInterval(() => {
       for (let v of this.vars) {
@@ -80,7 +86,7 @@ export class WatchService {
           v.active = false;
           continue;
         }
-        let context = v.context === GLOBAL ? '' : v.context + '.';
+        let context = v.context === GLOBAL ? '' : v.context;
         this.ws
           .query('watch ' + context + ' ' + v.name)
           .then((ret: MCQueryResponse) => {
@@ -88,6 +94,7 @@ export class WatchService {
             if (ret.err) {
               v.value = ret.err.errMsg;
               v.active = false;
+              if (!this.env.production) console.log(ret);
             } else {
               v.value = ret.result;
             }
@@ -124,6 +131,7 @@ class WatchVar {
   context: string;
   active: boolean = true;
   value: string;
+  record: boolean = false;
 
   constructor(name: string, context: string) {
     this.name = name;
@@ -138,6 +146,8 @@ class WatchVar {
       this.context +
       '","active":' +
       this.active +
+      ',"record":' +
+      this.record +
       ',"value":"' +
       (this.value || '') +
       '"}'

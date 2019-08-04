@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -16,6 +16,10 @@ export const PERMISSION_SUPER = 99;
 
 @Injectable()
 export class ApiService {
+  private picReq: number = 0;
+
+  profilePicChanged: EventEmitter<void> = new EventEmitter();
+
   constructor(private http: HttpClient) {}
 
   private formatErrors(error: any) {
@@ -136,6 +140,11 @@ export class ApiService {
     return this.http.post(url, formData).toPromise();
   }
 
+  refreshProfilePic() {
+    this.picReq++;
+    this.profilePicChanged.emit();
+  }
+
   getProfilePic(username: string) {
     //return 'assets/pics/logo_cs.png';
     return (
@@ -143,7 +152,9 @@ export class ApiService {
       '/cs/api/' +
       username +
       '/pic?token=' +
-      localStorage.getItem('jwtToken')
+      localStorage.getItem('jwtToken') +
+      '&d=' +
+      this.picReq
     );
   }
 
@@ -217,7 +228,7 @@ export class ApiService {
         document.body.removeChild(a);
       });
   }
-  
+
   downloadSysZip() {
     window.location.href = environment.api_url + '/cs/api/zipSysFile';
   }
@@ -345,24 +356,32 @@ export class ApiService {
   getLog() {
     return this.get('/cs/api/log').toPromise();
   }
-  
+
   getRecordingFiles() {
-    return this.get('/cs/api/dashboard/recfiles').toPromise();
+    return this.get('/cs/api/dashboard/recfiles')
+      .toPromise()
+      .then((ret: string[]) => {
+        return ret.map(s => {
+          return s.split('.')[0];
+        });
+      });
   }
 
   getRecordingCSV(recName: string) {
-    let body = new HttpParams();
     let rec = recName || 'CSRECORD';
     return this.get('/cs/api/dashboard/rec/' + rec)
       .toPromise()
       .then(
         (csv: RecordingData) => {
-          return csv.data.replace(/\0/g, ''); // REMOVE NULL CHARACTERS
+          return csv.data.replace(/\0/g, '').slice(0, -1); // REMOVE NULL CHARACTERS
         },
         () => {
           return null;
         }
-      );
+      )
+      .catch(ret => {
+        return null;
+      });
   }
 
   createPalletFile(data: string, fileName: string) {
@@ -402,14 +421,26 @@ export class ApiService {
     const url = environment.api_url + '/cs/api/factoryRestore';
     return <Promise<boolean>>this.http.get(url).toPromise();
   }
-  
+
   bugReport(info: string, user: string, history: string) {
     const url = environment.api_url + '/cs/api/bugreport';
-    return <Promise<boolean>> this.http.post(url, {
-      user: user,
-      info: info,
-      history: history
-    }).toPromise();
+    return <Promise<boolean>>this.http
+      .post(url, {
+        user: user,
+        info: info,
+        history: history,
+      })
+      .toPromise();
+  }
+
+  copy(fromPath: string, to: string) {
+    const url = environment.api_url + '/cs/api/copy';
+    return <Promise<boolean>>this.http
+      .post(url, {
+        from: fromPath,
+        to: to,
+      })
+      .toPromise();
   }
 }
 

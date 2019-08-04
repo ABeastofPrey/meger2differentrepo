@@ -5,17 +5,22 @@ import { Screenfull } from 'screenfull';
 import { environment } from '../../../../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ApiService } from './api.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class CommonService {
-  
+  themeLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private _theme: string = null;
+  get theme() {
+    return this._theme;
+  }
+
   private env = environment;
-  
+
   private _fontWidth: number = 13.2; // FOR MONOSPACE
   get fontWidth() {
     return this._fontWidth;
   }
-  
 
   constructor(
     private platform: Platform,
@@ -41,8 +46,8 @@ export class CommonService {
     e.style.outline = '0';
     document.body.appendChild(e);
     this._fontWidth = e.getBoundingClientRect().width / 2;
-    if (this.isTablet)
-      this._fontWidth = this._fontWidth * 1.5; // because of screen scaling
+    const isWin = navigator && navigator.platform === 'Win32';
+    if (this.isTablet && !isWin) this._fontWidth = this._fontWidth * 1.5; // because of screen scaling
     e.remove();
   }
 
@@ -65,6 +70,13 @@ export class CommonService {
           classList.remove(name);
         }
       }
+      this._theme = theme;
+      this.themeLoaded.next(true);
+      // change document title
+      document.title =
+        theme === environment.platforms.Kuka.name
+          ? environment.appName_Kuka
+          : environment.appName;
     });
   }
 

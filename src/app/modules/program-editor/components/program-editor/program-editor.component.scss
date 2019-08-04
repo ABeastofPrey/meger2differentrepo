@@ -6,6 +6,10 @@
   padding: 0;
   flex-direction: column;
 }
+.busy,
+.busy * {
+  cursor: progress !important;
+}
 .editor-wrapper {
   display: flex;
   flex-direction: column;
@@ -38,7 +42,6 @@ program-editor-side-menu {
   font-size: 20px;
   font-weight: 600;
   margin: 0 24px 0 0;
-  
 }
 program-editor-ace {
   flex: 1;

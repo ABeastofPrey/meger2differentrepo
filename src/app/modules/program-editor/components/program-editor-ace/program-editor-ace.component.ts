@@ -17,7 +17,7 @@ import {
 } from '../../services/program-editor.service';
 import { ApiService } from '../../../../modules/core/services/api.service';
 import { GroupManagerService } from '../../../../modules/core/services/group-manager.service';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import {
   DataService,
   TaskService,
@@ -31,6 +31,7 @@ import {
 import { MatSnackBar, MatInput } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../core/services/common.service';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 declare var ace;
 
@@ -81,10 +82,10 @@ export class ProgramEditorAceComponent implements OnInit {
   private Range = ace.require('ace/range').Range;
   private currRange: any;
   private markers: any[] = [];
-  private subs: Subscription;
   private commands: Command[];
   private files: MCFile[];
   private words: any;
+  private notifier: Subject<boolean> = new Subject();
 
   // HANDLE MOUSE HOVER TOOLTIPS
   private tooltipTimeout: any;
@@ -119,22 +120,25 @@ export class ProgramEditorAceComponent implements OnInit {
   ngOnInit() {
     this.task.start();
     this.service.refreshStatus(true);
-    this.subs = this.service.editorTextChange.subscribe(text => {
-      if (text === null) return;
-      this.removeAllMarkers();
-      if (this.editor) {
-        this.editor.setValue(text || '', -1);
-        if (this.service.activeFile === null) {
-          this.editor.setReadOnly(true);
-          this.cd.detectChanges();
+    this.service.editorTextChange
+      .pipe(takeUntil(this.notifier))
+      .subscribe(text => {
+        if (text === null) return;
+        this.removeAllMarkers();
+        if (this.editor) {
+          this.editor.setValue(text || '', -1);
+          if (this.service.activeFile === null) {
+            this.editor.setReadOnly(true);
+            this.cd.detectChanges();
+          }
+          setTimeout(() => {
+            this.editor.resize();
+          }, 200);
         }
-        setTimeout(() => {
-          this.editor.resize();
-        }, 200);
-      }
-    });
-    this.subs.add(
-      this.service.statusChange.subscribe((stat: ProgramStatus) => {
+      });
+    this.service.statusChange
+      .pipe(takeUntil(this.notifier))
+      .subscribe((stat: ProgramStatus) => {
         if (this.service.errors.length === 0 || this.service.backtrace === null)
           this.removeAllMarkers();
         this.editor.setReadOnly(
@@ -145,47 +149,49 @@ export class ProgramEditorAceComponent implements OnInit {
             this.cmn.isTablet
         );
         this.cd.detectChanges();
-        if (stat && stat.programLine > 0 && stat.statusCode !== TASKSTATE_KILLED) {
+        if (
+          stat &&
+          stat.programLine > 0 &&
+          stat.statusCode !== TASKSTATE_KILLED
+        ) {
           this.highlightLine(stat.programLine);
           if (stat.statusCode !== TASKSTATE_RUNNING)
             this.editor.scrollToLine(stat.programLine, true, true, null);
         }
         if (stat && stat.statusCode === TASKSTATE_NOTLOADED)
           this.setBreakpoints('');
-      })
-    );
-    this.subs.add(
-      this.service.errLinesChange.subscribe(lines => {
+      });
+    this.service.errLinesChange
+      .pipe(takeUntil(this.notifier))
+      .subscribe(lines => {
         this.highlightErrors(lines);
-      })
-    );
-    this.subs.add(
-      this.service.onInsertAndJump.subscribe(ret => {
+      });
+    this.service.onInsertAndJump
+      .pipe(takeUntil(this.notifier))
+      .subscribe(ret => {
         if (ret) this.insertAndJump(ret.cmd, ret.lines);
-      })
-    );
-    this.subs.add(
-      this.service.onReplaceRange.subscribe(ret => {
+      });
+    this.service.onReplaceRange
+      .pipe(takeUntil(this.notifier))
+      .subscribe(ret => {
         if (ret) this.replaceRange(ret);
-      })
-    );
-    this.subs.add(
-      this.service.onReplaceLine.subscribe(ret => {
-        if (ret) this.replaceLine(ret.index, ret.cmd);
-      })
-    );
-    this.subs.add(
-      this.service.skipLineRequest.subscribe((line: number) => {
+      });
+    this.service.onReplaceLine.pipe(takeUntil(this.notifier)).subscribe(ret => {
+      if (ret) this.replaceLine(ret.index, ret.cmd);
+    });
+    this.service.skipLineRequest
+      .pipe(takeUntil(this.notifier))
+      .subscribe((line: number) => {
         if (line) {
           this.editor.scrollToLine(line, true, true, null);
           if (this.service.errors.length > 0 && this.service.backtrace) {
             this.highlightErrors([{ number: line, file: '', error: '' }]);
           }
         }
-      })
-    );
-    this.subs.add(
-      this.service.fileChange.subscribe(fileName => {
+      });
+    this.service.fileChange
+      .pipe(takeUntil(this.notifier))
+      .subscribe(fileName => {
         if (fileName.endsWith('B') || this.service.modeToggle === 'mc')
           return this.setBreakpoints('');
         if (this.prj.currProject.value && this.service.modeToggle === 'prj') {
@@ -199,33 +205,22 @@ export class ProgramEditorAceComponent implements OnInit {
             });
         }
         this.editor.getSession().setUndoManager(new ace.UndoManager());
-      })
-    );
-    this.subs.add(
-      this.service.dragEnd.subscribe(() => {
-        if (this.editor) this.editor.resize();
-      })
-    );
-    this.subs.add(
-      this.service.onUndo.subscribe(() => {
-        if (this.editor) this.editor.undo();
-      })
-    );
-    this.subs.add(
-      this.service.onRedo.subscribe(() => {
-        if (this.editor) this.editor.redo();
-      })
-    );
-    this.subs.add(
-      this.service.onFind.subscribe(() => {
-        if (this.editor) this.editor.execCommand('find');
-      })
-    );
-    this.subs.add(
-      this.service.onReplace.subscribe(() => {
-        if (this.editor) this.editor.execCommand('replace');
-      })
-    );
+      });
+    this.service.dragEnd.pipe(takeUntil(this.notifier)).subscribe(() => {
+      if (this.editor) this.editor.resize();
+    });
+    this.service.onUndo.pipe(takeUntil(this.notifier)).subscribe(() => {
+      if (this.editor) this.editor.undo();
+    });
+    this.service.onRedo.pipe(takeUntil(this.notifier)).subscribe(() => {
+      if (this.editor) this.editor.redo();
+    });
+    this.service.onFind.pipe(takeUntil(this.notifier)).subscribe(() => {
+      if (this.editor) this.editor.execCommand('find');
+    });
+    this.service.onReplace.pipe(takeUntil(this.notifier)).subscribe(() => {
+      if (this.editor) this.editor.execCommand('replace');
+    });
   }
 
   ngAfterViewInit() {
@@ -235,16 +230,20 @@ export class ProgramEditorAceComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
     this.task.stop();
     this.service.refreshStatus(false);
   }
-  
+
   get isEditorDisabled(): boolean {
+    if (this.service.busy) return true;
     return (
-      this.editor && this.editor.getReadOnly() && !this.cmn.isTablet
-    ) || ( this.cmn.isTablet && this.service.status &&
-      this.service.status.statusCode >= 0 && !this.service.isLib
+      (this.editor && this.editor.getReadOnly() && !this.cmn.isTablet) ||
+      (this.cmn.isTablet &&
+        this.service.status &&
+        this.service.status.statusCode >= 0 &&
+        !this.service.isLib)
     );
   }
 
@@ -289,18 +288,18 @@ export class ProgramEditorAceComponent implements OnInit {
     }
     return count;
   }
-  
+
   private insertLineBreak() {
     let editor = this.editor;
     var position = editor.getCursorPosition();
     var row = position.row; // current row
     var line: string = editor.session.getLine(row);
     var column = line.length; // end of line
-    editor.gotoLine(row+1, column);
+    editor.gotoLine(row + 1, column);
     editor.insert('\n');
     editor.focus();
   }
-  
+
   deleteLine() {
     this.editor.removeLines();
   }
@@ -850,10 +849,8 @@ export class ProgramEditorAceComponent implements OnInit {
     var editor = this.editor;
     var position = editor.getCursorPosition();
     var row = position.row; // current row
-    if (this.dummyText === '\n')
-      this.insertLineBreak();
-    else
-      this.replaceLine(row, this.dummyText);
+    if (this.dummyText === '\n') this.insertLineBreak();
+    else this.replaceLine(row, this.dummyText);
     this.dummyText = '';
   }
   /******************************************************/

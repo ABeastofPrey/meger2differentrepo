@@ -1,13 +1,11 @@
 <div class="wrapper" [class.tablet-ui]="cmn.isTablet">
 	<program-toolbar tourAnchor="project-toolbar-1" *ngIf="!login.isViewer"></program-toolbar>
 	<div class="blocker" *ngIf="prj.isLoading"></div>
-	<as-split direction="horizontal" (dragEnd)="onDragEnd()">
-		<as-split-area size="20">
+	<as-split direction="horizontal" (dragEnd)="onDragEnd()" unit="pixel">
+		<as-split-area size="210">
 			<program-editor-side-menu class="mat-elevation-z1"></program-editor-side-menu>
 		</as-split-area>
-		<as-split-area
-			[size]="service.mode === 'editor' && !login.isOperator && !login.isViewer ? 65 : 80"
-		>
+		<as-split-area>
 			<as-split direction="vertical" (dragEnd)="onDragEnd()">
 				<as-split-area size="80" class="right-side" style="position: relative;">
 					<mat-tab-group
@@ -19,32 +17,39 @@
 						<mat-tab *ngFor="let tab of service.tabs; let i = index">
 							<ng-template mat-tab-label>
 								{{ tab.file }}
-								<mat-icon *ngIf="service.selectedTabIndex === i" (click)="service.closeTab(i)"
-									>close</mat-icon
-								>
+								<mat-icon *ngIf="service.selectedTabIndex === i" (click)="service.closeTab(i)">close</mat-icon>
 								<div class="icon-placeholder" *ngIf="service.selectedTabIndex !== i"></div>
 							</ng-template>
 						</mat-tab>
 					</mat-tab-group>
-          <div class="center-vertical program-name" *ngIf="service.mode === 'editor' && service.modeToggle !== 'mc'">
-            <h1>
-              {{ service.activeFile ? service.activeFile : ('files.no_file' | translate) }}
-            </h1>
-            <span *ngIf="!appDescEditMode && service.fileRef" class="mat-subtitle-color">
-              {{service.fileRef.desc && service.fileRef.desc.length > 0 ? service.fileRef.desc : ('projectSettings.apps.app_desc_none' | translate)}}
-            </span>
-            <mat-form-field *ngIf="appDescEditMode && service.fileRef">
-              <input matInput placeholder="{{'projectSettings.apps.app_desc' | translate}}" [(ngModel)]="service.fileRef.desc">
-            </mat-form-field>
-            <button *ngIf="service.fileRef" mat-icon-button color="primary" (click)="onAppDescSave()">
-              <mat-icon>{{appDescEditMode ? 'save' : 'edit'}}</mat-icon>
-            </button>
-          </div>
+					<div class="center-vertical program-name" *ngIf="service.mode === 'editor' && service.modeToggle !== 'mc'">
+						<h1>
+							{{ service.activeFile ? service.activeFile : ('files.no_file' | translate) }}
+						</h1>
+						<span *ngIf="!appDescEditMode && service.fileRef" class="mat-subtitle-color">
+							{{
+								service.fileRef.desc && service.fileRef.desc.length > 0
+									? service.fileRef.desc
+									: ('projectSettings.apps.app_desc_none' | translate)
+							}}
+						</span>
+						<mat-form-field *ngIf="appDescEditMode && service.fileRef">
+							<input
+								matInput
+								placeholder="{{ 'projectSettings.apps.app_desc' | translate }}"
+								[(ngModel)]="service.fileRef.desc"
+							/>
+						</mat-form-field>
+						<button *ngIf="service.fileRef" mat-icon-button color="primary" (click)="onAppDescSave()">
+							<mat-icon>{{ appDescEditMode ? 'save' : 'edit' }}</mat-icon>
+						</button>
+					</div>
 					<div class="editor-wrapper" *ngIf="service.mode === 'editor'">
 						<div
 							class="toolbar center-vertical"
 							tourAnchor="project-toolbar-2"
 							*ngIf="service.status"
+							[class.busy]="service.busy"
 						>
 							<mat-icon
 								*ngIf="!login.isOperator && !login.isViewer"
@@ -54,9 +59,7 @@
 								[class.disabled]="service.status.statusCode > -1 && !service.isLib"
 								>save</mat-icon
 							>
-							<mat-icon
-								(click)="service.download()"
-								matTooltip="{{ 'projects.toolbar.download' | translate }}"
+							<mat-icon (click)="service.download()" matTooltip="{{ 'projects.toolbar.download' | translate }}"
 								>file_download</mat-icon
 							>
 							<div class="center-vertical" *ngIf="service.status.statusCode !== -2">
@@ -132,8 +135,7 @@
 									<span
 										[class.primary]="service.status.statusCode === taskStates[1]"
 										[class.warn]="
-											service.status.statusCode === taskStates[0] ||
-											service.status.statusCode === taskStates[3]
+											service.status.statusCode === taskStates[0] || service.status.statusCode === taskStates[3]
 										"
 									>
 										{{ service.status.name }}
@@ -143,22 +145,17 @@
 						</div>
 						<program-editor-ace></program-editor-ace>
 					</div>
-            <data-screen *ngIf="service.mode === 'data'" style="overflow: auto; flex: 1;"></data-screen>
-            <data-screen *ngIf="service.mode === pPoints" [useAsProjectPoints]="true" style="overflow: auto; flex: 1;"></data-screen>
-            <program-settings *ngIf="service.mode === 'settings'" style="overflow: auto; flex: 1;"></program-settings>
+					<data-screen *ngIf="service.mode === 'data'" style="overflow: auto; flex: 1;"></data-screen>
+					<data-screen
+						*ngIf="service.mode === pPoints"
+						[useAsProjectPoints]="true"
+						style="overflow: auto; flex: 1;"
+					></data-screen>
+					<program-settings *ngIf="service.mode === 'settings'" style="overflow: auto; flex: 1;"></program-settings>
 					<frames *ngIf="service.mode === 'frames'" style="overflow: auto; flex: 1;"></frames>
-					<pallet-screen
-						*ngIf="service.mode === 'pallets'"
-						style="flex: 1; display: flex;"
-					></pallet-screen>
-					<gripper-screen
-						*ngIf="service.mode === 'grippers'"
-						style="flex: 1; display: flex;"
-					></gripper-screen>
-					<app-payload-wizard
-						*ngIf="service.mode === 'payloads'"
-						style="flex: 1; display: flex;"
-					></app-payload-wizard>
+					<pallet-screen *ngIf="service.mode === 'pallets'" style="flex: 1; display: flex;"></pallet-screen>
+					<gripper-screen *ngIf="service.mode === 'grippers'" style="flex: 1; display: flex;"></gripper-screen>
+					<app-payload-wizard *ngIf="service.mode === 'payloads'" style="flex: 1; display: flex;"></app-payload-wizard>
 					<io-mapping *ngIf="service.mode === 'io'" style="flex: 1; display: flex;"></io-mapping>
 				</as-split-area>
 				<as-split-area
@@ -167,58 +164,62 @@
 					*ngIf="service.mode === 'editor'"
 					style="padding: 8px;"
 				>
-					<div class="err-container">
-						<div *ngIf="!service.backtrace && service.errors.length > 0">
-							{{ 'projects.notification.errMsg' | translate }}
-							<div
-								*ngFor="let e of service.errors"
-								class="center-vertical error-line"
-								(click)="e.number === -1 ? null : service.skipToLine(e.number)"
-								[class.error-line-selectable]="e.number !== -1"
-							>
-								<mat-icon style="margin-right: 8px;">bug_report</mat-icon>
-								<span *ngIf="e.number !== -1">Line {{ e.number + ':' }}&nbsp;&nbsp;</span>
-								<span *ngIf="e.number === -1">Task {{ e.file + ':' }}&nbsp;&nbsp;</span>
-								{{ e.error }}
+					<as-split direction="horizontal" (dragEnd)="onDragEnd()" unit="pixel">
+						<as-split-area>
+							<div class="err-container">
+								<div *ngIf="!service.backtrace && service.errors.length > 0">
+									{{ 'projects.notification.errMsg' | translate }}
+									<div
+										*ngFor="let e of service.errors"
+										class="center-vertical error-line"
+										(click)="e.number === -1 ? null : service.skipToLine(e.number)"
+										[class.error-line-selectable]="e.number !== -1"
+									>
+										<mat-icon style="margin-right: 8px;">bug_report</mat-icon>
+										<span *ngIf="e.number !== -1">Line {{ e.number + ':' }}&nbsp;&nbsp;</span>
+										<span *ngIf="e.number === -1">Task {{ e.file + ':' }}&nbsp;&nbsp;</span>
+										{{ e.error }}
+									</div>
+								</div>
+								<div *ngIf="service.errors.length === 0 && !service.backtrace">
+									{{ 'projects.notification.none' | translate }}
+								</div>
+								<div *ngIf="service.backtrace && service.errors.length === 0" class="backtrace">
+									<div>Backtrace:</div>
+									<div *ngFor="let file of service.backtrace.files">
+										{{ file.name }}(<a
+											(click)="service.setFile(file.name, file.path, null, file.line, service.backtrace)"
+											>{{ file.path }}{{ file.name }}:{{ file.line }}</a
+										>)
+									</div>
+								</div>
+								<div *ngIf="service.backtrace && service.errors.length > 0" class="backtrace err">
+									Exception at task "{{ service.backtrace.files[service.backtrace.files.length - 1].name }}": &nbsp;<b
+										>{{ service.errors[0].error }}</b
+									>
+									<div *ngFor="let file of service.backtrace.files" class="bt-line">
+										at {{ file.name }}(<a
+											matRipple
+											matRippleUnbounded="false"
+											(click)="
+												login.isAdmin && service.setFile(file.name, file.path, null, file.line, service.backtrace)
+											"
+											[class.disabled]="!login.isAdmin"
+											>{{ file.path }}{{ file.name }}:{{ file.line }}</a
+										>)
+									</div>
+								</div>
 							</div>
-						</div>
-						<div *ngIf="service.errors.length === 0 && !service.backtrace">
-							{{ 'projects.notification.none' | translate }}
-						</div>
-						<div *ngIf="service.backtrace && service.errors.length === 0" class="backtrace">
-							<div>Backtrace:</div>
-							<div *ngFor="let file of service.backtrace.files">
-								{{ file.name }}(<a
-									(click)="
-										service.setFile(file.name, file.path, null, file.line, service.backtrace)
-									"
-									>{{ file.path }}{{ file.name }}:{{ file.line }}</a
-								>)
-							</div>
-						</div>
-						<div *ngIf="service.backtrace && service.errors.length > 0" class="backtrace err">
-							Exception at task "{{
-								service.backtrace.files[service.backtrace.files.length - 1].name
-							}}": &nbsp;<b>{{ service.errors[0].error }}</b>
-							<div *ngFor="let file of service.backtrace.files" class="bt-line">
-								at {{ file.name }}(<a
-									matRipple
-									matRippleUnbounded="false"
-									(click)="
-										login.isAdmin &&
-											service.setFile(file.name, file.path, null, file.line, service.backtrace)
-									"
-									[class.disabled]="!login.isAdmin"
-									>{{ file.path }}{{ file.name }}:{{ file.line }}</a
-								>)
-							</div>
-						</div>
-					</div>
+						</as-split-area>
+						<as-split-area size="200" minSize="200">
+							<coordinates></coordinates>
+						</as-split-area>
+					</as-split>
 				</as-split-area>
 			</as-split>
 		</as-split-area>
 		<as-split-area
-			size="15"
+			size="170"
 			style="padding: 8px; box-sizing: border-box;"
 			*ngIf="service.mode === 'editor' && !login.isOperator && !login.isViewer"
 		>

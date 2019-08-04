@@ -12,10 +12,7 @@
 					</mat-select>
 				</mat-form-field>
 				<mat-form-field>
-					<mat-select
-						placeholder="{{ 'projectCommands.stop.type' | translate }}"
-						[(ngModel)]="stopType"
-					>
+					<mat-select placeholder="{{ 'projectCommands.stop.type' | translate }}" [(ngModel)]="stopType">
 						<mat-option value="Immediate">Immediate</mat-option>
 						<mat-option value="OnPath">OnPath</mat-option>
 						<mat-option value="EndMotion">EndMotion</mat-option>

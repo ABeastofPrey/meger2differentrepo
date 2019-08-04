@@ -780,6 +780,7 @@ export class ProgramToolbarComponent implements OnInit {
   // If "add" is true --> +1, otherwise --> -1
   changeVrate(add: boolean) {
     const val = this.prj.currProject.value.settings.vrate + (add ? 1 : -1);
+    if (val === 0 || val === 101) return;
     this.onVrateChange(val);
   }
 }

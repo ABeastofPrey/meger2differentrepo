@@ -34,9 +34,7 @@
 					</ng-container>
 					<ng-container matColumnDef="name">
 						<mat-header-cell *matHeaderCellDef>{{ 'name' | translate }}</mat-header-cell>
-						<mat-cell *matCellDef="let element"
-							>{{ element.name }}<span *ngIf="element.isArr"> [...]</span></mat-cell
-						>
+						<mat-cell *matCellDef="let element">{{ element.name }}<span *ngIf="element.isArr"> [...]</span></mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="arrIndex">
 						<mat-header-cell *matHeaderCellDef>{{ 'index' | translate }}</mat-header-cell>
@@ -47,9 +45,7 @@
 									[(ngModel)]="element.selectedIndex"
 									(selectionChange)="rowClick(element, true)"
 								>
-									<mat-option *ngFor="let data of element.value; let i = index" [value]="i + 1">{{
-										i + 1
-									}}</mat-option>
+									<mat-option *ngFor="let data of element.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
 								</mat-select>
 							</mat-form-field>
 						</mat-cell>
@@ -66,8 +62,7 @@
 			<as-split-area size="70">
 				<mat-card class="mat-elevation-z3 data-card">
 					<div class="var-name" *ngIf="selectedVar">
-						{{ selectedVar.name
-						}}{{ selectedVar.isArr ? '[' + selectedVar.selectedIndex + ']' : '' }}
+						{{ selectedVar.name }}{{ selectedVar.isArr ? '[' + selectedVar.selectedIndex + ']' : '' }}
 					</div>
 					<div class="buttons" *ngIf="selectedVar || selection.selected.length > 0">
 						<button
@@ -89,12 +84,7 @@
 						>
 							{{ 'dataScreen.del' | translate: selectedVar }}
 						</button>
-						<button
-							*ngIf="selection.selected.length > 0"
-							mat-raised-button
-							color="warn"
-							(click)="deleteChecked()"
-						>
+						<button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">
 							{{ 'button.delete_selected' | translate }}
 						</button>
 					</div>

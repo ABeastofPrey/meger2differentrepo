@@ -2,9 +2,7 @@
 	<div class="side-menu mat-elevation-z3">
 		<div style="margin-bottom: 16px;">{{ data.gripperLibVer }}</div>
 		<button *ngIf="!login.isOperator" mat-raised-button color="primary" (click)="addNewItem(null)">
-			<div class="center-vertical-horizontal">
-				<mat-icon>add</mat-icon>{{ 'grippers.new_ef' | translate }}
-			</div>
+			<div class="center-vertical-horizontal"><mat-icon>add</mat-icon>{{ 'grippers.new_ef' | translate }}</div>
 		</button>
 		<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
 			<mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
@@ -12,13 +10,7 @@
 					<mat-icon style="margin-right: 16px;" color="accent">subdirectory_arrow_right</mat-icon>
 					<span>{{ node.item }}</span>
 				</button>
-				<button
-					mat-icon-button
-					color="warn"
-					*ngIf="!login.isOperator"
-					(click)="deleteNode(node)"
-					style="width: 40px;"
-				>
+				<button mat-icon-button color="warn" *ngIf="!login.isOperator" (click)="deleteNode(node)" style="width: 40px;">
 					<mat-icon>delete</mat-icon>
 				</button>
 			</mat-tree-node>
@@ -30,21 +22,10 @@
 					<mat-icon style="margin-right: 16px;" color="primary">settings_input_component</mat-icon>
 					<span style="margin-right: 16px;">{{ node.item }}</span>
 				</button>
-				<button
-					mat-raised-button
-					color="primary"
-					*ngIf="!login.isOperator"
-					(click)="addNewItem(node)"
-				>
+				<button mat-raised-button color="primary" *ngIf="!login.isOperator" (click)="addNewItem(node)">
 					<mat-icon>add</mat-icon>{{ 'grippers.new_grp' | translate }}
 				</button>
-				<button
-					mat-icon-button
-					color="warn"
-					*ngIf="!login.isOperator"
-					(click)="deleteNode(node)"
-					style="width: 40px;"
-				>
+				<button mat-icon-button color="warn" *ngIf="!login.isOperator" (click)="deleteNode(node)" style="width: 40px;">
 					<mat-icon>delete</mat-icon>
 				</button>
 			</mat-tree-node>
@@ -79,9 +60,7 @@
 							(selectionChange)="updatePayload()"
 							[disabled]="login.isOperator"
 						>
-							<mat-option *ngIf="data.payloads.length === 0" disabled>{{
-								'empty_list' | translate
-							}}</mat-option>
+							<mat-option *ngIf="data.payloads.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
 							<mat-option *ngFor="let p of data.payloads" [value]="p">{{ p.name }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -92,9 +71,7 @@
 							(selectionChange)="updatePayloadItem()"
 							[disabled]="login.isOperator"
 						>
-							<mat-option *ngIf="data.payloads.length === 0" disabled>{{
-								'empty_list' | translate
-							}}</mat-option>
+							<mat-option *ngIf="data.payloads.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
 							<mat-option *ngFor="let p of data.payloads" [value]="p">{{ p.name }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -112,9 +89,7 @@
 							(selectionChange)="updateGripperCmd(1)"
 							[disabled]="login.isOperator"
 						>
-							<mat-option *ngIf="database.outputs.length === 0" disabled>{{
-								'empty_list' | translate
-							}}</mat-option>
+							<mat-option *ngIf="database.outputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
 							<mat-option *ngFor="let o of database.outputs" [value]="o">{{ o }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -166,9 +141,7 @@
 							(selectionChange)="updateGripperCmd(2)"
 							[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
 						>
-							<mat-option *ngIf="database.outputs.length === 0" disabled>{{
-								'empty_list' | translate
-							}}</mat-option>
+							<mat-option *ngIf="database.outputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
 							<mat-option *ngFor="let o of database.outputs" [value]="o">{{ o }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -179,12 +152,9 @@
 						[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle
-						color="primary"
-						[disabled]="login.isOperator"
-						[(ngModel)]="selectedNode.cmd2_enabled"
-						>{{ 'enable' | translate }}</mat-slide-toggle
-					>
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.cmd2_enabled">{{
+						'enable' | translate
+					}}</mat-slide-toggle>
 				</div>
 				<div class="row">
 					<mat-form-field>
@@ -194,9 +164,7 @@
 							(selectionChange)="updateGripperFb(1)"
 							[disabled]="login.isOperator || !selectedNode.fb1_enabled"
 						>
-							<mat-option *ngIf="database.inputs.length === 0" disabled>{{
-								'empty_list' | translate
-							}}</mat-option>
+							<mat-option *ngIf="database.inputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
 							<mat-option *ngFor="let o of database.inputs" [value]="o">{{ o }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -207,12 +175,9 @@
 						(change)="updateGripperFb(1)"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle
-						color="primary"
-						[disabled]="login.isOperator"
-						[(ngModel)]="selectedNode.fb1_enabled"
-						>{{ 'enable' | translate }}</mat-slide-toggle
-					>
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb1_enabled">{{
+						'enable' | translate
+					}}</mat-slide-toggle>
 				</div>
 				<div class="row">
 					<mat-form-field>
@@ -222,9 +187,7 @@
 							(selectionChange)="updateGripperFb(2)"
 							[disabled]="login.isOperator || !selectedNode.fb2_enabled"
 						>
-							<mat-option *ngIf="database.inputs.length === 0" disabled>{{
-								'empty_list' | translate
-							}}</mat-option>
+							<mat-option *ngIf="database.inputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
 							<mat-option *ngFor="let o of database.inputs" [value]="o">{{ o }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -235,12 +198,9 @@
 						(change)="updateGripperFb(2)"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle
-						color="primary"
-						[disabled]="login.isOperator"
-						[(ngModel)]="selectedNode.fb2_enabled"
-						>{{ 'enable' | translate }}</mat-slide-toggle
-					>
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb2_enabled">{{
+						'enable' | translate
+					}}</mat-slide-toggle>
 				</div>
 				<div class="row">
 					<mat-form-field>

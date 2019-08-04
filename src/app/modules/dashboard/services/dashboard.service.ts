@@ -7,18 +7,17 @@ import {
 } from '../../../modules/core/services/websocket.service';
 import { ScreenManagerService } from '../../../modules/core/services/screen-manager.service';
 import { ApiService } from '../../../modules/core/services/api.service';
-import { RecordGraphComponent } from '../components/record-graph/record-graph.component';
 import { RecordParams } from '../components/record-dialog/record-dialog.component';
 import { TourService } from 'ngx-tour-md-menu';
 import { ApplicationRef } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { RecordGraphComponent } from '../../../components/record-graph/record-graph.component';
 
 @Injectable()
 export class DashboardService {
   private _windows: DashboardWindow[] = [];
-  private is3D: boolean = false;
-  private isAdvanced: boolean = false;
+  private graphType: string;
   private _busy: boolean = false;
   private words: any;
 
@@ -151,16 +150,17 @@ export class DashboardService {
     this.ws.query(cmd);
   }
 
-  showGraphDialog(is3D: boolean, isAdvanced: boolean, recName?: string) {
-    if (is3D !== null && (isAdvanced === null || !isAdvanced)) this.is3D = is3D;
-    else if (isAdvanced !== null) this.isAdvanced = isAdvanced;
+  showGraphDialog(graphType: string, recName?: string) {
+    this.graphType = graphType;
     this.getRecordingData(recName).then((ret: boolean) => {
       this._busy = false;
       if (!ret) return;
       this.dialog.open(RecordGraphComponent, {
-        width: '90%',
-        height: '90%',
+        width: '100%',
+        height: '100%',
+        maxWidth: '100%',
         data: this.lastChartData,
+        autoFocus: false,
       });
     });
   }
@@ -187,8 +187,8 @@ export class DashboardService {
     let newData: Graph[] = [];
     // parse CSR
     let recLines = csv.split('\n');
-    let legends = recLines[0].split(',');
-    if (this.is3D && !this.isAdvanced) {
+    let legends = recLines[1].split(',');
+    if (this.graphType === '3d') {
       // 3D GRAPH
       let chartData: Graph3D = {
         mode: 'lines',
@@ -199,7 +199,7 @@ export class DashboardService {
         type: 'scatter3d',
       };
       newData.push(chartData);
-    } else if (!this.isAdvanced) {
+    } else if (this.graphType === '2d') {
       // 2D
       for (let legend of legends) {
         newData.push({
@@ -218,12 +218,12 @@ export class DashboardService {
         y: [],
       });
     }
-    for (let i = 1; i < recLines.length; i++) {
+    for (let i = 2; i < recLines.length; i++) {
       if (recLines[i] !== '') {
         let vals = recLines[i].slice(0, -1).split(',');
-        if (!this.is3D) {
+        if (this.graphType !== '3d') {
           // 2D
-          if (this.isAdvanced) {
+          if (this.graphType === '2da') {
             // ADVANCED 2D
             if (vals.length !== 2) continue;
             newData[0].x.push(Number(vals[0]));

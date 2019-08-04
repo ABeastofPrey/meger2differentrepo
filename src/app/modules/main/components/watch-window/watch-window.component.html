@@ -1,9 +1,16 @@
+<mat-progress-bar color="accent" [value]="recPercentage" *ngIf="isRecording"></mat-progress-bar>
 <div class="content">
 	<table style="table-layout: fixed;">
 		<thead class="mat-title-color">
 			<tr>
-				<td style="width: 32px;"></td>
-				<td style="width: 32px;"></td>
+				<td colspan="3" style="width: 128px;">
+					<button mat-raised-button color="primary" [disabled]="!enableRecord" (click)="record()">
+						<mat-icon style="margin-right: 8px;">
+							{{ isRecording ? 'stop' : 'fiber_manual_record' }}
+						</mat-icon>
+						<span *ngIf="!isRecording"> {{ 'button.record' | translate }}... </span>
+					</button>
+				</td>
 				<td style="width: 100px;">{{ 'watch.name' | translate }}</td>
 				<td style="width: 150px;">{{ 'watch.context' | translate }}</td>
 				<td>Value</td>
@@ -12,23 +19,23 @@
 		<tbody>
 			<tr *ngFor="let v of watch.vars; let i = index">
 				<td>
-					<button
-						mat-icon-button
-						color="warn"
-						(click)="watch.delete(i)"
-						[disabled]="i === watch.vars.length - 1"
-					>
+					<button mat-icon-button color="warn" (click)="watch.delete(i)" [disabled]="i === watch.vars.length - 1">
 						<mat-icon>delete</mat-icon>
+					</button>
+				</td>
+				<td>
+					<button mat-icon-button color="primary" (click)="watch.toggleActive(v)" [class.disabled]="!v.active">
+						<mat-icon>{{ v.active ? 'visibility' : 'visibility_off' }}</mat-icon>
 					</button>
 				</td>
 				<td>
 					<button
 						mat-icon-button
-						color="primary"
-						(click)="watch.toggleActive(v)"
-						[class.disabled]="!v.active"
+						style="color: #f00;"
+						[class.disable-record]="!v.record"
+						(click)="v.record = !v.record"
 					>
-						<mat-icon>{{ v.active ? 'visibility' : 'visibility_off' }}</mat-icon>
+						<mat-icon>fiber_manual_record</mat-icon>
 					</button>
 				</td>
 				<td>

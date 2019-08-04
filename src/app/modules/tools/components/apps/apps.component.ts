@@ -128,7 +128,6 @@ export class AppsComponent implements OnInit {
       localStorage.removeItem(this.LibraryVersion);
       localStorage.setItem(this.LibraryVersion, this.data.cabinetVer);
     });
-
   }
 
   onUploadFilesChange(e: any) {

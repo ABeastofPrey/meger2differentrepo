@@ -33,7 +33,7 @@ import {
   MatRippleModule,
   MatBadgeModule,
   MatChipsModule,
-  MatPaginatorModule
+  MatPaginatorModule,
 } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -73,7 +73,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     DragDropModule,
     MatBadgeModule,
     MatChipsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
   ],
   exports: [
     MatButtonModule,
@@ -109,7 +109,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     DragDropModule,
     MatBadgeModule,
     MatChipsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
   ],
   declarations: [],
 })
