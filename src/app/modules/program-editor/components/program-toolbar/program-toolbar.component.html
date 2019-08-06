@@ -126,6 +126,11 @@
 		<li (click)="run()"><mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run_prj' | translate }}</li>
 		<li (click)="stop()"><mat-icon>stop</mat-icon>{{ 'projects.toolbar.stop_prj' | translate }}</li>
 		<mat-divider></mat-divider>
+		<li (click)="runAllBGTasks()">
+			<mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run_all_bg_tasks' | translate }}
+		</li>
+		<li (click)="stopAllBGTasks()"><mat-icon>stop</mat-icon>{{ 'projects.toolbar.stop_all_bg_tasks' | translate }}</li>
+		<mat-divider></mat-divider>
 		<li (click)="toggleRemote()">
 			<mat-icon>open_in_new</mat-icon
 			>{{ (stat.mode === 'R' ? 'projects.toolbar.remote_disable' : 'projects.toolbar.remote_enable') | translate }}

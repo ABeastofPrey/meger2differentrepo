@@ -44,6 +44,7 @@ const leafTypes = [
   'Conveyor',
   'IO',
   'Payloads',
+  'BG'
 ];
 const disableWhenProjectActive = [
   'DATA',
@@ -56,6 +57,27 @@ const disableWhenProjectActive = [
   'PAYLOADS',
   projectPoints.toUpperCase(),
 ];
+
+class TreeNode {
+  name: string;
+  type: string;
+  children: TreeNode[] = [];
+  projectNameRef: string;
+  parent: TreeNode;
+  ref: any = null; /* REFERENCE TO AN APP, LIB, ETC... */
+
+  constructor(
+    name: string,
+    typeStr: string,
+    projectNameRef: string,
+    parent: TreeNode
+  ) {
+    this.name = name;
+    this.type = typeStr;
+    this.projectNameRef = projectNameRef;
+    this.parent = parent;
+  }
+}
 
 @Component({
   selector: 'program-editor-side-menu',
@@ -74,6 +96,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   menuLeft: string = '0';
   menuTop: string = '0';
 
+  public bgtCount = 0;
   public env = environment;
   public projectPoints = projectPoints;
   private _getChildren = (node: TreeNode) => {
@@ -108,6 +131,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         'projects.toolbar.app_name',
         'button.rename',
         'projects.toolbar.save_as',
+        'projectTree.del_bg_msg',
+        'projects.toolbar.task_name',
       ])
       .subscribe(words => {
         this.words = words;
@@ -142,8 +167,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       })
     );
     this.subscriptions.push(
-      this.prj.onExpand.subscribe(name => {
-        const appsNode = this.nestedDataSource.data[0];
+      this.prj.onExpand.subscribe((expandNodeIndex = 0) => {
+        const appsNode = this.nestedDataSource.data[expandNodeIndex];
         this.nestedTreeControl.expand(appsNode);
       })
     );
@@ -199,8 +224,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       this.nestedTreeControl.collapseDescendants(node);
   }
 
-  runApp(app: string) {
-    this.ws.query('?tp_run_app("' + this.currProject.name + '","' + app + '")');
+  runApp(app: string, isBG = false) {
+    const cmd = isBG ? `BKG_runProgram("${this.currProject.name}", "${app}", ".BKG")` :
+    '?tp_run_app("' + this.currProject.name + '","' + app + '")';
+    this.ws.query(cmd).then((res: MCQueryResponse) => {
+      if (res.err) {
+        console.warn(res.err);
+      }
+    });
   }
 
   openFile(n: TreeNode) {
@@ -308,12 +339,20 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       const appName = n.parent.parent.name;
       path = projName + '/' + appName + '/LIBS/';
       this.service.setFile(n.name + '.ULB', path, n.ref, -1);
+    } else if (n.type === 'BG') {
+      path = projName + '/BKG/';
+      this.service.setFile(n.name + '.BKG', path, n.ref, -1);
     }
   }
 
   newApp() {
     this.menuVisible = false;
-    this.dialog.open(NewAppDialogComponent);
+    this.dialog.open(NewAppDialogComponent, {
+      data: {
+        title: 'projects.toolbar.new_app',
+        placeholder: 'projects.toolbar.app_name'
+      }
+    });
   }
 
   newLib(appName?: string) {
@@ -324,14 +363,16 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     });
   }
 
-  deleteApp(app: string) {
+  deleteApp(app: string, isBG = false) {
     this.menuVisible = false;
-    this.trn.get('projectTree.del_app_title', { name: app }).subscribe(word => {
+    const title = isBG ? 'projectTree.del_bg_title' : 'projectTree.del_app_title';
+    const msg = isBG ? 'projectTree.del_bg_msg' : 'projectTree.del_app_msg';
+    this.trn.get(title, { name: app }).subscribe(word => {
       this.dialog
         .open(YesNoDialogComponent, {
           data: {
             title: word,
-            msg: this.words['projectTree.del_app_msg'],
+            msg: this.words[msg],
             yes: this.words['button.delete'],
             no: this.words['button.cancel'],
           },
@@ -341,15 +382,16 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         .subscribe(ret => {
           if (ret) {
             const prj = this.prj.currProject.value;
+            const cmd = isBG ? `BKG_removeBgTask("${prj.name}", "${app}")` : '?prj_remove_app("' + prj.name + '","' + app + '")';
             this.ws
-              .query('?prj_remove_app("' + prj.name + '","' + app + '")')
+              .query(cmd)
               .then((ret: MCQueryResponse) => {
-                if (ret.result === '0') {
+                if ((!isBG && ret.result === '0') || (isBG && !ret.err)) {
                   this.data
                     .refreshDomains()
                     .then(() => this.prj.refreshAppList(prj, true))
                     .then(ret => {
-                      this.prj.onExpand.emit();
+                      this.prj.onExpand.emit(isBG ? 1 : 0);
                     });
                 }
               });
@@ -358,31 +400,25 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     });
   }
 
-  renameApp(app: string) {
-    this.dialog
-      .open(SingleInputDialogComponent, {
+  renameApp(app: string, isBG = false) {
+    const ph = isBG ? 'projects.toolbar.task_name' : 'projects.toolbar.app_name';
+    this.dialog.open(SingleInputDialogComponent, {
         data: {
           icon: 'edit',
           title: this.words['projects.toolbar.rename'] + ' ' + app,
-          placeholder: this.words['projects.toolbar.app_name'],
+          placeholder: this.words[ph],
           accept: this.words['button.rename'],
         },
-      })
-      .afterClosed()
-      .subscribe((name: string) => {
+      }).afterClosed().subscribe((name: string) => {
         if (name) {
           name = name.toUpperCase();
           const prj = this.prj.currProject.value;
-          const cmd =
-            '?prj_rename_application("' +
-            prj.name +
-            '","' +
-            app +
-            '","' +
-            name +
-            '")';
+          const cmd = isBG ? `BKG_renameBgTask("${prj.name}", "${app}", "${name}")`
+          : `?prj_rename_application("${prj.name}","${app}","${name}")`;
           this.ws.query(cmd).then((ret: MCQueryResponse) => {
-            if (ret.err || ret.result !== '0') return;
+            if (!isBG && (ret.err || ret.result !== '0') || (isBG && ret.err)) {
+              return;
+            }
             this.service.close();
             this.service.mode = null;
             this.prj.refreshAppList(prj, true);
@@ -391,13 +427,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       });
   }
 
-  saveAppAs(app: string) {
+  saveAppAs(app: string, isBG = false) {
+    const ph = isBG ? 'projects.toolbar.task_name' : 'projects.toolbar.app_name';
     this.dialog
       .open(SingleInputDialogComponent, {
         data: {
           icon: 'save',
           title: app + ' - ' + this.words['projects.toolbar.save_as'] + '...',
-          placeholder: this.words['projects.toolbar.app_name'],
+          placeholder: this.words[ph],
           accept: this.words['button.save'],
         },
       })
@@ -406,16 +443,13 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         if (name) {
           name = name.toUpperCase();
           const prj = this.prj.currProject.value;
-          const cmd =
-            '?prj_save_application_as("' +
-            prj.name +
-            '","' +
-            app +
-            '","' +
-            name +
-            '")';
+          const cmd = isBG ? `BKG_saveAsBgTask("${prj.name}", "${app}", "${name}")` :
+           '?prj_save_application_as("' + prj.name + '","' + app + '","' + name + '")';
           this.ws.query(cmd).then((ret: MCQueryResponse) => {
-            if (ret.err || ret.result !== '0') return;
+            if ((!isBG && (ret.err || ret.result !== '0')) || (isBG && ret.err)) {
+              console.warn(ret.err);
+              return;
+            }
             this.service.close();
             this.prj.refreshAppList(prj, true).then(() => {
               const path = prj.name + '/' + name + '/';
@@ -474,6 +508,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       case 'App':
       case 'Libraries':
       case 'Library':
+      case 'Auxiliary':
+      case 'BG':
         break;
       default:
         return;
@@ -525,7 +561,16 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     let vision = new TreeNode('', 'Vision', p.name, null);
     let conveyor = new TreeNode('', 'Conveyor', p.name, null);
     let payloads = new TreeNode('', 'Payloads', p.name, null);
+    // Auxiliary node
+    const auxiliaryNode = new TreeNode('', 'Auxiliary', p.name, null);
+    p.backgroundTaskList.forEach(item => {
+      const prgNode = new TreeNode(item, 'BG', p.name, auxiliaryNode);
+      auxiliaryNode.children.push(prgNode);
+    });
+    this.bgtCount = p.backgroundTaskList.length;
+
     data.push(apps);
+    data.push(auxiliaryNode);
     data.push(deps);
     if (!this.login.isOperator && !this.login.isViewer) {
       data.push(settings);
@@ -548,7 +593,18 @@ export class ProgramEditorSideMenuComponent implements OnInit {
 
   hasNestedChild = (_: number, nodeData: TreeNode) => {
     return nodeData && !leafTypes.includes(nodeData.type);
-  };
+  }
+
+  public newBackgroundTask(): void {
+    this.menuVisible = false;
+    this.dialog.open(NewAppDialogComponent, {
+      data: {
+        title: 'projects.toolbar.new_bg_task',
+        placeholder: 'projects.toolbar.new_bg_task_name',
+        newBackgroundTask: true
+      }
+    });
+  }
 
   private setDragAndDrop() {
     setTimeout(() => {
@@ -582,26 +638,5 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         list.withItems(dragRefs);
       }
     }, 200);
-  }
-}
-
-class TreeNode {
-  name: string;
-  type: string;
-  children: TreeNode[] = [];
-  projectNameRef: string;
-  parent: TreeNode;
-  ref: any = null; /* REFERENCE TO AN APP, LIB, ETC... */
-
-  constructor(
-    name: string,
-    typeStr: string,
-    projectNameRef: string,
-    parent: TreeNode
-  ) {
-    this.name = name;
-    this.type = typeStr;
-    this.projectNameRef = projectNameRef;
-    this.parent = parent;
   }
 }

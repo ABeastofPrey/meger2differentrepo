@@ -19,7 +19,7 @@
 		mat-raised-button
 		color="primary"
 		[matMenuTriggerFor]="interpolation"
-		[disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+		[disabled]="prg.activeFile == null || prg.status.statusCode !== -1 || prg.isSelectedBKG"
 	>
 		{{ 'projectCommands.menu.interpolation' | translate }}
 	</button>
@@ -141,9 +141,9 @@
 		<button mat-menu-item (click)="menu_dim()">Dim...</button>
 	</mat-menu>
 	<mat-menu #pallets="matMenu">
-		<button mat-menu-item (click)="menu_plt_pick()">Pick...</button>
-		<button mat-menu-item (click)="menu_plt_place()">Place...</button>
-		<button mat-menu-item (click)="menu_plt_home()">Home...</button>
+		<button mat-menu-item (click)="menu_plt_pick()" [disabled]="prg.isSelectedBKG">Pick...</button>
+		<button mat-menu-item (click)="menu_plt_place()" [disabled]="prg.isSelectedBKG">Place...</button>
+		<button mat-menu-item (click)="menu_plt_home()" [disabled]="prg.isSelectedBKG">Home...</button>
 		<button mat-menu-item (click)="menu_plt_index()">Set Index...</button>
 		<button mat-menu-item (click)="menu_plt_get_index()">Get Index...</button>
 		<button mat-menu-item (click)="menu_plt_status()">Get Status...</button>

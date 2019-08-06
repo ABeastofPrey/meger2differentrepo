@@ -23,6 +23,7 @@
 			<mat-checkbox color="primary" [(ngModel)]="filterLibs">{{ 'tasks.lib' | translate }}</mat-checkbox>
 			<mat-checkbox color="primary" [(ngModel)]="filterGlobalLibs">{{ 'tasks.lib_g' | translate }}</mat-checkbox>
 			<mat-checkbox color="primary" [(ngModel)]="filterUser">{{ 'tasks.user' | translate }}</mat-checkbox>
+      		<mat-checkbox color="primary" [(ngModel)]="filterBackground">{{'tasks.background' | translate}}</mat-checkbox>
 		</div>
 	</div>
 	<table class="mat-elevation-z3">
@@ -33,7 +34,7 @@
 		</tr>
 		<tr
 			*ngFor="
-				let t of task.tasks | taskFilter: [filterPrograms, filterLibs, filterGlobalLibs, filterUser];
+				let t of task.tasks | taskFilter: [filterPrograms, filterLibs, filterGlobalLibs, filterUser, filterBackground];
 				let i = index
 			"
 			class="mat-title-color"

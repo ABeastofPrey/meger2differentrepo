@@ -29,6 +29,8 @@ export const TASKSTATE_KILLSTART = 9;
 export const TASKSTATE_KILLED = 10;
 export const TASKSTATE_LIB_LOADED = 11;
 
+const endsWithBKG = (x: string) => x.endsWith('BKG');
+
 @Injectable()
 export class ProgramEditorService {
   files: MCFile[] = [];
@@ -124,6 +126,10 @@ export class ProgramEditorService {
     this.trn.get(words).subscribe(words => {
       this.words = words;
     });
+  }
+
+  get isSelectedBKG(): boolean {
+    return endsWithBKG(this.activeFile) ? true : false;
   }
 
   get modeToggle() {
@@ -321,6 +327,8 @@ export class ProgramEditorService {
             }
           });
         }
+      }).catch(err => {
+        console.warn(err);
       });
   }
 
@@ -342,8 +350,9 @@ export class ProgramEditorService {
               0,
               this.activeFile.indexOf('.')
             );
+            const cmd = '?tp_load_app("' + prj + '","' + file + '")';
             this.ws
-              .query('?tp_load_app("' + prj + '","' + file + '")')
+              .query(cmd)
               .then((ret: MCQueryResponse) => {
                 if (ret.result !== '0') this.getTRNERR(null);
                 else this.errors = [];
@@ -390,15 +399,21 @@ export class ProgramEditorService {
 
   run() {
     if (this.activeFile === null) return;
+    const prj = this.prj.currProject.value.name;
+    const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
     if (this.fileRef) {
-      const prj = this.prj.currProject.value.name;
-      const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
       this.ws.query('?tp_run_app("' + prj + '","' + file + '")');
       return;
     }
-    this.ws.query('KillTask ' + this.activeFile).then(() => {
-      this.ws.query('StartTask ' + this.activeFile);
-    });
+    if (endsWithBKG(this.activeFile)) {
+      const cmd = `BKG_runProgram("${prj}", "${file}", ".BKG")`;
+      this.ws.query(cmd);
+    } else {
+      this.ws.query('KillTask ' + this.activeFile).then(() => {
+        const cmd = 'StartTask ' + this.activeFile;
+        this.ws.query(cmd);
+      });
+    }
   }
 
   jump() {
@@ -444,14 +459,12 @@ export class ProgramEditorService {
     if (this.activeFile === null) return;
     this.busy = true;
     this.ws.query('KillTask ' + this.activeFile).then(() => {
-      this.ws
-        .query('Unload ' + this.activeFile)
-        .then((ret: MCQueryResponse) => {
-          if (ret.result.length > 0) {
-            this.snack.open(ret.result, '', { duration: 2000 });
-          }
-          this.busy = false;
-        });
+      this.ws.query('Unload ' + this.activeFile).then((ret: MCQueryResponse) => {
+        if (ret.result.length > 0) {
+          this.snack.open(ret.result, '', { duration: 2000 });
+        }
+        this.busy = false;
+      });
     });
   }
 
@@ -535,7 +548,7 @@ export class ProgramEditorService {
       return;
     }
     const file = this.activeFile;
-    if (!this.isLib && !file.endsWith('.UPG') && !file.endsWith('.PRG')) {
+    if (!this.isLib && !file.endsWith('.UPG') && !file.endsWith('.PRG') && !file.endsWith('.BKG')) {
       let tmpStatus = new ProgramStatus(null);
       tmpStatus.statusCode = TASKSTATE_NOTLOADED;
       tmpStatus.name = 'Not Loadable';

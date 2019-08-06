@@ -31,7 +31,7 @@ export class SaveAsDialogComponent implements OnInit {
         if (ret.result !== '0' || ret.err) this.submitting = false;
         else {
           this.prj.getCurrentProject().then(() => {
-            this.prj.onExpand.emit(name);
+            this.prj.onExpand.emit(0);
           });
           this.dialogRef.close();
         }

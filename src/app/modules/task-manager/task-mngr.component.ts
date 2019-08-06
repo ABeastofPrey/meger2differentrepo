@@ -18,6 +18,7 @@ export class TaskMngrComponent implements OnInit {
   filterLibs: boolean = false;
   filterGlobalLibs: boolean = false;
   filterUser: boolean = true;
+  filterBackground: boolean = false;
 
   constructor(
     public task: TaskService,
@@ -73,7 +74,7 @@ export class TaskMngrComponent implements OnInit {
     return this.selected.includes(index);
   }
   private get filtersAsArr() {
-    return [this.filterPrograms, this.filterLibs, this.filterGlobalLibs];
+    return [this.filterPrograms, this.filterLibs, this.filterGlobalLibs, this.filterUser, this.filterBackground];
   }
   run() {
     this.task.run(this.selected, this.filtersAsArr);

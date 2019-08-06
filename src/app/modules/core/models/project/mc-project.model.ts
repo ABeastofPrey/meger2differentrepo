@@ -10,6 +10,7 @@ export class MCProject {
     name: string;
   }[] = [];
   apps: App[] = [];
+  backgroundTaskList: string[] = [];
 
   constructor(name: string) {
     this.name = name;

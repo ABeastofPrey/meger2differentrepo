@@ -12,6 +12,7 @@
 				virtualKeyboard
 				[type]="data.type || 'text'"
 				[ktype]="data.type === 'number' ? 'numeric' : 'text'"
+				(keyup.enter)="create()"
 				(onKeyboardClose)="create()"
 			/>
 			<span matSuffix *ngIf="data.suffix">{{ data.suffix }}</span>

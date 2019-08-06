@@ -12,8 +12,13 @@
 		</div>
 		<header [style.background-image]="'url(' + loginBgImgUrl + ')'">
 			<div class="black-overlay"></div>
-			<div class="center-vertical" style="z-index: 2;">
-				<img [ngStyle]="{ opacity: utils.IsKuka ? 0 : 100 }" src="assets/pics/logo_cs.png" height="100" width="100" />
+			<div class="center-vertical" [class.kuka-center-vertical]="utils.IsKuka" style="z-index: 2;">
+				<img
+					[ngStyle]="{ display: utils.IsKuka ? 'none' : 'block' }"
+					src="assets/pics/logo_cs.png"
+					height="100"
+					width="100"
+				/>
 				<div>
 					<div class="title">{{ appName }}</div>
 					<div class="subtitle">{{ ver }}</div>

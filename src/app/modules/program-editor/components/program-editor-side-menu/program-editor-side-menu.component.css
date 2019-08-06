@@ -67,6 +67,12 @@ ul,
 .leaf {
   padding-left: 16px;
 }
+.background-leaf {
+  padding-left: 10px;
+}
+.background-node {
+  padding-left: 0;
+}
 li > div {
   display: flex;
   flex-direction: row;

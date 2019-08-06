@@ -100,4 +100,8 @@ $material-semi-black: rgba(0,0,0,0.54);
   .create-point-option:hover {
     background: mat-color($material-servotronix-primary, 100) !important;
   }
+  .stx-logo {
+    height: 24px;
+    margin-right: 16px;
+  }
 }

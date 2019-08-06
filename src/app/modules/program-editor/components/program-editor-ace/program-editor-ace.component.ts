@@ -192,6 +192,13 @@ export class ProgramEditorAceComponent implements OnInit {
     this.service.fileChange
       .pipe(takeUntil(this.notifier))
       .subscribe(fileName => {
+
+        // set no break points of background task, perhaps we should add this feature in the future.
+        if (fileName.endsWith('G') || this.service.modeToggle === 'prj') {
+          this.setBreakpoints('');
+          return;
+        }
+
         if (fileName.endsWith('B') || this.service.modeToggle === 'mc')
           return this.setBreakpoints('');
         if (this.prj.currProject.value && this.service.modeToggle === 'prj') {

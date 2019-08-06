@@ -173,6 +173,14 @@ export class ProgramToolbarComponent implements OnInit {
     this.ws.query('?prj_stop("' + this.prj.currProject.value.name + '")');
   }
 
+  public runAllBGTasks(): void {
+    this.ws.query('call BKG_startBGTasks');
+  }
+
+  public stopAllBGTasks(): void {
+    this.ws.query('call BKG_stopBGTasks');
+  }
+
   export() {
     this.prj.isLoading = true;
     return this.api

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {
   WebsocketService,
   ProjectManagerService,
@@ -20,7 +20,8 @@ export class NewAppDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<any>,
     private ws: WebsocketService,
     private prj: ProjectManagerService,
-    private data: DataService
+    private dataService: DataService,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
   create() {
@@ -28,16 +29,19 @@ export class NewAppDialogComponent implements OnInit {
     const name = this.name.toUpperCase();
     const proj = this.prj.currProject.value;
     this.submitting = true;
-    this.ws
-      .query('?prj_add_app("' + proj.name + '","' + name + '")')
-      .then((ret: MCQueryResponse) => {
-        if (ret.result !== '0' || ret.err) this.submitting = false;
-        else {
-          this.data
+    const cmd = (!this.data.newBackgroundTask) ? `?prj_add_app("${proj.name}","${name}")` : `BKG_addBgTask("${proj.name}", "${name}")`;
+    this.ws.query(cmd).then((ret: MCQueryResponse) => {
+        if ((!this.data.newBackgroundTask) && (ret.result !== '0' || ret.err)) {
+          this.submitting = false;
+        } else if (this.data.newBackgroundTask && ret.err) {
+          console.warn(`Create background task ${name} failed.`);
+          this.dialogRef.close();
+        } else {
+          this.dataService
             .refreshDomains()
             .then(() => this.prj.refreshAppList(proj, true))
             .then(() => {
-              this.prj.onExpand.emit(name);
+              this.prj.onExpand.emit(!this.data.newBackgroundTask ? 0 : 1);
             });
           this.dialogRef.close();
         }

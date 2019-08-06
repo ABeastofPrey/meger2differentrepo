@@ -19,7 +19,7 @@ import { TpStatService } from './tp-stat.service';
 @Injectable()
 export class ProjectManagerService {
   currProject: BehaviorSubject<MCProject> = new BehaviorSubject(null);
-  onExpand: EventEmitter<string> = new EventEmitter();
+  onExpand: EventEmitter<number> = new EventEmitter();
   onExpandLib: EventEmitter<{ app: string; lib: string }> = new EventEmitter();
   fileRefreshNeeded: EventEmitter<any> = new EventEmitter();
   onAppStatusChange: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -143,17 +143,18 @@ export class ProjectManagerService {
       this.isLoading = true;
       this.stopStatusRefresh();
     }
-    return this.ws
-      .query('?prj_get_app_list("' + projName + '")')
-      .then((ret: MCQueryResponse) => {
-        proj.initAppsFromString(ret.result);
-        let promises: Promise<any>[] = [];
-        const cmd = '?prj_get_app_libraries_list("' + projName + '","';
-        for (let app of proj.apps) {
-          promises.push(this.ws.query(cmd + app.name + '")'));
-        }
-        return Promise.all(promises);
-      })
+    const queries = [this.ws.query('?prj_get_app_list("' + projName + '")'), this.ws.query('?bkg_getbgtasklist')];
+    return Promise.all(queries).then(([ret, bgtRes]: MCQueryResponse[]) => {
+      const bgtList = JSON.parse(bgtRes.result);
+      proj.backgroundTaskList = bgtList;
+      proj.initAppsFromString(ret.result);
+      let promises: Promise<any>[] = [];
+      const cmd = '?prj_get_app_libraries_list("' + projName + '","';
+      for (let app of proj.apps) {
+        promises.push(this.ws.query(cmd + app.name + '")'));
+      }
+      return Promise.all(promises);
+    })
       .then((ret: MCQueryResponse[]) => {
         for (let i = 0; i < proj.apps.length; i++) {
           if (ret[i].result.length > 0) {
@@ -172,27 +173,26 @@ export class ProjectManagerService {
   }
 
   getCurrentProject(): Promise<any> {
-    return this.ws
-      .query('?prj_get_current_project')
-      .then((ret: MCQueryResponse) => {
-        if (ret.err || !this.stat.onlineStatus.value)
-          return Promise.resolve(null);
-        this.isLoading = true;
-        const projName = ret.result;
-        let proj = new MCProject(projName);
-        return this.refreshAppList(proj, false)
-          .then(() => {
-            return this.loadProgramSettings(proj);
-          })
-          .then(() => {
-            return this.refreshDependencies(proj);
-          })
-          .then(() => {
-            this.isLoading = false;
-            this.currProject.next(proj);
-            this.stat.onProjectLoaded.emit(true);
-          });
-      });
+    return this.ws.query('?prj_get_current_project').then((ret: MCQueryResponse) => {
+      if (ret.err || !this.stat.onlineStatus.value) {
+        return Promise.resolve(null);
+      }
+      this.isLoading = true;
+      const projName = ret.result;
+      const proj = new MCProject(projName);
+      return this.refreshAppList(proj, false)
+        .then(() => {
+          return this.loadProgramSettings(proj);
+        })
+        .then(() => {
+          return this.refreshDependencies(proj);
+        })
+        .then(() => {
+          this.isLoading = false;
+          this.currProject.next(proj);
+          this.stat.onProjectLoaded.emit(true);
+        });
+    });
   }
 
   private refreshDependencies(proj: MCProject): Promise<any> {

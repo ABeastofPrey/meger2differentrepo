@@ -182,4 +182,7 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
     margin: 1px 7px 1px 0;
     background-color: mat-color($material-kuka-primary, 1000);
   }
+  .kuka-logo {
+    height: 64px;
+  }
 }

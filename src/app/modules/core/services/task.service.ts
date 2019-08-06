@@ -50,7 +50,9 @@ export class TaskService {
         name = parts[0].substring(9).trim();
         state = parts[1].substring(6).trim();
         priority = Number(parts[2].substring(9));
-        if (parts[3]) path = parts[3].substring(20);
+        if (parts[3]) {
+          path = parts[3].substring(9);
+        }
       } else if (line.indexOf('Global') === 0) {
         name = parts[0].substring(18).trim();
         (state = 'Loaded Globally'), (priority = null);

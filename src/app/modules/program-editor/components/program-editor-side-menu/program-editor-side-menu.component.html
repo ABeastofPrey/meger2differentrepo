@@ -11,50 +11,38 @@
 			[class.busy]="service.busy"
 		>
 			<mat-tree-node *matTreeNodeDef="let node" [class.disabled]="isNodeDisabled(node)">
-				<li class="leaf" (contextmenu)="openContextMenu($event, node)">
-					<div
-						(click)="openFile(node)"
-						(click)="selectNode(node)"
-						[class.selected]="lastSelectedNode === node"
-						[class.disabled]="isNodeDisabled(node)"
-					>
+				<li class="leaf" [class.background-leaf]="node.type === 'BG'" (contextmenu)="openContextMenu($event, node)">
+					<div (click)="openFile(node)" (click)="selectNode(node)"
+						[class.selected]="lastSelectedNode === node" [class.disabled]="isNodeDisabled(node)"
+						[class.background-node]="node.type === 'BG'">
 						<mat-icon class="leaf mat-primary" color="primary" *ngIf="node.type === 'File'">insert_drive_file</mat-icon>
-						<mat-icon class="leaf mat-primary" color="primary" *ngIf="node.type === 'Data'"
-							>format_list_numbered</mat-icon
-						>
+						<mat-icon class="leaf mat-primary" color="primary" *ngIf="node.type === 'BG'">insert_drive_file</mat-icon>
+						<mat-icon class="leaf mat-primary" color="primary" *ngIf="node.type === 'Data'">format_list_numbered</mat-icon>
 						<mat-icon class="leaf library mat-primary" *ngIf="node.type === 'Library'">insert_drive_file</mat-icon>
 						<mat-icon class="leaf library mat-primary" *ngIf="node.type === 'Dependency'">public</mat-icon>
-						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Settings'"
-							>settings_applications</mat-icon
-						>
-						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === projectPoints">line_style</mat-icon>
+						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Settings'">settings_applications</mat-icon>
+						<mat-icon class="mat-primary" color="primary" *ngIf="node.type===projectPoints">line_style</mat-icon>
 						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Errors'">error</mat-icon>
 						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Macros'">keyboard</mat-icon>
 						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Frames'">filter_b_and_w</mat-icon>
 						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Pallets'">view_quilt</mat-icon>
-						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Grippers'"
-							>settings_input_component</mat-icon
-						>
+						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Grippers'">settings_input_component</mat-icon>
 						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'IO'">device_hub</mat-icon>
 						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Vision'">linked_camera</mat-icon>
 						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Conveyor'">power_input</mat-icon>
 						<mat-icon class="mat-primary" color="primary" *ngIf="node.type === 'Payloads'">markunread_mailbox</mat-icon>
-						<span>{{ node.name.length > 0 ? node.name : ('projectTree.' + node.type | translate) }}</span>
+						<span>{{node.name.length > 0 ? node.name : ('projectTree.' + node.type | translate)}}</span>
 					</div>
 				</li>
 			</mat-tree-node>
 			<mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
-				<li
-					(contextmenu)="openContextMenu($event, node)"
-					[id]="node.type + (node.name && node.name.length > 0 ? '-' + node.name : '')"
-				>
-					<div
-						[class.selected]="lastSelectedNode === node"
+				<li (contextmenu)="openContextMenu($event, node)"
+					[id]="node.type + (node.name && node.name.length > 0 ? '-' + node.name : '')">
+					<div [class.selected]="lastSelectedNode === node"
 						(click)="toggleNode(node); selectNode(node)"
 						[matTooltip]="node.ref && node.ref.desc ? node.ref.desc : 'nope'"
 						matTooltipShowDelay="0"
-						[matTooltipDisabled]="!node.ref || !node.ref.desc"
-					>
+						[matTooltipDisabled]="!node.ref || !node.ref.desc">
 						<mat-icon class="mat-primary">
 							{{ nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
 						</mat-icon>
@@ -63,20 +51,16 @@
 							{{ nestedTreeControl.isExpanded(node) ? 'folder_open' : 'folder' }}
 						</mat-icon>
 						<span [class.enabledApp]="node.ref && node.ref.active">
-							{{ node.name.length > 0 ? node.name : ('projectTree.' + node.type | translate) }}
+							<span *ngIf="node.type !== 'Auxiliary'">{{ node.name.length > 0 ? node.name : ('projectTree.' + node.type | translate) }}</span>
+							<span *ngIf="node.type === 'Auxiliary'">{{ node.name.length > 0 ? node.name : ('projects.toolbar.Auxiliary' | translate) }}</span>
 						</span>
-						<span
-							class="status"
-							*ngIf="node.ref && node.ref.status !== -1"
-							[class.status-running]="node.ref && node.ref.status === 1"
-						>
+						<span class="status" *ngIf="node.ref && node.ref.status !== -1"
+							[class.status-running]="node.ref && node.ref.status === 1">
 							({{ getStatusString(node.ref.status) }})
 						</span>
 					</div>
-					<ul
-						[class.invisible]="!nestedTreeControl.isExpanded(node)"
-						[id]="node.type + (node.name && node.name.length > 0 ? '-' + node.name : '') + '-ul'"
-					>
+					<ul [class.invisible]="!nestedTreeControl.isExpanded(node)"
+						[id]="node.type + (node.name && node.name.length > 0 ? '-' + node.name : '') + '-ul'">
 						<ng-container matTreeNodeOutlet></ng-container>
 					</ul>
 				</li>
@@ -96,12 +80,16 @@
 					<mat-icon class="primary-light">add</mat-icon>{{ 'projects.toolbar.new_app' | translate }}...
 				</button>
 			</div>
+			<!-- new background task -->
+			<div *ngIf="lastSelectedNode && (lastSelectedNode.type === 'Auxiliary') && bgtCount < 8">
+				<button mat-button (click)="newBackgroundTask()">
+					<mat-icon class="primary-light">add</mat-icon>{{ 'projects.toolbar.newBackgroundTask' | translate }}...
+				</button>
+			</div>
+			<!-- end -->
 			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'App'">
-				<button
-					mat-button
-					(click)="runApp(lastSelectedNode.name)"
-					*ngIf="lastSelectedNode.ref && lastSelectedNode.ref.status !== 2"
-				>
+				<button mat-button (click)="runApp(lastSelectedNode.name)"
+					*ngIf="lastSelectedNode.ref && lastSelectedNode.ref.status !== 2">
 					<mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
@@ -133,6 +121,27 @@
 					{{ lastSelectedNode.name }}
 				</button>
 			</div>
+			<!-- curd background task -->
+			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'BG'">
+				<button mat-button (click)="runApp(lastSelectedNode.name, true)">
+					<mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run' | translate }}
+					{{ lastSelectedNode.name }}
+				</button>
+				<mat-divider></mat-divider>
+				<button mat-button (click)="renameApp(lastSelectedNode.name, true)">
+					<mat-icon class="primary-light">edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}
+					{{ lastSelectedNode.name }}...
+				</button>
+				<button mat-button (click)="saveAppAs(lastSelectedNode.name, true)">
+					<mat-icon class="primary-light">save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...
+				</button>
+				<mat-divider></mat-divider>
+				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name, true)">
+					<mat-icon class="primary-light">delete</mat-icon>{{ 'delete' | translate }}
+					{{ lastSelectedNode.name }}
+				</button>
+			</div>
+			<!-- end -->
 		</div>
 	</div>
 </div>
