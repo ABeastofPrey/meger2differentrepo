@@ -30,6 +30,7 @@ class TPStatResponse {
   DEADMAN: number;
   SWITCH: string;
   CART_REACH: number;
+  ESTOP: number;
 }
 
 const refreshRate = 200;
@@ -71,6 +72,10 @@ export class TpStatService {
 
   get systemErrorCode() {
     return this._systemErrorCode;
+  }
+  
+  get estop(): boolean {
+    return this._estop;
   }
 
   get deadman(): boolean {
@@ -204,6 +209,7 @@ export class TpStatService {
       this._bipRequest = stat.BIP == 1; // NOT IMPLEMENTED
       this._isRefresh = stat.REFRESH == 1;
       this._cart_reach = stat.CART_REACH === 1;
+      this._estop = stat.ESTOP === 1;
 
       if (typeof stat.DEADMAN === 'undefined')
         this._deadman = this._virtualDeadman;

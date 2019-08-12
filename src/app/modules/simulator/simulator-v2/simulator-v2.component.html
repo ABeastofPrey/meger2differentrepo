@@ -4,7 +4,7 @@
 		<img src="assets/pics/{{ env.platform.spinner }}" />
 	</div>
 	<div class="toolbar primary-bg mat-elevation-z3">
-		<button mat-button [matMenuTriggerFor]="menu" [disabled]="!loaded">
+		<button mat-button [matMenuTriggerFor]="menu" [disabled]="!loaded || !sim.shouldShowSimulator">
 			<mat-icon>menu</mat-icon>
 			{{ 'simulator_screen.simulation' | translate }}
 		</button>
@@ -18,7 +18,7 @@
 			color="accent"
 			matTooltip="{{ 'simulator_screen.cube' | translate }}"
 			(click)="sim.addObject('Cube')"
-			[disabled]="!loaded"
+			[disabled]="!loaded || !sim.shouldShowSimulator"
 		>
 			<img src="assets/pics/icons/cube.png" />
 			<mat-icon class="badge primary-bg mat-elevation-z3">add</mat-icon>
@@ -28,7 +28,7 @@
 			color="accent"
 			matTooltip="{{ 'simulator_screen.sphere' | translate }}"
 			(click)="sim.addObject('Sphere')"
-			[disabled]="!loaded"
+			[disabled]="!loaded || !sim.shouldShowSimulator"
 		>
 			<img src="assets/pics/icons/sphere.png" />
 			<mat-icon class="badge primary-bg mat-elevation-z3">add</mat-icon>
@@ -38,7 +38,7 @@
 			color="accent"
 			matTooltip="{{ 'simulator_screen.cylinder' | translate }}"
 			(click)="sim.addObject('Cylinder')"
-			[disabled]="!loaded"
+			[disabled]="!loaded || !sim.shouldShowSimulator"
 		>
 			<img src="assets/pics/icons/cylinder.png" />
 			<mat-icon class="badge primary-bg mat-elevation-z3">add</mat-icon>
@@ -53,19 +53,25 @@
 			<mat-icon class="badge primary-bg mat-elevation-z3 disabled">add</mat-icon>
 		</button>-->
 		<div class="separator"></div>
-		<mat-slide-toggle color="accent" [(ngModel)]="showTrace" [disabled]="!loaded">Trace</mat-slide-toggle>
+		<mat-slide-toggle color="accent" [(ngModel)]="showTrace" [disabled]="!loaded || !sim.shouldShowSimulator">Trace</mat-slide-toggle>
 		<div class="separator"></div>
-		<button mat-raised-button color="accent" (click)="openRecording()" [disabled]="!loaded">
+		<button mat-raised-button color="accent" (click)="openRecording()" [disabled]="!loaded || !sim.shouldShowSimulator">
 			{{ (liveMode ? 'simulator_screen.load_rec' : 'simulator_screen.rec_close') | translate }}
 		</button>
 		<div class="separator"></div>
-		<div class="color-select center-vertical mat-elevation-z3" [(colorPicker)]="sim.bgColor" [style.background]="sim.bgColor">
+		<div 
+    class="color-select center-vertical mat-elevation-z3"
+    [(colorPicker)]="sim.bgColor"
+    [style.background]="sim.bgColor"
+    [cpPosition]="'bottom'"
+   >
 			<mat-icon>colorize</mat-icon>&nbsp;&nbsp; Background
 		</div>
 		<div
 			class="color-select center-vertical mat-elevation-z3"
 			[(colorPicker)]="sim.traceColor"
 			[style.background]="sim.traceColor"
+    [cpPosition]="'bottom'"
 		>
 			<mat-icon>colorize</mat-icon>&nbsp;&nbsp; Trace
 		</div>
@@ -74,7 +80,7 @@
       <mat-icon>photo_camera</mat-icon>
     </button>-->
 	</div>
-	<as-split direction="horizontal">
+	<as-split direction="horizontal" class="main">
 		<as-split-area size="15" class="side-panel">
 			<as-split direction="vertical">
 				<as-split-area size="35">
@@ -86,10 +92,10 @@
 			</as-split>
 		</as-split-area>
 		<as-split-area size="85" class="gradient-stx">
-			<lib-player></lib-player>
+			<lib-player *ngIf="sim.shouldShowSimulator"></lib-player>
 			<lib-app-simulator
 				id="sim-v2"
-				*ngIf="robots.selectedRobot"
+				*ngIf="sim.shouldShowSimulator"
 				[debug]="false"
 				[backgroundColor]="sim.bgColor"
 				[traceColor]="sim.traceColor"
@@ -99,6 +105,9 @@
 				[jntValues]="jointsAsArr"
 				(onload)="loaded = true"
 			></lib-app-simulator>
+      <div class="warn-bg center-vertical-horizontal warn" *ngIf="!sim.shouldShowSimulator">
+        {{ 'simulator_screen.disabled' | translate }}
+      </div>
 		</as-split-area>
 	</as-split>
 </div>

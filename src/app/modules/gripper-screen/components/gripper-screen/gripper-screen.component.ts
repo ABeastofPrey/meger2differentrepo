@@ -15,6 +15,7 @@ import {
   MCQueryResponse,
   DataService,
   LoginService,
+  ScreenManagerService,
 } from '../../../core';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { SingleInputDialogComponent } from '../../../../components/single-input-dialog/single-input-dialog.component';
@@ -54,7 +55,9 @@ export class ChecklistDatabase {
     return this.dataChange.value;
   }
 
-  constructor(private ws: WebsocketService) {
+  constructor(
+    private ws: WebsocketService
+    ) {
     this.initialize();
   }
 
@@ -169,7 +172,8 @@ export class GripperScreenComponent implements OnInit {
     private ws: WebsocketService,
     private dialog: MatDialog,
     private trn: TranslateService,
-    public login: LoginService
+    public login: LoginService,
+    public mgr: ScreenManagerService
   ) {}
 
   getLevel = (node: GripperTableFlatNode) => {

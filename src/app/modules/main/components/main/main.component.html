@@ -11,7 +11,7 @@
 			<mat-icon>menu</mat-icon>
 		</button>
 		<div class="center-vertical main-header">
-			<img src="assets/pics/{{ env.platform.logo }}" class="stx-logo kuka-logo"/>
+			<img src="assets/pics/{{ env.platform.logo }}" class="{{utils.IsKuka ? 'kuka-logo' : 'stx-logo'}}"/>
 			<span *ngIf="!utils.IsKuka">{{ appName }}</span>
 		</div>
 		<mat-icon *ngIf="stat.systemErrorCode < 0" [matTooltip]="'Error ' + stat.systemErrorCode">warning</mat-icon>
@@ -85,7 +85,7 @@
 			mat-mini-fab
 			matTooltip="{{ 'simulator' | translate }}"
 			(click)="toggleSimulator()"
-			[disabled]="!cooService.coosLoaded.value"
+			[disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator"
 		>
 			<mat-icon>3d_rotation</mat-icon>
 		</button>
@@ -115,8 +115,8 @@
 	<mat-sidenav-container autosize class="mat-typography">
 		<mat-sidenav
 			#drawer
-			[mode]="!cmn.isTablet && screenWidth >= 1024 ? 'side' : 'over'"
-			[opened]="!cmn.isTablet && screenWidth >= 1024"
+			[mode]="!cmn.isTablet ? 'side' : 'over'"
+			[opened]="!cmn.isTablet"
 			class="mat-elevation-z1"
 		>
 			<main-menu [drawer]="drawer" [class.menu-small]="!screenManager.menuExpanded"></main-menu>
@@ -243,6 +243,9 @@
 			</div>
 		</mat-sidenav-content>
 	</mat-sidenav-container>
+  <div class="footer center-vertical-horizontal warn-bg" *ngIf="stat.estop">
+    <mat-icon>warning</mat-icon> {{ 'error.estop' | translate }}
+  </div>
 	<div
 		#notificationWindow
 		*ngIf="notification.windowOpen"

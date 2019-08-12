@@ -49,7 +49,7 @@ export class ProgramEditMenuComponent implements OnInit {
 
   menu_grp_use() {
     let ref = this.dialog.open(GripperSelectorComponent, {
-      data: 'Set Gripper',
+      data: 'grippers.set',
     });
     ref.afterClosed().subscribe((grp: Gripper) => {
       if (grp) {
@@ -62,7 +62,7 @@ export class ProgramEditMenuComponent implements OnInit {
 
   menu_grp_open() {
     let ref = this.dialog.open(GripperSelectorComponent, {
-      data: 'Open Gripper',
+      data: 'grippers.open',
     });
     ref.afterClosed().subscribe((grp: Gripper) => {
       if (grp) {
@@ -74,7 +74,7 @@ export class ProgramEditMenuComponent implements OnInit {
 
   menu_grp_close() {
     let ref = this.dialog.open(GripperSelectorComponent, {
-      data: 'Close Gripper',
+      data: 'grippers.close',
     });
     ref.afterClosed().subscribe((grp: Gripper) => {
       if (grp) {
@@ -169,7 +169,7 @@ export class ProgramEditMenuComponent implements OnInit {
     this.dialog
       .open(PalletPickerDialogComponent, {
         data: {
-          title: 'Insert Get Pallet Status Command',
+          title: 'projectCommands.other.title_plt_status',
           pickRobot: false,
         },
       })
@@ -450,10 +450,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_dim() {
-    let ref = this.dialog.open(DimDialogComponent, {
-      width: '400px',
-    });
-    ref.afterClosed().subscribe((cmd: string) => {
+    this.dialog.open(DimDialogComponent).afterClosed().subscribe((cmd: string) => {
       if (cmd) {
         this.prg.insertAndJump(cmd, 0);
       }

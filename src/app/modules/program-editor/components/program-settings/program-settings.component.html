@@ -81,21 +81,21 @@
 					/>
 					<span matSuffix>mm/sec</span>
 				</mat-form-field>
-				<h3>Blending Method</h3>
+				<h3>{{ 'blending.method' | translate }}</h3>
 				<mat-radio-group
 					[(ngModel)]="prj.currProject.value.settings.blendingMethod"
 					(change)="prj.onProgramSettingChanged('blendingMethod')"
 					style="margin-bottom: 8px; display: block;"
 				>
-					<mat-radio-button color="primary" [value]="0">None</mat-radio-button>
-					<mat-radio-button color="primary" [value]="1">Continous Path</mat-radio-button>
-					<mat-radio-button color="primary" [value]="2">SuperPosition</mat-radio-button>
+					<mat-radio-button color="primary" [value]="0">{{ 'blending.none' | translate }}</mat-radio-button>
+					<mat-radio-button color="primary" [value]="1">{{ 'blending.continous' | translate }}</mat-radio-button>
+					<mat-radio-button color="primary" [value]="2">{{ 'blending.superPosition' | translate }}</mat-radio-button>
 				</mat-radio-group>
 				<mat-slide-toggle
 					color="primary"
 					[(ngModel)]="prj.currProject.value.settings.overlap"
 					(change)="prj.onProgramSettingChanged('overlap')"
-					>Motion Overlap</mat-slide-toggle
+					>{{ 'blending.overlap' | translate }}</mat-slide-toggle
 				>
 			</div>
 		</mat-expansion-panel>

@@ -10,7 +10,6 @@ import {
 import { SelectionModel } from '@angular/cdk/collections';
 import { YesNoDialogComponent } from '../../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
-import { User } from '../../../../core/models/user.model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -125,7 +124,9 @@ export class UserMngrComponent implements OnInit {
   }
 
   create() {
-    let ref = this.dialog.open(NewUserDialogComponent);
+    let ref = this.dialog.open(NewUserDialogComponent,{
+      minWidth: '320px'
+    });
     ref.afterClosed().subscribe(ret => {
       if (ret) this.refreshUsers();
     });
@@ -135,6 +136,7 @@ export class UserMngrComponent implements OnInit {
     this.dialog
       .open(NewUserDialogComponent, {
         data: row,
+        minWidth: '320px'
       })
       .afterClosed()
       .subscribe(ret => {

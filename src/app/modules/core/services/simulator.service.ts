@@ -3,14 +3,18 @@ import { SceneObject, Box, Cylinder, SceneService, Sphere } from 'stxsim-ng';
 import { BehaviorSubject } from 'rxjs';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { DataService } from './data.service';
+import {RobotService} from './robot.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SimulatorService {
+  
   data: BehaviorSubject<SceneObject[]> = new BehaviorSubject([]);
   bgColor: string = '#7c99b7';
   traceColor: string = '#ffff00';
+  
+  private sceneLoaded: boolean = false;
 
   private _selected: SceneObject = null;
   get selected() {
@@ -23,14 +27,22 @@ export class SimulatorService {
   get scene() {
     return this.service.simulatorScene;
   }
+  
+  get shouldShowSimulator() {
+    return this.robots.selectedRobot &&
+      this.robots.get3DModelPath(this.robots.selectedRobot.part_number) !== null;
+  }
 
   constructor(
     private dataService: DataService,
     private ws: WebsocketService,
-    private service: SceneService
+    private service: SceneService,
+    private robots: RobotService
   ) {}
 
   getScene() {
+    if (this.sceneLoaded) return;
+    this.sceneLoaded = true;
     this.data.next([]);
     while (this.scene.children.length > 0) {
       const c = this.scene.children[0];

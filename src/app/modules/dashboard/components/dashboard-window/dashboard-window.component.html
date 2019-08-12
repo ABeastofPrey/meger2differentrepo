@@ -110,7 +110,7 @@
 		</div>
 		<div style="flex: 1;" *ngIf="params.isExpanded">
 			<div class="move-content" tourAnchor="dashboard-move">
-				<button mat-raised-button color="primary" (click)="move()">
+				<button mat-raised-button color="primary" (mousedown)="move()" (mouseup)="stopMotion()">
 					{{ 'button.move' | translate }}
 				</button>
 				<mat-slide-toggle

@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { DataService } from './data.service';
 import { EventEmitter } from '@angular/core';
+import {ErrorFrame} from '../models/error-frame.model';
 
 const POLL_INTERVAL: number = 100;
 
@@ -129,24 +130,18 @@ export class CoordinatesService {
       if (stat && this.interval === null) {
         //LOADED and INTERVAL ISN'T SET
         this._zone.runOutsideAngular(() => {
-          this.interval = setInterval(() => {
-            //const now = new Date().getTime();
-            this.ws.query('cyc2').then((result: MCQueryResponse) => {
-              // console.log(new Date().getTime() - now);
-              if (result.err || result.result.length === 0) {
-                clearInterval(this.interval);
-                return;
-              }
-              setTimeout(() => {
-                this.update(result.result);
-                if (!this.coosLoaded.value)
-                  this._zone.run(() => {
-                    this.coosLoaded.next(true);
-                  });
-                result.result = null;
-                result = null;
-              }, 0);
-            });
+          this.interval = this.ws.send('cyc2',false,(result: string, cmd: string, err: ErrorFrame) => {
+            if (err || result.length === 0) {
+              this.ws.clearInterval(this.interval);
+              return;
+            }
+            setTimeout(() => {
+              this.update(result);
+              if (!this.coosLoaded.value)
+                this._zone.run(() => {
+                  this.coosLoaded.next(true);
+                });
+            }, 0);
           }, POLL_INTERVAL);
         });
       }
@@ -154,7 +149,7 @@ export class CoordinatesService {
 
     this.ws.isConnected.subscribe(stat => {
       if (!stat) {
-        clearInterval(this.interval);
+        this.ws.clearInterval(this.interval);
         this.interval = null;
         this.coosLoaded.next(false);
       }

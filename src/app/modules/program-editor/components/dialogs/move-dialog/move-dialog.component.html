@@ -63,16 +63,17 @@
 						matInput
 						[placeholder]="data.moveS ? 'VTran [mm/s]' : 'VCruise [deg/s]'"
 						[(ngModel)]="vcruise"
+            type="number"
 						virtualKeyboard
 						ktype="numeric"
 					/>
 				</mat-form-field>
 				<mat-form-field>
-					<input matInput placeholder="Blending Percentage" [(ngModel)]="blending" virtualKeyboard ktype="numeric" />
+					<input matInput placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}" type="number" [(ngModel)]="blending" virtualKeyboard ktype="numeric" />
 					<span matSuffix>%</span>
 				</mat-form-field>
 				<mat-form-field>
-					<mat-select placeholder="Postion Trigger" [(ngModel)]="pts" multiple>
+					<mat-select placeholder="{{ 'projectSettings.position_trigger.title' | translate }}" [(ngModel)]="pts" multiple>
 						<mat-option *ngFor="let pt of ptList" [value]="pt">{{ pt }}</mat-option>
 					</mat-select>
 				</mat-form-field>

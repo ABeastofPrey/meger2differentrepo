@@ -214,6 +214,16 @@ main-menu {
 main-menu.menu-small {
   width: 60px;
 }
+.tablet-ui {
+  .img-logo {
+    height: 15px;
+  }
+  @media only screen and (max-width: 1199px) {
+    .img-logo {
+      display: none;
+    }
+  }
+}
 
 .main-header {
   width: 100%;
@@ -236,4 +246,15 @@ main-menu.menu-small {
     -moz-box-shadow: 0px 0px 8px 3px rgba(255, 0, 0, 1);
     box-shadow: 0px 0px 8px 3px rgba(255, 0, 0, 1);
   }
+}
+.footer {
+  border-top: 1px solid black;
+  font-weight: bold;
+  font-size: 16px;
+  padding-left: 16px;
+  padding: 4px 0;
+  z-index: 1;
+}
+.footer mat-icon {
+  margin-right: 16px;
 }

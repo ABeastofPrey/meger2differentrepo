@@ -81,10 +81,11 @@
 				<h4 class="mat-subtitle-color" style="margin-top: -24px;">
 					{{ selectedNode.parent.item }} > {{ selectedNode.item }}
 				</h4>
+        <img src="assets/pics/grp/grp.gif" class="helper" [style.position]="mgr.openedControls ? 'relative' : 'absolute'">
 				<div class="row">
 					<mat-form-field>
 						<mat-select
-							placeholder="dOut Command 1"
+							placeholder="{{ 'grippers.dout1' | translate }}"
 							[(ngModel)]="selectedNode.cmd1"
 							(selectionChange)="updateGripperCmd(1)"
 							[disabled]="login.isOperator"
@@ -101,7 +102,7 @@
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
 				</div>
-				<h2>Sleep Time:</h2>
+				<h2>{{ 'grippers.sleep' | translate }}:</h2>
 				<div class="row">
 					<mat-form-field>
 						<input
@@ -136,7 +137,7 @@
 				<div class="row">
 					<mat-form-field>
 						<mat-select
-							placeholder="dOut Command 2"
+							placeholder="{{ 'grippers.dout2' | translate }}"
 							[(ngModel)]="selectedNode.cmd2"
 							(selectionChange)="updateGripperCmd(2)"
 							[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
@@ -159,7 +160,7 @@
 				<div class="row">
 					<mat-form-field>
 						<mat-select
-							placeholder="dIn Feedback 1"
+							placeholder="{{ 'grippers.fb1' | translate }}"
 							[(ngModel)]="selectedNode.fb1"
 							(selectionChange)="updateGripperFb(1)"
 							[disabled]="login.isOperator || !selectedNode.fb1_enabled"
@@ -182,7 +183,7 @@
 				<div class="row">
 					<mat-form-field>
 						<mat-select
-							placeholder="dIn Feedback 2"
+							placeholder="{{ 'grippers.fb2' | translate }}"
 							[(ngModel)]="selectedNode.fb2"
 							(selectionChange)="updateGripperFb(2)"
 							[disabled]="login.isOperator || !selectedNode.fb2_enabled"

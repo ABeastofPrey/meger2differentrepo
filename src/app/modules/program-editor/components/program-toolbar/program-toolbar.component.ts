@@ -29,6 +29,7 @@ import { NewFileDialogComponent } from '../../../file-tree/components/new-file-d
 import { SingleInputDialogComponent } from '../../../../components/single-input-dialog/single-input-dialog.component';
 import { CommonService } from '../../../core/services/common.service';
 import { ProjectDeleteDialogComponent } from '../project-delete-dialog/project-delete-dialog.component';
+import {NewDependencyDialogComponent} from '../toolbar-dialogs/new-dependency-dialog/new-dependency-dialog.component';
 
 @Component({
   selector: 'program-toolbar',
@@ -194,6 +195,9 @@ export class ProgramToolbarComponent implements OnInit {
   }
   newLib() {
     this.dialog.open(NewLibDialogComponent);
+  }
+  newDep() {
+    this.dialog.open(NewDependencyDialogComponent);
   }
   saveAs() {
     this.dialog.open(SaveAsDialogComponent);
@@ -639,6 +643,14 @@ export class ProgramToolbarComponent implements OnInit {
         this.stat.mode = 'R';
         break;
     }
+  }
+  
+  toggleDependencies() {
+    const prj = this.prj.currProject.value;
+    const loaded = prj.dependenciesLoaded;
+    const name = prj.name;
+    const cmd = loaded ? 'PRJ_UNLOAD_DEPENDENCIES' : 'PRJ_LOAD_DEPENDENCIES';
+    this.ws.query('call ' + cmd + '("' + name + '")');
   }
 
   /*

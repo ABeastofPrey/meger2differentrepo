@@ -3,8 +3,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource, MatDialog } from '@angular/material';
 import { of as observableOf, Subscription } from 'rxjs';
 import {
-  ProgramEditorService,
-  getStatusString,
+  ProgramEditorService
 } from '../../services/program-editor.service';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import {
@@ -21,10 +20,10 @@ import { NewAppDialogComponent } from '../toolbar-dialogs/new-app-dialog/new-app
 import { NewLibDialogComponent } from '../toolbar-dialogs/new-lib-dialog/new-lib-dialog.component';
 import { NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { environment } from '../../../../../environments/environment';
 import { SingleInputDialogComponent } from '../../../../components/single-input-dialog/single-input-dialog.component';
 import { CdkDragDrop, moveItemInArray, DragDrop } from '@angular/cdk/drag-drop';
 import { CommonService } from '../../../core/services/common.service';
+import {NewDependencyDialogComponent} from '../toolbar-dialogs/new-dependency-dialog/new-dependency-dialog.component';
 
 export const projectPoints = 'pPoints';
 
@@ -97,7 +96,6 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   menuTop: string = '0';
 
   public bgtCount = 0;
-  public env = environment;
   public projectPoints = projectPoints;
   private _getChildren = (node: TreeNode) => {
     return observableOf(node.children);
@@ -127,6 +125,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         'button.cancel',
         'projectTree.del_app_msg',
         'projectTree.del_lib_msg',
+        'projectTree.del_dep_msg',
         'projects.toolbar.rename',
         'projects.toolbar.app_name',
         'button.rename',
@@ -173,6 +172,12 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       })
     );
     this.subscriptions.push(
+      this.prj.onExpandDep.subscribe(name => {
+        const depsNode = this.nestedDataSource.data[1];
+        this.nestedTreeControl.expand(depsNode);
+      })
+    );
+    this.subscriptions.push(
       this.prj.onExpandLib.subscribe((ret: { app: string; lib: string }) => {
         const appsNode = this.nestedDataSource.data[0];
         for (let app of appsNode.children) {
@@ -204,10 +209,6 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     return false;
   }
 
-  getStatusString(stat: number) {
-    return getStatusString(stat);
-  }
-
   selectNode(node: TreeNode) {
     this.lastSelectedNode = node;
     this.lastSelectedFile = null;
@@ -230,7 +231,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     this.ws.query(cmd).then((res: MCQueryResponse) => {
       if (res.err) {
         console.warn(res.err);
-      }
+  }
     });
   }
 
@@ -265,7 +266,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       return;
     }
     const projName = this.currProject.name;
-    if (n.type !== 'File') this.service.close();
+    if (n.type !== 'File' && n.type !== 'Dependency') this.service.close();
     if (n.type === 'Data') {
       if (this.data.selectedDomain === n.parent.name) {
         this.service.mode = 'data';
@@ -342,6 +343,9 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     } else if (n.type === 'BG') {
       path = projName + '/BKG/';
       this.service.setFile(n.name + '.BKG', path, n.ref, -1);
+    } else if (n.type === 'Dependency') {
+      path = projName + '/DEPENDENCIES/';
+      this.service.setFile(n.name, path,n.ref, -1);
     }
   }
 
@@ -353,6 +357,18 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         placeholder: 'projects.toolbar.app_name'
       }
     });
+  }
+  newDep() {
+    this.menuVisible = false;
+    this.dialog.open(NewDependencyDialogComponent);
+  }
+  
+  toggleDependencies() {
+    const prj = this.prj.currProject.value;
+    const loaded = prj.dependenciesLoaded;
+    const name = prj.name;
+    const cmd = loaded ? 'PRJ_UNLOAD_DEPENDENCIES' : 'PRJ_LOAD_DEPENDENCIES';
+    this.ws.query('call ' + cmd + '("' + name + '")');
   }
 
   newLib(appName?: string) {
@@ -467,7 +483,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       this.dialog
         .open(YesNoDialogComponent, {
           data: {
-            title: 'Delete Library ' + lib + '?',
+            title: word,
             msg: this.words['projectTree.del_lib_msg'],
             yes: this.words['button.delete'],
             no: this.words['button.cancel'],
@@ -498,6 +514,44 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         });
     });
   }
+  
+  deleteDep() {
+    this.menuVisible = false;
+    const dep = this.lastSelectedNode.name;
+    this.trn.get('projectTree.del_dep_title', { name: dep }).subscribe(word => {
+      this.dialog
+        .open(YesNoDialogComponent, {
+          data: {
+            title: word,
+            msg: this.words['projectTree.del_dep_msg'],
+            yes: this.words['button.delete'],
+            no: this.words['button.cancel'],
+            warnBtn: true
+          },
+          width: '500px',
+        })
+        .afterClosed()
+        .subscribe(ret => {
+          if (ret) {
+            const prj = this.prj.currProject.value;
+            const cmd =
+              '?prj_delete_dependency("' +
+              prj.name +
+              '","USER","' +
+              dep +
+              '")';
+            this.ws.query(cmd).then((ret: MCQueryResponse) => {
+              if (ret.result === '0') {
+                this.prj.refreshDependencies(prj).then(ret => {
+                  this.prj.currProject.next(prj);
+                  this.prj.onExpandDep.emit(dep);
+                });
+              }
+            });
+          }
+        });
+    });
+  }
 
   openContextMenu(event: MouseEvent, node: TreeNode) {
     event.preventDefault();
@@ -510,6 +564,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       case 'Library':
       case 'Auxiliary':
       case 'BG':
+      case 'Dependency':
+      case 'Dependencies':
         break;
       default:
         return;

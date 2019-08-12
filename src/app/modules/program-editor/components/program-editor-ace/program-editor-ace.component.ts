@@ -254,10 +254,10 @@ export class ProgramEditorAceComponent implements OnInit {
     );
   }
 
-  private replaceLine(index: number, newLine: string) {
+  private replaceLine(index: number, newLine: string, replaceTabs?: boolean) {
     let editor = this.editor;
     let line: string = editor.session.getLine(index);
-    let tabs = Array(this.numberOfTabs(line) + 1).join('\t');
+    let tabs = replaceTabs ? '' : Array(this.numberOfTabs(line) + 1).join('\t');
     let txtLines = newLine.split('\n');
     for (let i = 0; i < txtLines.length; i++) txtLines[i] = tabs + txtLines[i];
     newLine = txtLines.join('\n');
@@ -849,7 +849,7 @@ export class ProgramEditorAceComponent implements OnInit {
     var editor = this.editor;
     var position = editor.getCursorPosition();
     var row = position.row; // current row
-    this.dummyText = editor.session.getLine(row).trim();
+    this.dummyText = editor.session.getLine(row).replace(/\t/g,'  ');
     this.dummyInput.focus();
   }
   onDummyKeyboardClose() {
@@ -857,7 +857,7 @@ export class ProgramEditorAceComponent implements OnInit {
     var position = editor.getCursorPosition();
     var row = position.row; // current row
     if (this.dummyText === '\n') this.insertLineBreak();
-    else this.replaceLine(row, this.dummyText);
+    else this.replaceLine(row, this.dummyText, true);
     this.dummyText = '';
   }
   /******************************************************/

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { fadeAnimation } from './fade.animation';
 import { LoginService } from './modules/core';
 import { TourService } from 'ngx-tour-md-menu';
@@ -16,7 +16,9 @@ import { CommonService } from './modules/core/services/common.service';
   animations: [fadeAnimation],
 })
 export class ControlStudioComponent {
+  
   env = environment;
+  landscape: boolean;
 
   public getRouterOutletState(outlet: RouterOutlet) {
     return outlet.isActivated ? outlet.activatedRouteData : '';
@@ -164,9 +166,20 @@ export class ControlStudioComponent {
         this.tour.initialize(steps);
       });
   }
-
+  
+  @HostListener('window:orientationchange', ['$event'])
+  onOrientationChange(event) {
+    this.landscape = !this.cmn.isTablet || Math.abs(screen.orientation.angle) === 90;
+  }
+  
+  
   ngOnInit() {
+    this.landscape = !this.cmn.isTablet || Math.abs(screen.orientation.angle) === 90;
     this.login.populate();
+  }
+  
+  ngOnDestroy() {
+    this.landscape = true;
   }
 }
 

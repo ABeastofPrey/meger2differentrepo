@@ -61,7 +61,7 @@
                               origin="0.425 0 0.100" parent="link1" child="link2"/>
     <xacro:def_link link_name="link2" mesh_name="link2.dae"/>
     <xacro:def_prismatic_joint joint_name="joint3" axis="0 0 1" effort="1000.0" lower="-0.133" upper="0.01"
-                               velocity="1.0" origin="0.276 0 0" parent="link2" child="link_empty_1"/>
+                               velocity="1.0" origin="0.276 0 -0.01" parent="link2" child="link_empty_1"/>
     <xacro:def_empty_link link_name="link_empty_1"/>
     <xacro:def_revolute_joint joint_name="joint4" axis="0 0 1" effort="1000.0" lower="-180" upper="180" velocity="1.0"
                               origin="0 0 0" parent="link_empty_1" child="link3"/>

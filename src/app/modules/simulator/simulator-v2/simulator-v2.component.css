@@ -5,14 +5,16 @@
   flex-direction: column;
 }
 .toolbar {
-  height: 64px;
+  min-height: 64px;
   display: flex;
   align-items: center;
   padding: 0 24px;
   box-sizing: border-box;
+  flex-wrap: wrap;
+  overflow: hidden;
 }
 .toolbar > * {
-  margin-right: 16px;
+  margin: 8px 16px 8px 0;
 }
 .toolbar .separator {
   width: 1px;
@@ -45,6 +47,11 @@
   height: auto;
   text-align: center;
 }
+.main {
+  height: auto;
+  width: auto;
+  flex: 1;
+}
 lib-player {
   display: block;
   margin-top: 16px;
@@ -55,4 +62,10 @@ lib-player {
   cursor: pointer;
   border: 1px solid black;
   margin-right: 16px;
+}
+.warn {
+  height: 100%;
+  font-size: 24px;
+  padding: 48px;
+  box-sizing: border-box;
 }

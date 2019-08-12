@@ -127,6 +127,13 @@ export class ProgramEditorService {
       this.words = words;
     });
   }
+  
+  getStatusString(stat: number) : string {
+    const str = stat.toString();
+    if (this.words)
+      return this.words['projects']['status'][str] || this.words['projects']['status']['999'];
+    return '';
+  }
 
   get isSelectedBKG(): boolean {
     return endsWithBKG(this.activeFile) ? true : false;
@@ -474,9 +481,11 @@ export class ProgramEditorService {
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
+      console.log('step');
       this.ws
         .query('?tp_step_over_app("' + prj + '","' + file + '")')
         .then(() => {
+          console.log('step done');
           this.busy = false;
         });
       return;
@@ -531,6 +540,7 @@ export class ProgramEditorService {
       'href',
       'data:text/plain;charset=utf-8,' + encodeURIComponent(this.editorText)
     );
+    console.log(this.activeFile);
     element.setAttribute('download', this.activeFile);
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -551,7 +561,6 @@ export class ProgramEditorService {
     if (!this.isLib && !file.endsWith('.UPG') && !file.endsWith('.PRG') && !file.endsWith('.BKG')) {
       let tmpStatus = new ProgramStatus(null);
       tmpStatus.statusCode = TASKSTATE_NOTLOADED;
-      tmpStatus.name = 'Not Loadable';
       this.status = tmpStatus;
       this.statusChange.emit(this.status);
       return;
@@ -583,7 +592,6 @@ export class ProgramEditorService {
                 err.errCode === '8020'
                   ? TASKSTATE_LIB_LOADED
                   : TASKSTATE_NOTLOADED;
-              tmpStatus.name = err.errCode === '8020' ? 'Loaded' : 'Not Loaded';
               this.status = tmpStatus;
               this.statusChange.emit(this.status);
             } else {
@@ -743,32 +751,14 @@ export class ProgramEditorService {
   }
 }
 
-export function getStatusString(stat: number): string {
-  switch (stat) {
-    case TASKSTATE_RUNNING:
-      return 'Running';
-    case TASKSTATE_STOPPED:
-      return 'Stopped';
-    case TASKSTATE_ERROR:
-      return 'Error';
-    case TASKSTATE_READY:
-      return 'Ready';
-    case TASKSTATE_KILLED:
-      return 'Killed';
-    default:
-      return 'UNKNOWN STATE (' + stat + ')';
-  }
-}
-
 export class ProgramStatus {
+  
   statusCode: number = null;
   sourceLine: number = null;
   programLine: number = null;
-  name: string = null;
 
   constructor(status: string) {
     if (status === null || status === 'No such task') {
-      this.name = 'Not Loaded';
       this.statusCode = TASKSTATE_NOTLOADED;
       return;
     }
@@ -779,7 +769,6 @@ export class ProgramStatus {
     let parts = status.split(' ');
     this.sourceLine = Number(parts[0]);
     this.programLine = Number(parts[3]);
-    this.name = getStatusString(this.statusCode);
   }
 }
 

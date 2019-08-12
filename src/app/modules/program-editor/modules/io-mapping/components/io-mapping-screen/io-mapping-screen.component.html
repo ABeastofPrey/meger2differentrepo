@@ -1,5 +1,10 @@
 <div class="wrapper">
-	<h1>{{ 'ios.mapping' | translate }}</h1>
+  <div class="center-vertical">
+    <h1 style="flex:1;">{{ 'ios.mapping' | translate }}</h1>
+    <button mat-fab color="primary" (click)="refresh()" style="margin: 8px;">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
 	<as-split direction="horizontal">
 		<as-split-area size="15">
 			<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">

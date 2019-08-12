@@ -9,10 +9,29 @@
   margin-right: -24px;
   margin-bottom: -24px;
 }
-.display {
-  width: 100%;
+.input-wrapper {
+  margin-bottom: 12px;
+}
+.input-container {
+  overflow: hidden;
+  margin-right: 16px;
+  position: relative;
+  white-space: pre;
+  flex:1;
+  height: 50px;
+}
+.placeholder {
+  font-size: 14px;
+  font-weight: bold;
+}
+.display{
   font-size: 24px;
   font-family: monospace;
+  position: absolute;
+  left: 0;
+  padding-right: 14px;
+  box-sizing: border-box;
+  min-width: 100%;
 }
 .display button {
   margin-left: 24px;
@@ -63,5 +82,4 @@
   background: #888;
   height: 24px;
   position: absolute;
-  top: 12px;
 }

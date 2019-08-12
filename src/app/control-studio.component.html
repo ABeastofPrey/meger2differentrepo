@@ -2,3 +2,9 @@
 <main [@fadeAnimation]="getRouterOutletState(o)" class="{{ env.platform.name }}" [class.tablet-ui]="cmn.isTablet">
 	<router-outlet #o="outlet"></router-outlet>
 </main>
+<div class="alert center-vertical-horizontal mat-typography" *ngIf="!landscape">
+  <div>
+    <mat-icon>screen_rotation</mat-icon>
+    {{ 'error.orientation' | translate }}
+  </div>
+</div>

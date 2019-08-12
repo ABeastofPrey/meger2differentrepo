@@ -261,6 +261,7 @@ export class ScreenManagerService {
         'restore.success',
         'home.addFeature.success',
         'error.firmware_update',
+        'ios.updating_succuss',
         this.Version,
       ])
       .subscribe(words => {
@@ -274,6 +275,9 @@ export class ScreenManagerService {
       switch (fromPath) {
         case 'firmware':
           msg = 'Firmware update was done succesfully!';
+          break;
+        case 'io':
+          msg = this.words['ios.updating_succuss'];
           break;
         case 'robot':
           msg = 'Robot configuration was changed succesfully!';

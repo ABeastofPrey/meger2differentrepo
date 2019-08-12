@@ -31,6 +31,8 @@ import { IoSelectorDialogComponent } from '../../components/io-selector-dialog/i
 import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { ControlStudioGestureConfig } from './cs-gesture-config';
 import { ClickOnceDirective } from '../../directives/click-once.directive';
+import {PassPipe} from '../core/pipes/space-to-nbsp.pipe';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -94,6 +96,7 @@ import { ClickOnceDirective } from '../../directives/click-once.directive';
     KeyboardDialog,
     IoSelectorDialogComponent,
     ClickOnceDirective,
+    PassPipe
   ],
   entryComponents: [
     YesNoDialogComponent,

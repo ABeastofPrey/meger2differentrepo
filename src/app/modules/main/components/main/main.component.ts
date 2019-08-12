@@ -23,7 +23,6 @@ import {
 } from '@angular/router';
 import { JogSettingsDialogComponent } from '../../../../components/jog-settings-dialog/jog-settings-dialog.component';
 import { MatDialog, MatSidenav } from '@angular/material';
-import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { TourService } from 'ngx-tour-md-menu';
 import { environment } from '../../../../../environments/environment';
 import {
@@ -174,22 +173,22 @@ export class MainComponent implements OnInit {
         // TP LIB IS NOT AVAILABLE
         this.screenManager.openedControls = false;
       } else {
-        const tourQuestion = localStorage.getItem('tourQuestion');
-        if (tourQuestion === null || !tourQuestion) {
-          localStorage.setItem('tourQuestion', 'true');
-          this.trn.get('main.tour').subscribe(data => {
-            this.dialog
-              .open(YesNoDialogComponent, {
-                data: data,
-              })
-              .afterClosed()
-              .subscribe(ret => {
-                if (ret) {
-                  this.tour.start();
-                }
-              });
-          });
-        }
+        /*const tourQuestion = localStorage.getItem('tourQuestion');
+          if (tourQuestion === null || !tourQuestion) {
+            localStorage.setItem('tourQuestion', 'true');
+            this.trn.get('main.tour').subscribe(data => {
+              this.dialog
+                .open(YesNoDialogComponent, {
+                  data: data,
+                })
+                .afterClosed()
+                .subscribe(ret => {
+                  if (ret) {
+                    this.tour.start();
+                  }
+                });
+            });
+          }*/
       }
     });
     this.login.isAuthenticated

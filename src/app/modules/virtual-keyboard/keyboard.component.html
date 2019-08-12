@@ -1,31 +1,33 @@
-<div class="wrapper virtual-keyboard tablet-ui">
-	<mat-form-field class="display">
-		<input
-			disabled
-			matInput
-			placeholder="{{ placeholder }}"
-			type="{{ inputType === 'password' ? 'password' : 'text' }}"
-			[value]="currValue"
-			#displayInput
-			(touchstart)="onInputTouch($event)"
-		/>
-		<div class="cursor blink" *ngIf="data.keyboardType !== 'numeric'" [style.left.px]="cursorX"></div>
-		<button matSuffix mat-mini-fab (click)="up()" color="accent" *ngIf="data.showArrows && terminal.history.length > 0">
-			<mat-icon>arrow_upward</mat-icon>
-		</button>
-		<button
-			matSuffix
-			mat-mini-fab
-			(click)="down()"
-			color="accent"
-			*ngIf="data.showArrows && terminal.history.length > 0"
-		>
-			<mat-icon>arrow_downward</mat-icon>
-		</button>
-		<button matSuffix mat-fab (click)="accept()" color="primary">
-			<mat-icon>done</mat-icon>
-		</button>
-	</mat-form-field>
+<div class="wrapper virtual-keyboard tablet-ui mat-typography">
+  <div class="input-wrapper center-vertical">
+    <div class="input-container">
+      <div class="placeholder mat-subtitle-color">{{ placeholder }}</div>
+      <div class="display"
+      #displayInput
+      (panstart)="onSwipe($event,'start')"
+      (panmove)="onSwipe($event,'move')"
+      (panend)="onSwipe($event,'end')"
+      (touchstart)="onInputTouch($event)">
+        <div>{{data.keyboardType !== 'password' ? currValue : (currValue | passPipe)}}</div>
+      </div>
+      <div class="cursor blink" *ngIf="data.keyboardType !== 'numeric' && cursorInitDone" [style.left.px]="cursorX"></div>
+    </div>
+    <button matSuffix mat-mini-fab (click)="up()" color="accent" *ngIf="data.showArrows && terminal.history.length > 0">
+      <mat-icon>arrow_upward</mat-icon>
+    </button>
+    <button
+      matSuffix
+      mat-mini-fab
+      (click)="down()"
+      color="accent"
+      *ngIf="data.showArrows && terminal.history.length > 0"
+    >
+      <mat-icon>arrow_downward</mat-icon>
+    </button>
+    <button matSuffix mat-fab (click)="accept()" color="primary">
+      <mat-icon>done</mat-icon>
+    </button>
+  </div>
 	<div class="keyboard">
 		<div class="row" *ngFor="let row of layout">
 			<button

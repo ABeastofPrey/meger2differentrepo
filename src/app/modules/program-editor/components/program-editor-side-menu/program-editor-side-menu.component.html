@@ -1,7 +1,4 @@
 <div class="wrapper mat-typography">
-	<div *ngIf="prj.isLoading" class="center-block">
-		<img src="assets/pics/{{ env.platform.spinner }}" />
-	</div>
 	<div class="project-tree" *ngIf="currProject && service.modeToggle === 'prj'">
 		<div class="title">{{ currProject.name }}</div>
 		<mat-tree
@@ -56,8 +53,11 @@
 						</span>
 						<span class="status" *ngIf="node.ref && node.ref.status !== -1"
 							[class.status-running]="node.ref && node.ref.status === 1">
-							({{ getStatusString(node.ref.status) }})
+							({{ service.getStatusString(node.ref.status) }})
 						</span>
+            <span class="status" *ngIf="node.type === 'Dependencies'">
+              ({{ ('projects.status.' + (currProject.dependenciesLoaded ? '7' : '-1')) | translate }})
+            </span>
 					</div>
 					<ul [class.invisible]="!nestedTreeControl.isExpanded(node)"
 						[id]="node.type + (node.name && node.name.length > 0 ? '-' + node.name : '') + '-ul'">
@@ -77,7 +77,7 @@
 		<div class="menu mat-elevation-z3" [style.top]="menuTop" [style.left]="menuLeft">
 			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Apps'">
 				<button mat-button (click)="newApp()">
-					<mat-icon class="primary-light">add</mat-icon>{{ 'projects.toolbar.new_app' | translate }}...
+					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_app' | translate }}...
 				</button>
 			</div>
 			<!-- new background task -->
@@ -87,37 +87,49 @@
 				</button>
 			</div>
 			<!-- end -->
+      <div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependencies'">
+				<button mat-button (click)="toggleDependencies()">
+          <mat-icon color="primary">
+            {{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}  
+          </mat-icon>
+          {{ (prj.currProject.value.dependenciesLoaded ? 'projects.toolbar.dep_unload' : 'projects.toolbar.dep_load') | translate }}
+				</button>
+        <mat-divider></mat-divider>
+        <button mat-button (click)="newDep()">
+					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_dep' | translate }}...
+				</button>
+			</div>
 			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'App'">
 				<button mat-button (click)="runApp(lastSelectedNode.name)"
 					*ngIf="lastSelectedNode.ref && lastSelectedNode.ref.status !== 2">
-					<mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run' | translate }}
+					<mat-icon color="primary">play_arrow</mat-icon>{{ 'projects.toolbar.run' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
 				<button mat-button (click)="newLib(lastSelectedNode.name)">
-					<mat-icon class="primary-light">add</mat-icon>{{ 'projects.toolbar.new_lib' | translate }}...
+					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_lib' | translate }}...
 				</button>
 				<mat-divider></mat-divider>
 				<button mat-button (click)="renameApp(lastSelectedNode.name)">
-					<mat-icon class="primary-light">edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}
+					<mat-icon color="primary">edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}
 					{{ lastSelectedNode.name }}...
 				</button>
 				<button mat-button (click)="saveAppAs(lastSelectedNode.name)">
-					<mat-icon class="primary-light">save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...
+					<mat-icon color="primary">save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...
 				</button>
 				<mat-divider></mat-divider>
 				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name)">
-					<mat-icon class="primary-light">delete</mat-icon>{{ 'delete' | translate }}
+					<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
 			</div>
 			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Libraries'">
 				<button mat-button (click)="newLib()">
-					<mat-icon class="primary-light">add</mat-icon>{{ 'projects.toolbar.new_lib' | translate }}...
+					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_lib' | translate }}...
 				</button>
 			</div>
 			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Library'">
 				<button mat-button color="warn" (click)="deleteLib()">
-					<mat-icon class="primary-light">delete</mat-icon>{{ 'delete' | translate }}
+					<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
 			</div>
@@ -138,6 +150,11 @@
 				<mat-divider></mat-divider>
 				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name, true)">
 					<mat-icon class="primary-light">delete</mat-icon>{{ 'delete' | translate }}
+					{{ lastSelectedNode.name }}
+				</button>
+      <div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependency'">
+				<button mat-button color="warn" (click)="deleteDep()">
+					<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
 			</div>

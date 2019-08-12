@@ -11,7 +11,7 @@
 		<button mat-button color="primary" mat-dialog-close cdkFocusInitial>
 			{{ data.no }}
 		</button>
-		<button mat-raised-button color="primary" (click)="yes()">
+		<button mat-raised-button [color]="data.warnBtn ? 'warn' : 'primary'" (click)="yes()">
 			{{ data.yes }}
 		</button>
 	</div>

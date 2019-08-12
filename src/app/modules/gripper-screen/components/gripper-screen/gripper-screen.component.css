@@ -65,5 +65,8 @@ mat-tree,
   padding: 8px;
 }
 .row mat-form-field:not(.payload) {
-  width: 100px;
+  width: 150px;
+}
+.helper {
+  right: 0;
 }

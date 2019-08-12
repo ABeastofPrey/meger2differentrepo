@@ -1,6 +1,9 @@
 <div class="wrapper" [class.tablet-ui]="cmn.isTablet">
 	<program-toolbar tourAnchor="project-toolbar-1" *ngIf="!login.isViewer"></program-toolbar>
 	<div class="blocker" *ngIf="prj.isLoading"></div>
+  <div *ngIf="prj.isLoading" class="center-block">
+		<img src="assets/pics/{{ env.platform.spinner }}" />
+	</div>
 	<as-split direction="horizontal" (dragEnd)="onDragEnd()" unit="pixel">
 		<as-split-area size="210">
 			<program-editor-side-menu class="mat-elevation-z1"></program-editor-side-menu>
@@ -67,14 +70,14 @@
 								<div class="separator"></div>
 								<img
 									src="assets/pics/icons/load.png"
-									*ngIf="!login.isViewer"
+									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
 									(click)="service.load()"
 									matTooltip="{{ 'projects.toolbar.save_load' | translate }}"
 									[class.disabled]="service.status.statusCode !== taskStates[0]"
 								/>
 								<img
 									src="assets/pics/icons/unload.png"
-									*ngIf="!service.fileRef && !login.isViewer"
+									*ngIf="!service.fileRef && !login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
 									(click)="service.unload()"
 									matTooltip="{{ 'projects.toolbar.unload' | translate }}"
 									[class.disabled]="service.status.statusCode === taskStates[0]"
@@ -107,29 +110,29 @@
 									[class.disabled]="service.status.statusCode !== taskStates[1]"
 									>pause</mat-icon
 								>
-								<div class="separator" *ngIf="!login.isViewer"></div>
+								<div class="separator" *ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"></div>
 								<img
 									src="assets/pics/icons/step_over.png"
-									*ngIf="!login.isViewer"
+									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
 									(click)="service.stepOver()"
 									matTooltip="{{ 'projects.toolbar.stp_over' | translate }}"
 									[class.disabled]="isStepDisabled"
 								/>
 								<img
 									src="assets/pics/icons/step_into.png"
-									*ngIf="!login.isViewer"
+									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
 									(click)="service.stepInto()"
 									matTooltip="{{ 'projects.toolbar.stp_into' | translate }}"
 									[class.disabled]="isStepDisabled"
 								/>
 								<img
 									src="assets/pics/icons/step_out.png"
-									*ngIf="!login.isViewer"
+									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
 									(click)="service.stepOut()"
 									matTooltip="{{ 'projects.toolbar.stp_out' | translate }}"
 									[class.disabled]="isStepDisabled"
 								/>
-								<div class="separator" *ngIf="!login.isViewer"></div>
+								<div class="separator" *ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"></div>
 								<div class="status" *ngIf="service.status">
 									{{ 'status' | translate }}:
 									<span
@@ -138,7 +141,7 @@
 											service.status.statusCode === taskStates[0] || service.status.statusCode === taskStates[3]
 										"
 									>
-										{{ service.status.name }}
+										{{ service.getStatusString(service.status.statusCode) }}
 									</span>
 								</div>
 							</div>

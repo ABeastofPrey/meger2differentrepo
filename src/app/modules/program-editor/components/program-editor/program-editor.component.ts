@@ -17,6 +17,7 @@ import {
 } from '../../../core';
 import { CommonService } from '../../../core/services/common.service';
 import { projectPoints } from '../program-editor-side-menu/program-editor-side-menu.component';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'program-editor',
@@ -24,8 +25,10 @@ import { projectPoints } from '../program-editor-side-menu/program-editor-side-m
   styleUrls: ['./program-editor.component.scss'],
 })
 export class ProgramEditorComponent implements OnInit {
+  
   pPoints = projectPoints;
   appDescEditMode: boolean = false;
+  env = environment;
 
   constructor(
     public service: ProgramEditorService,

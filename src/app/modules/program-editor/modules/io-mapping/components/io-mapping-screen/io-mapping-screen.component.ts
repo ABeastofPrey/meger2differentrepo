@@ -4,6 +4,7 @@ import {
   WebsocketService,
   MCQueryResponse,
   ProjectManagerService,
+  ApiService,
 } from '../../../../../core';
 import { IoModule } from '../../../../../core/models/io/io-module.model';
 import { NestedTreeControl } from '@angular/cdk/tree';
@@ -11,11 +12,14 @@ import {
   MatTreeNestedDataSource,
   MatSlideToggleChange,
   MatSnackBar,
+  MatDialog,
 } from '@angular/material';
 import { Io } from '../../../../../core/models/io/io.model';
 import { NgZone } from '@angular/core';
 import { ApplicationRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import {UpdateDialogComponent} from '../../../../../../components/update-dialog/update-dialog.component';
+import {YesNoDialogComponent} from '../../../../../../components/yes-no-dialog/yes-no-dialog.component';
 
 export class TreeNode {
   children: TreeNode[] = [];
@@ -60,11 +64,13 @@ export class IoMappingScreenComponent implements OnInit {
     private zone: NgZone,
     private ref: ApplicationRef,
     public prj: ProjectManagerService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private dialog: MatDialog,
+    private api: ApiService
   ) {
     this.treeControl = new NestedTreeControl<TreeNode>(this._getChildren);
     this.dataSource = new MatTreeNestedDataSource();
-    this.trn.get(['changeOK', 'changeError']).subscribe(words => {
+    this.trn.get(['changeOK', 'changeError', 'ios.updating','ios.updating_confirm','button.cancel','button.update']).subscribe(words => {
       this.words = words;
     });
   }
@@ -165,6 +171,46 @@ export class IoMappingScreenComponent implements OnInit {
           this.snack.open(this.words['changeOK'], '', { duration: 1000 });
         }
       });
+  }
+  
+  refresh() {
+    this.dialog.open(YesNoDialogComponent, {
+      disableClose: true,
+      data: {
+        title: this.words['ios.updating'],
+        msg: this.words['ios.updating_confirm'],
+        yes: this.words['button.update'],
+        no: this.words['button.cancel'],
+      },
+      maxWidth: '400px'
+    }).afterClosed().subscribe(ret => {
+      if (!ret) return;
+      this.dialog.open(UpdateDialogComponent, {
+        disableClose: true,
+        width: '100%',
+        height: '100%',
+        maxWidth: '100%',
+        closeOnNavigation: false,
+        data: this.words['ios.updating'],
+        id: 'update',
+      });
+      this.ws.updateFirmwareMode = true;
+      this.ws.query('?iomap_remap'); // ALSO REBOOTS MC!
+      setTimeout(() => {
+        let ok = false;
+        let interval = setInterval(() => {
+          if (ok) return;
+          this.api
+            .getFile('isWebServerAlive.HTML')
+            .then(ret => {
+              ok = true;
+              clearInterval(interval);
+              location.href = location.href + '?from=io';
+            })
+            .catch(err => {});
+        }, 2000);
+      }, 10000);
+    });
   }
 
   startDataRefreshInterval() {

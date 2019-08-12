@@ -23,6 +23,7 @@ import { LangService } from './services/lang.service';
 import { KeywordService } from './services/keywords.service';
 import { CommonService } from './services/common.service';
 import { TaskFilterPipe } from '../task-manager/task-filter.pipe';
+import {PassPipe} from './pipes/space-to-nbsp.pipe';
 
 @NgModule({
   imports: [CommonModule],
@@ -49,6 +50,7 @@ import { TaskFilterPipe } from '../task-manager/task-filter.pipe';
     KeywordService,
     CommonService,
     TaskFilterPipe,
-  ],
+    PassPipe
+  ]
 })
 export class CoreModule {}

@@ -32,8 +32,8 @@ export const environment = {
   appName_Kuka: 'KUKA.ControlStudio',
   api_url: 'http://10.4.20.51:1207',
   ip: '10.4.20.51',
-  gui_ver: 'v1.1.4-dev 2019-08-04',
-  compatible_webserver_ver: 'v3.1.5',
+  gui_ver: 'v1.1.5-dev 2019-08-12',
+  compatible_webserver_ver: 'v3.1.6',
   platform: Platforms.Kuka,
   platforms: Platforms,
 };

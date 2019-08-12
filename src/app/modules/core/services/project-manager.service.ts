@@ -21,6 +21,7 @@ export class ProjectManagerService {
   currProject: BehaviorSubject<MCProject> = new BehaviorSubject(null);
   onExpand: EventEmitter<number> = new EventEmitter();
   onExpandLib: EventEmitter<{ app: string; lib: string }> = new EventEmitter();
+  onExpandDep: EventEmitter<string> = new EventEmitter();
   fileRefreshNeeded: EventEmitter<any> = new EventEmitter();
   onAppStatusChange: BehaviorSubject<any> = new BehaviorSubject(null);
   activeProject: boolean = false; // TRUE IF ONE APP IS LOADED AND NOT KILLED
@@ -91,7 +92,9 @@ export class ProjectManagerService {
             waiting = false;
             if (this.oldStat === ret.result) return;
             this.oldStat = ret.result;
-            if (ret.result.length === 0) {
+            const parts = ret.result.split(';');
+            this.currProject.value.dependenciesLoaded = parts[1] === '1';
+            if (parts[0].length === 0) {
               this.activeProject = false;
               this.mgr.projectActiveStatusChange.next(this.activeProject);
               for (let app of this.currProject.value.apps) {
@@ -100,7 +103,7 @@ export class ProjectManagerService {
               this.onAppStatusChange.next(null);
               return;
             }
-            let status = ret.result.split(',');
+            let status = parts[0].split(',');
             let i = 0;
             let activeProject = false;
             while (
@@ -195,8 +198,18 @@ export class ProjectManagerService {
     });
   }
 
-  private refreshDependencies(proj: MCProject): Promise<any> {
-    return Promise.resolve();
+  refreshDependencies(proj: MCProject): Promise<any> {
+    this.isLoading = true;
+    const cmd = '?PRJ_GET_USER_DEPENDENCIES("' + proj.name + '")';
+    return this.ws.query(cmd).then((ret: MCQueryResponse)=>{
+      if (ret.err || ret.result.length === 0) {
+        proj.dependencies = [];
+        this.isLoading = false;
+        return;
+      }
+      proj.dependencies = ret.result.split(',');
+      this.isLoading = false;
+    });
   }
 
   private refreshAppIds(proj: MCProject): Promise<any> {

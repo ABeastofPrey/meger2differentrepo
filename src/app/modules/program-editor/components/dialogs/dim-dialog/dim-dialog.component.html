@@ -12,11 +12,13 @@
 					ktype="text"
 				/>
 			</mat-form-field>
-			<mat-select placeholder="{{ 'variables.type' | translate }}" [(ngModel)]="varType">
-				<mat-option value="long">{{ 'long' | translate }}</mat-option>
-				<mat-option value="double">{{ 'double' | translate }}</mat-option>
-				<mat-option value="string">{{ 'string' | translate }}</mat-option>
-			</mat-select>
+      <mat-form-field>
+        <mat-select placeholder="{{ 'variables.type' | translate }}" [(ngModel)]="varType">
+          <mat-option value="long">{{ 'long' | translate }}</mat-option>
+          <mat-option value="double">{{ 'double' | translate }}</mat-option>
+          <mat-option value="string">{{ 'string' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
 		</div>
 	</div>
 	<div class="actions">

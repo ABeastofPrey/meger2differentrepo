@@ -6,7 +6,7 @@
 			<mat-list>
 				<mat-list-item *ngIf="data.cabinetVer">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>System</h4>
+					<h4 mat-line>{{ 'about.system' | translate }}</h4>
 					<p mat-line>{{ data.cabinetVer }}</p>
 				</mat-list-item>
 				<mat-list-item>
@@ -16,47 +16,47 @@
 				</mat-list-item>
 				<mat-list-item *ngIf="data.MCVersion">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>softMC</h4>
+					<h4 mat-line>softMC ({{serial}})</h4>
 					<p mat-line>{{ data.MCVersion }}</p>
 				</mat-list-item>
 				<mat-list-item *ngIf="data.JavaVersion">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>Web Server</h4>
+					<h4 mat-line>{{ 'about.server' | translate }}</h4>
 					<p mat-line>{{ data.JavaVersion }}</p>
 				</mat-list-item>
 				<mat-list-item *ngIf="data.TPVersion">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>TP Libraries</h4>
+					<h4 mat-line>{{ 'about.tp' | translate }}</h4>
 					<p mat-line>{{ data.TPVersion }}</p>
 				</mat-list-item>
 				<mat-list-item *ngIf="data.palletLibVer">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>Pallet Library</h4>
+					<h4 mat-line>{{ 'about.pallet' | translate }}</h4>
 					<p mat-line>{{ data.palletLibVer }}</p>
 				</mat-list-item>
 				<mat-list-item *ngIf="data.gripperLibVer">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>Grippers Library</h4>
+					<h4 mat-line>{{ 'about.grippers' | translate }}</h4>
 					<p mat-line>{{ data.gripperLibVer }}</p>
 				</mat-list-item>
 				<mat-list-item *ngIf="data.payloadLibVer">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>Payloads Library</h4>
+					<h4 mat-line>{{ 'about.payloads' | translate }}</h4>
 					<p mat-line>{{ data.payloadLibVer }}</p>
 				</mat-list-item>
 				<mat-list-item *ngIf="data.LeadByNoseLibVer">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>Lead By Nose Library</h4>
+					<h4 mat-line>{{ 'about.lbn' | translate }}</h4>
 					<p mat-line>{{ data.LeadByNoseLibVer }}</p>
 				</mat-list-item>
 				<mat-list-item *ngIf="data.iomapVer">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>I/O Mapping Library</h4>
+					<h4 mat-line>{{ 'about.io' | translate }}</h4>
 					<p mat-line>{{ data.iomapVer }}</p>
 				</mat-list-item>
 				<mat-list-item *ngIf="data.mcuVer">
 					<mat-icon mat-list-icon>assignment</mat-icon>
-					<h4 mat-line>MCU Library</h4>
+					<h4 mat-line>{{ 'about.mcu' | translate }}</h4>
 					<p mat-line>{{ data.mcuVer }}</p>
 				</mat-list-item>
 			</mat-list>

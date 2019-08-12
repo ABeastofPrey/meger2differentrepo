@@ -38,7 +38,13 @@
 			{{ 'projects.toolbar.controller' | translate }}
 		</li>
 	</ul>
-	<ul class="mat-elevation-z1 prj-buttons" *ngIf="cmn.isTablet">
+	<ul class="mat-elevation-z1 prj-buttons" *ngIf="cmn.isTablet && prj.currProject.value">
+    <button (click)="toggleDependencies()" mat-raised-button color="accent" style="margin-right: 24px;">
+			<mat-icon>public</mat-icon>
+      <mat-icon class="secondary-icon">
+        {{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}
+      </mat-icon>
+		</button>
 		<button
 			(click)="stop()"
 			mat-raised-button
@@ -105,7 +111,7 @@
 	>
 		<li (click)="newApp()"><mat-icon>add</mat-icon>{{ 'projects.toolbar.app' | translate }}...</li>
 		<li (click)="newLib()"><mat-icon>add</mat-icon>{{ 'projects.toolbar.lib' | translate }}...</li>
-		<li style="cursor: not-allowed;"><mat-icon>add</mat-icon>{{ 'projects.toolbar.dep' | translate }}...</li>
+		<li (click)="newDep()"><mat-icon>add</mat-icon>{{ 'projects.toolbar.dep' | translate }}...</li>
 	</ul>
 	<ul
 		class="dropdown-menu menu3"
@@ -125,6 +131,12 @@
 		<mat-divider></mat-divider>
 		<li (click)="run()"><mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run_prj' | translate }}</li>
 		<li (click)="stop()"><mat-icon>stop</mat-icon>{{ 'projects.toolbar.stop_prj' | translate }}</li>
+    <li (click)="toggleDependencies()">
+      <mat-icon>public</mat-icon>
+      <mat-icon class="secondary-icon">
+        {{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}
+      </mat-icon>
+      {{ (prj.currProject.value.dependenciesLoaded ? 'projects.toolbar.dep_unload' : 'projects.toolbar.dep_load') | translate }}</li>
 		<mat-divider></mat-divider>
 		<li (click)="runAllBGTasks()">
 			<mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run_all_bg_tasks' | translate }}

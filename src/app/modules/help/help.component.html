@@ -1,14 +1,14 @@
 <div class="wrapper">
 	<div class="title">{{ 'help.title' | translate }}</div>
 	<mat-card class="main">
-		<a
+		<!--<a
 			(click)="startTour()"
 			[matTooltip]="online ? null : ('help.tourDisabled' | translate)"
 			[class.disabled]="!online"
 		>
 			<mat-icon>touch_app</mat-icon>
 			<div>{{ env.appName }} {{ 'help.tour' | translate }}</div>
-		</a>
+		</a>-->
 		<a *ngIf="isNotKuka" href="http://softmc.servotronix.com/wiki/welcome" target="_blank">
 			<img src="assets/pics/wiki.png" />
 			<div>{{ 'help.wiki' | translate }}</div>

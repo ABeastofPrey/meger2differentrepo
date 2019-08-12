@@ -48,8 +48,9 @@ export class SimulatorV2Component implements OnInit {
       this.jointsAsArr = ret;
     });
     this.sim.getScene();
+    this.loaded = this.sim.shouldShowSimulator ? false : true;
   }
-
+  
   openRecording() {
     if (!this.liveMode) {
       this.player.unload();
@@ -132,6 +133,7 @@ export class SimulatorV2Component implements OnInit {
   }
 
   ngOnDestroy() {
+    this.sim.selected = null;
     this.player.unload();
     this.notifier.next(true);
     this.notifier.unsubscribe();

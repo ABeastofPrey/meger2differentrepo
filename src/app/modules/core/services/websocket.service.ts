@@ -182,13 +182,7 @@ export class WebsocketService {
 
   query(query) {
     return new Promise((resolve, reject) => {
-      //let start = new Date().getTime();
-      /*let timeout = setTimeout(()=>{
-        console.log('TIMEOUT REACHED FOR ' + query);
-        this.reset();
-      },10000);*/
       this.send(query, false, function(result, cmd: string, err) {
-        //clearTimeout(timeout);
         resolve({ result: result, cmd: cmd, err: err });
       });
     }).catch(reason => {});

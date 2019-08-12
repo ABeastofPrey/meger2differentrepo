@@ -6,7 +6,10 @@
 				<img [src]="l.profilePic" />
 			</div>
 			<p mat-line class="mat-subtitle-color">{{ l.username }} | {{ l.time | date }}</p>
-			<h4 mat-line class="mat-title-color">{{ l.msg }}</h4>
+			<h4 mat-line class="mat-title-color">
+        <span *ngIf="l.data.length === 0">{{ ('log.' + l.msg) | translate}}.</span>
+        <span *ngIf="l.data.length === 1">{{ ('log.' + l.msg) | translate}} {{l.data[0]}}</span>
+      </h4>
 		</mat-list-item>
 	</mat-list>
 	<mat-list style="border-left: 1px solid #ccc;" *ngIf="stat.errorHistory.length">

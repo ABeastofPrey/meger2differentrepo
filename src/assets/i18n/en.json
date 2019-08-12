@@ -1,18 +1,17 @@
 {
   "404": "Page Not Found",
   "about": {
+    "grippers": "Grippers Library",
+    "io": "I/O Mapping Library",
+    "lbn": "Lead By Nose Library",
+    "mcu": "MCU Version",
+    "pallet": "Pallets Library",
+    "payloads": "Payloads Library",
+    "server": "Web Server",
+    "subtitle": "Version information for this softMC controller",
+    "system": "System",
     "title": "About",
-    "subtitle": "Version information for this softMC controller"
-  },
-  "version": {
-    "softMCDes": "This is soft mc",
-    "GUIDes": "This is GUI",
-    "webServerDes": "This is web server",
-    "successDialogTitle": "Success!",
-    "successDialogMsg": "The OS upgrade is successful. The new version is: ",
-    "errorDialogTitle": "Failed!",
-    "errorDialogMsg": "The OS upgrade is failed, please reinstall the old version: ",
-    "releaseNoteTitle": "ControlStudion+ Release Note"
+    "tp": "TP Libraries"
   },
   "acknowledge": "ACKNOWLEDGE",
   "actions": "Actions",
@@ -54,6 +53,13 @@
   "base": "Base",
   "bases": "Bases",
   "binary": "Binary",
+  "blending": {
+    "continous": "Continous Path",
+    "method": "Blending Method",
+    "none": "None",
+    "overlap": "Motion Overlap",
+    "superPosition": "SuperPosition"
+  },
   "button": {
     "add": "ADD",
     "calibrate": "CALIBRATE",
@@ -84,6 +90,7 @@
     "send": "SEND",
     "set_current": "SET AS CURRENT",
     "teach": "TEACH",
+    "update": "UPDATE",
     "upload": "UPLOAD",
     "reset": "RESET",
     "verify": "VERIFY",
@@ -99,6 +106,7 @@
   "changeError": "An error occurred, changes not saved",
   "changeOK": "Changes saved",
   "checkbox_enable": "Allow selection",
+  "circlePoint": "CirclePoint",
   "clear_msgs": "Clear messages",
   "close": "Close",
   "connecting": "Connecting",
@@ -186,6 +194,7 @@
     "conn_mc": "Can't connect to softMC",
     "conn_ws": "Can't establish a websocket connection",
     "err": "Error",
+    "estop": "E-STOP IS PRESSED",
     "field_too_short": "Input is too short",
     "firmware_update": {
       "title": "Firmware Update Failed",
@@ -193,7 +202,9 @@
     },
     "invalid_feature": "Invalid feature",
     "invalid_full_name": "A Full name is made of a First AND Last name",
-    "invalid_webserver": "Use web server v{{ver}} (current is {{current}})"
+    "invalid_webserver": "Use web server v{{ver}} (current is {{current}})",
+    "orientation": "ControlStudio+ works in Landscape mode only.",
+    "tp": "Could not load TP Libraries, check console log for more details..."
   },
   "errorHistory": {
     "button": {
@@ -225,6 +236,7 @@
   "filter": "Filter",
   "frame": "Motion Frame",
   "frames": {
+    "BASE": "BASE",
     "calibration": {
       "origin": "Origin",
       "posX": "Position X",
@@ -243,20 +255,31 @@
       "title": "Delete {{name}}?",
       "title_multi": "Delete {{num}} items?"
     },
+    "JOINT": "JOINT",
     "name": ["Tool Name", "Base Name", "Machine Table Name", "Work Piece Name"],
-    "new": ["Add Tool", "Add Base", "Add Machine Table", "Add Work Piece"]
+    "new": ["Add Tool", "Add Base", "Add Machine Table", "Add Work Piece"],
+    "TOOL": "TOOL",
+    "WORLD": "WORLD"
   },
   "grippers": {
     "btnCycle": "CYCLE",
     "btnTest": "TEST",
+    "close": "Close Gripper",
     "cycle": "Cycle Test",
     "cycle_time": "Cycle Time",
+    "dout1": "Primary output",
+    "dout2": "Secondary output",
     "ef": "End Effector",
+    "fb1": "Primary feedback",
+    "fb2": "Secondary feedback",
     "grp": "Gripper",
     "new_ef": "New End Effector",
     "new_grp": "New Gripper",
+    "open": "Open Gripper",
     "pay_ef": "End Effector Payload",
     "pay_item": "Item Payload",
+    "set": "Set Gripper",
+    "sleep": "Sleep Time",
     "test": "Test Gripper",
     "use_tool": "Use Tool"
   },
@@ -389,7 +412,10 @@
       "2": "Name",
       "3": "Description",
       "4": "Simulated"
-    }
+    },
+    "updating": "Updating I/O modules",
+    "updating_confirm": "This will reboot softMC, please make sure you have saved all your changes before updating the I/O modules.",
+    "updating_succuss": "I/O modules updated successfuly"
   },
   "jogScreen": {
     "menu": ["Teach", "Tool Align"],
@@ -441,6 +467,15 @@
   "loading": "Loading",
   "location": "Location",
   "locations": "Locations",
+  "log": {
+    "file_del": "Deleted a file",
+    "firmware": "Updated firmware with",
+    "login": "Has logged in",
+    "upload": "Uploaded file",
+    "user_del": "Deleted user",
+    "user_edit": "Edited user",
+    "user_new": "created a new user"
+  },
   "long": "Long",
   "longs": "Longs",
   "main": {
@@ -484,6 +519,8 @@
     "name": "Pallet Name",
     "selected": "Selected Pallet",
     "type": "Pallet Type",
+    "type_CUSTOM": "Custom",
+    "type_grid": "Grid",
     "wizard": {
       "3d_disable": "Too many items - 3D Preview is disabled",
       "app": "Approach",
@@ -620,6 +657,7 @@
       "title_pick": "Insert Pick Command",
       "title_place": "Insert Place Command",
       "title_plt_index": "Insert Get Pallet Index Command",
+      "title_plt_status": "Insert Get Pallet Status Command",
       "title_waitForMotion": "Insert WaitForMotion Command"
     },
     "pallet_index": {
@@ -690,6 +728,18 @@
     "open": "OPEN PROJECT",
     "saved": "File Saved",
     "select": "Select a Project",
+    "status": {
+      "-1": "Not Loaded",
+      "999": "Unknown State",
+      "1": "Running",
+      "2": "Stopped",
+      "4": "Error",
+      "5": "Terminated",
+      "7": "Ready",
+      "9": "Kill Start",
+      "10": "Killed",
+      "11": "Loaded Library"
+    },
     "toolbar": {
       "app": "App",
       "app_create": "CREATE APP",
@@ -706,6 +756,10 @@
       "del_prj_other": "Delete other Project(s)",
       "del_prj_title": "Delete project {{name}}?",
       "dep": "Dependency",
+      "dep_create": "CREATE DEPENDENCY",
+      "dep_load": "Load Dependencies",
+      "dep_name": "Dependency Name",
+      "dep_unload": "Unload dependencies",
       "dialog_conflict": {
         "title": "Settings Conflict Detected",
         "msg": "The project settings are different from the currently active settings. Which settings do you want to use?",
@@ -733,6 +787,7 @@
       "menu_download_files": "Download selected",
       "new": "New",
       "new_app": "New App",
+      "new_dep": "New Dependency",
       "new_file": "New File",
       "new_folder": "New Folder",
       "new_lib": "New Library",
@@ -869,6 +924,8 @@
     "del_app_title": "Delete App {{name}}?",
     "del_bg_msg": "This operation cannot be undone, and will remove this task. Are you sure you wish to delete it?",
     "del_bg_title": "Delete Task {{name}}?",
+    "del_dep_msg": "This operation cannot be undone. Are you sure you wish to delete this dependency?",
+    "del_dep_title": "Delete Dependency {{name}}?",
     "del_lib_msg": "This operation cannot be undone. Are you sure you want to delete this library?",
     "del_lib_title": "Delete Library {{name}}?",
     "dirty": "File has changed",
@@ -997,6 +1054,7 @@
     "cube": "Cube",
     "custom": "User Object",
     "cylinder": "Cylinder",
+    "disabled": "No available 3D model exists for the current robot - 3D Preview is disabled.",
     "load_rec": "LOAD RECORDING...",
     "loading": "Loading...",
     "prop": "Property",
@@ -1043,6 +1101,7 @@
     "teach": "Teach",
     "tools": "softMC Tools"
   },
+  "targetPoint": "TargetPoint",
   "tasks": {
     "display": "Display",
     "idle": "Idle Task",
@@ -1187,6 +1246,16 @@
     "name": "Variable Name",
     "new": "Add Variable",
     "type": "Variable Type"
+  },
+  "version": {
+    "softMCDes": "This is soft mc",
+    "GUIDes": "This is GUI",
+    "webServerDes": "This is web server",
+    "successDialogTitle": "Success!",
+    "successDialogMsg": "The OS upgrade is successful. The new version is: ",
+    "errorDialogTitle": "Failed!",
+    "errorDialogMsg": "The OS upgrade is failed, please reinstall the old version: ",
+    "releaseNoteTitle": "ControlStudion+ Release Note"
   },
   "watch": {
     "context": "Context",

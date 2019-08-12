@@ -22,7 +22,7 @@
 									[disabled]="true"
 								>
 									<mat-option value="{{ dataService.selectedPallet.type }}">{{
-										dataService.selectedPallet.type
+              ('pallets.type_' + dataService.selectedPallet.type) | translate
 									}}</mat-option>
 								</mat-select>
 							</mat-form-field>

@@ -33,8 +33,6 @@ export class KeyboardDirective {
   @Output() onKeyboardClose: EventEmitter<any> = new EventEmitter();
   @Output() onLineDelete: EventEmitter<any> = new EventEmitter();
 
-  private _shiftMode: boolean = false;
-
   @HostListener('focus')
   onClick() {
     if (!this.cmn.isTablet || this.ktype === 'none' || this._dialogOpen) {
@@ -92,13 +90,15 @@ export class KeyboardDirective {
   styleUrls: ['./keyboard.component.scss'],
 })
 export class KeyboardDialog implements OnInit {
-  public ngModel: NgModel;
-  public placeholder: string;
-  public inputType: string;
-  public layout: any;
-  public ctrl: FormControlName;
-  public control: FormControl;
-  public currValue: string = '';
+  
+  ngModel: NgModel;
+  placeholder: string;
+  inputType: string;
+  layout: any;
+  ctrl: FormControlName;
+  control: FormControl;
+  currValue: string = '';
+  cursorInitDone: boolean = false;
   private onKeyboardClose: EventEmitter<any>[];
   private _shiftMode: boolean = false;
   private _moreMode: boolean = false;
@@ -106,14 +106,16 @@ export class KeyboardDialog implements OnInit {
   private lastCmdIndex = -1;
   private backKeyDown: boolean = false;
   private _cursorPos: number = 0; // index of the letter the cursor is at
-  private cursorInitDone: boolean = false;
+  private panLeft: number = 0;
 
   @ViewChild('displayInput', { static: true }) displayInput: ElementRef;
 
   get cursorX() {
     if (this.displayInput) {
-      const inputWidth = this.displayInput.nativeElement.offsetWidth;
-      const cursorPos = this._cursorPos * this.cmn.fontWidth;
+      const el = this.displayInput.nativeElement as HTMLElement;
+      const left = Math.abs(Number(el.style.left.slice(0,-2)));
+      const inputWidth = el.offsetWidth;
+      const cursorPos = this._cursorPos * this.cmn.fontWidth - left;
       return cursorPos <= inputWidth ? cursorPos : inputWidth;
     } else {
       return 0;
@@ -137,7 +139,7 @@ export class KeyboardDialog implements OnInit {
     this.layout = this.data.layout;
     this.onKeyboardClose = this.data.accept;
     this.ctrl = this.data.name;
-    this.control = this.data.ctrl ? this.data.ctrl.control : null;
+    this.control = this.data.ctrl ? this.data.ctrl.control : null;    
     if (this.ctrl && this.ctrl.name) {
       this.currValue = this.ctrl.value || '';
       this._cursorPos = this.currValue.length;
@@ -145,8 +147,11 @@ export class KeyboardDialog implements OnInit {
         this.ctrl.valueChanges.subscribe(val => {
           this.currValue = val;
           if (!this.cursorInitDone) {
-            this._cursorPos = this.currValue.length;
-            this.cursorInitDone = true;
+            setTimeout(()=>{
+              this._cursorPos = this.currValue.length;
+              this.scrollToCursor();
+              this.cursorInitDone = true;
+            },0);
           }
         });
       }
@@ -157,8 +162,11 @@ export class KeyboardDialog implements OnInit {
         this.control.valueChanges.subscribe(val => {
           this.currValue = val;
           if (!this.cursorInitDone) {
-            this._cursorPos = this.currValue.length;
-            this.cursorInitDone = true;
+            setTimeout(()=>{
+              this._cursorPos = this.currValue.length;
+              this.scrollToCursor();
+              this.cursorInitDone = true;
+            },0);
           }
         });
       }
@@ -169,22 +177,69 @@ export class KeyboardDialog implements OnInit {
         this.ngModel.valueChanges.subscribe(val => {
           this.currValue = val;
           if (!this.cursorInitDone) {
-            this._cursorPos = this.currValue.length;
-            this.cursorInitDone = true;
+            setTimeout(()=>{
+              this._cursorPos = this.currValue.length;
+              this.scrollToCursor();
+              this.cursorInitDone = true;
+            },0);
           }
         });
       }
     }
   }
+  
+  private scrollToCursor() {
+    // scroll to cursor position, if needed
+    const el = this.displayInput.nativeElement as HTMLElement;
+    const containerWidth = el.parentElement.clientWidth;
+    const charsInLine = Math.floor(containerWidth / this.cmn.fontWidth);
+    const currLeft = Number(el.style.left.slice(0,-2)) * -1;
+    let min = Math.floor(currLeft / this.cmn.fontWidth);
+    if (this._cursorPos >= min && this._cursorPos <= (min + charsInLine)) return;
+    if (this._cursorPos < min) {
+      while (this._cursorPos < min) {
+        const max = this._cursorPos;
+        min = max - charsInLine;
+      }
+      if (min < 0)
+        min = 0;
+      const left = min * this.cmn.fontWidth;
+      el.style.left = -left + 'px';
+    } else if (this._cursorPos > (min + charsInLine)) {
+      while (this._cursorPos > (min + charsInLine)) {
+        min = min + charsInLine;
+      }
+      if (min + charsInLine > this.currValue.length)
+        min = this.currValue.length - charsInLine;
+      const left = (min + 0.5) * this.cmn.fontWidth;
+      el.style.left = -left + 'px';
+    }
+  }
 
   onInputTouch(e: TouchEvent) {
-    const left = (e.target as HTMLElement).getBoundingClientRect().left;
+    const el = e.target as HTMLElement;
+    const left = el.getBoundingClientRect().left;
     const x = e.touches[0].clientX - left;
     // find nearest position
     this._cursorPos = Math.min(
-      Math.floor(Math.max(0, x / this.cmn.fontWidth)),
+      Math.floor(Math.max(0, x/this.cmn.fontWidth)),
       this.currValue.length
     );
+  }
+  
+  onSwipe(e: any, eventType: string) {
+    const el = this.displayInput.nativeElement as HTMLElement;
+    if (eventType === 'start') {
+      const left = Number(el.style.left.slice(0,-2));
+      this.panLeft = left;
+    }
+    const width = el.getBoundingClientRect().width;
+    const containerWidth = el.parentElement.clientWidth;
+    el.style.left = 
+      Math.max(
+        containerWidth - width,
+        Math.min(this.panLeft + e.deltaX,0)
+      ) + 'px';
   }
 
   onKeyUp(key: string, e: MouseEvent) {
@@ -232,6 +287,7 @@ export class KeyboardDialog implements OnInit {
           value =
             value.slice(0, this._cursorPos - 1) + value.slice(this._cursorPos);
           this._cursorPos--;
+          this.scrollToCursor();
           setTimeout(() => {
             if (!this.backKeyDown) return;
             const interval = setInterval(() => {
@@ -244,6 +300,7 @@ export class KeyboardDialog implements OnInit {
               } else {
                 clearInterval(interval);
               }
+              this.scrollToCursor();
             }, 100);
           }, 400);
         }
@@ -277,6 +334,7 @@ export class KeyboardDialog implements OnInit {
             key +
             value.substring(this._cursorPos);
           this._cursorPos++;
+          this.scrollToCursor();
         }
         break;
     }

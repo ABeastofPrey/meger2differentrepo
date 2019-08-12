@@ -3,7 +3,7 @@
 		<div class="title">{{ 'projectCommands.circle.title' | translate }}</div>
 		<div class="content">
 			<mat-form-field>
-				<mat-select placeholder="CirclePoint" [(ngModel)]="circlePoint" (selectionChange)="resetIndexCirclePoint()">
+				<mat-select placeholder="{{ 'circlePoint' | translate }}" [(ngModel)]="circlePoint" (selectionChange)="resetIndexCirclePoint()">
 					<mat-optgroup label="{{ 'joints' | translate }}" *ngIf="this.dataService.joints.length > 0"
 						><mat-option *ngFor="let data of this.dataService.joints" [value]="data"
 							>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
@@ -28,7 +28,7 @@
 				<input matInput placeholder="Angle" [(ngModel)]="angle" virtualKeyboard ktype="numeric" />
 			</mat-form-field>
 			<mat-form-field *ngIf="!data.angle">
-				<mat-select placeholder="TargetPoint" [(ngModel)]="targetPoint" (selectionChange)="resetIndexTargetPoint()">
+				<mat-select placeholder="{{ 'targetPoint' | translate }}" [(ngModel)]="targetPoint" (selectionChange)="resetIndexTargetPoint()">
 					<mat-optgroup label="{{ 'joints' | translate }}" *ngIf="this.dataService.joints.length > 0"
 						><mat-option *ngFor="let data of this.dataService.joints" [value]="data"
 							>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
@@ -62,11 +62,11 @@
 					<input matInput placeholder="Vtran [mm/s]" [(ngModel)]="vtran" virtualKeyboard ktype="numeric" />
 				</mat-form-field>
 				<mat-form-field>
-					<input matInput placeholder="Blending Percentage" [(ngModel)]="blending" virtualKeyboard ktype="numeric" />
+					<input matInput placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}" [(ngModel)]="blending" virtualKeyboard ktype="numeric" />
 					<span matSuffix>%</span>
 				</mat-form-field>
 				<mat-form-field>
-					<mat-select placeholder="Postion Trigger" [(ngModel)]="pts" multiple>
+					<mat-select placeholder="{{ 'projectSettings.position_trigger.title' | translate }}" [(ngModel)]="pts" multiple>
 						<mat-option *ngFor="let pt of ptList" [value]="pt">{{ pt }}</mat-option>
 					</mat-select>
 				</mat-form-field>
