@@ -5,9 +5,11 @@
 			<span>{{ 'button.create' | translate }}</span>
 		</button>
 		<mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="displayVarType" (change)="updateDataType()">
-			<mat-button-toggle *ngFor="let t of ['joints', 'locations', 'longs', 'doubles', 'strings']" [value]="t">
-				{{ t | translate }}
-			</mat-button-toggle>
+			<ng-container *ngFor="let t of ['joints', 'locations', 'longs', 'doubles', 'strings']">
+				<mat-button-toggle *ngIf="!useAsProjectPoints || (useAsProjectPoints && t === 'joints')" [value]="t">
+					{{ t | translate }}
+				</mat-button-toggle>
+			</ng-container>
 		</mat-button-toggle-group>
 		<button
 			*ngIf="selection.selected.length > 0"

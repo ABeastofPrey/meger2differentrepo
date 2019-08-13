@@ -109,19 +109,19 @@ export class DataScreenComponent implements OnInit {
     });
   }
 
-  filterData() {
-    if (this.data.domainIsFrame) {
-      this.dataSource.data = this.data.locations;
-      this.selection.clear();
-      return;
-    }
-    let data = [];
-    if (this.useAsProjectPoints) {
-      data = data.concat(this.data.pJoints);
-    }
-    this.dataSource.data = data;
-    this.selection.clear();
-  }
+  // filterData() {
+  //   if (this.data.domainIsFrame) {
+  //     this.dataSource.data = this.data.locations;
+  //     this.selection.clear();
+  //     return;
+  //   }
+  //   let data = [];
+  //   if (this.useAsProjectPoints) {
+  //     data = data.concat(this.data.pJoints);
+  //   }
+  //   this.dataSource.data = data;
+  //   this.selection.clear();
+  // }
 
   ngOnInit() {
     this.displayVarType = this.data.isRobotType ? 'joints' : 'longs';
@@ -144,7 +144,11 @@ export class DataScreenComponent implements OnInit {
         this._legend = this.data.robotCoordinateType.legends.map((l, i) => {
           return 'J' + (i + 1);
         });
-        this.dataSource.data = this.data.joints;
+        if (this.useAsProjectPoints) {
+          this.dataSource.data = this.data.pJoints;
+        } else {
+          this.dataSource.data = this.data.joints;
+        }
         break;
       case 'locations':
         this._legend = this.data.robotCoordinateType.all;
@@ -313,10 +317,10 @@ export class DataScreenComponent implements OnInit {
     });
   }
 
-  onDomainChange() {
-    this.selectedVar = null;
-    this.filterData();
-  }
+  // onDomainChange() {
+  //   this.selectedVar = null;
+  //   this.filterData();
+  // }
 
   deleteSelected(element: TPVariable) {
     this.trn
