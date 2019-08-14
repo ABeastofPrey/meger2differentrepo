@@ -10,6 +10,8 @@ import {
   Platform,
 } from '../../../../environments/environment';
 import { DataService } from './data.service';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { DOCUMENT } from '@angular/common';
 
 /*
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
@@ -19,6 +21,7 @@ import { DataService } from './data.service';
 })
 export class UtilsService {
   private words: any;
+  private upperRightOverlayEle = document.getElementById('overlaycover');
 
   constructor(
     private ws: WebsocketService,
@@ -27,7 +30,8 @@ export class UtilsService {
     private snack: MatSnackBar,
     private dialog: MatDialog,
     private trn: TranslateService,
-    public dataService: DataService
+    public dataService: DataService,
+    private overlayContainer: OverlayContainer
   ) {
     this.trn.get(['utils.success', 'acknowledge']).subscribe(words => {
       this.words = words;
@@ -110,5 +114,26 @@ export class UtilsService {
 
   public get IsScara(): boolean {
     return this.dataService.robotType === 'SCARA' ? true : false;
+  }
+
+  public shrinkOverlay(): void {
+    this.overlayContainer.getContainerElement().classList.add('shrink-overlay');
+    this.overlayContainer.getContainerElement().classList.remove('stretch-overlay');
+    this.upperRightOverlayEle.classList.add('upper-right-conner-overlay-stretch');
+    this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-shrink');
+  }
+
+  public stretchOverlay(): void {
+    this.overlayContainer.getContainerElement().classList.remove('shrink-overlay');
+    this.overlayContainer.getContainerElement().classList.add('stretch-overlay');
+    this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-stretch');
+    this.upperRightOverlayEle.classList.add('upper-right-conner-overlay-shrink');
+  }
+
+  public removeShrinkStretchOverlay(): void {
+    this.overlayContainer.getContainerElement().classList.remove('shrink-overlay');
+    this.overlayContainer.getContainerElement().classList.remove('stretch-overlay');
+    this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-stretch');
+    this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-shrink');
   }
 }

@@ -198,7 +198,6 @@ export class ProgramEditorAceComponent implements OnInit {
           this.setBreakpoints('');
           return;
         }
-
         if (fileName.endsWith('B') || this.service.modeToggle === 'mc')
           return this.setBreakpoints('');
         if (this.prj.currProject.value && this.service.modeToggle === 'prj') {

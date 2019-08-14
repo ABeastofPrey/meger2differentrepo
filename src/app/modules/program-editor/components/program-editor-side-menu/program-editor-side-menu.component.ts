@@ -231,7 +231,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     this.ws.query(cmd).then((res: MCQueryResponse) => {
       if (res.err) {
         console.warn(res.err);
-  }
+      }
     });
   }
 

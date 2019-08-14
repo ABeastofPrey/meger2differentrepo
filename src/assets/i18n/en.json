@@ -356,7 +356,7 @@
   },
   "topology": {
     "title": "Device Manager",
-    "errTip": "It seems that some devices have been changed, please do reset all operation of CS+ in Task Manager.",
+    "errTip": "It seems that some devices have been changed, please do reset all operation of CS in Task Manager.",
     "exTip": "Expand all",
     "colTip": "Collapse all",
     "controller": "Controller",
@@ -1245,7 +1245,9 @@
     "btn_create": "CREATE VARIABLE",
     "name": "Variable Name",
     "new": "Add Variable",
-    "type": "Variable Type"
+    "type": "Variable Type",
+    "get_current": "GET CURRENT",
+    "cannot_use_jog_tip": "Jog panel is disabled!"
   },
   "version": {
     "softMCDes": "This is soft mc",

@@ -119,17 +119,18 @@ export class MoveDialogComponent implements OnInit {
   }
 
   public createPoint(): void {
-    const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
-    this.dialog
-      .open(AddVarComponent, option)
-      .afterClosed()
-      .subscribe(addedVar => {
-        let _location = this.locations.find(x => x.name === addedVar);
-        this.location = _location
-          ? _location
-          : this.joints.find(x => x.name === addedVar);
-        this.cd.detectChanges();
-      });
+    const option = {
+      hasBackdrop: false,
+      data: { hotVariableOption: [1, 1, 0, 0, 0] }
+    };
+    this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
+      let _location = this.locations.find(x => x.name === addedVar);
+      this.location = _location ? _location : this.joints.find(x => x.name === addedVar);
+      if (this.location && this.location.isArr) {
+        this.locationIndex = 1;
+      }
+      this.cd.detectChanges();
+    });
   }
 
   cancel() {

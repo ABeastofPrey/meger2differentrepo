@@ -1,3 +1,6 @@
+.add-var-container {
+  min-width: 400px;
+}
 .title {
   display: flex;
   align-items: center;
@@ -22,6 +25,24 @@
 .name-wrapper mat-form-field {
   width: 100%;
 }
+.value-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.values {
+  width: 320px;
+  margin-right: 10px;
+}
 .values mat-form-field {
-  width: 100px;
+  width: 80px;
+}
+
+.label {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

@@ -1,40 +1,38 @@
 <div class="topology">
-	<button *ngIf="hasErr" mat-raised-button color="warn" class="warn-btn">
-		{{ 'topology.errTip' | translate }}
-	</button>
-	<mat-card>
-		<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-			<mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-				<button mat-icon-button disabled></button>
-				<mat-icon class="mat-primary mat-icon">label</mat-icon>&nbsp;
-				<div [ngSwitch]="node.name">
-					<span *ngSwitchCase="'Drive Bus'">{{ 'topology.driveBus' | translate }}</span>
-					<span *ngSwitchCase="'Extension Bus'">{{ 'topology.extensionBus' | translate }}</span>
-					<span *ngSwitchDefault>{{ node.name }}</span>
-				</div>
-			</mat-tree-node>
-			<mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-				<button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-					<mat-icon class="mat-primary mat-icon-rtl-mirror">
-						{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-					</mat-icon>
-				</button>
-				<mat-icon class="mat-primary mat-icon">devices</mat-icon>&nbsp;
-				<div [ngSwitch]="node.name">
-					<span *ngSwitchCase="'Controller'">{{ 'topology.controller' | translate }}</span>
-					<span *ngSwitchCase="'Drive Bus'">{{ 'topology.driveBus' | translate }}</span>
-					<span *ngSwitchCase="'Extension Bus'">{{ 'topology.extensionBus' | translate }}</span>
-					<span *ngSwitchDefault>{{ node.name }}</span>
-				</div>
-			</mat-tree-node>
-		</mat-tree>
-		<mat-card-actions>
-			<button matTooltip="{{ 'topology.exTip' | translate }}" mat-icon-button>
-				<mat-icon (click)="treeControl.expandAll()" class="mat-primary mat-icon">add</mat-icon>
-			</button>
-			<button matTooltip="{{ 'topology.colTip' | translate }}" mat-icon-button>
-				<mat-icon (click)="treeControl.collapseAll()" class="mat-primary mat-icon">remove</mat-icon>
-			</button>
-		</mat-card-actions>
-	</mat-card>
+    <span *ngIf="hasErr" class="warn-tip warn-bg">{{'topology.errTip'|translate}}</span>
+    <mat-card>
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                <button mat-icon-button disabled></button>
+                <mat-icon class="mat-primary mat-icon">label</mat-icon>&nbsp;
+                <div [ngSwitch]="node.name">
+                    <span *ngSwitchCase="'Drive Bus'">{{'topology.driveBus'|translate}}</span>
+                    <span *ngSwitchCase="'Extension Bus'">{{'topology.extensionBus'|translate}}</span>
+                    <span *ngSwitchDefault>{{node.name}}</span>
+                </div>
+            </mat-tree-node>
+            <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+                    <mat-icon class="mat-primary mat-icon-rtl-mirror">
+                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+                <mat-icon class="mat-primary mat-icon">devices</mat-icon>&nbsp;
+                <div [ngSwitch]="node.name">
+                    <span *ngSwitchCase="'Controller'">{{'topology.controller'|translate}}</span>
+                    <span *ngSwitchCase="'Drive Bus'">{{'topology.driveBus'|translate}}</span>
+                    <span *ngSwitchCase="'Extension Bus'">{{'topology.extensionBus'|translate}}</span>
+                    <span *ngSwitchDefault>{{node.name}}</span>
+                </div>
+            </mat-tree-node>
+        </mat-tree>
+        <mat-card-actions>
+            <button matTooltip="{{'topology.exTip'|translate}}" mat-icon-button>
+                <mat-icon (click)="treeControl.expandAll()" class="mat-primary mat-icon">expand_more</mat-icon>
+            </button>
+            <button matTooltip="{{'topology.colTip'|translate}}" mat-icon-button>
+                <mat-icon (click)="treeControl.collapseAll()" class="mat-primary mat-icon">expand_less</mat-icon>
+            </button>
+        </mat-card-actions>
+    </mat-card>
 </div>

@@ -309,6 +309,7 @@ export class DataScreenComponent implements OnInit {
 
   showAddDialog() {
     this.dialog.open(AddVarComponent, {
+      disableClose: true,
       data: {
         useAsProjectPoints: this.useAsProjectPoints,
         canUseArray: this.useAsProjectPoints ? false : true,

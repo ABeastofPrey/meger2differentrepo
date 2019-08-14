@@ -55,9 +55,9 @@
 							[class.status-running]="node.ref && node.ref.status === 1">
 							({{ service.getStatusString(node.ref.status) }})
 						</span>
-            <span class="status" *ngIf="node.type === 'Dependencies'">
-              ({{ ('projects.status.' + (currProject.dependenciesLoaded ? '7' : '-1')) | translate }})
-            </span>
+						<span class="status" *ngIf="node.type === 'Dependencies'">
+						({{ ('projects.status.' + (currProject.dependenciesLoaded ? '7' : '-1')) | translate }})
+						</span>
 					</div>
 					<ul [class.invisible]="!nestedTreeControl.isExpanded(node)"
 						[id]="node.type + (node.name && node.name.length > 0 ? '-' + node.name : '') + '-ul'">
@@ -81,21 +81,22 @@
 				</button>
 			</div>
 			<!-- new background task -->
-			<div *ngIf="lastSelectedNode && (lastSelectedNode.type === 'Auxiliary') && bgtCount < 8">
-				<button mat-button (click)="newBackgroundTask()">
-					<mat-icon class="primary-light">add</mat-icon>{{ 'projects.toolbar.newBackgroundTask' | translate }}...
+			<div *ngIf="lastSelectedNode && (lastSelectedNode.type === 'Auxiliary')">
+				<button mat-button [disabled]="bgtCount >= 8" (click)="newBackgroundTask()">
+					<mat-icon class="primary-light">add</mat-icon>
+					{{ 'projects.toolbar.newBackgroundTask' | translate }}...
 				</button>
 			</div>
 			<!-- end -->
-      <div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependencies'">
+			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependencies'">
 				<button mat-button (click)="toggleDependencies()">
-          <mat-icon color="primary">
-            {{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}  
-          </mat-icon>
-          {{ (prj.currProject.value.dependenciesLoaded ? 'projects.toolbar.dep_unload' : 'projects.toolbar.dep_load') | translate }}
+					<mat-icon color="primary">
+						{{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}
+					</mat-icon>
+					{{ (prj.currProject.value.dependenciesLoaded ? 'projects.toolbar.dep_unload' : 'projects.toolbar.dep_load') | translate }}
 				</button>
-        <mat-divider></mat-divider>
-        <button mat-button (click)="newDep()">
+				<mat-divider></mat-divider>
+				<button mat-button (click)="newDep()">
 					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_dep' | translate }}...
 				</button>
 			</div>
@@ -152,13 +153,13 @@
 					<mat-icon class="primary-light">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
-      <div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependency'">
-				<button mat-button color="warn" (click)="deleteDep()">
-					<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
-					{{ lastSelectedNode.name }}
-				</button>
+				<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependency'">
+					<button mat-button color="warn" (click)="deleteDep()">
+						<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
+						{{ lastSelectedNode.name }}
+					</button>
+				</div>
+				<!-- end -->
 			</div>
-			<!-- end -->
 		</div>
 	</div>
-</div>

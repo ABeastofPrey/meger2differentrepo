@@ -177,3 +177,144 @@ mat-slide-toggle { display: block!important; }
   background-color: #bdbdbd;
   color: white;
 }
+
+// shrink ovealy css
+.shrink-overlay {
+  width: calc(100% - 250px);
+  animation: shirnkoverlayanimation 300ms;
+  -moz-animation: shirnkoverlayanimation 300ms;	/* Firefox */
+  -webkit-animation: shirnkoverlayanimation 300ms;	/* Safari 和 Chrome */
+  -o-animation: shirnkoverlayanimation 300ms;	/* Opera */
+}
+
+@keyframes shirnkoverlayanimation
+{
+  from { width: 100%; }
+  to { width: calc(100% - 250px); }
+}
+
+@-moz-keyframes shirnkoverlayanimation /* Firefox */
+{
+  from { width: 100%; }
+  to { width: calc(100% - 250px); }
+}
+
+@-webkit-keyframes shirnkoverlayanimation /* Safari 和 Chrome */
+{
+  from { width: 100%; }
+  to { width: calc(100% - 250px); }
+}
+
+@-o-keyframes shirnkoverlayanimation /* Opera */
+{
+  from { width: 100%; }
+  to { width: calc(100% - 250px); }
+}
+
+// stretch overlay css
+.stretch-overlay {
+  width: 100%;
+  animation: stretchkoverlayanimation 300ms;
+  -moz-animation: stretchkoverlayanimation 300ms;	/* Firefox */
+  -webkit-animation: stretchkoverlayanimation 300ms;	/* Safari 和 Chrome */
+  -o-animation: stretchkoverlayanimation 300ms;	/* Opera */
+}
+
+@keyframes stretchkoverlayanimation
+{
+  from { width: calc(100% - 250px); }
+  to { width: 100%; }
+}
+
+@-moz-keyframes stretchkoverlayanimation /* Firefox */
+{
+  from { width: calc(100% - 250px); }
+  to { width: 100%; }
+}
+
+@-webkit-keyframes stretchkoverlayanimation /* Safari 和 Chrome */
+{
+  from { width: calc(100% - 250px); }
+  to { width: 100%; }
+}
+
+@-o-keyframes stretchkoverlayanimation /* Opera */
+{
+  from { width: calc(100% - 250px); }
+  to { width: 100%; }
+}
+
+.upper-right-conner-overlay {
+  position: absolute;
+  width: 0;
+  height: 65px;
+  right: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.32);
+  z-index: 1000;
+}
+
+.upper-right-conner-overlay-stretch {
+  width: 250px !important;
+  animation: stretchkoverlaycoveranimation 300ms;
+  -moz-animation: stretchkoverlaycoveranimation 300ms;	/* Firefox */
+  -webkit-animation: stretchkoverlaycoveranimation 300ms;	/* Safari 和 Chrome */
+  -o-animation: stretchkoverlaycoveranimation 300ms;	/* Opera */
+}
+
+@keyframes stretchkoverlaycoveranimation
+{
+  from { width: 0; }
+  to { width: 250px; }
+}
+
+@-moz-keyframes stretchkoverlaycoveranimation /* Firefox */
+{
+  from { width: 0; }
+  to { width: 250px; }
+}
+
+@-webkit-keyframes stretchkoverlaycoveranimation /* Safari 和 Chrome */
+{
+  from { width: 0; }
+  to { width: 250px; }
+}
+
+@-o-keyframes stretchkoverlaycoveranimation /* Opera */
+{
+  from { width: 0; }
+  to { width: 250px; }
+}
+
+
+.upper-right-conner-overlay-shrink {
+  width: 0;
+  animation: shrinkoverlaycoveranimation 300ms;
+  -moz-animation: shrinkoverlaycoveranimation 300ms;	/* Firefox */
+  -webkit-animation: shrinkoverlaycoveranimation 300ms;	/* Safari 和 Chrome */
+  -o-animation: shrinkoverlaycoveranimation 300ms;	/* Opera */
+}
+
+@keyframes shrinkoverlaycoveranimation
+{
+  from { width: 250px; }
+  to { width: 0; }
+}
+
+@-moz-keyframes shrinkoverlaycoveranimation /* Firefox */
+{
+  from { width: 250px; }
+  to { width: 0; }
+}
+
+@-webkit-keyframes shrinkoverlaycoveranimation /* Safari 和 Chrome */
+{
+  from { width: 250px; }
+  to { width: 0; }
+}
+
+@-o-keyframes shrinkoverlaycoveranimation /* Opera */
+{
+  from { width: 250px; }
+  to { width: 0; }
+}

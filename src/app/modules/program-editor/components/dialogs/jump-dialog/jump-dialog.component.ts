@@ -218,14 +218,14 @@ export class JumpDialogComponent implements OnInit {
   }
 
   public createPoint(): void {
-    const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
-    this.dialog
-      .open(AddVarComponent, option)
-      .afterClosed()
-      .subscribe(addedVar => {
-        this.location = this.locations.find(x => x.name === addedVar);
-        this.cd.detectChanges();
-      });
+    const option = {
+      hasBackdrop: false,
+      data: { hotVariableOption: [1, 1, 0, 0, 0] }
+    };
+    this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
+      this.location = this.locations.find(x => x.name === addedVar);
+      this.cd.detectChanges();
+    });
   }
 
   /**

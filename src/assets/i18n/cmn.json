@@ -296,7 +296,7 @@
   },
   "topology": {
     "title": "设备管理器",
-    "errTip": "似乎有的设备已被修改，请在设备管理器中重置CS+的全部操作。",
+    "errTip": "似乎有的设备已被修改，请在设备管理器中重置CS的全部操作。",
     "exTip": "全部展开",
     "colTip": "全部折叠",
     "controller": "控制器",
@@ -1092,7 +1092,9 @@
     "btn_create": "创建变量",
     "name": "变量名称",
     "new": "添加变量",
-    "type": "变量类型"
+    "type": "变量类型",
+    "get_current": "获取当前值",
+    "cannot_use_jog_tip": "Jog panel 不可用！"
   },
   "watch": {
     "context": "上下文",

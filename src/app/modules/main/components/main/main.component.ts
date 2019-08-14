@@ -284,6 +284,11 @@ export class MainComponent implements OnInit {
     this.terminalOpen = !this.terminalOpen;
   }
 
+  public closeJog(): void {
+    this.screenManager.toggleControls();
+    this.utils.stretchOverlay();
+  }
+
   toggleSimulator() {
     this.simOpen = !this.simOpen;
     if (!this.simOpen) {

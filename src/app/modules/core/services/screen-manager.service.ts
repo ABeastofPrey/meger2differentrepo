@@ -172,7 +172,10 @@ export class ScreenManagerService {
     }
   }
 
-  toggleControls() {
+  toggleControls(isToggleByAddVar?) {
+    if (!isToggleByAddVar) {
+      this.utils.removeShrinkStretchOverlay();
+    }
     this.controlsAnimating.next(true);
     this.openedControls = !this.openedControls;
     if (!this.cmn.isTablet) this.stat.mode = this.openedControls ? 'T1' : 'A';

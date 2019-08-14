@@ -105,7 +105,10 @@ export class Jump3DialogComponent implements OnInit {
       (x: IRequiredPar) => x.selected,
       this.requiredPars
     );
-    const option = { data: { hotVariableOption: [1, 1, 0, 0, 0] } };
+    const option = {
+      hasBackdrop: false,
+      data: { hotVariableOption: [1, 1, 0, 0, 0] }
+    };
     this.dialog
       .open(AddVarComponent, option)
       .afterClosed()

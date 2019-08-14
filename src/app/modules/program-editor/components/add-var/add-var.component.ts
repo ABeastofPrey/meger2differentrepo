@@ -5,8 +5,13 @@ import {
   WebsocketService,
   CoordinatesService,
   MCQueryResponse,
+  ScreenManagerService,
+  ProjectManagerService,
 } from '../../../core';
 import { TranslateService } from '@ngx-translate/core';
+import { UtilsService } from '../../../core/services/utils.service';
+import { TpStatService } from '../../../core/services/tp-stat.service';
+import { CommonService } from '../../../core/services/common.service';
 
 @Component({
   selector: 'add-var',
@@ -31,6 +36,11 @@ export class AddVarComponent implements OnInit {
     public coos: CoordinatesService,
     private snackbar: MatSnackBar,
     private trn: TranslateService,
+    private utils: UtilsService,
+    private screenManagerService: ScreenManagerService,
+    public stat: TpStatService,
+    public prj: ProjectManagerService,
+    public cmn: CommonService,
     @Inject(MAT_DIALOG_DATA) public para: any
   ) {
     this.varType = this.para.varType || 'JOINT';
@@ -45,9 +55,10 @@ export class AddVarComponent implements OnInit {
     }
 
     if (this.data.domainIsFrame) this.varType = 'LOCATION';
-    this.trn.get(['success']).subscribe(words => {
+    this.trn.get(['success', 'variables.cannot_use_jog_tip']).subscribe(words => {
       this.words = words;
     });
+
   }
 
   public isHotOption(index: number): boolean {
@@ -57,6 +68,20 @@ export class AddVarComponent implements OnInit {
   ngOnInit() {
     this.values = this.data.robotCoordinateType.all.map(l => {
       return '0';
+    });
+    // Open jog panel
+    this.stat.onlineStatus.subscribe(stat => {
+      const canNotOpen = !stat ||
+        this.prj.activeProject ||
+        !this.coos.coosLoaded.value ||
+        this.screenManagerService.controlsAnimating.value ||
+        (this.cmn.isTablet && this.stat.mode !== 'T1');
+
+      if (!canNotOpen) {
+        this.changeOverlayAndToggleJog();
+      } else {
+        this.snackbar.open(this.words['variables.cannot_use_jog_tip'], '', { duration: 2000 });
+      }
     });
   }
 
@@ -122,5 +147,46 @@ export class AddVarComponent implements OnInit {
         });
       }
     });
+  }
+
+  public getCurrent(): void {
+    if (this.varType === 'JOINT') {
+      const j1 = this.coos.joints.find(x => x.key === 'J1');
+      const j2 = this.coos.joints.find(x => x.key === 'J2');
+      const j3 = this.coos.joints.find(x => x.key === 'J3');
+      const j4 = this.coos.joints.find(x => x.key === 'J4');
+      this.values = [j1.value, j2.value, j3.value, j4.value];
+    } else if (this.varType === 'LOCATION') {
+      const x = this.coos.locations.find(_x => _x.key === 'X');
+      const y = this.coos.locations.find(_y => _y.key === 'Y');
+      const z = this.coos.locations.find(_z => _z.key === 'Z');
+      const r = this.coos.locations.find(_r => _r.key === 'Roll');
+      this.values = [x.value, y.value, z.value, r.value];
+    }
+  }
+
+  private changeOverlayAndToggleJog(): void {
+    const isOpened = this.screenManagerService.openedControls;
+    this.shrinkOverlayAndExpandJog(isOpened);
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.stretchOverlayAndCollapseJog(isOpened);
+    });
+  }
+
+  private shrinkOverlayAndExpandJog(isOpened: boolean): void {
+    this.utils.shrinkOverlay();
+    if (!isOpened) {
+      this.screenManagerService.toggleControls(true);
+    }
+  }
+
+  private stretchOverlayAndCollapseJog(isOpened: boolean): void {
+    this.utils.stretchOverlay();
+    if (!isOpened && this.screenManagerService.openedControls) {
+      this.screenManagerService.toggleControls(true);
+    }
+    setTimeout(() => {
+      this.utils.removeShrinkStretchOverlay();
+    }, 400);
   }
 }
