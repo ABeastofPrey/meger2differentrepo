@@ -419,6 +419,9 @@ export class DataService {
   get JavaVersion() {
     return this._JavaVersion;
   }
+  get WebServerInfo() {
+    return this._JavaVersion.split(' ');
+  }
 
   // Variables
   private _joints: TPVariable[] = [];

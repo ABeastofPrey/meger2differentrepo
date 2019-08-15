@@ -37,6 +37,7 @@ interface IResLibs {
 }
 
 const splitWithSemicolon = split(';');
+const splitWithSpace = split(' ');
 
 @Component({
   selector: 'app-version',
@@ -46,7 +47,7 @@ const splitWithSemicolon = split(';');
 export class VersionComponent implements OnInit {
   public wholeLibs: ILib[] = [];
   public visableLibs: ILib[] = [];
-  public guiVer: string = environment.gui_ver;
+  public guiVer: string = splitWithSpace(environment.gui_ver);
   public appNameKuka: string = environment.appName_Kuka;
   public pageSize = 10;
   public mainVer: string[] = [];

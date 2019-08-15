@@ -29,7 +29,8 @@
 						<mat-expansion-panel-header>
 							<mat-panel-title><mat-icon>create</mat-icon>&nbsp;GUI </mat-panel-title>
 							<mat-panel-description>
-								<span>{{ guiVer }}</span>
+								<span>{{ guiVer[0] }}</span>
+								<span class="date-container">{{ guiVer[1] }}</span>
 							</mat-panel-description>
 						</mat-expansion-panel-header>
 						<p>{{ 'version.GUIDes' | translate }}</p>
@@ -39,8 +40,8 @@
 						<mat-expansion-panel-header>
 							<mat-panel-title><mat-icon>web</mat-icon>&nbsp;Web Server </mat-panel-title>
 							<mat-panel-description>
-								<span>{{ data.JavaVersion }}</span>
-								<span class="date-container"></span>
+								<span>{{ data.WebServerInfo[0] }}</span>
+								<span class="date-container">{{ data.WebServerInfo[1] }}</span>
 							</mat-panel-description>
 						</mat-expansion-panel-header>
 						<p>{{ 'version.webServerDes' | translate }}</p>

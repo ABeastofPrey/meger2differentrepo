@@ -19,6 +19,7 @@ const fakeData = {
   LeadByNoseLibVer: 'v1.0.1;2018-09-12',
   iomapVer: 'v1.0.1;2018-09-12',
   mcuVer: 'v1.0.1;2018-09-12',
+  WebServerInfo: ['v1.0.1', '2018-09-12'],
 };
 
 const spyWs = {
