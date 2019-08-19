@@ -1,8 +1,8 @@
 <div class="mastering" [ngStyle]="{ 'margin-top': stepper.selectedIndex === 0 ? '-50px' : 0 }">
 	<div [ngStyle]="{ opacity: stepper.selectedIndex === 0 ? 1 : 0 }" class="stepper-head-cover"></div>
 	<mat-horizontal-stepper [linear]="true" #stepper>
-		<mat-step [stepControl]="firstFormGroup">
-			<form [formGroup]="firstFormGroup">
+		<mat-step>
+			<form>
 				<ng-template matStepLabel>{{ 'robots.mastering.mainHead' | translate }}</ng-template>
 				<mat-table [dataSource]="tableData" class="mat-elevation-z8 mastering-table">
 					<ng-container matColumnDef="{{ tableColumns[0] }}">
@@ -23,30 +23,12 @@
 				<mat-card class="mastering-setting-card">
 					<mat-card-content>
 						<div class="mastering-setting">
-							<mat-form-field>
-								<mat-label>{{ 'robots.mastering.refPoint' | translate }}</mat-label>
-								<mat-select
-									required
-									formControlName="firstCtrl"
-									required
-									[(ngModel)]="selectedPoint"
-									(selectionChange)="selectionChange($event)"
-								>
-									<mat-option *ngFor="let point of referencePoints" [value]="point">
-										{{ point }}
-									</mat-option>
-								</mat-select>
-								<mat-error *ngIf="firstFormGroup.controls.firstCtrl.hasError('required')">{{
-									'robots.mastering.refError' | translate
-								}}</mat-error>
-								<!-- <mat-hint>Reference point is required.</mat-hint> -->
-							</mat-form-field>
 							<div class="mastering-setting-buttons">
 								<button
 									*ngIf="isBasicMode"
 									mat-raised-button
 									color="primary"
-									[disabled]="isInvalidForm(firstFormGroup) || canNotUse()"
+									[disabled]="canNotUse()"
 									(click)="changeMode()"
 								>
 									{{ 'robots.mastering.basicMaster' | translate }}
@@ -55,7 +37,7 @@
 									*ngIf="!isBasicMode"
 									mat-stroked-button
 									color="primary"
-									[disabled]="isInvalidForm(firstFormGroup) || canNotUse()"
+									[disabled]="canNotUse()"
 									(click)="changeMode(true)"
 								>
 									{{ 'robots.mastering.basicMaster' | translate }}
@@ -64,7 +46,7 @@
 									*ngIf="isBasicMode"
 									mat-stroked-button
 									color="primary"
-									[disabled]="isInvalidForm(firstFormGroup) || canNotUse()"
+									[disabled]="canNotUse()"
 									(click)="changeMode(true)"
 								>
 									{{ 'robots.mastering.enhancedMaster' | translate }}
@@ -73,7 +55,7 @@
 									*ngIf="!isBasicMode"
 									mat-raised-button
 									color="primary"
-									[disabled]="isInvalidForm(firstFormGroup) || canNotUse()"
+									[disabled]="canNotUse()"
 									(click)="changeMode()"
 								>
 									{{ 'robots.mastering.enhancedMaster' | translate }}
@@ -83,70 +65,86 @@
 					</mat-card-content>
 				</mat-card>
 			</form>
-		</mat-step>
-		<mat-step>
-			<form>
-				<mat-card *ngIf="isBasicMode" class="mastering-card">
-					<ng-template matStepLabel>{{ 'robots.mastering.selectJoint' | translate }}</ng-template>
-					<mat-card-header>
-						<mat-card-title>{{ 'robots.mastering.selectJointH' | translate }}</mat-card-title>
-					</mat-card-header>
-					<mat-card-content>
-						<label class="zero-radio-group-label">{{ 'robots.mastering.pickJoints' | translate }}</label>
-						<mat-radio-group class="zero-radio-group" [(ngModel)]="zeroAxis" [ngModelOptions]="{ standalone: true }">
-							<mat-radio-button value="[1, 0, 0, 0]" class="zero-radio-button"
-								>{{ 'robots.mastering.j' | translate }}1</mat-radio-button
-							>
-							<mat-radio-button value="[0, 1, 0, 0]" class="zero-radio-button"
-								>{{ 'robots.mastering.j' | translate }}2</mat-radio-button
-							>
-							<mat-radio-button value="[0, 0, 1, 0]" class="zero-radio-button"
-								>{{ 'robots.mastering.j' | translate }}3</mat-radio-button
-							>
-							<mat-radio-button value="[0, 0, 1, 1]" class="zero-radio-button"
-								>{{ 'robots.mastering.j' | translate }}3&{{ 'robots.mastering.j' | translate }}4</mat-radio-button
-							>
-							<mat-radio-button value="[1, 1, 1, 1]" class="zero-radio-button">{{
-								'robots.mastering.all' | translate
-							}}</mat-radio-button>
-						</mat-radio-group>
-					</mat-card-content>
-					<mat-card-actions>
-						<button mat-stroked-button (click)="cancel()" color="primary">
-							{{ 'button.cancel' | translate }}
-						</button>
-						<button mat-raised-button matStepperPrevious color="primary">
-							{{ 'button.previous' | translate }}
-						</button>
-						<button mat-raised-button color="primary" matStepperNext [disabled]="!zeroAxis">
-							{{ 'button.next' | translate }}
-						</button>
-					</mat-card-actions>
-				</mat-card>
-				<mat-card *ngIf="!isBasicMode" class="mastering-card">
-					<ng-template matStepLabel>{{ 'robots.mastering.basicConfirm' | translate }}</ng-template>
-					<mat-card-header>
-						<mat-card-title>{{ 'robots.mastering.emjh' | translate }} 2</mat-card-title>
-						<mat-card-subtitle>
-							{{ 'robots.mastering.emjsh1' | translate }} <br />
-							{{ 'robots.mastering.emjsh2' | translate }}
-						</mat-card-subtitle>
-					</mat-card-header>
-					<mat-card-content> </mat-card-content>
-					<mat-card-actions>
-						<button mat-stroked-button (click)="cancel()" color="primary">
-							{{ 'button.cancel' | translate }}
-						</button>
-						<button mat-raised-button matStepperPrevious color="primary">
-							{{ 'button.previous' | translate }}
-						</button>
-						<button mat-raised-button matStepperNext color="primary">
-							{{ 'button.next' | translate }}
-						</button>
-					</mat-card-actions>
-				</mat-card>
-			</form>
-		</mat-step>
+    </mat-step>
+
+    <mat-step *ngIf="isBasicMode" [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <mat-card class="mastering-card">
+          <ng-template matStepLabel>{{ 'robots.mastering.selectJoint' | translate }}</ng-template>
+          <mat-card-header>
+            <mat-card-title>{{ 'robots.mastering.selectJointH' | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="reference-point">
+              <mat-form-field>
+                <mat-label>{{ 'robots.mastering.refPoint' | translate }}</mat-label>
+                <mat-select formControlName="firstCtrl" required [(ngModel)]="selectedPoint"
+                  (selectionChange)="selectionChange($event)">
+                  <mat-option *ngFor="let point of referencePoints" [value]="point">
+                    {{ point }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="firstFormGroup.controls.firstCtrl.hasError('required')">
+                  {{'robots.mastering.refError' | translate}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <label class="zero-radio-group-label">{{ 'robots.mastering.pickJoints' | translate }}</label>
+            <mat-radio-group class="zero-radio-group" [(ngModel)]="zeroAxis" [ngModelOptions]="{ standalone: true }">
+              <mat-radio-button value="[1, 0, 0, 0]" class="zero-radio-button">{{ 'robots.mastering.j' | translate }}1
+              </mat-radio-button>
+              <mat-radio-button value="[0, 1, 0, 0]" class="zero-radio-button">{{ 'robots.mastering.j' | translate }}2
+              </mat-radio-button>
+              <mat-radio-button value="[0, 0, 1, 0]" class="zero-radio-button">{{ 'robots.mastering.j' | translate }}3
+              </mat-radio-button>
+              <mat-radio-button value="[0, 0, 1, 1]" class="zero-radio-button">
+                {{ 'robots.mastering.j' | translate }}3&{{ 'robots.mastering.j' | translate }}4
+              </mat-radio-button>
+              <mat-radio-button value="[1, 1, 1, 1]" class="zero-radio-button">{{'robots.mastering.all' | translate}}
+              </mat-radio-button>
+            </mat-radio-group>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-stroked-button (click)="cancel()" color="primary">
+              {{ 'button.cancel' | translate }}
+            </button>
+            <button mat-raised-button matStepperPrevious color="primary">
+              {{ 'button.previous' | translate }}
+            </button>
+            <button mat-raised-button color="primary" matStepperNext
+              [disabled]="!zeroAxis || isInvalidForm(firstFormGroup)">
+              {{ 'button.next' | translate }}
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </form>
+    </mat-step>
+
+    <mat-step *ngIf="!isBasicMode">
+      <mat-card class="mastering-card">
+        <ng-template matStepLabel>{{ 'robots.mastering.basicConfirm' | translate }}</ng-template>
+        <mat-card-header>
+          <mat-card-title>{{ 'robots.mastering.emjh' | translate }} 2</mat-card-title>
+          <mat-card-subtitle>
+            {{ 'robots.mastering.emjsh1' | translate }} <br />
+            {{ 'robots.mastering.emjsh2' | translate }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content> </mat-card-content>
+        <mat-card-actions>
+          <button mat-stroked-button (click)="cancel()" color="primary">
+            {{ 'button.cancel' | translate }}
+          </button>
+          <button mat-raised-button matStepperPrevious color="primary">
+            {{ 'button.previous' | translate }}
+          </button>
+          <button mat-raised-button matStepperNext color="primary">
+            {{ 'button.next' | translate }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-step>
+
 		<mat-step>
 			<form>
 				<mat-card *ngIf="isBasicMode" class="mastering-card">

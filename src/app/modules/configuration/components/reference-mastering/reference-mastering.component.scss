@@ -2,7 +2,6 @@
   margin: 0;
 }
 .mastering {
-  max-width: 950px;
   .stepper-head-cover {
     z-index: 1;
     width: 100%;
@@ -29,13 +28,14 @@
     .mastering-setting-buttons button:first-child {
       margin-right: 10px;
     }
-    mat-form-field {
-      width: 200px;
-    }
+  }
+  .reference-point {
+    display: flex;
+    flex-direction: row;
   }
   .zero-radio-group {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
   }
   .zero-radio-button {
     margin: 10px;

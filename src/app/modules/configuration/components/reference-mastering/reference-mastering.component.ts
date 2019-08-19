@@ -52,11 +52,6 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
   public tableData: IAxis[] = [];
   public referencePoints: string[] = [];
   public firstFormGroup: FormGroup;
-  public secondFormGroup: FormGroup;
-  public thirdFormGroup: FormGroup;
-  public fourthFormGroup: FormGroup;
-  public fifthFormGroup: FormGroup;
-  public sixthFormGroup: FormGroup;
   public zeroAxis: string = null;
   public selectedPoint: string;
   public isMoveingComplete: boolean = true;
@@ -303,7 +298,6 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
   }
 
   public selectionChange(event: MatSelectChange): void {
-    this.zeroAxis = null;
     const callApi = bind(this.service.setReferencePoint, this.service);
     const logError = err =>
       console.warn('Retrieve reference points failed: ' + err);
