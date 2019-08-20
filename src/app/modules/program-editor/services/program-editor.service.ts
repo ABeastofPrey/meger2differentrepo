@@ -441,9 +441,20 @@ export class ProgramEditorService {
       });
       return;
     }
-    this.ws.query('KillTask ' + this.activeFile).then(() => {
-      this.busy = false;
-    });
+    if (endsWithBKG(this.activeFile)) {
+      this.ws.query('KillTask ' + this.activeFile).then(() => {
+        this.ws.query('Unload ' + this.activeFile).then((ret: MCQueryResponse) => {
+          if (ret.result.length > 0) {
+            this.snack.open(ret.result, '', { duration: 2000 });
+          }
+          this.busy = false;
+        });
+      });
+    } else {
+      this.ws.query('KillTask ' + this.activeFile).then(() => {
+        this.busy = false;
+      });
+    }
   }
 
   idle() {
