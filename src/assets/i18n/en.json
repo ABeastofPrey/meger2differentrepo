@@ -520,7 +520,7 @@
     "selected": "Selected Pallet",
     "type": "Pallet Type",
     "type_CUSTOM": "Custom",
-    "type_grid": "Grid",
+    "type_GRID": "Grid",
     "wizard": {
       "3d_disable": "Too many items - 3D Preview is disabled",
       "app": "Approach",

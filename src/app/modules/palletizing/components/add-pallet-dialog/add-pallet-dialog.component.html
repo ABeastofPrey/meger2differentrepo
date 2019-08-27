@@ -13,7 +13,7 @@
 			<div>
 				<mat-form-field>
 					<mat-select placeholder="{{ 'pallets.type' | translate }}" [(ngModel)]="palletType">
-						<mat-option *ngFor="let t of dataService.palletTypeOptions" value="t">{{ ('pallets.type_' + t) | translate }}</mat-option>
+						<mat-option *ngFor="let t of dataService.palletTypeOptions" value="{{t}}">{{ ('pallets.type_' + t) | translate }}</mat-option>
 					</mat-select>
 				</mat-form-field>
 			</div>
