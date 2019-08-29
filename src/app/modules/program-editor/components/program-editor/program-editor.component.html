@@ -77,7 +77,7 @@
 								/>
 								<img
 									src="assets/pics/icons/unload.png"
-									*ngIf="!service.fileRef && !login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
+									*ngIf="!service.isSelectedBKG && !service.fileRef && !login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
 									(click)="service.unload()"
 									matTooltip="{{ 'projects.toolbar.unload' | translate }}"
 									[class.disabled]="service.status.statusCode === taskStates[0]"

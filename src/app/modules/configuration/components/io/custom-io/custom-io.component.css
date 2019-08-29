@@ -61,3 +61,8 @@
 .mat-select-normal-place-holder ::ng-deep .mat-select-placeholder {
   color: black;
 }
+
+.mat-select-normal-place-holder ::ng-deep .mat-select-value {
+  max-width: none;
+  width: auto;
+}
