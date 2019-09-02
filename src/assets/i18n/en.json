@@ -1,6 +1,8 @@
 {
   "404": "Page Not Found",
   "about": {
+    "title": "About",
+    "subtitle": "Version information for this softMC controller",
     "grippers": "Grippers Library",
     "io": "I/O Mapping Library",
     "lbn": "Lead By Nose Library",
@@ -8,10 +10,18 @@
     "pallet": "Pallets Library",
     "payloads": "Payloads Library",
     "server": "Web Server",
-    "subtitle": "Version information for this softMC controller",
     "system": "System",
-    "title": "About",
     "tp": "TP Libraries"
+  },
+  "version": {
+    "softMCDes": "This is soft mc",
+    "GUIDes": "This is GUI",
+    "webServerDes": "This is web server",
+    "successDialogTitle": "Success!",
+    "successDialogMsg": "The OS upgrade is successful. The new version is: ",
+    "errorDialogTitle": "Failed!",
+    "errorDialogMsg": "The OS upgrade is failed, please reinstall the old version: ",
+    "releaseNoteTitle": "ControlStudion+ Release Note"
   },
   "acknowledge": "ACKNOWLEDGE",
   "actions": "Actions",
@@ -36,15 +46,15 @@
       "no": "CANCEL"
     },
     "rebooting": "Rebooting softMC...",
+    "title": "softMC Tools",
+    "updating": "Updating Firmware",
     "restore": {
       "default": "Default",
       "desc": "Restore softMC to Factory State",
       "msg": "This will also reset the calibration parameters. Robot DH parameters and Mastering parameters will have to be reconfigured manually after the system restore will be done.",
       "robot": "Restore to the specified Robot",
       "title": "Factory Restore"
-    },
-    "title": "softMC Tools",
-    "updating": "Updating Firmware"
+    }
   },
   "are_you_sure": "Are you sure?",
   "arr": "Array",
@@ -256,8 +266,18 @@
       "title_multi": "Delete {{num}} items?"
     },
     "JOINT": "JOINT",
-    "name": ["Tool Name", "Base Name", "Machine Table Name", "Work Piece Name"],
-    "new": ["Add Tool", "Add Base", "Add Machine Table", "Add Work Piece"],
+    "name": [
+      "Tool Name",
+      "Base Name",
+      "Machine Table Name",
+      "Work Piece Name"
+    ],
+    "new": [
+      "Add Tool",
+      "Add Base",
+      "Add Machine Table",
+      "Add Work Piece"
+    ],
     "TOOL": "TOOL",
     "WORLD": "WORLD"
   },
@@ -332,8 +352,14 @@
     },
     "axes_max": "Max. Axes",
     "axes_real": "Real Axes",
-    "chart_ram": ["Used RAM", "Free RAM"],
-    "chart_space": ["Used Space", "Free Space"],
+    "chart_ram": [
+      "Used RAM",
+      "Free RAM"
+    ],
+    "chart_space": [
+      "Used Space",
+      "Free Space"
+    ],
     "features": "Features",
     "groups": "Groups Configuration",
     "platform": "Platform",
@@ -418,7 +444,10 @@
     "updating_succuss": "I/O modules updated successfuly"
   },
   "jogScreen": {
-    "menu": ["Teach", "Tool Align"],
+    "menu": [
+      "Teach",
+      "Tool Align"
+    ],
     "percision": "Percision",
     "settings": "Jog Settings",
     "speed": "Speed",
@@ -1248,16 +1277,6 @@
     "type": "Variable Type",
     "get_current": "GET CURRENT",
     "cannot_use_jog_tip": "Jog panel is disabled!"
-  },
-  "version": {
-    "softMCDes": "This is soft mc",
-    "GUIDes": "This is GUI",
-    "webServerDes": "This is web server",
-    "successDialogTitle": "Success!",
-    "successDialogMsg": "The OS upgrade is successful. The new version is: ",
-    "errorDialogTitle": "Failed!",
-    "errorDialogMsg": "The OS upgrade is failed, please reinstall the old version: ",
-    "releaseNoteTitle": "ControlStudion+ Release Note"
   },
   "watch": {
     "context": "Context",
