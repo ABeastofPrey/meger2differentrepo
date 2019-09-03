@@ -284,7 +284,7 @@
   "grippers": {
     "btnCycle": "循环",
     "btnTest": "测试",
-    "close": "Close Gripper",
+    "close": "关闭抓手",
     "cycle": "循环测试",
     "cycle_time": "循环时间",
     "dout1": "主输出",
@@ -1025,7 +1025,7 @@
       "cancelMsg": "确定要取消校准吗，所有校准过的数据将会丢失？",
       "cancelWarm": "重置源发生错误无法返回。",
       "previousWarm": "重置源发生错误无法后退。",
-      "leaveMsg": "Do you really want to leave this page, all calibrated data will lost?",
+      "leaveMsg": "确定要离开此页面吗，所有已校准数据将会丢失?",
       "masterZeroWarm": "教零失败！",
       "masterFinalWarm": "精校准失败！",
       "recordPointWarm": "记录点失败！",
@@ -1145,7 +1145,7 @@
     "state": "状态",
     "unload": "卸载任务",
     "user": "用户任务",
-    "background": "Background Tasks"
+    "background": "后台任务"
   },
   "teach": "示教",
   "teach_var": "示教{{name}}?",
