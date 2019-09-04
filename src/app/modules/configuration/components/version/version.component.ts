@@ -7,9 +7,7 @@ import { PageEvent } from '@angular/material';
 import {
   slice,
   map,
-  range,
   ifElse,
-  always,
   then,
   split,
   compose,
@@ -31,9 +29,9 @@ interface ILib {
 }
 
 interface IResLibs {
-    name: string;
-    ver: string;
-    desc: string;
+  name: string;
+  ver: string;
+  desc: string;
 }
 
 const splitWithSemicolon = split(';');
@@ -58,39 +56,35 @@ export class VersionComponent implements OnInit {
     private ws: WebsocketService,
     private trn: TranslateService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
-        this.wholeLibs = await this.getLibDescriptions();
-        this.visableLibs = slice(0, this.pageSize)(this.wholeLibs);
+    this.wholeLibs = await this.getLibDescriptions();
+    this.visableLibs = slice(0, this.pageSize)(this.wholeLibs);
     // get the main version(Control Studio Version)
     this.mainVer = await this.getMainVersion();
     // get latest lib date as main lib date.
-        const getDate = (x: ILib) => x.date;
-        const dates = map(getDate, this.visableLibs);
+    const getDate = (x: ILib) => x.date;
+    const dates = map(getDate, this.wholeLibs);
     const filterNilDate = filter(isNotNil);
     const differ = (a, b) => b - a;
     const sorter = sort(differ);
-    const getLatestDate = compose(
-      head,
-      sorter,
-      filterNilDate
-    );
+    const getLatestDate = compose(head, sorter, filterNilDate);
     this.libVer = getLatestDate(dates);
   }
 
   public clickReleaseNote(): void {
     this.dialog.open(ReleaseNoteComponent, {
-            autoFocus: false,
+      autoFocus: false,
       disableClose: true,
     });
   }
 
   public clickUserLicence(): void {
     this.dialog.open(LicenseDialogComponent, {
-            autoFocus: false,
-            disableClose: true,
-            data: {
+      autoFocus: false,
+      disableClose: true,
+      data: {
         useInKukaAbout: true,
       },
     });
@@ -103,21 +97,21 @@ export class VersionComponent implements OnInit {
     this.visableLibs = getVisLibs(this.wholeLibs);
   }
 
-    private async getLibDescriptions(): Promise<ILib[]> {
-        const query = () => this.ws.query('?VI_getLibraryVersion');
-        const leftHandler = err => {
-            console.warn(err);
-            return [];
-        };
-        const splitVerDate = (x: IResLibs) => Object({
-            name: x.name,
-            version: splitWithSemicolon(x.ver)[0],
-            date: splitWithSemicolon(x.ver)[1],
-            desc: x.desc
-        }) as ILib;
-        const rightHandler = compose(map(splitVerDate), JSON.parse, resProp);
-        const resHandler = ifElse(hasNoError, rightHandler, leftHandler);
-        return compose(then(resHandler), query)();
+  private async getLibDescriptions(): Promise<ILib[]> {
+    const query = () => this.ws.query('?VI_getLibraryVersion');
+    const leftHandler = err => {
+      console.warn(err);
+      return [];
+    };
+    const splitVerDate = (x: IResLibs) => Object({
+      name: x.name,
+      version: splitWithSemicolon(x.ver)[0],
+      date: splitWithSemicolon(x.ver)[1],
+      desc: x.desc
+    }) as ILib;
+    const rightHandler = compose(map(splitVerDate), JSON.parse, resProp);
+    const resHandler = ifElse(hasNoError, rightHandler, leftHandler);
+    return compose(then(resHandler), query)();
   }
 
   private async getMainVersion(): Promise<string[]> {

@@ -11,11 +11,21 @@
 					</ng-container>
 					<ng-container matColumnDef="{{ tableColumns[1] }}">
 						<mat-header-cell *matHeaderCellDef>{{ 'robots.mastering.position' | translate }}</mat-header-cell>
-						<mat-cell *matCellDef="let element">{{ element.position }}</mat-cell>
+						<mat-cell *matCellDef="let element">
+              <div class="axis-unit">
+                  <span>{{ element.position }}</span>
+                  <span matSuffix>{{ element.index == 03 ? "[mm]" : "[deg]" }}</span>
+              </div>
+            </mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="{{ tableColumns[2] }}">
 						<mat-header-cell *matHeaderCellDef>{{ 'robots.mastering.offset' | translate }}</mat-header-cell>
-						<mat-cell *matCellDef="let element">{{ element.offset }}</mat-cell>
+						<mat-cell *matCellDef="let element">
+              <div class="axis-unit">
+                  <span>{{ element.offset }}</span>
+                  <span matSuffix>{{ element.index == 03 ? "[mm]" : "[deg]" }}</span>
+              </div>
+            </mat-cell>
 					</ng-container>
 					<mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
 					<mat-row *matRowDef="let row; columns: tableColumns"></mat-row>

@@ -24,7 +24,8 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { AddFeatureDialogComponent } from '../add-feature-dialog/add-feature-dialog.component';
 import { Feature } from '../../models/feature.model';
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
-import { ifElse, then, compose, split } from 'ramda';
+import { ifElse, then, compose, split, map, filter, sort, head, } from 'ramda';
+import { isNotNil } from 'ramda-adjunct';
 import { hasNoError, resProp } from '../../../core/services/service-adjunct';
 import { DataService } from '../../../core';
 import { environment } from '../../../../../environments/environment';
@@ -81,6 +82,7 @@ export class HomeScreenComponent implements OnInit {
   private words: any;
   private timeInterval: any;
   private notifier: Subject<boolean> = new Subject();
+  public libVer: string;
 
   // Header Info
   date: string;
@@ -246,6 +248,9 @@ export class HomeScreenComponent implements OnInit {
     this.getMainVersion().then(res => {
       this.mainVer = res;
     });
+    this.getLibVer().then(ver => {
+      this.libVer = ver;
+    });
     this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (!stat) return;
       this.ws.query('?sys.date').then((ret: MCQueryResponse) => {
@@ -257,6 +262,7 @@ export class HomeScreenComponent implements OnInit {
         this.refreshTime();
       }, 60000);
     });
+
   }
 
   @HostListener('window:resize')
@@ -369,4 +375,48 @@ export class HomeScreenComponent implements OnInit {
   goToProject() {
     this.router.navigateByUrl('/projects');
   }
+
+  async getLibVer(): Promise<string> {
+    const wholeLibs = await this.getLibDescriptions();
+    // get latest lib date as main lib date.
+    const getDate = (x: ILib) => x.date;
+    const dates = map(getDate, wholeLibs);
+    const filterNilDate = filter(isNotNil);
+    const differ = (a, b) => b - a;
+    const sorter = sort(differ);
+    const getLatestDate = compose(head, sorter, filterNilDate);
+    return getLatestDate(dates);
+  }
+
+  private async getLibDescriptions(): Promise<ILib[]> {
+    const splitWithSemicolon = split(';');
+    const query = () => this.ws.query('?VI_getLibraryVersion');
+    const leftHandler = err => {
+      console.warn(err);
+      return [];
+    };
+    const splitVerDate = (x: IResLibs) => Object({
+      name: x.name,
+      version: splitWithSemicolon(x.ver)[0],
+      date: splitWithSemicolon(x.ver)[1],
+      desc: x.desc
+    }) as ILib;
+    const rightHandler = compose(map(splitVerDate), JSON.parse, resProp);
+    const resHandler = ifElse(hasNoError, rightHandler, leftHandler);
+    return compose(then(resHandler), query)();
+  }
+
+}
+
+interface ILib {
+  name: string;
+  version: string;
+  date: string;
+  desc: string;
+}
+
+interface IResLibs {
+  name: string;
+  ver: string;
+  desc: string;
 }

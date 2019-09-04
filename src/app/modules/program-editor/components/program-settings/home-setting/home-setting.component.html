@@ -15,7 +15,8 @@
 					ktype="numeric"
 					(onKeyboardClose)="updatePosition(i + 1, $event.target)"
 					(keyup)="onKeyup($event)"
-				/>
+        />
+        <span matSuffix>{{i == 2 ? "[mm]" : "[deg]"}}</span>
 			</mat-form-field>
 		</div>
 		<button *ngIf="positionList.length !== 0" mat-raised-button class="read-btn" (click)="readCurrentPosition()">

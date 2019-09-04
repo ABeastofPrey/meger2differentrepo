@@ -19,6 +19,13 @@
   .mastering-table {
     margin-top: 10px;
   }
+  .axis-unit {
+    width: 100%;
+  }
+  .axis-unit span:first-child {
+    min-width: 100px;
+    display: inline-block;
+  }
   .mastering-setting {
     display: flex;
     flex-direction: row;

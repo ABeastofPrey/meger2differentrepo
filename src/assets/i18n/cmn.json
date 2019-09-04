@@ -937,7 +937,7 @@
       "title": "Home配置",
       "homePosition": "Home位置",
       "homeOrder": "Home顺序",
-      "degree": "值以度为单位",
+      "degree": "值以度/毫米为单位",
       "curPositionBtn": "读取当前位置",
       "stepOption": "步骤",
       "savedTip": "修改已保存！",
@@ -1033,8 +1033,8 @@
       "moveToRefWarn": "移动到参考点失败!",
       "mainHead": "主页",
       "axis": "轴",
-      "position": "位置[度]",
-      "offset": "偏移[度]",
+      "position": "位置",
+      "offset": "偏移",
       "j": "关节",
       "converse": "反转",
       "refPoint": "参考点",
@@ -1292,3 +1292,4 @@
   "wp": "工件",
   "wps": "工件"
 }
+
