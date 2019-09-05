@@ -16,8 +16,8 @@
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>
-				<td style="color:#00897b;" *ngIf="positionOK[0]">
-					<mat-icon>check_circle</mat-icon>
+				<td *ngIf="positionOK[0]">
+					<mat-icon color="primary">check_circle</mat-icon>
 				</td>
 				<td *ngIf="positionOK[0]">
 					<button mat-icon-button color="warn" (click)="resetPos(0)">
@@ -32,8 +32,8 @@
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>
-				<td style="color:#00897b;" *ngIf="positionOK[1]">
-					<mat-icon>check_circle</mat-icon>
+				<td *ngIf="positionOK[1]">
+					<mat-icon color="primary">check_circle</mat-icon>
 				</td>
 				<td *ngIf="positionOK[1]">
 					<button mat-icon-button color="warn" (click)="resetPos(1)">
@@ -48,8 +48,8 @@
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>
-				<td style="color:#00897b;" *ngIf="positionOK[2]">
-					<mat-icon>check_circle</mat-icon>
+				<td *ngIf="positionOK[2]">
+					<mat-icon color="primary">check_circle</mat-icon>
 				</td>
 				<td *ngIf="positionOK[2]">
 					<button mat-icon-button color="warn" (click)="resetPos(2)">
