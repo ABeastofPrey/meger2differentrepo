@@ -46,12 +46,16 @@ export class RobotsComponent implements OnInit {
 
   // SYSTEM
   sysName: string = null;
+  
+  // MCU
   @ViewChild('mcu', { static: false }) mcu: HTMLElement;
   mcuThreshold: number;
   private mcuInterval: any;
+  mcuConnected: boolean;
 
   private word_ok: string;
   private word_updating: string;
+  private words: any;
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
@@ -67,9 +71,10 @@ export class RobotsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.trn.get(['changeOK', 'robots.updating']).subscribe(words => {
+    this.trn.get(['changeOK', 'robots.updating', 'connected', 'disconnected']).subscribe(words => {
       this.word_ok = words['changeOK'];
       this.word_updating = words['robots.updating'];
+      this.words = words;
     });
     this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) {
@@ -105,27 +110,32 @@ export class RobotsComponent implements OnInit {
   }
 
   initMCU() {
-    //clearInterval(this.mcuInterval);
-    this.ws.query('?MCU_GET_FAN_THRESHOLD').then((ret: MCQueryResponse) => {
-      this.mcuThreshold = Number(ret.result);
-      //this.mcuInterval = setInterval(()=>{
-      this.ws
-        .query('?MCU_SEND_GETFANVALUE_COMMAND')
-        .then((ret: MCQueryResponse) => {
-          let val = Number(ret.result);
-          if (val === -1 && !isNaN(val)) {
-            clearInterval(this.mcuInterval);
-            this.generateMcuChart(0);
-            return;
-          }
-          this.generateMcuChart(val);
-        });
-      //},2000);
+    this.ws.query('?mcu_connected').then((ret: MCQueryResponse)=>{
+      this.mcuConnected = ret.result === '1';
+    }).then(()=>{
+      //clearInterval(this.mcuInterval);
+      this.ws.query('?MCU_GET_FAN_THRESHOLD').then((ret: MCQueryResponse) => {
+        this.mcuThreshold = Number(ret.result);
+        //this.mcuInterval = setInterval(()=>{
+        this.ws
+          .query('?MCU_SEND_GETFANVALUE_COMMAND')
+          .then((ret: MCQueryResponse) => {
+            let val = Number(ret.result);
+            if (val === -1 && !isNaN(val)) {
+              clearInterval(this.mcuInterval);
+              this.generateMcuChart(0);
+              return;
+            }
+            this.generateMcuChart(val);
+          });
+        //},2000);
+      });
     });
   }
 
   private generateMcuChart(val: number) {
-    const color = val >= this.mcuThreshold ? '#ff0000' : '#00ff00';
+    const color = val <= this.mcuThreshold ? '#ff0000' : '#00ff00';
+    const mcuStatus = this.mcuConnected ? this.words['connected'] : this.words['disconnected'];
     const trace1 = {
       x: ['MCU Fan'],
       y: [val],
@@ -144,7 +154,7 @@ export class RobotsComponent implements OnInit {
     const layout = {
       barmode: 'stack',
       showlegend: false,
-      title: 'MCU Fan',
+      title: 'MCU Fan (' + mcuStatus + ')',
       annotations: [
         {
           x: 0,

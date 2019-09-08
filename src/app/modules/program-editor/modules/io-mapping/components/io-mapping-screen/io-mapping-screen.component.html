@@ -97,7 +97,7 @@
 							</tr>
 						</tbody>
 						<tbody *ngIf="!activeModule.showInputs">
-							<tr *ngFor="let io of activeModule.io.outputs">
+							<tr *ngFor="let io of activeModule.io.outputs" [class.invalid]="!io.valid">
 								<td>{{ io.id }}</td>
 								<td>
 									<mat-slide-toggle

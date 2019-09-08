@@ -67,7 +67,8 @@ export class RecordGraphComponent implements OnInit {
           else {
             const y0 = y[j - 1];
             const y1 = y[j + 1];
-            tmpY[j] = (y1 - y0) / 2; // 2 ms between points
+            const mul = i === 0 ? 1000 / 4 : 1;
+            tmpY[j] = (y1 - y0) / 2 * mul ; // 2 ms between points
           }
         }
         newY = tmpY;

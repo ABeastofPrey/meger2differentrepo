@@ -133,6 +133,8 @@ export class CoordinatesService {
           this.interval = this.ws.send('cyc2',false,(result: string, cmd: string, err: ErrorFrame) => {
             if (err || result.length === 0) {
               this.ws.clearInterval(this.interval);
+              console.log('cyc2 returned wrong value:');
+              console.log(result,cmd,err);
               return;
             }
             setTimeout(() => {

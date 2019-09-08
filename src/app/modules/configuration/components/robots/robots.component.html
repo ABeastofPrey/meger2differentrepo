@@ -120,6 +120,7 @@
 					virtualKeyboard
 					ktype="numeric"
 					(onKeyboardClose)="onThresholdUpdate()"
+          [disabled]="!mcuConnected"
 				/>
 			</mat-form-field>
 		</div>

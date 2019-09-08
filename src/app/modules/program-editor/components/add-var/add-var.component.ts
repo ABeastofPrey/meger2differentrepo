@@ -33,7 +33,7 @@ export class AddVarComponent implements OnInit {
     public dialogRef: MatDialogRef<AddVarComponent>,
     public data: DataService,
     private ws: WebsocketService,
-    public coos: CoordinatesService,
+    private coos: CoordinatesService,
     private snackbar: MatSnackBar,
     private trn: TranslateService,
     private utils: UtilsService,

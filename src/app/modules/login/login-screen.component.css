@@ -47,6 +47,7 @@ header {
   align-items: flex-end;
   position: relative;
   box-sizing: border-box;
+  background-position: center;
 }
 .black-overlay {
   height: 100px;
@@ -72,6 +73,14 @@ header {
 .subtitle {
   font-size: 18px;
   font-weight: 300;
+}
+.stx-ver {
+  position: absolute;
+  top: 16px;
+}
+.stx-ver .subtitle {
+  font-weight: normal;
+  font-size: 14px;
 }
 .main {
   margin-top: 36px;

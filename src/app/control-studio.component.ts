@@ -169,12 +169,19 @@ export class ControlStudioComponent {
   
   @HostListener('window:orientationchange', ['$event'])
   onOrientationChange(event) {
-    this.landscape = !this.cmn.isTablet || Math.abs(screen.orientation.angle) === 90;
+    this.getOrientation();
+  }
+  
+  private getOrientation() {
+    const s = screen as any;
+    const orientation: string = s.msOrientation || s.mozOrientation || (s.orientation || {}).type;
+    console.log(orientation);
+    this.landscape = !this.cmn.isTablet || orientation.startsWith('landscape');
   }
   
   
   ngOnInit() {
-    this.landscape = !this.cmn.isTablet || Math.abs(screen.orientation.angle) === 90;
+    this.getOrientation();
     this.login.populate();
   }
   

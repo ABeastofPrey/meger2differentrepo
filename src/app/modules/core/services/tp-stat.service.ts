@@ -11,7 +11,7 @@ import {
 } from '@angular/material';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { ErrorDialogComponent } from '../../../components/error-dialog/error-dialog.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { ApiService } from './api.service';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,6 +38,7 @@ const refreshRate = 200;
 @Injectable()
 export class TpStatService {
   modeChanged: EventEmitter<any> = new EventEmitter();
+  estopChange: Subject<boolean> = new Subject();
   onProjectLoaded: EventEmitter<boolean> = new EventEmitter();
   onlineStatus: BehaviorSubject<boolean> = new BehaviorSubject(false);
   get jogEnabled() {
@@ -98,20 +99,25 @@ export class TpStatService {
    * IF THE USER USES A TABLET, AND CHANGES THE MODE (T1,T2...) SO FIRST HE
    * WILL BE PROMPT TO ENTER HIS PASSWORD AGAIN.
    */
-  changeMode(e: MatButtonToggleChange) {
+  changeMode() {
     this.zone.run(() => {
-      e.source.buttonToggleGroup.value = this._switch;
       this.dialog
         .open(AuthPassDialogComponent, {
           minWidth: '400px',
+          data: {
+            withModeSelector: true,
+            currentMode: this.mode
+          }
         })
         .afterClosed()
-        .subscribe((pass: string) => {
+        .subscribe((result: {pass: string, mode: string}) => {
+          const pass = result.pass;
+          const mode = result.mode;
           if (pass) {
             const username = this.login.getCurrentUser().user.username;
             this.api.confirmPass(username, pass).then(ret => {
               if (ret) {
-                this.mode = e.value;
+                this.mode = mode;
               } else {
                 this.snack.open(
                   this.words['password_err'],
@@ -134,7 +140,7 @@ export class TpStatService {
     this.ws
       .query('?tp_set_switch_mode("' + mode + '")')
       .then((ret: MCQueryResponse) => {
-        if (!environment.production) console.log(ret);
+        //if (!environment.production) console.log(ret);
         if (ret.result !== '0') {
           console.log(ret);
           console.log('oldStat:' + oldStat);
@@ -209,7 +215,10 @@ export class TpStatService {
       this._bipRequest = stat.BIP == 1; // NOT IMPLEMENTED
       this._isRefresh = stat.REFRESH == 1;
       this._cart_reach = stat.CART_REACH === 1;
-      this._estop = stat.ESTOP === 1;
+      if (this._estop !== ((stat.ESTOP) === 1)) {
+        this._estop = stat.ESTOP === 1;
+        this.estopChange.next(this._estop);
+      }
 
       if (typeof stat.DEADMAN === 'undefined')
         this._deadman = this._virtualDeadman;
@@ -306,15 +315,15 @@ export class TpStatService {
     return this.ws
       .query('?tp_exit')
       .then(() => {
-        return this.ws.query('call TP_setKeepAliveBreakable(1)');
-      })
-      .then(() => {
-        // WE NEED TO WAIT AT LEAST 50ms FOR BREAKABLE TO TAKE AFFECT
-        return new Promise(resolve => setTimeout(() => resolve(), 60));
-      })
-      .then(() => {
-        this.onlineStatus.next(false);
-        this._online = false;
+        return this.ws.query('?TP_setKeepAliveBreakable(1)');
+      }).then((ret: MCQueryResponse) => {
+        console.log(ret);
+        if (ret.result === '0') {
+          this.onlineStatus.next(false);
+          this._online = false;
+        } else {
+          return Promise.reject(null);
+        }
       });
   }
 

@@ -90,10 +90,7 @@ $material-semi-black: rgba(0,0,0,0.54);
   .selected:not(.disabled) { background: #E0F2F1!important; }
 
   .item { background: #004D40; }
-
-  .background-image {
-    background: url('../pics/robot_bg.jpg');
-  }
+  
   .create-point-option {
     background: mat-color($material-servotronix-primary, 100) !important;
   }

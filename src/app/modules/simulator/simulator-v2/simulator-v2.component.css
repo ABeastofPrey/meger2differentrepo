@@ -4,6 +4,17 @@
   display: flex;
   flex-direction: column;
 }
+.sim-wrapper {
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+lib-app-simulator {
+  flex: 1;
+  display: flex;
+}
 .toolbar {
   min-height: 64px;
   display: flex;

@@ -53,7 +53,7 @@
 			<mat-icon class="badge primary-bg mat-elevation-z3 disabled">add</mat-icon>
 		</button>-->
 		<div class="separator"></div>
-		<mat-slide-toggle color="accent" [(ngModel)]="showTrace" [disabled]="!loaded || !sim.shouldShowSimulator">Trace</mat-slide-toggle>
+		<mat-slide-toggle color="accent" [(ngModel)]="sim.showTrace" [disabled]="!loaded || !sim.shouldShowSimulator">Trace</mat-slide-toggle>
 		<div class="separator"></div>
 		<button mat-raised-button color="accent" (click)="openRecording()" [disabled]="!loaded || !sim.shouldShowSimulator">
 			{{ (liveMode ? 'simulator_screen.load_rec' : 'simulator_screen.rec_close') | translate }}
@@ -92,21 +92,23 @@
 			</as-split>
 		</as-split-area>
 		<as-split-area size="85" class="gradient-stx">
-			<lib-player *ngIf="sim.shouldShowSimulator"></lib-player>
-			<lib-app-simulator
-				id="sim-v2"
-				*ngIf="sim.shouldShowSimulator"
-				[debug]="false"
-				[backgroundColor]="sim.bgColor"
-				[traceColor]="sim.traceColor"
-				#simulator
-				[trace]="showTrace"
-				[roboturl]="robots.get3DModelPath(robots.selectedRobot.part_number)"
-				[jntValues]="jointsAsArr"
-				(onload)="loaded = true"
-			></lib-app-simulator>
-      <div class="warn-bg center-vertical-horizontal warn" *ngIf="!sim.shouldShowSimulator">
-        {{ 'simulator_screen.disabled' | translate }}
+      <div class="sim-wrapper">
+        <lib-player *ngIf="sim.shouldShowSimulator"></lib-player>
+        <lib-app-simulator
+          id="sim-v2"
+          *ngIf="sim.shouldShowSimulator"
+          [debug]="false"
+          [backgroundColor]="sim.bgColor"
+          [traceColor]="sim.traceColor"
+          #simulator
+          [trace]="sim.showTrace"
+          [roboturl]="robots.get3DModelPath(robots.selectedRobot.part_number)"
+          [jntValues]="jointsAsArr"
+          (onload)="loaded = true"
+        ></lib-app-simulator>
+        <div class="warn-bg center-vertical-horizontal warn" *ngIf="!sim.shouldShowSimulator">
+          {{ 'simulator_screen.disabled' | translate }}
+        </div>
       </div>
 		</as-split-area>
 	</as-split>

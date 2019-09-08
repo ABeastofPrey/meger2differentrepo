@@ -38,6 +38,7 @@ export class FrameCalibrationDialogComponent implements OnInit {
     let cmd =
       '?TP_FRAME_CALIBRATION_TEACH("' + this.data.frameType + '",' + pos + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
+      if (pos === 4) pos = 3;
       this.positionOK[pos - 1] = ret.result === '0';
     });
   }

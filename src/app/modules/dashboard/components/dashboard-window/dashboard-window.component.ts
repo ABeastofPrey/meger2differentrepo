@@ -16,7 +16,7 @@ import {
 } from '../../../../modules/core/services/websocket.service';
 import { TourService } from 'ngx-tour-md-menu';
 import { TranslateService } from '@ngx-translate/core';
-import { LoginService } from '../../../core';
+import { LoginService, GroupManagerService } from '../../../core';
 
 @Component({
   selector: 'dashboard-window',
@@ -40,7 +40,8 @@ export class DashboardWindowComponent implements OnInit {
     private dialog: MatDialog,
     private tour: TourService,
     private trn: TranslateService,
-    public login: LoginService
+    public login: LoginService,
+    private grp: GroupManagerService
   ) {
     this.trn
       .get(['dashboard.err_target', 'dismiss', 'dashboard.move_sent'])
@@ -126,11 +127,7 @@ export class DashboardWindowComponent implements OnInit {
           .subscribe(word => {
             this.snack.open(word, this.words['dismiss']);
           });
-        return;
       }
-      this.snack.open(this.words['dashboard.move_sent'], '', {
-        duration: 1500,
-      });
     });
   }
 
@@ -184,7 +181,7 @@ export class DashboardWindowComponent implements OnInit {
         }
         let cmd =
           'Record CSRECORD.rec ' +
-          Math.ceil(params.duration) +
+          Math.ceil(params.duration / this.grp.sysInfo.cycleTime) +
           ' Gap=1 RecData=' +
           varList.join();
         this.ws.query(cmd).then((ret: MCQueryResponse) => {

@@ -18,9 +18,12 @@ mat-card {
 }
 .mat-card-image {
   height: calc(100% - 120px);
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+}
+.mat-card-image.kuka-image {
+  background-size: cover;
 }
 .simulated {
   padding: 8px;

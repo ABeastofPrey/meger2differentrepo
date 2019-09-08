@@ -132,8 +132,9 @@ export class ProgramEditorAceComponent implements OnInit {
             this.cd.detectChanges();
           }
           setTimeout(() => {
-            this.editor.resize();
-          }, 200);
+            if (this.editor)
+              this.editor.resize();
+          }, 1000);
         }
       });
     this.service.statusChange
@@ -739,21 +740,36 @@ export class ProgramEditorAceComponent implements OnInit {
         this.hideTooltip();
         return;
       }
-      if (token.value === this.lastWord) return;
+      let tokenNoSpaces = token.value.replace(/\s/g, '');
+      if (tokenNoSpaces.length === 0) return;
+      if (tokenNoSpaces === ']') {
+        const tokens: any[] = this.editor.session.getTokens(position.row);
+        const i = tokens.indexOf(token);
+        if (i < 3) return;
+        tokenNoSpaces = tokens.slice(i - 3, i+1).map(t=>{
+          return t.value;
+        }).join('');
+      }
+      if (tokenNoSpaces === this.lastWord) return;
       this.hideTooltip();
       if (this.tooltipTimeout) {
         clearTimeout(this.tooltipTimeout);
       }
-      this.lastWord = token.value;
-      const tokenNoSpaces = token.value.replace(/\s/g, 'X');
-      if (tokenNoSpaces.length === 0) return;
+      this.lastWord = tokenNoSpaces;
       const cmd1 = 'watch ' + this.service.activeFile + ' ' + tokenNoSpaces;
       const cmd2 = 'watch ' + tokenNoSpaces;
+      const nameWithoutExt = this.service.activeFile.split('.')[0];
+      const cmd3 = 'watch ' + nameWithoutExt + '::' + tokenNoSpaces;
       this.tooltipTimeout = setTimeout(() => {
         this.ws.query(cmd1).then((ret: MCQueryResponse) => {
           if (ret.err) {
             return this.ws.query(cmd2).then((ret: MCQueryResponse) => {
-              if (ret.err) return;
+              if (ret.err) {
+                return this.ws.query(cmd3).then((ret: MCQueryResponse) => {
+                  if (ret.err) return;
+                  this.showTooptip(e, ret.result);
+                });
+              }
               this.showTooptip(e, ret.result);
             });
           }

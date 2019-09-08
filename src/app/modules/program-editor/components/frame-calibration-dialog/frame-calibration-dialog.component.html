@@ -42,9 +42,9 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{{ 'frames.calibration.posY' | translate }}</td>
+				<td>{{ 'frames.calibration.posXY' | translate }}</td>
 				<td>
-					<button mat-raised-button color="primary" (click)="teach(3)" [disabled]="!positionOK[1] || positionOK[2]">
+					<button mat-raised-button color="primary" (click)="teach(4)" [disabled]="!positionOK[1] || positionOK[2]">
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>

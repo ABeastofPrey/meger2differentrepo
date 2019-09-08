@@ -13,6 +13,7 @@ export class SimulatorService {
   data: BehaviorSubject<SceneObject[]> = new BehaviorSubject([]);
   bgColor: string = '#7c99b7';
   traceColor: string = '#ffff00';
+  showTrace: boolean = false;
   
   private sceneLoaded: boolean = false;
 
@@ -41,7 +42,10 @@ export class SimulatorService {
   ) {}
 
   getScene() {
-    if (this.sceneLoaded) return;
+    if (this.sceneLoaded){
+      this.refreshPallets();
+      return;
+    }
     this.sceneLoaded = true;
     this.data.next([]);
     while (this.scene.children.length > 0) {
@@ -52,15 +56,39 @@ export class SimulatorService {
   }
 
   private refreshPallets() {
+    // REMOVE OLD PALLETS
+    let childrenToRemove = [];
+    for (let i = 0; i < this.scene.children.length; i++) {
+      const c = this.scene.children[i];
+      if (c.name.startsWith('Pallet_')) {
+        childrenToRemove.push(i);
+      }
+    }
+    for (var i = childrenToRemove.length-1; i >= 0; i--) {
+      this.scene.removeChild(this.scene.children[i]);
+    }
     let promises = [];
     for (let p of this.dataService.pallets) {
-      if (p.isFrameCalibrated)
-        promises.push(this.ws.query('?plt_get_origin("' + p.name + '")'));
+      promises.push(this.ws.query('?PLT_IS_ORIGIN_CALIBRATED("' + p.name + '")'));
     }
+    let calibratedIndexes: number[] = [];
     return Promise.all(promises)
       .then((rets: MCQueryResponse[]) => {
+        for (let i = 0; i < rets.length; i++) {
+          if (rets[i].result === '1')
+            calibratedIndexes.push(i);
+        }
+        promises = [];
+        for (let i = 0; i < calibratedIndexes.length; i++) {
+          const j = calibratedIndexes[i];
+          const p = this.dataService.pallets[j];
+          promises.push(this.ws.query('?plt_get_origin("' + p.name + '")'));
+        }
+        return Promise.all(promises);
+      }).then((rets: MCQueryResponse[]) => {
         promises = [];
         for (let i = 0; i < rets.length; i++) {
+          const j = calibratedIndexes[i];
           const ret = rets[i];
           if (ret.result.length === 3)
             // NO ORIGIN
@@ -70,10 +98,9 @@ export class SimulatorService {
             .split(',')
             .map((s, i) => {
               const n = Number(s);
-              const num = isNaN(n) ? 0 : n;
-              return i < 3 ? num / 1000 : num;
+              return isNaN(n) ? 0 : n;
             });
-          promises.push(this.addPallet(i, origin));
+          promises.push(this.addPallet(j, origin));
         }
         return Promise.all(promises);
       })
@@ -92,6 +119,15 @@ export class SimulatorService {
           const n = Number(s);
           return isNaN(n) ? 0 : n * 0.001;
         });
+        const legends = this.dataService.robotCoordinateType.legends;
+        for (let i = 0; i < legends.length; i++) {
+          if (i >= origin.length) break;
+          const key = legends[i].toLowerCase();
+          p.origin[key] = origin[i];
+        }
+        p.pallet_size_x = sizes[0] * 1000;
+        p.pallet_size_y = sizes[1] * 1000;
+        p.pallet_size_z = sizes[2] * 1000;
         // FIND CENTER
         // calculate distance from origin to center
         const R = Math.sqrt(Math.pow(sizes[0], 2) + Math.pow(sizes[1], 2)) / 2;
@@ -99,7 +135,7 @@ export class SimulatorService {
         const THETA = (origin[3] * Math.PI) / 180;
         const X = origin[0] + R * Math.cos(A + THETA);
         const Y = origin[1] + R * Math.sin(A + THETA);
-        const correctedPosition = [X, Y, origin[2] + 0.15]; // 150 for SCARA ONLY!! TODO: CHANGE!!
+        const correctedPosition = [X, Y, origin[2] + 150]; // 150 for SCARA ONLY!! TODO: CHANGE!!
         const box = new Box();
         box.positionMM.set(
           correctedPosition[0],
@@ -108,7 +144,7 @@ export class SimulatorService {
         );
         box.eulerXYZ.set(0, 0, THETA);
         box.scale.set(sizes[0], sizes[1], 0.0001);
-        box.name = 'Pallet_' + this.dataService.pallets[i].name;
+        box.name = 'Pallet_' + i + '_' + this.dataService.pallets[i].name;
         this.scene.addChild(box);
       });
   }

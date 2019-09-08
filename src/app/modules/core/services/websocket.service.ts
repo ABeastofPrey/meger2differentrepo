@@ -2,7 +2,6 @@ import { Injectable, NgZone } from '@angular/core';
 import { ReplaySubject, Observable, BehaviorSubject } from 'rxjs';
 import { MatDialog } from '@angular/material';
 import { NotificationService } from './notification.service';
-import { environment } from '../../../../environments/environment';
 import { JwtService } from './jwt.service';
 import { ErrorFrame } from '../models/error-frame.model';
 import { ErrorDialogComponent } from '../../../components/error-dialog/error-dialog.component';
@@ -159,6 +158,8 @@ export class WebsocketService {
   send(msg: string, force: boolean, callback?, interval?: number) {
     //console.log('send',msg);
     this.socketQueueId++;
+    if (this.socketQueueId === 32766)
+      this.socketQueueId = 1000;
     if (callback) {
       this.socketQueue['i_' + this.socketQueueId] = callback;
       if (interval) this.socketQueueIntervals['i_' + this.socketQueueId] = true;

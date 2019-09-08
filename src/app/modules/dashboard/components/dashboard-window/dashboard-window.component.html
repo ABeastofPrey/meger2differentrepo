@@ -110,7 +110,7 @@
 		</div>
 		<div style="flex: 1;" *ngIf="params.isExpanded">
 			<div class="move-content" tourAnchor="dashboard-move">
-				<button mat-raised-button color="primary" (mousedown)="move()" (mouseup)="stopMotion()">
+				<button mat-raised-button color="primary" (touchstart)="move()" (mousedown)="move()" (touchend)="stopMotion()" (mouseup)="stopMotion()">
 					{{ 'button.move' | translate }}
 				</button>
 				<mat-slide-toggle
@@ -165,7 +165,7 @@
 			</div>
 		</div>
 		<div *ngIf="!login.isViewer" matRipple class="expand primary-bg-dark" (click)="toggleExpand()">
-			<mat-icon class="primary-light" tourAnchor="dashboard-expand">{{
+			<mat-icon class="primary-light" tourAnchor="dashboard-expand" style="color: #fff;">{{
 				params.isExpanded ? 'chevron_left' : 'more_vert'
 			}}</mat-icon>
 		</div>

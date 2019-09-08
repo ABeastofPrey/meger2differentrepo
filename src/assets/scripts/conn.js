@@ -65,6 +65,33 @@ function MCConnection() {
   //var IP = '10.4.20.51';
   var reset = true;
   var isConnected = false;
+  var pingPongInterval = null;
+  var lastPong = 0;
+  var PING_INTERVAL = 500;
+  
+  this.pingPong = function() {
+    clearInterval(this.pingPongInterval);
+    this.pingPongInterval = setInterval(function(){
+      if (ws && ws.readyState !== ws.OPEN) {
+        clearInterval(this.pingPongInterval);
+        return;
+      } else if (ws) {
+        ws.send('X');
+        var now = new Date().getTime();
+        if (lastPong === 0) return;
+        var diff = now - lastPong;
+        if (diff > 1000) {
+          lastPong = 0;
+          worker.postMessage({ serverMsg: true, msg: 2, clean: false, code: 1000 }); // ONCLOSE MESSAGE
+          console.log('PONG DIFF TOO LONG',diff);
+          isConnected = false;
+          clearInterval(this.pingPongInterval);
+          ws.close();
+          return;
+        }
+      }
+    },PING_INTERVAL);
+  };
 
   this.connect = function() {
     //Initiate a websocket connection
@@ -77,6 +104,7 @@ function MCConnection() {
         console.log('WEBSOCKET OPENED');
         reset = false;
         isConnected = true;
+        //conn.pingPong();
       };
       ws.onerror = function(e) {
         worker.postMessage({ serverMsg: true, msg: 1 }); // ONERROR MESSAGE
@@ -87,8 +115,14 @@ function MCConnection() {
         worker.postMessage({ serverMsg: true, msg: 2, clean: event.wasClean, code: event.code }); // ONCLOSE MESSAGE
         console.log('WEBSOCKET CLOSED',event);
         isConnected = false;
+        lastPong = 0;
+        clearInterval(this.pingPongInterval);
       };
       ws.onmessage = function(msg) {
+        if (msg.data === 'O') {
+          lastPong = new Date().getTime();
+          return;
+        }
         try {
           let jsonMessage = JSON.parse(msg.data);
           var id = jsonMessage['cmd_id'];
@@ -117,10 +151,10 @@ function MCConnection() {
     if (ws && ws.readyState === ws.OPEN) {
       try {
         ws.send(jsonData);
-        //console.log(jsonData);
+        //if (jsonData.indexOf('cyc0') !== -1) console.log('cyc0');
       } catch (err) {
         console.log(err);
-        alert('MC Connection terminated unexpectedly, trying to reconnect...');
+        console.log('MC Connection terminated unexpectedly, trying to reconnect...');
         conn.connect();
       }
     }

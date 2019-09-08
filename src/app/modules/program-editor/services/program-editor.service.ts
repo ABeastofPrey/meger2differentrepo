@@ -120,6 +120,7 @@ export class ProgramEditorService {
       'projects',
       'button.teach',
       'button.cancel',
+      'dismiss',
       'error.err',
       'success',
     ];
@@ -717,7 +718,9 @@ export class ProgramEditorService {
             var cmd_teach = '?tp_teach("' + fullName + '","' + v.typeStr + '")';
             this.ws.query(cmd_teach).then((ret: MCQueryResponse) => {
               if (ret.result === '0') {
-                this.snack.open(this.words['success'], '', { duration: 2000 });
+                this.getVariable(fullName).then(result=>{
+                  this.snack.open(this.words['success'] + ' ( ' + result + ' )', this.words['dismiss']);
+                });
               } else {
                 const err = this.words['error.err'] + ' ' + ret.result;
                 this.snack.open(err, '', { duration: 2000 });
@@ -727,28 +730,12 @@ export class ProgramEditorService {
         });
     });
   }
-
-  teachVariableByName(fullName: string) {
-    // search for TP Variable
-    let index = fullName.indexOf('[');
-    const searchName = index > -1 ? fullName.substring(0, index) : fullName;
-    let varType: string = null;
-    for (let v of this.data.joints.concat(this.data.locations)) {
-      if (v.name === searchName) {
-        varType = v.typeStr;
-        break;
-      }
-    }
-    if (varType === null) {
-      return this.snack.open(this.words['error.err'], '', { duration: 2000 });
-    }
-    const cmd_teach = '?tp_teach("' + fullName + '","' + varType + '")';
-    this.ws.query(cmd_teach).then((ret: MCQueryResponse) => {
-      if (ret.result === '0') {
-        this.snack.open(this.words['success'], '', { duration: 2000 });
-      } else {
-        this.snack.open(this.words['error.err'], '', { duration: 2000 });
-      }
+  
+  private getVariable(v: string): Promise<string> {
+    const cmd = `?tp_get_value_namespace("${v}")`;
+    return this.ws.query(cmd).then((ret: MCQueryResponse) => {
+      if (ret.err) return null;
+      return ret.result;
     });
   }
 

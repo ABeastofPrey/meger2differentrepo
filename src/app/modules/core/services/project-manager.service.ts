@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TreeNode } from '../../file-tree/components/mc-file-tree/mc-file-tree.component';
 import { TpStatService } from './tp-stat.service';
+import {CommonService} from './common.service';
 
 /*
  * THIS SERVICE MANAGES THE PROJECTS IN THE PROJECT EDITOR, BUT ALSO MANAGES
@@ -40,7 +41,8 @@ export class ProjectManagerService {
     private mgr: ScreenManagerService,
     private trn: TranslateService,
     private stat: TpStatService,
-    private zone: NgZone
+    private zone: NgZone,
+    private cmn: CommonService
   ) {
     this.trn.get('changeOK').subscribe(words => {
       this.words = words;
@@ -90,6 +92,7 @@ export class ProjectManagerService {
           .query('cyc3,' + this.currProject.value.name)
           .then((ret: MCQueryResponse) => {
             waiting = false;
+            if (this.currProject.value === null) return;
             if (this.oldStat === ret.result) return;
             this.oldStat = ret.result;
             const parts = ret.result.split(';');
@@ -127,7 +130,8 @@ export class ProjectManagerService {
             }
             this.activeProject = activeProject;
             this.mgr.projectActiveStatusChange.next(this.activeProject);
-            if (this.activeProject) this.mgr.closeControls();
+            if (this.activeProject && !this.cmn.isTablet)
+              this.mgr.closeControls();
             this.onAppStatusChange.next(null);
           });
       } else {

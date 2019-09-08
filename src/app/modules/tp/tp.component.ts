@@ -17,8 +17,10 @@ const TABS = ['jog', lbnTab, hGTab];
   styleUrls: ['./tp.component.css'],
 })
 export class TpComponent implements OnInit, OnDestroy {
+  
   tabs: Tab[];
 
+  private timeout: any = null;
   private unsubscribeEvent = new Subject<void>();
 
   constructor(
@@ -59,9 +61,16 @@ export class TpComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl('/');
         }
       });
+    this.timeout = setTimeout(()=>{
+      if (this.stat.mode !== 'T1' && this.stat.mode !== 'T2') {
+        this.router.navigateByUrl('/');
+      }
+    },1000);
   }
 
   ngOnDestroy() {
+    if (this.timeout !== null)
+      clearTimeout(this.timeout);
     if (!this.cmn.isTablet) {
       this.stat.mode = 'A';
     }

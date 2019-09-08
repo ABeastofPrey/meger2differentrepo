@@ -1,6 +1,5 @@
 <div class="wrapper">
 	<div class="side-menu mat-elevation-z3">
-		<div style="margin-bottom: 16px;">{{ data.gripperLibVer }}</div>
 		<button *ngIf="!login.isOperator" mat-raised-button color="primary" (click)="addNewItem(null)">
 			<div class="center-vertical-horizontal"><mat-icon>add</mat-icon>{{ 'grippers.new_ef' | translate }}</div>
 		</button>

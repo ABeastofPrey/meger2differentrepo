@@ -296,7 +296,7 @@
 								{{ 'button.calibrate' | translate }}
 							</button>
 						</div>
-						<div *ngIf="originResult">{{ 'calibrated_origin' | translate }}:&nbsp; {{ originResult }}</div>
+						<div *ngIf="originResult">{{ 'pallets.wizard.calibrated_origin' | translate }}:&nbsp; {{ originResult }}</div>
 						<img height="260" width="430" src="assets/pics/pallet/{{ originPicName }}" />
 					</div>
 					<div class="step-content" (mouseleave)="setOriginPic(0)">
@@ -738,6 +738,7 @@
 								? 'pallets.wizard.calibrated'
 								: 'pallets.wizard.calibrated_not') | translate
 						}}
+            <span *ngIf="originResult && this.dataService.selectedPallet.isFrameCalibrated">{{ originResult }}</span>
 					</td>
 				</tr>
 				<tr>

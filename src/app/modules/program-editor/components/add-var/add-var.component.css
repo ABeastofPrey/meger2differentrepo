@@ -36,8 +36,11 @@
   width: 320px;
   margin-right: 10px;
 }
-.values mat-form-field {
+.values mat-form-field:not(.flag-select) {
   width: 80px;
+}
+.values mat-form-field.flag-select {
+  width: 160px;
 }
 
 .label {

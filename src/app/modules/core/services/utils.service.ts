@@ -65,7 +65,9 @@ export class UtilsService {
 
   resetAll(loadautoexec?: boolean) {
     return this.stat
-      .resetAll()
+      .resetAll().catch(err=>{
+        console.log(err);
+    })
       .then(() => {
         return this.task.resetAll();
       })

@@ -1,3 +1,6 @@
+:host {
+  overflow: hidden;
+}
 .wrapper {
   flex: 1;
   display: flex;

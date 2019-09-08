@@ -100,25 +100,16 @@ export class ProgramToolbarComponent implements OnInit {
     const ref = this.dialog.open(NewProjectDialogComponent);
     ref.afterClosed().subscribe(projectName => {
       if (projectName) {
+        this.prgService.close();
         this.ws
           .query('?prj_new_project("' + projectName + '")')
           .then((ret: MCQueryResponse) => {
-            console.log(ret);
             if (ret.result === '0') {
               this.prj.currProject.next(null);
               this.utl.resetAllDialog(
                 this.words['projects.toolbar']['changing']
               );
-            } else
-              this.snack.open(
-                this.words['error.err'] +
-                  ' ' +
-                  ret +
-                  ':' +
-                  this.words['projects.toolbar']['err_create'],
-                '',
-                { duration: 1500 }
-              );
+            }
           });
       }
     });
@@ -128,6 +119,7 @@ export class ProgramToolbarComponent implements OnInit {
     const ref = this.dialog.open(OpenProjectDialogComponent);
     ref.afterClosed().subscribe(projectName => {
       if (projectName) {
+        this.prgService.close();
         this.ws
           .query('?prj_set_current_project("' + projectName + '")')
           .then((ret: MCQueryResponse) => {
@@ -191,7 +183,12 @@ export class ProgramToolbarComponent implements OnInit {
       });
   }
   newApp() {
-    this.dialog.open(NewAppDialogComponent);
+    this.dialog.open(NewAppDialogComponent, {
+      data: {
+        title: 'projects.toolbar.new_app',
+        placeholder: 'projects.toolbar.app_name'
+      }
+    });
   }
   newLib() {
     this.dialog.open(NewLibDialogComponent);

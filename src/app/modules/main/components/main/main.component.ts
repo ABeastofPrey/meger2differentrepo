@@ -15,6 +15,7 @@ import {
   ScreenManagerService,
   WebsocketService,
   ProjectManagerService,
+  MCQueryResponse,
 } from '../../../core';
 import {
   Router,
@@ -22,7 +23,7 @@ import {
   RouteConfigLoadEnd,
 } from '@angular/router';
 import { JogSettingsDialogComponent } from '../../../../components/jog-settings-dialog/jog-settings-dialog.component';
-import { MatDialog, MatSidenav } from '@angular/material';
+import { MatDialog, MatSidenav, MatSnackBar } from '@angular/material';
 import { TourService } from 'ngx-tour-md-menu';
 import { environment } from '../../../../../environments/environment';
 import {
@@ -95,6 +96,8 @@ export class MainComponent implements OnInit {
   appName: string = environment.appName;
   lastWindowsZindex = 5;
   env = environment;
+  allowHiddenMenu: boolean = false; // Sets if the hidden menu feature is active
+  hiddenMenuVisible: boolean = false;
 
   @ViewChild('drawer', { static: true }) drawer: MatSidenav;
 
@@ -124,7 +127,7 @@ export class MainComponent implements OnInit {
     public cmn: CommonService,
     public utils: UtilsService,
     public rec: RecordService,
-    public sim: SimulatorService
+    public sim: SimulatorService,
   ) {
     this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(event => {
       this.refreshLang();
@@ -138,12 +141,25 @@ export class MainComponent implements OnInit {
         });
       }
     });
+    this.stat.estopChange.pipe(takeUntil(this.notifier)).subscribe(estop=>{
+      if (estop) {
+        this.motionFlag = false;
+        clearInterval(this.jogInterval);
+      }
+    });
   }
 
   private refreshLang() {
     this.trn.get(['main.errJog', 'main.jogControlsToggle']).subscribe(words => {
       this.words = words;
     });
+  }
+  
+  toggleHiddenMenu() {
+    this.hiddenMenuVisible = !this.hiddenMenuVisible;
+  }
+  closeHiddenMenu() {
+    this.hiddenMenuVisible = false;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -152,6 +168,7 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.allowHiddenMenu = this.cmn.isTablet;
     this.screenWidth = window.innerWidth;
     this.prj.currProject.pipe(takeUntil(this.notifier)).subscribe(prj => {
       if (prj) this.prj.getProjectStatus();
@@ -198,7 +215,12 @@ export class MainComponent implements OnInit {
       });
     // IF NOT CONNECTED AFTER 2 seconds - redirect...
     setTimeout(() => {
-      if (!this.ws.connected) this.router.navigateByUrl('/login');
+      if (!this.ws.connected) return this.router.navigateByUrl('/login');
+      if (this.cmn.isTablet) {
+        this.ws.query('?tp_ver').then((ret:MCQueryResponse)=>{
+          if (ret.err) return this.router.navigateByUrl('/login');
+        });
+      }
     }, 2000);
   }
 
@@ -260,7 +282,7 @@ export class MainComponent implements OnInit {
   mouseUp(e: MouseEvent) {
     let target: HTMLElement = e ? <HTMLElement>e.target : null;
     if (
-      target &&
+      target && e &&
       e.type === 'mouseout' &&
       (target.tagName !== 'TD' && target.tagName !== 'HTML')
     ) {

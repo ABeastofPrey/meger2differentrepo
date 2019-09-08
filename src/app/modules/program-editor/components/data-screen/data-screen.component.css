@@ -34,6 +34,7 @@
 .data-table {
   width: 100%;
   table-layout: fixed;
+  min-width: 970px;
 }
 .data-table.busy {
   background-color: #ccc;

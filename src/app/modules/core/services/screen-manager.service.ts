@@ -182,6 +182,10 @@ export class ScreenManagerService {
     setTimeout(() => {
       this.controlsAnimating.next(false);
     }, 300);
+    setTimeout(() => {
+      if (this.stat.mode !== 'T1' && this.openedControls && !this.controlsAnimating.value)
+        this.closeControls();
+    }, 1000);
   }
 
   showControls() {
@@ -192,6 +196,10 @@ export class ScreenManagerService {
     setTimeout(() => {
       this.controlsAnimating.next(false);
     }, 300);
+    setTimeout(() => {
+      if (this.stat.mode !== 'T1' && this.openedControls && !this.controlsAnimating.value)
+        this.closeControls();
+    }, 1000);
   }
 
   isScreenDisabled(s: ControlStudioScreen) {
@@ -240,6 +248,10 @@ export class ScreenManagerService {
     // HANDLE CDK CONTAINER WHEN JOG PANEL IS OPENED
     this.dialog.afterOpened.subscribe(dialog => {
       const data = dialog._containerInstance._config.data;
+      // HANDLE FOCUS
+      if (!this.cmn.isTablet) {
+        dialog._containerInstance._config.autoFocus = true;
+      }
       if (data && data.enableJog && this.openedControls) {
         const { classList } = this.container.getContainerElement();
         if (!classList.contains('jog-panel-open')) {

@@ -168,6 +168,7 @@ export class TaskService {
       })
       .then(ret => {
         console.log(ret);
+        this.start();
       });
   }
 }

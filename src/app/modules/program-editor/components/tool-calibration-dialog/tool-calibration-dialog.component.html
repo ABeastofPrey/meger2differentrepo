@@ -1,10 +1,10 @@
 <div class="mat-typography" style="margin: -24px;">
 	<div class="header mat-toolbar mat-primary mat-elevation-z3">
 		<div class="title">{{ ('calibrate' | translate) + ' ' + varName }}</div>
-	</div>
 	<button mat-button class="close-btn" (click)="closeDialog()">
-		<mat-icon>close</mat-icon>
-	</button>
+      <mat-icon>close</mat-icon>
+    </button>
+	</div>
 	<div class="content">
 		<mat-radio-group [(ngModel)]="calibType" style="font-size: 1.5em;">
 			<mat-radio-button value="MULTIPLE_POINTS" style="margin-right: 1em;">{{

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CoordinatesService, ApiService } from '../../core';
+import { CoordinatesService, ApiService, GroupManagerService } from '../../core';
 import {
   SimulatorComponent,
   PlayerService,
@@ -22,7 +22,6 @@ import { SimulatorService } from '../../core/services/simulator.service';
 })
 export class SimulatorV2Component implements OnInit {
   jointsAsArr: number[];
-  showTrace: boolean = false;
   loaded: boolean = false;
   liveMode: boolean = true;
   env = environment;
@@ -39,7 +38,8 @@ export class SimulatorV2Component implements OnInit {
     private player: PlayerService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
-    private scene: SceneService
+    private scene: SceneService,
+    private grp: GroupManagerService
   ) {}
 
   ngOnInit() {
@@ -52,6 +52,7 @@ export class SimulatorV2Component implements OnInit {
   }
   
   openRecording() {
+    const cycleTime = this.grp.sysInfo.cycleTime;
     if (!this.liveMode) {
       this.player.unload();
       this.liveMode = true;
@@ -79,7 +80,7 @@ export class SimulatorV2Component implements OnInit {
               .map(val => {
                 return Number(val);
               }),
-            timeFromStartMs: (i - 2) * 4 * gap,
+            timeFromStartMs: (i - 2) * cycleTime * gap,
           };
         });
       data.shift();

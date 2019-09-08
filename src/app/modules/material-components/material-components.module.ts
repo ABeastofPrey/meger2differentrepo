@@ -34,6 +34,7 @@ import {
   MatBadgeModule,
   MatChipsModule,
   MatPaginatorModule,
+  MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -112,5 +113,17 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatPaginatorModule,
   ],
   declarations: [],
+  providers: [
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        autoFocus: false,
+        hasBackdrop: true,
+        restoreFocus: false,
+        closeOnNavigation: true,
+        data: null
+      }
+    }
+  ]
 })
 export class MaterialComponentsModule {}

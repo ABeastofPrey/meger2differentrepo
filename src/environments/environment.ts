@@ -17,7 +17,7 @@ export const Kuka: Platform = {
 
 export const Servotronix: Platform = {
   name: 'stx',
-  logo: 'stx.png',
+  logo: 'cs_stx.png',
   spinner: 'logo_only.gif', // Must be 64 by 64 px
 };
 
@@ -32,8 +32,8 @@ export const environment = {
   appName_Kuka: 'KUKA.ControlStudio',
   api_url: 'http://10.4.20.51:1207',
   ip: '10.4.20.51',
-  gui_ver: 'v1.1.5-dev 2019-08-12',
-  compatible_webserver_ver: 'v3.1.6',
+  gui_ver: 'v1.1.9-dev 2019-09-08',
+  compatible_webserver_ver: 'v3.2.2',
   platform: Platforms.Kuka,
   platforms: Platforms,
 };

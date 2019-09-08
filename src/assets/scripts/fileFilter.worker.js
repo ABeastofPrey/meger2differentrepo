@@ -21,22 +21,18 @@ function iterationCopy(src) {
   return target;
 }
 
+/*
+ * Find string s in TreeNode n
+ */
 function findInNode(s, n) {
   // copy node to not change original
   var node = this.iterationCopy(n);
 
   if (s.length === 0) return node;
-
-  var i = node.name.lastIndexOf('.');
-  var ext = i > -1 ? node.name.substring(i + 1).toUpperCase() : '';
-  var nameOnly = i > -1 ? node.name.substring(0, i) : node.name;
-  var nameMatch =
-    (ext.length > 0 &&
-      s.startsWith('*.') &&
-      ext === s.substring(2).toUpperCase()) ||
-    (s.indexOf('.') === -1 &&
-      nameOnly.toUpperCase().includes(s.toUpperCase())) ||
-    node.name.toUpperCase().includes(s.toUpperCase());
+  
+  // Create RegExp
+  var reg = new RegExp(s.replace(/\./g,'\\.').replace(/\*/g,'(.*?)'), 'i');
+  var nameMatch = node.name.search(reg) !== -1;
   if (node.isFolder) {
     var filteredChildren = [];
     var found = false;

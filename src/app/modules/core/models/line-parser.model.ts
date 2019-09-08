@@ -32,7 +32,7 @@ export class LineParser {
     let result: TPVariable[] = [];
     let tmp = row.split(' ');
     if (tmp.length <= 1) return [];
-    let varList = this.data.joints.concat(this.data.locations);
+    let varList: TPVariable[] = this.data.joints.concat(this.data.locations);
     for (let i = 1; i < tmp.length; i++) {
       if (tmp[i].length === 0 || (i === 1 && this.data.robots.includes(tmp[i])))
         continue;
@@ -53,7 +53,7 @@ export class LineParser {
       } else if (bracket > -1) continue;
       for (let v of varList) {
         if (tmp[i] === v.name) {
-          if (v.isArr && v.value.length <= varIndex) continue;
+          if (v.isArr && v.value.length < varIndex) continue;
           let varCopy = Object.assign({}, v);
           varCopy.selectedIndex = varIndex;
           result.push(varCopy);

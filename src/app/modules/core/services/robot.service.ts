@@ -96,6 +96,7 @@ export class RobotService {
       case 'SC_4_700_WU_M01_6_EC_SIM':
         return 'assets/robots/midea/wukong700/wukong700.xacro';
       case 'DLTL_3_000_IGUS_M01_00_CAN':
+      case 'DLTL_3_000_IGUS_M01_00_CAN_SIM':
         return 'assets/robots/igus/delta/delta.xacro';
       default:
         return null;

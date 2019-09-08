@@ -336,6 +336,17 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     if (n.type === 'File') {
       path = projName + '/' + n.parent.name + '/';
       this.service.setFile(n.parent.name + '.UPG', path, n.ref, -1);
+      // REFRESH VARIABLES IF NEEDED
+      if (this.data.selectedDomain === n.parent.name) return;
+      this.service.busy = true;
+      this.ws
+        .query('?tp_set_application("' + n.parent.name + '")')
+        .then(() => {
+          return this.data.refreshDomains();
+        })
+        .then(() => {
+          this.service.busy = false;
+        });
     } else if (n.type === 'Library') {
       const appName = n.parent.parent.name;
       path = projName + '/' + appName + '/LIBS/';

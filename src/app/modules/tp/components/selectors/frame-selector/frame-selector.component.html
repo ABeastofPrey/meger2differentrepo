@@ -1,5 +1,5 @@
 <mat-form-field>
-	<mat-select placeholder="{{ 'frame' | translate }}" [(ngModel)]="dataService.selectedFrame" [disabled]="disabled">
+	<mat-select placeholder="{{ 'frame_jog' | translate }}" [(ngModel)]="dataService.selectedFrame" [disabled]="disabled">
 		<mat-option *ngFor="let item of dataService.frames" value="{{ item }}">{{ ('frames.' + item) | translate }}</mat-option>
 	</mat-select>
 </mat-form-field>

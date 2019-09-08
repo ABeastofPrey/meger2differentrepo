@@ -32,6 +32,10 @@ export class GroupManagerService {
               this.refreshGroupsAndInfo();
             }, 2000);
           });
+          return this.ws.query('?BUS[0].Cycletime');
+        }).then((ret: MCQueryResponse)=>{
+          const cycleTime = Number(ret.result) || 4; // in microseconds
+          this.sysInfo.cycleTime = cycleTime / 1000; // in milliseconds
           this.sysInfoLoaded.next(true);
         });
       } else {

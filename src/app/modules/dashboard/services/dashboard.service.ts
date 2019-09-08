@@ -13,6 +13,7 @@ import { ApplicationRef } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordGraphComponent } from '../../../components/record-graph/record-graph.component';
+import {GroupManagerService} from '../../core/services/group-manager.service';
 
 @Injectable()
 export class DashboardService {
@@ -63,7 +64,8 @@ export class DashboardService {
     private tour: TourService,
     private zone: NgZone,
     private ref: ApplicationRef,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private grp: GroupManagerService
   ) {
     this.trn
       .get([
@@ -218,6 +220,8 @@ export class DashboardService {
         y: [],
       });
     }
+    const cycleTime = this.grp.sysInfo.cycleTime;
+    const gap = Number(recLines[0]) || 1;
     for (let i = 2; i < recLines.length; i++) {
       if (recLines[i] !== '') {
         let vals = recLines[i].slice(0, -1).split(',');
@@ -230,7 +234,7 @@ export class DashboardService {
             newData[0].y.push(Number(vals[1]));
           } else {
             vals.forEach((val, index) => {
-              newData[index].x.push(i * 2);
+              newData[index].x.push((i-2) * cycleTime * gap);
               newData[index].y.push(Number(val));
             });
           }

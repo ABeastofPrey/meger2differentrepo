@@ -7,14 +7,19 @@
 		<div class="header-box primary-bg-dark center-vertical" style="min-width: 155px;">
 			<mat-icon>local_library</mat-icon>
 			<span
-				>TP: {{ (stat.onlineStatus.value ? 'online' : 'offline') | translate }} ({{
+				>{{ 'mode_selector' | translate }}: {{ (stat.onlineStatus.value ? 'online' : 'offline') | translate }} ({{
 					stat.mode || ('na' | translate)
 				}})</span
 			>
 		</div>
 		<div class="header-box primary-bg-dark center-vertical">
 			<mat-icon>devices</mat-icon>
-			<span>{{ 'system_state.state' | translate }}: {{ 'system_state.' + stat.systemErrorCode | translate }}</span>
+			<span *ngIf="stat.systemErrorCode === 1000 || stat.systemErrorCode < 0">
+        {{ 'system_state.state' | translate }}: {{ 'system_state.' + stat.systemErrorCode | translate }}
+      </span>
+      <span *ngIf="stat.systemErrorCode !== 1000 && stat.systemErrorCode >= 0">
+        {{ 'system_state.state' | translate }}: {{ 'system_state.loading' | translate }}({{stat.systemErrorCode}})
+      </span>
 		</div>
 		<div class="header-box primary-bg-dark center-vertical">
 			<mat-icon>comment</mat-icon>
@@ -36,16 +41,18 @@
 	<mat-grid-list cols="12" rowHeight="fit">
 		<mat-grid-tile colspan="3" rowspan="1">
 			<mat-card>
-				<mat-card-header>
+				<mat-card-header style="margin-bottom: 8px;" class="center-vertical">
 					<div
 						mat-card-avatar
 						style="background-size: cover;"
 						[style.background-image]="'url(' + profileSrc + ')'"
 					></div>
-					<mat-card-title
-						><b>{{ 'home.welcome' | translate }}, {{ login.fName }}!</b></mat-card-title
-					>
-					<mat-card-subtitle>{{ login.permission | translate }}</mat-card-subtitle>
+          <div style="height: 48px;">
+            <mat-card-title
+              ><b>{{ 'home.welcome' | translate }}, {{ login.fName }}!</b></mat-card-title
+            >
+            <mat-card-subtitle>{{ login.permission | translate }}</mat-card-subtitle>
+          </div>
 				</mat-card-header>
 				<div
 					mat-card-image
@@ -53,6 +60,7 @@
 					class="center-vertical-horizontal"
 					[style.background-image]="'url(' + mcImage + ')'"
 					@scaleIn
+          [class.kuka-image]="utils.IsKuka"
 				>
 					<div *ngIf="simulated" class="primary-bg mat-elevation-z3 simulated">
 						{{ 'home.virtual_controller' | translate }}

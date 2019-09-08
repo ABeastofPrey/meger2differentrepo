@@ -7,6 +7,7 @@
     "io": "I/O Mapping Library",
     "lbn": "Lead By Nose Library",
     "mcu": "MCU Version",
+    "mcuDev": "MCU S/N",
     "pallet": "Pallets Library",
     "payloads": "Payloads Library",
     "server": "Web Server",
@@ -119,6 +120,7 @@
   "circlePoint": "CirclePoint",
   "clear_msgs": "Clear messages",
   "close": "Close",
+  "connected": "Connected",
   "connecting": "Connecting",
   "copy": "Copy",
   "cut": "Cut",
@@ -134,7 +136,7 @@
       "3d": "3D Graph",
       "btnShow": "SHOW",
       "name": "Recording Name",
-      "title": "Show an External Recording"
+      "title": "Open Recording"
     },
     "move_sent": "MOTION COMMAND SENT",
     "new": {
@@ -159,7 +161,7 @@
     "tooltip": {
       "chart": "Show/Hide chart window",
       "csv": "Download chart data as CSV",
-      "external": "Show external graph"
+      "external": "Open Recording"
     }
   },
   "dataScreen": {
@@ -190,6 +192,7 @@
     "title": "Connection to softMC was lost",
     "msg": "Check your network connection."
   },
+  "disconnected": "Disconnected",
   "dismiss": "DISMISS",
   "domain": "Application",
   "done": "Done",
@@ -210,11 +213,14 @@
       "title": "Firmware Update Failed",
       "msg": "We couldn't install the pacakge on the controller."
     },
+    "invalid_etag": "It seems you recently updated ControlStudio+ and/or the softMC web server. Press CTRL + SHIFT + R to reload this page.",
+    "invalid_etag_tablet": "It seems you recently updated ControlStudio+ and/or the softMC web server. Please clear the browser cache, then reload this page.",
     "invalid_feature": "Invalid feature",
     "invalid_full_name": "A Full name is made of a First AND Last name",
-    "invalid_webserver": "Use web server v{{ver}} (current is {{current}})",
+    "invalid_webserver": "Use web server {{ver}} (current is {{current}})",
     "orientation": "ControlStudio+ works in Landscape mode only.",
-    "tp": "Could not load TP Libraries, check console log for more details..."
+    "tp": "Could not load TP Libraries, check console log for more details...",
+    "tp_tablet": "TP Libraries was not found. Reboot the controller and try again"
   },
   "errorHistory": {
     "button": {
@@ -245,12 +251,13 @@
   },
   "filter": "Filter",
   "frame": "Motion Frame",
+  "frame_jog": "Jog Frame",
   "frames": {
     "BASE": "BASE",
     "calibration": {
       "origin": "Origin",
       "posX": "Position X",
-      "posY": "Position Y",
+      "posXY": "Position XY",
       "set": "Set as current",
       "title": "Calibrate"
     },
@@ -299,7 +306,7 @@
     "pay_ef": "End Effector Payload",
     "pay_item": "Item Payload",
     "set": "Set Gripper",
-    "sleep": "Sleep Time",
+    "sleep": "Timing",
     "test": "Test Gripper",
     "use_tool": "Use Tool"
   },
@@ -558,7 +565,8 @@
         "teach_entry": "TEACH ENTRY POSITION",
         "teach_origin": "TEACH ORIGIN",
         "teach_posX": "TEACH POSITION X",
-        "teach_posY": "TEACH POSITION Y"
+        "teach_posY": "TEACH POSITION Y",
+        "teach_posXY": "TEACH POSITION XY"
       },
       "calibrated": "Calibrated",
       "calibrated_not": "Not calibrated",
@@ -566,8 +574,8 @@
       "conf": "Configuration Flags",
       "curr_index": "Current item index",
       "curr_pos": "Current Position",
-      "dimensions_item": "Item Dimensions",
-      "dimensions_pallet": "Pallet Dimensions",
+      "dimensions_item": "Item Dimensions [mm]",
+      "dimensions_pallet": "Pallet Dimensions [mm]",
       "dir": "Direction",
       "done_title": "Pallet setup is done!",
       "entry": "Entry",
@@ -1115,6 +1123,7 @@
   "success": "Success!",
   "system_state": {
     "1000": "ONLINE",
+    "loading": "Initializing system...",
     "state": "System State"
   },
   "tabs": {

@@ -30,13 +30,13 @@
 			<div class="label">{{ 'values' | translate }}</div>
 			<div class="value-container">
 				<div *ngIf="varType === 'JOINT'" class="values">
-					<mat-form-field *ngFor="let joint of coos.joints; let i = index" floatLabel="never">
+					<mat-form-field *ngFor="let joint of data.robotCoordinateType.legends; let i = index" floatLabel="never">
 						<span matPrefix style="font-weight: bold;">J{{ i + 1 }}:&nbsp;&nbsp;</span>
 						<input matInput [placeholder]="'J' + (i + 1)" [(ngModel)]="this.values[i]" virtualKeyboard ktype="numeric" />
 					</mat-form-field>
 				</div>
 				<div *ngIf="varType === 'LOCATION'" class="values">
-					<mat-form-field *ngFor="let legend of data.robotCoordinateType.all; let i = index" floatLabel="never">
+					<mat-form-field *ngFor="let legend of data.robotCoordinateType.all; let i = index" floatLabel="never" [class.flag-select]="i >= data.robotCoordinateType.legends.length">
 						<span matPrefix style="font-weight: bold;">{{ legend }}:&nbsp;&nbsp;</span>
 						<input
 							*ngIf="i < data.robotCoordinateType.legends.length"
@@ -90,7 +90,12 @@
 						></textarea>
 					</mat-form-field>
 				</div>
-				<button *ngIf="varType === 'JOINT' || varType === 'LOCATION'" mat-raised-button color="primary" (click)="getCurrent()">
+				<button 
+        *ngIf="varType === 'JOINT' || varType === 'LOCATION'"
+        mat-raised-button
+        color="primary"
+        (click)="getCurrent()"
+        style="align-self: flex-start;">
 					{{'variables.get_current'|translate}}
 				</button>
 			</div>

@@ -43,7 +43,7 @@ export class DataScreenComponent implements OnInit {
     true,
     []
   );
-
+  varTypes = ['joints', 'locations', 'longs', 'doubles', 'strings'];
   colsToDisplay: string[] = BASE_COLS;
 
   private _legend: string[] = [];
@@ -109,21 +109,24 @@ export class DataScreenComponent implements OnInit {
     });
   }
 
-  // filterData() {
-  //   if (this.data.domainIsFrame) {
-  //     this.dataSource.data = this.data.locations;
-  //     this.selection.clear();
-  //     return;
-  //   }
-  //   let data = [];
-  //   if (this.useAsProjectPoints) {
-  //     data = data.concat(this.data.pJoints);
-  //   }
-  //   this.dataSource.data = data;
-  //   this.selection.clear();
-  // }
+  filterData() {
+    if (this.data.domainIsFrame) {
+      this.dataSource.data = this.data.locations;
+      this.selection.clear();
+      return;
+    }
+    let data = [];
+    if (this.useAsProjectPoints) {
+      data = data.concat(this.data.pJoints);
+    }
+    this.dataSource.data = data;
+    this.selection.clear();
+  }
 
   ngOnInit() {
+    if (this.useAsProjectPoints) {
+      this.varTypes = ['joints'];
+    }
     this.displayVarType = this.data.isRobotType ? 'joints' : 'longs';
     this.data.dataRefreshed.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) this.updateDataType();
@@ -144,11 +147,7 @@ export class DataScreenComponent implements OnInit {
         this._legend = this.data.robotCoordinateType.legends.map((l, i) => {
           return 'J' + (i + 1);
         });
-        if (this.useAsProjectPoints) {
-          this.dataSource.data = this.data.pJoints;
-        } else {
-          this.dataSource.data = this.data.joints;
-        }
+        this.dataSource.data = this.useAsProjectPoints ? this.data.pJoints : this.data.joints;
         break;
       case 'locations':
         this._legend = this.data.robotCoordinateType.all;
@@ -314,14 +313,14 @@ export class DataScreenComponent implements OnInit {
         useAsProjectPoints: this.useAsProjectPoints,
         canUseArray: this.useAsProjectPoints ? false : true,
         varType: this.displayVarType.slice(0, -1).toUpperCase(),
-      },
+      }
     });
   }
 
-  // onDomainChange() {
-  //   this.selectedVar = null;
-  //   this.filterData();
-  // }
+  onDomainChange() {
+    this.selectedVar = null;
+    this.filterData();
+  }
 
   deleteSelected(element: TPVariable) {
     this.trn

@@ -3,7 +3,16 @@
 		<mat-icon>security</mat-icon>&nbsp;&nbsp;{{ 'password_confirm' | translate }} ({{ username }})
 	</div>
 	<div class="name-wrapper">
-		<mat-form-field>
+    <div class="center-vertical" *ngIf="data.withModeSelector">
+      <span>{{ 'mode_selector' | translate }}</span>
+      <mat-button-toggle-group [(ngModel)]="mode">
+        <mat-button-toggle color="primary" value="T1" [disabled]="data.currentMode === 'T1'">T1</mat-button-toggle>
+        <mat-button-toggle color="primary" value="T2" [disabled]="data.currentMode === 'T2'">T2</mat-button-toggle>
+        <mat-button-toggle color="primary" value="A" [disabled]="data.currentMode === 'A'">A</mat-button-toggle>
+        <mat-button-toggle color="primary" value="R" [disabled]="data.currentMode === 'R'">R</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+		<mat-form-field appearance="outline" style="margin: 24px 0;">
 			<input
 				matInput
 				type="password"

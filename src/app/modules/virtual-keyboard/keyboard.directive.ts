@@ -33,8 +33,9 @@ export class KeyboardDirective {
   @Output() onKeyboardClose: EventEmitter<any> = new EventEmitter();
   @Output() onLineDelete: EventEmitter<any> = new EventEmitter();
 
-  @HostListener('focus')
-  onClick() {
+  @HostListener('focus',['$event'])
+  onClick(e) {
+    //console.log(e);
     if (!this.cmn.isTablet || this.ktype === 'none' || this._dialogOpen) {
       if (!this._dialogOpen) this.el.nativeElement.readOnly = false;
       return;
@@ -81,7 +82,9 @@ export class KeyboardDirective {
     private cmn: CommonService,
     @Optional() private ctrl: NgControl,
     private name: FormControlName
-  ) {}
+  ) {
+    (el.nativeElement as HTMLElement).setAttribute('autocomplete','off');
+  }
 }
 
 @Component({
@@ -189,6 +192,11 @@ export class KeyboardDialog implements OnInit {
   }
   
   private scrollToCursor() {
+    // TODO: REMOVE TIMEOUT AND FIX THIS ISSUE
+    const start = new Date().getTime();
+    const TIMEOUT = 200; // 200 ms
+    let diff: number = 0;
+    if (this.data.keyboardType === 'numeric') return;
     // scroll to cursor position, if needed
     const el = this.displayInput.nativeElement as HTMLElement;
     const containerWidth = el.parentElement.clientWidth;
@@ -197,17 +205,29 @@ export class KeyboardDialog implements OnInit {
     let min = Math.floor(currLeft / this.cmn.fontWidth);
     if (this._cursorPos >= min && this._cursorPos <= (min + charsInLine)) return;
     if (this._cursorPos < min) {
-      while (this._cursorPos < min) {
+      while (this._cursorPos < min && diff < TIMEOUT) {
         const max = this._cursorPos;
         min = max - charsInLine;
+        diff = new Date().getTime() - start;
+      }
+      if (diff >= TIMEOUT) {
+        console.log('ERROR IN SCROLL TO CURSOR:');
+        console.log(this._cursorPos, charsInLine, min);
+        return;
       }
       if (min < 0)
         min = 0;
       const left = min * this.cmn.fontWidth;
       el.style.left = -left + 'px';
     } else if (this._cursorPos > (min + charsInLine)) {
-      while (this._cursorPos > (min + charsInLine)) {
+      while (this._cursorPos > (min + charsInLine) && diff < TIMEOUT) {
         min = min + charsInLine;
+        diff = new Date().getTime() - start;
+      }
+      if (diff >= TIMEOUT) {
+        console.log('ERROR IN SCROLL TO CURSOR:');
+        console.log(this._cursorPos, charsInLine, min);
+        return;
       }
       if (min + charsInLine > this.currValue.length)
         min = this.currValue.length - charsInLine;

@@ -257,8 +257,11 @@ export class IoMappingScreenComponent implements OnInit {
         '?iomap_set_info(' + ioType + ',' + io.id + ',"VALUE","' + newVal + '")'
       )
       .then((ret: MCQueryResponse) => {
-        if (ret.result !== '0') e.source.checked = !e.source.checked;
-        else io.value = !io.value;
+        if (ret.result !== '0') {
+          e.source.checked = !e.source.checked;
+        } else {
+          io.value = e.checked;
+        }
       });
   }
 

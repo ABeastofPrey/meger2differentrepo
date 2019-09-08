@@ -348,8 +348,12 @@ export class DataService {
 
   // MCU
   private _mcuVer: string = null;
+  private _mcuDevVer: string = null;
   get mcuVer() {
     return this._mcuVer;
+  }
+  get mcuDevVer() {
+    return this._mcuDevVer;
   }
 
   // CABINET
@@ -700,6 +704,7 @@ export class DataService {
         queries.push(this.ws.query('?TP_GET_SIMULATED_AXES'));
         queries.push(this.ws.query('?system_version'));
         queries.push(this.ws.query('?TP_IS_SYSTEM_SIMULATED'));
+        queries.push(this.ws.query('?MCU_DEV_VER'));
 
         return Promise.all(queries)
           .then((result: MCQueryResponse[]) => {
@@ -735,6 +740,7 @@ export class DataService {
             this._simulated = result[10].result === '1';
             this._cabinetVer = result[11].err ? null : result[11].result;
             this._simulatedSystem = result[12].result === '1';
+            this._mcuDevVer = result[13].result;
 
             return this.refreshMachineTables()
               .then(() => {
@@ -784,15 +790,31 @@ export class DataService {
     this.stat.onlineStatus.subscribe(stat => {
       if (stat) {
         this.init();
+      } else {
+        this.dataLoaded.next(false);
       }
     });
     this.ws.isConnected.subscribe(stat => {
-      if (!stat) this.dataLoaded.next(false);
+      if (!stat) 
+        this.dataLoaded.next(false);
+      else if (this._JavaVersion === null)
+        this.getMinimumVersions();
     });
   }
 
   reset() {
     //this._selectedPallet = null;
+  }
+  
+  getMinimumVersions() : Promise<any> {
+    const promises = [
+      this.ws.query('?ver'),
+      this.ws.query('java_ver')
+    ];
+    return Promise.all(promises).then((ret: MCQueryResponse[])=>{
+      this._MCVersion = ret[0].result;
+      this._JavaVersion = ret[1].result;
+    });
   }
 
   init() {
@@ -850,8 +872,6 @@ export class DataService {
       this.ws.query('?TP_GET_KEYBOARD_TYPE'),
       this.ws.query('?TP_GET_KEYBOARD_TYPES_LIST'),
       this.ws.query('?TP_GET_KEYBOARD_FORMAT'),
-      this.ws.query('?ver'),
-      this.ws.query('java_ver'),
       this.ws.query('?TP_GET_JOG_INCREMENT_SIZE'),
     ];
     return Promise.all(promises)
@@ -862,9 +882,7 @@ export class DataService {
         this._refreshCycle = parseInt(results[3].result);
         this._softTPType = results[4].result;
         this._softTPTypes = results[5].result.split(',');
-        this._MCVersion = results[7].result;
-        this._JavaVersion = results[8].result;
-        this._jogIncrements = results[9].result;
+        this._jogIncrements = results[7].result;
         try {
           this._keyboardFormat = JSON.parse(results[6].result);
         } catch (err) {

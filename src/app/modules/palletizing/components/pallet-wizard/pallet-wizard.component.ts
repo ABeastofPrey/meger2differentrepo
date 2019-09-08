@@ -342,15 +342,17 @@ export class PalletWizardComponent implements OnInit {
   }
 
   private checkCalibrationStatus() {
-    return this.ws
-      .query(
-        '?PLT_IS_ORIGIN_CALIBRATED("' +
-          this.dataService.selectedPallet.name +
-          '")'
-      )
+    const pal = this.dataService.selectedPallet.name;
+    return this.ws.query('?PLT_IS_ORIGIN_CALIBRATED("' + pal + '")')
       .then((ret: MCQueryResponse) => {
         this.dataService.selectedPallet.isFrameCalibrated = ret.result === '1';
-        return ret.err || ret.result === '0' ? { notCalibrated: true } : null;
+        if (!this.dataService.selectedPallet.isFrameCalibrated)
+          return { notCalibrated: true };
+        return this.ws.query('?PLT_GET_ORIGIN("' + pal + '")')
+          .then((ret: MCQueryResponse) => {
+            this._originResult = ret.result;
+            return null;
+          });
       });
   }
 

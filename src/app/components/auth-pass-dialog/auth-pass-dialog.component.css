@@ -15,8 +15,11 @@
 }
 .name-wrapper {
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
-.name-wrapper .mat-form-field {
-  flex: 1;
+.name-wrapper mat-button-toggle-group {
+  margin-left: 16px;
+}
+mat-button-toggle-group mat-button-toggle {
+  min-width: 44px;
 }

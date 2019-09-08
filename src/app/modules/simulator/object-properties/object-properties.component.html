@@ -13,6 +13,45 @@
 			<mat-icon>delete</mat-icon>
 		</button>
 	</div>
+  <table class="full" style="text-align: left;" *ngIf="pallet">
+    <thead>
+			<tr>
+				<td>{{ 'simulator_screen.prop' | translate }}</td>
+				<td>{{ 'simulator_screen.val' | translate }}</td>
+			</tr>
+		</thead>
+    <tr>
+      <td>
+        {{ 'pallets.wizard.origin' | translate }}:
+      </td>
+      <td>
+        <span *ngFor="let l of data.robotCoordinateType.legends">
+          {{pallet.origin[l.toLowerCase()]}}
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-right: 8px;">
+        {{ 'pallets.wizard.dimensions_pallet' | translate }}:
+      </td>
+      <td>
+        {{pallet.pallet_size_x}},
+        {{pallet.pallet_size_y}},
+        {{pallet.pallet_size_z}}
+      </td>
+    </tr>
+    <tr *ngIf="lastSelectedNode.color">
+			<td>Color</td>
+			<td
+				class="color-select"
+				[colorPicker]="'#' + lastSelectedNode.color"
+				(colorPickerChange)="onColorChange($event)"
+				[style.background]="'#' + lastSelectedNode.color"
+			>
+				{{ lastSelectedNode.color }}
+			</td>
+		</tr>
+  </table>
 	<table class="full" *ngIf="!lastSelectedNode.name.startsWith('Pallet_')">
 		<thead>
 			<tr>

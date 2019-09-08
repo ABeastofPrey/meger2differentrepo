@@ -3,6 +3,7 @@ import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { TaskService, MCTask } from './task.service';
 import { LoginService } from './login.service';
 import { environment } from '../../../../environments/environment';
+import {ProjectManagerService} from './project-manager.service';
 
 const GLOBAL = '_Global';
 
@@ -24,7 +25,8 @@ export class WatchService {
   constructor(
     private ws: WebsocketService,
     private task: TaskService,
-    private login: LoginService
+    private login: LoginService,
+    private prj: ProjectManagerService
   ) {
     const cachedStr = localStorage.getItem('watch');
     if (cachedStr) {
@@ -75,9 +77,15 @@ export class WatchService {
         })
         .map(t => {
           return t.name;
-        })
-        .sort();
+        });
+      const prj = this.prj.currProject.value;
+      if (prj) {
+        this.contexts = this.contexts.concat(prj.apps.map(app=>{
+          return app.name + '_DATA';
+        }));
+      this.contexts.sort();
       this.contexts.unshift(GLOBAL);
+      }
     });
     this.interval = setInterval(() => {
       for (let v of this.vars) {
@@ -86,9 +94,18 @@ export class WatchService {
           v.active = false;
           continue;
         }
-        let context = v.context === GLOBAL ? '' : v.context;
+        let context: string;
+        let separator:string = ' ';
+        if (v.context === GLOBAL)
+          context = '';
+        else if (v.context.endsWith('_DATA')) {
+          context = v.context.slice(0,-5) + '::';
+          separator = '';
+        }
+        else
+        context = v.context;
         this.ws
-          .query('watch ' + context + ' ' + v.name)
+          .query('watch ' + context + separator + v.name)
           .then((ret: MCQueryResponse) => {
             if (!v.active) return;
             if (ret.err) {
