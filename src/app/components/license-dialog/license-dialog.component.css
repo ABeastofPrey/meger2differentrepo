@@ -4,6 +4,12 @@
 }
 .content {
   padding: 16px;
+  position: relative;
+}
+.license-spinner {
+  position: absolute;
+  left: calc(50% - 50px);
+  top: calc(50% - 50px);
 }
 .license {
   max-height: 500px;

@@ -3,7 +3,7 @@
 		{{ 'license.title' | translate }}
 	</mat-toolbar>
 	<div class="content">
-		<mat-spinner color="primary" *ngIf="license === null"></mat-spinner>
+		<mat-spinner class="license-spinner" color="primary" *ngIf="license === null" ></mat-spinner>
 		<div #container class="license mat-elevation-z3" *ngIf="license" [innerHTML]="license"></div>
 		<div *ngIf="!useInKukaAbout" style="text-align: center;">
 			<button mat-button color="warn" mat-dialog-close>

@@ -22,6 +22,7 @@ import { DOCUMENT } from '@angular/common';
 export class UtilsService {
   private words: any;
   private upperRightOverlayEle = document.getElementById('overlaycover');
+  private globalOverlayWrappers: HTMLCollectionOf<Element>;
 
   constructor(
     private ws: WebsocketService,
@@ -118,7 +119,25 @@ export class UtilsService {
     return this.dataService.robotType === 'SCARA' ? true : false;
   }
 
+  public hiddenOverlayWrappers(): void {
+    this.globalOverlayWrappers = document.getElementsByClassName('cdk-global-overlay-wrapper');
+    if (this.globalOverlayWrappers && this.globalOverlayWrappers.length > 1) {
+      for (let i = 0; i < this.globalOverlayWrappers.length - 1; i++) {
+        this.globalOverlayWrappers[i].classList.add('global-hidden');
+      }
+    }
+  }
+
+  public displayOverlayWrappers(): void {
+    if (this.globalOverlayWrappers && this.globalOverlayWrappers.length >= 1) {
+      for (let i = 0; i < this.globalOverlayWrappers.length; i++) {
+        this.globalOverlayWrappers[i].classList.remove('global-hidden');
+      }
+    }
+  }
+
   public shrinkOverlay(): void {
+    this.hiddenOverlayWrappers();
     this.overlayContainer.getContainerElement().classList.add('shrink-overlay');
     this.overlayContainer.getContainerElement().classList.remove('stretch-overlay');
     this.upperRightOverlayEle.classList.add('upper-right-conner-overlay-stretch');
@@ -126,6 +145,7 @@ export class UtilsService {
   }
 
   public stretchOverlay(): void {
+    this.displayOverlayWrappers();
     this.overlayContainer.getContainerElement().classList.remove('shrink-overlay');
     this.overlayContainer.getContainerElement().classList.add('stretch-overlay');
     this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-stretch');

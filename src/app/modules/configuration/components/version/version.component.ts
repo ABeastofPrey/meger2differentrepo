@@ -84,6 +84,7 @@ export class VersionComponent implements OnInit {
     this.dialog.open(LicenseDialogComponent, {
       autoFocus: false,
       disableClose: true,
+      width: '90%',
       data: {
         useInKukaAbout: true,
       },
