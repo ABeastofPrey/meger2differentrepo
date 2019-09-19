@@ -14,6 +14,8 @@
     "tp": "TP 库"
   },
   "version": {
+    "releaseNote": "发行说明",
+    "userLicense": "用户许可证",
     "softMCDes": "这是 soft mc",
     "GUIDes": "这是 GUI",
     "webServerDes": "这是 web server",
@@ -382,7 +384,7 @@
   },
   "topology": {
     "title": "设备管理器",
-    "errTip": "似乎有的设备已被修改，请在设备管理器中重置CS的全部操作。",
+    "errTip": "Ethercat不在operation模式下，请确保所有的物理设备都能正常工作然后再在设备管理器中重置CS的全部操作。",
     "exTip": "全部展开",
     "colTip": "全部折叠",
     "controller": "控制器",
@@ -1123,7 +1125,7 @@
     "editor": "项目编辑器",
     "help": "帮助",
     "history": "错误历史",
-    "home": "Home",
+    "home": "主页",
     "log": "日志",
     "simulator": "3D模拟器",
     "task": "任务管理器",

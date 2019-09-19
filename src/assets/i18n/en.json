@@ -15,6 +15,8 @@
     "tp": "TP Libraries"
   },
   "version": {
+    "releaseNote": "Release Note",
+    "userLicense": "User License",
     "softMCDes": "This is soft mc",
     "GUIDes": "This is GUI",
     "webServerDes": "This is web server",
@@ -389,7 +391,7 @@
   },
   "topology": {
     "title": "Device Manager",
-    "errTip": "It seems that some devices have been changed, please do reset all operation of CS in Task Manager.",
+    "errTip": "Ethercat is not in operation mode, please make sure that physical devices work well and then try to do reset all operation of CS in Task Manager.",
     "exTip": "Expand all",
     "colTip": "Collapse all",
     "controller": "Controller",

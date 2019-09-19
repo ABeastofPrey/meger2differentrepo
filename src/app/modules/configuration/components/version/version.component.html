@@ -8,8 +8,8 @@
 				<span>{{ appNameKuka }}</span>
 				<span class="kuka-font-dark-gray">{{ mainVer[0] }}</span>
 				<span class="kuka-font-dark-gray">{{ mainVer && mainVer[1] }}</span>
-				<a class="primary" (click)="clickReleaseNote()">Release Note</a>
-				<a class="primary" (click)="clickUserLicence()">User License</a>
+				<a class="primary" (click)="clickReleaseNote()">{{ 'version.releaseNote' | translate }}</a>
+				<a class="primary" (click)="clickUserLicence()">{{ 'version.userLicense' | translate }}</a>
 			</div>
 			<div class="four-components">
 				<mat-accordion>

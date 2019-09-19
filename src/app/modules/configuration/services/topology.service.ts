@@ -5,16 +5,13 @@ import { compose, then, identity } from 'ramda';
 
 @Injectable()
 export class TopologyService {
-  constructor(private ws: WebsocketService) {}
+  constructor(private ws: WebsocketService) { }
 
   public async getDeviceTopology(): Promise<any> {
     const api = '?TOP_getTopology';
     const query = _api => this.ws.query(_api);
     const resHandler = handler(JSON.parse, errMsgProp);
-    const retrieveTopology = compose(
-      then(resHandler),
-      query
-    );
+    const retrieveTopology = compose(then(resHandler), query);
     return retrieveTopology(api);
   }
 
@@ -22,10 +19,15 @@ export class TopologyService {
     const api = '?ec_master_opmode'; // good status: 8
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
-    const retrieveOpMode = compose(
-      then(resHandler),
-      query
-    );
+    const retrieveOpMode = compose(then(resHandler), query);
     return retrieveOpMode(api);
+  }
+
+  public async getBusType(): Promise<any> {
+    const api = '?tp::lsystembustype'; // 1: simulator 2: ethercat
+    const query = _api => this.ws.query(_api);
+    const resHandler = handler(identity, errMsgProp);
+    const retrieveBusType = compose(then(resHandler), query);
+    return retrieveBusType(api);
   }
 }

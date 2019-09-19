@@ -12,7 +12,7 @@ export class SimulatorService {
   
   data: BehaviorSubject<SceneObject[]> = new BehaviorSubject([]);
   bgColor: string = '#7c99b7';
-  traceColor: string = '#ffff00';
+  traceColor: string = '#ffd740';
   showTrace: boolean = false;
   
   private sceneLoaded: boolean = false;

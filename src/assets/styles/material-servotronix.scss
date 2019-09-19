@@ -101,4 +101,7 @@ $material-semi-black: rgba(0,0,0,0.54);
     height: 24px;
     margin-right: 16px;
   }
+  .stx-fill {
+    background-color: mat-color($material-servotronix-primary, 100);
+  }
 }

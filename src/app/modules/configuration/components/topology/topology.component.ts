@@ -79,6 +79,7 @@ const treeFlattener = new MatTreeFlattener(
 export class TopologyComponent implements OnInit, OnDestroy {
   private interval: any;
   private oldNodes: DeviceNode[] = [];
+  public systemBusType: number;
   public treeControl: FlatTreeControl<FileFlatNode>;
   public dataSource: MatTreeFlatDataSource<DeviceNode, FileFlatNode>;
   public hasErr: boolean = false;
@@ -96,6 +97,7 @@ export class TopologyComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.retriveSystemBusType();
     this.refresh();
   }
 
@@ -174,6 +176,15 @@ export class TopologyComponent implements OnInit, OnDestroy {
       retrieveTopology
     );
     doIt();
+  }
+
+  private async retriveSystemBusType(): Promise<any> {
+    const getBusType = bind(this.service.getBusType, this.service);
+    const logErr = err => console.warn(`Get systembustype failed: ${err}`);
+    const setBus = busType => this.systemBusType = busType
+    const logOrSet = Either.either(logErr, compose(setBus, Number));
+    const setBusType = compose(then(logOrSet), getBusType);
+    setBusType();
   }
 
   private isChanged(nodes: DeviceNode[]): boolean {

@@ -1,5 +1,5 @@
 <div class="topology">
-    <span *ngIf="hasErr" class="warn-tip warn-bg">{{'topology.errTip'|translate}}</span>
+    <span *ngIf="hasErr && (systemBusType && systemBusType === 2)" class="warn-tip warn-bg">{{'topology.errTip'|translate}}</span>
     <mat-card>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
