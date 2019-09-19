@@ -7,6 +7,7 @@
     "io": "I/O 映射库",
     "lbn": "手动示教库",
     "mcu": "MCU 版本",
+    "mcuDev": "MCU S/N",
     "pallet": "码垛",
     "payloads": "Payloads 库",
     "server": "Web 服务器",
@@ -23,7 +24,7 @@
     "successDialogMsg": "OS升级成功，新版本是: ",
     "errorDialogTitle": "失败!",
     "errorDialogMsg": "OS升级失败，请重装旧版本: ",
-    "releaseNoteTitle": "ControlStudion+ 发布 Note"
+    "releaseNoteTitle": "ControlStudio+ 发布 Note"
   },
   "acknowledge": "确认",
   "actions": "动作",
@@ -121,6 +122,7 @@
   "circlePoint": "原点",
   "clear_msgs": "清除消息",
   "close": "关闭",
+  "connected": "已连接",
   "connecting": "连接中",
   "copy": "复制",
   "cut": "剪切",
@@ -192,6 +194,7 @@
     "title": "无法连接到控制柜",
     "msg": "检查你的网络连接。"
   },
+  "disconnected": "已断开",
   "dismiss": "取消",
   "domain": "域",
   "done": "完成",
@@ -212,11 +215,14 @@
       "title": "固件更新失败",
       "msg": "未安装库到控制器"
     },
+    "invalid_etag": "似乎您最近更新了controlstudio+和/或softmc web服务器。按ctrl+shift+r重新加载此页。",
+    "invalid_etag_tablet": "似乎您最近更新了controlstudio+和/或softmc web服务器。请清除浏览器缓存，然后重新加载此页。",
     "invalid_feature": "无效的特征",
     "invalid_full_name": "完整名字应包括姓和名",
-    "invalid_webserver": "使用web server v{{ver}} (当前是{{current}})",
+    "invalid_webserver": "使用web服务器v{{ver}} (当前是{{current}})",
     "orientation": "ControlStudio+ 仅仅在Landscape模式下工作",
-    "tp": "无法加载TP库，详细信息请查看打印日志..."
+    "tp": "无法加载TP库，详细信息请查看打印日志...",
+    "tp_tablet": "找不到tp库。重新启动控制器并重试。"
   },
   "errorHistory": {
     "button": {
@@ -247,12 +253,14 @@
   },
   "filter": "过滤器",
   "frame": "运动Frame",
+  "frame_jog": "点动 Frame",
   "frames": {
     "BASE": "基",
     "calibration": {
       "origin": "原点",
       "posX": "位置X",
       "posY": "位置Y",
+      "posXY": "位置 XY",
       "set": "设为当前",
       "title": "校准"
     },
@@ -476,8 +484,8 @@
   "joint": "关节",
   "joints": "关节",
   "lang": {
-    "cmn": "中文",
-    "en": "英语",
+    "cmn": "简体中文",
+    "en": "English",
     "subtitle": "设置图形用户界面和库消息的语言",
     "selected": "已选择语言"
   },
@@ -560,7 +568,8 @@
         "teach_entry": "示教入口位置",
         "teach_origin": "示教原点",
         "teach_posX": "示教位置X",
-        "teach_posY": "示教位置Y"
+        "teach_posY": "示教位置Y",
+        "teach_posXY": "示教位置 XY"
       },
       "calibrated": "已校准",
       "calibrated_not": "未校准",
@@ -1117,6 +1126,7 @@
   "success": "成功！",
   "system_state": {
     "1000": "在线",
+    "loading": "系统初始化中...",
     "state": "系统状态"
   },
   "tabs": {
@@ -1278,7 +1288,7 @@
     "new": "添加变量",
     "type": "变量类型",
     "get_current": "获取当前值",
-    "cannot_use_jog_tip": "Jog panel 不可用！"
+    "cannot_use_jog_tip": "点动面板不可用！"
   },
   "watch": {
     "context": "上下文",
@@ -1294,4 +1304,3 @@
   "wp": "工件",
   "wps": "工件"
 }
-

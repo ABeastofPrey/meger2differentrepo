@@ -24,7 +24,7 @@
     "successDialogMsg": "The OS upgrade is successful. The new version is: ",
     "errorDialogTitle": "Failed!",
     "errorDialogMsg": "The OS upgrade is failed, please reinstall the old version: ",
-    "releaseNoteTitle": "ControlStudion+ Release Note"
+    "releaseNoteTitle": "ControlStudio+ Release Note"
   },
   "acknowledge": "ACKNOWLEDGE",
   "actions": "Actions",
@@ -259,6 +259,7 @@
     "calibration": {
       "origin": "Origin",
       "posX": "Position X",
+      "posY": "Position Y",
       "posXY": "Position XY",
       "set": "Set as current",
       "title": "Calibrate"
@@ -483,7 +484,7 @@
   "joint": "Joint",
   "joints": "Joints",
   "lang": {
-    "cmn": "Chinese Mandarin",
+    "cmn": "简体中文",
     "en": "English",
     "subtitle": "Set the language for the GUI and library messages",
     "selected": "Selected Language"
