@@ -89,6 +89,7 @@
               "src/test.ts",
               "src/polyfills.ts",
               "src/environments/*.ts",
+              "src/app/directives/*.ts",
               "src/app/components/**/*.ts",
               "src/app/modules/core/**/*.ts",
               "src/app/modules/blockly/**/*.ts",
@@ -109,6 +110,7 @@
               "src/app/modules/tools/**/*.ts",
               "src/app/modules/tp/**/*.ts",
               "src/app/modules/virtual-keyboard/**/*.ts",
+              "src/app/modules/program-editor/components/add-var/*.ts",
               "src/app/modules/program-editor/services/*.ts",
               "src/app/modules/help/components/activation/activation.service.ts",
               "src/app/modules/configuration/services/reference-mastering.service.ts"

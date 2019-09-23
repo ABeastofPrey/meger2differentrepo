@@ -20,6 +20,7 @@ describe('TopologyComponent', () => {
   const fakeService = jasmine.createSpyObj('TopologyService', [
     'getDeviceTopology',
     'getOpMode',
+    'getBusType',
   ]);
   let fakeMode = `OP
 8`;
@@ -28,6 +29,9 @@ describe('TopologyComponent', () => {
   );
   let getOpModeSpy = fakeService.getOpMode.and.returnValue(
     Promise.resolve(Right(fakeMode))
+  );
+  let getBusTypeSpy = fakeService.getBusType.and.returnValue(
+    Promise.resolve(Right('2'))
   );
 
   beforeEach(async(() => {
@@ -100,6 +104,7 @@ describe('TopologyComponent', () => {
         Promise.resolve(Right(_tree))
       );
       expect(1).toBe(1);
+      jasmine.clock().uninstall();
     });
   }));
 });
