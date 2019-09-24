@@ -31,6 +31,8 @@ export class ParameterErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+const hasInvalid = x => [...Object.values(x)].findIndex((item: any) => item.invalid) !== -1;
+
 @Component({
   selector: 'app-jump-dialog',
   templateUrl: './jump-dialog.component.html',
@@ -226,6 +228,14 @@ export class JumpDialogComponent implements OnInit {
       this.location = this.locations.find(x => x.name === addedVar);
       this.cd.detectChanges();
     });
+  }
+
+  get hasInvalidRequire(): boolean {
+    return hasInvalid(this.requiredFormControls);
+  }
+
+  get hasInvalidOptional(): boolean {
+    return hasInvalid(this.advancedFormControls);
   }
 
   /**

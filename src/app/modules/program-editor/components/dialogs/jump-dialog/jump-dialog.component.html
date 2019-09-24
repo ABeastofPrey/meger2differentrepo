@@ -139,7 +139,7 @@
 		<button mat-button color="primary" (click)="cancel()">
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="insert()">
+		<button mat-button color="primary" [disabled]="hasInvalidRequire || hasInvalidOptional" (click)="insert()">
 			{{ 'button.insert' | translate }}
 		</button>
 	</div>

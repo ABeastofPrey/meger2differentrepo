@@ -321,54 +321,58 @@ describe('JumpDialogComponent', () => {
 
     component.location = dataService.locations[0];
     component.advancedMode = true;
-    component.arcNumber = 2.3;
-    component.limitZ = 500.1;
-    component.speed = 6000.3;
-    component.acceleration = 400.4;
-    component.blending = 100.1;
-
     fixture.detectChanges();
 
+    component.arcNumber = 2;
+    component.limitZ = 100;
+    component.speed = 100;
+    component.acceleration = 100;
+    component.blending = 30;
+
     expect(component.advancedFormControls[JumpParameter.ArcNumber].status).toBe(
-      'INVALID',
-      'the arc number validation is unsuccessful'
+      'VALID',
+      'the arc number validation is successful'
     );
     expect(component.advancedFormControls[JumpParameter.LimitZ].status).toBe(
-      'INVALID',
+      'VALID',
       'the limit z validation is unsuccessful'
     );
     expect(component.advancedFormControls[JumpParameter.Speed].status).toBe(
-      'INVALID',
-      'the speed validation is unsuccessful'
+      'VALID',
+      'the speed validation is successful'
     );
     expect(
       component.advancedFormControls[JumpParameter.Acceleration].status
-    ).toBe('INVALID', 'the acceleration validation is unsuccessful');
+    ).toBe('VALID', 'the acceleration validation is successful');
     expect(component.advancedFormControls[JumpParameter.Blending].status).toBe(
-      'INVALID',
-      'the blending validation is unsuccessful'
+      'VALID',
+      'the blending validation is successful'
     );
 
     component.insert();
-    fixture.detectChanges();
 
+    fixture.whenStable().then(() => {
+      expect(component.dialogRef.close).toHaveBeenCalledWith(
+        'jump(SCARA, "P1", 2, 100, 30, 100, 100)'
+      );
+    });
     expect(
       component.advancedFormControls[JumpParameter.ArcNumber].untouched
-    ).toBe(false, 'the arc number window is touched as default');
+    ).toBe(true, 'the arc number window is untouched');
     expect(component.advancedFormControls[JumpParameter.LimitZ].untouched).toBe(
-      false,
-      'the limit z window is touched as default'
+      true,
+      'the limit z window is untouched'
     );
     expect(component.advancedFormControls[JumpParameter.Speed].untouched).toBe(
-      false,
-      'the speed window is touched as default'
+      true,
+      'the speed window is untouched'
     );
     expect(
       component.advancedFormControls[JumpParameter.Acceleration].untouched
-    ).toBe(false, 'the accleration window is touched as default');
+    ).toBe(true, 'the accleration window is untouched');
     expect(
       component.advancedFormControls[JumpParameter.Blending].untouched
-    ).toBe(false, 'the blending window is touched as default');
+    ).toBe(true, 'the blending window is untouched');
   });
 
   /**
