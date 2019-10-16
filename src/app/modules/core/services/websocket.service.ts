@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { ReplaySubject, Observable, BehaviorSubject } from 'rxjs';
+import { ReplaySubject, Observable, BehaviorSubject, Observer } from 'rxjs';
 import { MatDialog } from '@angular/material';
 import { NotificationService } from './notification.service';
 import { JwtService } from './jwt.service';
@@ -187,6 +187,18 @@ export class WebsocketService {
         resolve({ result: result, cmd: cmd, err: err });
       });
     }).catch(reason => {});
+  }
+
+  public observableQuery(api: string): Observable<MCQueryResponse | ErrorFrame> {
+    return Observable.create((observer: Observer<MCQueryResponse | ErrorFrame>) => {
+      this.send(api, false, (result: string, cmd: string, err: ErrorFrame) => {
+        if (!!err) {
+          observer.error(err);
+        } else {
+          observer.next({ result: result, cmd: cmd, err: err });
+        }
+      });
+    });
   }
 
   handleMessage(data: MCResponse) {

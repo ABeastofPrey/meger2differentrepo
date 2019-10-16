@@ -791,9 +791,9 @@
       "controller": "控制柜",
       "copy_name": "新名字",
       "create": "创建",
-      "del_prj": "删除项目{{name}}?",
+      "del_prj": "删除项目",
       "del_prj_msg": "所有的项目文件将被永久移除。",
-      "del_prj_other": "删除另一项目(s)",
+      "del_prj_other": "删除另一项目",
       "del_prj_title": "删除项目 {{name}}?",
       "dep": "依赖",
       "dep_create": "创建依赖",
@@ -1105,7 +1105,9 @@
     "simulation": "场景",
     "sphere": "球体",
     "stop": "停止记录",
-    "val": "值"
+    "val": "值",
+    "background": "背景色",
+    "trace": "追踪"
   },
   "softMC_log": "softMC日志",
   "softMC User": "softMC用户",

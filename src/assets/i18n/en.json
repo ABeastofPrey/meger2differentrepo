@@ -793,7 +793,7 @@
       "create": "Create",
       "del_prj": "Delete Project",
       "del_prj_msg": "All the project files will be removed permanently.",
-      "del_prj_other": "Delete other Project(s)",
+      "del_prj_other": "Delete other Project",
       "del_prj_title": "Delete project {{name}}?",
       "dep": "Dependency",
       "dep_create": "CREATE DEPENDENCY",
@@ -1105,7 +1105,9 @@
     "simulation": "Scene",
     "sphere": "Sphere",
     "stop": "Stop recording",
-    "val": "Value"
+    "val": "Value",
+    "background": "Background",
+    "trace": "Trace"
   },
   "softMC_log": "softMC Log",
   "softMC User": "softMC User",

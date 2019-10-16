@@ -45,7 +45,7 @@
 			<mat-icon>school</mat-icon>
 			<div>{{ 'help.education' | translate }}</div>
 		</a>
-		<a *ngIf="utils.IsKuka && !isActivated" matTooltip="activation" (click)="activation()">
+		<a *ngIf="utils.IsKuka && !isActivated" matTooltip="{{ 'help.activation.title' | translate }}" (click)="activation()">
 			<mat-icon>lock</mat-icon>
 			<div>{{ 'help.activation.title' | translate }}</div>
 		</a>

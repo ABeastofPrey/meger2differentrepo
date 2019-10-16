@@ -53,7 +53,7 @@
 			<mat-icon class="badge primary-bg mat-elevation-z3 disabled">add</mat-icon>
 		</button>-->
 		<div class="separator"></div>
-		<mat-slide-toggle color="accent" [(ngModel)]="sim.showTrace" [disabled]="!loaded || !sim.shouldShowSimulator">Trace</mat-slide-toggle>
+		<mat-slide-toggle color="accent" [(ngModel)]="sim.showTrace" [disabled]="!loaded || !sim.shouldShowSimulator">{{'simulator_screen.trace' | translate}}</mat-slide-toggle>
 		<div class="separator"></div>
 		<button mat-raised-button color="accent" (click)="openRecording()" [disabled]="!loaded || !sim.shouldShowSimulator">
 			{{ (liveMode ? 'simulator_screen.load_rec' : 'simulator_screen.rec_close') | translate }}
@@ -65,7 +65,7 @@
     [style.background]="sim.bgColor"
     [cpPosition]="'bottom'"
    >
-			<mat-icon>colorize</mat-icon>&nbsp;&nbsp; Background
+			<mat-icon>colorize</mat-icon>&nbsp;&nbsp; {{'simulator_screen.background' | translate}}
 		</div>
 		<div
 			class="color-select center-vertical mat-elevation-z3"
@@ -73,7 +73,7 @@
 			[style.background]="sim.traceColor"
     [cpPosition]="'bottom'"
 		>
-			<mat-icon>colorize</mat-icon>&nbsp;&nbsp; Trace
+			<mat-icon>colorize</mat-icon>&nbsp;&nbsp; {{'simulator_screen.trace' | translate}}
 		</div>
 		<!--<div class="separator"></div>
     <button mat-mini-fab color="accent" (click)="snapshot()">
