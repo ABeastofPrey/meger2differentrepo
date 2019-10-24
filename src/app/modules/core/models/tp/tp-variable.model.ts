@@ -1,6 +1,7 @@
 import { TPVariableType } from './tp-variable-type.model';
 
 export class TPVariable {
+  
   name: string;
   value: any = null;
   isArr: boolean = false;
@@ -8,11 +9,18 @@ export class TPVariable {
   isPosition: boolean = false;
   typeStr: string = null;
   selectedIndex: number = 1;
+  
+  private _dataLoaded: boolean = false;
+  set dataLoaded(val: boolean) {
+    this._dataLoaded = val;
+  }
 
+  /*
+   * returns TRUE if the variable data was once loaded (tp_get_value_namespace
+   * was called at least once)
+   */
   get dataLoaded() {
-    const v = this.value;
-    const i = this.selectedIndex;
-    return this.isArr ? v && v[i].value : v;
+    return this._dataLoaded;
   }
 
   constructor(varType: TPVariableType, str?: string) {

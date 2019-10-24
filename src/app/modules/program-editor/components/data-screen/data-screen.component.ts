@@ -169,10 +169,19 @@ export class DataScreenComponent implements OnInit {
     this.colsToDisplay = BASE_COLS.concat(this._legend).concat(SUFFIX_COLS);
     this.refreshValues();
   }
+  
+  getValue(element: TPVariable, i: number) {
+    if (element.isArr) {
+      const idx = element.selectedIndex - 1;
+      return element.value[idx].value[i].value;
+    }
+    return element.value[i].value;
+  }
 
   private refreshVariable(v: TPVariable): Promise<any> {
     let fullname = v.name;
-    if (v.isArr) fullname += '[' + v.selectedIndex + ']';
+    if (v.isArr) 
+      fullname += '[' + v.selectedIndex + ']';
     let api: string;
     if (this.useAsProjectPoints)
       api = `?tp_get_project_value_namespace("${fullname}")`;
@@ -183,12 +192,24 @@ export class DataScreenComponent implements OnInit {
       if (valuesString.indexOf('#') === 0)
         valuesString = valuesString.substr(1);
       if (valuesString.indexOf(',') === -1) {
-        const val = [{ value: valuesString.trim() }];
-        if (v.isArr) (v.value[v.selectedIndex] as TPVariable).value = val;
-        else v.value = val;
+        let val = [{ value: valuesString.trim() }];
+        if (v.isArr) {
+          const selected = v.value[v.selectedIndex-1] as TPVariable;
+          if (!selected.dataLoaded) {
+            selected.value = val;
+            selected.dataLoaded = true;
+          } else {
+            selected.value[0].value = val[0].value;
+          }
+        } else if (!v.dataLoaded) {
+          v.value = val;
+          v.dataLoaded = true;
+        } else {
+          v.value[0].value = val[0].value;
+        }
         return;
       }
-      const val = [];
+      let val = [];
       const parts: string[] = valuesString
         .substr(1, valuesString.length - 2)
         .split(';');
@@ -205,8 +226,23 @@ export class DataScreenComponent implements OnInit {
       for (let i = 0; i < total.length; i++) {
         val[i] = { value: total[i].trim() };
       }
-      if (v.isArr) (v.value[v.selectedIndex] as TPVariable).value = val;
-      else v.value = val;
+      if (v.isArr) {
+        const selected = v.value[v.selectedIndex-1] as TPVariable;
+        if (!selected.dataLoaded) {
+          selected.value = val;
+          selected.dataLoaded = true;
+        } else {
+          for (let i = 0; i < val.length; i++)
+            selected.value[i].value = val[i].value;
+        }
+      }
+      else if (!v.dataLoaded) {
+        v.value = val;
+        v.dataLoaded = true;
+      } else {
+        for (let i = 0; i < val.length; i++)
+          v.value[i].value = val[i].value;
+      }
     });
   }
 
@@ -214,10 +250,10 @@ export class DataScreenComponent implements OnInit {
     this._varRefreshing = true;
     let queries: Promise<any>[] = [];
     for (let v of this.dataSource.data) {
-      if (!v.isArr && v.value) continue;
+      if (!v.isArr && v.dataLoaded) continue;
       if (v.isArr) {
-        const selectedChild = v.value[v.selectedIndex] as TPVariable;
-        if (selectedChild.value) continue;
+        const selectedChild = v.value[v.selectedIndex-1] as TPVariable;
+        if (selectedChild.dataLoaded) continue;
       }
       queries.push(this.refreshVariable(v));
     }
@@ -407,7 +443,7 @@ export class DataScreenComponent implements OnInit {
     if (v.isArr) {
       fullname += '[' + v.selectedIndex + ']';
       parent = v;
-      v = v.value[v.selectedIndex];
+      v = v.value[v.selectedIndex-1];
     }
     const size = Math.min(
       v.value.length,

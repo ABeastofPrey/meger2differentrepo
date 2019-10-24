@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, ApplicationRef } from '@angular/core';
 import { MCProject, Limit } from '../models/project/mc-project.model';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { BehaviorSubject } from 'rxjs';
@@ -42,7 +42,8 @@ export class ProjectManagerService {
     private trn: TranslateService,
     private stat: TpStatService,
     private zone: NgZone,
-    private cmn: CommonService
+    private cmn: CommonService,
+    private ref: ApplicationRef
   ) {
     this.trn.get('changeOK').subscribe(words => {
       this.words = words;
@@ -84,60 +85,64 @@ export class ProjectManagerService {
     if (this.interval) clearInterval(this.interval);
     this.oldStat = null;
     let waiting: boolean = false;
-    this.interval = setInterval(() => {
-      if (waiting) return;
-      if (this.currProject.value) {
-        waiting = true;
-        return this.ws
-          .query('cyc3,' + this.currProject.value.name)
-          .then((ret: MCQueryResponse) => {
-            waiting = false;
-            if (this.currProject.value === null) return;
-            if (this.oldStat === ret.result) return;
-            this.oldStat = ret.result;
-            const parts = ret.result.split(';');
-            this.currProject.value.dependenciesLoaded = parts[1] === '1';
-            if (parts[0].length === 0) {
-              this.activeProject = false;
-              this.mgr.projectActiveStatusChange.next(this.activeProject);
-              for (let app of this.currProject.value.apps) {
-                app.status = -1;
+    this.zone.runOutsideAngular(()=>{
+      this.interval = setInterval(() => {
+        if (waiting) return;
+        if (this.currProject.value) {
+          waiting = true;
+          return this.ws
+            .query('cyc3,' + this.currProject.value.name)
+            .then((ret: MCQueryResponse) => {
+              waiting = false;
+              if (this.currProject.value === null) return;
+              if (this.oldStat === ret.result) return;
+              this.oldStat = ret.result;
+              const parts = ret.result.split(';');
+              this.currProject.value.dependenciesLoaded = parts[1] === '1';
+              if (parts[0].length === 0) {
+                this.activeProject = false;
+                this.mgr.projectActiveStatusChange.next(this.activeProject);
+                for (let app of this.currProject.value.apps) {
+                  app.status = -1;
+                }
+                this.onAppStatusChange.next(null);
+                this.ref.tick();
+                return;
               }
-              this.onAppStatusChange.next(null);
-              return;
-            }
-            let status = parts[0].split(',');
-            let i = 0;
-            let activeProject = false;
-            while (
-              status.length > 0 ||
-              i < this.currProject.value.apps.length
-            ) {
-              if (
-                this.currProject.value.apps[i] &&
-                !this.currProject.value.apps[i].active
+              let status = parts[0].split(',');
+              let i = 0;
+              let activeProject = false;
+              while (
+                status.length > 0 ||
+                i < this.currProject.value.apps.length
               ) {
+                if (
+                  this.currProject.value.apps[i] &&
+                  !this.currProject.value.apps[i].active
+                ) {
+                  i++;
+                  continue;
+                }
+                const code = Number(status.shift());
+                if (this.currProject.value.apps[i])
+                  this.currProject.value.apps[i].status = code;
+                if (code !== -1) {
+                  activeProject = true;
+                }
                 i++;
-                continue;
               }
-              const code = Number(status.shift());
-              if (this.currProject.value.apps[i])
-                this.currProject.value.apps[i].status = code;
-              if (code !== -1) {
-                activeProject = true;
-              }
-              i++;
-            }
-            this.activeProject = activeProject;
-            this.mgr.projectActiveStatusChange.next(this.activeProject);
-            if (this.activeProject && !this.cmn.isTablet)
-              this.mgr.closeControls();
-            this.onAppStatusChange.next(null);
-          });
-      } else {
-        clearInterval(this.interval);
-      }
-    }, 200);
+              this.activeProject = activeProject;
+              this.mgr.projectActiveStatusChange.next(this.activeProject);
+              if (this.activeProject && !this.cmn.isTablet)
+                this.mgr.closeControls();
+              this.onAppStatusChange.next(null);
+              this.ref.tick();
+            });
+        } else {
+          clearInterval(this.interval);
+        }
+      }, 200);
+    });
   }
 
   /* Refreshes the app list and lib list for the given project.

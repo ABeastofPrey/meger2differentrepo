@@ -920,7 +920,8 @@ export class PalletWizardComponent implements OnInit {
     if (
       typeof x !== 'undefined' &&
       typeof y !== 'undefined' &&
-      typeof z !== 'undefined'
+      typeof z !== 'undefined' &&
+      !isNaN(Number(x)) && !isNaN(Number(y)) && !isNaN(Number(z))
     ) {
       if (!control.touched && !control.dirty) return Promise.resolve(null);
       const cmd =

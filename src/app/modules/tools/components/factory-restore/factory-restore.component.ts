@@ -87,12 +87,16 @@ export class FactoryRestoreComponent implements OnInit {
           '?FACTORY_RESET_SELECT_ROBOT("' +
           this.selectedRobot.part_number +
           '",0)';
-        //const cmd = '?0'; // TODO: REPLACE THIS
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
           if (ret.result === '0') {
             // RESET WEBSERVER
             this.api.restoreToFactory().then(ret => {
-              if (ret) this.reboot();
+              if (ret) {
+                console.log('factory reset ' + ret);
+                setTimeout(()=>{
+                  this.reboot();
+                },1000);
+              }
               else dialog.close();
             });
           } else {

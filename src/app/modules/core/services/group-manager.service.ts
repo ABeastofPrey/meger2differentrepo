@@ -12,6 +12,7 @@ export class GroupManagerService {
   sysInfo: SysInfo = null;
   groups: Group[] = [];
   sysInfoLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  groupsLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   private groupInterval: any;
   private lastGrouplist: string = null;
@@ -76,6 +77,7 @@ export class GroupManagerService {
       if (grouplist.result.indexOf('No groups') === 0) {
         this.groups = [];
         this.ref.tick();
+        this.groupsLoaded.next(true);
         return;
       }
       let groups = grouplist.result.split('\n');
@@ -87,6 +89,7 @@ export class GroupManagerService {
         });
       }
       this.groups = elements;
+      this.groupsLoaded.next(true);
       this.ref.tick();
     });
   }

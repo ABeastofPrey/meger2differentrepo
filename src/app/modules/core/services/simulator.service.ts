@@ -130,7 +130,7 @@ export class SimulatorService {
         p.pallet_size_z = sizes[2] * 1000;
         // FIND CENTER
         // calculate distance from origin to center
-        const R = Math.sqrt(Math.pow(sizes[0], 2) + Math.pow(sizes[1], 2)) / 2;
+        const R = Math.sqrt(Math.pow(p.pallet_size_x, 2) + Math.pow(p.pallet_size_y, 2)) / 2;
         const A = Math.atan(sizes[1] / sizes[0]);
         const THETA = (origin[3] * Math.PI) / 180;
         const X = origin[0] + R * Math.cos(A + THETA);

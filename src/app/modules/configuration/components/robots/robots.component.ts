@@ -78,17 +78,21 @@ export class RobotsComponent implements OnInit {
     });
     this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) {
-        switch (this.data.robotType) {
-          case 'PUMA':
-            this.dh_img_path_1 = 'DH_puma1.jpg';
-            this.dh_img_path_2 = 'DH_puma2.jpg';
-            break;
-          case 'SCARA':
-            this.dh_img_path_1 = 'DH_scara1.jpg';
-            break;
-        }
-        this.refreshDisp();
-        this.refreshDH();
+        this.grp.groupsLoaded.pipe(takeUntil(this.notifier)).subscribe(loaded => {
+          if (loaded) {
+            switch (this.data.robotType) {
+              case 'PUMA':
+                this.dh_img_path_1 = 'DH_puma1.jpg';
+                this.dh_img_path_2 = 'DH_puma2.jpg';
+                break;
+              case 'SCARA':
+                this.dh_img_path_1 = 'DH_scara1.jpg';
+                break;
+            }
+            this.refreshDisp();
+            this.refreshDH();
+          }
+        });
         this.initMCU();
         this.ws.query('?sys.name').then((ret: MCQueryResponse) => {
           this.sysName = ret.result;
@@ -110,7 +114,7 @@ export class RobotsComponent implements OnInit {
   }
 
   initMCU() {
-    this.ws.query('?mcu_connected').then((ret: MCQueryResponse)=>{
+    this.ws.query('?MCU_GET_CONNECTION_STATUS').then((ret: MCQueryResponse)=>{
       this.mcuConnected = ret.result === '1';
     }).then(()=>{
       //clearInterval(this.mcuInterval);
@@ -176,6 +180,9 @@ export class RobotsComponent implements OnInit {
   }
 
   onNameChange() {
+    if (this.sysName.length === 0) {
+      this.sysName = 'MC';
+    }
     this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName + '")');
     this.snack.open(this.word_ok, '', { duration: 1500 });
   }

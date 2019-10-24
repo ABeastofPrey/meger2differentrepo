@@ -19,6 +19,7 @@ import { JumpDialogComponent } from './jump-dialog.component';
 import { DataNotArrayPipe } from './jump-dialog.pipe';
 import { JumpParameter } from './jump-dialog.enum';
 import { UnitTestModule } from '../../../../shared/unit-test.module';
+import {TPVariableType} from '../../../../core/models/tp/tp-variable-type.model';
 
 /**
  * It contains all the test specs to JumpDialogComponent.
@@ -47,19 +48,12 @@ describe('JumpDialogComponent', () => {
   /**
    * The mock DataService instance.
    */
+  let loc = new TPVariable(TPVariableType.LOCATION);
+  loc.value = null;
+  loc.name = 'P1';
+  
   let dataService = {
-    locations: [
-      {
-        value: null,
-        isArr: false,
-        varType: 1,
-        isPosition: true,
-        name: 'P1',
-        typeStr: 'LOCATION',
-        selectedIndex: 1,
-        dataLoaded: false
-      },
-    ],
+    locations: [loc]
   };
 
   /**

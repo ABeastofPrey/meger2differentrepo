@@ -116,6 +116,7 @@ export class ScreenManagerService {
       url: 'dashboard',
     },
     { icon: 'insert_comment', name: 'editor', permission: 99, url: 'projects' },
+    { icon: 'featured_play_list', name: 'blockly', permission: 99, url: 'blockly', stxOnly: true },
     {
       icon: '3d_rotation',
       name: 'simulator',
@@ -148,6 +149,7 @@ export class ScreenManagerService {
   get screens(): ControlStudioScreen[] {
     if (!this.login.getCurrentUser().user) return [];
     return this._screens.filter(s => {
+      if (s.stxOnly && this.utils.IsKuka) return false;
       const permission = this.login.getCurrentUser().user.permission;
       if (permission === 99) return true;
       return s.permission >= permission;
@@ -485,4 +487,5 @@ export interface ControlStudioScreen {
   requiresTpLib?: boolean;
   autoModeOnly?: boolean;
   requiresInactiveProject?: boolean;
+  stxOnly?: boolean;
 }

@@ -39,6 +39,8 @@ export class WatchWindowComponent implements OnInit {
         return v.record && v.name.trim().length;
       })
       .map(v => {
+        if (v.context.endsWith('_DATA'))
+          return v.context.slice(0, -5) + '::' + v.name;
         return v.name;
       });
     this.dialog

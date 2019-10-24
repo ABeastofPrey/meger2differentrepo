@@ -62,7 +62,7 @@ function MCConnection() {
   var ws = null;
   var MCPORT = 3010;
   var IP = self.location.hostname;
-  //var IP = '10.4.20.51';
+  //var IP = '10.4.20.23';
   var reset = true;
   var isConnected = false;
   var pingPongInterval = null;

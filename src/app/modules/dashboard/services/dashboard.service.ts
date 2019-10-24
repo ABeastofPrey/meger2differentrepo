@@ -168,6 +168,7 @@ export class DashboardService {
   }
 
   private getRecordingData(recName: string) {
+    if (recName === null) this.graphType = '2d';
     this._busy = true;
     return this.api.getRecordingCSV(recName).then((csv: string) => {
       if (csv === null) {

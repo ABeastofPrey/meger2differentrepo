@@ -146,7 +146,6 @@ export class AppsComponent implements OnInit {
       this.api.uploadIPK(file).then((ret: UploadResult) => {
         e.target.value = null;
         if (ret.success) {
-          // TODO: PUT THE FUNCTION HERE
           this.ws.query('?UTL_UPDATE_MCU_FW').then((ret: MCQueryResponse) => {
             if (ret.result !== '0') {
               this.snack.open(this.words['err_mcu'], '', { duration: 1500 });

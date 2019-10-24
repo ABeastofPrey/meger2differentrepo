@@ -10,10 +10,7 @@ import {
   trigger,
   transition,
   style,
-  animate,
-  animateChild,
-  group,
-  query,
+  animate
 } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';

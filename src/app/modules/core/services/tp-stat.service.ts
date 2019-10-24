@@ -83,6 +83,7 @@ export class TpStatService {
     return this._deadman;
   }
   set deadman(active: boolean) {
+    console.log('set deadman to ' + active);
     let oldStat = this._deadman;
     let dm = active ? 1 : 0;
     this._virtualDeadman = active;
@@ -248,6 +249,7 @@ export class TpStatService {
                 .open(err, this.words['acknowledge'])
                 .afterDismissed()
                 .subscribe(() => {
+                  if (!this.onlineStatus.value) return;
                   this.ws.send('?TP_CONFIRM_ERROR', true);
                 });
             }, 0);

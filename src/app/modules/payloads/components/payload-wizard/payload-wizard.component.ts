@@ -135,7 +135,11 @@ export class PayloadWizardComponent implements OnInit {
         });
         dialog.afterClosed().subscribe(ret => {
           if (ret) {
-            this.data.refreshPayloads();
+            this.data.refreshPayloads().then(()=>{
+              return this.onPayloadChange();
+            }).then(()=>{
+              this.snack.open(this.words['payloads']['done'], '', { duration: 1500 });
+            });
           }
         });
         const interval = setInterval(() => {
@@ -249,7 +253,7 @@ export class PayloadWizardComponent implements OnInit {
         this.ws.query('?PAY_GET_INERTIA("'+name+'")'),
         this.ws.query('?PAY_GET_LX("'+name+'")'),
       ];*/
-    Promise.all(promises).then((results: MCQueryResponse[]) => {
+    return Promise.all(promises).then((results: MCQueryResponse[]) => {
       /*
       // PARSE REF POS
         const refString = results[0].result.substring(1, results[0].result.length-1);
@@ -288,7 +292,7 @@ export class PayloadWizardComponent implements OnInit {
       '}")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result === '0')
-        this.snack.open('Changes Saved', '', { duration: 1500 });
+        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
     });
   }
 

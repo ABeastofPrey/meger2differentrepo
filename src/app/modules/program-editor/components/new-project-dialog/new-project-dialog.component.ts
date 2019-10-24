@@ -7,7 +7,9 @@ import { MatDialogRef } from '@angular/material';
   styleUrls: ['./new-project-dialog.component.css'],
 })
 export class NewProjectDialogComponent implements OnInit {
+  
   fileName: string;
+  valid: boolean = false;
 
   constructor(public dialogRef: MatDialogRef<any>) {}
 
@@ -17,5 +19,9 @@ export class NewProjectDialogComponent implements OnInit {
 
   ngOnInit() {
     this.fileName = '';
+  }
+  
+  validateInput() {
+    this.valid = this.fileName.match(/[a-zA-Z0-9]*$/).index === 0;
   }
 }

@@ -3,7 +3,7 @@
 		<div class="title">{{ 'projectCommands.circle.title' | translate }}</div>
 		<div class="content">
 			<mat-form-field>
-				<mat-select placeholder="{{ 'circlePoint' | translate }}" [(ngModel)]="circlePoint" (selectionChange)="resetIndexCirclePoint()">
+				<mat-select placeholder="{{ (data.angle ? 'circleCenter' : 'circlePoint') | translate }}" [(ngModel)]="circlePoint" (selectionChange)="resetIndexCirclePoint()">
 					<mat-optgroup label="{{ 'joints' | translate }}" *ngIf="this.dataService.joints.length > 0"
 						><mat-option *ngFor="let data of this.dataService.joints" [value]="data"
 							>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option

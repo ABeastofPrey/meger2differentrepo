@@ -28,6 +28,7 @@
 								(click)="$event.stopPropagation()"
 								(change)="$event ? selection.toggle(row) : null"
 								[checked]="selection.isSelected(row)"
+                [disabled]="row.name === '-'"
 							>
 							</mat-checkbox>
 						</mat-cell>

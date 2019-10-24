@@ -1,4 +1,4 @@
-<div class="mat-typography">
+<form class="mat-typography" [formGroup]="ctrl" (ngSubmit)="insert()">
 	<div class="wrapper">
 		<div class="title">
 			{{ (data.moveS ? 'projectCommands.move.title_moves' : 'projectCommands.move.title_move') | translate }}
@@ -7,7 +7,7 @@
 			<mat-form-field>
 				<mat-select
 					placeholder="{{ 'projectCommands.move.move' | translate }}"
-					[(ngModel)]="location"
+					formControlName="location"
 					(selectionChange)="resetIndex()"
 				>
 					<mat-optgroup label="{{ 'joints' | translate }}" *ngIf="this.dataService.joints.length > 0"
@@ -26,35 +26,38 @@
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field *ngIf="location && location.isArr && !rangeMode">
-				<mat-select placeholder="{{ 'index' | translate }}" [(ngModel)]="locationIndex">
+				<mat-select placeholder="{{ 'index' | translate }}" formControlName="locationIndex">
 					<mat-option *ngFor="let data of location.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<div class="rangeSelector" *ngIf="rangeMode">
 				<mat-form-field>
-					<mat-select placeholder="{{ 'projectCommands.move.index_from' | translate }}" [(ngModel)]="indexFrom">
+					<mat-select placeholder="{{ 'projectCommands.move.index_from' | translate }}" formControlName="indexFrom">
 						<mat-option *ngFor="let data of location.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
 					</mat-select>
 				</mat-form-field>
 				<mat-form-field>
-					<mat-select placeholder="{{ 'projectCommands.move.index_to' | translate }}" [(ngModel)]="indexTo">
+					<mat-select placeholder="{{ 'projectCommands.move.index_to' | translate }}" formControlName="indexTo">
 						<mat-option *ngFor="let data of location.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
 					</mat-select>
+          <mat-error *ngIf="ctrl.hasError('invalidRange')">
+            {{ 'form_validation.range' | translate }}
+          </mat-error>
 				</mat-form-field>
 			</div>
 			<mat-slide-toggle
-				[(ngModel)]="rangeMode"
+				formControlName="rangeMode"
 				style="margin-bottom: 8px; margin-right: 16px;"
 				color="primary"
 				*ngIf="location && location.isArr"
 				>{{ 'projectCommands.move.range' | translate }}</mat-slide-toggle
 			>
-			<mat-slide-toggle [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary">{{
+			<mat-slide-toggle formControlName="advancedMode" style="margin-bottom: 8px;" color="primary">{{
 				'advanced' | translate
 			}}</mat-slide-toggle>
 			<div *ngIf="advancedMode">
 				<mat-form-field>
-					<mat-select placeholder="{{ 'motion_element' | translate }}" [(ngModel)]="motionElement">
+					<mat-select placeholder="{{ 'motion_element' | translate }}" formControlName="motionElement">
 						<mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{ e }}</mat-option>
 					</mat-select>
 				</mat-form-field>
@@ -62,18 +65,26 @@
 					<input
 						matInput
 						[placeholder]="data.moveS ? 'VTran [mm/s]' : 'VCruise [deg/s]'"
-						[(ngModel)]="vcruise"
+						formControlName="vcruise"
             type="number"
 						virtualKeyboard
 						ktype="numeric"
 					/>
 				</mat-form-field>
 				<mat-form-field>
-					<input matInput placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}" type="number" [(ngModel)]="blending" virtualKeyboard ktype="numeric" />
+					<input 
+        matInput
+        placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}"
+        type="number"
+        formControlName="blendingPh"
+        virtualKeyboard ktype="numeric" />
 					<span matSuffix>%</span>
+          <mat-error *ngIf="blendingPh.invalid">
+            {{ 'form_validation.percent' | translate }}
+          </mat-error>
 				</mat-form-field>
 				<mat-form-field>
-					<mat-select placeholder="{{ 'projectSettings.position_trigger.title' | translate }}" [(ngModel)]="pts" multiple>
+					<mat-select placeholder="{{ 'projectSettings.position_trigger.title' | translate }}" [(ngModel)]="pts" multiple [ngModelOptions]="{standalone: true}">
 						<mat-option *ngFor="let pt of ptList" [value]="pt">{{ pt }}</mat-option>
 					</mat-select>
 				</mat-form-field>
@@ -81,21 +92,16 @@
 		</div>
 	</div>
 	<div class="actions">
-		<button mat-button (click)="cancel()">
+		<button mat-button matDialogClose>
 			{{ 'button.cancel' | translate }}
 		</button>
 		<button
 			mat-button
 			color="primary"
-			(click)="insert()"
-			[disabled]="
-				this.location == null ||
-				(this.location.isArr && !this.rangeMode && this.locationIndex < 0) ||
-				(this.rangeMode && (this.indexFrom < 0 || this.indexTo < 0 || this.indexFrom >= this.indexTo)) ||
-				invalidBlending()
-			"
+    type="submit"
+			[disabled]="ctrl.invalid"
 		>
 			{{ (!this.withParams ? 'button.insert' : 'button.edit') | translate }}
 		</button>
 	</div>
-</div>
+</form>

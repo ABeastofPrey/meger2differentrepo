@@ -150,9 +150,9 @@ export class CircleDialogComponent implements OnInit {
     let vtranString = '';
     if (this.vtran && Number(this.vtran) > 0)
       vtranString = ' Vtran=' + this.vtran;
-    let circlePoint = 'CirclePoint=' + name1;
+    let circlePoint = this.data.angle ? 'Angle=' + this.angle : 'CirclePoint=' + name1;
     let targetPoint = this.data.angle
-      ? ' Angle=' + this.angle
+      ? ' CircleCenter=' + name1
       : ' TargetPoint=' + name2;
     let blendingString = '';
     if (this.blending) blendingString = ' BlendingPercentage=' + this.blending;

@@ -43,7 +43,7 @@
 		<mat-icon color="accent" *ngIf="ws.otherClients > 0"
 			[matTooltip]="ws.otherClients + ' Other connections are active'">warning</mat-icon>
     <button mat-raised-button *ngIf="tpOnline && stat.mode && cmn.isTablet" class="mode-selector" [disabled]="login.isViewer" (click)="stat.changeMode()">
-      {{stat.mode}}
+      {{ stat.mode === 'None' ? '--' : stat.mode }}
     </button>
 		<mat-slide-toggle *ngIf="!login.isViewer && data.dataLoaded.value && !data.simulatedSystem" color="accent"
 			[checked]="data.simulated" (change)="data.toggleSimulated($event)">{{ 'simulative' | translate }}

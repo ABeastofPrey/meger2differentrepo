@@ -6,6 +6,44 @@ import { ProgramEditorService } from '../../../services/program-editor.service';
 import { PositionTriggerService } from '../../../services/position-trigger.service';
 import { reduce, isEmpty, complement } from 'ramda';
 import { AddVarComponent } from '../../add-var/add-var.component';
+import {FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors} from '@angular/forms';
+
+const rangeValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  const loc = control.controls['location'].value as TPVariable;
+  const rangeMode = control.controls['rangeMode'].value;
+  if ((loc && !loc.isArr) || (!rangeMode)) return null;
+  const iFrom = control.controls['indexFrom'];
+  const iTo = control.controls['indexTo'];
+  if (iFrom.value !== -1 && iTo.value !== -1 && iFrom.value <= iTo.value ) {
+    iFrom.setErrors(null);
+    iTo.setErrors(null);
+    return null;
+  }
+  const err = {
+    'invalidRange': true
+  };
+  if (iFrom.value === -1)
+    iFrom.setErrors(err);
+  if (iTo.value === -1 || iTo.value < iFrom.value)
+    iTo.setErrors(err);
+  return err;
+};
+
+const indexValidator : ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  const loc = control.controls['location'].value as TPVariable;
+  if (!loc || !loc.isArr || control.controls['rangeMode'].value) {
+    control.controls['locationIndex'].setErrors(null);
+    return null;
+  }
+  const val = control.controls['locationIndex'].value;
+  if (val && val > 0) {
+    control.controls['locationIndex'].setErrors(null);
+    return null;
+  }
+  const err = {'invalidIndex': true };
+  control.controls['locationIndex'].setErrors(err);
+  return err;
+};
 
 @Component({
   selector: 'app-move-dialog',
@@ -13,37 +51,40 @@ import { AddVarComponent } from '../../add-var/add-var.component';
   styleUrls: ['./move-dialog.component.css'],
 })
 export class MoveDialogComponent implements OnInit {
-  private _location: TPVariable;
-  private _locationIndex: number = -1;
-  indexFrom: number = -1;
-  indexTo: number = -1;
-  motionElement: string = null;
-  vcruise: string = null;
-  advancedMode: boolean = false;
-  rangeMode: boolean = false;
+  
   withParams: boolean = false;
-  blending: string = null;
   ptList: string[] = [];
   pts: string[] = [];
-
-  get locationIndex() {
-    return this._locationIndex;
-  }
-  set locationIndex(val: number) {
-    this._locationIndex = val;
-    this.prg.lastVarIndex = val;
-  }
-
-  get location() {
-    return this._location;
-  }
-  set location(newLocation: TPVariable) {
-    this._location = newLocation;
-    this.rangeMode = false;
-    this.indexFrom = -1;
-    this.indexTo = -1;
-    this._locationIndex = -1;
-    this.prg.lastVar = this._location;
+  ctrl: FormGroup = new FormGroup({
+    advancedMode: new FormControl(false),
+    blendingPh: new FormControl('', [
+      Validators.min(0),
+      Validators.max(100)
+    ]),
+    indexFrom: new FormControl(-1),
+    indexTo: new FormControl(-1),
+    location: new FormControl('',[
+      Validators.required
+    ]),
+    locationIndex: new FormControl(-1),
+    motionElement: new FormControl(null),
+    rangeMode: new FormControl(false),
+    vcruise: new FormControl(null)
+  }, {
+    validators: [
+      rangeValidator,
+      indexValidator
+    ]
+  });
+  
+  private onLocationChange(newLocation: TPVariable) {
+    if (newLocation)
+      this.ctrl.controls['location'].setValue(newLocation);
+    this.ctrl.controls['rangeMode'].setValue(false);
+    this.ctrl.controls['indexFrom'].setValue(-1);
+    this.ctrl.controls['indexTo'].setValue(-1);
+    this.ctrl.controls['locationIndex'].setValue(-1);
+    this.prg.lastVar = this.ctrl.controls['location'].value;
   }
 
   get locations(): TPVariable[] {
@@ -53,13 +94,29 @@ export class MoveDialogComponent implements OnInit {
   get joints(): TPVariable[] {
     return this.dataService.joints;
   }
+  
+  get location(): TPVariable {
+    return this.ctrl.get('location').value;
+  }
+  
+  get rangeMode(): boolean {
+    return this.ctrl.get('rangeMode').value;
+  }
+  
+  get advancedMode(): boolean {
+    return this.ctrl.get('advancedMode').value;
+  }
+  
+  get blendingPh() {
+    return this.ctrl.get('blendingPh');
+  }
 
   /*
    * CALLED WHEN THE SELECTED VARIABLE HAS CHANGED
    */
   resetIndex() {
-    this.locationIndex = -1;
-    this.prg.lastVar = this._location;
+    this.ctrl.controls['locationIndex'].setValue(-1);
+    this.prg.lastVar = this.ctrl.controls['location'].value;
   }
 
   constructor(
@@ -73,12 +130,15 @@ export class MoveDialogComponent implements OnInit {
   ) {
     this.withParams = typeof this.data.params !== 'undefined';
     if (this.prg.lastVar && !this.withParams) {
-      this._location = this.prg.lastVar;
-      if (this._location.isArr && this.prg.lastVarIndex) {
+      const loc = this.ctrl.controls['location'];
+      loc.setValue(this.prg.lastVar);
+      const val = loc.value as TPVariable;
+      if (val.isArr && this.prg.lastVarIndex) {
         let index = this.prg.lastVarIndex;
-        this._locationIndex =
-          index < this._location.value.length ? index + 1 : 1;
-        this.prg.lastVarIndex = this._locationIndex;
+        this.ctrl.controls['locationIndex'].setValue(
+          index < val.value.length ? index + 1 : 1
+        );
+        this.prg.lastVarIndex = this.ctrl.controls['locationIndex'].value;
       }
     }
   }
@@ -87,33 +147,37 @@ export class MoveDialogComponent implements OnInit {
     this.mtService.plsNameList().then(nameList => {
       this.ptList = nameList;
     });
+    this.ctrl.controls['location'].valueChanges.subscribe(val=>{
+      this.onLocationChange(null);
+    });
   }
 
   ngAfterContentInit() {
     let params = this.data.params;
     if (params) {
       if (params['element'] || params['vcruise'] || params['blending']) {
-        this.advancedMode = true;
+        this.ctrl.controls['advancedMode'].setValue(true);
       }
       // PARSE MOTION ELEMENT
-      if (params['element']) this.motionElement = params['element'] + ' ';
+      if (params['element'])
+        this.ctrl.controls['motionElement'].setValue(params['element'] + ' ');
       // PARSE TARGET
       if (params['target']) {
         for (let v of this.dataService.joints.concat(
           this.dataService.locations
         )) {
           if (v.name === params['target'].name) {
-            this._location = v;
-            this._locationIndex = params['target'].selectedIndex;
+            this.ctrl.controls['location'].setValue(v);
+            this.ctrl.controls['locationIndex'].setValue(params['target'].selectedIndex);
           }
         }
       }
       // PARSE OTHER PARAMS
       if (params['vcruise']) {
-        this.vcruise = params['vcruise'];
+        this.ctrl.controls['vcruise'].setValue(params['vcruise']);
       }
       if (params['blending']) {
-        this.blending = params['blending'];
+        this.ctrl.controls['blendingPh'].setValue(params['blending']);
       }
     }
   }
@@ -124,48 +188,48 @@ export class MoveDialogComponent implements OnInit {
       data: { hotVariableOption: [1, 1, 0, 0, 0] }
     };
     this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
-      let _location = this.locations.find(x => x.name === addedVar);
-      this.location = _location ? _location : this.joints.find(x => x.name === addedVar);
-      if (this.location && this.location.isArr) {
-        this.locationIndex = 1;
+      const _location = this.locations.find(x => x.name === addedVar);
+      this.onLocationChange(_location || this.joints.find(x => x.name === addedVar));
+      if (_location && _location.isArr) {
+        this.ctrl.controls['locationIndex'].setValue(1);
       }
       this.cd.detectChanges();
     });
   }
 
   cancel() {
-    this.dialogRef.close();
-  }
-
-  invalidBlending(): boolean {
-    if (this.blending) {
-      let n = Number(this.blending);
-      if (!isNaN(n) && (n < 0 || n > 100)) return true;
-    }
-    return false;
+    this.dialogRef.close(null);
   }
 
   insert() {
     let cmds = '';
     let cmd = this.data.moveS ? 'Moves ' : 'Move ';
     let names = [];
-    let name = this.location.name;
-    let robot = this.motionElement ? this.motionElement + ' ' : '';
-    if (this.location.isArr) {
-      if (!this.rangeMode) names.push(name + '[' + this.locationIndex + ']');
+    const loc = this.ctrl.controls['location'].value as TPVariable;
+    const idx = this.ctrl.controls['locationIndex'].value;
+    let name = loc.name;
+    const el = this.ctrl.controls['motionElement'].value;
+    let robot = el ? el + ' ' : '';
+    if (loc.isArr) {
+      if (!this.ctrl.controls['rangeMode'].value)
+        names.push(name + '[' + idx + ']');
       else {
-        for (var i = this.indexFrom; i <= this.indexTo; i++)
+        const iFrom = this.ctrl.controls['indexFrom'].value;
+        const iTo = this.ctrl.controls['indexTo'].value;
+        for (var i = iFrom; i <= iTo; i++)
           names.push(name + '[' + i + ']');
       }
     } else {
       names.push(name);
     }
     let vcruiseString = '';
-    if (this.vcruise && Number(this.vcruise) > 0)
+    const vcruise = this.ctrl.controls['vcruise'].value;
+    if (vcruise && Number(vcruise) > 0)
       vcruiseString =
-        (this.data.moveS ? ' Vtran=' : ' Vcruise=') + this.vcruise;
+        (this.data.moveS ? ' Vtran=' : ' Vcruise=') + vcruise;
     let blendingString = '';
-    if (this.blending) blendingString = ' BlendingPercentage=' + this.blending;
+    if (this.ctrl.controls['blendingPh'].value)
+      blendingString = ' BlendingPercentage=' + this.ctrl.controls['blendingPh'].value;
     for (let i = 0; i < names.length; i++) {
       cmds += cmd + robot + names[i] + vcruiseString + blendingString;
       if (i < names.length - 1) cmds += '\n';

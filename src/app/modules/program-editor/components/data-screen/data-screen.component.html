@@ -74,12 +74,12 @@
 						appearance="outline"
 						floatLabel="never"
 						class="value-field"
-						*ngIf="element.dataLoaded"
+						*ngIf="(!element.isArr && element.dataLoaded) || (element.isArr && element.value[element.selectedIndex-1].dataLoaded)"
 						[class.text-field]="element.typeStr === 'STRING'"
 					>
 						<mat-select
 							*ngIf="element.typeStr === 'LOCATION' && i >= data.robotCoordinateType.legends.length"
-							[(ngModel)]="element.isArr ? element.value[element.selectedIndex].value[i].value : element.value[i].value"
+							[(ngModel)]="element.isArr ? element.value[element.selectedIndex-1].value[i].value : element.value[i].value"
 							(selectionChange)="onKeyboardClose(element)"
 						>
 							<mat-option disabled>{{ leg }}</mat-option>
@@ -106,7 +106,8 @@
 							"
 							matInput
 							[placeholder]="leg"
-							[(ngModel)]="element.isArr ? element.value[element.selectedIndex].value[i].value : element.value[i].value"
+							[(ngModel)]="element.isArr ? element.value[element.selectedIndex-1].value[i].value : element.value[i].value"
+               (ngModelChange) = "element.isArr ? element.value[element.selectedIndex-1].value[i].value = $event : element.value[i].value = $event"
 							(change)="onKeyboardClose(element)"
 							virtualKeyboard
 							ktype="numeric"
@@ -116,7 +117,8 @@
 							matInput
 							*ngIf="element.typeStr === 'STRING'"
 							[placeholder]="legend[i]"
-							[(ngModel)]="element.isArr ? element.value[element.selectedIndex].value[i].value : element.value[i].value"
+							[(ngModel)]="element.isArr ? element.value[element.selectedIndex-1].value[i].value : element.value[i].value"
+              (ngModelChange) = "element.isArr ? element.value[element.selectedIndex-1].value[i].value = $event : element.value[i].value = $event"
 							virtualKeyboard
 							ktype="text"
 							cdkTextareaAutosize

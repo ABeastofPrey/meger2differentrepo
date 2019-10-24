@@ -98,6 +98,11 @@ export class RobotService {
       case 'DLTL_3_000_IGUS_M01_00_CAN':
       case 'DLTL_3_000_IGUS_M01_00_CAN_SIM':
         return 'assets/robots/igus/delta/delta.xacro';
+      case 'SC_4_500_SHY_M01_6_CAN':
+      case 'SC_4_500_SHY_M01_6_CAN_SIM':
+      case 'SC_4_500_SHY_M01_6_EC':
+      case 'SC_4_500_SHY_M01_6_EC_SIM':
+        return 'assets/robots/shinyou/RS500/ShinYou500.xacro';
       default:
         return null;
     }

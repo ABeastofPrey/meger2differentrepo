@@ -14,18 +14,6 @@
     "system": "System",
     "tp": "TP Libraries"
   },
-  "version": {
-    "releaseNote": "Release Note",
-    "userLicense": "User License",
-    "softMCDes": "This is soft mc",
-    "GUIDes": "This is GUI",
-    "webServerDes": "This is web server",
-    "successDialogTitle": "Success!",
-    "successDialogMsg": "The OS upgrade is successful. The new version is: ",
-    "errorDialogTitle": "Failed!",
-    "errorDialogMsg": "The OS upgrade is failed, please reinstall the old version: ",
-    "releaseNoteTitle": "ControlStudio+ Release Note"
-  },
   "acknowledge": "ACKNOWLEDGE",
   "actions": "Actions",
   "add": "Add",
@@ -119,6 +107,7 @@
   "changeError": "An error occurred, changes not saved",
   "changeOK": "Changes saved",
   "checkbox_enable": "Allow selection",
+  "circleCenter": "CircleCenter",
   "circlePoint": "CirclePoint",
   "clear_msgs": "Clear messages",
   "close": "Close",
@@ -252,6 +241,10 @@
     "upload": "UPLOAD TO MC..."
   },
   "filter": "Filter",
+  "form_validation": {
+    "percent": "Value must be between 0 and 100",
+    "range": "Invalid Range"
+  },
   "frame": "Motion Frame",
   "frame_jog": "Jog Frame",
   "frames": {
@@ -259,7 +252,7 @@
     "calibration": {
       "origin": "Origin",
       "posX": "Position X",
-      "posY": "Position Y",
+      "posXY": "Position XY",
       "posXY": "Position XY",
       "set": "Set as current",
       "title": "Calibrate"
@@ -624,6 +617,7 @@
     "current": "Current values",
     "delete_title": "Delete payload {{name}}?",
     "delete_msg": "This cannot be undone.",
+    "done": "Payload identification succeeded",
     "freq": "Frequencies",
     "ident": {
       "dialog": {
@@ -1132,6 +1126,7 @@
     "state": "System State"
   },
   "tabs": {
+    "blockly": "Blockly Graphic Programming",
     "configuration": "System Configuration",
     "dashboard": "Motion Dashboard",
     "editor": "Project Editor",
@@ -1291,6 +1286,18 @@
     "type": "Variable Type",
     "get_current": "GET CURRENT",
     "cannot_use_jog_tip": "Jog panel is disabled!"
+  },
+  "version": {
+    "releaseNote": "Release Note",
+    "userLicense": "User License",
+    "softMCDes": "This is soft mc",
+    "GUIDes": "This is GUI",
+    "webServerDes": "This is web server",
+    "successDialogTitle": "Success!",
+    "successDialogMsg": "The OS upgrade is successful. The new version is: ",
+    "errorDialogTitle": "Failed!",
+    "errorDialogMsg": "The OS upgrade is failed, please reinstall the old version: ",
+    "releaseNoteTitle": "ControlStudio+ Release Note"
   },
   "watch": {
     "context": "Context",

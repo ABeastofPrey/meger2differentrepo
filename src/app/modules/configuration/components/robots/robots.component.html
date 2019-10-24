@@ -99,7 +99,7 @@
 		<h2>
 			{{ 'robots.title' | translate }}
 		</h2>
-		<div *ngIf="sysName">
+		<div *ngIf="sysName !== null">
 			<mat-form-field appearance="outline">
 				<mat-label>{{ 'robots.name' | translate }}</mat-label>
 				<input

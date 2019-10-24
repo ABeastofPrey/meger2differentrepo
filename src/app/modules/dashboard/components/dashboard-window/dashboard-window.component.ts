@@ -170,11 +170,11 @@ export class DashboardWindowComponent implements OnInit {
           ];
         } else {
           for (let p of this.params.params) {
-            if (!this.params.isGroup)
+            if (!this.params.isGroup || (p.value as string).indexOf(',') === -1)
               varList.push(this.params.name + '.' + p.name);
             else {
-              for (let a of this.params.axes) {
-                varList.push(a + '.' + p.name);
+              for (let i = 1; i <= this.params.axes.length; i++) {
+                varList.push(this.params.name + '.' + p.name + '{' + i + '}');
               }
             }
           }

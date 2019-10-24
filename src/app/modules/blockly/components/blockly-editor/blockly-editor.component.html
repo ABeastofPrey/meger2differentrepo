@@ -1,0 +1,112 @@
+<div id="blocklyArea" style="height: 100%; width: 100%; position: relative;">
+  <div id="blocklyDiv"></div>
+</div>
+<xml #toolbox style="display: none">
+  <category name="Robot">
+    <category name="Motion">
+      <block type="block_enable"></block>
+      <block type="block_disable"></block>
+      <block type="block_stop"></block>
+      <block type="block_delay"></block>
+      <block type="block_wait_for_motion"></block>
+    </category>
+    <category name="Interpolation">
+      <block type="block_move"></block>
+      <block type="block_moves"></block>
+      <block type="block_circle"></block>
+      <block type="block_arc"></block>
+    </category>
+    <category name="Parameters">
+      <block type="block_vtran"></block>
+      <block type="block_blending"></block>
+      <block type="block_out_set"></block>
+    </category>
+    <category name="Operation">
+      <block type="block_approach"></block>
+      <block type="block_depart"></block>
+      <block type="block_up"></block>
+      <block type="block_down"></block>
+      <block type="block_move_over"></block>
+    </category>
+  </category>
+  <category name="Flow">
+    <category name="Program">
+      <block type="block_program"></block>
+      <block type="block_sub"></block>
+      <block type="block_call"></block>
+      <block type="block_sleep"></block>
+      <block type="block_print"></block>
+    </category>
+    <category name="Conditions">
+      <block type="block_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+    </category>
+    <category name="Loops">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <shadow type="math_number">
+            <field name="NUM">5</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+    </category>
+  </category>
+  <category name="System">
+    <category name="Constants">
+      <block type="block_val_custom"></block>
+      <block type="text"></block>
+    </category>
+    <category name="Variables">
+      <button text="Create Variable..." callbackKey="createVar"></button>
+      <block type="block_var_val"></block>
+      <label text="Value Types:"></label>
+      <block type="block_var_joint"></block>
+      <block type="block_var_location"></block>
+      <block type="block_var_long"></block>
+      <block type="block_var_double"></block>
+      <block type="block_var_string"></block>
+    </category>
+    <category name="Operations">
+      <block type="math_arithmetic">
+        <value name="A">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="B">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+    </category>
+    <category name="I/O">
+      <block type="block_inp"></block>
+      <block type="block_out"></block>
+      <block type="block_out_set"></block>
+      <block type="block_inp_wait"></block>
+    </category>
+    <category name="Palletizing">
+      <block type="block_pallet_pick"></block>
+      <block type="block_pallet_put"></block>
+      <block type="block_pallet_home"></block>
+      <block type="block_pallet_index_set"></block>
+      <label text="Conditions:"></label>
+      <block type="block_pallet_index_get"></block>
+      <block type="block_pallet_condition_index"></block>
+    </category>
+    <category name="Grippers">
+      <block type="block_gripper_active"></block>
+      <block type="block_gripper_open"></block>
+      <block type="block_gripper_close"></block>
+    </category>
+    <category name="Conveyor">
+    </category>
+    <category name="Vision">
+    </category>
+  </category>
+</xml>

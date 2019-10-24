@@ -11,6 +11,7 @@
 				maxlength="32"
 				virtualKeyboard
 				ktype="text"
+      (ngModelChange)="validateInput()"
 			/>
 		</mat-form-field>
 		<div class="center-vertical" style="color:red;">
@@ -22,7 +23,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="create()" [disabled]="!fileName || fileName.length === 0">
+		<button mat-button color="primary" (click)="create()" [disabled]="!fileName || fileName.length === 0 || !valid">
 			{{ 'projects.btnCreate' | translate }}
 		</button>
 	</div>

@@ -161,7 +161,7 @@ export class AddVarComponent implements OnInit {
       const y = this.coos.locations.find(_y => _y.key === 'Y');
       const z = this.coos.locations.find(_z => _z.key === 'Z');
       const r = this.coos.locations.find(_r => _r.key === 'Roll');
-      this.values = [x.value, y.value, z.value, r.value];
+      this.values = [x.value, y.value, z.value, r.value, '0'];
     }
   }
 

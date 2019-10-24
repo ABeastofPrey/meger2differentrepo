@@ -37,6 +37,7 @@ declare var ace;
 
 const MOTION_COMMANDS = ['move', 'moves', 'circle'];
 const TASK_COMMANDS = ['unload', 'idle', 'kill'];
+const TASK_PREFIXES = ['prg','upg','lib','ulb'];
 const PROGRAM_COMMANDS = ['load'];
 const OPTIONAL: OptionalParams[] = [
   {
@@ -80,6 +81,7 @@ export class ProgramEditorAceComponent implements OnInit {
   @ViewChild('ace', { static: false }) editorDiv: ElementRef;
   private editor: any;
   private Range = ace.require('ace/range').Range;
+  private TokenIterator = ace.require('ace/token_iterator').TokenIterator;
   private currRange: any;
   private markers: any[] = [];
   private commands: Command[];
@@ -130,6 +132,8 @@ export class ProgramEditorAceComponent implements OnInit {
           if (this.service.activeFile === null) {
             this.editor.setReadOnly(true);
             this.cd.detectChanges();
+          } else {
+            this.editor.getSession().setUndoManager(new ace.UndoManager());
           }
           setTimeout(() => {
             if (this.editor)
@@ -344,7 +348,7 @@ export class ProgramEditorAceComponent implements OnInit {
       showPrintMargin: false,
       theme: 'ace/theme/cs',
       enableBasicAutocompletion: true,
-      enableLiveAutocompletion: false,
+      enableLiveAutocompletion: true,
       readOnly: this.cmn.isTablet,
       tabSize: 2,
       fontFamily: 'courier',
@@ -361,218 +365,8 @@ export class ProgramEditorAceComponent implements OnInit {
         this.files = files;
         this.keywords.initDone.subscribe(done => {
           if (!done) return;
-          const staticWordCompleter = {
-            getCompletions: (
-              editor,
-              session,
-              pos,
-              prefix: string,
-              callback: Function
-            ) => {
-              let line: string = session.getLine(pos.row);
-              let i = pos.column;
-              if (i < line.length && i > 0) line = line.substring(0, i);
-              const trimmed = line.trim();
-              i = trimmed.indexOf(' ');
-              const firstWord =
-                i > 0
-                  ? trimmed
-                      .substring(0, i)
-                      .toLowerCase()
-                      .trim()
-                  : trimmed;
-              let params = [];
-              if (firstWord.length > 0) {
-                for (let options of OPTIONAL) {
-                  if (options.cmd === firstWord) {
-                    params = options.params;
-                    break;
-                  }
-                }
-              }
-              if (line.charAt(line.length - prefix.length - 1) === '.') {
-                const index = line.lastIndexOf(' ');
-                let candidate = line
-                  .substring(index + 1, line.length - 1)
-                  .toLowerCase();
-                if (candidate.charAt(candidate.length - 1) === '.')
-                  candidate = candidate.substring(0, candidate.length - 1);
-                let found = false;
-                // COMPARE WITH GROUPS AND AXES
-                for (let g of this.groups.groups) {
-                  if (g.name.toLowerCase() === candidate) {
-                    found = true;
-                    break;
-                  }
-                  for (let a of g.axes) {
-                    if (a.toLowerCase() === candidate) {
-                      found = true;
-                      break;
-                    }
-                  }
-                }
-                callback(
-                  null,
-                  this.keywords.wordList.map(function(word) {
-                    return {
-                      caption: word,
-                      value: word,
-                      meta: 'parameter',
-                      type: 'parameter',
-                    };
-                  })
-                );
-              } else if (
-                trimmed.charAt(trimmed.length - prefix.length - 1) === '='
-              ) {
-                let candidate;
-                if (
-                  trimmed.charAt(trimmed.length - prefix.length - 2) === ' '
-                ) {
-                  const parts = trimmed.split(' ');
-                  candidate = parts[parts.length - 2].toLowerCase();
-                } else {
-                  const index = trimmed.lastIndexOf(' ');
-                  candidate = trimmed
-                    .substring(index + 1, trimmed.length - 1)
-                    .toLowerCase();
-                }
-                let values: Values = null;
-                for (let val of VALUES) {
-                  if (val.attr === candidate) {
-                    values = val;
-                    break;
-                  }
-                }
-                if (values === null) return;
-                callback(
-                  null,
-                  values.values.map(function(val) {
-                    return {
-                      caption: val.val,
-                      value: val.val,
-                      meta: 'Value',
-                      type: 'Value',
-                      docHTML: '<div class="docs">' + val.doc + '</div>',
-                    };
-                  })
-                );
-              } else if (MOTION_COMMANDS.includes(firstWord)) {
-                callback(
-                  null,
-                  this.data.robots
-                    .map(function(robot) {
-                      return {
-                        caption: robot,
-                        value: robot,
-                        meta: 'Motion Element',
-                        type: 'Motion Element',
-                      };
-                    })
-                    .concat(
-                      this.data.locations
-                        .concat(this.data.joints)
-                        .map(function(pos) {
-                          return {
-                            caption: pos.name,
-                            value: pos.name,
-                            meta: 'Position',
-                            type: 'Position',
-                          };
-                        })
-                        .concat(
-                          params.map(function(param) {
-                            return {
-                              caption: param,
-                              value: param,
-                              meta: 'Optional',
-                              type: 'Optional',
-                            };
-                          })
-                        )
-                    )
-                );
-              } else if (TASK_COMMANDS.includes(firstWord)) {
-                callback(
-                  null,
-                  this.task.tasks.map(function(task) {
-                    return {
-                      caption: task.name,
-                      value: task.name,
-                      meta: 'Task',
-                      type: 'Task',
-                    };
-                  })
-                );
-              } else if (PROGRAM_COMMANDS.includes(firstWord)) {
-                callback(
-                  null,
-                  this.files.map(function(file) {
-                    return {
-                      caption: file.fileName,
-                      value: file.fileName,
-                      meta: 'File',
-                      type: 'File',
-                    };
-                  })
-                );
-              } else if (params.length > 0) {
-                callback(
-                  null,
-                  params.map(function(param) {
-                    return {
-                      caption: param,
-                      value: param,
-                      meta: 'Command Parameter',
-                      type: 'Command Parameter',
-                    };
-                  })
-                );
-              } else {
-                callback(
-                  null,
-                  this.commands
-                    .map<any>(function(cmd) {
-                      return {
-                        caption: cmd.name,
-                        value: cmd.name,
-                        meta: 'command',
-                        type: 'command',
-                        docHTML:
-                          '<div class="docs"><b>' +
-                          cmd.name +
-                          '<br><br>Syntax: </b>' +
-                          cmd.syntax +
-                          '<br><b>Description:</b><br>' +
-                          cmd.description +
-                          '</div>',
-                      };
-                    })
-                    .concat(
-                      this.keywords.wordList.map(function(word) {
-                        return {
-                          caption: word,
-                          value: word,
-                          meta: 'parameter',
-                          type: 'parameter',
-                        };
-                      })
-                    )
-                    .concat(
-                      this.keywords.keywords.map(function(word) {
-                        return {
-                          caption: word,
-                          value: word,
-                          meta: 'keyword',
-                          type: 'keyword',
-                        };
-                      })
-                    )
-                );
-              }
-            },
-          };
-          this.editor.completers = [staticWordCompleter];
+          const newWordCompleter = this.getNewWordCompleter();
+          this.editor.completers = [newWordCompleter];
           this.editor.getSession().setMode('ace/mode/mcbasic');
         });
       });
@@ -588,6 +382,11 @@ export class ProgramEditorAceComponent implements OnInit {
       var breakpointsArray = Object.keys(this.editor.session.getBreakpoints());
       var breakpoint;
       var prevBreakpoint = -1;
+      if (e.lines[0] && (e.lines[0] === '.' || e.lines[0] === ' ')) {
+        setTimeout(() => {
+          this.editor.commands.byName.startAutocomplete.exec(this.editor);
+        }, 50);
+      }
       if (breakpointsArray.length > 0) {
         if (e.lines.length > 1) {
           var lines = e.lines.length - 1;
@@ -856,6 +655,246 @@ export class ProgramEditorAceComponent implements OnInit {
       this.editor.session.removeMarker(this.markers.pop());
     }
   }
+  
+  getNewWordCompleter() {
+    return {
+      getCompletions: (
+        editor,
+        session,
+        pos,
+        prefix: string,
+        callback: Function
+      ) => {
+        let stream = new this.TokenIterator(session, pos.row, pos.column);
+        let token = stream.getCurrentToken();
+        const line: string = session.getLine(pos.row).trim();
+        for (let cmd in DOCS.commands) {
+          const cmdObj = DOCS.commands[cmd];
+          const match = line.match(new RegExp(cmdObj.regStr,'gi'));
+          if (match) {
+            // find which part of the command are we
+            const i = match[0].split(' ').length - 1;
+            if (!cmdObj.parts[i]) {
+              return callback(null, cmdObj.opts.map(opt=>{
+                 return {
+                   caption: opt,
+                   value: opt,
+                   meta: 'Command Parameter',
+                   type: 'Command Parameter',
+                   docHTML: this.getDoc(DOCS.properties,opt)
+                 };
+               }));
+            }
+            const partTypes = cmdObj.parts[i].split('|');
+            let results = [];
+            for (let t of partTypes) {
+              if (t === 'me') { // motion element
+                results = results.concat(this.groups.groups.map(grp=>{
+                  return grp.name;
+                }));
+              } else if (t === 'jnt') {
+                results = results.concat(this.data.joints.map(jnt=>{
+                  return jnt.name;
+                }));
+              } else if (t === 'loc') {
+                results = results.concat(this.data.locations.map(loc=>{
+                  return loc.name;
+                }));
+              } else if (t === 'must') {
+                return callback(null, cmdObj.musts.map(must=>{
+                  return {
+                    caption: must,
+                    value: must,
+                    meta: 'Command Parameter',
+                    type: 'Command Parameter',
+                    docHTML: this.getDoc(DOCS.musts,must)
+                  };
+                }).concat(results.map(res=>{
+                  return {
+                    caption: res,
+                    value: res,
+                    meta: 'Command Parameter',
+                    type: 'Command Parameter'
+                  };
+                })));
+              }
+            }
+            return callback(null, results.map(res=>{
+              return {
+                caption: res,
+                value: res,
+                meta: 'Command Parameter',
+                type: 'Command Parameter'
+              };
+            }));
+          }
+        }
+        if (token.value === '.') {
+          token = stream.stepBackward();
+          prefix = (token.value as string).toLowerCase();
+          if (TASK_PREFIXES.includes(prefix)) { // i.e: prg
+            token = stream.stepBackward();
+            if (token.value as string === '.') {
+              token = stream.stepBackward();
+              prefix = (token.value as string).toLowerCase() + '.' +
+                prefix; // i.e: demo.prg
+              return callback(null, this.handlePrefix(prefix));
+            }
+          }
+          return callback(null, this.handlePrefix(prefix));
+        }
+        token = stream.stepBackward();
+        if (token.value === '.') {
+          token = stream.stepBackward();
+          prefix = (token.value as string).toLowerCase();
+          return callback(null, this.handlePrefix(prefix));
+        }
+        // HANDLE NON-PREFIX
+        return callback(null, this.getAutocompleteOptions(prefix));
+      }
+    };
+  }
+  
+  handlePrefix(p: string) {
+    // HANDLE SYS
+    if (p === 'sys') {
+      return Object.keys(DOCS.sys).map(key=>{
+        return {
+          caption: key,
+          value: key,
+          meta: 'System Parameter',
+          type: 'System Parameter',
+          docHTML: this.getDoc(DOCS.sys,key)
+        };
+      });
+    }
+    // HANDLE GROUP
+    if (this.groups.groups.map(grp=>{
+      return grp.name.toLowerCase();
+    }).includes(p)) {
+      return DOCS.group.map(property=>{
+        return {
+          caption: property,
+          value: property,
+          meta: 'Group Parameter',
+          type: 'Group Parameter',
+          docHTML: this.getDoc(DOCS.properties,property)
+        };
+      });
+    }
+    // HANDLE AXIS
+    const axes = this.groups.groups.map(grp=>{
+      return grp.axes.map(axis=>{
+        return axis.toLowerCase();
+      });
+    });
+    if (axes.some(arr=>{ return arr.includes(p); })) {
+      return DOCS.axis.map(property=>{
+        return {
+          caption: property,
+          value: property,
+          meta: 'Axis Parameter',
+          type: 'Axis Parameter',
+          docHTML: this.getDoc(DOCS.properties,property)
+        };
+      });
+    }
+    // HANDLE TASKS
+    if (this.task.tasks.map(t=>{
+      return t.name.toLowerCase();
+    }).includes(p)) {
+      return Object.keys(DOCS.tasks).map(key=>{
+        return {
+          caption: key,
+          value: key,
+          meta: 'Task Parameter',
+          type: 'Task Parameter',
+          docHTML: this.getDoc(DOCS.tasks,key)
+        };
+      });
+    }
+  }
+  
+  getAutocompleteOptions(prefix: string) {
+    if (prefix.trim().length === 0) return;
+    const groups = this.groups.groups.map(grp=>{
+      return {
+        caption: grp.name,
+        value: grp.name,
+        meta: 'Group',
+        type: 'Group'
+      };
+    });
+    const variables = this.data.joints
+      .concat(this.data.locations)
+      .concat(this.data.longs)
+      .concat(this.data.doubles)
+      .concat(this.data.strings)
+      .map(v=>{
+        return {
+          caption: v.name,
+          value: v.name,
+          meta: v.typeStr,
+          type: v.typeStr,
+          docHTML: v.isArr ? v.name + '[' + v.value.length + ']' : null
+        };
+    });
+    const commands = this.commands.map<any>(cmd => {
+      return {
+        caption: cmd.name,
+        value: cmd.name,
+        meta: 'command',
+        type: 'command',
+        docHTML:
+          '<div class="docs"><b>' +
+          cmd.name +
+          '<br><br>Syntax: </b>' +
+          cmd.syntax +
+          '<br><b>Description:</b><br>' +
+          cmd.description +
+          '</div>',
+      };
+    }).concat(this.keywords.wordList.map(word => {
+        return {
+          caption: word,
+          value: word,
+          meta: 'parameter',
+          type: 'parameter',
+        };
+      })
+    ).concat(this.keywords.keywords.map(word => {
+        return {
+          caption: word,
+          value: word,
+          meta: 'keyword',
+          type: 'keyword',
+        };
+      })
+    );
+    return groups.concat(variables).concat(commands).filter(a=>{
+      return a.value.toLowerCase().startsWith(prefix);
+    }).sort((a,b)=>{
+      return a.caption >= b.caption ? 1 : -1;
+    });
+  }
+  
+  getDoc(obj, key) {
+    let doc = '<b>' + key;
+    if (obj[key].type === 'list') {
+      doc += '</b>:<table style="margin-top: 8px;">';
+      for (let k in obj[key].options) {
+        const val = obj[key].options[k];
+        doc += '<tr><td style="padding-right: 6px; font-weight: bold;">' + k + '</td><td style="padding-right: 6px;">' + val.name + '</td><td>'
+         + val.desc + '</td></tr>';
+      }
+      doc += '</table>';
+    } else {
+      doc += ' [' + obj[key].type + ']</b>';
+    }
+    doc += '<p style="margin-top: 8px;">' + obj[key].desc + '</p>';
+    return doc;
+      
+  }
 
   /*************** Virtual Keyboard **********************/
   @ViewChild(MatInput, { static: false }) dummyInput: MatInput;
@@ -896,3 +935,72 @@ export interface Command {
   syntax: string;
   description: string;
 }
+
+// TODO: REMOVE THIS FROM HERE AND PUT IN WEB SERVER !!!
+export const DOCS = {
+  "axis": ['VCruise', 'VMax'],
+  "commands": {
+    "attach": {
+      "musts": [],
+      "opts": [],
+      "parts": ['me'],
+      "regStr": "(attach) *(\\w+)?"
+    },
+    "circle": {
+      "musts": ['CirclePoint', 'TargetPoint', 'Angle'],
+      "opts": ['VTran'],
+      "parts": ['me|must','must'],
+      "regStr": "(circle) *(?:(\\w+)? *(CirclePoint|TargetPoint|Angle)? *= *(\\w+) *(CirclePoint|TargetPoint|Angle) *= *(\\w+)(?: +(.+))*)?"
+    },
+    "dopass": {
+      "musts": [],
+      "opts": [],
+      "parts": ['me'],
+      "regStr": "(DoPass) *(\\w+)?"
+    },
+    "move(s)": {
+      "musts": [],
+      "opts": ['VCruise', 'VMax'],
+      "parts": ['me|jnt|loc'],
+      "regStr": "(moves?) *(\\w+)?(?: +(.+))*"
+    },
+    "stop": {
+      "musts": ['StopType'],
+      "opts": [],
+      "parts": ['me|must'],
+      "regStr": "(stop) *(\\w+ *)?(?:stoptype *= *(\\w+))?"
+    },
+    "with": {
+      "musts": [],
+      "opts": [],
+      "parts": ['me'],
+      "regStr": "(with) *(\\w+)?"
+    }
+  },
+  "group": ['VCruise', 'VMax'],
+  "musts": {
+   "Angle": {"desc":"Angle", "type": "Double"},
+   "CirclePoint": {"desc":"CirclePoint", "type": "Joint/Location"},
+   "StopType": {"desc":"StopType", "type": "list", "options":{
+     1: {"name":"IMMEDIATE", "desc": "Immediate stop using maximum deceleration."},
+     2: {"name":"ONPATH", "desc": "Immediate stop on the path of the motion. This is useful for stopping group motion so all axes remain on the original path of travel during the stop. For a single axis, IMMEDIATE and ONPATH are the same."},
+     3: {"name":"ENDMOTION", "desc": "Stop at the end of the current motion command."},
+     4: {"name":"ABORT", "desc": "Stop the current motion immediate but do not wait for proceed to start next motion. Only the accepted motion commands are stopped, the commands coming after this stoptype will be executed regularly"},
+     5: {"name":"DecStopOnPath", "desc": "the stopping procedure is started immediately according to DecStop value or DecStopTran and DecStopRot values (for ROBOT ). As those parameters are modal so their values must be updated before executing the motion command.  Contrary to stop immediate in this case the Robot is stopped as a whole group on the movement path."},
+   }},
+   "TargetPoint": {"desc":"TargetPoint", "type": "Joint/Location"},
+  },
+  "properties": {
+    "VCruise": {"desc":"Velocity of motion", "type": "double"},
+    "VMax": {"desc":"Maximum velocity of motion", "type": "double"},
+    "VTran": {"desc":"Transitional Velocity", "type": "double"}
+  },
+  "sys": {
+    "information": {"desc":"Prints information about the system", "type": "string"},
+    "name": {"desc":"The name of the system", "type": "string"}
+  },
+  "tasks": {
+    "state": {"desc":"The current state id of the task", "type": "long"},
+    "status": {"desc":"The current status string of the task", "type": "string"}
+  }
+};

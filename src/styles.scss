@@ -177,6 +177,10 @@ mat-slide-toggle { display: block!important; }
   background-color: #bdbdbd;
   color: white;
 }
+.ace_tooltip {
+  font-family: monospace;
+  white-space: pre-wrap;
+}
 
 // shrink ovealy css
 .shrink-overlay {
