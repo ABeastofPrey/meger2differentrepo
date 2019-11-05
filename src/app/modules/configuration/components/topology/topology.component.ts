@@ -1,34 +1,22 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TopologyService } from '../../services/topology.service';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-} from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { Observable, of as observableOf } from 'rxjs';
 import { Either } from 'ramda-fantasy';
 import { isFalsy, isNotNil, isNotEmpty } from 'ramda-adjunct';
-import {
-  compose,
-  bind,
-  then,
-  unless,
-  split,
-  last,
-  equals,
-  isNil,
-  isEmpty,
-  concat,
-} from 'ramda';
+import { compose, bind, then, unless, split, last, equals, isNil, isEmpty, concat } from 'ramda';
 
 export interface DeviceNode {
   name: string;
+  type: string;
   children?: DeviceNode[];
 }
 
 /** Flat node with expandable and level information */
 export class FileFlatNode {
   name: string;
+  type: string;
   level: number;
   expandable: boolean;
 }
@@ -55,11 +43,11 @@ export const levelOrder = (root: DeviceNode) => {
 
 const getLevel = (node: FileFlatNode) => node.level;
 const isExpandable = (node: FileFlatNode) => node.expandable;
-const getChildren = (node: DeviceNode): Observable<DeviceNode[]> =>
-  observableOf(node.children);
+const getChildren = (node: DeviceNode): Observable<DeviceNode[]> => observableOf(node.children);
 const transformer = (node: DeviceNode, level: number) => {
   let flatNode = new FileFlatNode();
   flatNode.name = node.name;
+  flatNode.type = node.type;
   flatNode.level = level;
   flatNode.expandable = !!node.children && node.children.length > 0;
   return flatNode;
@@ -86,14 +74,8 @@ export class TopologyComponent implements OnInit, OnDestroy {
   public hasChild = (_: number, nodeData: FileFlatNode) => nodeData.expandable;
 
   constructor(private service: TopologyService) {
-    this.treeControl = new FlatTreeControl<FileFlatNode>(
-      getLevel,
-      isExpandable
-    );
-    this.dataSource = new MatTreeFlatDataSource(
-      this.treeControl,
-      treeFlattener
-    );
+    this.treeControl = new FlatTreeControl<FileFlatNode>(getLevel, isExpandable);
+    this.dataSource = new MatTreeFlatDataSource(this.treeControl, treeFlattener);
   }
 
   ngOnInit(): void {
@@ -128,34 +110,18 @@ export class TopologyComponent implements OnInit, OnDestroy {
    * @memberof TopologyComponent
    */
   private async checkStateWithOpMode(): Promise<boolean> {
-    const getModeCode = compose(
-      last,
-      split('\n')
-    );
+    const getModeCode = compose(last, split('\n'));
     const getOpMode = bind(this.service.getOpMode, this.service);
-    const logError = err =>
-      console.warn('Retrieve device topology failed: ' + err);
-    const isGoodState = compose(
-      equals('8'),
-      getModeCode
-    );
+    const logError = err => console.warn('Retrieve device topology failed: ' + err);
+    const isGoodState = compose(equals('8'), getModeCode);
     const logOrCheck = Either.either(logError, isGoodState);
-    const fetchModeAndCheck = compose(
-      then(
-        compose(
-          isFalsy,
-          logOrCheck
-        )
-      ),
-      getOpMode
-    );
+    const fetchModeAndCheck = compose(then(compose(isFalsy, logOrCheck)), getOpMode);
     return fetchModeAndCheck();
   }
 
   private async retrieveAndAssemble(): Promise<void> {
     const retrieveTopology = bind(this.service.getDeviceTopology, this.service);
-    const logError = err =>
-      console.warn('Retrieve device topology failed: ' + err);
+    const logError = err => console.warn('Retrieve device topology failed: ' + err);
     const assemble = tree => {
       if (isEmpty(this.oldNodes)) {
         this.dataSource.data = tree;
@@ -171,10 +137,7 @@ export class TopologyComponent implements OnInit, OnDestroy {
       }
     };
     const logOrAssemble = Either.either(logError, assemble);
-    const doIt = compose(
-      then(logOrAssemble),
-      retrieveTopology
-    );
+    const doIt = compose(then(logOrAssemble), retrieveTopology);
     doIt();
   }
 

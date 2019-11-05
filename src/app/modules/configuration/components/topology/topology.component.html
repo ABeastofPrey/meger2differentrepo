@@ -4,7 +4,17 @@
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
                 <button mat-icon-button disabled></button>
-                <mat-icon class="mat-primary mat-icon">label</mat-icon>&nbsp;
+                <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="node.type === 'Controller' || node.type === 'Bus' || node.type === 'Coupler'">
+                        <mat-icon class="mat-primary mat-icon">devices</mat-icon>&nbsp;
+                    </ng-container>
+                    <ng-container *ngSwitchCase="node.type === 'Terminal'">
+                        <mat-icon class="mat-primary mat-icon">label</mat-icon>&nbsp;
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                        <mat-icon class="mat-primary mat-icon">label</mat-icon>&nbsp;
+                    </ng-container>
+                </ng-container>
                 <div [ngSwitch]="node.name">
                     <span *ngSwitchCase="'Drive Bus'">{{'topology.driveBus'|translate}}</span>
                     <span *ngSwitchCase="'Extension Bus'">{{'topology.extensionBus'|translate}}</span>
@@ -17,7 +27,17 @@
                         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                     </mat-icon>
                 </button>
-                <mat-icon class="mat-primary mat-icon">devices</mat-icon>&nbsp;
+                <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="node.type === 'Controller' || node.type === 'Bus' || node.type === 'Coupler'">
+                        <mat-icon class="mat-primary mat-icon">devices</mat-icon>&nbsp;
+                    </ng-container>
+                    <ng-container *ngSwitchCase="node.type === 'Terminal'">
+                        <mat-icon class="mat-primary mat-icon">label</mat-icon>&nbsp;
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                        <mat-icon class="mat-primary mat-icon">devices</mat-icon>&nbsp;
+                    </ng-container>
+                </ng-container>
                 <div [ngSwitch]="node.name">
                     <span *ngSwitchCase="'Controller'">{{'topology.controller'|translate}}</span>
                     <span *ngSwitchCase="'Drive Bus'">{{'topology.driveBus'|translate}}</span>
