@@ -136,8 +136,9 @@ export class ProgramEditorAceComponent implements OnInit {
             this.editor.getSession().setUndoManager(new ace.UndoManager());
           }
           setTimeout(() => {
-            if (this.editor)
+            if (this.editor) {
               this.editor.resize();
+            }
           }, 1000);
         }
       });
@@ -598,6 +599,9 @@ export class ProgramEditorAceComponent implements OnInit {
           this.setBreakpoints(ret.result);
         });
     }
+    setTimeout(()=>{
+      this.editor.resize();
+    },0);
   }
 
   private showTooptip(e: any, val: any) {
@@ -744,7 +748,7 @@ export class ProgramEditorAceComponent implements OnInit {
           return callback(null, this.handlePrefix(prefix));
         }
         token = stream.stepBackward();
-        if (token.value === '.') {
+        if (token && token.value === '.') {
           token = stream.stepBackward();
           prefix = (token.value as string).toLowerCase();
           return callback(null, this.handlePrefix(prefix));

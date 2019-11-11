@@ -988,4 +988,10 @@ export class DataService {
       this.dataRefreshed.next(true);
     });
   }
+  
+  setDebugMode(on: boolean) {
+    if (on) {
+      this.dataLoaded.next(false);
+    }
+  }
 }

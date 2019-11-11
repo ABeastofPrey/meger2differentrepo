@@ -2,9 +2,9 @@
 	<div [class.hidden]="!isRouterLoading" class="spinner mat-elevation-z6">
 		<img src="assets/pics/{{ env.platform.spinner }}" />
 	</div>
-	<mat-toolbar class="mat-elevation-z3" [color]="stat.systemErrorCode < 0 ? 'warn' : 'primary'"
+	<mat-toolbar class="mat-elevation-z3" [color]="(stat.systemErrorCode < 0 || screenManager.debugMode) ? 'warn' : 'primary'"
 		[class.primary-bg-dark]="stat.systemErrorCode >= 0">
-    <div class="hidden-menu" *ngIf="allowHiddenMenu" [class.visible]="hiddenMenuVisible" (click)="closeHiddenMenu()">
+    <div class="hidden-menu" *ngIf="allowHiddenMenu && !screenManager.debugMode" [class.visible]="hiddenMenuVisible" (click)="closeHiddenMenu()">
       <button
         mat-mini-fab
         class="rec-button"
@@ -40,6 +40,11 @@
         <mat-icon>settings_remote</mat-icon>
         REMOTE MODE
       </div>
+      <div class="remote" *ngIf="screenManager.debugMode">
+        <mat-icon>bug_report</mat-icon>
+        DEBUG MODE
+        <button mat-button (click)="quitDebugMode()"><mat-icon>close</mat-icon></button>
+      </div>
 		<mat-icon color="accent" *ngIf="ws.otherClients > 0"
 			[matTooltip]="ws.otherClients + ' Other connections are active'">warning</mat-icon>
     <button mat-raised-button *ngIf="tpOnline && stat.mode && cmn.isTablet" class="mode-selector" [disabled]="login.isViewer" (click)="stat.changeMode()">
@@ -49,12 +54,12 @@
 			[checked]="data.simulated" (change)="data.toggleSimulated($event)">{{ 'simulative' | translate }}
 		</mat-slide-toggle>
 		<button mat-mini-fab [disabled]="login.isViewer || !stat.onlineStatus.value" color="warn"
-			[class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()"
+			[class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()" *ngIf="!screenManager.debugMode"
 			matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}">
         <mat-icon>power_settings_new</mat-icon>
       </button>
       <button
-        *ngIf="!allowHiddenMenu"
+        *ngIf="!allowHiddenMenu && !screenManager.debugMode"
         mat-mini-fab
         class="rec-button"
         [disabled]="login.isViewer || !data.dataLoaded.value"
@@ -65,7 +70,7 @@
       >
         <mat-icon>{{ rec.recording ? 'stop' : 'fiber_manual_record' }}</mat-icon>
       </button>
-      <div [matTooltip]="jogTooltip">
+      <div [matTooltip]="jogTooltip" *ngIf="!screenManager.debugMode">
         <button
         mat-mini-fab
         *ngIf="!login.isViewer"
@@ -80,7 +85,7 @@
           <mat-icon>touch_app</mat-icon>
         </button>
       </div>
-      <button mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow()" tourAnchor="watch" *ngIf="!allowHiddenMenu">
+      <button mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow()" tourAnchor="watch" *ngIf="!allowHiddenMenu && !screenManager.debugMode">
         <mat-icon>update</mat-icon>
       </button>
       <button
@@ -88,7 +93,7 @@
         matTooltip="{{ 'simulator' | translate }}"
         (click)="toggleSimulator()"
         [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator"
-        *ngIf="!allowHiddenMenu"
+        *ngIf="!allowHiddenMenu && !screenManager.debugMode"
       >
         <mat-icon>3d_rotation</mat-icon>
       </button>
@@ -100,7 +105,7 @@
       <button *ngIf="login.isAdmin" mat-mini-fab matTooltip="{{ 'terminal' | translate }}" (click)="toggleTerminal()">
         <mat-icon>featured_play_list</mat-icon>
       </button>
-      <button *ngIf="allowHiddenMenu" mat-mini-fab (click)="toggleHiddenMenu()" [class.button-dark]="hiddenMenuVisible">
+      <button *ngIf="allowHiddenMenu && !screenManager.debugMode" mat-mini-fab (click)="toggleHiddenMenu()" [class.button-dark]="hiddenMenuVisible">
         <mat-icon>{{ hiddenMenuVisible ? 'close' : 'more_vert' }}</mat-icon>
       </button>
       <button mat-mini-fab color="warn" (click)="login.logout()" matTooltip="{{ 'button.logout' | translate }}">
@@ -200,7 +205,12 @@
 											<mat-icon>remove</mat-icon>
 										</button>
 									</td>
-									<td>{{ data.selectedRobot }}</td>
+                  <td>
+                    <div>{{ data.selectedRobot }}</div>
+										<div class="{{ cmn.isTablet ? 'coordinate-tab' : 'coordinate' }}">
+											{{ cooService.axisCoordinate.value }}
+										</div>
+                  </td>
 									<td (mouseout)="mouseUp($event)">
 										<button mat-fab color="primary" (mousedown)="mouseDown(1, $event)"
 											(mouseup)="mouseUp($event)" (touchstart)="mouseDown(1, $event)"

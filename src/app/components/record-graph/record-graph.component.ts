@@ -3,11 +3,11 @@ import {
   OnInit,
   ViewChild,
   ElementRef,
-  Inject,
+  Input,
+  HostListener,
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
-import { GraphDerivativeComponent } from '../graph-derivative/graph-derivative.component';
+import {Graph, RecordTab, ChartType} from '../../modules/core/services/record.service';
+import {ScreenManagerService} from '../../modules/core';
 
 declare var Plotly;
 
@@ -17,70 +17,80 @@ declare var Plotly;
   styleUrls: ['./record-graph.component.css'],
 })
 export class RecordGraphComponent implements OnInit {
+  
   @ViewChild('graph', { static: false }) graph: ElementRef;
+  
+  @Input('chartData') chartData: RecordTab;
 
-  private word_title: string;
+  private isViewLoaded: boolean = false;
+  private _lastData: Graph[] = null;
+  private _lastType: ChartType = null;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private trn: TranslateService,
-    private dialog: MatDialog
+    private mgr: ScreenManagerService
   ) {}
 
   ngOnInit() {
-    this.trn.get('dashboard.record.recorded').subscribe(word => {
-      this.word_title = word;
+    this.mgr.controlsAnimating.subscribe(anim=>{
+      if (anim) {
+        setTimeout(()=>{
+          this.onResize();
+        },400);
+      }
     });
   }
 
   ngAfterViewInit() {
-    let layout = {
-      title: this.word_title,
+    setTimeout(()=>{
+      this.isViewLoaded = true;
+      this.refreshChart();
+    },200);
+  }
+  
+  @HostListener('window:resize')
+  onResize() {
+    if (this.graph.nativeElement) {
+      Plotly.relayout(this.graph.nativeElement, {});
+    }
+  }
+  @HostListener('resize')
+  onHostResize() {
+    this.onResize();
+  }
+  
+  private refreshChart() {
+    this._lastData = this.chartData.data;
+    this._lastType = this.chartData.chartType;
+    let layout: any = {
+      title: this.chartData.file + '.REC',
+      autosize: true,
+      showlegend: true
     };
-    Plotly.newPlot(this.graph.nativeElement, this.data, layout);
-  }
-
-  derivative() {
-    this.dialog
-      .open(GraphDerivativeComponent, {
-        data: this.data,
-      })
-      .afterClosed()
-      .subscribe(ret => {
-        const deg = ret[0];
-        const dataIndex = ret[1];
-        if (isNaN(deg) || isNaN(dataIndex)) return;
-        this.addDer(deg, dataIndex);
-      });
-  }
-
-  private addDer(deg: number, dataIndex: number) {
-    let newData = [];
-    const graphData = this.data[dataIndex];
-    let newY: number[] = [];
-    if (graphData.y) {
-      for (let i = 0; i < deg; i++) {
-        const y: number[] = i === 0 ? graphData.y : newY;
-        let tmpY: number[] = [];
-        for (let j = 0; j < y.length; j++) {
-          if (j === 0 || j === y.length - 1) tmpY[j] = 0;
-          else {
-            const y0 = y[j - 1];
-            const y1 = y[j + 1];
-            const mul = i === 0 ? 1000 / 4 : 1;
-            tmpY[j] = (y1 - y0) / 2 * mul ; // 2 ms between points
-          }
-        }
-        newY = tmpY;
+    if (this.chartData.chartType === ChartType.Time) {
+      layout['xaxis'] = {
+        title: 'Time [ms.]',
+      };
+    } else {
+      layout['xaxis'] = {
+        title: this.chartData.legends[this.chartData.legendX]
+      };
+      layout['yaxis'] = {
+        title: this.chartData.legends[this.chartData.legendY]
+      };
+      if (this.chartData.chartType === ChartType.Three) {
+        layout['zaxis'] = {
+          title: this.chartData.legends[this.chartData.legendZ]
+        };
       }
     }
-    newData.push({
-      mode: 'lines',
-      name: graphData.name + '-DER-' + deg,
-      x: graphData.x,
-      y: newY,
-    });
-    let layout = { title: this.word_title };
-    Plotly.plot(this.graph.nativeElement, newData, layout);
+    Plotly.newPlot(this.graph.nativeElement, this.chartData.data, layout, {responsive: true});
+  }
+  
+  ngDoCheck() {
+    if (this.isViewLoaded) {
+      if (this._lastData === this.chartData.data && this._lastType === this.chartData.chartType)
+        return;
+      this.refreshChart();
+    }
   }
 }

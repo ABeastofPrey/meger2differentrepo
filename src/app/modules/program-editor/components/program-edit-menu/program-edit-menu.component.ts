@@ -130,7 +130,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_plt_home() {
     let ref = this.dialog.open(PalletPickerDialogComponent, {
       data: {
-        title: 'projectCommands.other.title_home',
+        title: 'projectCommands.other.title_plt_entry',
         pickRobot: true,
       },
     });

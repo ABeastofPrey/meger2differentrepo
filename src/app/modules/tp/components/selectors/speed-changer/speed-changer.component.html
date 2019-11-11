@@ -1,4 +1,4 @@
-<div style="display: inline-block;">{{ 'jogScreen.speed' | translate }}: {{ val }}</div>
+<div style="display: inline-block;">{{ 'jogScreen.speed' | translate }}[%]: {{ val }}</div>
 <mat-slider
 	thumbLabel
 	max="100"
@@ -7,7 +7,7 @@
 	value="{{ val }}"
 	(change)="onChange($event)"
 	[disabled]="disabled"
->
+  [displayWith]="getDisplayVal">
 </mat-slider>
 <div [class.hidden]="val !== 0.1" class="center-vertical">
 	<span>Incremental</span>

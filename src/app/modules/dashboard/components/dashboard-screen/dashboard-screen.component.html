@@ -1,0 +1,13 @@
+<div class="wrapper">
+  <div class="container" #container *ngIf="init">
+    <dashboard-window
+    [container]="container"
+    *ngFor="let w of dashboard.windows"
+      [params]="w"
+      @fadeIn
+    ></dashboard-window>
+  </div>
+</div>
+<button mat-fab color="accent" class="fab" (click)="add()" @scaleIn>
+  <mat-icon>add</mat-icon>
+</button>

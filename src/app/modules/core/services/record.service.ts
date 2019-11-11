@@ -1,24 +1,69 @@
 import { Injectable } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
-import { DataService } from './data.service';
 import { MatSnackBar } from '@angular/material';
+import {GroupManagerService} from './group-manager.service';
+import {ApiService} from './api.service';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RecordService {
+  
   private timeout: any;
   private _isRecording: boolean = false;
+  
+  private _tabs: RecordTab[] = [];
+  private _selectedTabIndex: number = 0;
+  
+  available: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   get recording() {
     return this._isRecording;
   }
+  
+  get selectedTabIndex() {
+    return this._selectedTabIndex;
+  }
+  
+  get tabs() {
+    return this._tabs;
+  }
+  
+  set selectedTabIndex(i: number) {
+    this._selectedTabIndex = i;
+    this.openTab(i);
+  }
+  
+  openTab(i: number) {
+    const tab = this._tabs[i];
+    if (tab && !tab.csv)
+      return this.api.getRecordingCSV(tab.file).then(result=>{
+        tab.init(result);
+      });
+  }
+  
+  createTab(name: string) {
+    this._tabs.push(new RecordTab(name,this));
+    this.selectedTabIndex = this._tabs.length - 1;
+  }
+  
+  closeTab(i: number) {
+    if (i >= 0 && i < this._tabs.length)
+      this._tabs.splice(i,1);
+  }
 
   constructor(
     private ws: WebsocketService,
-    private data: DataService,
-    private snack: MatSnackBar
-  ) {}
+    private snack: MatSnackBar,
+    public grp: GroupManagerService,
+    private api: ApiService
+  ) {
+    this.grp.sysInfoLoaded.subscribe(loaded=>{
+      this.available.next(loaded);
+    });
+  }
+
 
   toggle() {
     if (this._isRecording) {
@@ -50,4 +95,197 @@ export class RecordService {
       });
     });
   }
+}
+
+export class RecordTab {
+  
+  file: string = null;
+  data: Graph[] = null;
+  csv: string = null;
+  
+  private _err: boolean = false;
+  private _serviceRef: RecordService = null;
+  private _legends: string[] = [];
+  private _chartType: ChartType = ChartType.Time;
+  private _legendX: number = null;
+  private _legendY: number = null;
+  private _legendZ: number = null;
+  private _recLines: string[] = [];
+  private _derData: Graph[] = [];
+  private _compareTo: RecordTab = null;
+  
+  constructor(fileName: string, ref: RecordService) {
+    this.file = fileName;
+    this._serviceRef = ref;
+  }
+  
+  get err() {
+    return this._err;
+  }
+  
+  get legends() {
+    return this._legends;
+  }
+  
+  get chartType() {
+    return this._chartType;
+  }
+  
+  get derData() {
+    return this._derData;
+  }
+  
+  set derData(data: Graph[]) {
+    this._derData = data;
+    this.init(this.csv);
+  }
+  
+  set chartType(val: ChartType) {
+    this._chartType = val;
+    this.init(this.csv);
+  }
+  
+  get legendX() {
+    return this._legendX;
+  };
+  get legendY() {
+    return this._legendY;
+  };
+  get legendZ() {
+    return this._legendZ;
+  };
+  set legendX(val: number) {
+    this._legendX = val;
+    this.init(this.csv);
+  }
+  set legendY(val: number) {
+    this._legendY = val;
+    this.init(this.csv);
+  }
+  set legendZ(val: number) {
+    this._legendZ = val;
+    this.init(this.csv);
+  }
+  
+  get compareTo() {
+    return this._compareTo;
+  }
+  
+  set compareTo(val: RecordTab) {
+    this._compareTo = val;
+  }
+  
+  init(csv: string) {
+    this.csv = csv;
+    try {
+      let newData: Graph[] = [];
+      if (this._legendX === null) { // FIRST INIT
+        // parse CSR
+        this._recLines = csv.split('\n');
+        // parse legends string
+        const line = this._recLines[1];
+        let legends = [];
+        let isFuncFlag = false;
+        let currLegend = '';
+        for (let i = 0; i < line.length; i++) {
+          const c = line.charAt(i);
+          if (c === '(')
+            isFuncFlag = true;
+          else if (c === ')')
+            isFuncFlag = false;
+          if (c !== ',' || isFuncFlag) {
+            currLegend += c;
+          } else {
+            legends.push(currLegend);
+            currLegend = '';
+          }
+          if (i === line.length-1) {
+            legends.push(currLegend);
+          }
+        }
+        this._legends = legends;
+        this._legendX = 0;
+        this._legendY = this.legends[1] ? 1 : 0;
+        this._legendZ = this.legends[2] ? 2 : (this.legends[1] ? 1 : 0);
+      }
+      if (this.chartType === ChartType.Three) {
+        // 3D GRAPH
+        let chartData: Graph3D = {
+          mode: 'lines',
+          name: this.file,
+          x: [],
+          y: [],
+          z: [],
+          type: 'scatter3d',
+        };
+        newData.push(chartData);
+      } else if (this.chartType === ChartType.Time) {
+        // X/T
+        for (let legend of this.legends) {
+          newData.push({
+            mode: 'lines',
+            name: legend,
+            x: [],
+            y: [],
+          });
+        }
+      } else {
+        // 2D ADVANCED
+        newData.push({
+          mode: 'lines',
+          name: this.file,
+          x: [],
+          y: [],
+        });
+      }
+      const cycleTime = this._serviceRef.grp.sysInfo.cycleTime;
+      const gap = Number(this._recLines[0]) || 1;
+      for (let i = 2; i < this._recLines.length; i++) {
+        if (this._recLines[i] !== '') {
+          let vals = this._recLines[i].slice(0, -1).split(',');
+          if (this.chartType !== ChartType.Three) {
+            // 2D
+            if (this.chartType === ChartType.Two) {
+              // ADVANCED 2D
+              if (vals.length < 2) continue;
+              newData[0].x.push(Number(vals[this.legendX]));
+              newData[0].y.push(Number(vals[this.legendY]));
+            } else {
+              vals.forEach((val, index) => {
+                newData[index].x.push((i-2) * cycleTime * gap);
+                newData[index].y.push(Number(val));
+              });
+            }
+          } else {
+            //3D
+            if (vals.length < 3) continue;
+            newData[0].x.push(Number(vals[this.legendX]));
+            newData[0].y.push(Number(vals[this.legendY]));
+            (<Graph3D>newData[0]).z.push(Number(vals[this.legendZ]));
+          }
+        }
+      }
+      newData = newData.concat(this.derData);
+      this.data = newData;
+      this._err = false;
+    } catch (err) {
+      this._err = true;
+      this.data = null;
+    }
+  }
+  
+}
+
+export enum ChartType { Time, Two, Three }
+
+export interface Graph {
+  mode: string;
+  name: string;
+  x: number[];
+  y: number[];
+}
+
+export interface Graph3D extends Graph {
+  z: number[];
+  type: string;
 }

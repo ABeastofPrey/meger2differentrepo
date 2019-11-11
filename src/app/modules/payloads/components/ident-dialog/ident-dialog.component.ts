@@ -1,8 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { WebsocketService } from '../../../core';
+import { WebsocketService, CoordinatesService } from '../../../core';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs';
+import {RobotService} from '../../../core/services/robot.service';
+import {SimulatorService} from '../../../core/services/simulator.service';
 
 @Component({
   selector: 'app-ident-dialog',
@@ -10,6 +12,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./ident-dialog.component.css'],
 })
 export class IdentDialogComponent implements OnInit {
+  
   timeLeft: number = 0;
   started: boolean = false;
   finished: boolean = false;
@@ -19,11 +22,16 @@ export class IdentDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<boolean>,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    public robot: RobotService,
+    public sim: SimulatorService,
+    public cooService: CoordinatesService
   ) {}
 
   ngOnInit() {
     this.timeLeft = this.data.duration;
+    this.started = false;
+    this.finished = false;
     this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(ret => {
       if (!ret) this.dialogRef.close(false);
     });

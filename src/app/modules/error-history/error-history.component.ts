@@ -13,9 +13,10 @@ import { ProgramEditorService } from '../program-editor/services/program-editor.
   styleUrls: ['./error-history.component.css'],
 })
 export class ErrorHistoryComponent implements OnInit {
-  public errors: MCError[] = [];
+  
   public initDone: boolean = false;
 
+  private _errors: MCError[] = [];
   private interval: any;
   private lastErrString: string = null;
 
@@ -37,12 +38,16 @@ export class ErrorHistoryComponent implements OnInit {
   ngOnDestroy() {
     clearInterval(this.interval);
   }
+  
+  get errors() {
+    return this._errors;
+  }
 
   update(errString: string) {
     if (errString === this.lastErrString) return;
     this.lastErrString = errString;
     if (errString === 'No error history') {
-      this.errors = [];
+      this._errors = [];
       this.initDone = true;
       return;
     }
@@ -51,7 +56,23 @@ export class ErrorHistoryComponent implements OnInit {
     for (let i = 1; i < errors.length - 3; i++) {
       newErrors.push(new MCError(errors[i]));
     }
-    this.errors = newErrors;
+    // GROUP
+    newErrors.forEach((err: MCError, i, arr)=>{
+      if (i === 0) return;
+      if (arr[i - 1].code === err.code &&
+         arr[i - 1].task === err.task &&
+         arr[i - 1].line === err.line
+      ) {
+        err.parent = arr[i - 1].parent || arr[i-1];
+        err.parent.repeatCount++;
+      }
+    });
+    newErrors = newErrors.filter(err=>{
+      return err.parent === null;
+    });
+    this._errors = newErrors.sort((e1,e2)=>{
+      return e1.timestamp > e2.timestamp ? -1 : 1;
+    });
     if (!this.initDone) this.initDone = true;
   }
 
@@ -92,15 +113,45 @@ export class ErrorHistoryComponent implements OnInit {
 }
 
 export class MCError {
+  
   private date: string;
   private time: string;
   private severity: string;
-  private code: string;
-  private task: string;
+  private _code: string;
+  private _task: string;
   private file: string;
-  private line: string;
+  private _line: string;
   private module: string;
   private message: string;
+  private _parent: MCError = null;
+  
+  public repeatCount: number = 0;
+  
+  get timestamp(): number {
+    if (this.date && this.time)
+      return Date.parse(this.date + ' ' + this.time);
+    return 0;
+  }
+  
+  get code() {
+    return this._code;
+  }
+  
+  set parent(err: MCError) {
+    this._parent = err;
+  }
+  
+  get parent() {
+    return this._parent;
+  }
+  
+  get task() {
+    return this._task;
+  }
+  
+  get line() {
+    return this._line;
+  }
 
   constructor(str: string) {
     var index = str.indexOf('"');
@@ -112,14 +163,14 @@ export class MCError {
     this.date = parts[0];
     this.time = parts[1];
     this.severity = parts[2].toUpperCase();
-    this.code = parts[3];
-    this.task = parts[4];
+    this._code = parts[3];
+    this._task = parts[4];
     this.file = parts[5];
-    this.line = parts[6];
+    this._line = parts[6];
     this.module = parts[7];
     if (this.module === undefined) {
       this.module = this.line;
-      this.line = this.file;
+      this._line = this.file;
       this.file = ' ';
     }
     this.message = str.substr(index + 1).slice(0, -2);

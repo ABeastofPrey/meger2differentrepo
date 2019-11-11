@@ -97,6 +97,13 @@ export class TaskService {
     this.isActive = false;
     this.interval = null;
   }
+  
+  setDebugMode(on: boolean) {
+    if (on)
+      this.stop();
+    else
+      this.start();
+  }
 
   run(indexes: number[], filters: boolean[]) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);

@@ -99,6 +99,15 @@ export class ApiService {
     if (overwrite) body = body.set('overwrite', 'true');
     return this.http.post(url, formData, { params: body }).toPromise();
   }
+  
+  uploadRec(file: File) {
+    const url = environment.api_url + '/cs/api/uploadRec';
+    let formData = new FormData();
+    formData.append('file', file);
+    let body = new HttpParams();
+    body = body.set('token', this.token);
+    return this.http.post(url, formData, { params: body }).toPromise();
+  }
 
   uploadIPK(file: File) {
     const url = environment.api_url + '/cs/firmware';
@@ -365,6 +374,26 @@ export class ApiService {
           return s.split('.')[0];
         });
       });
+  }
+  
+  getRecordingFile(recName: string) {
+    const url = environment.api_url + '/cs/api/dashboard/recFile/' + recName;
+    return this.http
+      .get(url, { responseType: 'arraybuffer' })
+      .toPromise()
+      .then(ret => {
+        const blob = new Blob([ret], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = recName + '.REC';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      });
+    
   }
 
   getRecordingCSV(recName: string) {

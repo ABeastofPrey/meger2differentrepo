@@ -7,13 +7,13 @@ import {
 } from '../../../modules/core/services/websocket.service';
 import { ScreenManagerService } from '../../../modules/core/services/screen-manager.service';
 import { ApiService } from '../../../modules/core/services/api.service';
-import { RecordParams } from '../components/record-dialog/record-dialog.component';
 import { TourService } from 'ngx-tour-md-menu';
 import { ApplicationRef } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordGraphComponent } from '../../../components/record-graph/record-graph.component';
 import {GroupManagerService} from '../../core/services/group-manager.service';
+import {RecordParams} from '../../../components/record-dialog/record-dialog.component';
 
 @Injectable()
 export class DashboardService {

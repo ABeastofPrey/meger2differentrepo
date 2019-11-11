@@ -89,6 +89,7 @@ export class WatchService {
     });
     this.interval = setInterval(() => {
       for (let v of this.vars) {
+        if (v.name.trim().length === 0) v.record = false;
         if (!v.active) continue;
         if (v.name.length === 0) {
           v.active = false;
@@ -109,7 +110,7 @@ export class WatchService {
           .then((ret: MCQueryResponse) => {
             if (!v.active) return;
             if (ret.err) {
-              v.value = ret.err.errMsg;
+              v.value = ret.err.errCode === '7195' ? '-' : ret.err.errMsg;
               v.active = false;
               if (!this.env.production) console.log(ret);
             } else {

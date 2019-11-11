@@ -17,10 +17,6 @@
   text-align: right;
   margin-top: 8px;
 }
-.content {
-  overflow: auto;
-  min-height: 100px;
-}
 mat-form-field {
   display: block;
   width: 100%;

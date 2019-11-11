@@ -10,7 +10,6 @@ import { TerminalWindowComponent } from './components/terminal-window/terminal-w
 import { HomeScreenModule } from '../home-screen/home-screen.module';
 import { ProgramEditorModule } from '../program-editor/program-editor.module';
 import { PermissionGuardService } from '../configuration/permission-guard.service';
-import { RecordGraphComponent } from '../../components/record-graph/record-graph.component';
 import { GraphDerivativeComponent } from '../../components/graph-derivative/graph-derivative.component';
 import { FileSelectorDialogComponent } from '../../components/file-selector-dialog/file-selector-dialog.component';
 import { StxsimNgModule } from 'stxsim-ng';
@@ -29,13 +28,11 @@ import { StxsimNgModule } from 'stxsim-ng';
     NotificationWindowComponent,
     WatchWindowComponent,
     TerminalWindowComponent,
-    RecordGraphComponent,
     GraphDerivativeComponent,
     FileSelectorDialogComponent,
   ],
   providers: [MainAuthResolver, PermissionGuardService],
   entryComponents: [
-    RecordGraphComponent,
     GraphDerivativeComponent,
     FileSelectorDialogComponent,
   ],

@@ -11,7 +11,7 @@ import {
   UploadResult,
   LoginService,
 } from '../../../core';
-import { of, Subscription, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { FileFilterService } from '../../file-filter.service';
 import { ProgramEditorService } from '../../../program-editor/services/program-editor.service';

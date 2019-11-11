@@ -106,6 +106,8 @@ export class CoordinatesService {
     } else if (parts.length === 2) {
       this._joints = null;
       this._locations = null;
+      this._locationKeysString = null;
+      this._jointKeysString = null;
       var key = parts[0].substring(1, parts[0].length - 1);
       var val = parts[1].substring(1, parts[1].length - 1);
       this._axis = new Coordinate(key, parseFloat(val));
@@ -118,6 +120,15 @@ export class CoordinatesService {
     }
     coordinates = null;
     this.positonChange.emit(this.jointsAsArr);
+  }
+  
+  setDebugMode(on: boolean) {
+    if (on) {
+      this.ws.clearInterval(this.interval);
+      this.interval = null;
+      this.coosLoaded.next(false);
+      this.data.setDebugMode(on);
+    }
   }
 
   constructor(

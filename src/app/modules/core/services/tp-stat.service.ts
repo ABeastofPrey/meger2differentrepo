@@ -239,7 +239,7 @@ export class TpStatService {
         this.lastErrString = this.errorString;
         const err = this.errorString.trim();
         if (err.length > 0) {
-          this._tpStatErrorHistory.push({
+          this._tpStatErrorHistory.unshift({
             time: new Date().getTime(),
             err: err,
           });
@@ -311,6 +311,20 @@ export class TpStatService {
       refreshRate
     );
   }
+  
+  resetStat() {
+    this._enabled = false;
+    this._isMoving = false;
+    this._isSetteled = false;
+    this._errorString = null;
+    this._velocityRate = null;
+    this._bipRequest = false;
+    this._isRefresh = false;
+    this._estop = false;
+    this._deadman = false;
+    this._switch = null;
+    this._cart_reach = false;
+  }
 
   resetAll() {
     this.ws.clearInterval(this.interval);
@@ -327,6 +341,18 @@ export class TpStatService {
           return Promise.reject(null);
         }
       });
+  }
+  
+  setDebugMode(on: boolean) {
+    if (on) {
+      // STOP TP_STAT
+      this.ws.clearInterval(this.interval);
+      this._online = false;
+      this.onlineStatus.next(false);
+    } else {
+      // START TP_STAT
+      this.startKeepAlive();
+    }
   }
 
   constructor(
@@ -360,6 +386,7 @@ export class TpStatService {
         this.onlineStatus.next(false);
         this._online = false;
         this._tpStatErrorHistory = [];
+        this.resetStat();
       }
     });
     this.onlineStatus.subscribe(stat => {

@@ -8,6 +8,9 @@ import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
   styleUrls: ['./gripper-test-dialog.component.css'],
 })
 export class GripperTestDialogComponent implements OnInit {
+  
+  private interval: any = null;
+  
   time: number = 5;
   duty: number = 50;
   status: boolean = false;
@@ -23,13 +26,18 @@ export class GripperTestDialogComponent implements OnInit {
     if (time) {
       this.time = Number(time);
     }
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.ws
         .query('?sys.dout.dout::' + this.data.dOut)
         .then((ret: MCQueryResponse) => {
           this.status = ret.result === '1';
         });
     }, 200);
+  }
+  
+  ngOnDestroy() {
+    clearInterval(this.interval);
+    this.interval = null;
   }
 
   open() {

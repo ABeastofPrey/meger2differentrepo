@@ -2,10 +2,6 @@ import { Component, OnInit, ElementRef, Input, ViewChild } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { NewDashboardParameterDialogComponent } from '../new-dashboard-parameter-dialog/new-dashboard-parameter-dialog.component';
 import {
-  RecordDialogComponent,
-  RecordParams,
-} from '../record-dialog/record-dialog.component';
-import {
   DashboardWindow,
   DashboardService,
   DashboardParam,
@@ -17,6 +13,9 @@ import {
 import { TourService } from 'ngx-tour-md-menu';
 import { TranslateService } from '@ngx-translate/core';
 import { LoginService, GroupManagerService } from '../../../core';
+import {RecordDialogComponent, RecordParams} from '../../../../components/record-dialog/record-dialog.component';
+import {RecordService} from '../../../core/services/record.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'dashboard-window',
@@ -41,7 +40,9 @@ export class DashboardWindowComponent implements OnInit {
     private tour: TourService,
     private trn: TranslateService,
     public login: LoginService,
-    private grp: GroupManagerService
+    private grp: GroupManagerService,
+    private rec: RecordService,
+    private router: Router
   ) {
     this.trn
       .get(['dashboard.err_target', 'dismiss', 'dashboard.move_sent'])
@@ -77,13 +78,15 @@ export class DashboardWindowComponent implements OnInit {
   }
 
   onDragEnd() {
+    const el = this.window.nativeElement as HTMLElement;
     let matrix = new WebKitCSSMatrix(
-      getComputedStyle(this.window.nativeElement).webkitTransform
+      getComputedStyle(el).webkitTransform
     );
     this.params.pos = {
       x: matrix.m41,
       y: matrix.m42,
     };
+    console.log(this.params.pos);
     this.dashboard.save();
   }
 
@@ -180,9 +183,9 @@ export class DashboardWindowComponent implements OnInit {
           }
         }
         let cmd =
-          'Record CSRECORD.rec ' +
+          'Record ' + params.name + '.rec ' +
           Math.ceil(params.duration / this.grp.sysInfo.cycleTime) +
-          ' Gap=1 RecData=' +
+          ' Gap=' + params.gap + ' RecData=' +
           varList.join();
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
           if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
@@ -200,7 +203,7 @@ export class DashboardWindowComponent implements OnInit {
                 !this.params.isRecording
               ) {
                 clearInterval(interval);
-                this.onRecordFinish(params.graphType);
+                this.onRecordFinish(params);
                 this.params.recordingTime = 0;
               }
             }, 200);
@@ -216,11 +219,12 @@ export class DashboardWindowComponent implements OnInit {
     this.ws.query('RecordClose');
   }
 
-  onRecordFinish(graphType: string) {
+  onRecordFinish(params: RecordParams) {
     this.stop();
     setTimeout(() => {
       // ALLOW TIME FOR RECORDING TO CLOSE FILE
-      this.dashboard.showGraphDialog(graphType);
+      this.rec.createTab(params.name);
+      this.router.navigateByUrl('/dashboard/recordings');
     }, 400);
   }
 }

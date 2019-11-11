@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DashboardWindow } from '../../services/dashboard.service';
+import {DashboardWindow} from '../../modules/dashboard/services/dashboard.service';
 
 @Component({
   selector: 'app-record-dialog',
@@ -8,6 +8,7 @@ import { DashboardWindow } from '../../services/dashboard.service';
   styleUrls: ['./record-dialog.component.css'],
 })
 export class RecordDialogComponent implements OnInit {
+  
   duration: number = null;
   override: boolean = false;
   x: string = 'setPoint{1}';
@@ -16,6 +17,8 @@ export class RecordDialogComponent implements OnInit {
   x2D: string = null;
   y2D: string = null;
   recMode: string = '1';
+  fileName: string = 'CSRECORD';
+  gap: number = 1;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DashboardWindow,
@@ -24,7 +27,10 @@ export class RecordDialogComponent implements OnInit {
 
   ngOnInit() {
     const storedDuration = Number(localStorage.getItem('recDuration'));
-    if (!isNaN(storedDuration)) this.duration = storedDuration;
+    if (!isNaN(storedDuration))
+      this.duration = storedDuration;
+    else
+      this.duration = 1000;
   }
 
   record() {
@@ -48,6 +54,8 @@ export class RecordDialogComponent implements OnInit {
       x: this.recMode === '2' ? this.x2D : this.x,
       y: this.recMode === '2' ? this.y2D : this.y,
       z: this.z,
+      gap: this.gap,
+      name: this.fileName
     });
   }
 }
@@ -59,4 +67,6 @@ export interface RecordParams {
   x: string;
   y: string;
   z: string;
+  gap: number;
+  name: string;
 }

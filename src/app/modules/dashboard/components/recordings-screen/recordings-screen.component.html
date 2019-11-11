@@ -1,0 +1,78 @@
+<div class="wrapper">
+  <button mat-fab color="accent" class="fab" @scaleIn (click)="add()"><mat-icon>add</mat-icon></button>
+  <div class="container mat-elevation-z3">
+    <div class="menu mat-elevation-z1" *ngIf="service.tabs[service.selectedTabIndex]">
+      <mat-radio-group color="primary" [(ngModel)]="service.tabs[service.selectedTabIndex].chartType" [disabled]="!service.tabs[service.selectedTabIndex].data">
+        <mat-radio-button [value]="0">X/T</mat-radio-button>
+        <mat-radio-button [value]="1" [disabled]="service.tabs[service.selectedTabIndex].legends.length < 2">2D</mat-radio-button>
+        <mat-radio-button [value]="2" [disabled]="service.tabs[service.selectedTabIndex].legends.length < 3">3D</mat-radio-button>
+      </mat-radio-group>
+      <div class="separator" *ngIf="service.tabs[service.selectedTabIndex].chartType !== 0"></div>
+      <div class="axes" *ngIf="service.tabs[service.selectedTabIndex].chartType !== 0">
+        <mat-form-field>
+          <mat-label>X</mat-label>
+          <mat-select [(ngModel)]="service.tabs[service.selectedTabIndex].legendX">
+            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legends; let i=index;" [value]="i">{{legend}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Y</mat-label>
+          <mat-select [(ngModel)]="service.tabs[service.selectedTabIndex].legendY">
+            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legends let i=index;" [value]="i">{{legend}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="service.tabs[service.selectedTabIndex].chartType === 2">
+          <mat-label>Z</mat-label>
+          <mat-select [(ngModel)]="service.tabs[service.selectedTabIndex].legendZ">
+            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legends let i=index;" [value]="i">{{legend}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="separator"></div>
+      <button mat-raised-button color="primary" (click)="compare()" [disabled]="service.tabs[service.selectedTabIndex].compareTo">{{ 'dashboard.record.buttons.compare' | translate }}</button>
+      <button mat-raised-button color="primary" *ngIf="service.tabs[service.selectedTabIndex].chartType === 0" [disabled]="!service.tabs[service.selectedTabIndex].data" (click)="derivative()">{{ 'dashboard.record.buttons.derivative' | translate }}</button>
+      <button mat-raised-button color="primary" [disabled]="!service.tabs[service.selectedTabIndex].data" (click)="downloadRec(service.tabs[service.selectedTabIndex])">{{ 'dashboard.record.buttons.downloadRec' | translate }}</button>
+      <button mat-raised-button color="primary" [disabled]="!service.tabs[service.selectedTabIndex].data" (click)="downloadCSV(service.tabs[service.selectedTabIndex])">{{ 'dashboard.record.buttons.downloadCSV' | translate }}</button>
+    </div>
+    <div class="charts">
+      <mat-tab-group
+      animationDuration="0ms"
+      color="accent"
+      backgroundColor="primary"
+      (selectedIndexChange)="showTab($event)"
+      [selectedIndex]="service.selectedTabIndex"
+      >
+        <mat-tab *ngFor="let tab of service.tabs; let i = index">
+          <ng-template mat-tab-label>
+            {{ tab.file }}
+            <mat-icon *ngIf="service.selectedTabIndex === i" (click)="service.closeTab(i)">close</mat-icon>
+            <div class="icon-placeholder" *ngIf="service.selectedTabIndex !== i"></div>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+      <as-split direction="horizontal" *ngIf="service.tabs[service.selectedTabIndex] && service.tabs[service.selectedTabIndex].compareTo">
+        <as-split-area size="50">
+          <app-record-graph *ngIf="service.tabs[service.selectedTabIndex].data" [chartData]="service.tabs[service.selectedTabIndex]"></app-record-graph>
+        </as-split-area>
+        <as-split-area size="50" style="position: relative;">
+          <img src="assets/pics/{{ env.platform.spinner }}" *ngIf="!service.tabs[service.selectedTabIndex].compareTo.data"/>
+          <button class="compare-close" mat-fab color="warn" (click)="service.tabs[service.selectedTabIndex].compareTo = null"><mat-icon>close</mat-icon></button>
+          <app-record-graph *ngIf="service.tabs[service.selectedTabIndex].compareTo.data" [chartData]="service.tabs[service.selectedTabIndex].compareTo"></app-record-graph>
+        </as-split-area>
+      </as-split>
+      <app-record-graph *ngIf="service.tabs[service.selectedTabIndex] && service.tabs[service.selectedTabIndex].data && !service.tabs[service.selectedTabIndex].compareTo" [chartData]="service.tabs[service.selectedTabIndex]"></app-record-graph>
+      <div class="loading" *ngIf="!service.tabs[service.selectedTabIndex] || !service.tabs[service.selectedTabIndex].data" [class.center-vertical-horizontal]="!service.tabs[service.selectedTabIndex]">
+        <div *ngIf="service.tabs[service.selectedTabIndex] && service.tabs[service.selectedTabIndex].err">
+          {{ 'error.err' | translate }}
+        </div>
+        <div *ngIf="service.tabs[service.selectedTabIndex] && !service.tabs[service.selectedTabIndex].err && !service.tabs[service.selectedTabIndex].data">
+          <img src="assets/pics/{{ env.platform.spinner }}" />
+        </div>
+        <h2 *ngIf="!service.tabs[service.selectedTabIndex]">
+          {{ 'dashboard.record.empty' | translate }}
+        </h2>
+      </div>
+      <img *ngIf="!service.tabs[service.selectedTabIndex]" src="assets/pics/Curved_Arrow.svg" class="arrow">
+    </div>
+  </div>
+</div>

@@ -8,7 +8,6 @@
 	(stopped)="onDragEnd()"
 	[handle]="handle"
 	#window
-	[tourAnchor]="params.name === 'SCARA (Tour)' ? 'dashboard-window' : null"
 >
 	<div class="title primary-bg center-vertical" #handle>
 		<div style="flex: 1; cursor: move;">{{ params.name }}</div>
@@ -165,7 +164,7 @@
 			</div>
 		</div>
 		<div *ngIf="!login.isViewer" matRipple class="expand primary-bg-dark" (click)="toggleExpand()">
-			<mat-icon class="primary-light" tourAnchor="dashboard-expand" style="color: #fff;">{{
+			<mat-icon class="primary-light" style="color: #fff;">{{
 				params.isExpanded ? 'chevron_left' : 'more_vert'
 			}}</mat-icon>
 		</div>

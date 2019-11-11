@@ -83,6 +83,19 @@ export class ScreenManagerService {
    * The query to get library version.
    */
   private readonly LibraryVersionQuery = '?system_version';
+  
+  private _debugMode: boolean = false;
+  get debugMode() {
+    return this._debugMode;
+  }
+  set debugMode(val: boolean) {
+    this._debugMode = val;
+    this.stat.setDebugMode(val);
+    if (val) {
+      this._screen = this.screens[0];
+      this.router.navigateByUrl('/');
+    }
+  }
 
   openedControls: boolean = false;
   controlsAnimating: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -250,11 +263,11 @@ export class ScreenManagerService {
     // HANDLE CDK CONTAINER WHEN JOG PANEL IS OPENED
     this.dialog.afterOpened.subscribe(dialog => {
       const data = dialog._containerInstance._config.data;
-      // HANDLE FOCUS
-      if (!this.cmn.isTablet) {
-        dialog._containerInstance._config.autoFocus = true;
-      }
       if (data && data.enableJog && this.openedControls) {
+        // HANDLE FOCUS
+        if (!this.cmn.isTablet) {
+          dialog._containerInstance._config.autoFocus = true;
+        }
         const { classList } = this.container.getContainerElement();
         if (!classList.contains('jog-panel-open')) {
           classList.add('jog-panel-open');

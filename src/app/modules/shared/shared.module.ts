@@ -32,7 +32,9 @@ import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { ControlStudioGestureConfig } from './cs-gesture-config';
 import { ClickOnceDirective } from '../../directives/click-once.directive';
 import {PassPipe} from '../core/pipes/space-to-nbsp.pipe';
-
+import {CoordinatesComponent} from '../main/components/coordinates/coordinates.component';
+import {RecordDialogComponent} from '../../components/record-dialog/record-dialog.component';
+import {RecordGraphComponent} from '../../components/record-graph/record-graph.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -77,6 +79,8 @@ import {PassPipe} from '../core/pipes/space-to-nbsp.pipe';
     NgScrollbarModule,
     IoSelectorDialogComponent,
     ClickOnceDirective,
+    CoordinatesComponent,
+    RecordGraphComponent
   ],
   declarations: [
     YesNoDialogComponent,
@@ -96,7 +100,10 @@ import {PassPipe} from '../core/pipes/space-to-nbsp.pipe';
     KeyboardDialog,
     IoSelectorDialogComponent,
     ClickOnceDirective,
-    PassPipe
+    PassPipe,
+    CoordinatesComponent,
+    RecordDialogComponent,
+    RecordGraphComponent
   ],
   entryComponents: [
     YesNoDialogComponent,
@@ -104,6 +111,8 @@ import {PassPipe} from '../core/pipes/space-to-nbsp.pipe';
     UpdateDialogComponent,
     IoSelectorDialogComponent,
     KeyboardDialog,
+    RecordDialogComponent,
+    RecordGraphComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

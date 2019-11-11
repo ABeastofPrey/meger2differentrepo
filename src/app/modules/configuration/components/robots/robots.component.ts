@@ -9,6 +9,11 @@ import {
   DataService,
   TpStatService,
   GroupManagerService,
+  ScreenManagerService,
+  CoordinatesService,
+  ProjectManagerService,
+  TaskService,
+  LoginService,
 } from '../../../core';
 import { RobotModel } from '../../../core/models/robot.model';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -16,6 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RobotSelectionComponent } from '../../../../components/robot-selection/robot-selection.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
 
 declare var Plotly;
 const MAXVAL = 3000;
@@ -67,7 +73,13 @@ export class RobotsComponent implements OnInit {
     private snack: MatSnackBar,
     private trn: TranslateService,
     public stat: TpStatService,
-    private grp: GroupManagerService
+    private grp: GroupManagerService,
+    private mgr: ScreenManagerService,
+    private coos: CoordinatesService,
+    private prj: ProjectManagerService,
+    private task: TaskService,
+    private prg: ProgramEditorService,
+    public login: LoginService
   ) {}
 
   ngOnInit() {
@@ -329,6 +341,17 @@ export class RobotsComponent implements OnInit {
             });
         }
       });
+  }
+  
+  toggleDebug(on: boolean) {
+    if (!on) return;
+    this.mgr.debugMode = on;
+    this.coos.setDebugMode(on);
+    this.grp.setDebugMode(on);
+    this.prj.setDebugMode(on);
+    this.task.setDebugMode(on);
+    this.prg.setDebugMode(on);
+    
   }
 }
 

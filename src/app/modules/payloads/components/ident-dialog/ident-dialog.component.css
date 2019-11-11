@@ -1,20 +1,42 @@
 .wrapper {
   width: 100%;
-  align-items: center;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-content: center;
+  overflow: hidden;
+}
+.content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
 }
 .time {
-  margin: 96px;
-  font-size: 56px;
-  font-weight: 200;
+  font-size: 36px;
+  min-height: 48px;
+  justify-content: center;
+  text-align: center;
+  margin: 16px 0;
+}
+.sim-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+lib-app-simulator {
+  flex: 1;
+  display: flex;
+}
+coordinates {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 1;
 }
 .huge {
   width: 256px;
   height: 256px;
   line-height: 256px;
+  margin-right: 48px;
 }
 .huge mat-icon {
   height: 128px;

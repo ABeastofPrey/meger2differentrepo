@@ -244,10 +244,6 @@ export class HomeScreenComponent implements OnInit {
           if (!stat) this.updateCharts();
         });
     });
-
-    this.getMainVersion().then(res => {
-      this.mainVer = res;
-    });
     this.getLibVer().then(ver => {
       this.libVer = ver;
     });
@@ -255,6 +251,9 @@ export class HomeScreenComponent implements OnInit {
       if (!stat) return;
       this.ws.query('?sys.date').then((ret: MCQueryResponse) => {
         this.date = ret.result;
+      });
+      this.getMainVersion().then(res => {
+        this.mainVer = res;
       });
       clearInterval(this.timeInterval);
       this.refreshTime();
@@ -271,6 +270,7 @@ export class HomeScreenComponent implements OnInit {
   }
 
   private refreshTime() {
+    if (this.screenMngr.debugMode) return;
     this.ws.query('?sys.time').then((ret: MCQueryResponse) => {
       const i = ret.result.lastIndexOf(':');
       this.time = ret.result.substring(0, i);

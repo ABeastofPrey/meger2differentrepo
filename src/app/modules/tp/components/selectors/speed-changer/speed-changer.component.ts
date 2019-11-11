@@ -23,6 +23,10 @@ export class SpeedChangerComponent implements OnInit {
   ngDoCheck() {
     this.val = this.stat.velocityRate;
   }
+  
+  getDisplayVal(value: number) {
+    return value === 0 ? 0.1 : value;
+  }
 
   onChange(event: MatSliderChange) {
     this.ws.query('?tp_set_jog_vrate(' + event.value + ')');

@@ -44,6 +44,18 @@ export class GroupManagerService {
       }
     });
   }
+  
+  setDebugMode(on: boolean) {
+    if (on) {
+      clearInterval(this.groupInterval);
+    } else {
+      this.zone.runOutsideAngular(() => {
+        this.groupInterval = setInterval(() => {
+          this.refreshGroupsAndInfo();
+        }, 2000);
+      });
+    }
+  }
 
   private refreshSysInfo() {
     // ONLY REFRESHES REAL AXES

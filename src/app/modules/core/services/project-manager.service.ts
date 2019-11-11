@@ -80,6 +80,11 @@ export class ProjectManagerService {
   stopStatusRefresh() {
     if (this.interval) clearInterval(this.interval);
   }
+  
+  setDebugMode(on: boolean) {
+    if (on)
+      this.reset();
+  }
 
   getProjectStatus() {
     if (this.interval) clearInterval(this.interval);

@@ -4,7 +4,11 @@
 			{{ 'dashboard.external.title' | translate }}
 		</div>
 		<div class="content">
-			<mat-form-field>
+      <mat-radio-group [(ngModel)]="mode" color="primary" class="mode">
+				<mat-radio-button value="mc">softMC</mat-radio-button>
+        <mat-radio-button value="pc">Upload file</mat-radio-button>
+			</mat-radio-group>
+			<mat-form-field *ngIf="mode==='mc'">
 				<mat-label>{{ 'dashboard.external.name' | translate }}</mat-label>
 				<mat-select [(ngModel)]="selectedFile">
 					<mat-option disabled *ngIf="files.length === 0">
@@ -15,13 +19,7 @@
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
-			<mat-radio-group [(ngModel)]="graphType">
-				<mat-radio-button value="2d">2D</mat-radio-button>
-				<mat-radio-button value="2da">
-					{{ 'dashboard.record.type.2d-a' | translate }}
-				</mat-radio-button>
-				<mat-radio-button value="3d">3D</mat-radio-button>
-			</mat-radio-group>
+      <input *ngIf="mode==='pc'" type="file" accept=".REC" #upload (change)="onUploadFilesChange($event)" class="file-input" />
 		</div>
 	</div>
 	<div class="actions">

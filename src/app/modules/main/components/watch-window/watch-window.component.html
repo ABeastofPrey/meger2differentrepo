@@ -32,6 +32,7 @@
 					<button
 						mat-icon-button
 						style="color: #f00;"
+         [disabled]="v.name.trim().length === 0"
 						[class.disable-record]="!v.record"
 						(click)="v.record = !v.record"
 					>

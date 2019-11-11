@@ -28,3 +28,10 @@ mat-form-field {
 mat-radio-button {
   margin-right: 16px;
 }
+.file-input {
+  display: block;
+}
+.mode {
+  display: block;
+  margin-bottom: 16px;
+}

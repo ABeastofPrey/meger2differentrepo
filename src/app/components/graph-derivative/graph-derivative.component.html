@@ -17,7 +17,7 @@
 		<mat-form-field>
 			<mat-label>{{ 'element' | translate }}</mat-label>
 			<mat-select [(ngModel)]="dataIndex">
-				<mat-option *ngFor="let d of data; let i = index" [value]="i">{{ d.name }}</mat-option>
+				<mat-option *ngFor="let d of data; let i = index" [value]="i">{{ d }}</mat-option>
 			</mat-select>
 		</mat-form-field>
 		<button mat-button color="primary" (click)="done()">

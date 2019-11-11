@@ -20,7 +20,7 @@
 		<li class="screen" *ngIf="!mgr.menuExpanded"></li>
 		<li
 			class="screen"
-			*ngFor="let s of mgr.screens"
+			*ngFor="let s of (mgr.debugMode ? [mgr.screens[0]] : mgr.screens)"
 			[tourAnchor]="'screen-' + s.name"
 			(click)="onClick(s)"
 			matTooltip="{{ 'tabs.' + s.name | translate }}"

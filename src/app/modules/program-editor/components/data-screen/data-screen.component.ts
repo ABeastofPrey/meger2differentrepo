@@ -168,6 +168,7 @@ export class DataScreenComponent implements OnInit {
     }
     this.colsToDisplay = BASE_COLS.concat(this._legend).concat(SUFFIX_COLS);
     this.refreshValues();
+    this.selection.clear();
   }
   
   getValue(element: TPVariable, i: number) {

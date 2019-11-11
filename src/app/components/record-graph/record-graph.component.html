@@ -1,17 +1,1 @@
-<div class="wrapper">
-	<div class="primary-bg toolbar center-vertical">
-		<div class="buttons">
-			<button
-				[disabled]="data[0].type === 'scatter3d'"
-				mat-raised-button
-				color="accent"
-				(click)="derivative()"
-				style="text-transform: uppercase;"
-			>
-				{{ 'derivative' | translate }}...
-			</button>
-		</div>
-		<button mat-icon-button mat-dialog-close><mat-icon>close</mat-icon></button>
-	</div>
-	<div #graph class="graph"></div>
-</div>
+<div #graph class="graph"></div>

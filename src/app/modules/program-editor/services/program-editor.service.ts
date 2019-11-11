@@ -27,7 +27,8 @@ export const TASKSTATE_TERMINATED = 5;
 export const TASKSTATE_READY = 7;
 export const TASKSTATE_KILLSTART = 9;
 export const TASKSTATE_KILLED = 10;
-export const TASKSTATE_LIB_LOADED = 11;
+export const TASKSTATE_INTERRUPTED = 11;
+export const TASKSTATE_LIB_LOADED = 99;
 
 const endsWithBKG = (x: string) => x.endsWith('BKG');
 
@@ -148,6 +149,11 @@ export class ProgramEditorService {
     this.close();
     if (val === 'mc') this.mode = 'editor';
     else this.tabs = [];
+  }
+  
+  setDebugMode(on: boolean) {
+    if (on)
+      this.close();
   }
 
   closeTab(i: number) {

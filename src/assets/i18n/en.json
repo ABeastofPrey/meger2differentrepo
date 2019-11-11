@@ -117,8 +117,8 @@
   "cut": "Cut",
   "dashboard": {
     "charts": {
-      "2d": "2D Graph",
-      "3d": "3D Graph"
+      "2d": "X/T Graph",
+      "3d": "XYZ Graph"
     },
     "err_file": "FILE NOT FOUND",
     "err_move": "Error {{code}}: {{msg}}",
@@ -141,19 +141,23 @@
     },
     "record": {
       "btnStart": "START RECORDING",
+      "buttons": {
+        "compare": "COMPARE...",
+        "derivative": "DERIVATIVE...",
+        "downloadCSV": "DOWNLOAD CSV FILE...",
+        "downloadRec": "DOWNLOAD REC FILE..."
+      },
+      "empty": "No open recordings.",
       "recorded": "Recorded Data",
       "title": "Start a New Recording",
       "type": {
-        "2d": "Dashboard 2D",
-        "2d-a": "Advanced 2D",
-        "3d": "3D"
+        "2d": "X/T",
+        "2d-a": "XY",
+        "3d": "XYZ"
       }
     },
-    "tooltip": {
-      "chart": "Show/Hide chart window",
-      "csv": "Download chart data as CSV",
-      "external": "Open Recording"
-    }
+    "tab1": "Dashboards",
+    "tab2": "Recordings"
   },
   "dataScreen": {
     "del": "DELETE {{name}}",
@@ -284,6 +288,8 @@
     "TOOL": "TOOL",
     "WORLD": "WORLD"
   },
+  "gap": "Gap",
+  "gap_units": "Samples",
   "grippers": {
     "btnCycle": "CYCLE",
     "btnTest": "TEST",
@@ -681,18 +687,19 @@
       "title_moves": "Insert Moves Command"
     },
     "other": {
-      "title_attach": "Insert Attach/Detach Command",
-      "title_disable": "Insert Disable Command",
-      "title_doPass": "Insert DoPass Command",
-      "title_en": "Insert Enable Command",
-      "title_home": "Insert Home Command",
+      "title_attach": "Insert Attach/Detach command",
+      "title_disable": "Insert Disable command",
+      "title_doPass": "Insert DoPass command",
+      "title_en": "Insert Enable command",
+      "title_home": "Insert Home command",
       "title_inRef": "Insert Input Reference",
       "title_outRef": "Insert Output Reference",
-      "title_pick": "Insert Pick Command",
-      "title_place": "Insert Place Command",
-      "title_plt_index": "Insert Get Pallet Index Command",
-      "title_plt_status": "Insert Get Pallet Status Command",
-      "title_waitForMotion": "Insert WaitForMotion Command"
+      "title_pick": "Insert Pick command",
+      "title_place": "Insert Place command",
+      "title_plt_entry": "Insert Move to Entry Position command",
+      "title_plt_index": "Insert Get Pallet Index command",
+      "title_plt_status": "Insert Get Pallet Status command",
+      "title_waitForMotion": "Insert WaitForMotion command"
     },
     "pallet_index": {
       "title": "Set Pallet Index"
@@ -772,7 +779,8 @@
       "7": "Ready",
       "9": "Kill Start",
       "10": "Killed",
-      "11": "Loaded Library"
+      "11": "Interrupted",
+      "99": "Loaded Library"
     },
     "toolbar": {
       "app": "App",
@@ -1191,8 +1199,8 @@
       "content": "This button shows/hides the JOG controls. This feature is disabled when TP.LIB is not loaded."
     },
     {
-      "title": "Watch Window",
-      "content": "This button shows/hides the WATCH window. This window can be used to monitor system and program variables."
+      "title": "Watch & Record Window",
+      "content": "This button shows/hides the WATCH & RECORD window. This window can be used to monitor system and program variables."
     },
     {
       "title": "Message Log",
@@ -1302,7 +1310,7 @@
   "watch": {
     "context": "Context",
     "name": "Variable Name",
-    "title": "Watch"
+    "title": "Watch & Record"
   },
   "websocket": {
     "err_es_busy": {

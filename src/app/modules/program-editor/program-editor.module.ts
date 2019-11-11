@@ -57,7 +57,6 @@ import { PLSSourceComponent } from './components/dialogs/pls-source/pls-source.c
 import { HomeDialogService } from './services/home-dialog.service';
 import { FileTreeModule } from '../file-tree/file-tree.module';
 import { ProjectDeleteDialogComponent } from './components/project-delete-dialog/project-delete-dialog.component';
-import { CoordinatesComponent } from '../main/components/coordinates/coordinates.component';
 
 @NgModule({
   imports: [
@@ -117,8 +116,7 @@ import { CoordinatesComponent } from '../main/components/coordinates/coordinates
     StopDialogComponent,
     PayloadSelectorComponent,
     HomeSettingComponent,
-    ProjectDeleteDialogComponent,
-    CoordinatesComponent,
+    ProjectDeleteDialogComponent
   ],
   entryComponents: [
     NewProjectDialogComponent,

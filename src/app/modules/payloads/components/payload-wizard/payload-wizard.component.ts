@@ -119,62 +119,72 @@ export class PayloadWizardComponent implements OnInit {
 
   private startIdent() {
     this.stat.mode = 'T2';
-    const cmd = '?PAY_START("' + this.selectedPayload.name + '")';
-    this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result === '0') {
-        const dialog = this.dialog.open(IdentDialogComponent, {
-          disableClose: true,
-          width: '100%',
-          height: '100%',
-          maxWidth: '100%',
-          closeOnNavigation: false,
-          data: {
-            duration: this.data.payloadDuration,
-          },
-          id: 'update',
-        });
-        dialog.afterClosed().subscribe(ret => {
-          if (ret) {
-            this.data.refreshPayloads().then(()=>{
-              return this.onPayloadChange();
-            }).then(()=>{
-              this.snack.open(this.words['payloads']['done'], '', { duration: 1500 });
-            });
-          }
-        });
-        const interval = setInterval(() => {
-          this.ws
-            .query('?PAY_GET_IDENT_STATUS')
-            .then((ret: MCQueryResponse) => {
-              const val = Number(ret.result);
-              switch (val) {
-                case 1: // DONE
-                  clearInterval(interval);
-                  dialog.close(true);
-                  break;
-                case 2: // RUNNING
-                  dialog.componentInstance.start();
-                  break;
-                case 3: // PROCESSING
-                  break;
-                case 4: // ERROR
-                  clearInterval(interval);
-                  dialog.close(false);
-                  break;
-                case 5: // NOT STARTED
-                  clearInterval(interval);
-                  dialog.close(false);
-                  break;
-                case 6: // MOVING TO START
-                  break;
-                case 7: // MOVING TO ORIGINAL POSITION
-                  dialog.componentInstance.finish();
-                  break;
-              }
-            });
-        }, 1000);
-      }
-    });
+    setTimeout(()=>{
+      if (this.stat.mode !== 'T2') return;
+      const cmd = '?PAY_START("' + this.selectedPayload.name + '")';
+      this.ws.query(cmd).then((ret: MCQueryResponse) => {
+        if (ret.result === '0') {
+          const dialog = this.dialog.open(IdentDialogComponent, {
+            disableClose: true,
+            width: '100%',
+            height: '100%',
+            maxWidth: '100%',
+            closeOnNavigation: false,
+            data: {
+              duration: this.data.payloadDuration,
+            },
+            id: 'update',
+          });
+          dialog.afterClosed().subscribe(ret => {
+            if (ret) {
+              this.data.refreshPayloads().then(()=>{
+                this.selectedPayload = this.data.payloads.find(p=>{
+                  return p.name === this.selectedPayload.name;
+                });
+                return this.onPayloadChange();
+              }).then(()=>{
+                this.snack.open(this.words['payloads']['done'], '', { duration: 1500 });
+              });
+            }
+          });
+          const interval = setInterval(() => {
+            this.ws
+              .query('?PAY_GET_IDENT_STATUS')
+              .then((ret: MCQueryResponse) => {
+                const val = Number(ret.result);
+                switch (val) {
+                  case 1: // DONE
+                    clearInterval(interval);
+                    dialog.close(true);
+                    break;
+                  case 2: // RUNNING
+                    dialog.componentInstance.start();
+                    break;
+                  case 3: // PROCESSING
+                    break;
+                  case 4: // ERROR
+                    clearInterval(interval);
+                    dialog.close(false);
+                    break;
+                  case 5: // NOT STARTED
+                    clearInterval(interval);
+                    dialog.close(false);
+                    break;
+                  case 6: // MOVING TO START
+                    break;
+                  case 7: // MOVING TO ORIGINAL POSITION
+                    dialog.componentInstance.finish();
+                    break;
+                  default:
+                    console.log('invalid value:' + val);
+                    clearInterval(interval);
+                    break;
+                }
+              });
+          }, 1000);
+        }
+      });
+    },400);
   }
 
   newPayload() {
@@ -187,12 +197,10 @@ export class PayloadWizardComponent implements OnInit {
           .then((ret: MCQueryResponse) => {
             if (ret.result === '0') {
               this.data.refreshPayloads().then(() => {
-                for (let p of this.data.payloads) {
-                  if (p.name === name) {
-                    this.selectedPayload = p;
-                    this.onPayloadChange();
-                  }
-                }
+                this.selectedPayload = this.data.payloads.find(p=>{
+                  return p.name === name;
+                });
+                this.onPayloadChange();
               });
             }
           });

@@ -4,9 +4,10 @@ import { PayloadWizardComponent } from './components/payload-wizard/payload-wiza
 import { SharedModule } from '../shared/shared.module';
 import { NewPayloadDialogComponent } from './components/new-payload-dialog/new-payload-dialog.component';
 import { IdentDialogComponent } from './components/ident-dialog/ident-dialog.component';
+import {StxsimNgModule} from 'stxsim-ng';
 
 @NgModule({
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, StxsimNgModule],
   declarations: [
     PayloadWizardComponent,
     NewPayloadDialogComponent,

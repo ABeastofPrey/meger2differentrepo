@@ -16,6 +16,8 @@ import {
   WebsocketService,
   ProjectManagerService,
   MCQueryResponse,
+  GroupManagerService,
+  TaskService,
 } from '../../../core';
 import {
   Router,
@@ -43,6 +45,7 @@ import { TpLoadingComponent } from '../../../../components/tp-loading/tp-loading
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { SimulatorService } from '../../../core/services/simulator.service';
+import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
 
 @Component({
   selector: 'app-main',
@@ -128,6 +131,9 @@ export class MainComponent implements OnInit {
     public utils: UtilsService,
     public rec: RecordService,
     public sim: SimulatorService,
+    private grp: GroupManagerService,
+    private task: TaskService,
+    private prg: ProgramEditorService
   ) {
     this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(event => {
       this.refreshLang();
@@ -326,5 +332,15 @@ export class MainComponent implements OnInit {
     if (!this.cooService.coosLoaded.value)
       return this.words['main.errJog']['coos'];
     return this.words['main.jogControlsToggle'];
+  }
+  
+  quitDebugMode() {
+    location.reload(true);
+    //    this.screenManager.debugMode = false;
+    //    this.cooService.setDebugMode(false);
+    //    this.grp.setDebugMode(false);
+    //    this.prj.setDebugMode(false);
+    //    this.task.setDebugMode(false);
+    //    this.prg.setDebugMode(false);
   }
 }
