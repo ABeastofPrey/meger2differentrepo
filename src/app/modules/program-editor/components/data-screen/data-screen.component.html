@@ -48,7 +48,10 @@
 					{{ 'name' | translate }}
 				</th>
 				>
-				<td mat-cell *matCellDef="let element">{{ element.name }}<span *ngIf="element.isArr"> [...]</span></td>
+				<td mat-cell *matCellDef="let element">{{ element.name }}
+					<span *ngIf="element.isArr"> [...]</span>
+					<span *ngIf="element.isTwoDimension"> [...]</span>
+				</td>
 			</ng-container>
 			<ng-container matColumnDef="arrIndex">
 				<th mat-header-cell *matHeaderCellDef>{{ 'index' | translate }}</th>
@@ -63,6 +66,15 @@
 							<mat-option *ngFor="let data of element.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
 						</mat-select>
 					</mat-form-field>
+					<mat-form-field *ngIf="element.isArr && element.isTwoDimension" class="index-field" appearance="outline">
+						<mat-select
+							placeholder="{{ 'index' | translate }}"
+							[(ngModel)]="element.selectedSecondIndex"
+							(selectionChange)="refreshVariable(element)"
+						>
+							<mat-option *ngFor="let data of element.value[element.selectedIndex - 1]; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
+						</mat-select>				
+					</mat-form-field>
 					<span *ngIf="!element.isArr">-</span>
 				</td>
 			</ng-container>
@@ -74,7 +86,9 @@
 						appearance="outline"
 						floatLabel="never"
 						class="value-field"
-						*ngIf="(!element.isArr && element.dataLoaded) || (element.isArr && element.value[element.selectedIndex-1].dataLoaded)"
+						*ngIf="(!element.isArr && element.dataLoaded) || 
+							   (element.isArr && (!element.isTwoDimension) && element.value[element.selectedIndex-1].dataLoaded) ||
+							   (element.isArr && element.isTwoDimension && element.value[element.selectedIndex-1][element.selectedSecondIndex - 1].dataLoaded)"
 						[class.text-field]="element.typeStr === 'STRING'"
 					>
 						<mat-select
@@ -107,7 +121,7 @@
 							matInput
 							[placeholder]="leg"
 							[(ngModel)]="element.isArr ? element.value[element.selectedIndex-1].value[i].value : element.value[i].value"
-               (ngModelChange) = "element.isArr ? element.value[element.selectedIndex-1].value[i].value = $event : element.value[i].value = $event"
+                            (ngModelChange) = "element.isArr ? element.value[element.selectedIndex-1].value[i].value = $event : element.value[i].value = $event"
 							(change)="onKeyboardClose(element)"
 							virtualKeyboard
 							ktype="numeric"
@@ -117,8 +131,12 @@
 							matInput
 							*ngIf="element.typeStr === 'STRING'"
 							[placeholder]="legend[i]"
-							[(ngModel)]="element.isArr ? element.value[element.selectedIndex-1].value[i].value : element.value[i].value"
-              (ngModelChange) = "element.isArr ? element.value[element.selectedIndex-1].value[i].value = $event : element.value[i].value = $event"
+							[(ngModel)]="element.isArr ? (element.isTwoDimension ? 
+							                              element.value[element.selectedIndex - 1][element.selectedSecondIndex - 1].value[i].value
+														: element.value[element.selectedIndex - 1].value[i].value) : element.value[i].value"
+							(ngModelChange) = "element.isArr ? (element.isTwoDimension ? 
+							                              element.value[element.selectedIndex - 1][element.selectedSecondIndex - 1].value[i].value = $event
+							                            : element.value[element.selectedIndex-1].value[i].value = $event) : element.value[i].value = $event"
 							virtualKeyboard
 							ktype="text"
 							cdkTextareaAutosize

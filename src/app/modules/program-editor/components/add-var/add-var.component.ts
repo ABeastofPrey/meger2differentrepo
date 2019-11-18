@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
-import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA, ErrorStateMatcher } from '@angular/material';
 import {
   DataService,
   WebsocketService,
@@ -12,6 +12,26 @@ import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
 import { TpStatService } from '../../../core/services/tp-stat.service';
 import { CommonService } from '../../../core/services/common.service';
+import { FormControl, FormGroupDirective, NgForm, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+
+export enum DataParameter {
+  OneArraySize = 'OneArraySize',
+  TwoArraySize = 'TwoArraySize'
+}
+
+export enum DataParameterErrorKey {
+  InvalidArraySize = 'InvalidArraySize',
+}
+
+export class ArraySizeErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(
+    control: FormControl | null,
+    form: FormGroupDirective | NgForm | null
+  ): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.touched || isSubmitted));
+  }
+}
 
 @Component({
   selector: 'add-var',
@@ -23,11 +43,19 @@ export class AddVarComponent implements OnInit {
   varType: string;
   values: any[];
   isArray: boolean = false;
-  arrSize: number = 0;
+  arrSize: number = 1;
+  arrSecondSize: number = 1;
   @Input() hotVariableOption: (0 | 1)[] = [1, 1, 1, 1, 1];
   @Input() canUseArray: boolean = true;
 
+  validationControls = {};
+  errorMatcher = new ArraySizeErrorStateMatcher();
+  dataParameterReference = DataParameter;
+
+  public dimension: number = 1;
+
   private words: any;
+  private errorMessages: any;
 
   constructor(
     public dialogRef: MatDialogRef<AddVarComponent>,
@@ -55,8 +83,11 @@ export class AddVarComponent implements OnInit {
     }
 
     if (this.data.domainIsFrame) this.varType = 'LOCATION';
-    this.trn.get(['success', 'variables.cannot_use_jog_tip']).subscribe(words => {
+    this.trn.get(['success', 'variables.cannot_use_jog_tip', 'enter_integer']).subscribe(words => {
       this.words = words;
+      this.errorMessages = {
+        [DataParameterErrorKey.InvalidArraySize]: words['enter_integer'],
+      };
     });
 
   }
@@ -83,6 +114,40 @@ export class AddVarComponent implements OnInit {
         this.snackbar.open(this.words['variables.cannot_use_jog_tip'], '', { duration: 2000 });
       }
     });
+
+    this.validationControls[DataParameter.OneArraySize] = new FormControl(
+      '',
+      [ Validators.required,
+        this.createValidator(
+          DataParameterErrorKey.InvalidArraySize,
+          (value: string): boolean => {
+            return Number(value) > 0 && (Number(value) % 1 === 0) ? true : false;
+          }
+        ),
+      ]
+    );
+
+    this.validationControls[DataParameter.TwoArraySize] = new FormControl(
+      '',
+      [ Validators.required,
+        this.createValidator(
+          DataParameterErrorKey.InvalidArraySize,
+          (value: string): boolean => {
+            return Number(value) > 0 && (Number(value) % 1 === 0) ? true : false;
+          }
+        ),
+      ]
+    );
+  }
+
+  getErrors(formControl: FormControl) {
+    if (formControl.errors) {
+      for (let errorKey of Object.keys(this.errorMessages)) {
+        if (formControl.hasError(errorKey)) {
+          return this.errorMessages[errorKey];
+        }
+      }
+    }
   }
 
   onTypeChange() {
@@ -95,7 +160,17 @@ export class AddVarComponent implements OnInit {
   }
 
   add(): Promise<any> {
-    let name = this.isArray ? this.name + '[' + this.arrSize + ']' : this.name;
+    let name = "";
+    if (this.varType === 'STRING') {
+      name = this.name;
+      if (this.isArray) {
+        name = this.dimension > 1 ? this.name + '[' + this.arrSize + ']' + '[' + this.arrSecondSize + ']' 
+                : this.name + '[' + this.arrSize + ']';
+      }
+    } else {
+      name = this.isArray ? this.name + '[' + this.arrSize + ']' : this.name;
+    }
+
     let value: string = '';
     if (!this.isArray) {
       const legendSize =
@@ -188,5 +263,19 @@ export class AddVarComponent implements OnInit {
     setTimeout(() => {
       this.utils.removeShrinkStretchOverlay();
     }, 400);
+  }
+
+  private createValidator(
+    errorKey: string,
+    validateFunction: (value: string) => boolean
+  ): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value === null || control.value === '') {
+        return null;
+      }
+      return validateFunction(control.value)
+        ? null
+        : { [errorKey]: true };
+    };
   }
 }

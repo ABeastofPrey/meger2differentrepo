@@ -183,6 +183,9 @@ export class DataScreenComponent implements OnInit {
     let fullname = v.name;
     if (v.isArr) 
       fullname += '[' + v.selectedIndex + ']';
+    if (v.isTwoDimension) {
+        fullname += '[' + v.selectedSecondIndex + ']';
+      }
     let api: string;
     if (this.useAsProjectPoints)
       api = `?tp_get_project_value_namespace("${fullname}")`;
@@ -195,7 +198,15 @@ export class DataScreenComponent implements OnInit {
       if (valuesString.indexOf(',') === -1) {
         let val = [{ value: valuesString.trim() }];
         if (v.isArr) {
-          const selected = v.value[v.selectedIndex-1] as TPVariable;
+          let selected = null;
+          if(v.isTwoDimension)
+          {
+            selected = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1] as TPVariable;
+          }
+          else
+          {
+            selected = v.value[v.selectedIndex-1] as TPVariable;
+          }
           if (!selected.dataLoaded) {
             selected.value = val;
             selected.dataLoaded = true;
@@ -253,8 +264,14 @@ export class DataScreenComponent implements OnInit {
     for (let v of this.dataSource.data) {
       if (!v.isArr && v.dataLoaded) continue;
       if (v.isArr) {
-        const selectedChild = v.value[v.selectedIndex-1] as TPVariable;
-        if (selectedChild.dataLoaded) continue;
+        if(!v.isTwoDimension) {
+          const selectedChild = v.value[v.selectedIndex - 1] as TPVariable;
+          if (selectedChild.dataLoaded) continue;
+        } else {
+          const selectedChild = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1] as TPVariable;
+          if (selectedChild.dataLoaded) continue;
+        }
+
       }
       queries.push(this.refreshVariable(v));
     }
@@ -444,7 +461,15 @@ export class DataScreenComponent implements OnInit {
     if (v.isArr) {
       fullname += '[' + v.selectedIndex + ']';
       parent = v;
-      v = v.value[v.selectedIndex-1];
+
+      if (v.isTwoDimension) {
+        fullname += '[' + v.selectedSecondIndex + ']';
+        v = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1];
+      }
+      else {
+        v = v.value[v.selectedIndex - 1];
+      }
+
     }
     const size = Math.min(
       v.value.length,

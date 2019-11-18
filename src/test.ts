@@ -59,7 +59,7 @@ const configurationServiceContext = require.context(
   true,
   /\.spec\.ts$/
 );
-configurationServiceContext.keys().map(configurationServiceContext);
+// configurationServiceContext.keys().map(configurationServiceContext);
 
 const rmContext = require.context('./app/modules/configuration/components/reference-mastering/', true, /\.spec\.ts$/);
 rmContext.keys().map(rmContext);
@@ -69,3 +69,6 @@ versionContext.keys().map(versionContext);
 
 const topologyContext = require.context('./app/modules/configuration/components/topology/', true, /\.spec\.ts$/);
 topologyContext.keys().map(topologyContext);
+
+const vCommandContext = require.context('./app/modules/program-editor/components/dialogs/vision-command/components/vision-command/', true, /\.spec\.ts$/);
+vCommandContext.keys().map(vCommandContext);

@@ -20,6 +20,7 @@ import { OSUpgradeErrorDialogComponent } from './components/osupgrade-error-dial
 import { OSUpgradeSuccessDialogComponent } from './components/osupgrade-success-dialog/osupgrade-success-dialog.component';
 import { TpLoadingComponent } from './components/tp-loading/tp-loading.component';
 import { CustomEventManager } from './modules/core/strategies/listener-outside-angular.strategy';
+import { NgrxRootModule } from './modules/ngrx-root/ngrx-root.module';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { CustomEventManager } from './modules/core/strategies/listener-outside-a
     MainModule,
     ControlStudioRoutingModule,
     TourMatMenuModule.forRoot(),
+    NgrxRootModule,
   ],
   bootstrap: [ControlStudioComponent],
   entryComponents: [

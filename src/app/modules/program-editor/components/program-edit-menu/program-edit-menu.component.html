@@ -77,6 +77,15 @@
 	<button
 		mat-raised-button
 		color="primary"
+		[matMenuTriggerFor]="vision"
+		*ngIf="this.data.payloadLibVer !== null"
+		[disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+	>
+		{{ 'projectCommands.menu.vision' | translate }}
+	</button>
+	<button
+		mat-raised-button
+		color="primary"
 		[matMenuTriggerFor]="teach"
 		[disabled]="prg.variablesInLine.length === 0 || prg.status.statusCode !== -1"
 	>
@@ -155,5 +164,14 @@
 	</mat-menu>
 	<mat-menu #payloads="matMenu">
 		<button mat-menu-item (click)="menu_pay_use()">Set Payload...</button>
+	</mat-menu>
+	<mat-menu #vision="matMenu">
+		<button mat-menu-item (click)="vLoadStationBook()">VLoadStationBook...</button>
+		<button mat-menu-item (click)="vCommand(visionCommandType.RunJobFull)">VRunJobFull...</button>
+		<button mat-menu-item (click)="vCommand(visionCommandType.RunJob)">VRunJob...</button>
+		<button mat-menu-item (click)="vCommand(visionCommandType.GetJobStatus)">VGetJobStatus...</button>
+		<button mat-menu-item (click)="vCommand(visionCommandType.GetJobData)">VGetJobData...</button>
+		<button mat-menu-item (click)="vCommand(visionCommandType.GetJobError)">VGetJobError...</button>
+		<button mat-menu-item (click)="vCommand(visionCommandType.StopJob)">VStopJob...</button>
 	</mat-menu>
 </div>

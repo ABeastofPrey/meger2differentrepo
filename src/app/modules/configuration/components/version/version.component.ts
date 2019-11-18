@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../../core';
 import { environment } from '../../../../../environments/environment';
-import { WebsocketService } from '../../../core/services/websocket.service';
+import { WebsocketService, MCQueryResponse } from '../../../core/services/websocket.service';
 import { PageEvent } from '@angular/material';
 import {
   slice,
@@ -20,6 +20,9 @@ import { MatDialog } from '@angular/material';
 import { LicenseDialogComponent } from '../../../../components/license-dialog/license-dialog.component';
 import { ReleaseNoteComponent } from './release-note/release-note.component';
 import { isNotNil } from 'ramda-adjunct';
+
+import { map as rxjsMap, catchError } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
 
 interface ILib {
   name: string;
@@ -71,24 +74,27 @@ export class VersionComponent implements OnInit {
     const sorter = sort(differ);
     const getLatestDate = compose(head, sorter, filterNilDate);
     this.libVer = getLatestDate(dates);
+
+    const que = '?VI_getLibraryVersion';
+    this.ws.observableQuery(que)
+      .pipe(rxjsMap((res: MCQueryResponse) => JSON.parse(res.result)), catchError((err: any) => throwError(err.errMsg)))
+      .subscribe(res => console.log(res), err => console.warn(err));
   }
 
   public clickReleaseNote(): void {
-    this.dialog.open(ReleaseNoteComponent, {
-      autoFocus: false,
-      disableClose: true,
-    });
+    this.dialog.open(ReleaseNoteComponent, { autoFocus: false, disableClose: true, });
   }
 
   public clickUserLicence(): void {
-    this.dialog.open(LicenseDialogComponent, {
+    const options = {
       autoFocus: false,
       disableClose: true,
       width: '90%',
       data: {
         useInKukaAbout: true,
       },
-    });
+    };
+    this.dialog.open(LicenseDialogComponent, options);
   }
 
   public pageChagne({ pageIndex, pageSize }: PageEvent): void {
@@ -121,14 +127,8 @@ export class VersionComponent implements OnInit {
       console.log(err);
       return [];
     };
-    const parser = compose(
-      splitWithSemicolon,
-      resProp
-    );
+    const parser = compose(splitWithSemicolon, resProp);
     const handler = ifElse(hasNoError, parser, logErr);
-    return compose(
-      then(handler),
-      query
-    )();
+    return compose(then(handler), query)();
   }
 }

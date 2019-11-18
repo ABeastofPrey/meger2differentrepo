@@ -62,6 +62,10 @@
   "are_you_sure": "你确定吗？",
   "arr": "数组",
   "arr_size": "数组大小",
+  "one_dimension_size": "一维大小",
+  "two_dimension_size": "二维大小",
+  "dimension": "维数",
+  "enter_integer": "请输入一个正整数",
   "back": "返回",
   "base": "基坐标",
   "bases": "基坐标",
@@ -676,7 +680,8 @@
       "pallets": "托盘",
       "payloads": "负载",
       "program": "程序",
-      "variables": "变量"
+      "variables": "变量",
+      "vision": "视觉"
     },
     "move": {
       "index_from": "从索引",
@@ -745,7 +750,31 @@
       "sourceTime": "时间",
       "sourcePercentage": "百分比"
     },
-    "createPoint": "添加点"
+    "visionCommand": {
+      "loadStationBookTitle": "插入 VLoadStationBook 指令",
+      "vCommandTitle": "插入 {{command}} 指令",
+      "jobNamePlaceHolder": "Job 名字",
+      "jobNameRequiredErr": "Job 名字是必需的",
+      "stationNamePlaceHolder": "Station 名字",
+      "stationNameRequiredErr": "Station 名字是必需的",
+      "timeoutPlaceHolder": "超时",
+      "timeoutPositiveErr": "超时项必须是大于0的正数",
+      "dimensionPlaceHolder": "维度",
+      "dimensionRequiredErr": "维度是必须的.",
+      "dataNumPlaceHolder": "数据 Num",
+      "dataNumRequiredErr": "DataNum是必须的.",
+      "asDataPlaceHolder": "As 数据",
+      "asDataRequiredErr": "AsData是必须的.",
+      "statusPlaceHolder": "状态",
+      "statusRequiredErr": "状态项是必须的.",
+      "errorPlaceHolder": "Error",
+      "errorRequiredErr": "Error是必须的.",
+      "variablePlaceHolder": "赋值给",
+      "configFilePathPlaceHolder": "配置文件路径",
+      "configFilePathRequiredErr": "配置文件路径是必须的.",
+      "loadConfigFilePathError": "加载配置文件失败。"
+    },
+    "createVar": "添加变量"
   },
   "projects": {
     "ace": {

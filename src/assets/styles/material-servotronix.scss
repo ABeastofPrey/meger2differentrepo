@@ -104,4 +104,8 @@ $material-semi-black: rgba(0,0,0,0.54);
   .stx-fill {
     background-color: mat-color($material-servotronix-primary, 800);
   }
+
+  .command-card .mat-card-header {
+    background-color: mat-color($material-servotronix-primary, 500)
+  }
 }

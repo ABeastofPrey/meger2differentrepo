@@ -21,10 +21,52 @@
 			</mat-select>
 		</mat-form-field>
 		<mat-checkbox *ngIf="canUseArray" color="primary" [(ngModel)]="isArray">{{ 'arr' | translate }}</mat-checkbox>
-		<mat-form-field *ngIf="isArray" style="margin-top: 8px;">
-			<input matInput placeholder="{{ 'arr_size' | translate }}" [(ngModel)]="arrSize" virtualKeyboard
-				ktype="numeric" />
+		<mat-form-field *ngIf="isArray && varType === 'STRING'" style="margin-top: 8px;">
+			<mat-select placeholder="{{ 'dimension' | translate }}" [(ngModel)]="dimension">
+					<mat-option [value]=1>1</mat-option>
+					<mat-option [value]=2>2</mat-option>
+			</mat-select>
 		</mat-form-field>
+
+		<mat-form-field *ngIf="dimension === 1" style="margin-top: 8px;">
+			<input matInput
+				placeholder="{{ 'arr_size' | translate }}" 
+				[(ngModel)]="arrSize" virtualKeyboard
+				ktype="numeric" 
+				[formControl]="validationControls[dataParameterReference.OneArraySize]"
+				[errorStateMatcher]="errorMatcher"
+				/>
+			<mat-error>
+				{{ getErrors(validationControls[dataParameterReference.OneArraySize]) }}
+			</mat-error>
+		</mat-form-field>
+		
+		<mat-form-field *ngIf="dimension === 2" style="margin-top: 8px;">
+			<input matInput
+				placeholder="{{ 'one_dimension_size' | translate }}"  
+				[(ngModel)]="arrSize" virtualKeyboard
+				ktype="numeric" 
+				[formControl]="validationControls[dataParameterReference.OneArraySize]"
+				[errorStateMatcher]="errorMatcher"
+				/>
+			<mat-error>
+				{{ getErrors(validationControls[dataParameterReference.OneArraySize]) }}
+			</mat-error>
+		</mat-form-field>
+
+		<mat-form-field *ngIf="isArray && varType === 'STRING' && dimension === 2" 
+		                style="margin-top: 8px;"
+		>
+			<input matInput 
+				placeholder="{{ 'two_dimension_size' | translate }}" 
+				[(ngModel)]="arrSecondSize" virtualKeyboard
+				ktype="numeric" 				
+				[formControl]="validationControls[dataParameterReference.TwoArraySize]"
+				[errorStateMatcher]="errorMatcher"/>
+			<mat-error>
+				{{ getErrors(validationControls[dataParameterReference.TwoArraySize]) }}
+			</mat-error>
+		</mat-form-field> 
 
 		<div *ngIf="!isArray && varType" style="margin-top: 8px;">
 			<div class="label">{{ 'values' | translate }}</div>

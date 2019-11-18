@@ -50,6 +50,10 @@
   "are_you_sure": "Are you sure?",
   "arr": "Array",
   "arr_size": "Array Size",
+  "one_dimension_size": "One dimension size",
+  "two_dimension_size": "Two dimension size",
+  "dimension": "Dimension",
+  "enter_integer": "Please enter an positive integer",
   "back": "Go Back",
   "base": "Base",
   "bases": "Bases",
@@ -676,7 +680,8 @@
       "pallets": "PALLETS",
       "payloads": "PAYLOADS",
       "program": "PROGRAM",
-      "variables": "VARIABLES"
+      "variables": "VARIABLES",
+      "vision": "VISION"
     },
     "move": {
       "index_from": "From Index",
@@ -746,7 +751,31 @@
       "sourceTime": "Time",
       "sourcePercentage": "Percentage"
     },
-    "createPoint": "Add Point"
+    "visionCommand": {
+      "loadStationBookTitle": "Insert VLoadStationBook Command",
+      "vCommandTitle": "Insert {{command}} Command",
+      "jobNamePlaceHolder": "Job Name",
+      "jobNameRequiredErr": "Job Name is required",
+      "stationNamePlaceHolder": "Station Name",
+      "stationNameRequiredErr": "Station Name is required",
+      "timeoutPlaceHolder": "Timeout",
+      "timeoutPositiveErr": "Timeout should be a non-negative number",
+      "dimensionPlaceHolder": "Dimension",
+      "dimensionRequiredErr": "Dimension is required.",
+      "dataNumPlaceHolder": "Data Num",
+      "dataNumRequiredErr": "DataNum is required",
+      "asDataPlaceHolder": "As Data",
+      "asDataRequiredErr": "AsData is required",
+      "statusPlaceHolder": "Status",
+      "statusRequiredErr": "Status is required",
+      "errorPlaceHolder": "Error",
+      "errorRequiredErr": "Error is required",
+      "variablePlaceHolder": "Assigned To",
+      "configFilePathPlaceHolder": "Config File Path",
+      "configFilePathRequiredErr": "Config file path is required.",
+      "loadConfigFilePathError": "Load file failed."
+    },
+    "createVar": "Add Variable"
   },
   "projects": {
     "ace": {

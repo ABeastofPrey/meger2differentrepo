@@ -17,6 +17,7 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { CommonService } from '../core/services/common.service';
 import { ApiService } from '../core/services/api.service';
+import { NgrxRootModule } from '../../modules/ngrx-root/ngrx-root.module';
 
 declare const require: any;
 
@@ -52,6 +53,7 @@ export class TranslatePipeMock implements PipeTransform {
 @NgModule({
   declarations: [TranslatePipeMock],
   imports: [
+    NgrxRootModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

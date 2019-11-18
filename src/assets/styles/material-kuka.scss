@@ -188,4 +188,8 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   .kuka-fill {
     background-color: mat-color($material-kuka-primary, 500);
   }
+
+  .command-card .mat-card-header {
+    background-color: mat-color($material-kuka-primary);
+  }
 }

@@ -24,6 +24,9 @@ import { PayloadSelectorComponent } from '../dialogs/payload-selector/payload-se
 import { HomeDialogComponent } from '../dialogs/home-dialog/home-dialog.component';
 import { IoSelectorDialogComponent } from '../../../../components/io-selector-dialog/io-selector-dialog.component';
 import { PLSSourceComponent } from '../dialogs/pls-source/pls-source.component';
+import { CommandType as VisionCommandType } from '../dialogs/vision-command/enums/command-type.enum';
+import { VisionCommandComponent } from '../dialogs/vision-command/components/vision-command/vision-command.component';
+import { VisionLoadStationBookComponent } from '../dialogs/vision-command/components/vision-load-station-book/vision-load-station-book.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -33,6 +36,7 @@ import { PLSSourceComponent } from '../dialogs/pls-source/pls-source.component';
 export class ProgramEditMenuComponent implements OnInit {
   parser: LineParser;
   isScara: boolean = false;
+  public visionCommandType = VisionCommandType;
 
   constructor(
     public prg: ProgramEditorService,
@@ -455,5 +459,30 @@ export class ProgramEditMenuComponent implements OnInit {
         this.prg.insertAndJump(cmd, 0);
       }
     });
+  }
+  
+  public vCommand(type: VisionCommandType): void {
+    this.dialog.open(VisionCommandComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        type
+      }
+    }).afterClosed().subscribe((cmd: string) => {
+      if (cmd) {
+        this.prg.insertAndJump(cmd, 0);
+      }
+    });
+  }
+
+  public vLoadStationBook(): void {
+    this.dialog.open(VisionLoadStationBookComponent, {
+      width: '400px',
+      disableClose: true,
+    }).afterClosed().subscribe((cmd: string) => {
+      if (cmd) {
+        this.prg.insertAndJump(cmd, 0);
+      }
+    });    
   }
 }

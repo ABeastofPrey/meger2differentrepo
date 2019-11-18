@@ -1,0 +1,34 @@
+@mixin command-card-layout {
+    margin: -24px;
+    padding: 0 0 20px 0;
+    ::ng-deep .mat-card-header {
+        color: #ffffff;
+        height: 50px;
+        overflow: hidden;
+        .mat-card-header-text {
+            display: flex;
+            align-items: center;
+            .mat-card-title {
+                font: 400 24px/32px Roboto, "Helvetica Neue", sans-serif;
+                font-size: 18px;
+                color: #fff;
+                margin-bottom: 0;
+            }
+        }
+    }
+    ::ng-deep .mat-card-content {
+        padding: 24px;
+        overflow: hidden;
+        .mat-form-field {
+            width: 100%;
+        }
+    }
+    .mat-card-actions {
+        margin: 0;
+        padding: 0 16px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+}

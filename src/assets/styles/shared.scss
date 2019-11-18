@@ -43,3 +43,13 @@ $larger-mini-fab-height: 44px;
     width: 60px;
   }
 }
+.dialog-title {
+  margin: -24px -24px 24px -24px;
+  padding: 16px;
+  color: #fff;
+  font-size: 18px;
+}
+
+.dialog-actions {
+  justify-content: flex-end;
+}
