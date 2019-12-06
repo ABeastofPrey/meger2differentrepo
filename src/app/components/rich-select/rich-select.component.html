@@ -1,0 +1,40 @@
+<form class="rich-select">
+    <mat-form-field>
+        <input matInput #autoCompleteInput
+            [matAutocomplete]="richAuto" 
+            [placeholder]="placeholder"
+            [(ngModel)]="current"
+            (keyup.enter)="autoCompleteInput.blur()"
+            (blur)="onBlur()"
+            (focus)="onFocus()"
+            (input)="onInput()"
+            [ngModelOptions]="{standalone: true}">
+        <mat-autocomplete autoActiveFirstOption #richAuto="matAutocomplete">
+            <!-- <cdk-virtual-scroll-viewport itemSize="10" [style.height]="viewPortHeight(filteredOptions | async)">
+                <mat-option *cdkVirtualFor="let option of filteredOptions | async"
+                    [value]="option">
+                    {{option}}
+                </mat-option>
+            </cdk-virtual-scroll-viewport> -->
+            <mat-option *ngFor="let option of filteredOptions | async"
+                [value]="option">
+                <colorful-span [key]="current" [value]="option"></colorful-span>
+            </mat-option>
+        </mat-autocomplete>
+        <mat-select [disabled]="options?.length === 0"
+            (selectionChange)="onSelectionChange($event.value)"
+            (openedChange)="openedChange($event)"
+            (click)="openSelect()"
+            [(ngModel)]="current"
+            [ngModelOptions]="{standalone: true}">
+            <ng-container *ngIf="options?.length < 1000 else virtualScroll">
+                <mat-option *ngFor="let option of options" [value]="option">{{option}}</mat-option>
+            </ng-container>
+            <ng-template #virtualScroll>
+                <cdk-virtual-scroll-viewport itemSize="10" [style.height]="viewPortHeight(options)">
+                    <mat-option *cdkVirtualFor="let option of options" [value]="option">{{option}}</mat-option>
+                </cdk-virtual-scroll-viewport>
+            </ng-template>
+        </mat-select>
+    </mat-form-field>
+</form>

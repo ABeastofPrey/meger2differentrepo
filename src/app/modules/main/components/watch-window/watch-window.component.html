@@ -1,65 +1,69 @@
 <mat-progress-bar color="accent" [value]="recPercentage" *ngIf="isRecording"></mat-progress-bar>
 <div class="content">
-	<table style="table-layout: fixed;">
-		<thead class="mat-title-color">
-			<tr>
-				<td colspan="3" style="width: 128px;">
-					<button mat-raised-button color="primary" [disabled]="!enableRecord" (click)="record()">
-						<mat-icon style="margin-right: 8px;">
-							{{ isRecording ? 'stop' : 'fiber_manual_record' }}
-						</mat-icon>
-						<span *ngIf="!isRecording"> {{ 'button.record' | translate }}... </span>
-					</button>
-				</td>
-				<td style="width: 100px;">{{ 'watch.name' | translate }}</td>
-				<td style="width: 150px;">{{ 'watch.context' | translate }}</td>
-				<td>{{ 'value' | translate }}</td>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let v of watch.vars; let i = index">
-				<td>
-					<button mat-icon-button color="warn" (click)="watch.delete(i)" [disabled]="i === watch.vars.length - 1">
-						<mat-icon>delete</mat-icon>
-					</button>
-				</td>
-				<td>
-					<button mat-icon-button color="primary" (click)="watch.toggleActive(v)" [class.disabled]="!v.active">
-						<mat-icon>{{ v.active ? 'visibility' : 'visibility_off' }}</mat-icon>
-					</button>
-				</td>
-				<td>
-					<button
-						mat-icon-button
-						style="color: #f00;"
-         [disabled]="v.name.trim().length === 0"
-						[class.disable-record]="!v.record"
-						(click)="v.record = !v.record"
-					>
-						<mat-icon>fiber_manual_record</mat-icon>
-					</button>
-				</td>
-				<td>
-					<input
-						type="text"
-						[(ngModel)]="v.name"
-						(focusout)="onBlur(v)"
-						(keyup.enter)="onBlur(v, $event)"
-						virtualKeyboard
-						ktype="text"
-						(onKeyboardClose)="onBlur(v)"
-						[id]="'var-' + i"
-					/>
-				</td>
-				<td>
-					<select [(ngModel)]="v.context" #context>
-						<option *ngFor="let c of watch.contexts" [value]="c">
-							{{ c }}
-						</option>
-					</select>
-				</td>
-				<td>{{ v.value }}</td>
-			</tr>
-		</tbody>
-	</table>
+	<cdk-virtual-scroll-viewport itemSize="90" [style.height]="'100%'" [style.min-height]="'300px'">
+		<table style="table-layout: fixed;">
+			<thead class="mat-title-color">
+				<tr>
+					<td colspan="3" style="width: 128px;">
+						<button mat-raised-button color="primary" [disabled]="!enableRecord" (click)="record()">
+							<mat-icon style="margin-right: 8px;">
+								{{ isRecording ? 'stop' : 'fiber_manual_record' }}
+							</mat-icon>
+							<span *ngIf="!isRecording"> {{ 'button.record' | translate }}... </span>
+						</button>
+					</td>
+					<td style="min-width: 150px;">{{ 'watch.name' | translate }}</td>
+					<td style="min-width: 150px;">{{ 'watch.context' | translate }}</td>
+					<td>{{ 'value' | translate }}</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *cdkVirtualFor="let v of watch.vars; let i = index">
+					<td>
+						<button mat-icon-button color="warn" (click)="watch.delete(i)"
+							[disabled]="i === watch.vars.length - 1">
+							<mat-icon>delete</mat-icon>
+						</button>
+					</td>
+					<td>
+						<button mat-icon-button color="primary" (click)="watch.toggleActive(v)"
+							[class.disabled]="!v.active">
+							<mat-icon>{{ v.active ? 'visibility' : 'visibility_off' }}</mat-icon>
+						</button>
+					</td>
+					<td>
+						<button mat-icon-button style="color: #f00;" [class.disable-record]="!v.record"
+							(click)="v.record = !v.record">
+							<mat-icon>fiber_manual_record</mat-icon>
+						</button>
+					</td>
+					<td>
+						<!-- <input
+							type="text"
+							[(ngModel)]="v.name"
+							(focusout)="onBlur(v)"
+							(keyup.enter)="onBlur(v, $event)"
+							virtualKeyboard
+							ktype="text"
+							(onKeyboardClose)="onBlur(v)"
+							[id]="'var-' + i"
+						/> -->
+						<rich-select [options]="v.variableList | async" [(current)]="v.name" (blurEvent)="onBlur(v)"
+							(focusEvent)="getVariablesWithContext(v)" (openSelectEvent)="getVariablesWithContext(v)">
+						</rich-select>
+					</td>
+					<td>
+						<mat-form-field [ngStyle]="{'width': '100%'}">
+							<mat-select [(ngModel)]="v.context" (ngModelChange)="getVariablesWithContext(v, true)">
+								<mat-option *ngFor="let c of watch.contexts" [value]="c">
+									{{ c }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+					<td>{{ v.value }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</cdk-virtual-scroll-viewport>
 </div>

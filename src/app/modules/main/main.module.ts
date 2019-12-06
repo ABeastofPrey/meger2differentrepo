@@ -13,6 +13,7 @@ import { PermissionGuardService } from '../configuration/permission-guard.servic
 import { GraphDerivativeComponent } from '../../components/graph-derivative/graph-derivative.component';
 import { FileSelectorDialogComponent } from '../../components/file-selector-dialog/file-selector-dialog.component';
 import { StxsimNgModule } from 'stxsim-ng';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { StxsimNgModule } from 'stxsim-ng';
     HomeScreenModule,
     ProgramEditorModule,
     StxsimNgModule,
+    ScrollingModule,
   ],
   declarations: [
     MainComponent,

@@ -31,10 +31,15 @@ import { IoSelectorDialogComponent } from '../../components/io-selector-dialog/i
 import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { ControlStudioGestureConfig } from './cs-gesture-config';
 import { ClickOnceDirective } from '../../directives/click-once.directive';
-import {PassPipe} from '../core/pipes/space-to-nbsp.pipe';
-import {CoordinatesComponent} from '../main/components/coordinates/coordinates.component';
-import {RecordDialogComponent} from '../../components/record-dialog/record-dialog.component';
-import {RecordGraphComponent} from '../../components/record-graph/record-graph.component';
+import { PassPipe } from '../core/pipes/space-to-nbsp.pipe';
+import { RichSelectComponent } from '../../components/rich-select/rich-select.component';
+import { ColorfulSpanComponent } from '../../components/rich-select/colorful-span/colorful-span.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
+import { CoordinatesComponent } from '../main/components/coordinates/coordinates.component';
+import { RecordDialogComponent } from '../../components/record-dialog/record-dialog.component';
+import { RecordGraphComponent } from '../../components/record-graph/record-graph.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -49,6 +54,7 @@ import {RecordGraphComponent} from '../../components/record-graph/record-graph.c
     ClickOutsideModule,
     TranslateModule,
     NgScrollbarModule,
+    ScrollingModule,
   ],
   exports: [
     CommonModule,
@@ -79,6 +85,8 @@ import {RecordGraphComponent} from '../../components/record-graph/record-graph.c
     NgScrollbarModule,
     IoSelectorDialogComponent,
     ClickOnceDirective,
+    RichSelectComponent,
+    ColorfulSpanComponent,
     CoordinatesComponent,
     RecordGraphComponent
   ],
@@ -101,6 +109,8 @@ import {RecordGraphComponent} from '../../components/record-graph/record-graph.c
     IoSelectorDialogComponent,
     ClickOnceDirective,
     PassPipe,
+    RichSelectComponent,
+    ColorfulSpanComponent,
     CoordinatesComponent,
     RecordDialogComponent,
     RecordGraphComponent
@@ -111,6 +121,8 @@ import {RecordGraphComponent} from '../../components/record-graph/record-graph.c
     UpdateDialogComponent,
     IoSelectorDialogComponent,
     KeyboardDialog,
+    RichSelectComponent,
+    ColorfulSpanComponent,
     RecordDialogComponent,
     RecordGraphComponent
   ],
@@ -122,4 +134,4 @@ import {RecordGraphComponent} from '../../components/record-graph/record-graph.c
     },
   ],
 })
-export class SharedModule {}
+export class SharedModule { }

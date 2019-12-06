@@ -1,10 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { WatchService } from '../../../../modules/core/services/watch.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { WatchService, WatchVar } from '../../../../modules/core/services/watch.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { WebsocketService, MCQueryResponse, ApiService } from '../../../core';
-import {RecordDialogComponent, RecordParams} from '../../../../components/record-dialog/record-dialog.component';
-import {RecordService} from '../../../core/services/record.service';
-import {Router} from '@angular/router';
+import { RecordDialogComponent, RecordParams } from '../../../../components/record-dialog/record-dialog.component';
+import { RecordService } from '../../../core/services/record.service';
+import { Router } from '@angular/router';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'watch-window',
@@ -12,7 +14,8 @@ import {Router} from '@angular/router';
   styleUrls: ['./watch-window.component.css'],
 })
 export class WatchWindowComponent implements OnInit {
-  @ViewChild('context', { static: false }) context: ElementRef;
+  @ViewChild(CdkVirtualScrollViewport, { static: true })
+  viewport: CdkVirtualScrollViewport;
   isRecording: boolean = false;
   recPercentage: number = 0;
 
@@ -24,9 +27,12 @@ export class WatchWindowComponent implements OnInit {
     private api: ApiService,
     private rec: RecordService,
     private router: Router
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // catch variables with context of vars.
+    this.watch.catchVariables();
+  }
 
   get enableRecord(): boolean {
     return this.watch.vars.some(v => {
@@ -83,7 +89,7 @@ export class WatchWindowComponent implements OnInit {
         // ALLOW TIME FOR RECORDING TO CLOSE FILE
         this.rec.createTab(recParams.name);
         this.router.navigateByUrl('/dashboard/recordings');
-    }, 400);
+      }, 400);
     });
   }
 
@@ -93,12 +99,19 @@ export class WatchWindowComponent implements OnInit {
       return;
     }
     if (this.watch.addBlankIfNeeded(v)) {
-      setTimeout(() => {
-        const e = document.getElementById(
-          'var-' + (this.watch.vars.length - 1)
-        );
-        if (e) e.focus();
-      }, 0);
+      const latestIdx = this.watch.vars.length - 1;
+      const latestVar = this.watch.vars[latestIdx];
+      this.watch.getVariablesWithContext(latestVar.context).subscribe(res => {
+        latestVar.variableList = of(res);
+        this.viewport.scrollToIndex(latestIdx);
+      });
     }
+  }
+
+  public getVariablesWithContext(v: WatchVar, changeContext: boolean): void {
+    if (changeContext) v.name = '';
+    this.watch.getVariablesWithContext(v.context).subscribe(res => {
+      v.variableList = of(res);
+    });
   }
 }

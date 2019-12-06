@@ -4,6 +4,9 @@ import { TaskService, MCTask } from './task.service';
 import { LoginService } from './login.service';
 import { environment } from '../../../../environments/environment';
 import {ProjectManagerService} from './project-manager.service';
+import { Observable, of, Observer, interval } from 'rxjs';
+import { map as rxjsMap, catchError, take, mergeMap } from 'rxjs/operators';
+import { remove } from 'ramda';
 
 const GLOBAL = '_Global';
 
@@ -17,6 +20,7 @@ export class WatchService {
   private _windowOpen: boolean = false;
   private interval: any;
   private env = environment;
+  private variableListMap = new Map<string, string[]>();
 
   get windowOpen() {
     return this._windowOpen;
@@ -56,9 +60,16 @@ export class WatchService {
   }
 
   delete(i: number) {
-    this.vars[i].active = false;
-    this.vars.splice(i, 1);
+    // this.vars[i].active = false;
+    // this.vars.splice(i, 1);
+    // this.vars[this.vars.length - 1].value = '';
+    // this.storeVars();
+
+    localStorage.removeItem('watch');
+    const _remove = remove(i, 1);
+    this.vars = _remove(this.vars);
     this.vars[this.vars.length - 1].value = '';
+    this.vars[this.vars.length - 1].name = '';
     this.storeVars();
   }
 
@@ -136,20 +147,69 @@ export class WatchService {
     let result = false;
     if (v.name.length > 0 && !v.active) v.active = true;
     if (this.vars[this.vars.length - 1].name.length > 0) {
-      this.vars.push(new WatchVar('', GLOBAL));
+      // this.vars.push(new WatchVar('', GLOBAL));
+      this.vars = [...this.vars, (new WatchVar('', GLOBAL))];
       result = true;
     }
     this.storeVars();
     return result;
   }
+
+  public catchVariables(): void {
+    this.variableListMap.clear();
+    const contextSet = new Set<string>();
+    this.vars.forEach(item => {
+      contextSet.add(item.context);
+    });
+    const contextList = [...contextSet];
+    const queryCount = contextList.length > 5 ? 5 : contextList.length;
+    contextSet.clear();
+    interval(300).pipe(
+      mergeMap(i => {
+        if (!contextList[i]) return of(null);
+        return this.getVariablesWithContext(contextList[i])
+      }),
+      take(queryCount)
+    ).subscribe((res) => {
+      if (!res) return;
+      this.vars.forEach(item => {
+        const hasCatche = this.variableListMap.has(item.context);
+        hasCatche && (item.variableList = of(this.variableListMap.get(item.context)))
+      });
+    });
+  }
+
+  public getVariablesWithContext(context: string): Observable<string[]> {
+    return Observable.create((overver: Observer<string[]>) => {
+      const hasCatche = this.variableListMap.has(context);
+      if (hasCatche) {
+        overver.next(this.variableListMap.get(context));
+        return;
+      }
+      const api = `?getContextVariableList("${context}")`;
+      const parser = (res: MCQueryResponse) => JSON.parse(res.result);
+      const handler = err => {
+        console.warn(`Get variables with ${context} context failed: ${err.msg}`);
+        return of([]);
+      };
+      this.ws.observableQuery(api).pipe(
+        rxjsMap(parser),
+        catchError(handler)
+      ).subscribe(queryList => {
+        this.variableListMap.set(context, queryList);
+        overver.next(queryList);
+      });
+    });
+  }
 }
 
-class WatchVar {
+export class WatchVar {
   name: string;
   context: string;
   active: boolean = true;
   value: string;
   record: boolean = false;
+  public variableList: Observable<string[]>;
 
   constructor(name: string, context: string) {
     this.name = name;
@@ -171,4 +231,5 @@ class WatchVar {
       '"}'
     );
   }
+
 }

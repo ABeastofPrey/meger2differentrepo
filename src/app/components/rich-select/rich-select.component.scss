@@ -1,0 +1,20 @@
+::ng-deep .rich-select {
+    height: 100%;
+    position: relative;
+    mat-form-field {
+        background: white;
+        z-index: 1;
+        width: 100%;
+        input {
+            position: absolute;
+            z-index: 1;
+            width: calc(100% - 20px);
+        }
+        mat-select {
+            z-index: 0;
+            .mat-select-value {
+                opacity: 0;
+            }
+        }
+    }
+}
