@@ -28,7 +28,7 @@
 			</mat-select>
 		</mat-form-field>
 
-		<mat-form-field *ngIf="dimension === 1" style="margin-top: 8px;">
+		<mat-form-field *ngIf="canUseArray && isArray && dimension === 1" style="margin-top: 8px;">
 			<input matInput
 				placeholder="{{ 'arr_size' | translate }}" 
 				[(ngModel)]="arrSize" virtualKeyboard
@@ -41,7 +41,7 @@
 			</mat-error>
 		</mat-form-field>
 		
-		<mat-form-field *ngIf="dimension === 2" style="margin-top: 8px;">
+		<mat-form-field *ngIf="canUseArray && isArray && dimension === 2" style="margin-top: 8px;">
 			<input matInput
 				placeholder="{{ 'one_dimension_size' | translate }}"  
 				[(ngModel)]="arrSize" virtualKeyboard
