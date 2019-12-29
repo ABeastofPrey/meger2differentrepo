@@ -1,4 +1,4 @@
-<div class="mat-typography">
+<form class="mat-typography" (ngSubmit)="create()" [formGroup]="dialogForm">
 	<div class="title mat-elevation-z1">
 		<mat-icon>create_new_folder</mat-icon>&nbsp;&nbsp;{{ 'projects.new' | translate }}
 	</div>
@@ -7,11 +7,10 @@
 			<input
 				matInput
 				placeholder="{{ 'projects.name' | translate }}"
-				[(ngModel)]="fileName"
+				formControlName="val"
 				maxlength="32"
 				virtualKeyboard
 				ktype="text"
-      (ngModelChange)="validateInput()"
 			/>
 		</mat-form-field>
 		<div class="center-vertical" style="color:red;">
@@ -23,8 +22,8 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="create()" [disabled]="!fileName || fileName.length === 0 || !valid">
+		<button mat-button color="primary" type="submit" [disabled]="dialogForm.invalid">
 			{{ 'projects.btnCreate' | translate }}
 		</button>
 	</div>
-</div>
+</form>

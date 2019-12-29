@@ -7,7 +7,7 @@ import { compose, then, identity } from 'ramda';
 export class TopologyService {
   constructor(private ws: WebsocketService) { }
 
-  public async getDeviceTopology(): Promise<any> {
+  async getDeviceTopology() {
     const api = '?TOP_getTopology';
     const query = _api => this.ws.query(_api);
     const resHandler = handler(JSON.parse, errMsgProp);
@@ -15,7 +15,7 @@ export class TopologyService {
     return retrieveTopology(api);
   }
 
-  public async getOpMode(): Promise<any> {
+  async getOpMode() {
     const api = '?ec_master_opmode'; // good status: 8
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -23,7 +23,7 @@ export class TopologyService {
     return retrieveOpMode(api);
   }
 
-  public async getBusType(): Promise<any> {
+  async getBusType() {
     const api = '?tp::lsystembustype'; // 1: simulator 2: ethercat
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);

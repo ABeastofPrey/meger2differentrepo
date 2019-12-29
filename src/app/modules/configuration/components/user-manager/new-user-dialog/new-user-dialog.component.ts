@@ -4,7 +4,7 @@ import { MatSnackBar, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { UserWithPic } from '../user-mngr/user-mngr.component';
 import { LoginService } from '../../../../core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, ValidatorFn } from '@angular/forms';
 
 @Component({
   selector: 'app-new-user-dialog',
@@ -12,10 +12,10 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./new-user-dialog.component.css'],
 })
 export class NewUserDialogComponent implements OnInit {
-  username: string = '';
-  password: string = '';
-  passwordConfirm: string = '';
-  permission: number = -1;
+
+  username = '';
+  password = '';
+  permission = -1;
 
   private wordErr: string;
 
@@ -24,13 +24,23 @@ export class NewUserDialogComponent implements OnInit {
     Validators.pattern('[A-Za-z]+ {1}[A-Za-z]+( [A-Za-z]+)*'),
   ]);
 
+  private checkPasswords: ValidatorFn = ctrl=>{ // here we have the 'passwords' group
+    const confirmPass = ctrl.value as string;
+    return this.password === confirmPass ? null : { mismatch: true };
+  }
+
+  passwordConfirm = new FormControl('', [
+    Validators.required,
+    this.checkPasswords,
+  ]);
+
   constructor(
     private api: ApiService,
     private snack: MatSnackBar,
-    private ref: MatDialogRef<any>,
+    private ref: MatDialogRef<boolean>,
     private trn: TranslateService,
     public login: LoginService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: UserWithPic
   ) {}
 
   ngOnInit() {
@@ -44,6 +54,7 @@ export class NewUserDialogComponent implements OnInit {
       this.wordErr = word;
     });
   }
+
 
   create() {
     if (this.data) {

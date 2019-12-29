@@ -9,20 +9,20 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class DashboardComponent implements OnInit {
   
-  private words: any;
+  private words: {};
   
-  tabs: {
+  tabs: Array<{
     path: string;
     label: string;
     icon: string;
-  }[] = [];
+  }> = [];
 
   constructor(
     private trn: TranslateService
   ) {
     this.tabs = [
-      { path: 'dashboards', label: 'dashboard.tab1', icon: 'assessment' },
-      { path: 'recordings', label: 'dashboard.tab2', icon: 'show_chart' }
+      { path: 'recordings', label: 'dashboard.tab2', icon: 'show_chart' },
+      { path: 'dashboards', label: 'dashboard.tab1', icon: 'assessment' }
     ];
   }
 

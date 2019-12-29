@@ -9,12 +9,15 @@ import { DataService } from '../../../../core';
 })
 export class RobotSelectorDialogComponent implements OnInit {
   motionElement: string = null;
-  advancedMode: boolean = false;
+  advancedMode = false;
 
   constructor(
     public dataService: DataService,
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<RobotSelectorDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      must: boolean,
+      title: string
+    }
   ) {}
 
   ngOnInit() {

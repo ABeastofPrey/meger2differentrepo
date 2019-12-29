@@ -29,9 +29,9 @@ export class NotificationWindowComponent implements OnInit {
   @ViewChild('wrapper', { static: false }) msgContainer: ElementRef;
 
   style: object = {};
-  contextMenuShown: boolean = false;
-  contextMenuX: number = 0;
-  contextMenuY: number = 0;
+  contextMenuShown = false;
+  contextMenuX = 0;
+  contextMenuY = 0;
   contextSelection: string = null;
 
   private notifier: Subject<boolean> = new Subject();
@@ -60,8 +60,8 @@ export class NotificationWindowComponent implements OnInit {
 
   onContextMenu(e: MouseEvent) {
     e.preventDefault();
-    this.contextMenuX = e.offsetX;
-    this.contextMenuY = e.offsetY + 72;
+    this.contextMenuX = e.offsetX + 8;
+    this.contextMenuY = e.offsetY + 8;
     this.contextMenuShown = true;
     this.contextSelection = this.getSelection();
   }

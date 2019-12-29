@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
 import { Jump3DialogService } from '../../../services/jump3-dialog.service';
 
 @Component({
@@ -8,12 +8,11 @@ import { Jump3DialogService } from '../../../services/jump3-dialog.service';
   styleUrls: ['./pls-source.component.scss'],
 })
 export class PLSSourceComponent implements OnInit {
-  public motionElements: string[];
-  public motionElement: string;
-  public source: string = 'PathLength';
+  motionElements: string[];
+  motionElement: string;
+  source = 'PathLength';
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<PLSSourceComponent>,
     private jumpService: Jump3DialogService
   ) {}
 
@@ -22,7 +21,7 @@ export class PLSSourceComponent implements OnInit {
     this.motionElement = this.motionElements[0];
   }
 
-  public emitCmd(): void {
+  emitCmd(): void {
     this.dialogRef.close(`${this.motionElement}.plssource=${this.source}`);
   }
 }

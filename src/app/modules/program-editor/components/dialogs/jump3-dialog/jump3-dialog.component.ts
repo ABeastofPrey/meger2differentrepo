@@ -19,6 +19,7 @@ import { map, range, all, find } from 'ramda';
 import { TranslateService } from '@ngx-translate/core';
 import { AddVarComponent } from '../../add-var/add-var.component';
 
+// tslint:disable-next-line: interface-name
 interface IParameter {
   placeholder: string;
   control: FormControl;
@@ -26,11 +27,13 @@ interface IParameter {
   selected: string;
 }
 
+// tslint:disable-next-line: interface-name
 interface IRequiredPar extends IParameter {
   change: (event: MatSelectChange) => void;
   options: string[];
 }
 
+// tslint:disable-next-line: interface-name
 interface IOptionalPar extends IParameter {
   suffix: string;
   sup: number;
@@ -59,17 +62,17 @@ export class ParameterErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['jump3-dialog.component.scss'],
 })
 export class Jump3DialogComponent implements OnInit {
-  public requiredPars: IRequiredPar[];
-  public optionalPars: IOptionalPar[];
-  public isAdvanced: boolean;
+  requiredPars: IRequiredPar[];
+  optionalPars: IOptionalPar[];
+  isAdvanced: boolean;
   private vMax: number;
   private aMax: number;
-  private limits: { min: number; max: number }[];
-  private words: any;
+  private limits: Array<{ min: number; max: number }>;
+  private words: {};
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<any>,
+    @Inject(MAT_DIALOG_DATA) public data: {type: string},
+    public dialogRef: MatDialogRef<Jump3DialogComponent>,
     private service: Jump3DialogService,
     private trn: TranslateService,
     private dialog: MatDialog,
@@ -100,7 +103,7 @@ export class Jump3DialogComponent implements OnInit {
       : false;
   }
 
-  public createPoint(index: number): void {
+  createPoint(index: number): void {
     const selectedOptions: string[] = map(
       (x: IRequiredPar) => x.selected,
       this.requiredPars
@@ -122,11 +125,11 @@ export class Jump3DialogComponent implements OnInit {
       });
   }
 
-  public emitCmd(): void {
+  emitCmd(): void {
     this.dialogRef.close(this.assemblingCmd());
   }
 
-  public errorMessage(control: FormControl): string {
+  errorMessage(control: FormControl): string {
     if (control.hasError('required')) {
       return this.words['requireErr'];
     } else if (control.hasError('limit')) {
@@ -208,8 +211,8 @@ export class Jump3DialogComponent implements OnInit {
     return this.isAdvanced ? advanceCmd : normalCmd;
   }
 
-  public limitValidator(min: number, max: number, index: number): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
+  limitValidator(min: number, max: number, index: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: {} } | null => {
       if (!!control.value === false) {
         return null;
       }
@@ -235,11 +238,11 @@ export class Jump3DialogComponent implements OnInit {
       return forbidden
         ? {
             limit: {
-              index: index,
-              min: min,
-              max: max,
+              index,
+              min,
+              max,
               value: control.value,
-              msg: msg,
+              msg,
             },
           }
         : null;

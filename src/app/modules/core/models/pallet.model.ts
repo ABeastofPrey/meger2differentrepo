@@ -17,33 +17,33 @@ export class Pallet {
   index: number;
   order: string;
   orderList: string[];
-  items_x: number;
-  items_y: number;
-  items_z: number;
-  item_size_x: number;
-  item_size_y: number;
-  item_size_z: number;
-  pallet_size_x: number;
-  pallet_size_y: number;
-  pallet_size_z: number;
+  itemsX: number;
+  itemsY: number;
+  itemsZ: number;
+  itemSizeX: number;
+  itemSizeY: number;
+  itemSizeZ: number;
+  palletSizeX: number;
+  palletSizeY: number;
+  palletSizeZ: number;
   levels: number;
   diffOddEven: boolean;
   origin: PalletLocation = new PalletLocation();
   posX: PalletLocation = new PalletLocation();
   posY: PalletLocation = new PalletLocation();
   entry: PalletLocation = new PalletLocation();
-  approach_offset_vertical: number;
-  approach_offset_horizontal: number;
-  approach_direction: string;
-  retract_offset_vertical: number;
-  retract_offset_horizontal: number;
-  retract_direction: string;
-  isFrameCalibrated: boolean = false;
-  appEnabled: boolean = false;
-  retEnabled: boolean = false;
-  entryEnabled: boolean = false;
-  retExceed: boolean = false;
-  appExceed: boolean = false;
+  approachOffsetVertical: number;
+  approachOffsetHorizontal: number;
+  approachDirection: string;
+  retractOffsetVertical: number;
+  retractOffsetHorizontal: number;
+  retractDirection: string;
+  isFrameCalibrated = false;
+  appEnabled = false;
+  retEnabled = false;
+  entryEnabled = false;
+  retExceed = false;
+  appExceed = false;
   dataFile: string = null;
   flags: number[] = [0, 0, 0];
 }
@@ -57,7 +57,7 @@ export class PalletLocation {
   roll: number = null;
   flags: number[] = null;
 
-  public toString = (): string => {
+  toString = (): string => {
     return (
       '#{' +
       this.x +

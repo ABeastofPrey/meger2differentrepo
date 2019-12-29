@@ -29,14 +29,18 @@ export class PalletPickerDialogComponent implements OnInit {
 
   constructor(
     private ws: WebsocketService,
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<PalletPickerDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      title: string,
+      pickRobot: boolean
+    },
     public dataService: DataService,
     private prg: ProgramEditorService
   ) {
     if (this.prg.lastPallet) this._pallet = this.prg.lastPallet;
-    else if (this.dataService.pallets.length === 1)
+    else if (this.dataService.pallets.length === 1) {
       this.pallet = this.dataService.pallets[0];
+ }
   }
 
   ngOnInit() {

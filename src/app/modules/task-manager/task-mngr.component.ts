@@ -1,4 +1,4 @@
-import { Component, OnInit, ApplicationRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { TaskService } from '../../modules/core/services/task.service';
 import { UtilsService } from '../core/services/utils.service';
 import { MCTask, ScreenManagerService, LoginService } from '../core';
@@ -11,18 +11,18 @@ import { ProgramEditorService } from '../program-editor/services/program-editor.
   styleUrls: ['./task-mngr.component.css'],
 })
 export class TaskMngrComponent implements OnInit {
-  private mouseDown: boolean = false;
+  private mouseDown = false;
   private selected: number[] = [];
 
-  filterPrograms: boolean = false;
-  filterLibs: boolean = false;
-  filterGlobalLibs: boolean = false;
-  filterUser: boolean = true;
-  filterBackground: boolean = false;
+  filterPrograms = false;
+  filterLibs = false;
+  filterGlobalLibs = false;
+  filterUser = true;
+  filterBackground = false;
 
   constructor(
     public task: TaskService,
-    private ref: ApplicationRef,
+    private ref: ChangeDetectorRef,
     private utils: UtilsService,
     private mgr: ScreenManagerService,
     private router: Router,
@@ -49,25 +49,26 @@ export class TaskMngrComponent implements OnInit {
   }
 
   onSelectionStart(index) {
-    let position = this.selected.indexOf(index);
-    if (position >= 0 && this.selected.length === 1)
+    const position = this.selected.indexOf(index);
+    if (position >= 0 && this.selected.length === 1) {
       this.selected.splice(position, 1);
+    }
     else this.selected = [index];
     this.mouseDown = true;
-    this.ref.tick();
+    this.ref.detectChanges();
   }
 
   onSelection(index) {
     if (!this.mouseDown) return;
-    let position = this.selected.indexOf(index);
+    const position = this.selected.indexOf(index);
     if (position >= 0) this.selected.splice(position, 1);
     else this.selected.push(index);
-    this.ref.tick();
+    this.ref.detectChanges();
   }
 
   onSelectionEnd() {
     this.mouseDown = false;
-    this.ref.tick();
+    this.ref.detectChanges();
   }
 
   isSelected(index): boolean {

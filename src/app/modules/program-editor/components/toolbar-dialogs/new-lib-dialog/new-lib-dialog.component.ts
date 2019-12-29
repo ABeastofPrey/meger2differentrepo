@@ -16,10 +16,10 @@ export class NewLibDialogComponent implements OnInit {
   name: string;
   appName: string;
   apps: App[];
-  submitting: boolean = false;
+  submitting = false;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<NewLibDialogComponent, void>,
     private ws: WebsocketService,
     private prj: ProjectManagerService,
     @Inject(MAT_DIALOG_DATA) public data: string

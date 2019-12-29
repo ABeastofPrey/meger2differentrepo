@@ -22,7 +22,7 @@ export class NewDashboardParameterDialogComponent implements OnInit {
 
   constructor(
     private api: ApiService,
-    public ref: MatDialogRef<any>,
+    public ref: MatDialogRef<DashboardParam>,
     public cmn: CommonService
   ) {
     this.api.getMCProperties().then((ret: MCCommand[]) => {

@@ -13,6 +13,8 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { TpStatService } from '../../../core/services/tp-stat.service';
 import { CommonService } from '../../../core/services/common.service';
 import { FormControl, FormGroupDirective, NgForm, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 export enum DataParameter {
   OneArraySize = 'OneArraySize',
@@ -41,21 +43,22 @@ export class ArraySizeErrorStateMatcher implements ErrorStateMatcher {
 export class AddVarComponent implements OnInit {
   name: string;
   varType: string;
-  values: any[];
-  isArray: boolean = false;
-  arrSize: number = 1;
-  arrSecondSize: number = 1;
-  @Input() hotVariableOption: (0 | 1)[] = [1, 1, 1, 1, 1];
-  @Input() canUseArray: boolean = true;
+  values: Array<string | number>;
+  isArray = false;
+  arrSize = 1;
+  arrSecondSize = 1;
+  @Input() hotVariableOption: Array<0 | 1> = [1, 1, 1, 1, 1];
+  @Input() canUseArray = true;
 
   validationControls = {};
   errorMatcher = new ArraySizeErrorStateMatcher();
   dataParameterReference = DataParameter;
 
-  public dimension: number = 1;
+  dimension = 1;
 
-  private words: any;
-  private errorMessages: any;
+  private words: {};
+  private errorMessages: {};
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     public dialogRef: MatDialogRef<AddVarComponent>,
@@ -69,7 +72,12 @@ export class AddVarComponent implements OnInit {
     public stat: TpStatService,
     public prj: ProjectManagerService,
     public cmn: CommonService,
-    @Inject(MAT_DIALOG_DATA) public para: any
+    @Inject(MAT_DIALOG_DATA) public para: {
+      varType: string,
+      useAsProjectPoints: boolean,
+      hotVariableOption: Array<0 | 1>,
+      canUseArray: boolean
+    }
   ) {
     this.varType = this.para.varType || 'JOINT';
     if (this.para.useAsProjectPoints) {
@@ -92,7 +100,7 @@ export class AddVarComponent implements OnInit {
 
   }
 
-  public isHotOption(index: number): boolean {
+  isHotOption(index: number): boolean {
     return this.hotVariableOption[index] === 1 ? true : false;
   }
 
@@ -101,12 +109,12 @@ export class AddVarComponent implements OnInit {
       return '0';
     });
     // Open jog panel
-    this.stat.onlineStatus.subscribe(stat => {
+    this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
       const canNotOpen = !stat ||
         this.prj.activeProject ||
         !this.coos.coosLoaded.value ||
         this.screenManagerService.controlsAnimating.value ||
-        (this.cmn.isTablet && this.stat.mode !== 'T1');
+        (this.cmn.isTablet && this.stat.mode !== 'T1' && this.stat.mode !== 'T2');
 
       if (!canNotOpen) {
         this.changeOverlayAndToggleJog();
@@ -140,9 +148,14 @@ export class AddVarComponent implements OnInit {
     );
   }
 
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
+  }
+
   getErrors(formControl: FormControl) {
     if (formControl.errors) {
-      for (let errorKey of Object.keys(this.errorMessages)) {
+      for (const errorKey of Object.keys(this.errorMessages)) {
         if (formControl.hasError(errorKey)) {
           return this.errorMessages[errorKey];
         }
@@ -159,19 +172,20 @@ export class AddVarComponent implements OnInit {
     this.dialogRef.close(this.name && this.name.toUpperCase());
   }
 
-  add(): Promise<any> {
+  add(): Promise<void> {
     let name = "";
     if (this.varType === 'STRING') {
       name = this.name;
       if (this.isArray) {
-        name = this.dimension > 1 ? this.name + '[' + this.arrSize + ']' + '[' + this.arrSecondSize + ']' 
-                : this.name + '[' + this.arrSize + ']';
+        name = this.dimension > 1 ? 
+          this.name + '[' + this.arrSize + ']' + '[' + this.arrSecondSize + ']' :
+          this.name + '[' + this.arrSize + ']';
       }
     } else {
       name = this.isArray ? this.name + '[' + this.arrSize + ']' : this.name;
     }
 
-    let value: string = '';
+    let value = '';
     if (!this.isArray) {
       const legendSize =
         this.varType === 'JOINT' || this.varType === 'LOCATION'
@@ -208,7 +222,7 @@ export class AddVarComponent implements OnInit {
       if (ret.err || ret.result !== '0') {
         console.log(ret);
       } else {
-        let queries = [
+        const queries = [
           this.data.refreshBases(),
           this.data.refreshTools(),
           this.data.refreshMachineTables(),
@@ -224,7 +238,7 @@ export class AddVarComponent implements OnInit {
     });
   }
 
-  public getCurrent(): void {
+  getCurrent(): void {
     if (this.varType === 'JOINT') {
       const j1 = this.coos.joints.find(x => x.key === 'J1');
       const j2 = this.coos.joints.find(x => x.key === 'J2');

@@ -17,8 +17,8 @@ export class DraggableItemDirective {
   private _time: number;
 
   @Input() draggableItem: CustomPalletItem;
-  @Output() shortclick: EventEmitter<any> = new EventEmitter();
-  @Output() dragEnd: EventEmitter<any> = new EventEmitter();
+  @Output() shortclick: EventEmitter<void> = new EventEmitter();
+  @Output() dragEnd: EventEmitter<void> = new EventEmitter();
 
   constructor(private el: ElementRef) {}
 
@@ -42,7 +42,7 @@ export class DraggableItemDirective {
 
   @HostListener('mouseup')
   onMouseUp() {
-    let diff = new Date().getTime() - this._time;
+    const diff = new Date().getTime() - this._time;
     if (diff < 100) this.shortclick.emit();
   }
 }

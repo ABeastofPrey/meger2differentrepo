@@ -9,7 +9,7 @@ export const { Left, Right } = Either;
 export const { Just, Nothing } = Maybe;
 
 export interface Result {
-  value: any;
+  value: {};
 }
 
 export const errProp = prop('err');
@@ -18,9 +18,9 @@ export const resProp = prop('result');
 
 export const errMsgProp = prop('errMsg');
 
-export type handResult = (result: string) => any;
+export type handResult = (result: string) => {};
 
-export type handError = (err: ErrorFrame) => any;
+export type handError = (err: ErrorFrame) => {};
 
 export const hasError: (res: MCQueryResponse) => boolean = compose(
   isNotNil,
@@ -39,11 +39,11 @@ export const hasNoError: (res: MCQueryResponse) => boolean = complement(
  * @param {MCQueryResponse} response the response.
  * @return {Result} the result.
  */
-export const handler = curry(function(
+export const handler = curry((
   rightHandler: handResult,
   leftHandler: handError,
   response: MCQueryResponse
-) {
+) => {
   return ifElse(
     hasNoError,
     compose(

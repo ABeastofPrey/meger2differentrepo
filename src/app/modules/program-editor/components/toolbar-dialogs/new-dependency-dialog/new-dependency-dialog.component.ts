@@ -10,10 +10,10 @@ import {WebsocketService, ProjectManagerService, DataService, MCQueryResponse} f
 export class NewDependencyDialogComponent implements OnInit {
   
   name: string;
-  submitting: boolean = false;
+  submitting = false;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<NewDependencyDialogComponent, void>,
     private ws: WebsocketService,
     private prj: ProjectManagerService,
     private data: DataService

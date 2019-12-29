@@ -1,5 +1,5 @@
 <div class="wrapper mat-typography">
-	<ul class="menu mat-elevation-z1" *ngIf="prgService.modeToggle === 'prj'" (click)="toggleFocus($event)">
+	<ul class="menu menu-big mat-elevation-z1" *ngIf="prgService.modeToggle === 'prj'" (click)="toggleFocus($event)">
 		<li
 			(mouseenter)="currMenu = 1"
 			[class.selected]="onFocus && currMenu === 1"
@@ -38,7 +38,7 @@
 			{{ 'projects.toolbar.controller' | translate }}
 		</li>
 	</ul>
-	<ul class="mat-elevation-z1 prj-buttons" *ngIf="cmn.isTablet && prj.currProject.value">
+	<ul class="mat-elevation-z1 prj-buttons" *ngIf="cmn.isTablet && prj.currProject.value && prgService.modeToggle === 'prj'">
     <button (click)="toggleDependencies()" mat-raised-button color="accent" style="margin-right: 24px;">
 			<mat-icon>public</mat-icon>
       <mat-icon class="secondary-icon">
@@ -58,7 +58,7 @@
 			<mat-icon>play_arrow</mat-icon>
 		</button>
 	</ul>
-	<ul class="mat-elevation-z1 v-slider-container" *ngIf="prj.currProject.value">
+	<ul class="mat-elevation-z1 v-slider-container" *ngIf="prj.currProject.value && prgService.modeToggle !== 'mc'">
 		<span class="title">{{ 'projects.toolbar.vrate' | translate }}</span>
 		<button mat-raised-button color="primary" (click)="changeVrate(false)">
 			-
@@ -89,6 +89,7 @@
 	class="dropdown-container mat-title-color"
 	*ngIf="onFocus && (prgService.modeToggle === 'mc' || this.prj.currProject.value)"
 	(click)="onFocus = false"
+	[class.dropdown-controller]="prgService.modeToggle === 'mc'"
 >
 	<ul class="dropdown-menu menu1" *ngIf="currMenu === 1 && !prj.activeProject && !login.isOperator">
 		<li (click)="new()"><mat-icon>note_add</mat-icon>{{ 'projects.toolbar.new' | translate }}...</li>

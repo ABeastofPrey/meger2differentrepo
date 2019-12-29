@@ -29,7 +29,7 @@ import {NewDashboardDialogComponent} from '../new-dashboard-dialog/new-dashboard
 })
 export class DashboardScreenComponent implements OnInit {
   
-  init: boolean = false;
+  init = false;
 
   constructor(
     public dashboard: DashboardService,
@@ -37,7 +37,7 @@ export class DashboardScreenComponent implements OnInit {
   ) { }
   
   add() {
-    let ref = this.dialog.open(NewDashboardDialogComponent);
+    const ref = this.dialog.open(NewDashboardDialogComponent);
     ref.afterClosed().subscribe(ret => {
       if (ret) this.dashboard.add(ret);
     });

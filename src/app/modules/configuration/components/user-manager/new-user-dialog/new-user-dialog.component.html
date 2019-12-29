@@ -46,11 +46,14 @@
 			matInput
 			type="password"
 			placeholder="{{ 'password_confirm' | translate }}"
-			[(ngModel)]="passwordConfirm"
+			[formControl]="passwordConfirm"
 			[disabled]="password.length === 0"
 			virtualKeyboard
 			ktype="text"
 		/>
+		<mat-error *ngIf="passwordConfirm.errors">
+			{{ 'error.mismatch_pass' | translate }}
+		</mat-error>
 	</mat-form-field>
 	<mat-form-field>
 		<mat-select
@@ -76,7 +79,7 @@
 				username.length === 0 ||
 				(username === 'admin' && !data) ||
 				(password.length === 0 && !data) ||
-				(password.length > 0 && password !== passwordConfirm) ||
+				(password.length > 0 && passwordConfirm.invalid) ||
 				fullNameControl.errors ||
 				permission === -1
 			"

@@ -1,0 +1,26 @@
+<div *ngIf="initDone">
+  <div class="vords title">
+    <div>{{ 'robots.mastering.axis' | translate }}</div>
+    <div>Vmax</div>
+    <mat-slide-toggle
+      color="primary"
+      [(ngModel)]="enabled"
+      (change)="onEnableToggle($event.checked)"
+    >{{ 'robots.vord.vmax' | translate }}</mat-slide-toggle>
+  </div>
+  <div *ngFor="let ax of vords; let i=index;" class="vords">
+    <div>{{ax.name}}</div>
+    <div class="original" [class.disabled]="enabled">{{ax.original}}</div>
+    <mat-form-field appearance="outline" class="vord">
+        <input 
+          matInput
+          type="number"
+          virtualKeyboard
+          ktype="numeric_pos"
+          [disabled]="!enabled"
+          [value]="ax.vord"
+          (change)="onVordChange(i,$event.target.value)"/>
+    </mat-form-field>
+  </div>
+</div>
+<div *ngIf="!initDone">{{ 'loading' | translate }}...</div>

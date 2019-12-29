@@ -36,6 +36,13 @@ program-toolbar {
 program-editor-side-menu {
   min-width: 20%;
 }
+.badge {
+  margin-left: 8px;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
+}
 .right-side {
   flex: 1;
   display: flex;
@@ -120,9 +127,11 @@ program-editor-ace {
   margin-left: 24px;
   font-weight: bold;
 }
-.error-line-selectable:hover {
-  text-decoration: underline;
+.error-line-selectable {
   cursor: pointer;
+}
+.error-line-selectable:hover {
+  color: #ff0000;
 }
 .blocker {
   position: absolute;
@@ -134,8 +143,10 @@ program-editor-ace {
 .err-container {
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   font-family: monospace;
+  display: flex;
+  flex-direction: column;
 }
 .backtrace {
   padding-top: 8px;
@@ -162,6 +173,21 @@ program-editor-ace {
 .bt-line {
   margin-left: 16px;
   user-select: text;
+}
+.no-file {
+  flex: 1;
+  background-image: url("assets/pics/no-file.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 301px;
+}
+.tab-content {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 .tablet-ui {
   .toolbar mat-icon,

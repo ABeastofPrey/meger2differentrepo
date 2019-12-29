@@ -1,4 +1,5 @@
 <div class="wrapper">
+	<img *ngIf="!shouldDisplayTable" src="assets/pics/Curved_Arrow.svg" class="arrow">
 	<div class="filter-menu mat-elevation-z1">
 		<button mat-raised-button color="primary" (click)="showAddDialog()" class="btn-add">
 			<mat-icon>add</mat-icon>
@@ -19,7 +20,11 @@
 			{{ 'button.delete_selected' | translate }}
 		</button>
 	</div>
-	<div class="table-wrapper">
+	<div class="behind" *ngIf="!shouldDisplayTable">
+		<img src="assets/pics/{{displayVarType}}.svg">
+		<h3>{{'variables.none_exist' | translate }}</h3>
+	</div>
+	<div class="table-wrapper" *ngIf="shouldDisplayTable">
 		<table mat-table #table [dataSource]="dataSource" matSort class="data-table" [class.busy]="isRefreshing">
 			<ng-container matColumnDef="select">
 				<th mat-header-cell *matHeaderCellDef>

@@ -7,4 +7,4 @@ export const reducers: ActionReducerMap<AppState> = { };
 
 export const initialState: AppState = { }
 
-export const metaReducers: MetaReducer<AppState>[] = !environment.production ? [] : [];
+export const metaReducers: Array<MetaReducer<AppState>> = !environment.production ? [] : [];

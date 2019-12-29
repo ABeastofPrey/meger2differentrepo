@@ -1,3 +1,4 @@
+import { ErrorFrame } from './../../../core/models/error-frame.model';
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../../core';
@@ -24,6 +25,7 @@ import { isNotNil } from 'ramda-adjunct';
 import { map as rxjsMap, catchError } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 
+// tslint:disable-next-line: interface-name
 interface ILib {
   name: string;
   version: string;
@@ -31,6 +33,7 @@ interface ILib {
   desc: string;
 }
 
+// tslint:disable-next-line: interface-name
 interface IResLibs {
   name: string;
   ver: string;
@@ -46,13 +49,13 @@ const splitWithSpace = split(' ');
   styleUrls: ['./version.component.scss'],
 })
 export class VersionComponent implements OnInit {
-  public wholeLibs: ILib[] = [];
-  public visableLibs: ILib[] = [];
-  public guiVer: string = splitWithSpace(environment.gui_ver);
-  public appNameKuka: string = environment.appName_Kuka;
-  public pageSize = 10;
-  public mainVer: string[] = [];
-  public libVer: string;
+  wholeLibs: ILib[] = [];
+  visableLibs: ILib[] = [];
+  guiVer: string = splitWithSpace(environment.gui_ver);
+  appNameKuka: string = environment.appName_Kuka;
+  pageSize = 10;
+  mainVer: string[] = [];
+  libVer: string;
 
   constructor(
     public data: DataService,
@@ -77,15 +80,17 @@ export class VersionComponent implements OnInit {
 
     const que = '?VI_getLibraryVersion';
     this.ws.observableQuery(que)
-      .pipe(rxjsMap((res: MCQueryResponse) => JSON.parse(res.result)), catchError((err: any) => throwError(err.errMsg)))
-      .subscribe(res => console.log(res), err => console.warn(err));
+      .pipe(
+          rxjsMap((res: MCQueryResponse) => JSON.parse(res.result)),
+          catchError((err: ErrorFrame) => throwError(err.errMsg))
+      ).subscribe(res => console.log(res), err => console.warn(err));
   }
 
-  public clickReleaseNote(): void {
+  clickReleaseNote(): void {
     this.dialog.open(ReleaseNoteComponent, { autoFocus: false, disableClose: true, });
   }
 
-  public clickUserLicence(): void {
+  clickUserLicence(): void {
     const options = {
       autoFocus: false,
       disableClose: true,
@@ -97,7 +102,7 @@ export class VersionComponent implements OnInit {
     this.dialog.open(LicenseDialogComponent, options);
   }
 
-  public pageChagne({ pageIndex, pageSize }: PageEvent): void {
+  pageChagne({ pageIndex, pageSize }: PageEvent): void {
     const strIndex = pageIndex * pageSize;
     const endIndex = strIndex + pageSize;
     const getVisLibs = slice(strIndex, endIndex);

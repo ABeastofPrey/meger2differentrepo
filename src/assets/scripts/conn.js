@@ -34,16 +34,16 @@ function timer(id, interval, msg, force) {
     }, interval);
     if (!globalConn.connected()) return;
     if (!force && pending[id]) {
-      //vcconsole.log('still pending',id);
+      //console.log('still pending',id);
       clearTimeout(timeout);
       setTimeout(function() {
         timer(id, interval, msg, force);
       }, 10);
       return;
     }
+    pending[id] = true;
     globalConn.sendData(msg);
     //console.log('sent msg',id);
-    pending[id] = true;
     if (new Date().getTime() - now > interval) {
       clearTimeout(timeout);
       setTimeout(function() {
@@ -98,6 +98,8 @@ function MCConnection() {
     try {
       ws = new WebSocket('ws://' + IP + ':' + MCPORT);
       ws.onopen = function() {
+        console.log('X');
+        ws.send('X');
         setTimeout(() => {
           worker.postMessage({ serverMsg: true, msg: 0 }); // ONOPEN MESSAGE
         }, 100);
@@ -120,6 +122,7 @@ function MCConnection() {
       };
       ws.onmessage = function(msg) {
         if (msg.data === 'O') {
+          console.log('O');
           lastPong = new Date().getTime();
           return;
         }

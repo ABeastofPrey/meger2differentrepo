@@ -4,10 +4,10 @@
 		<div
 			class="item"
 			[style.height]="
-				(rotation % 180 === 0 ? pallet.item_size_y / normalizePreview : pallet.item_size_x / normalizePreview) + 'px'
+				(rotation % 180 === 0 ? pallet.itemSizeY / normalizePreview : pallet.itemSizeX / normalizePreview) + 'px'
 			"
 			[style.width]="
-				(rotation % 180 === 0 ? pallet.item_size_x / normalizePreview : pallet.item_size_y / normalizePreview) + 'px'
+				(rotation % 180 === 0 ? pallet.itemSizeX / normalizePreview : pallet.itemSizeY / normalizePreview) + 'px'
 			"
 		></div>
 		<h2 style="margin-top: 8px;">Options</h2>
@@ -35,10 +35,10 @@
 			*ngFor="let item of items"
 			#customItem
 			[style.height]="
-				(item.r % 180 === 0 ? pallet.item_size_y / normalizeItem : pallet.item_size_x / normalizeItem) + 'px'
+				(item.r % 180 === 0 ? pallet.itemSizeY / normalizeItem : pallet.itemSizeX / normalizeItem) + 'px'
 			"
 			[style.width]="
-				(item.r % 180 === 0 ? pallet.item_size_x / normalizeItem : pallet.item_size_y / normalizeItem) + 'px'
+				(item.r % 180 === 0 ? pallet.itemSizeX / normalizeItem : pallet.itemSizeY / normalizeItem) + 'px'
 			"
 			[draggableItem]="item"
 			(shortclick)="showMenu(item)"

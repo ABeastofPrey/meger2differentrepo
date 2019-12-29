@@ -5,6 +5,7 @@
 			type="text"
 			[(ngModel)]="filterByString"
 			(ngModelChange)="onSearchChange()"
+			(keydown.enter)="onSearchChange(true)"
 			[disabled]="isRefreshing"
 			#searchInput
 			virtualKeyboard

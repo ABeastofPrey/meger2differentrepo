@@ -80,7 +80,7 @@
       <mat-icon>photo_camera</mat-icon>
     </button>-->
 	</div>
-	<as-split direction="horizontal" class="main">
+	<as-split direction="horizontal" class="main" (dragStart)="resizing = true" (dragEnd)="resizing = false">
 		<as-split-area size="15" class="side-panel">
 			<as-split direction="vertical">
 				<as-split-area size="35">
@@ -91,7 +91,7 @@
 				</as-split-area>
 			</as-split>
 		</as-split-area>
-		<as-split-area size="85" class="gradient-stx">
+		<as-split-area size="85" class="gradient-stx" [style.background] = "resizing ? sim.bgColor : 'auto'">
       <div class="sim-wrapper">
         <lib-player *ngIf="sim.shouldShowSimulator"></lib-player>
         <lib-app-simulator
@@ -104,11 +104,15 @@
           [trace]="sim.showTrace"
           [roboturl]="robots.get3DModelPath(robots.selectedRobot.part_number)"
           [jntValues]="jointsAsArr"
-          (onload)="loaded = true"
+					(onload)="loaded = true"
+					[class.simResize] = "resizing"
         ></lib-app-simulator>
         <div class="warn-bg center-vertical-horizontal warn" *ngIf="!sim.shouldShowSimulator">
           {{ 'simulator_screen.disabled' | translate }}
-        </div>
+				</div>
+				<div class="sim-mode mat-elevation-z3 warn-bg" *ngIf="loaded">
+					{{ liveMode ? ('simulator_screen.mode_live' | translate) : 'CSRECORD.REC' }}
+				</div>
       </div>
 		</as-split-area>
 	</as-split>

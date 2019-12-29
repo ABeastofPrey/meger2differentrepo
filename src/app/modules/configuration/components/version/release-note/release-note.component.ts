@@ -8,7 +8,7 @@ import { environment } from '../../../../../../environments/environment';
   styleUrls: ['./release-note.component.scss'],
 })
 export class ReleaseNoteComponent implements OnInit {
-  public releaseNote: string = null;
+  releaseNote: string = null;
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {

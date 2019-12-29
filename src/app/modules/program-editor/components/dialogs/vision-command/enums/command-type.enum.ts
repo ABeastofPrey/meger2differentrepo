@@ -30,31 +30,31 @@ export interface GetCommandOption {
     [CommandOptions.Timeout]: number,
     [CommandOptions.Variable]: string
 }
-const DimensionAuthorized = [
+const DIMENSION_AUTHORIZED = [
     CommandType.GetJobData,
     CommandType.RunJobFull,
 ];
 
-const DataNumAuthorized = [
+const DATA_NUM_AUTHORIZED = [
     CommandType.GetJobData,
     CommandType.RunJobFull,
 ];
 
-const AsDataAuthorized = [
+const AS_DATA_AUTHORIZED = [
     CommandType.GetJobData,
     CommandType.RunJobFull,
 ];
 
-const StatusAuthorized = [
+const STATUS_AUTHORIZED = [
     CommandType.GetJobStatus,
 ];
 
-const ErrorAuthorized = [
+const ERROR_AUTHORIZED = [
     CommandType.GetJobError,
     CommandType.RunJobFull,
 ];
 
-const VariableAuthorized = [
+const VARIABLE_AUTHORIZED = [
     CommandType.GetJobData,
     CommandType.GetJobError,
     CommandType.GetJobStatus,
@@ -62,7 +62,7 @@ const VariableAuthorized = [
     CommandType.RunJobFull,
 ];
 
-const TimeoutAuthorized = [
+const TIMEOUT_AUTHORIZED = [
     CommandType.GetJobStatus,
     CommandType.RunJob,
     CommandType.RunJobFull,
@@ -75,11 +75,11 @@ export class CommandOptionAuth {
     constructor(_type: CommandType) {
         this.type = _type;
     }
-    get hasDimension(): boolean { return fined(DimensionAuthorized, this.type); };
-    get hasDataNum(): boolean { return fined(DataNumAuthorized, this.type); };
-    get hasAsData(): boolean { return fined(AsDataAuthorized, this.type); };
-    get hasStatus(): boolean { return fined(StatusAuthorized, this.type); };
-    get hasError(): boolean { return fined(ErrorAuthorized, this.type); };
-    get hasTimeout(): boolean { return fined(TimeoutAuthorized, this.type); };
-    get hasVariable(): boolean { return fined(VariableAuthorized, this.type) };
+    get hasDimension(): boolean { return fined(DIMENSION_AUTHORIZED, this.type); };
+    get hasDataNum(): boolean { return fined(DATA_NUM_AUTHORIZED, this.type); };
+    get hasAsData(): boolean { return fined(AS_DATA_AUTHORIZED, this.type); };
+    get hasStatus(): boolean { return fined(STATUS_AUTHORIZED, this.type); };
+    get hasError(): boolean { return fined(ERROR_AUTHORIZED, this.type); };
+    get hasTimeout(): boolean { return fined(TIMEOUT_AUTHORIZED, this.type); };
+    get hasVariable(): boolean { return fined(VARIABLE_AUTHORIZED, this.type) };
 }

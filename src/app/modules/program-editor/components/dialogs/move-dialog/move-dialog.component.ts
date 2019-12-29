@@ -22,10 +22,12 @@ const rangeValidator: ValidatorFn = (control: FormGroup): ValidationErrors | nul
   const err = {
     'invalidRange': true
   };
-  if (iFrom.value === -1)
+  if (iFrom.value === -1) {
     iFrom.setErrors(err);
-  if (iTo.value === -1 || iTo.value < iFrom.value)
+  }
+  if (iTo.value === -1 || iTo.value < iFrom.value) {
     iTo.setErrors(err);
+  }
   return err;
 };
 
@@ -52,7 +54,7 @@ const indexValidator : ValidatorFn = (control: FormGroup): ValidationErrors | nu
 })
 export class MoveDialogComponent implements OnInit {
   
-  withParams: boolean = false;
+  withParams = false;
   ptList: string[] = [];
   pts: string[] = [];
   ctrl: FormGroup = new FormGroup({
@@ -78,8 +80,9 @@ export class MoveDialogComponent implements OnInit {
   });
   
   private onLocationChange(newLocation: TPVariable) {
-    if (newLocation)
+    if (newLocation) {
       this.ctrl.controls['location'].setValue(newLocation);
+    }
     this.ctrl.controls['rangeMode'].setValue(false);
     this.ctrl.controls['indexFrom'].setValue(-1);
     this.ctrl.controls['indexTo'].setValue(-1);
@@ -121,8 +124,13 @@ export class MoveDialogComponent implements OnInit {
 
   constructor(
     public dataService: DataService,
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<MoveDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      isArr: boolean,
+      moveS: boolean,
+      name: string,
+      params: {},
+    },
     private prg: ProgramEditorService,
     private dialog: MatDialog,
     private cd: ChangeDetectorRef,
@@ -134,7 +142,8 @@ export class MoveDialogComponent implements OnInit {
       loc.setValue(this.prg.lastVar);
       const val = loc.value as TPVariable;
       if (val.isArr && this.prg.lastVarIndex) {
-        let index = this.prg.lastVarIndex;
+        const index = this.prg.lastVarIndex;
+        if (!Array.isArray(val.value)) return;
         this.ctrl.controls['locationIndex'].setValue(
           index < val.value.length ? index + 1 : 1
         );
@@ -153,17 +162,18 @@ export class MoveDialogComponent implements OnInit {
   }
 
   ngAfterContentInit() {
-    let params = this.data.params;
+    const params = this.data.params;
     if (params) {
       if (params['element'] || params['vcruise'] || params['blending']) {
         this.ctrl.controls['advancedMode'].setValue(true);
       }
       // PARSE MOTION ELEMENT
-      if (params['element'])
+      if (params['element']) {
         this.ctrl.controls['motionElement'].setValue(params['element'] + ' ');
+      }
       // PARSE TARGET
       if (params['target']) {
-        for (let v of this.dataService.joints.concat(
+        for (const v of this.dataService.joints.concat(
           this.dataService.locations
         )) {
           if (v.name === params['target'].name) {
@@ -182,7 +192,7 @@ export class MoveDialogComponent implements OnInit {
     }
   }
 
-  public createPoint(): void {
+  createPoint(): void {
     const option = {
       hasBackdrop: false,
       data: { hotVariableOption: [1, 1, 0, 0, 0] }
@@ -203,33 +213,37 @@ export class MoveDialogComponent implements OnInit {
 
   insert() {
     let cmds = '';
-    let cmd = this.data.moveS ? 'Moves ' : 'Move ';
-    let names = [];
+    const cmd = this.data.moveS ? 'Moves ' : 'Move ';
+    const names = [];
     const loc = this.ctrl.controls['location'].value as TPVariable;
     const idx = this.ctrl.controls['locationIndex'].value;
-    let name = loc.name;
+    const name = loc.name;
     const el = this.ctrl.controls['motionElement'].value;
-    let robot = el ? el + ' ' : '';
+    const robot = el ? el + ' ' : '';
     if (loc.isArr) {
-      if (!this.ctrl.controls['rangeMode'].value)
+      if (!this.ctrl.controls['rangeMode'].value) {
         names.push(name + '[' + idx + ']');
+      }
       else {
         const iFrom = this.ctrl.controls['indexFrom'].value;
         const iTo = this.ctrl.controls['indexTo'].value;
-        for (var i = iFrom; i <= iTo; i++)
+        for (let i = iFrom; i <= iTo; i++) {
           names.push(name + '[' + i + ']');
+        }
       }
     } else {
       names.push(name);
     }
     let vcruiseString = '';
     const vcruise = this.ctrl.controls['vcruise'].value;
-    if (vcruise && Number(vcruise) > 0)
+    if (vcruise && Number(vcruise) > 0) {
       vcruiseString =
         (this.data.moveS ? ' Vtran=' : ' Vcruise=') + vcruise;
+    }
     let blendingString = '';
-    if (this.ctrl.controls['blendingPh'].value)
+    if (this.ctrl.controls['blendingPh'].value) {
       blendingString = ' BlendingPercentage=' + this.ctrl.controls['blendingPh'].value;
+    }
     for (let i = 0; i < names.length; i++) {
       cmds += cmd + robot + names[i] + vcruiseString + blendingString;
       if (i < names.length - 1) cmds += '\n';

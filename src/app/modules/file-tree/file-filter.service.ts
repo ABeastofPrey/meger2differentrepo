@@ -18,8 +18,8 @@ export class FileFilterService {
 
   filter(nodes: TreeNode[], search: string) {
     this.worker.postMessage({
-      nodes: nodes,
-      search: search,
+      nodes,
+      search,
     });
   }
 }

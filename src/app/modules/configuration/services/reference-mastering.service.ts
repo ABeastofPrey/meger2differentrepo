@@ -11,7 +11,7 @@ export class ReferenceMasteringService {
     this.robot = this.dataService.selectedRobot;
   }
 
-  public async retrieveAxisInfo(): Promise<any> {
+  async retrieveAxisInfo() {
     const api = `?MT_getAxisInfo(${this.robot})`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(JSON.parse, errMsgProp);
@@ -22,7 +22,7 @@ export class ReferenceMasteringService {
     return _retrieveAxisInfo(api);
   }
 
-  public async masterZero([j1, j2, j3, j4]: (0 | 1)[]): Promise<any> {
+  async masterZero([j1, j2, j3, j4]: Array<0 | 1>) {
     const api = `MT_master_zero(${this.robot}, ${j1}, ${j2}, ${j3}, ${j4})`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -33,7 +33,7 @@ export class ReferenceMasteringService {
     return _masterZero(api);
   }
 
-  public async masterFinal([j1, j2, j3, j4]: (0 | 1)[]): Promise<any> {
+  async masterFinal([j1, j2, j3, j4]: Array<0 | 1>) {
     const api = `MT_master_final(${this.robot}, ${j1}, ${j2}, ${j3}, ${j4})`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -44,7 +44,7 @@ export class ReferenceMasteringService {
     return _masterZero(api);
   }
 
-  public async recordPoint(): Promise<any> {
+  async recordPoint() {
     const api = `MT_recordPoint(${this.robot}, 2)`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -55,7 +55,7 @@ export class ReferenceMasteringService {
     return _recordPoint(api);
   }
 
-  public async masterLeftRight(): Promise<any> {
+  async masterLeftRight() {
     const api = `MT_master_left_right(${this.robot})`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -66,7 +66,7 @@ export class ReferenceMasteringService {
     return _masterLeftRight(api);
   }
 
-  public async resetOriginal(): Promise<any> {
+  async resetOriginal() {
     const api = `MT_resetOriginal(${this.robot})`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -77,7 +77,7 @@ export class ReferenceMasteringService {
     return _resetOriginal(api);
   }
 
-  public async fetchReferencePoints(): Promise<any> {
+  async fetchReferencePoints() {
     const api = '?tp_get_project_joints("ALL")';
     const query = _api => this.ws.query(_api);
     const resHandler = handler(split(','), errMsgProp);
@@ -88,7 +88,7 @@ export class ReferenceMasteringService {
     return _resetOriginal(api);
   }
 
-  public async setReferencePoint(point: string): Promise<any> {
+  async setReferencePoint(point: string) {
     const api = `mt_setref("${point}")`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -99,7 +99,7 @@ export class ReferenceMasteringService {
     return _setReferencePoint(api);
   }
 
-  public async getReferencePoint(): Promise<string> {
+  async getReferencePoint(): Promise<string> {
     const api = '?mt_getref';
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -110,7 +110,7 @@ export class ReferenceMasteringService {
     return _getReferencePoint(api);
   }
 
-  public async initRobot(): Promise<any> {
+  async initRobot() {
     const api = `mt_init(${this.robot})`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -121,7 +121,7 @@ export class ReferenceMasteringService {
     return _initRobot(api);
   }
 
-  public async moveToRef(isBasicMode = true): Promise<any> {
+  async moveToRef(isBasicMode = true) {
     const api = isBasicMode
       ? `mt_movetoref(${this.robot})`
       : `mt_movetorefopposite(${this.robot})`;
@@ -134,7 +134,7 @@ export class ReferenceMasteringService {
     return _moveToRef(api);
   }
 
-  public async isMoveing(): Promise<any> {
+  async isMoveing() {
     const api = `?${this.robot}.ismoving`;
     const converter = (x: number) => !!x;
     const query = _api => this.ws.query(_api);
@@ -152,7 +152,7 @@ export class ReferenceMasteringService {
     return _isMoveing(api);
   }
 
-  public async getCommand(): Promise<any> {
+  async getCommand() {
     const api = `?mt_getcommand(${this.robot})`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);

@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
 import { DataService, TpStatService } from '../../modules/core';
 
 @Component({
@@ -9,8 +9,7 @@ import { DataService, TpStatService } from '../../modules/core';
 })
 export class JogSettingsDialogComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<JogSettingsDialogComponent, void>,
     public dataService: DataService,
     public stat: TpStatService
   ) {}

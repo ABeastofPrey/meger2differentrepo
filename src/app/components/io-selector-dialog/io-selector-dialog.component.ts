@@ -8,13 +8,17 @@ import { WebsocketService, MCQueryResponse } from '../../modules/core';
   styleUrls: ['./io-selector-dialog.component.css'],
 })
 export class IoSelectorDialogComponent implements OnInit {
+
   list: string[] = [];
   io: string = null;
 
   constructor(
     private ws: WebsocketService,
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<IoSelectorDialogComponent,string>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      inputs: boolean,
+      title: string
+    }
   ) {}
 
   ngOnInit() {

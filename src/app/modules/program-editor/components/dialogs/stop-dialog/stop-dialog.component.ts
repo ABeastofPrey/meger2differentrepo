@@ -13,7 +13,7 @@ export class StopDialogComponent implements OnInit {
 
   constructor(
     public dataService: DataService,
-    public dialogRef: MatDialogRef<any>
+    public dialogRef: MatDialogRef<StopDialogComponent, string>
   ) {}
 
   ngOnInit() {}

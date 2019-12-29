@@ -1,3 +1,4 @@
+import { CustomPalletItem } from './../pallet-level-designer/pallet-level-designer.component';
 import { Component, OnInit, Inject } from '@angular/core';
 import {
   MatDialogRef,
@@ -13,7 +14,10 @@ import {
 export class CustomItemMenuComponent implements OnInit {
   constructor(
     private ref: MatDialogRef<number>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: {
+      order: number,
+      items: CustomPalletItem[]
+    }
   ) {}
 
   delete() {

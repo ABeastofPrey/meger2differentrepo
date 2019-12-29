@@ -15,14 +15,15 @@ import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-n
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
 
-declare var Isomer: any;
+// tslint:disable-next-line: no-any
+declare let Isomer: any;
 
-var Point = Isomer.Point;
-var Path = Isomer.Path;
-var Shape = Isomer.Shape;
-var Vector = Isomer.Vector;
-var Color = Isomer.Color;
-var Canvas = Isomer.Canvas;
+const Point = Isomer.Point;
+const Path = Isomer.Path;
+const Shape = Isomer.Shape;
+const Vector = Isomer.Vector;
+const Color = Isomer.Color;
+const Canvas = Isomer.Canvas;
 const floor = new Color(50, 50, 50);
 const servotronixColor = new Color(0, 130, 130);
 const servotronixColor2 = new Color(0, 78, 78);
@@ -41,13 +42,14 @@ export class PalletizingComponent implements OnInit {
   @ViewChild('palletPreview', { static: false }) preview: ElementRef;
   @ViewChild('palletContainer', { static: false }) container: ElementRef;
 
+  // tslint:disable-next-line: no-any
   private iso: any = null;
   private adjustedMaxSize: number;
-  private scaleFactor: number = 1;
-  private words: any;
+  private scaleFactor = 1;
+  private words: {};
 
-  abnormalItemCount: boolean = false;
-  wizardMode: boolean = false;
+  abnormalItemCount = false;
+  wizardMode = false;
 
   constructor(
     public data: DataService,
@@ -72,14 +74,14 @@ export class PalletizingComponent implements OnInit {
 
   onWindowResize() {
     if (this.container) {
-      var element: any = this.container.nativeElement;
+      let element: HTMLElement = this.container.nativeElement;
       if (typeof element === 'undefined') return;
-      var x = 0;
-      var y = 0;
+      let x = 0;
+      let y = 0;
       do {
         x += element.offsetLeft;
         y += element.offsetTop;
-        element = element.offsetParent;
+        element = element.offsetParent as HTMLElement;
       } while (element);
       // Position blocklyDiv over blocklyArea.
       this.preview.nativeElement.style.left = x + 'px';
@@ -99,8 +101,8 @@ export class PalletizingComponent implements OnInit {
   }
 
   private getPalletInfo() {
-    let name = this.data.selectedPallet.name;
-    let queries: Promise<any>[] = [
+    const name = this.data.selectedPallet.name;
+    const queries = [
       this.ws.query('?plt_get_number_of_items("' + name + '")'),
       this.ws.query('?PLT_GET_ITEM_DIMENSION("' + name + '","X")'),
       this.ws.query('?PLT_GET_ITEM_DIMENSION("' + name + '","Y")'),
@@ -108,26 +110,24 @@ export class PalletizingComponent implements OnInit {
       this.ws.query('?PLT_GET_PALLETIZING_ORDER("' + name + '")'),
       this.ws.query('?PLT_GET_INDEX_STATUS("' + name + '")'),
     ];
-    return Promise.all(queries).then((ret: MCQueryResponse[]) => {
-      var itemCount = ret[0].result.split(',');
-      this.data.selectedPallet.items_x = Number(itemCount[0]);
-      this.data.selectedPallet.items_y = Number(itemCount[1]);
-      this.data.selectedPallet.items_z = Number(itemCount[2]);
-      this.data.selectedPallet.item_size_x = Number(ret[1].result);
-      this.data.selectedPallet.item_size_y = Number(ret[2].result);
-      this.data.selectedPallet.item_size_z = Number(ret[3].result);
+    return Promise.all(queries).then(ret => {
+      const itemCount = ret[0].result.split(',');
+      this.data.selectedPallet.itemsX = Number(itemCount[0]);
+      this.data.selectedPallet.itemsY = Number(itemCount[1]);
+      this.data.selectedPallet.itemsZ = Number(itemCount[2]);
+      this.data.selectedPallet.itemSizeX = Number(ret[1].result);
+      this.data.selectedPallet.itemSizeY = Number(ret[2].result);
+      this.data.selectedPallet.itemSizeZ = Number(ret[3].result);
       this.data.selectedPallet.order = ret[4].result;
       this.data.selectedPallet.index = Number(ret[5].result);
     });
   }
 
   addPallet() {
-    let ref = this.dialog.open(AddPalletDialogComponent, {
-      width: '400px',
-    });
-    ref.afterClosed().subscribe((ret: NewPalletOptions) => {
+    this.dialog.open(AddPalletDialogComponent, { width: '400px' }).afterClosed()
+    .subscribe((ret: NewPalletOptions) => {
       if (ret) {
-        let name = ret.name.toUpperCase();
+        const name = ret.name.toUpperCase();
         this.ws
           .query(
             '?PLT_ASSIGN_PALLET("' +
@@ -164,15 +164,14 @@ export class PalletizingComponent implements OnInit {
     this.trn
       .get('pallets.delete.title', { name: this.data.selectedPallet.name })
       .subscribe(word => {
-        let ref = this.dialog.open(YesNoDialogComponent, {
+        this.dialog.open(YesNoDialogComponent, {
           data: {
             title: word,
             msg: this.words['pallets.delete.msg'],
             yes: this.words['button.delete'],
             no: this.words['button.cancel'],
           },
-        });
-        ref.afterClosed().subscribe(ret => {
+        }).afterClosed().subscribe(ret => {
           if (ret) {
             this.ws
               .query(
@@ -190,23 +189,23 @@ export class PalletizingComponent implements OnInit {
   }
 
   drawPreview() {
-    var canvas = this.preview.nativeElement;
-    var ctx = canvas.getContext('2d');
+    const canvas = this.preview.nativeElement;
+    const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    var data = this.getPalletDrawingData();
+    const data = this.getPalletDrawingData();
     if (data.floor === null) {
       return;
     }
     this.iso = new Isomer(canvas);
     this.iso.add(data.floor, floor); // add floor
     if (this.utils.IsKuka) {
-      for (let item of data.items) {
+      for (const item of data.items) {
         this.iso.add(item.shape, item.z % 2 === 0 ? kukaColor : kukaColor2);
       }
     }
 
     if (!this.utils.IsKuka) {
-      for (let item of data.items) {
+      for (const item of data.items) {
         this.iso.add(
           item.shape,
           item.z % 2 === 0 ? servotronixColor : servotronixColor2
@@ -216,21 +215,21 @@ export class PalletizingComponent implements OnInit {
   }
 
   private getItemsXYZ(itemX: number, itemY: number, itemZ: number) {
-    let result = [];
-    let pallet = this.data.selectedPallet;
-    var count = pallet.index;
-    var max_z = Math.ceil(count / (pallet.items_x * pallet.items_y)) - 1;
-    for (var z = 0; z <= max_z; z++) {
-      var countForThisLevel = count;
-      var max_y =
-        z < max_z
-          ? pallet.items_y - 1
-          : Math.floor((countForThisLevel - 1) / pallet.items_x);
-      for (var i = pallet.items_x - 1; i >= 0; i--) {
-        for (var j = max_y; j >= 0; j--) {
-          var x = i * itemX;
-          var y = j * itemY;
-          if (z < max_z || pallet.items_x * j + i < countForThisLevel) {
+    const result = [];
+    const pallet = this.data.selectedPallet;
+    let count = pallet.index;
+    const maxZ = Math.ceil(count / (pallet.itemsX * pallet.itemsY)) - 1;
+    for (let z = 0; z <= maxZ; z++) {
+      const countForThisLevel = count;
+      const maxY =
+        z < maxZ
+          ? pallet.itemsY - 1
+          : Math.floor((countForThisLevel - 1) / pallet.itemsX);
+      for (let i = pallet.itemsX - 1; i >= 0; i--) {
+        for (let j = maxY; j >= 0; j--) {
+          const x = i * itemX;
+          const y = j * itemY;
+          if (z < maxZ || pallet.itemsX * j + i < countForThisLevel) {
             // FULL FLOOR...
             result.push({
               shape: Shape.Prism(
@@ -239,7 +238,7 @@ export class PalletizingComponent implements OnInit {
                 itemY - borderSize / 100,
                 itemZ - borderSize / 100
               ),
-              z: z,
+              z,
             });
             count--;
           }
@@ -251,21 +250,21 @@ export class PalletizingComponent implements OnInit {
   }
 
   private getItemsYXZ(itemX: number, itemY: number, itemZ: number) {
-    let result = [];
-    let pallet = this.data.selectedPallet;
-    var count = pallet.index;
-    var max_z = Math.ceil(count / (pallet.items_x * pallet.items_y)) - 1;
-    for (var z = 0; z <= max_z; z++) {
-      var countForThisLevel = count;
-      var max_x =
-        z < max_z
-          ? pallet.items_x - 1
-          : Math.floor((countForThisLevel - 1) / pallet.items_y);
-      for (var i = max_x; i >= 0; i--) {
-        for (var j = pallet.items_y - 1; j >= 0; j--) {
-          var x = i * itemX;
-          var y = j * itemY;
-          if (z < max_z || pallet.items_y * i + j < countForThisLevel) {
+    const result = [];
+    const pallet = this.data.selectedPallet;
+    let count = pallet.index;
+    const maxZ = Math.ceil(count / (pallet.itemsX * pallet.itemsY)) - 1;
+    for (let z = 0; z <= maxZ; z++) {
+      const countForThisLevel = count;
+      const maxX =
+        z < maxZ
+          ? pallet.itemsX - 1
+          : Math.floor((countForThisLevel - 1) / pallet.itemsY);
+      for (let i = maxX; i >= 0; i--) {
+        for (let j = pallet.itemsY - 1; j >= 0; j--) {
+          const x = i * itemX;
+          const y = j * itemY;
+          if (z < maxZ || pallet.itemsY * i + j < countForThisLevel) {
             // FULL FLOOR...
             result.push({
               shape: Shape.Prism(
@@ -274,7 +273,7 @@ export class PalletizingComponent implements OnInit {
                 itemY - borderSize / 100,
                 itemZ - borderSize / 100
               ),
-              z: z,
+              z,
             });
             count--;
           }
@@ -286,17 +285,17 @@ export class PalletizingComponent implements OnInit {
   }
 
   private getItemsXZY(itemX: number, itemY: number, itemZ: number) {
-    let result = [];
-    let pallet = this.data.selectedPallet;
-    var count = pallet.index;
-    var max_y = Math.ceil(count / (pallet.items_z * pallet.items_x)) - 1;
-    for (var z = 0; z < pallet.items_z; z++) {
-      for (var i = pallet.items_x - 1; i >= 0; i--) {
-        for (var j = max_y; j >= 0; j--) {
-          var x = i * itemX;
-          var y = j * itemY;
-          var itemsSoFar =
-            j * pallet.items_z * pallet.items_x + z * pallet.items_x + i + 1;
+    const result = [];
+    const pallet = this.data.selectedPallet;
+    let count = pallet.index;
+    const maxY = Math.ceil(count / (pallet.itemsZ * pallet.itemsX)) - 1;
+    for (let z = 0; z < pallet.itemsZ; z++) {
+      for (let i = pallet.itemsX - 1; i >= 0; i--) {
+        for (let j = maxY; j >= 0; j--) {
+          const x = i * itemX;
+          const y = j * itemY;
+          const itemsSoFar =
+            j * pallet.itemsZ * pallet.itemsX + z * pallet.itemsX + i + 1;
           if (pallet.index >= itemsSoFar) {
             result.push({
               shape: Shape.Prism(
@@ -305,7 +304,7 @@ export class PalletizingComponent implements OnInit {
                 itemY - borderSize / 100,
                 itemZ - borderSize / 100
               ),
-              z: z,
+              z,
             });
             count--;
           }
@@ -317,17 +316,17 @@ export class PalletizingComponent implements OnInit {
   }
 
   private getItemsYZX(itemX: number, itemY: number, itemZ: number) {
-    let result = [];
-    let pallet = this.data.selectedPallet;
-    var count = pallet.index;
-    var max_x = Math.ceil(count / (pallet.items_z * pallet.items_y)) - 1;
-    for (var z = 0; z < pallet.items_z; z++) {
-      for (var i = max_x; i >= 0; i--) {
-        for (var j = pallet.items_y - 1; j >= 0; j--) {
-          var x = i * itemX;
-          var y = j * itemY;
-          var itemsSoFar =
-            i * pallet.items_z * pallet.items_y + z * pallet.items_y + j + 1;
+    const result = [];
+    const pallet = this.data.selectedPallet;
+    let count = pallet.index;
+    const maxX = Math.ceil(count / (pallet.itemsZ * pallet.itemsY)) - 1;
+    for (let z = 0; z < pallet.itemsZ; z++) {
+      for (let i = maxX; i >= 0; i--) {
+        for (let j = pallet.itemsY - 1; j >= 0; j--) {
+          const x = i * itemX;
+          const y = j * itemY;
+          const itemsSoFar =
+            i * pallet.itemsZ * pallet.itemsY + z * pallet.itemsY + j + 1;
           if (pallet.index >= itemsSoFar) {
             result.push({
               shape: Shape.Prism(
@@ -336,7 +335,7 @@ export class PalletizingComponent implements OnInit {
                 itemY - borderSize / 100,
                 itemZ - borderSize / 100
               ),
-              z: z,
+              z,
             });
             count--;
           }
@@ -348,17 +347,17 @@ export class PalletizingComponent implements OnInit {
   }
 
   private getItemsZYX(itemX: number, itemY: number, itemZ: number) {
-    let result = [];
-    let pallet = this.data.selectedPallet;
-    var count = pallet.index;
-    var max_x = Math.ceil(count / (pallet.items_z * pallet.items_y)) - 1;
-    for (var z = 0; z < pallet.items_z; z++) {
-      for (var i = max_x; i >= 0; i--) {
-        for (var j = pallet.items_y - 1; j >= 0; j--) {
-          var x = i * itemX;
-          var y = j * itemY;
-          var itemsSoFar =
-            i * pallet.items_z * pallet.items_y + j * pallet.items_z + z + 1;
+    const result = [];
+    const pallet = this.data.selectedPallet;
+    let count = pallet.index;
+    const maxX = Math.ceil(count / (pallet.itemsZ * pallet.itemsY)) - 1;
+    for (let z = 0; z < pallet.itemsZ; z++) {
+      for (let i = maxX; i >= 0; i--) {
+        for (let j = pallet.itemsY - 1; j >= 0; j--) {
+          const x = i * itemX;
+          const y = j * itemY;
+          const itemsSoFar =
+            i * pallet.itemsZ * pallet.itemsY + j * pallet.itemsZ + z + 1;
           if (pallet.index >= itemsSoFar) {
             result.push({
               shape: Shape.Prism(
@@ -367,7 +366,7 @@ export class PalletizingComponent implements OnInit {
                 itemY - borderSize / 100,
                 itemZ - borderSize / 100
               ),
-              z: z,
+              z,
             });
             count--;
           }
@@ -379,17 +378,17 @@ export class PalletizingComponent implements OnInit {
   }
 
   private getItemsZXY(itemX: number, itemY: number, itemZ: number) {
-    let result = [];
-    let pallet = this.data.selectedPallet;
-    var count = pallet.index;
-    var max_y = Math.ceil(count / (pallet.items_z * pallet.items_x)) - 1;
-    for (var z = 0; z < pallet.items_z; z++) {
-      for (var i = pallet.items_x - 1; i >= 0; i--) {
-        for (var j = max_y; j >= 0; j--) {
-          var x = i * itemX;
-          var y = j * itemY;
-          var itemsSoFar =
-            j * pallet.items_z * pallet.items_x + i * pallet.items_z + z + 1;
+    const result = [];
+    const pallet = this.data.selectedPallet;
+    let count = pallet.index;
+    const maxY = Math.ceil(count / (pallet.itemsZ * pallet.itemsX)) - 1;
+    for (let z = 0; z < pallet.itemsZ; z++) {
+      for (let i = pallet.itemsX - 1; i >= 0; i--) {
+        for (let j = maxY; j >= 0; j--) {
+          const x = i * itemX;
+          const y = j * itemY;
+          const itemsSoFar =
+            j * pallet.itemsZ * pallet.itemsX + i * pallet.itemsZ + z + 1;
           if (pallet.index >= itemsSoFar) {
             result.push({
               shape: Shape.Prism(
@@ -398,7 +397,7 @@ export class PalletizingComponent implements OnInit {
                 itemY - borderSize / 100,
                 itemZ - borderSize / 100
               ),
-              z: z,
+              z,
             });
             count--;
           }
@@ -425,34 +424,34 @@ export class PalletizingComponent implements OnInit {
     });
   }
 
-  private getPalletDrawingData(): any {
-    var result = {
+  private getPalletDrawingData() {
+    const result = {
       floor: null,
       items: [],
     };
     this.adjustedMaxSize = maxXYsize * this.scaleFactor;
-    let pallet = this.data.selectedPallet;
+    const pallet = this.data.selectedPallet;
     if (pallet === null || typeof pallet.index === 'undefined') return result;
-    if (pallet.items_y * pallet.items_x * pallet.items_z > 250) {
+    if (pallet.itemsY * pallet.itemsX * pallet.itemsZ > 250) {
       this.abnormalItemCount = true;
       return result;
     }
     this.abnormalItemCount = false;
     if (
-      pallet.items_x > 0 &&
-      pallet.items_y > 0 &&
-      pallet.items_z > 0 &&
-      pallet.item_size_x > 0 &&
-      pallet.item_size_y > 0 &&
-      pallet.item_size_z > 0
+      pallet.itemsX > 0 &&
+      pallet.itemsY > 0 &&
+      pallet.itemsZ > 0 &&
+      pallet.itemSizeX > 0 &&
+      pallet.itemSizeY > 0 &&
+      pallet.itemSizeZ > 0
     ) {
-      var x = pallet.items_x * pallet.item_size_x;
-      var y = pallet.items_y * pallet.item_size_y;
-      var sizeByX = x > y;
-      var mm = sizeByX ? this.adjustedMaxSize / x : this.adjustedMaxSize / y; // 1 millimeter
-      var itemX = pallet.item_size_x * mm;
-      var itemY = pallet.item_size_y * mm;
-      var itemZ = pallet.item_size_z * mm;
+      const x = pallet.itemsX * pallet.itemSizeX;
+      const y = pallet.itemsY * pallet.itemSizeY;
+      const sizeByX = x > y;
+      const mm = sizeByX ? this.adjustedMaxSize / x : this.adjustedMaxSize / y; // 1 millimeter
+      const itemX = pallet.itemSizeX * mm;
+      const itemY = pallet.itemSizeY * mm;
+      const itemZ = pallet.itemSizeZ * mm;
       result.floor = sizeByX
         ? Shape.Prism(
             Point(0, 0, 0),
@@ -467,6 +466,8 @@ export class PalletizingComponent implements OnInit {
             this.adjustedMaxSize / 10
           );
       switch (pallet.order) {
+        default:
+          break;
         case 'XYZ':
           result.items = this.getItemsXYZ(itemX, itemY, itemZ);
           break;
@@ -490,7 +491,7 @@ export class PalletizingComponent implements OnInit {
     return result;
   }
 
-  public get palletBgImgUrl(): string {
+  get palletBgImgUrl(): string {
     const imgName = this.utils.IsKuka
       ? 'kuka_pallet.jpg'
       : 'servotronix_pallet.jpg';

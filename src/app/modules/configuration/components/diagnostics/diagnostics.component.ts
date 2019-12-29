@@ -19,9 +19,9 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 })
 export class DiagnosticsComponent implements OnInit {
   content: string;
-  state: string = '1';
-  isRefreshing: boolean = false;
-  interval: any;
+  state = '1';
+  isRefreshing = false;
+  interval: number;
   env = environment;
   @ViewChild('container', { read: ViewContainerRef, static: false })
   ref: ViewContainerRef;
@@ -47,42 +47,42 @@ export class DiagnosticsComponent implements OnInit {
   private getGraphsFromText() {
     this.ref.clear();
     let text = this.content;
-    let graphs: GraphData[] = [];
+    const graphs: GraphData[] = [];
     let index: number = text.indexOf('<GRAPH');
     try {
       while (index > -1) {
-        let index2 = text.indexOf('</GRAPH>');
+        const index2 = text.indexOf('</GRAPH>');
         let graphText = text.substring(index + 7, index2); //X='' Y='' TITLE='' type=''>DATA
 
         // PARSE TITLE
         let index3 = graphText.indexOf('Title="');
         let tmp = graphText.substring(index3 + 7);
         let index4 = tmp.indexOf('"');
-        let title = tmp.substring(0, index4);
+        const title = tmp.substring(0, index4);
 
         // PARSE TYPE
         index3 = graphText.indexOf('type=');
         tmp = graphText.substring(index3 + 5);
         index4 = Math.min(tmp.indexOf(' '), tmp.indexOf('>'));
-        let graphType = tmp.substring(0, index4);
+        const graphType = tmp.substring(0, index4);
 
         // PARSE X
         index3 = graphText.indexOf('X="');
         tmp = graphText.substring(index3 + 3);
         index4 = tmp.indexOf('"');
-        let XLegend = tmp.substring(0, index4);
+        const xLegend = tmp.substring(0, index4);
 
         // PARSE Y
         index3 = graphText.indexOf('Y="');
         tmp = graphText.substring(index3 + 3);
         index4 = tmp.indexOf('"');
-        let YLegend = tmp.substring(0, index4);
+        const yLegend = tmp.substring(0, index4);
 
         index3 = graphText.indexOf('>');
         graphText = graphText.substring(index3 + 1); // DATA
-        let json = JSON.parse('{' + graphText + '}');
-        json['XLegend'] = XLegend;
-        json['YLegend'] = YLegend;
+        const json = JSON.parse('{' + graphText + '}');
+        json['XLegend'] = xLegend;
+        json['YLegend'] = yLegend;
         json['title'] = title;
         json['graphType'] = graphType;
         graphs.push(json);
@@ -90,9 +90,9 @@ export class DiagnosticsComponent implements OnInit {
         index = text.indexOf('<GRAPH');
       }
       this.content = text;
-      var factory = this.resolver.resolveComponentFactory(GraphComponent);
+      const factory = this.resolver.resolveComponentFactory(GraphComponent);
       let ref: ComponentRef<GraphComponent>;
-      for (let graph of graphs) {
+      for (const graph of graphs) {
         ref = this.ref.createComponent(factory);
         ref.instance.setData(graph);
       }
@@ -106,7 +106,7 @@ export class DiagnosticsComponent implements OnInit {
     if (this.ref) this.ref.clear();
     this.isRefreshing = true;
     this.content = null;
-    let cmd =
+    const cmd =
       this.state === '1'
         ? '?TP_GET_MOTION_DEVICES_STATE'
         : '?TP_GET_MOTION_MASTER_STATE';
@@ -127,7 +127,7 @@ export class DiagnosticsComponent implements OnInit {
           this.isRefreshing = false;
           return;
         }
-        this.interval = setInterval(() => {
+        this.interval = window.setInterval(() => {
           this.ws.query(cmd + '(2)').then((ret: MCQueryResponse) => {
             if (ret.result !== 'Not Ready') {
               clearInterval(this.interval);

@@ -9,10 +9,11 @@ import { GroupManagerService } from '../../../core';
   styleUrls: ['./add-feature-dialog.component.css'],
 })
 export class AddFeatureDialogComponent implements OnInit {
+  
   feature: Feature = new Feature();
 
   constructor(
-    private dialog: MatDialogRef<any>,
+    private dialog: MatDialogRef<Feature>,
     private grp: GroupManagerService
   ) {}
 

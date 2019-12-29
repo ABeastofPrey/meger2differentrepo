@@ -12,7 +12,7 @@ export class OpenProjectDialogComponent implements OnInit {
   projects: string[];
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<OpenProjectDialogComponent, string>,
     private ws: WebsocketService
   ) {}
 

@@ -8,7 +8,7 @@ import { Input } from '@angular/core';
   styleUrls: ['./tool-selector.component.css'],
 })
 export class ToolSelectorComponent implements OnInit {
-  @Input('disabled') disabled: boolean;
+  @Input('disabled') disabled?: boolean;
 
   constructor(public dataService: DataService) {}
 

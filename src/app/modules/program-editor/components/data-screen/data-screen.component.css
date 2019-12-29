@@ -3,6 +3,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 .filter-menu {
   display: flex;
@@ -20,9 +21,7 @@
 }
 .btn-add {
   border-radius: 36px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  padding-right: 36px;
 }
 .btn-add mat-icon {
   font-size: 36px;
@@ -73,4 +72,22 @@
 .real-device {
   bottom: 24px;
   right: 24px;
+}
+.behind {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.behind img {
+  height: 200px;
+}
+.arrow {
+  position: absolute;
+  width: 48px;
+  top: 64px;
+  left: 80px;
+  z-index: 1;
+  transform: rotate(90deg) scale(-1, 1);
 }

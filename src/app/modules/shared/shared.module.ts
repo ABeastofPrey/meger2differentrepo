@@ -39,6 +39,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CoordinatesComponent } from '../main/components/coordinates/coordinates.component';
 import { RecordDialogComponent } from '../../components/record-dialog/record-dialog.component';
 import { RecordGraphComponent } from '../../components/record-graph/record-graph.component';
+import { NotificationWindowComponent } from '../main/components/notification-window/notification-window.component';
 
 @NgModule({
   imports: [
@@ -88,7 +89,8 @@ import { RecordGraphComponent } from '../../components/record-graph/record-graph
     RichSelectComponent,
     ColorfulSpanComponent,
     CoordinatesComponent,
-    RecordGraphComponent
+    RecordGraphComponent,
+    NotificationWindowComponent
   ],
   declarations: [
     YesNoDialogComponent,
@@ -113,7 +115,8 @@ import { RecordGraphComponent } from '../../components/record-graph/record-graph
     ColorfulSpanComponent,
     CoordinatesComponent,
     RecordDialogComponent,
-    RecordGraphComponent
+    RecordGraphComponent,
+    NotificationWindowComponent
   ],
   entryComponents: [
     YesNoDialogComponent,

@@ -27,19 +27,20 @@ export class LineParser {
   getVariablesFromLine(row: string): TPVariable[] {
     row = row
       .toUpperCase()
-      .replace(/CIRCLEPOINT|TARGETPOINT|=/gi, '')
+      .replace(/CIRCLEPOINT|TARGETPOINT|CIRCLECENTER|=/gi, '')
       .trim();
-    let result: TPVariable[] = [];
-    let tmp = row.split(' ');
+    const result: TPVariable[] = [];
+    const tmp = row.split(' ');
     if (tmp.length <= 1) return [];
-    let varList: TPVariable[] = this.data.joints.concat(this.data.locations);
+    const varList: TPVariable[] = this.data.joints.concat(this.data.locations);
     for (let i = 1; i < tmp.length; i++) {
-      if (tmp[i].length === 0 || (i === 1 && this.data.robots.includes(tmp[i])))
+      if (tmp[i].length === 0 || (i === 1 && this.data.robots.includes(tmp[i]))) {
         continue;
+      }
       let varIndex = -1;
-      let bracket = tmp[i].indexOf('[');
+      const bracket = tmp[i].indexOf('[');
       if (bracket > -1 && bracket < tmp[i].length - 1) {
-        let tmpIndex = tmp[i]
+        const tmpIndex = tmp[i]
           .substring(bracket + 1)
           .slice(0, -1)
           .trim();
@@ -51,10 +52,12 @@ export class LineParser {
         }
         tmp[i] = tmp[i].substring(0, bracket);
       } else if (bracket > -1) continue;
-      for (let v of varList) {
+      for (const v of varList) {
         if (tmp[i] === v.name) {
-          if (v.isArr && v.value.length < varIndex) continue;
-          let varCopy = Object.assign({}, v);
+          if (v.isArr && (v.value as TPVariable[]).length < varIndex) {
+            continue;
+          }
+          const varCopy = Object.assign({}, v);
           varCopy.selectedIndex = varIndex;
           result.push(varCopy);
         }
@@ -66,9 +69,9 @@ export class LineParser {
   getMotionElementFromLine(row: string): string {
     row = row
       .toUpperCase()
-      .replace(/CIRCLEPOINT|TARGETPOINT|=/gi, '')
+      .replace(/CIRCLEPOINT|CIRCLECENTER|TARGETPOINT|=/gi, '')
       .trim();
-    let tmp = row.split(' ');
+    const tmp = row.split(' ');
     if (tmp.length < 2) return null;
     let i = 1;
     while (i < tmp.length && tmp[i].length === 0) i++;
@@ -79,15 +82,15 @@ export class LineParser {
   getLineParameters(line: string, lineType: LineType, rowIndex: number) {
     let searchWord: string;
     let index: number;
-    let params = {
-      lineType: lineType,
+    const params = {
+      lineType,
       line: rowIndex,
     };
     line = line.toUpperCase().trim();
     switch (lineType) {
-      case LineType.MOVE:
-        var lineVars = this.getVariablesFromLine(line);
-        var element = this.getMotionElementFromLine(line);
+      case LineType.MOVE: {
+        const lineVars = this.getVariablesFromLine(line);
+        const element = this.getMotionElementFromLine(line);
         if (lineVars.length > 0) params['target'] = lineVars[0];
         if (element) params['element'] = element;
         params['moves'] = line.indexOf('MOVES') === 0;
@@ -100,7 +103,7 @@ export class LineParser {
             tmpLine = tmpLine.substring(index + 1);
             index = tmpLine.indexOf(' ');
             if (index > 0) tmpLine = tmpLine.substring(0, index);
-            let val = Number(tmpLine);
+            const val = Number(tmpLine);
             if (!isNaN(val)) params['vcruise'] = val;
           }
         }
@@ -113,30 +116,30 @@ export class LineParser {
             tmpLine = tmpLine.substring(index + 1);
             index = tmpLine.indexOf(' ');
             if (index > 0) tmpLine = tmpLine.substring(0, index);
-            let val = Number(tmpLine);
+            const val = Number(tmpLine);
             if (!isNaN(val)) params['blending'] = val;
           }
         }
         break;
-      case LineType.CIRCLE:
-        var lineVars = this.getVariablesFromLine(line);
-        var element = this.getMotionElementFromLine(line);
+      }
+      case LineType.CIRCLE: {
+        const lineVars = this.getVariablesFromLine(line);
+        const element = this.getMotionElementFromLine(line);
         if (lineVars.length > 0) params['target'] = lineVars;
         if (element) params['element'] = element;
-        if (lineVars.length === 1) {
+        searchWord = 'ANGLE';
+        index = line.indexOf(searchWord);
+        if (index !== 1) {
           // CIRCLE ANGLE
-          var tmp = line.replace(/=/gi, ' ').trim();
-          var i = tmp.indexOf('ANGLE');
-          if (i > -1) {
-            tmp = tmp.substring(i + 5);
-            var nextElements = tmp.split(' ');
-            if (nextElements.length > 0) {
-              for (let e of nextElements) {
-                if (e.length > 0) {
-                  var num = Number(e);
-                  if (!isNaN(num)) params['angle'] = e;
-                  break;
-                }
+          let tmp = line.replace(/=/gi, ' ').trim();
+          const i = tmp.indexOf('ANGLE');
+          tmp = tmp.substring(i + 5);
+          const nextElements = tmp.split(' ');
+          if (nextElements.length > 0) {
+            for (const e of nextElements) {
+              if (e.length > 0) {
+                params['angle'] = e;
+                break;
               }
             }
           }
@@ -150,7 +153,7 @@ export class LineParser {
             tmpLine = tmpLine.substring(index + 1);
             index = tmpLine.indexOf(' ');
             if (index > 0) tmpLine = tmpLine.substring(0, index);
-            let val = Number(tmpLine);
+            const val = Number(tmpLine);
             if (!isNaN(val)) params['vtran'] = val;
           }
         }
@@ -163,11 +166,12 @@ export class LineParser {
             tmpLine = tmpLine.substring(index + 1);
             index = tmpLine.indexOf(' ');
             if (index > 0) tmpLine = tmpLine.substring(0, index);
-            let val = Number(tmpLine);
+            const val = Number(tmpLine);
             if (!isNaN(val)) params['blending'] = val;
           }
         }
         break;
+      }
       default:
         return null;
     }

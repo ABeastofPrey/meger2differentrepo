@@ -33,7 +33,7 @@ export class DataScreenComponent implements OnInit {
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   // To display GUI for project points
-  @Input() useAsProjectPoints: boolean = false;
+  @Input() useAsProjectPoints = false;
 
   displayVarType: string;
 
@@ -47,10 +47,22 @@ export class DataScreenComponent implements OnInit {
   colsToDisplay: string[] = BASE_COLS;
 
   private _legend: string[] = [];
-  private _value: any[] = [];
-  private _varRefreshing: boolean = false;
-  private words: any;
+  private _value = [];
+  private _varRefreshing = false;
+  private words: {};
   private notifier: Subject<boolean> = new Subject();
+
+  /*
+    weather or not to display the mat-table element
+  */
+  get shouldDisplayTable() {
+    return this.useAsProjectPoints || 
+      (
+        !!this.displayVarType &&
+        !!this.dataSource.data &&
+        this.dataSource.data.length > 0
+      );
+  }
 
   get isRefreshing() {
     return this._varRefreshing;
@@ -93,16 +105,16 @@ export class DataScreenComponent implements OnInit {
   teach(element: TPVariable) {
     let fullname = element.name;
     if (element.isArr) fullname += '[' + element.selectedIndex + ']';
-    let cmd_teach = '?tp_teach("' + fullname + '","' + element.typeStr + '")';
+    let cmdTeach = '?tp_teach("' + fullname + '","' + element.typeStr + '")';
     if (this.useAsProjectPoints) {
-      cmd_teach =
+      cmdTeach =
         '?tp_teach_project_points("' +
         fullname +
         '","' +
         element.typeStr +
         '")';
     }
-    this.ws.query(cmd_teach).then((ret: MCQueryResponse) => {
+    this.ws.query(cmdTeach).then((ret: MCQueryResponse) => {
       if (ret.result === '0') {
         this.refreshVariable(element);
       }
@@ -143,6 +155,8 @@ export class DataScreenComponent implements OnInit {
    */
   updateDataType() {
     switch (this.displayVarType) {
+      default:
+        break;
       case 'joints':
         this._legend = this.data.robotCoordinateType.legends.map((l, i) => {
           return 'J' + (i + 1);
@@ -179,24 +193,27 @@ export class DataScreenComponent implements OnInit {
     return element.value[i].value;
   }
 
-  private refreshVariable(v: TPVariable): Promise<any> {
+  private refreshVariable(v: TPVariable) {
     let fullname = v.name;
-    if (v.isArr) 
+    if (v.isArr) { 
       fullname += '[' + v.selectedIndex + ']';
+    }
     if (v.isTwoDimension) {
         fullname += '[' + v.selectedSecondIndex + ']';
       }
     let api: string;
-    if (this.useAsProjectPoints)
+    if (this.useAsProjectPoints) {
       api = `?tp_get_project_value_namespace("${fullname}")`;
+    }
     else api = `?tp_get_value_namespace("${fullname}")`;
     return this.ws.query(api).then((ret: MCQueryResponse) => {
       if (ret.err) return;
       let valuesString = ret.result;
-      if (valuesString.indexOf('#') === 0)
+      if (valuesString.indexOf('#') === 0) {
         valuesString = valuesString.substr(1);
+      }
       if (valuesString.indexOf(',') === -1) {
-        let val = [{ value: valuesString.trim() }];
+        const val = [{ value: valuesString.trim() }];
         if (v.isArr) {
           let selected = null;
           if(v.isTwoDimension)
@@ -221,12 +238,12 @@ export class DataScreenComponent implements OnInit {
         }
         return;
       }
-      let val = [];
+      const val = [];
       const parts: string[] = valuesString
         .substr(1, valuesString.length - 2)
         .split(';');
       const values = parts[0].split(',');
-      let flags = parts[1] ? parts[1].split(',') : [];
+      const flags = parts[1] ? parts[1].split(',') : [];
       if (v.varType === TPVariableType.LOCATION) {
         const len = this.data.robotCoordinateType.flags.length;
         // SET ALL OTHER FLAGS TO ZERO
@@ -244,35 +261,37 @@ export class DataScreenComponent implements OnInit {
           selected.value = val;
           selected.dataLoaded = true;
         } else {
-          for (let i = 0; i < val.length; i++)
+          for (let i = 0; i < val.length; i++) {
             selected.value[i].value = val[i].value;
+          }
         }
       }
       else if (!v.dataLoaded) {
         v.value = val;
         v.dataLoaded = true;
       } else {
-        for (let i = 0; i < val.length; i++)
+        for (let i = 0; i < val.length; i++) {
           v.value[i].value = val[i].value;
+        }
       }
     });
   }
 
   private refreshValues() {
     this._varRefreshing = true;
-    let queries: Promise<any>[] = [];
-    for (let v of this.dataSource.data) {
-      if (!v.isArr && v.dataLoaded) continue;
+    const queries: Array<Promise<void>> = [];
+    for (const v of this.dataSource.data) {
+      /*if (!v.isArr && v.dataLoaded) continue;
       if (v.isArr) {
         if(!v.isTwoDimension) {
           const selectedChild = v.value[v.selectedIndex - 1] as TPVariable;
-          if (selectedChild.dataLoaded) continue;
+        if (selectedChild.dataLoaded) continue;
         } else {
           const selectedChild = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1] as TPVariable;
           if (selectedChild.dataLoaded) continue;
         }
 
-      }
+      }*/
       queries.push(this.refreshVariable(v));
     }
     return Promise.all(queries).then(results => {
@@ -284,7 +303,7 @@ export class DataScreenComponent implements OnInit {
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
+    return numSelected === numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
@@ -302,16 +321,19 @@ export class DataScreenComponent implements OnInit {
       !forceRefresh &&
       this.selectedVar &&
       this.selectedVar.name === element.name
-    )
+    ) {
       return;
+    }
     this._varRefreshing = true;
     this.selectedVar = element;
     let fullname = this.selectedVar.name;
-    if (this.selectedVar.isArr)
+    if (this.selectedVar.isArr) {
       fullname += '[' + this.selectedVar.selectedIndex + ']';
+    }
     let api: string;
-    if (this.useAsProjectPoints)
+    if (this.useAsProjectPoints) {
       api = `?tp_get_project_value_namespace("${fullname}")`;
+    }
     else api = `?tp_get_value_namespace("${fullname}")`;
     this.ws.query(api).then((ret: MCQueryResponse) => {
       if (ret.err) {
@@ -319,8 +341,9 @@ export class DataScreenComponent implements OnInit {
         return;
       }
       let valuesString = ret.result;
-      if (valuesString.indexOf('#') === 0)
+      if (valuesString.indexOf('#') === 0) {
         valuesString = valuesString.substr(1);
+      }
       if (valuesString.indexOf(',') === -1) {
         this._legend = [this.words['value']];
         this._varRefreshing = false;
@@ -332,7 +355,7 @@ export class DataScreenComponent implements OnInit {
         .substr(1, valuesString.length - 2)
         .split(';');
       const values = parts[0].split(',');
-      let flags = parts[1] ? parts[1].split(',') : [];
+      const flags = parts[1] ? parts[1].split(',') : [];
       if (this.selectedVar.varType === TPVariableType.LOCATION) {
         const len = this.data.robotCoordinateType.flags.length;
         // SET ALL OTHER FLAGS TO ZERO
@@ -344,11 +367,14 @@ export class DataScreenComponent implements OnInit {
       let newLegend: string[] = [];
       for (let i = 0; i < total.length; i++) {
         this._value[i] = { value: total[i].trim() };
-        if (this.selectedVar.varType === TPVariableType.JOINT)
+        if (this.selectedVar.varType === TPVariableType.JOINT) {
           newLegend.push('J' + (i + 1));
+        }
       }
       if (newLegend.length === 0) {
         switch (this.selectedVar.varType) {
+          default:
+            break;
           case TPVariableType.LOCATION:
             newLegend = this.data.robotCoordinateType.all;
             break;
@@ -429,8 +455,8 @@ export class DataScreenComponent implements OnInit {
           .afterClosed()
           .subscribe(ret => {
             if (ret) {
-              let queries: Promise<any>[] = [];
-              for (let v of this.selection.selected) {
+              const queries = [];
+              for (const v of this.selection.selected) {
                 let cmd = '?TP_DELETEVAR("' + v.name + '")';
                 if (this.useAsProjectPoints) {
                   cmd = '?TP_DELETE_project_points("' + v.name + '")';
@@ -442,7 +468,7 @@ export class DataScreenComponent implements OnInit {
                 this.snackBar.open(this.words['success'], '', {
                   duration: 2000,
                 });
-                var dataQueries = [
+                const dataQueries = [
                   this.data.refreshBases(),
                   this.data.refreshTools(),
                 ];
@@ -465,12 +491,13 @@ export class DataScreenComponent implements OnInit {
       if (v.isTwoDimension) {
         fullname += '[' + v.selectedSecondIndex + ']';
         v = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1];
-      }
+    }
       else {
         v = v.value[v.selectedIndex - 1];
       }
 
     }
+    if (!Array.isArray(v.value)) return;
     const size = Math.min(
       v.value.length,
       this.data.robotCoordinateType.legends.length
@@ -497,8 +524,9 @@ export class DataScreenComponent implements OnInit {
     }
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       this.refreshVariable(parent || v);
-      if (ret.result === '0')
+      if (ret.result === '0') {
         this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
+      }
       else console.log(ret.cmd + '>>>' + ret.result);
     });
   }

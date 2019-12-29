@@ -12,7 +12,7 @@ export class NewFileDialogComponent implements OnInit {
     ext: 'PRG',
   };
 
-  constructor(private ref: MatDialogRef<any>) {}
+  constructor(private ref: MatDialogRef<string>) {}
 
   ngOnInit() {}
 

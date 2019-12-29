@@ -32,7 +32,7 @@
 			<input matInput
 				placeholder="{{ 'arr_size' | translate }}" 
 				[(ngModel)]="arrSize" virtualKeyboard
-				ktype="numeric" 
+				ktype="numeric_int_pos" 
 				[formControl]="validationControls[dataParameterReference.OneArraySize]"
 				[errorStateMatcher]="errorMatcher"
 				/>
@@ -45,7 +45,7 @@
 			<input matInput
 				placeholder="{{ 'one_dimension_size' | translate }}"  
 				[(ngModel)]="arrSize" virtualKeyboard
-				ktype="numeric" 
+				ktype="numeric_int_pos" 
 				[formControl]="validationControls[dataParameterReference.OneArraySize]"
 				[errorStateMatcher]="errorMatcher"
 				/>
@@ -60,7 +60,7 @@
 			<input matInput 
 				placeholder="{{ 'two_dimension_size' | translate }}" 
 				[(ngModel)]="arrSecondSize" virtualKeyboard
-				ktype="numeric" 				
+				ktype="numeric_int_pos" 				
 				[formControl]="validationControls[dataParameterReference.TwoArraySize]"
 				[errorStateMatcher]="errorMatcher"/>
 			<mat-error>

@@ -1,3 +1,4 @@
+import { ErrorFrame } from './../../core/models/error-frame.model';
 import { TestBed } from '@angular/core/testing';
 import { UnitTestModule } from '../../shared/unit-test.module';
 
@@ -69,17 +70,17 @@ describe('IoService', () => {
   it('custom io port result should not be empty after getting query response', () => {
     expect(ioService).toBeTruthy();
 
-    let spyValue = createMockCustomIoPorts();
-    let mcQueryResponse = { result: spyValue, cmd: '', err: null };
+    const spyValue = createMockCustomIoPorts();
+    const mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
     });
 
     ioService.queryCustomIoPorts().then(() => {
-      let customIoPorts = ioService.getCustomIoPorts();
+      const customIoPorts = ioService.getCustomIoPorts();
       expect(customIoPorts).toBeTruthy();
-      let key = CustomIOTypes.InputBit.replace(/\s/g, '');
+      const key = CustomIOTypes.InputBit.replace(/\s/g, '');
       expect(customIoPorts[key]).toBeTruthy();
       expect(customIoPorts[key].length).toBe(0, 'no input port');
     });
@@ -92,9 +93,9 @@ describe('IoService', () => {
   it('custom io port result should be null if there is error in the query response', () => {
     expect(ioService).toBeTruthy();
 
-    let spyValue = createMockCustomIoPorts();
-    let errFrame = createMockErrorFrame();
-    let mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
+    const spyValue = createMockCustomIoPorts();
+    const errFrame = createMockErrorFrame() as ErrorFrame;
+    const mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
@@ -114,8 +115,8 @@ describe('IoService', () => {
   it('custom ios result should be empty without sending query command', () => {
     expect(ioService).toBeTruthy();
 
-    let spyValue = createMockCustomIoPorts();
-    let customIoPorts = JSON.parse(spyValue);
+    const spyValue = createMockCustomIoPorts();
+    const customIoPorts = JSON.parse(spyValue);
 
     expect(
       ioService.getCustomIos(allCustomIoTypes, customIoPorts)
@@ -134,17 +135,17 @@ describe('IoService', () => {
     expect(ioService).toBeTruthy();
 
     let spyValue = createMockCustomIos();
-    let mcQueryResponse = { result: spyValue, cmd: '', err: null };
+    const mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
     });
 
     spyValue = createMockCustomIoPorts();
-    let customIoPorts = JSON.parse(spyValue);
+    const customIoPorts = JSON.parse(spyValue);
 
     ioService.queryCustomIos(1, false).then(() => {
-      let customIos = ioService.getCustomIos(allCustomIoTypes, customIoPorts);
+      const customIos = ioService.getCustomIos(allCustomIoTypes, customIoPorts);
       expect(customIos.length).toBe(3, 'it should have three custom ios');
       expect(customIos[0].label).toBe('1', 'custom io has its own label');
     });
@@ -158,18 +159,18 @@ describe('IoService', () => {
     expect(ioService).toBeTruthy();
 
     let spyValue = createMockCustomIos();
-    let errFrame = createMockErrorFrame();
-    let mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
+    const errFrame = createMockErrorFrame() as ErrorFrame;
+    const mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
     });
 
     spyValue = createMockCustomIoPorts();
-    let customIoPorts = JSON.parse(spyValue);
+    const customIoPorts = JSON.parse(spyValue);
 
     ioService.queryCustomIos(1, false).then(() => {
-      let customIos = ioService.getCustomIos(allCustomIoTypes, customIoPorts);
+      const customIos = ioService.getCustomIos(allCustomIoTypes, customIoPorts);
       expect(customIos.length).toBe(0, 'there is no custom io');
     });
   });
@@ -183,17 +184,17 @@ describe('IoService', () => {
     expect(ioService).toBeTruthy();
 
     let spyValue = createMockCustomIo();
-    let mcQueryResponse = { result: spyValue, cmd: '', err: null };
+    const mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
     });
 
     spyValue = createMockCustomIoPorts();
-    let customIoPorts = JSON.parse(spyValue);
-    let selectType = { key: CustomIOTypes.OutputBit, value: 'Output Bit' };
+    const customIoPorts = JSON.parse(spyValue);
+    const selectType = { key: CustomIOTypes.OutputBit, value: 'Output Bit' };
     ioService.addCustomIo(1, selectType, 2000, false).then(() => {
-      let customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
+      const customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
       expect(customIo).toBeTruthy();
     });
   });
@@ -205,17 +206,17 @@ describe('IoService', () => {
     expect(ioService).toBeTruthy();
 
     let spyValue = createMockCustomIo();
-    let mcQueryResponse = { result: spyValue, cmd: '', err: null };
+    const mcQueryResponse = { result: spyValue, cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
     });
 
     spyValue = createMockCustomIoPorts();
-    let customIoPorts = JSON.parse(spyValue);
-    let selectType = { key: CustomIOTypes.OutputBit, value: 'Output Bit' };
+    const customIoPorts = JSON.parse(spyValue);
+    const selectType = { key: CustomIOTypes.OutputBit, value: 'Output Bit' };
     ioService.modifyCustomIo(1, 1, selectType, 2000, false).then(() => {
-      let customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
+      const customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
       expect(customIo).toBeTruthy();
     });
   });
@@ -226,17 +227,17 @@ describe('IoService', () => {
   it('remove custom io item in the view', () => {
     expect(ioService).toBeTruthy();
 
-    let mcQueryResponse = { result: '', cmd: '', err: null };
+    const mcQueryResponse = { result: '', cmd: '', err: null };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
     });
 
-    let spyValue = createMockCustomIoPorts();
-    let customIoPorts = JSON.parse(spyValue);
+    const spyValue = createMockCustomIoPorts();
+    const customIoPorts = JSON.parse(spyValue);
 
     ioService.removeCustomIo(1, 1).then(() => {
-      let customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
+      const customIo = ioService.getCustomIo(allCustomIoTypes, customIoPorts);
       expect(customIo).toBeNull();
     });
   });
@@ -272,7 +273,7 @@ describe('IoService', () => {
     });
 
     ioService.queryIos(IoOptions.AllInputs, 'all', false).then(() => {
-      let ios = ioService.getIos();
+      const ios = ioService.getIos();
       expect(ios.length).toBe(2, 'it should have two ios');
       expect(ios[0].label).toBe('Omri', 'io has its own label');
     });
@@ -286,7 +287,7 @@ describe('IoService', () => {
     expect(ioService).toBeTruthy();
 
     const spyValue = createMockIos();
-    const errFrame = createMockErrorFrame();
+    const errFrame = createMockErrorFrame() as ErrorFrame;
     const mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
 
     webSocketServiceSpy.query.and.callFake(() => {
@@ -294,7 +295,7 @@ describe('IoService', () => {
     });
 
     ioService.queryIos(IoOptions.AllInputs, 'all', false).then(() => {
-      let ios = ioService.getIos();
+      const ios = ioService.getIos();
       expect(ios.length).toBe(0, 'there is no io');
     });
   });

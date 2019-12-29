@@ -3,8 +3,8 @@ import { Location } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { ElementRef } from '@angular/core';
 
-const BOXES_OFFSET: number = 10;
-const SPEED: number = 3;
+const BOXES_OFFSET = 10;
+const SPEED = 3;
 
 @Component({
   selector: 'app-page-not-found',
@@ -14,15 +14,15 @@ const SPEED: number = 3;
 export class PageNotFoundComponent implements OnInit {
   constructor(private _location: Location) {}
 
-  public env = environment;
+  env = environment;
 
   // GAME
-  private isDrawCalled: boolean = false;
-  private started: boolean = false;
-  private score: number = 0;
+  private isDrawCalled = false;
+  private started = false;
+  private score = 0;
   private boxes: Box[] = [];
   private grp: Gripper = new Gripper();
-  private gameOver: boolean = false;
+  private gameOver = false;
   @ViewChild('game', { static: false }) game: ElementRef;
 
   back() {
@@ -37,7 +37,7 @@ export class PageNotFoundComponent implements OnInit {
         this.init();
         return;
       }
-      let ctx = this.game.nativeElement.getContext('2d');
+      const ctx = this.game.nativeElement.getContext('2d');
       ctx.save();
       ctx.clearRect(0, 0, 600, 300); // clear canvas
       ctx.font = '24px serif';
@@ -76,11 +76,11 @@ export class PageNotFoundComponent implements OnInit {
       // DRAW BOXES AND CHECK FOR COLLISION
       ctx.translate(0, BOXES_OFFSET);
       ctx.fillStyle = '#C0C0C0';
-      let filteredBoxes = this.boxes.filter(function(box) {
+      const filteredBoxes = this.boxes.filter(box => {
         return !box.remove;
       });
       for (let i = 0; i < filteredBoxes.length; i++) {
-        let b = filteredBoxes[i];
+        const b = filteredBoxes[i];
         if (b.xPos === 121) {
           b.remove = true;
         }
@@ -94,9 +94,9 @@ export class PageNotFoundComponent implements OnInit {
           continue;
         }
         b.touchable = b.xPos < this.grp.xPos + this.grp.width;
-        let grpBottomY = this.grp.yPos + this.grp.height;
-        let checkX = b.xPos <= this.grp.xPos + this.grp.width;
-        let checkY = b.yPos + BOXES_OFFSET < grpBottomY;
+        const grpBottomY = this.grp.yPos + this.grp.height;
+        const checkX = b.xPos <= this.grp.xPos + this.grp.width;
+        const checkY = b.yPos + BOXES_OFFSET < grpBottomY;
         if (checkX && checkY) {
           if (b.touchable) {
             b.success = true;
@@ -111,8 +111,8 @@ export class PageNotFoundComponent implements OnInit {
       ctx.fillStyle = '#C0C0C0';
       if (this.gameOver) return;
       // ADD NEW BOXES
-      let lastBox = this.boxes[this.boxes.length - 1];
-      let distance = (Math.random() * 100 + 1) * 20;
+      const lastBox = this.boxes[this.boxes.length - 1];
+      const distance = (Math.random() * 100 + 1) * 20;
       if (lastBox.xPos < 600 - lastBox.width - distance) {
         this.boxes.push(new Box());
       }
@@ -133,12 +133,11 @@ export class PageNotFoundComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   onKeyDown(e: KeyboardEvent) {
-    if (e.keyCode === 40)
-      // keydown
+    if (e.key === 'ArrowDown') {
       this.grp.yPos += this.grp.yPos >= 180 ? 0 : SPEED;
-    else if (e.keyCode === 38)
-      // keyup
+    } else if (e.key === 'ArrowUp') {
       this.grp.yPos -= this.grp.yPos <= 115 ? 0 : SPEED;
+    }
   }
 
   onCanvasClick() {

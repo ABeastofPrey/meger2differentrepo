@@ -1,4 +1,4 @@
-<div class="mat-typography">
+<form class="mat-typography" [formGroup]="dialogForm" (ngSubmit)="create()">
 	<div class="title mat-elevation-z1">
 		<mat-icon>{{ data.icon }}</mat-icon
 		>&nbsp;&nbsp;{{ data.title }}
@@ -8,22 +8,24 @@
 			<input
 				matInput
 				placeholder="{{ data.placeholder }}"
-				[(ngModel)]="val"
+				formControlName="val"
 				virtualKeyboard
+				[errorStateMatcher]="matcher"
 				[type]="data.type || 'text'"
 				[ktype]="data.type === 'number' ? 'numeric' : 'text'"
-				(keyup.enter)="create()"
-				(onKeyboardClose)="create()"
 			/>
 			<span matSuffix *ngIf="data.suffix">{{ data.suffix }}</span>
+			<mat-error *ngIf="dialogForm.controls['val'].hasError('pattern')">
+				{{ 'error.invalid_regex' | translate }}
+			</mat-error>
 		</mat-form-field>
 	</div>
 	<div class="actions">
 		<button mat-button color="primary" mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="create()" [disabled]="!isValOk">
+		<button mat-raised-button color="primary" type="submit" [disabled]="dialogForm.invalid">
 			{{ data.accept }}
 		</button>
 	</div>
-</div>
+</form>

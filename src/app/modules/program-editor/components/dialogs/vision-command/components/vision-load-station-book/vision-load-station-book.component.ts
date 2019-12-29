@@ -14,17 +14,17 @@ import { map, catchError } from 'rxjs/operators';
   styleUrls: ['./vision-load-station-book.component.scss']
 })
 export class VisionLoadStationBookComponent implements OnInit {
-  public form: FormGroup;
-  files: any[] = [];
+  form: FormGroup;
+  files: VisionFile[] = [];
   selectedVariable: TPVariable;
 
-  public successfullyLoaded: boolean;
+  successfullyLoaded: boolean;
 
   private readonly defaultRootFolder = "SSMC";
   private readonly defaultConfigFile = "VJOB.DAT";
   private readonly defaultConfigExtension = "DAT";
 
-  constructor(public dialogRef: MatDialogRef<any>,
+  constructor(public dialogRef: MatDialogRef<VisionLoadStationBookComponent, string>,
     private formBuilder: FormBuilder,
     private api: ApiService,
     private dataService: DataService,
@@ -52,7 +52,7 @@ export class VisionLoadStationBookComponent implements OnInit {
     this.loadFile(filePath);
   }
 
-  selectItem(item: any) {
+  selectItem(item: VisionFile) {
     this.form.patchValue({ configFilePath: item.displayPath });
   }
 
@@ -74,7 +74,7 @@ export class VisionLoadStationBookComponent implements OnInit {
   }
 
   submitForm({ value, valid }: FormGroup): void {
-    let { configFilePath, assignedTo } = value;
+    const { configFilePath, assignedTo } = value;
 
     if (valid) {
       const command = assignedTo ? `${assignedTo.name} = VLoadStationBook("${configFilePath}")` :
@@ -83,7 +83,7 @@ export class VisionLoadStationBookComponent implements OnInit {
     }
   }
 
-  public loadFile(filePath: string): void {
+  loadFile(filePath: string): void {
     this.loadAndCheck(filePath).subscribe(isTrue => {
       this.successfullyLoaded = isTrue;
       this.form.patchValue({ configFilePath: filePath });
@@ -112,4 +112,9 @@ export class VisionLoadStationBookComponent implements OnInit {
       }
     }
   }
+}
+
+interface VisionFile {
+  fileName: string;
+  displayPath: string;
 }

@@ -21,49 +21,49 @@ const parseRes = compose(
 export class HomeSettingService {
   constructor(private ws: WebsocketService) {}
 
-  public async getHomePostion(): Promise<Result> {
+  async getHomePostion(): Promise<Result> {
     const api = '?getAllHome';
     const resHandler = handler(parseRes, errMsgProp);
     return this.query(api, resHandler);
   }
 
-  public async getHomeOrder(): Promise<Result> {
+  async getHomeOrder(): Promise<Result> {
     const api = '?getAllHomeOrder';
     const resHandler = handler(parseRes, errMsgProp);
     return this.query(api, resHandler);
   }
 
-  public async updateHomePostion(index: number, value: number): Promise<any> {
+  async updateHomePostion(index: number, value: number) {
     const api = `setHome(${index}, ${value})`;
     const resHandler = handler(Nothing, errMsgProp);
     return this.query(api, resHandler);
   }
 
-  public async clearHomePosition(index: number): Promise<any> {
+  async clearHomePosition(index: number) {
     const api = `clearHome(${index})`;
     const resHandler = handler(Nothing, errMsgProp);
     return this.query(api, resHandler);
   }
 
-  public async updateHomeOrder(index: number, value: number): Promise<any> {
+  async updateHomeOrder(index: number, value: number) {
     const api = `setHomeOrder(${index}, ${value})`;
     const resHandler = handler(Nothing, errMsgProp);
     return this.query(api, resHandler);
   }
 
-  public async readCurrentPosition(): Promise<any> {
+  async readCurrentPosition() {
     const api = '?HM_readCurrentPosition';
     const resHandler = handler(parseRes, errMsgProp);
     return this.query(api, resHandler);
   }
 
-  public async getPositionMax(index: number): Promise<any> {
+  async getPositionMax(index: number) {
     const api = `?maingroup.j${index}.pmax`;
     const resHandler = handler(Number, errMsgProp);
     return this.query(api, resHandler);
   }
 
-  public async getPositionMin(index: number): Promise<any> {
+  async getPositionMin(index: number) {
     const api = `?maingroup.j${index}.pmin`;
     const resHandler = handler(Number, errMsgProp);
     return this.query(api, resHandler);

@@ -19,13 +19,18 @@
   "add": "Add",
   "Administrator": "Administrator",
   "advanced": "Advanced",
+  "app_bar": {
+    "menu_toggle": "Expand/Contract App Menu",
+    "toolbar_contract": "Contract App Toolbar",
+    "toolbar_expand": "Expand App Toolbar"
+  },
   "apps": {
     "err_mcu": "Error: could not update MCU firmware",
-    "firmware": "Update Firmware",
+    "firmware": "Update System Software",
     "firmware_confirm": {
-      "title": "Update softMC Firmware",
+      "title": "Update softMC System Software",
       "msg": "softMC will disconnect during the process. Make sure you have saved all changes before proceeding.",
-      "yes": "UPDATE FIRMWARE",
+      "yes": "UPDATE SYSTEM SOFTWARE",
       "no": "CANCEL"
     },
     "modbus": "Modbus Configurator",
@@ -38,7 +43,7 @@
     },
     "rebooting": "Rebooting softMC...",
     "title": "softMC Tools",
-    "updating": "Updating Firmware",
+    "updating": "Updating System Software",
     "restore": {
       "default": "Default",
       "desc": "Restore softMC to Factory State",
@@ -160,7 +165,7 @@
         "3d": "XYZ"
       }
     },
-    "tab1": "Dashboards",
+    "tab1": "Motion Dashboards",
     "tab2": "Recordings"
   },
   "dataScreen": {
@@ -209,17 +214,19 @@
     "estop": "E-STOP IS PRESSED",
     "field_too_short": "Input is too short",
     "firmware_update": {
-      "title": "Firmware Update Failed",
+      "title": "System Software Update failed",
       "msg": "We couldn't install the pacakge on the controller."
     },
     "invalid_etag": "It seems you recently updated ControlStudio+ and/or the softMC web server. Press CTRL + SHIFT + R to reload this page.",
     "invalid_etag_tablet": "It seems you recently updated ControlStudio+ and/or the softMC web server. Please clear the browser cache, then reload this page.",
     "invalid_feature": "Invalid feature",
     "invalid_full_name": "A Full name is made of a First AND Last name",
+    "invalid_regex": "Invalid input",
     "invalid_webserver": "Use web server {{ver}} (current is {{current}})",
+    "mismatch_pass": "Password doesn't match the previous field",
     "orientation": "ControlStudio+ works in Landscape mode only.",
     "tp": "Could not load TP Libraries, check console log for more details...",
-    "tp_tablet": "TP Libraries was not found. Reboot the controller and try again"
+    "tp_tablet": "TP Library was not found. Reboot the controller and try again"
   },
   "errorHistory": {
     "button": {
@@ -289,6 +296,7 @@
       "Add Machine Table",
       "Add Work Piece"
     ],
+    "none": "No {{frameType}} is selected",
     "TOOL": "TOOL",
     "WORLD": "WORLD"
   },
@@ -511,7 +519,7 @@
   "locations": "Locations",
   "log": {
     "file_del": "Deleted a file",
-    "firmware": "Updated firmware with",
+    "firmware": "Updated system software with",
     "login": "Has logged in",
     "upload": "Uploaded file",
     "user_del": "Deleted user",
@@ -537,6 +545,8 @@
     }
   },
   "message_log": "Message Log",
+  "mode_debug": "DEBUG MODE",
+  "mode_remote": "REMOTE MODE",
   "mode_selector": "Mode",
   "motion_element": "Motion Element",
   "motion_elements": "Motion Elements",
@@ -591,7 +601,7 @@
       "index_custom": "Custom",
       "index_empty": "Empty",
       "index_full": "Full",
-      "invalid_val": "Invalid value",
+      "invalid_val": "Select pallet current index",
       "level": "Level",
       "levels": "Levels",
       "levels_in_pallet": "Levels in pallet",
@@ -723,7 +733,7 @@
     },
     "goHome": {
       "title": "Insert GoHome Command",
-      "vCruisePh": "VCruise",
+      "vCruisePh": "VCruise (Optional)",
       "numRange": "Enter a number in"
     },
     "jump": {
@@ -793,7 +803,8 @@
     "new": "New Project",
     "notification": {
       "errMsg": "Errors found in the following lines:",
-      "none": "No compilation errors."
+      "none": "No compilation errors.",
+      "title": "Problems"
     },
     "open": "OPEN PROJECT",
     "saved": "File Saved",
@@ -1036,6 +1047,10 @@
   "robot": "Robot",
   "robots": {
     "axes": "Robot Axes",
+    "battery": {
+      "masteringAck": "CONFIRM MASTERING DONE",
+      "status": "Battery Status"
+    },
     "btnChange": "CHANGE ROBOT",
     "btnSetCurrent": "SET CURRENT",
     "bus": "Bus Type",
@@ -1061,6 +1076,10 @@
     "updating": "Updating Robot Configuration",
     "reference": {
       "title": "Mastering by reference point"
+    },
+    "vord": {
+      "title": "Velocity Override",
+      "vmax": "Vmax Override"
     },
     "mastering": {
       "cancelTitle": "Cancel mastering process?",
@@ -1118,6 +1137,9 @@
       "congratulationsContent2": "has been successfully finished, please move the robot to existent points to verify."
     }
   },
+  "safety": {
+    "ack_tooltip": "Safety Acknowledge"
+  },
   "select": "Select",
   "simulative": "Simulated",
   "simulator": "3D Simulator",
@@ -1128,6 +1150,7 @@
     "disabled": "No available 3D model exists for the current robot - 3D Preview is disabled.",
     "load_rec": "LOAD RECORDING...",
     "loading": "Loading...",
+    "mode_live": "Live Mode",
     "prop": "Property",
     "rec_close": "CLOSE RECORDING",
     "record": "Record Motion",
@@ -1158,14 +1181,14 @@
   "strings": "Strings",
   "success": "Success!",
   "system_state": {
-    "1000": "ONLINE",
+    "1000": "ACTIVE",
     "loading": "Initializing system...",
     "state": "System State"
   },
   "tabs": {
     "blockly": "Blockly Graphic Programming",
     "configuration": "System Configuration",
-    "dashboard": "Motion Dashboard",
+    "dashboard": "Dashboards",
     "editor": "Project Editor",
     "help": "Help",
     "history": "Error History",
@@ -1186,7 +1209,7 @@
     "name": "Task Name",
     "prg": "Programs",
     "priority": "Priority",
-    "reset": "RESET ALL",
+    "reset": "RELOAD SYSTEM",
     "run": "Run Task",
     "state": "State",
     "unload": "Unload Task",
@@ -1288,6 +1311,13 @@
       "content": "Use this toolbar to open, edit and execute your project."
     }
   ],
+  "trivia": [
+    "You can record the robot's motion by pressing the RECORD button on the main app toolbar.",
+    "You can add a new application to the project by right clicking the Apps folder.",
+    "You can EXPAND or CONTRACT the application's toolbar by clicking on the arrow button in the app toolbar.",
+    "You can CLEAR all commands from the terminal by using the command CLEAR in the terminal.",
+    "You can UPLOAD a new PROFILE PICTURE by expanding the app's side menu, clicking the profile picture, and choosing a photo."
+  ],
   "type": "Type",
   "userManager": {
     "btnCreate": "CREATE USER",
@@ -1320,6 +1350,7 @@
     "btn_create": "CREATE VARIABLE",
     "name": "Variable Name",
     "new": "Add Variable",
+    "none_exist": "No variables on this list",
     "type": "Variable Type",
     "get_current": "GET CURRENT",
     "cannot_use_jog_tip": "Jog panel is disabled!"
@@ -1331,9 +1362,9 @@
     "GUIDes": "This is GUI",
     "webServerDes": "This is web server",
     "successDialogTitle": "Success!",
-    "successDialogMsg": "The OS upgrade is successful. The new version is: ",
+    "successDialogMsg": "The OS update was successful. The new version is: ",
     "errorDialogTitle": "Failed!",
-    "errorDialogMsg": "The OS upgrade is failed, please reinstall the old version: ",
+    "errorDialogMsg": "The OS update has failed, please reinstall the old version: ",
     "releaseNoteTitle": "ControlStudio+ Release Note"
   },
   "watch": {

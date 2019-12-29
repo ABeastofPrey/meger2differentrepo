@@ -16,35 +16,35 @@ export const PERMISSION_SUPER = 99;
 
 @Injectable()
 export class ApiService {
-  private picReq: number = 0;
+  private picReq = 0;
 
   profilePicChanged: EventEmitter<void> = new EventEmitter();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  private formatErrors(error: any) {
+  private formatErrors(error: { error: Error }) {
     return throwError(error.error);
   }
 
-  get(path: string, params: HttpParams = new HttpParams()): Observable<any> {
+  get(path: string, params: HttpParams = new HttpParams()): Observable<{}> {
     return this.http
       .get(`${environment.api_url}${path}`, { params })
       .pipe(catchError(this.formatErrors));
   }
 
-  put(path: string, body: Object = {}): Observable<any> {
+  put(path: string, body: {} = {}): Observable<{}> {
     return this.http
       .put(`${environment.api_url}${path}`, JSON.stringify(body))
       .pipe(catchError(this.formatErrors));
   }
 
-  post(path: string, body: Object = {}): Observable<any> {
+  post(path: string, body: {} = {}): Observable<{}> {
     return this.http
       .post(`${environment.api_url}${path}`, JSON.stringify(body))
       .pipe(catchError(this.formatErrors));
   }
 
-  delete(path): Observable<any> {
+  delete(path): Observable<{}> {
     return this.http
       .delete(`${environment.api_url}${path}`)
       .pipe(catchError(this.formatErrors));
@@ -57,7 +57,7 @@ export class ApiService {
   confirmPass(username: string, pass: string) {
     return this.post('/cs/api/users', {
       user: {
-        username: username,
+        username,
         password: pass,
       },
     })
@@ -75,15 +75,15 @@ export class ApiService {
   upload(file: File, overwrite: boolean) {
     let url = environment.api_url + '/cs/upload';
     if (overwrite) url += '/overwrite';
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('token', this.token);
     formData.append('file', file);
     return this.http.post(url, formData).toPromise();
   }
 
   uploadToDrive(file: File, ip: string) {
-    let url = environment.api_url + '/drive/api/upload';
-    let formData = new FormData();
+    const url = environment.api_url + '/drive/api/upload';
+    const formData = new FormData();
     formData.append('file', file);
     formData.append('ip', ip);
     return this.http.post(url, formData).toPromise();
@@ -91,7 +91,7 @@ export class ApiService {
 
   uploadToPath(file: File, overwrite: boolean, path: string) {
     const url = environment.api_url + '/cs/api/upload';
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('file', file);
     let body = new HttpParams();
     body = body.set('token', this.token);
@@ -99,10 +99,10 @@ export class ApiService {
     if (overwrite) body = body.set('overwrite', 'true');
     return this.http.post(url, formData, { params: body }).toPromise();
   }
-  
+
   uploadRec(file: File) {
     const url = environment.api_url + '/cs/api/uploadRec';
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('file', file);
     let body = new HttpParams();
     body = body.set('token', this.token);
@@ -111,7 +111,7 @@ export class ApiService {
 
   uploadIPK(file: File) {
     const url = environment.api_url + '/cs/firmware';
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('token', this.token);
     formData.append('file', file);
     return this.http.post(url, formData).toPromise();
@@ -119,7 +119,7 @@ export class ApiService {
 
   verifyProject(file: File) {
     const url = environment.api_url + '/cs/api/verifyProject';
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('token', this.token);
     formData.append('file', file);
     return this.http.post(url, formData).toPromise();
@@ -138,13 +138,13 @@ export class ApiService {
   }
 
   uploadProfilePic(file: File, username: string) {
-    let url =
+    const url =
       environment.api_url +
       '/cs/api/' +
       username +
       '/pic?token=' +
       localStorage.getItem('jwtToken');
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('file', file);
     return this.http.post(url, formData).toPromise();
   }
@@ -227,7 +227,7 @@ export class ApiService {
       .then(ret => {
         const blob = new Blob([ret], { type: 'application/zip' });
         const url = window.URL.createObjectURL(blob);
-        var a = document.createElement('a');
+        const a = document.createElement('a');
         document.body.appendChild(a);
         a.setAttribute('style', 'display: none');
         a.href = url;
@@ -314,9 +314,9 @@ export class ApiService {
     permission: number
   ) {
     const user = {
-      username: username,
-      password: password,
-      fullName: fullName,
+      username,
+      password,
+      fullName,
       permission: permission.toString(),
     };
     return this.http
@@ -331,9 +331,9 @@ export class ApiService {
     permission: number
   ) {
     const user = {
-      username: username,
-      password: password,
-      fullName: fullName,
+      username,
+      password,
+      fullName,
       permission: permission.toString(),
     };
     return this.http
@@ -359,6 +359,8 @@ export class ApiService {
         return 'Viewer';
       case PERMISSION_SUPER:
         return 'System Supervisor';
+      default:
+        return '';
     }
   }
 
@@ -384,7 +386,7 @@ export class ApiService {
       .then(ret => {
         const blob = new Blob([ret], { type: 'application/octet-stream' });
         const url = window.URL.createObjectURL(blob);
-        var a = document.createElement('a');
+        const a = document.createElement('a');
         document.body.appendChild(a);
         a.setAttribute('style', 'display: none');
         a.href = url;
@@ -397,7 +399,7 @@ export class ApiService {
   }
 
   getRecordingCSV(recName: string) {
-    let rec = recName || 'CSRECORD';
+    const rec = recName || 'CSRECORD';
     return this.get('/cs/api/dashboard/rec/' + rec)
       .toPromise()
       .then(
@@ -436,40 +438,40 @@ export class ApiService {
 
   createFolder(path: string): Promise<boolean> {
     const url = environment.api_url + '/cs/api/folder';
-    return <Promise<boolean>>this.http.post(url, { path: path }).toPromise();
+    return this.http.post(url, { path }).toPromise() as Promise<boolean>;
   }
 
   moveFiles(files: string, target: string): Promise<boolean> {
     const url = environment.api_url + '/cs/api/move';
-    return <Promise<boolean>>(
-      this.http.post(url, { files: files, target: target }).toPromise()
-    );
+    return (
+      this.http.post(url, { files, target }).toPromise()
+    ) as Promise<boolean>;
   }
 
   restoreToFactory() {
     const url = environment.api_url + '/cs/api/factoryRestore';
-    return <Promise<boolean>>this.http.get(url).toPromise();
+    return this.http.get(url).toPromise() as Promise<boolean>;
   }
 
   bugReport(info: string, user: string, history: string) {
     const url = environment.api_url + '/cs/api/bugreport';
-    return <Promise<boolean>>this.http
+    return this.http
       .post(url, {
-        user: user,
-        info: info,
-        history: history,
+        user,
+        info,
+        history,
       })
-      .toPromise();
+      .toPromise() as Promise<boolean>;
   }
 
   copy(fromPath: string, to: string) {
     const url = environment.api_url + '/cs/api/copy';
-    return <Promise<boolean>>this.http
+    return this.http
       .post(url, {
         from: fromPath,
-        to: to,
+        to,
       })
-      .toPromise();
+      .toPromise() as Promise<boolean>;
   }
 }
 

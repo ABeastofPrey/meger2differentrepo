@@ -15,7 +15,11 @@
   border-radius: 6px;
 }
 mat-toolbar {
+  transition: height 0.5s ease-out;
   z-index: 2;
+}
+mat-toolbar.contracted {
+  height: 0px;
 }
 mat-toolbar span {
   flex: 1;
@@ -29,6 +33,12 @@ mat-toolbar > mat-icon {
 mat-toolbar mat-slide-toggle {
   margin-right: 16px;
   font-size: 16px;
+}
+.toolbar-fab {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
 }
 .toolbar-wrapper {
   display: flex;
@@ -83,6 +93,9 @@ mat-sidenav-content {
 mat-sidenav {
   background-color: #eee;
 }
+mat-sidenav.contracted {
+  padding-top: 48px;
+}
 login-screen {
   flex: 1;
 }
@@ -113,7 +126,6 @@ login-screen {
 .window .title span {
   flex: 1;
 }
-watch-window,
 notification-window,
 terminal-window {
   flex: 1;
@@ -123,8 +135,10 @@ terminal-window {
 watch-window {
   min-height: 0;
   max-height: 400px;
-  width: 605px;
+  overflow: auto;
+  width: 100%;
   flex-direction: column;
+  flex: 1;
 }
 .window {
   position: absolute;
@@ -138,6 +152,7 @@ watch-window {
   left: 25%;
   background: #fff;
   min-height: 100px;
+  width: 500px;
 }
 .window-large {
   width: 50%;
@@ -146,6 +161,7 @@ watch-window {
 lib-app-simulator {
   flex: 1;
   display: flex;
+  overflow: hidden;
 }
 .window-sim {
   width: 400px;
@@ -156,6 +172,12 @@ lib-app-simulator {
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+.simResize {
+  display: block;
+  width: 0;
+  height: 0;
 }
 .hidden {
   visibility: hidden;
@@ -292,4 +314,11 @@ main-menu.menu-small {
 }
 .footer mat-icon {
   margin-right: 16px;
+}
+.safety-ack {
+  height: 48px;
+  font-size: 24px;
+  font-weight: bold;
+  width: 150px;
+  min-width: auto;
 }

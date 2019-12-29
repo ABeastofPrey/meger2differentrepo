@@ -16,8 +16,8 @@ import { of } from 'rxjs';
 export class WatchWindowComponent implements OnInit {
   @ViewChild(CdkVirtualScrollViewport, { static: true })
   viewport: CdkVirtualScrollViewport;
-  isRecording: boolean = false;
-  recPercentage: number = 0;
+  isRecording = false;
+  recPercentage = 0;
 
   constructor(
     public watch: WatchService,
@@ -46,8 +46,9 @@ export class WatchWindowComponent implements OnInit {
         return v.record && v.name.trim().length;
       })
       .map(v => {
-        if (v.context.endsWith('_DATA'))
+        if (v.context.endsWith('_DATA')) {
           return v.context.slice(0, -5) + '::' + v.name;
+        }
         return v.name;
       });
     this.dialog.open(RecordDialogComponent).afterClosed().subscribe((recParams: RecordParams) => {
@@ -58,7 +59,7 @@ export class WatchWindowComponent implements OnInit {
   }
 
   private startRecording(params: string[], recParams: RecordParams) {
-    let cmd =
+    const cmd =
       'Record ' + recParams.name + '.rec ' +
       Math.ceil(recParams.duration) +
       ' Gap=' + recParams.gap + ' RecData=' +
@@ -89,13 +90,13 @@ export class WatchWindowComponent implements OnInit {
         // ALLOW TIME FOR RECORDING TO CLOSE FILE
         this.rec.createTab(recParams.name);
         this.router.navigateByUrl('/dashboard/recordings');
-      }, 400);
+    }, 400);
     });
   }
 
   onBlur(v, e?: KeyboardEvent) {
     if (e) {
-      (<HTMLElement>e.target).blur();
+      (e.target as HTMLElement).blur();
       return;
     }
     if (this.watch.addBlankIfNeeded(v)) {

@@ -7,7 +7,7 @@ import { compose, then } from 'ramda';
 export class HomeDialogService {
   constructor(private ws: WebsocketService) {}
 
-  public async retrieveVelocityMax(): Promise<any> {
+  async retrieveVelocityMax() {
     const api = '?maingroup.VELOCITYMAX';
     const query = _api => this.ws.query(_api);
     const resHandler = handler(JSON.parse, errMsgProp);

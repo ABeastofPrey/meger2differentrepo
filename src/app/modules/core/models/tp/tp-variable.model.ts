@@ -1,18 +1,22 @@
 import { TPVariableType } from './tp-variable-type.model';
 
+interface VariableValue {
+  value: string | number;
+}
+
 export class TPVariable {
   
   name: string;
-  value: any = null;
-  isArr: boolean = false;
-  isTwoDimension: boolean = false;
-  varType: TPVariableType = null;
-  isPosition: boolean = false;
-  typeStr: string = null;
-  selectedIndex: number = 1;
-  selectedSecondIndex: number = 1;
-  
-  private _dataLoaded: boolean = false;
+  value: number | Array< TPVariable | VariableValue | Array< TPVariable | VariableValue>> = null;
+  isArr = false;
+  isTwoDimension = false;
+  varType: TPVariableType | null = null;
+  isPosition = false;
+  typeStr: string | null = null;
+  selectedIndex = 1;
+  selectedSecondIndex = 1;
+
+  private _dataLoaded = false;
   set dataLoaded(val: boolean) {
     this._dataLoaded = val;
   }
@@ -45,38 +49,39 @@ export class TPVariable {
       case TPVariableType.STRING:
         this.typeStr = 'STRING';
         break;
+      default:
+        break;
     }
     if (typeof str === 'undefined') {
       this.value = 0;
       this.name = '';
       return;
     }
-    var index = str.indexOf('[');
-    if (index === -1) this.name = str;
-    else {
+    const index = str.indexOf('[');
+    if (index === -1) {
+      this.name = str;
+    } else {
       this.name = str.substring(0, index);
       this.isArr = true;
-      let secondIndex = str.indexOf('][');
-      if (secondIndex === -1)
-      {
+      const secondIndex = str.indexOf('][');
+      if (secondIndex === -1) {
         str = str.substring(index + 1, str.length - 1);
-        let arrSize = parseInt(str);
+        const arrSize = Number(str);
         this.value = new Array<TPVariable>(arrSize);
-        for (var i = 0; i < arrSize; i++) {
+        for (let i = 0; i < arrSize; i++) {
           this.value[i] = new TPVariable(varType);
         }
-      }
-      else {
+      } else {
         this.isTwoDimension = true;
-        let arrSize = parseInt(str.substring(index + 1, secondIndex));
-        let arrSecondSize = parseInt(str.substring(secondIndex + 2, str.length - 1));
+        const arrSize = Number(str.substring(index + 1, secondIndex));
+        const arrSecondSize = Number(str.substring(secondIndex + 2, str.length - 1));
         this.value = [];
-        for (var i = 0; i < arrSize; i++) {
+        for (let i = 0; i < arrSize; i++) {
           this.value[i] = [];
-          for (var j = 0; j < arrSecondSize; j++) {
+          for (let j = 0; j < arrSecondSize; j++) {
             this.value[i][j] = new TPVariable(varType);
           } 
-        }
+  }
       }
     }
   }

@@ -20,12 +20,12 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
   styleUrls: ['./factory-restore.component.css'],
 })
 export class FactoryRestoreComponent implements OnInit {
-  mode: string = '1';
-  password: string = '';
+  
+  password = '';
   selectedRobot: RobotModel = null;
-  busy: boolean = false; // true when the dialog is busy checking user password
+  busy = false; // true when the dialog is busy checking user password
 
-  private words: any;
+  private words: {};
   private notifier: Subject<boolean> = new Subject();
 
   private _username: string;
@@ -112,7 +112,7 @@ export class FactoryRestoreComponent implements OnInit {
     this.ws.query('?user sys_reboot(0,0,0)');
     setTimeout(() => {
       let ok = false;
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         if (ok) return;
         this.api
           .getFile('isWebServerAlive.HTML')

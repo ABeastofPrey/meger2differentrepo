@@ -66,23 +66,23 @@ export class HomeScreenComponent implements OnInit {
   @ViewChild('msgLogContainer', { static: false }) msgContainer: ElementRef;
 
   style: object = {};
-  contextMenuShown: boolean = false;
-  contextMenuX: number = 0;
-  contextMenuY: number = 0;
-  mcImage: string = '';
-  simulated: boolean = false;
-  viewInit: boolean = false;
+  contextMenuShown = false;
+  contextMenuX = 0;
+  contextMenuY = 0;
+  mcImage = '';
+  simulated = false;
+  viewInit = false;
   profileSrc: string;
   contextSelection: string = null;
-  public mainVer: string[] = [];
-  public guiVer: string = environment.gui_ver;
-  public appNameKuka: string = environment.appName_Kuka;
+  mainVer: string[] = [];
+  guiVer: string = environment.gui_ver;
+  appNameKuka: string = environment.appName_Kuka;
 
-  private chartInit: boolean = false;
-  private words: any;
-  private timeInterval: any;
+  private chartInit = false;
+  private words: {};
+  private timeInterval: number;
   private notifier: Subject<boolean> = new Subject();
-  public libVer: string;
+  libVer: string;
 
   // Header Info
   date: string;
@@ -138,8 +138,9 @@ export class HomeScreenComponent implements OnInit {
     } else if (
       cpu.indexOf('neon') !== -1 ||
       cpu.toLowerCase().indexOf('arm') !== -1
-    )
+    ) {
       mc += '301';
+ }
     else mc += '702';
     this.mcImage = 'assets/pics/mc/' + mc + '.png';
   }
@@ -147,7 +148,7 @@ export class HomeScreenComponent implements OnInit {
   private updateCharts() {
     const sysInfo = this.groupManager.sysInfo;
     if (sysInfo === null) return;
-    let layout = {
+    const layout = {
       title: 'Disk',
       height: 230,
       showlegend: false,
@@ -160,7 +161,7 @@ export class HomeScreenComponent implements OnInit {
       },
       paper_bgcolor: 'transparent',
     };
-    let layout2 = {
+    const layout2 = {
       title: 'RAM',
       height: 200,
       showlegend: false,
@@ -173,7 +174,7 @@ export class HomeScreenComponent implements OnInit {
       },
       paper_bgcolor: 'transparent',
     };
-    let data = [
+    const data = [
       {
         values: [
           sysInfo.diskSize - sysInfo.freeDiskSpace,
@@ -182,25 +183,25 @@ export class HomeScreenComponent implements OnInit {
         labels: this.words['home.chart_space'],
         type: 'pie',
         marker: {
-          colors: colors,
+          colors,
         },
       },
     ];
-    let data2 = [
+    const data2 = [
       {
         values: [sysInfo.ramSize - sysInfo.freeRamSpace, sysInfo.freeRamSpace],
         labels: this.words['home.chart_ram'],
         type: 'pie',
         marker: {
-          colors: colors,
+          colors,
         },
       },
     ];
     setTimeout(() => {
-      Plotly.newPlot(this.gDisk.nativeElement, data, layout, {
+      Plotly.newPlot(this.gDisk.nativeElement, data as Array<Partial<Plotly.PlotData>>, layout, {
         staticPlot: true,
       });
-      Plotly.newPlot(this.gMem.nativeElement, data2, layout2, {
+      Plotly.newPlot(this.gMem.nativeElement, data2 as Array<Partial<Plotly.PlotData>>, layout2, {
         staticPlot: true,
       });
       this.chartInit = true;
@@ -257,7 +258,7 @@ export class HomeScreenComponent implements OnInit {
       });
       clearInterval(this.timeInterval);
       this.refreshTime();
-      this.timeInterval = setInterval(() => {
+      this.timeInterval = window.setInterval(() => {
         this.refreshTime();
       }, 60000);
     });
@@ -311,7 +312,7 @@ export class HomeScreenComponent implements OnInit {
       .afterClosed()
       .subscribe((ret: Feature) => {
         if (ret) {
-          const importCmd: string =
+          const importCmd =
             'import_c lic_man_add_feature(byval as string) as long';
           this.ws.query(importCmd).then(() => {
             const cmd = '?lic_man_add_feature("' + ret.toString() + '")';
@@ -330,7 +331,7 @@ export class HomeScreenComponent implements OnInit {
                 this.ws.query('?user sys_reboot(0,0,0)');
                 setTimeout(() => {
                   let ok = false;
-                  let interval = setInterval(() => {
+                  const interval = setInterval(() => {
                     if (ok) return;
                     this.api
                       .getFile('isWebServerAlive.HTML')
@@ -408,6 +409,7 @@ export class HomeScreenComponent implements OnInit {
 
 }
 
+// tslint:disable-next-line: interface-name
 interface ILib {
   name: string;
   version: string;
@@ -415,6 +417,7 @@ interface ILib {
   desc: string;
 }
 
+// tslint:disable-next-line: interface-name
 interface IResLibs {
   name: string;
   ver: string;

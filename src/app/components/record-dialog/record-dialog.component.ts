@@ -10,15 +10,15 @@ import {DashboardWindow} from '../../modules/dashboard/services/dashboard.servic
 export class RecordDialogComponent implements OnInit {
   
   duration: number = null;
-  override: boolean = false;
-  x: string = 'setPoint{1}';
-  y: string = 'setPoint{2}';
-  z: string = 'setPoint{3}';
+  override = false;
+  x = 'setPoint{1}';
+  y = 'setPoint{2}';
+  z = 'setPoint{3}';
   x2D: string = null;
   y2D: string = null;
-  recMode: string = '1';
-  fileName: string = 'CSRECORD';
-  gap: number = 1;
+  recMode = '1';
+  fileName = 'CSRECORD';
+  gap = 1;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DashboardWindow,
@@ -27,10 +27,12 @@ export class RecordDialogComponent implements OnInit {
 
   ngOnInit() {
     const storedDuration = Number(localStorage.getItem('recDuration'));
-    if (!isNaN(storedDuration))
+    if (!isNaN(storedDuration)) {
       this.duration = storedDuration;
-    else
+    }
+    else {
       this.duration = 1000;
+    }
   }
 
   record() {
@@ -46,11 +48,13 @@ export class RecordDialogComponent implements OnInit {
       case '3':
         graphType = '3d';
         break;
+      default:
+        break;
     }
     this.ref.close({
       duration: this.duration,
       override: this.override,
-      graphType: graphType,
+      graphType,
       x: this.recMode === '2' ? this.x2D : this.x,
       y: this.recMode === '2' ? this.y2D : this.y,
       z: this.z,

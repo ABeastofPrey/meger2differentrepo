@@ -35,8 +35,8 @@ import { VisionLoadStationBookComponent } from '../dialogs/vision-command/compon
 })
 export class ProgramEditMenuComponent implements OnInit {
   parser: LineParser;
-  isScara: boolean = false;
-  public visionCommandType = VisionCommandType;
+  isScara = false;
+  visionCommandType = VisionCommandType;
 
   constructor(
     public prg: ProgramEditorService,
@@ -52,7 +52,7 @@ export class ProgramEditMenuComponent implements OnInit {
   }
 
   menu_grp_use() {
-    let ref = this.dialog.open(GripperSelectorComponent, {
+    const ref = this.dialog.open(GripperSelectorComponent, {
       data: 'grippers.set',
     });
     ref.afterClosed().subscribe((grp: Gripper) => {
@@ -65,7 +65,7 @@ export class ProgramEditMenuComponent implements OnInit {
   }
 
   menu_grp_open() {
-    let ref = this.dialog.open(GripperSelectorComponent, {
+    const ref = this.dialog.open(GripperSelectorComponent, {
       data: 'grippers.open',
     });
     ref.afterClosed().subscribe((grp: Gripper) => {
@@ -77,7 +77,7 @@ export class ProgramEditMenuComponent implements OnInit {
   }
 
   menu_grp_close() {
-    let ref = this.dialog.open(GripperSelectorComponent, {
+    const ref = this.dialog.open(GripperSelectorComponent, {
       data: 'grippers.close',
     });
     ref.afterClosed().subscribe((grp: Gripper) => {
@@ -103,7 +103,7 @@ export class ProgramEditMenuComponent implements OnInit {
   }
 
   menu_plt_pick() {
-    let ref = this.dialog.open(PalletPickerDialogComponent, {
+    const ref = this.dialog.open(PalletPickerDialogComponent, {
       data: {
         title: 'projectCommands.other.title_pick',
         pickRobot: true,
@@ -111,14 +111,14 @@ export class ProgramEditMenuComponent implements OnInit {
     });
     ref.afterClosed().subscribe(plt => {
       if (plt) {
-        let cmd =
+        const cmd =
           'PLT_PICK_FROM_PALLET(' + plt.robot + ',"' + plt.pallet + '")';
         this.prg.insertAndJump(cmd, 0);
       }
     });
   }
   menu_plt_place() {
-    let ref = this.dialog.open(PalletPickerDialogComponent, {
+    const ref = this.dialog.open(PalletPickerDialogComponent, {
       data: {
         title: 'projectCommands.other.title_place',
         pickRobot: true,
@@ -126,13 +126,13 @@ export class ProgramEditMenuComponent implements OnInit {
     });
     ref.afterClosed().subscribe(plt => {
       if (plt) {
-        let cmd = 'PLT_PLACE_ON_PALLET(' + plt.robot + ',"' + plt.pallet + '")';
+        const cmd = 'PLT_PLACE_ON_PALLET(' + plt.robot + ',"' + plt.pallet + '")';
         this.prg.insertAndJump(cmd, 0);
       }
     });
   }
   menu_plt_home() {
-    let ref = this.dialog.open(PalletPickerDialogComponent, {
+    const ref = this.dialog.open(PalletPickerDialogComponent, {
       data: {
         title: 'projectCommands.other.title_plt_entry',
         pickRobot: true,
@@ -147,7 +147,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_plt_index() {
-    let ref = this.dialog.open(PalletIndexDialogComponent);
+    const ref = this.dialog.open(PalletIndexDialogComponent);
     ref.afterClosed().subscribe(cmd => {
       if (cmd) this.prg.insertAndJump(cmd, 0);
     });
@@ -162,11 +162,12 @@ export class ProgramEditMenuComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(plt => {
-        if (plt)
+        if (plt) {
           this.prg.insertAndJump(
             '?PLT_GET_INDEX_STATUS("' + plt.pallet + '")',
             0
           );
+        }
       });
   }
   menu_plt_status() {
@@ -179,8 +180,9 @@ export class ProgramEditMenuComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(plt => {
-        if (plt)
+        if (plt) {
           this.prg.insertAndJump('?PLT_GET_STATUS("' + plt.pallet + '")', 0);
+        }
       });
   }
   menu_edit_line() {
@@ -191,10 +193,13 @@ export class ProgramEditMenuComponent implements OnInit {
         this.menu_move(this.prg.lineParams['moves'], this.prg.lineParams);
         break;
       case this.prg.parser.LineType.CIRCLE:
+        const angle = this.prg.lineParams['angle'];
         this.menu_circle(
-          this.prg.lineParams['target'].length === 1,
+          !!angle,
           this.prg.lineParams
         );
+        break;
+      default:
         break;
     }
   }
@@ -202,13 +207,13 @@ export class ProgramEditMenuComponent implements OnInit {
     this.prg.insertAndJump('program\n\n\t\n\nend program', 3);
   }
   menu_call() {
-    let ref = this.dialog.open(CallDialogComponent);
+    const ref = this.dialog.open(CallDialogComponent);
     ref.afterClosed().subscribe(expression => {
       if (expression) this.prg.insertAndJump('call ' + expression, 0);
     });
   }
   menu_if_else() {
-    let ref = this.dialog.open(IfDialogComponent);
+    const ref = this.dialog.open(IfDialogComponent);
     ref.afterClosed().subscribe(ret => {
       if (ret.expression) {
         let cmd = 'if ' + ret.expression + " then\n\t'Do Something...";
@@ -219,13 +224,13 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_while() {
-    let ref = this.dialog.open(WhileDialogComponent);
+    const ref = this.dialog.open(WhileDialogComponent);
     ref.afterClosed().subscribe(expression => {
       if (expression) {
         const txt = this.prg.rangeText
           ? this.prg.rangeText.split('\n').join('\n\t')
           : "'Do something...";
-        let cmd =
+        const cmd =
           'while ' + expression + '\n\t' + txt + "\n\t'sleep 1\nend while";
         if (this.prg.rangeText) this.prg.replaceRange(cmd);
         else this.prg.insertAndJump(cmd, 2);
@@ -236,28 +241,28 @@ export class ProgramEditMenuComponent implements OnInit {
     this.prg.insertAndJump("for i = 1 to 1\n\t'Do something...\nnext", 2);
   }
   menu_case() {
-    let cmd =
+    const cmd =
       "select case var\n\tcase 1\n\t\t'Do something...\n\tcase 2\n\t\t'Do something...\nend select";
     this.prg.insertAndJump(cmd, 3);
   }
   menu_sleep() {
-    let ref = this.dialog.open(SleepDialogComponent);
+    const ref = this.dialog.open(SleepDialogComponent);
     ref.afterClosed().subscribe(time => {
       if (time) {
         this.prg.insertAndJump('sleep ' + time, 0);
       }
     });
   }
-  menu_move(moves: boolean, params?: any) {
-    let ref = this.dialog.open(MoveDialogComponent, {
+  menu_move(moves: boolean, params?: {}) {
+    const ref = this.dialog.open(MoveDialogComponent, {
       width: '400px',
-      data: { moveS: moves, params: params },
+      data: { moveS: moves, params },
       disableClose: true,
     });
     ref.afterClosed().subscribe((cmd: string) => {
       if (cmd) {
         if (params) {
-          let index = params['line']; // Line index
+          const index = params['line']; // Line index
           this.prg.replaceLine(index, cmd);
         } else {
           this.prg.insertAndJump(cmd, 0);
@@ -265,16 +270,16 @@ export class ProgramEditMenuComponent implements OnInit {
       }
     });
   }
-  menu_circle(angle: boolean, params?: any) {
-    let ref = this.dialog.open(CircleDialogComponent, {
+  menu_circle(angle: boolean, params?: {}) {
+    const ref = this.dialog.open(CircleDialogComponent, {
       width: '400px',
-      data: { angle: angle, params: params },
+      data: { angle, params },
       disableClose: true,
     });
     ref.afterClosed().subscribe((cmd: string) => {
       if (cmd) {
         if (params) {
-          let index = params['line']; // Line index
+          const index = params['line']; // Line index
           this.prg.replaceLine(index, cmd);
         } else {
           this.prg.insertAndJump(cmd, 0);
@@ -284,7 +289,7 @@ export class ProgramEditMenuComponent implements OnInit {
   }
   menu_attach() {
     let cmd = 'Attach';
-    let ref = this.dialog.open(RobotSelectorDialogComponent, {
+    const ref = this.dialog.open(RobotSelectorDialogComponent, {
       width: '400px',
       data: {
         title: 'projectCommands.other.title_attach',
@@ -299,7 +304,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_dopass() {
-    let ref = this.dialog.open(RobotSelectorDialogComponent, {
+    const ref = this.dialog.open(RobotSelectorDialogComponent, {
       width: '400px',
       data: {
         title: 'projectCommands.other.title_doPass',
@@ -315,7 +320,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_jump() {
-    let ref = this.dialog.open(JumpDialogComponent, {
+    const ref = this.dialog.open(JumpDialogComponent, {
       width: '400px',
       disableClose: true,
     });
@@ -331,7 +336,7 @@ export class ProgramEditMenuComponent implements OnInit {
       .open(Jump3DialogComponent, {
         width: '400px',
         disableClose: true,
-        data: { type: type },
+        data: { type },
       })
       .afterClosed()
       .subscribe((cmd: string) => {
@@ -355,13 +360,13 @@ export class ProgramEditMenuComponent implements OnInit {
       });
   }
   menu_stop() {
-    let ref = this.dialog.open(StopDialogComponent, { width: '400px' });
+    const ref = this.dialog.open(StopDialogComponent, { width: '400px' });
     ref.afterClosed().subscribe(cmd => {
       if (cmd) this.prg.insertAndJump(cmd, 0);
     });
   }
   menu_waitForMotion() {
-    let ref = this.dialog.open(RobotSelectorDialogComponent, {
+    const ref = this.dialog.open(RobotSelectorDialogComponent, {
       width: '400px',
       data: { title: 'projectCommands.other.title_waitForMotion', must: false },
     });
@@ -374,7 +379,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_delay() {
-    let ref = this.dialog.open(DelayDialogComponent, {
+    const ref = this.dialog.open(DelayDialogComponent, {
       width: '400px',
     });
     ref.afterClosed().subscribe((cmd: string) => {
@@ -384,7 +389,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_enable() {
-    let ref = this.dialog.open(RobotSelectorDialogComponent, {
+    const ref = this.dialog.open(RobotSelectorDialogComponent, {
       width: '400px',
       data: { title: 'projectCommands.other.title_en', must: false },
     });
@@ -397,7 +402,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_disable() {
-    let ref = this.dialog.open(RobotSelectorDialogComponent, {
+    const ref = this.dialog.open(RobotSelectorDialogComponent, {
       width: '400px',
       data: { title: 'projectCommands.other.title_disable', must: false },
     });
@@ -424,7 +429,7 @@ export class ProgramEditMenuComponent implements OnInit {
       });
   }
   menu_inputs() {
-    let ref = this.dialog.open(IoSelectorDialogComponent, {
+    const ref = this.dialog.open(IoSelectorDialogComponent, {
       width: '400px',
       data: {
         title: 'projectCommands.other.title_inRef',
@@ -439,7 +444,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_outputs() {
-    let ref = this.dialog.open(IoSelectorDialogComponent, {
+    const ref = this.dialog.open(IoSelectorDialogComponent, {
       width: '400px',
       data: {
         title: 'projectCommands.other.title_outRef',
@@ -461,7 +466,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   
-  public vCommand(type: VisionCommandType): void {
+  vCommand(type: VisionCommandType): void {
     this.dialog.open(VisionCommandComponent, {
       width: '400px',
       disableClose: true,
@@ -475,7 +480,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
 
-  public vLoadStationBook(): void {
+  vLoadStationBook(): void {
     this.dialog.open(VisionLoadStationBookComponent, {
       width: '400px',
       disableClose: true,

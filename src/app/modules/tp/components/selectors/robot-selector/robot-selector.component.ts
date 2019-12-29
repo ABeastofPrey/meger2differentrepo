@@ -7,8 +7,8 @@ import { DataService } from '../../../../core';
   styleUrls: ['./robot-selector.component.css'],
 })
 export class RobotSelectorComponent implements OnInit {
-  @Input() disabled: boolean;
-  @Input() prompt: string;
+  @Input() disabled?: boolean;
+  @Input() prompt?: string;
 
   constructor(public dataService: DataService) {}
 

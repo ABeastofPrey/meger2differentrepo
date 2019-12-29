@@ -113,7 +113,7 @@
 							(change)="updateGripperSleep('OPEN')"
 							(onKeyboardClose)="updateGripperSleep('OPEN')"
 							virtualKeyboard
-							ktype="numeric"
+							ktype="numeric_int_pos"
 						/>
 						<span matSuffix>ms.</span>
 					</mat-form-field>
@@ -126,7 +126,7 @@
 							type="number"
 							(change)="updateGripperSleep('CLOSE')"
 							virtualKeyboard
-							ktype="numeric"
+							ktype="numeric_int_pos"
 							(onKeyboardClose)="updateGripperSleep('CLOSE')"
 						/>
 						<span matSuffix>ms.</span>

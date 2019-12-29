@@ -9,14 +9,18 @@ import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
 })
 export class GripperTestDialogComponent implements OnInit {
   
-  private interval: any = null;
+  private interval: number = null;
   
-  time: number = 5;
-  duty: number = 50;
-  status: boolean = false;
+  time = 5;
+  duty = 50;
+  status = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      dOut: number,
+      ef: string,
+      grp: string
+    },
     public dataService: DataService,
     private ws: WebsocketService
   ) {}
@@ -26,7 +30,7 @@ export class GripperTestDialogComponent implements OnInit {
     if (time) {
       this.time = Number(time);
     }
-    this.interval = setInterval(() => {
+    this.interval = window.setInterval(() => {
       this.ws
         .query('?sys.dout.dout::' + this.data.dOut)
         .then((ret: MCQueryResponse) => {

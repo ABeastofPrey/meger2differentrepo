@@ -153,13 +153,20 @@
 					<mat-icon class="primary-light">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
-				<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependency'">
-					<button mat-button color="warn" (click)="deleteDep()">
-						<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
-						{{ lastSelectedNode.name }}
-					</button>
-				</div>
-				<!-- end -->
+			</div>
+			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependency'">
+				<button mat-button (click)="renameDep(lastSelectedNode.name)">
+					<mat-icon color="primary">edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}
+					{{ lastSelectedNode.name }}...
+				</button>
+				<button mat-button (click)="saveDepAs(lastSelectedNode.name)">
+					<mat-icon color="primary">save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...
+				</button>
+				<mat-divider></mat-divider>
+				<button mat-button color="warn" (click)="deleteDep()">
+					<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
+					{{ lastSelectedNode.name }}
+				</button>
 			</div>
 		</div>
 	</div>

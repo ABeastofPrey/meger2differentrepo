@@ -37,18 +37,21 @@ import {NewDependencyDialogComponent} from '../toolbar-dialogs/new-dependency-di
   styleUrls: ['./program-toolbar.component.scss'],
 })
 export class ProgramToolbarComponent implements OnInit {
-  onFocus: boolean = false;
-  currMenu: number = -1;
+  onFocus = false;
+  currMenu = -1;
 
-  private words: any;
+  private words: {};
   private fromBackup: boolean;
 
   @ViewChild('uploadFiles', { static: false }) uploadFiles: ElementRef;
   @ViewChild('upload', { static: false }) uploadInput: ElementRef;
 
   toggleFocus(e: MouseEvent) {
-    if (this.cmn.isTablet) this.onFocus = e.toElement.tagName === 'LI';
-    else this.onFocus = !this.onFocus;
+    if (this.cmn.isTablet) {
+      this.onFocus = (e.target as HTMLElement).tagName === 'LI';
+    } else {
+      this.onFocus = !this.onFocus;
+    }
   }
   doImport(fromBackup: boolean) {
     this.uploadInput.nativeElement.click();
@@ -130,7 +133,7 @@ export class ProgramToolbarComponent implements OnInit {
               this.utl.resetAllDialog(
                 this.words['projects.toolbar']['changing']
               );
-            } else
+            } else {
               this.snack.open(
                 this.words['error.err'] +
                   ' ' +
@@ -140,6 +143,7 @@ export class ProgramToolbarComponent implements OnInit {
                 '',
                 { duration: 1500 }
               );
+            }
           });
       }
     });
@@ -166,11 +170,11 @@ export class ProgramToolbarComponent implements OnInit {
     this.ws.query('?prj_stop("' + this.prj.currProject.value.name + '")');
   }
 
-  public runAllBGTasks(): void {
+  runAllBGTasks(): void {
     this.ws.query('call BKG_startBGTasks');
   }
 
-  public stopAllBGTasks(): void {
+  stopAllBGTasks(): void {
     this.ws.query('call BKG_stopBGTasks');
   }
 
@@ -238,10 +242,10 @@ export class ProgramToolbarComponent implements OnInit {
       .afterClosed()
       .subscribe((ret: string[]) => {
         if (ret && ret.length > 0) {
-          let promises: Promise<any>[] = [];
-          let isCurrent: boolean = false;
+          const promises = [];
+          let isCurrent = false;
           this.prj.isLoading = true;
-          for (let prj of ret) {
+          for (const prj of ret) {
             promises.push(this.ws.query('?prj_delete_project("' + prj + '")'));
             if (this.prj.currProject.value.name === prj) isCurrent = true;
           }
@@ -362,8 +366,9 @@ export class ProgramToolbarComponent implements OnInit {
         this.prgService.close();
         this.prgService.mode = 'editor';
         this.snack.open(this.words['success'], '', { duration: 1500 });
-        if (projectName === this.prj.currProject.value.name)
+        if (projectName === this.prj.currProject.value.name) {
           return this.prj.getCurrentProject();
+        }
       } else {
         this.snack.open(
           this.words['projects.toolbar']['err_import'],
@@ -373,14 +378,14 @@ export class ProgramToolbarComponent implements OnInit {
     });
   }
 
-  onUploadProjectFile(e: any) {
+  onUploadProjectFile(e: {target: {files: File[], value: File }}) {
     this.prj.isLoading = true;
-    for (let f of e.target.files) {
+    for (const f of e.target.files) {
       if (this.fromBackup) {
         // USER UPLOADS A BACKUP ZIP
         let count = 0;
-        let targetCount = e.target.files.length;
-        for (let f of e.target.files) {
+        const targetCount = e.target.files.length;
+        for (const f of e.target.files) {
           this.api.uploadIPK(f).then(
             (ret: UploadResult) => {
               // ON SUCCUESS
@@ -400,7 +405,7 @@ export class ProgramToolbarComponent implements OnInit {
                 this.ws.query('?user sys_reboot(0,0,0)');
                 setTimeout(() => {
                   let ok = false;
-                  let interval = setInterval(() => {
+                  const interval = setInterval(() => {
                     if (ok) return;
                     this.api
                       .getFile('isWebServerAlive.HTML')
@@ -423,6 +428,8 @@ export class ProgramToolbarComponent implements OnInit {
               this.prj.isLoading = false;
               this.trn.get(words, { name: f.name }).subscribe(words => {
                 switch (ret.error.err) {
+                  default:
+                    break;
                   case -2:
                     this.snack.open(
                       words['files.err_upload'],
@@ -460,7 +467,7 @@ export class ProgramToolbarComponent implements OnInit {
               if (ret.result === '0') {
                 // PROJECT IMPORT IS OK - TELL WEB SERVER TO UNZIP THE FILE
                 this.importProject(verification.file, projectName).then(() => {
-                  this.api.deleteProjectZip(verification.file);
+                  //this.api.deleteProjectZip(verification.file);
                   this.prj.isLoading = false;
                 });
               } else {
@@ -531,6 +538,8 @@ export class ProgramToolbarComponent implements OnInit {
           ];
           this.trn.get(words, { name: f.name }).subscribe(words => {
             switch (ret.error.err) {
+              default:
+                break;
               case -2:
                 this.snack.open(
                   words['files.err_upload'],
@@ -558,8 +567,8 @@ export class ProgramToolbarComponent implements OnInit {
     this.uploadFiles.nativeElement.click();
   }
 
-  onUploadFilesChange(e: any) {
-    let ref = this.dialog.open(YesNoDialogComponent, {
+  onUploadFilesChange(e: {target: {files: File[], value: File }}) {
+    const ref = this.dialog.open(YesNoDialogComponent, {
       data: {
         title: this.words['are_you_sure'],
         msg: this.words['files.confirm_upload'],
@@ -570,8 +579,8 @@ export class ProgramToolbarComponent implements OnInit {
     ref.afterClosed().subscribe(ret => {
       if (!ret) return;
       let count = 0;
-      let targetCount = e.target.files.length;
-      for (let f of e.target.files) {
+      const targetCount = e.target.files.length;
+      for (const f of e.target.files) {
         this.api.upload(f, true).then(
           (ret: UploadResult) => {
             // ON SUCCUESS
@@ -592,6 +601,8 @@ export class ProgramToolbarComponent implements OnInit {
             ];
             this.trn.get(words, { name: f.name }).subscribe(words => {
               switch (ret.error.err) {
+                default:
+                  break;
                 case -2:
                   this.snack.open(
                     words['files.err_upload'],
@@ -632,6 +643,7 @@ export class ProgramToolbarComponent implements OnInit {
   }
 
   toggleRemote() {
+    if (this.cmn.isTablet) return;
     switch (this.stat.mode) {
       case 'R':
         this.stat.mode = 'A';
@@ -657,12 +669,14 @@ export class ProgramToolbarComponent implements OnInit {
    * a TreeNode of a FOLDER with NO FILES AS DESCENDANTS
    */
   private deleteRecursivly(node: TreeNode): Promise<boolean> {
-    if (node.children.length === 0)
-      return <Promise<boolean>>this.api.deleteFolder(node.path);
-    let promises: Promise<boolean>[] = [];
-    for (let n of node.children) {
-      if (n.isFolder && this.prj.checklistSelection.isSelected(n))
+    if (node.children.length === 0) {
+      return this.api.deleteFolder(node.path) as Promise<boolean>;
+    }
+    const promises: Array<Promise<boolean>> = [];
+    for (const n of node.children) {
+      if (n.isFolder && this.prj.checklistSelection.isSelected(n)) {
         promises.push(this.deleteRecursivly(n));
+      }
     }
     return Promise.all(promises)
       .then((result: boolean[]) => {
@@ -672,7 +686,7 @@ export class ProgramToolbarComponent implements OnInit {
       })
       .then(result => {
         if (result) {
-          return <Promise<boolean>>this.api.deleteFolder(node.path);
+          return this.api.deleteFolder(node.path) as Promise<boolean>;
         }
       });
   }
@@ -686,7 +700,7 @@ export class ProgramToolbarComponent implements OnInit {
   deleteFiles() {
     const selected = this.prj.checklistSelection.selected;
     if (selected.length === 0) return;
-    let ref = this.dialog.open(YesNoDialogComponent, {
+    const ref = this.dialog.open(YesNoDialogComponent, {
       data: {
         title: this.words['are_you_sure'],
         msg: this.words['files.confirm_delete'],
@@ -696,8 +710,8 @@ export class ProgramToolbarComponent implements OnInit {
     });
     ref.afterClosed().subscribe(ret => {
       if (ret) {
-        let promises: Promise<any>[] = [];
-        for (let n of selected) {
+        let promises = [];
+        for (const n of selected) {
           if (!n.isFolder) {
             if (n.name === this.prgService.activeFile) {
               this.prgService.close();
@@ -716,19 +730,21 @@ export class ProgramToolbarComponent implements OnInit {
             if (result) {
               // ALL FILES DELETES SUCCESSFULY - CONTINUE TO DELETE FOLDERS..
               promises = [];
-              for (let n of selected) {
+              for (const n of selected) {
                 if (!n.isFolder || n.name === 'SSMC') continue;
                 if (
                   n.parent === null ||
                   !this.prj.checklistSelection.isSelected(n.parent)
-                )
+                ) {
                   promises.push(this.deleteRecursivly(n));
+                }
               }
               return Promise.all(promises);
-            } else
+            } else {
               this.snack.open(this.words['files.err_delete'], '', {
                 duration: 2000,
               });
+            }
           })
           .then((ret: boolean[]) => {
             if (ret) {
@@ -756,7 +772,7 @@ export class ProgramToolbarComponent implements OnInit {
       });
       if (selected.length === 0) return;
       files = [];
-      for (let node of selected) {
+      for (const node of selected) {
         if (node.name === 'SSMC') continue;
         files.push(node.path);
       }
@@ -786,7 +802,7 @@ export class ProgramToolbarComponent implements OnInit {
   }
 
   onVrateChange(e: MatSliderChange | number) {
-    const val = Number(e) || (<MatSliderChange>e).value;
+    const val = Number(e) || (e as MatSliderChange).value;
     this.prj.currProject.value.settings.vrate = val;
     const cmd = '?TP_SET_PROJECT_VRATE(' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {

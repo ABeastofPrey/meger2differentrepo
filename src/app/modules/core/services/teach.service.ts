@@ -10,11 +10,11 @@ import { DataService } from './data.service';
 export class TeachService {
   private _selectedTeachVariable: TPVariable;
   private _selectedTeachVariableIndex: number;
-  private _value: any = [];
+  private _value: Array<{ value: number | string }> = [];
   private _legend: string[];
   private _fullName: string;
 
-  private words: any;
+  private words: {};
 
   get legend() {
     return this._legend;
@@ -51,7 +51,7 @@ export class TeachService {
         this._fullName = null;
         return;
       }
-      var name = val.isArr
+      const name = val.isArr
         ? val.name + '[' + this._selectedTeachVariableIndex + ']'
         : val.name;
       if (this._fullName !== name) {
@@ -65,8 +65,9 @@ export class TeachService {
             return;
           }
           let valuesString = ret.result;
-          if (valuesString.indexOf('#') === 0)
+          if (valuesString.indexOf('#') === 0) {
             valuesString = valuesString.substr(1);
+          }
           if (valuesString.indexOf(',') === -1) {
             this._legend = [this.words['value']];
             this._value = [{ value: valuesString.trim() }];
@@ -76,7 +77,7 @@ export class TeachService {
             .substr(1, valuesString.length - 2)
             .split(';');
           const values = parts[0].split(',');
-          let flags = parts[1] ? parts[1].split(',') : [];
+          const flags = parts[1] ? parts[1].split(',') : [];
           if (this.selectedTeachVariable.varType === TPVariableType.LOCATION) {
             const len = this.data.robotCoordinateType.flags.length;
             for (let i = flags.length; i < len; i++) {
@@ -87,13 +88,16 @@ export class TeachService {
           let newLegend: string[] = [];
           for (let i = 0; i < total.length; i++) {
             this._value[i] = { value: total[i].trim() };
-            if (this.selectedTeachVariable.varType === TPVariableType.JOINT)
+            if (this.selectedTeachVariable.varType === TPVariableType.JOINT) {
               newLegend.push('J' + (i + 1));
+            }
           }
           if (newLegend.length === 0) {
             switch (this.selectedTeachVariable.varType) {
               case TPVariableType.LOCATION:
                 newLegend = this.data.robotCoordinateType.all;
+                break;
+              default:
                 break;
             }
           }
@@ -122,13 +126,8 @@ export class TeachService {
 
   teach() {
     if (this.fullName == null) return;
-    var cmd_teach =
-      '?tp_teach("' +
-      this.fullName +
-      '","' +
-      this._selectedTeachVariable.typeStr +
-      '")';
-    this.ws.query(cmd_teach).then((ret: MCQueryResponse) => {
+    const cmdTeach = `?tp_teach("${this.fullName}","${this._selectedTeachVariable.typeStr}")`;
+    this.ws.query(cmdTeach).then(ret => {
       if (ret.result === '0') {
         setTimeout(() => {
           this.selectedTeachVariableIndex = this.selectedTeachVariableIndex;
@@ -154,7 +153,7 @@ export class TeachService {
   onKeyboardClose() {
     try {
       const fullname = this._fullName;
-      const val = this._value as { value: number }[];
+      const val = this._value as Array<{ value: number }>;
       const size = Math.min(
         val.length,
         this.data.robotCoordinateType.legends.length
@@ -175,12 +174,13 @@ export class TeachService {
             })
             .join();
       }
-      let cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
+      const cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
       this.ws.query(cmd).then((ret: MCQueryResponse) => {
         console.log(cmd);
         this.selectedTeachVariable = this.selectedTeachVariable;
-        if (ret.result === '0')
+        if (ret.result === '0') {
           this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
+        }
         else console.log(ret.cmd + '>>>' + ret.result);
       });
     } catch (err) {

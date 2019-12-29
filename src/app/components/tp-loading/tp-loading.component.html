@@ -2,7 +2,7 @@
 	<div class="container">
 		<img src="assets/pics/{{ env.platform.spinner }}" />
 		<div class="loader">
-			<div class="fill" [class.kuka-fill]="utils.IsKuka" [class.stx-fill]="!utils.IsKuka"></div>
+			<div class="fill {{cmn.theme}}-fill"></div>
 		</div>
 		<div class="Loading" *ngIf="firstUnloadedStep.length > 0">
 			{{ 'loading' | translate }} {{ firstUnloadedStep | translate }}

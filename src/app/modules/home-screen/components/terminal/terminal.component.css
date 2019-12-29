@@ -10,7 +10,7 @@
 .terminal div,
 .terminal input {
   user-select: text;
-  font-family: monospace;
+  font-family: 'cs-monospace';
 }
 input {
   outline: none;

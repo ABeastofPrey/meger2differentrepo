@@ -6,17 +6,19 @@ import {
 
 @Injectable()
 export class TerminalService {
+  
   cmds: TerminalCommand[] = [];
   history: string[] = [];
-  public sentCommandEmitter: EventEmitter<string> = new EventEmitter<string>();
+  sentCommandEmitter: EventEmitter<string> = new EventEmitter<string>();
+  resizeRequired: EventEmitter<void> = new EventEmitter<void>();
 
-  public onNewCommand: EventEmitter<TerminalCommand> = new EventEmitter<
+  onNewCommand: EventEmitter<TerminalCommand> = new EventEmitter<
     TerminalCommand
   >();
 
   send(cmd: string) {
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      const terminalCommand = { cmd: cmd, result: ret.result };
+      const terminalCommand = { cmd, result: ret.result };
       this.cmds.push(terminalCommand);
       this.history.push(cmd);
       this.onNewCommand.emit(terminalCommand);
@@ -40,7 +42,7 @@ export class TerminalService {
 
   clear() {
     this.cmds = [];
-    this.onNewCommand.emit(null);
+    this.onNewCommand.emit();
   }
 }
 

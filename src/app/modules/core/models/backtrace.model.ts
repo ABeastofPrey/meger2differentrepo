@@ -7,7 +7,7 @@ export class Backtrace {
   constructor(str: string) {
     this.str = str;
     const lines = str.split('\n');
-    let files: BacktraceFile[] = [];
+    const files: BacktraceFile[] = [];
     let parts = lines[0].split(' ');
     this.taskName = parts[1];
     this.taskState = Number(parts[3]);

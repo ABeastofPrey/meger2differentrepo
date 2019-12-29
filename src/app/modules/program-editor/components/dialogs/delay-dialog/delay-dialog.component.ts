@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
 import { DataService } from '../../../../core';
 
 @Component({
@@ -9,13 +9,12 @@ import { DataService } from '../../../../core';
 })
 export class DelayDialogComponent implements OnInit {
   motionElement: string;
-  delay: number = 4;
-  advancedMode: boolean = false;
+  delay = 4;
+  advancedMode = false;
 
   constructor(
     public dataService: DataService,
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<DelayDialogComponent>
   ) {}
 
   ngOnInit() {}

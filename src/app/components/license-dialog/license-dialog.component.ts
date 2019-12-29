@@ -9,15 +9,18 @@ import { environment as env } from '../../../environments/environment';
   styleUrls: ['./license-dialog.component.css'],
 })
 export class LicenseDialogComponent implements OnInit {
-  license: string = null;
-  public useInKukaAbout = false;
 
-  @ViewChild('container', { static: false }) container: HTMLElement;
+  license: string | null = null;
+  useInKukaAbout = false;
+
+  @ViewChild('container', { static: false }) container?: HTMLElement;
 
   constructor(
     private http: HttpClient,
-    private ref: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    private ref: MatDialogRef<boolean>,
+    @Inject(MAT_DIALOG_DATA) public data?: {
+      useInKukaAbout: boolean
+    }
   ) {
     if (data && data.useInKukaAbout) {
       this.useInKukaAbout = true;

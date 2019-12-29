@@ -9,21 +9,21 @@ export interface Platform {
   spinner: string;
 }
 
-export const Kuka: Platform = {
+export const KUKA: Platform = {
   name: 'kuka',
   logo: 'kuka.png',
   spinner: 'kuka-spinner.gif', // Must be 64 by 64 px
 };
 
-export const Servotronix: Platform = {
+export const STX: Platform = {
   name: 'stx',
   logo: 'cs_stx.png',
   spinner: 'logo_only.gif', // Must be 64 by 64 px
 };
 
-export const Platforms = {
-  Kuka: Kuka,
-  Servotronix: Servotronix,
+export const PLATFORMS = {
+  Kuka: KUKA,
+  Servotronix: STX,
 };
 
 export const environment = {
@@ -32,8 +32,8 @@ export const environment = {
   appName_Kuka: 'KUKA.ControlStudio',
   api_url: 'http://10.4.20.23:1207',
   ip: '10.4.20.23',
-  gui_ver: 'v1.2.1-dev 2019-11-06',
-  compatible_webserver_ver: 'v3.2.4',
-  platform: Platforms.Kuka,
-  platforms: Platforms,
+  gui_ver: 'v1.2.5-dev 2019-12-29',
+  compatible_webserver_ver: 'v3.2.6',
+  platform: PLATFORMS.Kuka,
+  platforms: PLATFORMS,
 };

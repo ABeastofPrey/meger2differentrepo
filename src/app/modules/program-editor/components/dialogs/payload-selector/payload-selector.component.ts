@@ -12,8 +12,8 @@ export class PayloadSelectorComponent implements OnInit {
   pay: Payload = null;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<PayloadSelectorComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: string,
     public service: DataService
   ) {}
 

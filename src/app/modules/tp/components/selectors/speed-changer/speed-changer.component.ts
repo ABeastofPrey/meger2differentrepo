@@ -9,8 +9,9 @@ import { Input } from '@angular/core';
   styleUrls: ['./speed-changer.component.css'],
 })
 export class SpeedChangerComponent implements OnInit {
-  public val: number;
-  @Input('disabled') disabled: boolean;
+
+  val = 0;
+  @Input('disabled') disabled?: boolean;
 
   constructor(
     private stat: TpStatService,

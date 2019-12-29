@@ -28,22 +28,6 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
   templateUrl: './login-screen.component.html',
   styleUrls: ['./login-screen.component.css'],
   animations: [
-    trigger('login', [
-      state('out', style({ backgroundColor: '#eee' })),
-      state('in', style({ backgroundColor: '#FAFAFA' })),
-      transition(
-        'out => in',
-        group([query('*', [animateChild()]), animate('1s')])
-      ),
-    ]),
-    trigger('init', [
-      state('out', style({ backgroundColor: '#fff' })),
-      state('in', style({ backgroundColor: '#eee' })),
-      transition(
-        'out => in',
-        group([query('*', [animateChild()]), animate('1s')])
-      ),
-    ]),
     trigger('fade', [
       transition(':enter', [
         style({ opacity: 0 }),
@@ -78,26 +62,77 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
       ),
       transition('card => toolbar', [animate('1s ease-in-out')]),
     ]),
+    trigger('robot1', [
+      state('none, void', style({
+          right: '-400px'
+      })),
+      state('shown', style({
+          right: '24px'
+      })),
+      transition('none => shown', animate('1s 0.4s ease-out')),
+      transition('shown => none', animate('1s ease-in'))
+    ]),
+    trigger('robot2', [
+      state('none, void', style({
+          left: '-400px'
+      })),
+      state('shown', style({
+        left: '0px'
+      })),
+      transition('none => shown', animate('0.4s 0.6s ease-out')),
+      transition('shown => none', animate('1s ease-in'))
+    ]),
+    trigger('conveyor', [
+      state('none, void', style({
+          left: '-1000px'
+      })),
+      state('shown', style({
+          left: '-300px'
+      })),
+      transition('none => shown', animate('1s 0.2s ease-out')),
+      transition('shown => none', animate('0.6s ease-in'))
+    ]),
+    trigger('cabinet', [
+      state('none, void', style({
+          left: '-400px'
+      })),
+      state('shown', style({
+          left: '24px'
+      })),
+      transition('none => shown', animate('1s 0.2s ease-out')),
+      transition('shown => none', animate('0.6s ease-in'))
+    ]),
+    trigger('floor', [
+      state('none, void', style({
+          bottom: '-300px'
+      })),
+      state('shown', style({
+          bottom: '0px'
+      })),
+      transition('* => shown', animate('0.4s ease-out')),
+      transition('shown => *', animate('0.4s 0.6s ease-in'))
+    ])
   ],
 })
 export class LoginScreenComponent implements OnInit {
   
   ver: string;
-  username: string = '';
-  password: string = '';
-  isSubmitting: boolean = false;
+  username = '';
+  password = '';
+  isSubmitting = false;
   authForm: FormGroup;
   errors: Errors = { error: null };
-  isVersionOK: boolean = true;
-  appName: string = '';
+  isVersionOK = true;
+  appName = '';
   platform: string = null;
-  compInit: boolean = false;
+  compInit = false;
   env = environment;
+  pageLoaded = 'none';
 
   private notifier: Subject<boolean> = new Subject();
-  private wsTimeout: any;
+  private wsTimeout: number;
 
-  public get loginBgImgUrl(): string {
+  get loginBgImgUrl(): string {
     const imgName = this.utils.IsKuka ? 'kuka_robot_bg.jpg' : 'stx1.jpg';
     const imgUrl = `assets/pics/${imgName}`;
     return imgUrl;
@@ -134,7 +169,7 @@ export class LoginScreenComponent implements OnInit {
       data => {
         if (data.user.license) {
           // TIMEOUT FOR WEBSOCKET CONNECTION
-          this.wsTimeout = setTimeout(() => {
+          this.wsTimeout = window.setTimeout(() => {
             if (!this.ws.connected) {
               this.ws.reset();
               this.showWebsocketError();
@@ -172,7 +207,7 @@ export class LoginScreenComponent implements OnInit {
   
   private getEtag() : string {
     if (!this.env.production) return '';
-    var req = new XMLHttpRequest();
+    const req = new XMLHttpRequest();
     req.open('GET', this.env.api_url + '/rs/assets/scripts/conn.js', false);
     req.send(null);
     const etag = req.getResponseHeader('etag');
@@ -182,7 +217,7 @@ export class LoginScreenComponent implements OnInit {
   ngOnInit() {
     this.platform = navigator.platform;
     const etag = this.getEtag();
-    const comp_ws = environment.compatible_webserver_ver;
+    const compWs = environment.compatible_webserver_ver;
     this.api.get('/cs/api/java-version').subscribe((ret: { ver: string }) => {
       if (etag.length > 0 && ret.ver !== etag) { // can only happen if page is cached
         // ask user to do hard reload
@@ -193,10 +228,10 @@ export class LoginScreenComponent implements OnInit {
         });
         return;
       }
-      this.isVersionOK = ret.ver.includes(comp_ws);
+      this.isVersionOK = ret.ver.includes(compWs);
       if (!this.isVersionOK) {
         const params = {
-          ver: comp_ws,
+          ver: compWs,
           current: ret.ver.split(' ')[0],
         };
         this.trn.get('error.invalid_webserver', params).subscribe(str => {
@@ -244,8 +279,9 @@ export class LoginScreenComponent implements OnInit {
    * CALLED WHEN USER IS AUTHENTICATED FROM LOCALSTORAGE AND WEBSOCKET IS OPENED
    */
   private redirectToMain() {
-    if (!this.cmn.isTablet)
+    if (!this.cmn.isTablet) {
       return this.router.navigateByUrl('/');
+    }
     this.ws.query('?tp_ver').then((ret:MCQueryResponse)=>{
       if (ret.err) {
         // DISCONNECT FROM WEBSOCKET
@@ -263,6 +299,7 @@ export class LoginScreenComponent implements OnInit {
   ngOnDestroy() {
     this.notifier.next(true);
     this.notifier.unsubscribe();
+    this.compInit = false;
   }
 
   ngAfterViewInit() {
@@ -279,5 +316,6 @@ export class LoginScreenComponent implements OnInit {
         }, 500);
       }
     });
+    this.pageLoaded = 'shown';
   }
 }

@@ -11,9 +11,9 @@ import { JwtService } from '../services/jwt.service';
 @Injectable()
 export class HttpTokenInterceptor implements HttpInterceptor {
   intercept(
-    req: HttpRequest<any>,
+    req: HttpRequest<{} | string>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<{} | string>> {
     const picUpload = req.url.indexOf('/pic?') > 0 && req.method === 'POST';
     const fileUpload = req.url.indexOf('/upload') > 0 && req.method === 'POST';
     const trnErr = req.url.indexOf('/trnerr') > 0 && req.method === 'GET';

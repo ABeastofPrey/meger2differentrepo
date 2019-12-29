@@ -1,9 +1,10 @@
+import { CoordinatesService } from './coordinates.service';
 import { OSUpgradeSuccessDialogComponent } from './../../../components/osupgrade-success-dialog/osupgrade-success-dialog.component';
 import { environment } from './../../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { LoginService } from './login.service';
 import { TpStatService } from './tp-stat.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterEvent, NavigationEnd } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { SuccessDialogComponent } from '../../../components/success-dialog/success-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -21,48 +22,48 @@ export class ScreenManagerService {
   /**
    * The key to store the upgrade version in the local storage.
    */
-  private readonly OSVersion: string = 'osVersion';
+  private readonly OS_VERSION: string = 'osVersion';
   /**
    * The key to store the gui version in the local storage.
    */
-  private readonly GUIVersion: string = 'guiVersion';
+  private readonly GUI_VERSION: string = 'guiVersion';
   /**
    * The key to store the web server version in the local storage.
    */
-  private readonly WebServerVersion: string = 'webServerVersion';
+  private readonly WEBSERVER_VERSION: string = 'webServerVersion';
   /**
    * The key to store the softMC version in the local storage.
    */
-  private readonly SoftMCVersion: string = 'softMCVersion';
+  private readonly SOFT_MC_VERSION: string = 'softMCVersion';
   /**
    * The key to store the library version in the local storage.
    */
-  private readonly LibraryVersion: string = 'libraryVersion';
+  private readonly LIB_VERSION: string = 'libraryVersion';
 
   /**
    * The key to get the version string in the translation.
    */
-  private readonly Version: string = 'version';
+  private readonly VERSION: string = 'version';
 
   /**
    * The key to get the title string of success dialog in the translation.
    */
-  private readonly SuccessDialogTitle: string = 'successDialogTitle';
+  private readonly SUCCESS_DIALOG_TITLE: string = 'successDialogTitle';
 
   /**
    * The key to get the message string of success dialog in the translation.
    */
-  private readonly SuccessDialogMsg: string = 'successDialogMsg';
+  private readonly SUCCESS_DIALOG_MSG: string = 'successDialogMsg';
 
   /**
    * The key to get the title string of error dialog in the translation.
    */
-  private readonly ErrorDialogTitle: string = 'errorDialogTitle';
+  private readonly ERROR_DIALOG_TITLE: string = 'errorDialogTitle';
 
   /**
    * The key to get the message string of error dialog in the translation.
    */
-  private readonly ErrorDialogMsg: string = 'errorDialogMsg';
+  private readonly ERROR_DIALOG_MSG: string = 'errorDialogMsg';
 
   /**
    * The file to store OS upgrade version.
@@ -72,19 +73,19 @@ export class ScreenManagerService {
   /**
    * The query to get softMC version.
    */
-  private readonly SoftMCVersionQuery = '?ver';
+  private readonly SOFT_MC_VERSION_QUERY = '?ver';
 
   /**
    * The query to get web server version.
    */
-  private readonly WebServerVersionQuery = 'java_ver';
+  private readonly WEBSERVER_VERSION_QUERY = 'java_ver';
 
   /**
    * The query to get library version.
    */
-  private readonly LibraryVersionQuery = '?system_version';
+  private readonly LIB_VERSION_QUERY = '?system_version';
   
-  private _debugMode: boolean = false;
+  private _debugMode = false;
   get debugMode() {
     return this._debugMode;
   }
@@ -97,14 +98,14 @@ export class ScreenManagerService {
     }
   }
 
-  openedControls: boolean = false;
+  openedControls = false;
   controlsAnimating: BehaviorSubject<boolean> = new BehaviorSubject(false);
   projectActiveStatusChange: BehaviorSubject<boolean> = new BehaviorSubject(
     false
   );
 
-  private tpOnline: boolean = false;
-  private words: any;
+  private tpOnline = false;
+  private words: {};
   private _menuExpanded: boolean;
 
   get menuExpanded(): boolean {
@@ -129,13 +130,13 @@ export class ScreenManagerService {
       url: 'dashboard',
     },
     { icon: 'insert_comment', name: 'editor', permission: 99, url: 'projects' },
-    { icon: 'featured_play_list', name: 'blockly', permission: 99, url: 'blockly', stxOnly: true },
     {
       icon: '3d_rotation',
       name: 'simulator',
       permission: 1,
       url: 'simulator',
       requiresTpLib: true,
+      requiresCoos: true
     },
     {
       icon: 'touch_app',
@@ -178,6 +179,7 @@ export class ScreenManagerService {
       typeof s === 'undefined' ||
       this.isScreenDisabled(s) ||
       (s.requiresTpLib && !this.tpOnline) ||
+      (s.requiresCoos && !this.coos.coosLoaded.value) ||
       (s.autoModeOnly && this.stat.mode !== 'A')
     ) {
       this._screen = this.screens[0];
@@ -198,8 +200,13 @@ export class ScreenManagerService {
       this.controlsAnimating.next(false);
     }, 300);
     setTimeout(() => {
-      if (this.stat.mode !== 'T1' && this.openedControls && !this.controlsAnimating.value)
+      if (
+        this.stat.mode !== 'T1' &&
+        this.stat.mode !== 'T2' &&
+        this.openedControls &&
+        !this.controlsAnimating.value) {
         this.closeControls();
+      }
     }, 1000);
   }
 
@@ -207,13 +214,20 @@ export class ScreenManagerService {
     if (this.openedControls) return;
     this.controlsAnimating.next(true);
     this.openedControls = true;
-    this.stat.mode = 'T1';
+    if (!this.cmn.isTablet) {
+      this.stat.mode = 'T1';
+    }
     setTimeout(() => {
       this.controlsAnimating.next(false);
     }, 300);
     setTimeout(() => {
-      if (this.stat.mode !== 'T1' && this.openedControls && !this.controlsAnimating.value)
+      if (
+        this.stat.mode !== 'T1' &&
+        this.stat.mode !== 'T2' &&
+        this.openedControls &&
+        !this.controlsAnimating.value) {
         this.closeControls();
+      }
     }, 1000);
   }
 
@@ -222,6 +236,7 @@ export class ScreenManagerService {
     const activeProject = this.projectActiveStatusChange.value;
     const cond1 =
       (s.requiresTpLib && !tpOnline) ||
+      (s.requiresCoos && !this.coos.coosLoaded.value) ||
       (s.autoModeOnly && this.stat.mode !== 'A');
     const cond2 = s.requiresInactiveProject && activeProject;
     switch (s.url) {
@@ -230,7 +245,7 @@ export class ScreenManagerService {
           cond1 ||
           cond2 ||
           this.controlsAnimating.value ||
-          (this.cmn.isTablet && this.stat.mode !== 'T1')
+          (this.cmn.isTablet && this.stat.mode !== 'T1' && this.stat.mode !== 'T2')
         );
       default:
         return cond1 || cond2;
@@ -241,7 +256,9 @@ export class ScreenManagerService {
     if (!this.openedControls) return;
     this.controlsAnimating.next(true);
     this.openedControls = false;
-    this.stat.mode = 'A';
+    if (!this.cmn.isTablet) {
+      this.stat.mode = 'A';
+    }
     setTimeout(() => {
       this.controlsAnimating.next(false);
     }, 300);
@@ -258,16 +275,25 @@ export class ScreenManagerService {
     private api: ApiService,
     private utils: UtilsService,
     private webSocketService: WebsocketService,
-    private container: OverlayContainer
+    private container: OverlayContainer,
+    private coos: CoordinatesService
   ) {
     // HANDLE CDK CONTAINER WHEN JOG PANEL IS OPENED
     this.dialog.afterOpened.subscribe(dialog => {
       const data = dialog._containerInstance._config.data;
+      // HANDLE FOCUS JUST ON INPUTS
+      if (!this.cmn.isTablet) {
+        const id = dialog.id;
+        setTimeout(()=>{
+          try {
+            const container = (document.getElementById(id) as HTMLElement);
+            const first = container.querySelector('input.mat-input-element') as HTMLElement;
+            first.focus();
+          } catch (err) {
+          }
+        },0);
+      }
       if (data && data.enableJog && this.openedControls) {
-        // HANDLE FOCUS
-        if (!this.cmn.isTablet) {
-          dialog._containerInstance._config.autoFocus = true;
-        }
         const { classList } = this.container.getContainerElement();
         if (!classList.contains('jog-panel-open')) {
           classList.add('jog-panel-open');
@@ -292,7 +318,7 @@ export class ScreenManagerService {
         'home.addFeature.success',
         'error.firmware_update',
         'ios.updating_succuss',
-        this.Version,
+        this.VERSION,
       ])
       .subscribe(words => {
         this.words = words;
@@ -317,6 +343,9 @@ export class ScreenManagerService {
           break;
         case 'feature':
           msg = this.words['home.addFeature.success'];
+          break;
+        default:
+          msg = '';
           break;
       }
       if (fromPath !== 'firmware') {
@@ -345,7 +374,7 @@ export class ScreenManagerService {
       }
     }
     this.stat.modeChanged.subscribe((mode: string) => {
-      if (mode !== 'T1') {
+      if (mode !== 'T1' && mode !== 'T2') {
         if (!this.openedControls) return;
         this.controlsAnimating.next(true);
         setTimeout(() => {
@@ -386,7 +415,8 @@ export class ScreenManagerService {
         this.router.navigateByUrl('/');
       }
     });
-    this.router.events.subscribe((e: any) => {
+    this.router.events.subscribe((e: RouterEvent) => {
+      if (!(e instanceof NavigationEnd)) return;
       let navUrl: string = e.urlAfterRedirects;
       if (!navUrl) return;
       if (navUrl === '/') navUrl = '';
@@ -411,15 +441,15 @@ export class ScreenManagerService {
    * Show the error dialog if the os upgrade is failed.
    */
   private showOSUpgradeErrorDialog() {
-    let dialogData = {
-      title: this.words[this.Version][this.ErrorDialogTitle],
+    const dialogData = {
+      title: this.words[this.VERSION][this.ERROR_DIALOG_TITLE],
       message:
-        this.words[this.Version][this.ErrorDialogMsg] +
-        localStorage.getItem(this.OSVersion),
-      guiVersion: localStorage.getItem(this.GUIVersion),
-      webServerVersion: localStorage.getItem(this.WebServerVersion),
-      softMCVersion: localStorage.getItem(this.SoftMCVersion),
-      libraryVersion: localStorage.getItem(this.LibraryVersion),
+        this.words[this.VERSION][this.ERROR_DIALOG_MSG] +
+        localStorage.getItem(this.OS_VERSION),
+      guiVersion: localStorage.getItem(this.GUI_VERSION),
+      webServerVersion: localStorage.getItem(this.WEBSERVER_VERSION),
+      softMCVersion: localStorage.getItem(this.SOFT_MC_VERSION),
+      libraryVersion: localStorage.getItem(this.LIB_VERSION),
     };
     this.dialog.open(OSUpgradeErrorDialogComponent, {
       data: dialogData,
@@ -433,10 +463,10 @@ export class ScreenManagerService {
     let isGetRes = false;
     let count = 20;
     const getRes = () => {
-      let promises = [
-        this.webSocketService.query(this.WebServerVersionQuery),
-        this.webSocketService.query(this.SoftMCVersionQuery),
-        this.webSocketService.query(this.LibraryVersionQuery),
+      const promises: Array<Promise<MCQueryResponse | string>> = [
+        this.webSocketService.query(this.WEBSERVER_VERSION_QUERY),
+        this.webSocketService.query(this.SOFT_MC_VERSION_QUERY),
+        this.webSocketService.query(this.LIB_VERSION_QUERY),
         this.api.getFile(this.VERSIONDAT),
       ];
       Promise.all(promises).then((results: MCQueryResponse[]) => {
@@ -455,8 +485,8 @@ export class ScreenManagerService {
 
         this.dialog.open(OSUpgradeSuccessDialogComponent, {
           data: {
-            title: this.words[this.Version][this.SuccessDialogTitle],
-            msg: this.words[this.Version][this.SuccessDialogMsg] + results[3],
+            title: this.words[this.VERSION][this.SUCCESS_DIALOG_TITLE],
+            msg: this.words[this.VERSION][this.SUCCESS_DIALOG_MSG] + results[3],
             guiVersion: environment.gui_ver,
             webServerVersion: results[0].result,
             softMCVersion: results[1].result,
@@ -498,6 +528,7 @@ export interface ControlStudioScreen {
   permission: number;
   url: string;
   requiresTpLib?: boolean;
+  requiresCoos? :boolean; // TRUE when the screen requires the coordinates service to work
   autoModeOnly?: boolean;
   requiresInactiveProject?: boolean;
   stxOnly?: boolean;

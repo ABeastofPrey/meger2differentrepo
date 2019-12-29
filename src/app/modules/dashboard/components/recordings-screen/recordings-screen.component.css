@@ -83,3 +83,10 @@ mat-tab-group .icon-placeholder {
   top: 16px;
   z-index: 2;
 }
+.none-open {
+  font-size: 24px;
+}
+.none-open img {
+  margin-bottom: 24px;
+  height: 200px;
+}

@@ -1,0 +1,135 @@
+const MC_KEYWORDS = 'print|printusing|ABS|ACCEPT|ACOS|ADDBREAKPOINT|ABPoint|ARRAYSIZE|arraysize|ASC|ASIN|Asin|ATAN2|Atan2|ATN|Atn|ATTACH|Attach|AttachTo|AttachTo$|AXISLIST|BACKTRACE|BACKTRACE$|BACKTRACE$()|BIN$|BREAKPOINTLIST|BList|BUS.BAUDRATE|BUS.CYCLETIME|BUS.NAME|BUS.NUMBERAXES|BUS[].Naxes|BUS.PHASE|BUS.POWER|BUS.SCAN|CALL|CAMLIST|CASTJOINT|CASTLOCATION|CASTPOINT|CHECKCAMMONOTONIC|Ccmon|CHR$|CIRCLE|CLEARBREAKPOINT|CBPoint|CLOSE|CompensationSource.Name|CSour.name|COMPSET|CONNECT|CONTINUETASK|CTas|CONTINUETASK$|CTas$|CTas$|COS|CREATECAMDATA|CCDat|CREATECOMP|CComp|CREATEPLSDATA|CPDat|DELAY|DELETE|DELETE$|DELETECAM|DCAM|DELETEGROUP|DelG|DELETEMOVINGFRAME|DELETEPLS|DPLS|DELETESEM|dsem|DELETEVAR|DETACH|DetachFrom|DetachFrom$|DIR|DIR$|DISTR|DNVRAM|DNVRAMSIZE|DNVRAMSize|DNVRAMSize|DOPASS|ENCRYPTFILE|ENTRYSTATIONTYPE|ESType|ERROR|ERRORHISTORY|ERRORHISTORYCLEAR|ERRORHISTORYDELTA|ERRORNUMBER|ESTOKENCOUNT|EVENTDELETE|EVENTLIST|EVENTOFF|EVENTON|EXP|FILECHECKSUM|FILESIZE|FILESIZE$|GETAXIS$|GETENTRYPRIORITY|GETEP|GETGROUP$|GOTO|groupAxis|GROUPLIST|HEX$|HOLD|HOME|IdentificationCancel|IdentificationFinish|IdentificationStart|IdentificationStatus|IDLETASK|ITas|IDLETASK$|ITas$|IDNSTATE|Istat|IDNSTRING|Istr|IDNVALUE|Ival|IDNVALUEARRAY|IVALA|IDNVALUEARRAYDOUBLE|IVALAD|IDNVALUEDOUBLE|IvalD|IMPORT|IMPORT_C|INPB|INPUT$|INPW|INSTR|INT|ISOPEN|JOG|KILLTASK|KTas|KILLTASK$|KTas$|LCASE$|LEFT$|LEN|LNVRAM|LNVRAMSIZE|LOAD|LOAD$|LOADCAMDATA|LCDat|LOADCOMPDATA|LCompData|LOADCOMPDATA$|LOADGLOBAL|LOADGLOBAL$|LOC|LOG|LOGGER|LTRIM$|MID$|MOVE|MOVES|MOVESKD|OLOAD|OLOAD$|ONERROR|ONEVENT|ONSYSTEMERROR|OPEN|OPEN FILE|OPENSOCKET|OUNLOAD|OUNLOAD$|OUTB|OUTW|PASS|PAUSE|PAUSETASK|Ptas|PAUSETASK$|Ptas$|PEEKB|PEEKW|PHASE|PING|PlcMotionStatusCreate|PlcMotionStatusDestroy|PlcMotionStatusQuery|PLSLIST|POKEB|POKEW|PRINT|PRINT HASH|PRINTUSING|PrintU|PRINTUSING hash-sign|PrintU #|PRINTUSING$|PrintU$|PRINTUSINGTOBUFF|PrintUToBuff|PROCEDURECHANGEBIT|PCB|PROCEED|PROGRAMCONTEXT|PROGRAMLINE|PROGRAMNAME|PROGRAMPASSWORD|PPAS|PROGRAMPASSWORD$|PPAS$|PROMPT|RECORD|RECORD$|RECORDCLOSE|RECORDING|RECORDOFF|RECORDON|REDIRECTSTDOUT|REDIRECTSTDOUT$|RESET|RESETENTRYSTATION|RESE|RETRIEVE|RIGHT$|ROBOTTYPE|ROBOTTYPE$|ROUND|RTRIM$|RTRIM$|SAVE|SCOPE|SEEK|SEMAPHOREGIVE|semgive|SEMAPHORESTATE|semstate|SEMAPHORETAKE|semTake|SEND|SENDDATA|SENDDATA$|SERCOS.BAUDRATE|Ser.Brat|SERCOS.CYCLETIME|Ser.CTim|SERCOS.NUMBERAXES|Ser.NAxes|SERCOS.PHASE|Ser.Phase|SERCOS.POWER|Ser.Power|SERCOS.SCAN|Ser.Scan|SETENTRYPRIORITY|SETEP|SGN|SHL|SHR|SIN|SineWave|SIZE|SLEEP|SPACE$|SQRT|STARTTASK|STas|STas$|STEPIN|STEPIN$|STEPOUT|STEPOUT$|STEPOVER|STEPOVER$|STOP|STOPPHASE|STOPTASKCYCLE|STASC|STOPTASKCYCLE$|STASC$|STORECAMDATA|SCDat|STORECOMPDATA|SCompData|STORECOMPDATA$|SCompData$|STR$|STRD$|STRING$|STRL$|STRUCTURE TYPE DEFINITION|SWAPCAMS axis|SYNCALL|SYNCCLEAR|SYNCSTART|SYSTEM.ACCELERATIONRATE|Sys.ARate|SYSTEM.AVERAGELOAD|Sys.ALoad|System.ALoad|SYSTEM.CLOCK|Sys.Clock|SYSTEM.CPUTYPE|Sys.CpuType|SYSTEM.DATE|Sys.Date|SYSTEM.DECELERATIONRATE|Sys.DRate|SYSTEM.DIN|Sys.Din|SYSTEM.DIPSWITCH|Sys.DipSwitch|SYSTEM.DISKFREESPACE|Sys.DiskFreeSpace|SYSTEM.DOUBLEFORMAT|Sys.DoubleFormat|SYSTEM.DOUT|Sys.Dout|SYSTEM.ENABLE|Sys.En|System.En|SYSTEM.ERROR|Sys.Error|SYSTEM.ERRORHANDLERMODE|Sys.ErrorHandlerMode|SYSTEM.ERRORNUMBER|Sys.ErrorNumber|SYSTEM.ERRORPRINTLEVEL|Sys.ErrorPrintLevel|SYSTEM.FLASHDISKSIZE|Sys.FlashDiskSize|SYSTEM.HOSTDOUBLE|Sys.Hdoub|System.Hdoub|SYSTEM.HOSTINTEGER|Sys.Hint|System.Hint|SYSTEM.INFORMATION|Sys.Information|SYSTEM.IPADDRESSMASK|Sys.IPAddressMask|System.IPAddressMask|SYSTEM.JERKRATE|Sys.JRate|SYSTEM.LED|Sys.Led|System.Led|SYSTEM.MAXMEMBLOCK|Sys.MaxMemBlock|SYSTEM.MCDOUBLE|Sys.MCDoub|SYSTEM.MCINTEGER|Sys.MCInt|System.MCInt|SYSTEM.MOTION|Sys.Motion|SYSTEM.MOTIONASSISTANCE|Sys.MotionAssistance|SYSTEM.MOTIONMARGIN|Sys.MotionMargin|SYSTEM.NAME|Sys.Name|SYSTEM.NUMBERAXES|Sys.NAxes|System.NAxes|SYSTEM.PEAKLOAD|Sys.PLoad|System.PLoad|SYSTEM.PIPEMODE|Sys.PMode|SYSTEM.PRINTMODE|Sys.PrintMode|SYSTEM.RAMDRIVEFREESPACE|Sys.RamDriveFreeSpace|SYSTEM.RAMSIZE|Sys.RAMSize|SYSTEM.SERCONVERSION|Sys.SerconVersion|SYSTEM.SERIALNUMBER|Sys.SerialNumber|SYSTEM.SERVICEPRINTLEVEL|Sys.ServicePrintLevel|SYSTEM.TIME|Sys.Time|SYSTEM.VELOCITYOVERRIDE|Sys.VOrd|System.VOrd|SYSTEM.VELOCITYRATE|Sys.VRate|SYSTEM.VIN|Sys.VIn|SYSTEM.VOUT|Sys.VOut|SYSTEM.WATCHDOGTEST|Sys.WatchDogTest|SYSTEMAXIS|SYSTEMGROUP|TAN|TASKERRORNUMBER|TASKLIST|TASKSTATE|TELL|TERMINATE|THROW|TIME|TIMEDATE|TOASCII8$|TOCART|TOJOINT|TORQUE|TOUTF8$|TRIGGER|TYPEOF|UCASE$|UNBREAKABLE|UNCONFIGGROUP|UNLOAD|UNLOAD$|UTF$|UTFSTRING$|VAL|VARLIST|VARLIST$|VERSION|Ver|VESEXECUTE|VESMESSAGE|WaitForMotion|WATCH|WDCYCLE|WDDELETE|WDINIT|WITH|WITHGLOBAL|WITHPLS|WRITEIDNSTRING|WISTR|WRITEIDNVALUE|WIVal|WRITEIDNVALUEARRAY|WIVALA|WRITEIDNVALUEARRAYDOUBLE|WIVALAD|WRITEIDNVALUEDOUBLE|WIVALD|ACCELERATIONCOMMAND|AccelCmd|ACTIVECAM|ACAM|ADDITIVETORQUEDELAY|ALTERNATIVECAM|ALTERNATIVECAM.NAME|ALTERNATIVEOFFSET|AXISNAME|AXNM|BUSNUMBER|CAMCYCLE|Ccyc|CAMINDEX|Cind|CAMOFFSET|Coff|CAMVALUE|CVAL|CAPTURE|CAPTUREINPUT|CAPTUREPOLARITY|CapPol|CAPTUREPOSITION|CapPos|CAPTURESOURCE|CapSrc|COMPENSATIONSOURCE|CompPositionCommand|COMPPOSITIONCOMMAND|CompPCMD|COMPPOSITIONFEEDBACK|CompPFB|ACOS|COUNTCOMMAND|CCmd|COUNTEXTERNAL|CEXT|CountExtMax|CountExtMin|CountExtRollOver|COUNTFEEDBACK|CFb|CountMax|CountMin|CountRollOver|COUNTTORQUEADDITIVECOMMAND|CTADDCMD|COUNTTORQUECOMMAND|CTCmd|COUNTTORQUEDRIVECOMMAND|CTDCMD|COUNTTORQUEFEEDBACK|CTfb|DIRECTION|DIRECTIONEXTERNAL|DirExt|DISABLETIMEOUT|DTimeout|DISPLACEMENT|Disp|DRIVEADDRESS|DAdd|DRIVECONTROL|DCon|DRIVEENABLE|DEn|DRIVEON|DOn|DRIVEOPMODE|DRIVESTATUS|DStat|FASTDATAENABLE|FDEn|FEEDBACK|FIRSTCAM|Fcam|FIRSTCAM.NAME|Fcam.Name|FOLLOWINGMODE|Fmode|GEARRATIO|GRat|HALTRESTART|HOLDTYPE|HTYPE|HOMEACCELERATION|Hacc|HOMEDIRECTION|Hdir|HOMEDISTANCE|Hdis|HOMEDISTANCEMAX|HdisMax|HOMEOFFSET|Hoff|HOMEPOLARITY|Hpol|HOMERETURN|Hret|HOMESTATUS|Hstat|HOMEVELOCITY|Hvel|IN1|IN1MODE|IN2|IN2MODE|IN3|IN3MODE|ISSWAPED|LIMITSWITCHTHRESHOLD|MASTERSOURCE|MSour|MasterSource.Name|MSour.master|MASTERSYNC|MSYN|MAXOFFSET|MOffset|ModelOffset|MOTIONBUSVELOCITYBASE|MOTIONBUSVELOCITYSCALE|OPMODE|OPMODEMAP|PIPEMODE|PMode|PositionBacklash|PositionBacklashAlpha|POSITIONEXTERNAL|PEXT|POSITIONEXTERNALFACTOR|PExtfac|POSITIONEXTROLLOVER|POSITIONEXTROLLOVERMIN|POSITIONFACTOR|Pfac|POSITIONMAX|PMAX|POSITIONMAXENABLE|PMaxEn|POSITIONMIN|Pmin|POSITIONMINENABLE|PMinEn|POSITIONROLLOVER|PRollover|POSITIONROLLOVERENABLE|Prolen|POSITIONROLLOVERMIN|PROLLOVERMIN|REALTIMECONTROLBIT|RTCB[ ]|REALTIMESTATUSBIT|RTSB[ ]|RTCB1|RTCB1 MODE|RTCB2|RTCB2 MODE|RTSB1 MODE|RTSB2 MODE|SIMULATED|SLAVEDEVIATION|SLAVEDISABLE|SLAVEDISCONNECT|SLAVELAG|SLAVEMAXDEVIATION|SUMTORQUE|STORQUE|TIMEJOG|TJog|TIMEOFSHORTMOTIONS|TSHORT|TORQUEADDCOMMAND|TAddCmd|TORQUECHANGERATIO|TCRatio|TORQUECHANGERATIOMAX|TCRatioMax|TORQUEDRIVECOMMAND|TDCMD|TORQUEERROR|TE|TORQUEERRORDISABLETYPE|TorqueErrorDisableType|TORQUEERRORENABLE|TEEn|TORQUEERRORFILTER|TEF|TORQUEERRORMAX|TEMAX|TORQUEERRORSTOPTYPE|TorqueErrorStopType|TORQUEFACTOR|TFAC|TorqueLimit|TorqueLimitVelocityMax|TlimVmax|TorqueMax|Tmax|TORQUETHRESHOLD|TORQUETHRESHOLD|UserFollowingMode|UserFmode|VELOCITYADDITIVECOMMAND|VADDCMD|VELOCITYEXTERNAL|VEXT|VELOCITYEXTERNALFACTOR|VExtFac|VELOCITYJOG|Vjog|VelocityLimitTorqueMax|VlimTmax|VELOCITYOVERSPEED|VOSPD|VELOCITYSAFETYLIMIT|VISCOUSFRICTION|WRAP|CAMID|CAMTYPE|CYCLE|Cyc|INUSE|ISMONOTONIC|Imon|MASTERDATA|Mdat|NEXT|NEXT.NAME|POLY|PREVIOUS|Prev|PREVIOUS.NAME|Prev.Name|SIZE|SLAVEDATA|Sdat|COMPACTIVE|CompID|DIRECTION|MAXPOSITION|MINPOSITION|MULTIPLIER|SOURCEDATA|TARGETDATA|ABSENABLE|AbsEn|ABSOLUTE|Abs|ACCELERATION|Acc|ACCELERATIONFACTOR|Afac|ACCELERATIONMAX|AMax|ACCELERATIONRATE|ARate|ATTACHEDTO|BLENDINGFACTOR|BLENDINGFACTORPREVIOUS|BFPrev|BLENDINGMETHOD|BLENDINGSTARTCONDITION|BLENDPROTECTED|CP|CPPREV|CURRENTABSOLUTE|.CAbs|CURRENTTIME|Ctime|DECELERATION|Dec|DECELERATIONMAX|DMax|DECELERATIONRATE|DRate|DEST|DOUBLEMODE|DMode|DoubleModePercentage|DYNAMICMODEL|DYNAMICPARAMETER|ELEMENTID|ELEMENTNAME|ELEMENTSIZE|ELEMENTSTATUS|ENABLE|En|INTERPOLATIONTYPE|IType|ISMOVING|JERK|JERKACCELERATIONPERCENTAGE|JAPERC|JERKDECELERATIONPERCENTAGE|JDPERC|JERKFACTOR|Jfac|JERKMAX|JMax|JERKRATE|JRate|MOTION|MOTIONSTATUS|PAYLOADMASS|PlcMotionStatus|PLSSOURCE|POSITIONCOMMAND|PCmd|POSITIONCOMMANDHISTORY|PCmdH|POSITIONERROR|PE|POSITIONERRORDELAY|PEDel|POSITIONERRORMAX|PEMax|POSITIONERRORSETTLE|PESettle|POSITIONFEEDBACK|PFb|POSITIONFINAL|PFinal|POSITIONTOGO|PToGo|PrecomputationMode|PROCEEDTYPE|PROFILERTYPE|PrfType|RESCUEMODE|RMode|RTKActive|SineWaveFreq|SLAVE|SMOOTHFACTOR|Smooth|STARTTYPE|STOPTYPE|TIMEACCELERATION|Tacc|TIMEACCMIN|TAccMin|TIMEDECELERATION|Tdec|TIMEDECMIN|TDecMin|TIMESETTLE|Tsettle|TIMESETTLEMAX|TsettleMax|TIMESETTLEMAX|TCMD|TORQUEFEEDBACK|Tfb|TOTALTIME|Ttime|VELOCITYCOMMAND|VCmd|VELOCITYCRUISE|Vcruise|VELOCITYFACTOR|Vfac|VELOCITYFEEDBACK|VFb|VELOCITYFINAL|Vfinal|VELOCITYMAX|VMax|VELOCITYOVERRIDE|Vord|VELOCITYRATE|VRate|MSG|NUM|STATE|STATUS|ACCELRATIONCOMMAND|AccelCmd|ANGLE|CIRCLECENTER|Ctr|CIRCLEPLANE|CIRCLEPOINT|CIRCLETYPE|ctype|COUPLED|CPLG|DECELERATIONSTOP|DecStop|DEST JOINT|DESTCENTER|DESTCIRCLEPOINT|DOMINANCEMODE|SELECTAXES|SAxes|THROUGH|UPTO|ACCELERATIONMAXROT|ACCELERATIONMAXROT|ACCELERATIONMAXTRAN|ArcPoint|BASE|Center|DAMPINGFACTOR|DOWNMASTER|DOWNSTREAM|ELEMENTNAME|FILTERFACTOR|HERE|ISINWINDOW|IIW|JERKMAXROT|JERKMAXTRAN|MASTERSOURCE|MAXFLOPS|MOVINGFRAMEID|MOVINGFRAMENAME|MOVINGFRAMESCALE|NUMBERDEGREESOFFREADOM|ndof|NUMBEROFITEMS|NOI|OBJECTLOC|OrientationTransformation|SLAVEORIENTATION|TOOL|TranslationTransformation|TYPE|UPMASTER|UPSTREAM|VELOCITYMAXROT|VELOCITYMAXTRANS|ZERO|NEXTITEM|NOOFCOORDINATES|NVRAMFORMAT|HWASSISTANCE|HWAssistance|HWIOtime|PLSAXISNAME|PAxNm|PLSdelaytime|PLSEMENTNAME|PAxNm|PLSENABLE|PEn|PLSHYSTERESIS|Phys|PLSOUTPUT|Pout|PLSPOLARITY|Ppol|PLSPOSITION|Ppos|PLSPropagationDelay|PLSPropagationDisableDelay|PLSPropagationEnableDelay|PLSRELATEDO|PLSREPEAT|Prep|ACCELCMDCART|ACCELERATIONDESYNCROT|ACCELERATIONDESYNCTRAN|ACCELERATIONMAXROT|amrot|ACCELERATIONMAXTRANS|amtran|ACCELERATIONROT|arot|ACCELERATIONSYNCROT|ACCELERATIONSYNCTRAN|ACCELERATIONTRANS|atran|ARMCMD|acmd|ARMFBK|afbk|AXIS|BASE|BASE.XMAX|BASE.XMIN|BASE.YMAX|BASE.YMIN|BASE.ZMAX|BASE.ZMIN|CURRENTPASS|DECELERATIONROT|drot|DECELERATIONSTOPROT|DecStopRot|DECELERATIONSTOPTRANS|DecStopTran|DECELERATIONTRANS|dtran|ELBOWCMD|ecmd|ELBOWFBK|efbk|GLOBALBASE|GBASE|GLOBALHERE|GHERE|GLOBALSETPOINT|GSETPOINT|GOTOLIMIT|HERE|INERTIAREDUCTION|IReduction|INERTIATHRESHOLD|IThreshold|ISMOVINGFRAMESYNCHRONIZED|IMFS|JERKDESYNCROT|JERKDESYNCTRAN|JERKMAXROT|jmrot|JERKMAXTRANS|jmtran|JERKROT|jrot|JERKSYNCROT|JERKSYNCTRAN|JERKTRANS|jtran|JOINTENABLE|LINK|MACHINETABLE|MACHINETABLE.XMAX|MACHINETABLE.XMIN|MACHINETABLE.YMAX|MACHINETABLE.ZMAX|MACHINETABLE.ZMIN|MASTERFRAME|MASTERFRAMENAME|MODELENABLE|NUMBEROFITEMS|NOI|ORIENTATIONCOMPLEMENT|OCOMPLEMENT|ORIENTATIONERROR|OE|ORIENTATIONERRORSETTLE|OESettle|ORIENTATIONFOLLOWING|ofollow|PASSBACKWARD|PASSBUFFERLEVEL|PASSBUFFERLOW|PASSBUFFERMAX|PASSBUFFERMIN|PASSBUFFERSIZE|PASSINTERPOLATION|PASSMETHOD|PASSROTMINGAP|PASSSYMMETRICPATH|PASSTHROUGHMAXDEVIATION|PASSUPTO|PAYLOADINERTIA|Persistent|RMAX|RMIN|SETPOINT|SINGULARITYMARGIN|START|STRETCHFACTOR|STRETCHVECTOR|ThetaOffset|TOOL|TOOL.XMAX|TOOL.XMIN|TOOL.YMAX|TOOL.YMIN|TOOL.ZMAX|TOOL.ZMIN|TYPEOF|USERPARAMETER|Upar|USERPARAMETERVECTOR|VELOCITYCOMMANDCARTESIAN|VCMDCART|VELOCITYDESYNCROT|VELOCITYDESYNCTRAN|VELOCITYFEEDBACKCARTESIAN|VFBKCART|VELOCITYFINALROT|vfrot|VELOCITYFINALTRANS|vftran|VELOCITYMAXROT|vmrot|VELOCITYMAXTRANS|vmtran|VELOCITYROT|vrot|VELOCITYSYNCROT|VELOCITYSYNCTRAN|VELOCITYTRANS|vtran|WORKPIECE|WORKPIECE.XMAX|WORKPIECE.XMIN|WORKPIECE.YMAX|WORKPIECE.YMIN|WORKPIECE.ZMAX|WORKPIECE.ZMIN|WRISTCMD|wcmd|WRISTFBK|wfbk|XMAX|XMIN|YMAX|YMIN|ZMAX|ZMIN|ERROR|ERRORNUMBER|ErrorNum|MAINFILENAME|NUMBEROFLOOPS|PASSWORDPROTECTED|PASP|SERVICEPRINTLEVEL|STATE|STATUS|TASKID|UNBREAKABLE';
+
+define('ace/mode/mcbasic_highlight_rules',(e, t, n) => {
+  'use strict';
+  const r = e('../lib/oop');
+  const i = e('./text_highlight_rules').TextHighlightRules;
+  const s = function() {
+    const e = this.createKeywordMapper({
+      'keyword.control.asp':  MC_KEYWORDS + '|group|common|shared|try|catch|long|double|string|sys|location|generic|joint|din|dout|Program|TargetPoint|If|Then|Else|ElseIf|End|While|Wend|For|To|Each|Case|Select|Return|Continue|Do|Until|Loop|Next|With|Exit|Function|Property|Type|Enum|Sub|IIf',
+      'storage.type.asp': 'Dim|Call|Class|Const|Dim|Redim|Set|Let|Get|New|Randomize|Option|Explicit',
+      'storage.modifier.asp': 'Private|Public|Default',
+      'keyword.operator.asp': 'Mod|And|Not|Or|Xor|as',
+      'constant.language.asp': 'Empty|False|Nothing|Null|True',
+      'support.class.asp': 'Application|ObjectContext|Request|Response|Server|Session',
+      'support.class.collection.asp': 'Contents|StaticObjects|ClientCertificate|Cookies|Form|QueryString|ServerVariables',
+      'support.constant.asp': 'TotalBytes|Buffer|CacheControl|Charset|ContentType|Expires|ExpiresAbsolute|IsClientConnected|PICS|Status|ScriptTimeout|CodePage|LCID|SessionID|Timeout',
+      'support.function.asp': 'Lock|Unlock|SetAbort|SetComplete|BinaryRead|AddHeader|AppendToLog|BinaryWrite|Clear|Flush|Redirect|Write|CreateObject|HTMLEncode|MapPath|URLEncode|Abandon|Convert|Regex',
+      'support.function.event.asp': 'Application_OnEnd|Application_OnStart|OnTransactionAbort|OnTransactionCommit|Session_OnEnd|Session_OnStart',
+      'support.function.vb.asp': 'Array|Add|Asc|Atn|CBool|CByte|CCur|CDate|CDbl|Chr|CInt|CLng|Conversions|Cos|CreateObject|CSng|CStr|Date|DateAdd|DateDiff|DatePart|DateSerial|DateValue|Day|Derived|Math|Escape|Eval|Exists|Exp|Filter|FormatCurrency|FormatDateTime|FormatNumber|FormatPercent|GetLocale|GetObject|GetRef|Hex|Hour|InputBox|InStr|InStrRev|Int|Fix|IsArray|IsDate|IsEmpty|IsNull|IsNumeric|IsObject|Item|Items|Join|Keys|LBound|LCase|Left|Len|LoadPicture|Log|LTrim|RTrim|Trim|Maths|Mid|Minute|Month|MonthName|MsgBox|Now|Oct|Remove|RemoveAll|Replace|RGB|Right|Rnd|Round|ScriptEngine|ScriptEngineBuildVersion|ScriptEngineMajorVersion|ScriptEngineMinorVersion|Second|SetLocale|Sgn|Sin|Space|Split|Sqr|StrComp|StrReverse|Tan|Time|Timer|TimeSerial|TimeValue|TypeName|UBound|UCase|Unescape|VarType|Weekday|WeekdayName|Year',
+      'support.type.vb.asp': 'vbtrue|vbfalse|vbcr|vbcrlf|vbformfeed|vblf|vbnewline|vbnullchar|vbnullstring|int32|vbtab|vbverticaltab|vbbinarycompare|vbtextcomparevbsunday|vbmonday|vbtuesday|vbwednesday|vbthursday|vbfriday|vbsaturday|vbusesystemdayofweek|vbfirstjan1|vbfirstfourdays|vbfirstfullweek|vbgeneraldate|vblongdate|vbshortdate|vblongtime|vbshorttime|vbobjecterror|vbEmpty|vbNull|vbInteger|vbLong|vbSingle|vbDouble|vbCurrency|vbDate|vbString|vbObject|vbError|vbBoolean|vbVariant|vbDataObject|vbDecimal|vbByte|vbArray',
+    },'identifier',true);
+    this.$rules = {
+      start: [
+        { token: ['meta.ending-space'], regex: '$' },
+        {
+          token: [
+            'text',
+            'storage.type.function.asp',
+            'text',
+            'entity.name.function.asp',
+            'text',
+            'punctuation.definition.parameters.asp',
+            'variable.parameter.function.asp',
+            'punctuation.definition.parameters.asp',
+          ],
+          regex:
+            '^(\\s*)(Function|Sub)(\\s+)([a-zA-Z_]\\w*)(\\s*)(\\()([^)]*)(\\))',
+        },
+        {
+          token: 'punctuation.definition.comment.asp',
+          regex: "'$|REM(?=\\s|$)$",
+          next: 'start',
+          caseInsensitive: !0,
+        },
+        {
+          token: 'punctuation.definition.comment.asp',
+          regex: "'|REM(?=\\s|$)",
+          next: 'comment',
+          caseInsensitive: !0,
+        },
+        {
+          token: 'storage.type.asp',
+          regex: 'On Error Resume Next|On Error GoTo',
+          caseInsensitive: !0,
+        },
+        {
+          token: 'punctuation.definition.string.begin.asp',
+          regex: '"',
+          next: 'string',
+        },
+        {
+          token: ['punctuation.definition.variable.asp'],
+          regex:
+            '(\\$)[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*?\\b\\s*',
+        },
+        { regex: '\\w+', token: e },
+        {
+          token: ['entity.name.function.asp'],
+          regex:
+            '(?:(\\b[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*?\\b)(?=\\(\\)?))',
+        },
+        {
+          token: ['keyword.operator.asp'],
+          regex: '\\-|\\+|\\*\\/|\\>|\\<|\\=|\\&',
+        },
+      ],
+      comment: [
+        {
+          token: 'comment.line.apostrophe.asp',
+          regex: '$|(?=(?:%>))',
+          next: 'start',
+        },
+        { defaultToken: 'comment.line.apostrophe.asp' },
+      ],
+      string: [
+        {
+          token: 'constant.character.escape.apostrophe.asp',
+          regex: '""',
+        },
+        {
+          token: 'string.quoted.double.asp',
+          regex: '"',
+          next: 'start',
+        },
+        { defaultToken: 'string.quoted.double.asp' },
+      ],
+    };
+  };
+  r.inherits(s, i), (t.VBScriptHighlightRules = s);
+});
+define(
+    'ace/mode/mcbasic',
+    (e, t, n) => {
+      'use strict';
+      const r = e('../lib/oop'),
+        myFoldMode = e("./folding/mcbasic").FoldMode,
+        workerClient = e("../worker/worker_client").WorkerClient,
+        i = e('./text').Mode,
+        s = e('./mcbasic_highlight_rules').VBScriptHighlightRules,
+        o = function() {
+          this.HighlightRules = s;
+          this.foldingRules = new myFoldMode();
+        };
+      r.inherits(o, i),
+        function() {
+          (this.createWorker = function(session) {
+            const worker = new workerClient(["ace"], "ace/mode/mcbasic_worker", "Worker");
+            worker.attachToDocument(session.getDocument());
+    
+            worker.on("annotate", function(e) {
+                session.setAnnotations(e.data);
+            });
+    
+            worker.on("terminate", function() {
+                session.clearAnnotations();
+            });
+    
+            return worker;
+        }),
+          (this.lineCommentStart = ["'", 'REM']),
+          (this.$id = 'ace/mode/mcbasic');
+        }.call(o.prototype),
+        (t.Mode = o);
+    }
+  );

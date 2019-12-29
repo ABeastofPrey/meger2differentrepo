@@ -123,9 +123,14 @@
 					<tr *ngFor="let a of params.axes; let i = index">
 						<td>{{ params.cartesian ? cart[i] : a }}</td>
 						<td>
-							<mat-form-field
-								><input matInput [(ngModel)]="params.target[i]" type="number" virtualKeyboard ktype="numeric"
-							/></mat-form-field>
+							<mat-form-field>
+								<input
+									matInput
+									[(ngModel)]="params.target[i]"
+									type="number"
+									virtualKeyboard
+									ktype="numeric"/>
+								</mat-form-field>
 						</td>
 					</tr>
 					<tr>

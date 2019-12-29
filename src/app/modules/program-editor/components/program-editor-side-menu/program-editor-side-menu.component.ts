@@ -14,7 +14,7 @@ import {
   MCQueryResponse,
   LoginService,
 } from '../../../core';
-import { MCProject } from '../../../core/models/project/mc-project.model';
+import { MCProject, App } from '../../../core/models/project/mc-project.model';
 import { ElementRef } from '@angular/core';
 import { NewAppDialogComponent } from '../toolbar-dialogs/new-app-dialog/new-app-dialog.component';
 import { NewLibDialogComponent } from '../toolbar-dialogs/new-lib-dialog/new-lib-dialog.component';
@@ -63,7 +63,7 @@ class TreeNode {
   children: TreeNode[] = [];
   projectNameRef: string;
   parent: TreeNode;
-  ref: any = null; /* REFERENCE TO AN APP, LIB, ETC... */
+  ref: App = null; /* REFERENCE TO AN APP, LIB, ETC... */
 
   constructor(
     name: string,
@@ -91,18 +91,18 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   lastSelectedNode: TreeNode = null;
   lastSelectedFile: MCFile = null;
   currProject: MCProject = null;
-  menuVisible: boolean = false;
-  menuLeft: string = '0';
-  menuTop: string = '0';
+  menuVisible = false;
+  menuLeft = '0';
+  menuTop = '0';
 
-  public bgtCount = 0;
-  public projectPoints = projectPoints;
+  bgtCount = 0;
+  projectPoints = projectPoints;
   private _getChildren = (node: TreeNode) => {
     return observableOf(node.children);
   };
   private subscriptions: Subscription[] = [];
-  private words: any;
-  private lastDragIndex: number = -1;
+  private words: {};
+  private lastDragIndex = -1;
 
   constructor(
     public service: ProgramEditorService,
@@ -159,10 +159,11 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       this.prj.onAppStatusChange.subscribe(stat => {
         if (
           this.service.mode === null ||
-          (this.prj.activeProject &&
+          (this.prj.activeProject && 
             disableWhenProjectActive.includes(this.service.mode.toUpperCase()))
-        )
+        ) {
           this.service.mode = 'editor';
+        }
       })
     );
     this.subscriptions.push(
@@ -180,7 +181,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     this.subscriptions.push(
       this.prj.onExpandLib.subscribe((ret: { app: string; lib: string }) => {
         const appsNode = this.nestedDataSource.data[0];
-        for (let app of appsNode.children) {
+        for (const app of appsNode.children) {
           if (app.name === ret.app) {
             this.nestedTreeControl.expand(appsNode);
             this.nestedTreeControl.expandDescendants(app);
@@ -192,13 +193,13 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    for (let sub of this.subscriptions) {
+    for (const sub of this.subscriptions) {
       sub.unsubscribe();
     }
   }
 
-  drop(event: CdkDragDrop<any[]>) {
-    let data = this.nestedDataSource.data;
+  drop(event: CdkDragDrop<TreeNode[]>) {
+    const data = this.nestedDataSource.data;
     moveItemInArray(data, event.previousIndex, event.currentIndex);
     this.nestedDataSource._data.next(data);
   }
@@ -221,8 +222,9 @@ export class ProgramEditorSideMenuComponent implements OnInit {
 
   toggleNode(node: TreeNode) {
     this.nestedTreeControl.toggle(node);
-    if (!this.nestedTreeControl.isExpanded(node))
+    if (!this.nestedTreeControl.isExpanded(node)) {
       this.nestedTreeControl.collapseDescendants(node);
+    }
   }
 
   runApp(app: string, isBG = false) {
@@ -487,6 +489,64 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       });
   }
 
+  renameDep(dep: string) {
+    const ph = 'projects.toolbar.dep_name';
+    this.dialog.open(SingleInputDialogComponent, {
+        data: {
+          icon: 'edit',
+          title: this.words['projects.toolbar.rename'] + ' ' + dep,
+          placeholder: this.words[ph],
+          accept: this.words['button.rename'],
+          suffix: '.ULB'
+        },
+      }).afterClosed().subscribe((name: string) => {
+        if (name) {
+          name = name.toUpperCase();
+          const prj = this.prj.currProject.value;
+          const cmd = `?PRJ_RENAME_DEPENDENCY("${prj.name}","USER","${dep}","${name}.ULB")`;
+          this.ws.query(cmd).then((ret: MCQueryResponse) => {
+            if ((ret.err || ret.result !== '0')) {
+              return;
+            }
+            this.service.close();
+            this.service.mode = null;
+            this.prj.refreshDependencies(prj);
+          });
+        }
+      });
+  }
+
+  saveDepAs(dep: string) {
+    const ph = 'projects.toolbar.dep_name';
+    this.dialog
+      .open(SingleInputDialogComponent, {
+        data: {
+          icon: 'save',
+          title: dep + ' - ' + this.words['projects.toolbar.save_as'] + '...',
+          placeholder: this.words[ph],
+          accept: this.words['button.save'],
+          suffix: '.ULB'
+        },
+      })
+      .afterClosed()
+      .subscribe((name: string) => {
+        if (name) {
+          name = name.toUpperCase();
+          const prj = this.prj.currProject.value;
+          const cmd = `?PRJ_SAVE_AS_DEPENDENCY("${prj.name}","USER","${dep}","${name}.ULB")`;
+          this.ws.query(cmd).then((ret: MCQueryResponse) => {
+            if (ret.err || ret.result !== '0') {
+              console.warn(ret.err);
+              return;
+            }
+            this.service.close();
+            this.service.mode = null;
+            this.prj.refreshDependencies(prj);
+          });
+        }
+      });
+  }
+
   deleteLib() {
     this.menuVisible = false;
     const lib = this.lastSelectedNode.name;
@@ -517,7 +577,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
             this.ws.query(cmd).then((ret: MCQueryResponse) => {
               if (ret.result === '0') {
                 this.prj.refreshAppList(prj, true).then(ret => {
-                  this.prj.onExpandLib.emit({ app: app, lib: null });
+                  this.prj.onExpandLib.emit({ app, lib: null });
                 });
               }
             });
@@ -553,6 +613,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
               '")';
             this.ws.query(cmd).then((ret: MCQueryResponse) => {
               if (ret.result === '0') {
+                this.service.close();
+                this.service.mode = null;
                 this.prj.refreshDependencies(prj).then(ret => {
                   this.prj.currProject.next(prj);
                   this.prj.onExpandDep.emit(dep);
@@ -567,16 +629,18 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   openContextMenu(event: MouseEvent, node: TreeNode) {
     event.preventDefault();
     event.stopImmediatePropagation();
+    if (this.login.isOperator || this.login.isViewer || this.prj.activeProject) return;
     this.selectNode(node);
     switch (node.type) {
+      case 'Dependencies':
+      case 'Dependency':
+        if (this.prj.currProject.value.dependenciesLoaded) return;
       case 'Apps':
       case 'App':
       case 'Libraries':
       case 'Library':
       case 'Auxiliary':
       case 'BG':
-      case 'Dependency':
-      case 'Dependencies':
         break;
       default:
         return;
@@ -591,17 +655,17 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   }
 
   refreshData() {
-    let data: TreeNode[] = [];
+    const data: TreeNode[] = [];
     const p = this.currProject;
-    let apps = new TreeNode('', 'Apps', p.name, null);
-    for (let app of p.apps) {
-      let appNode = new TreeNode(app.name, 'App', p.name, apps);
+    const apps = new TreeNode('', 'Apps', p.name, null);
+    for (const app of p.apps) {
+      const appNode = new TreeNode(app.name, 'App', p.name, apps);
       appNode.ref = app;
-      let libsNode = new TreeNode('', 'Libraries', p.name, appNode);
-      for (let lib of app.libs) {
+      const libsNode = new TreeNode('', 'Libraries', p.name, appNode);
+      for (const lib of app.libs) {
         libsNode.children.push(new TreeNode(lib, 'Library', p.name, libsNode));
       }
-      let prgNode = new TreeNode('', 'File', p.name, appNode);
+      const prgNode = new TreeNode('', 'File', p.name, appNode);
       prgNode.ref = app;
       appNode.children.push(prgNode);
       if (!this.login.isOperator && !this.login.isViewer) {
@@ -613,21 +677,21 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     apps.children = apps.children.sort((n1, n2) => {
       return n1.name < n2.name ? -1 : 1;
     });
-    let deps = new TreeNode('', 'Dependencies', p.name, null);
-    for (let dep of p.dependencies) {
+    const deps = new TreeNode('', 'Dependencies', p.name, null);
+    for (const dep of p.dependencies) {
       deps.children.push(new TreeNode(dep, 'Dependency', p.name, deps));
     }
-    let macros = new TreeNode('', 'Macros', p.name, null);
-    let settings = new TreeNode('', 'Settings', p.name, null);
-    let pPoints = new TreeNode('', projectPoints, p.name, null);
-    let errors = new TreeNode('', 'Errors', p.name, null);
-    let frames = new TreeNode('', 'Frames', p.name, null);
-    let pallets = new TreeNode('', 'Pallets', p.name, null);
-    let grippers = new TreeNode('', 'Grippers', p.name, null);
-    let io = new TreeNode('', 'IO', p.name, null);
-    let vision = new TreeNode('', 'Vision', p.name, null);
-    let conveyor = new TreeNode('', 'Conveyor', p.name, null);
-    let payloads = new TreeNode('', 'Payloads', p.name, null);
+    const macros = new TreeNode('', 'Macros', p.name, null);
+    const settings = new TreeNode('', 'Settings', p.name, null);
+    const pPoints = new TreeNode('', projectPoints, p.name, null);
+    const errors = new TreeNode('', 'Errors', p.name, null);
+    const frames = new TreeNode('', 'Frames', p.name, null);
+    const pallets = new TreeNode('', 'Pallets', p.name, null);
+    const grippers = new TreeNode('', 'Grippers', p.name, null);
+    const io = new TreeNode('', 'IO', p.name, null);
+    const vision = new TreeNode('', 'Vision', p.name, null);
+    const conveyor = new TreeNode('', 'Conveyor', p.name, null);
+    const payloads = new TreeNode('', 'Payloads', p.name, null);
     // Auxiliary node
     const auxiliaryNode = new TreeNode('', 'Auxiliary', p.name, null);
     p.backgroundTaskList.forEach(item => {
@@ -662,7 +726,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     return nodeData && !leafTypes.includes(nodeData.type);
   }
 
-  public newBackgroundTask(): void {
+  newBackgroundTask(): void {
     this.menuVisible = false;
     this.dialog.open(NewAppDialogComponent, {
       data: {
@@ -675,15 +739,15 @@ export class ProgramEditorSideMenuComponent implements OnInit {
 
   private setDragAndDrop() {
     setTimeout(() => {
-      let appsElement = document.getElementById('Apps-ul');
+      const appsElement = document.getElementById('Apps-ul');
       if (appsElement) {
-        let list = this.dd.createDropList(appsElement);
+        const list = this.dd.createDropList(appsElement);
         list.lockAxis = 'y';
         list.withOrientation('vertical');
         list.sortingDisabled = false;
-        let data = this.nestedDataSource.data;
+        const data = this.nestedDataSource.data;
         list.dropped.subscribe(e => {
-          let data = this.nestedDataSource.data;
+          const data = this.nestedDataSource.data;
           data[0].children.splice(
             e.currentIndex,
             0,
@@ -693,11 +757,11 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           this.nestedDataSource.data = data;
           this.setDragAndDrop();
         });
-        let dragRefs = [];
-        for (let app of data[0].children) {
-          let e = document.getElementById('App-' + app.name);
+        const dragRefs = [];
+        for (const app of data[0].children) {
+          const e = document.getElementById('App-' + app.name);
           if (e) {
-            let ref = this.dd.createDrag(e);
+            const ref = this.dd.createDrag(e);
             ref.data = app.name;
             dragRefs.push(ref);
           }

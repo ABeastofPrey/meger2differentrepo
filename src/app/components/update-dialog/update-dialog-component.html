@@ -1,5 +1,18 @@
-<div class="mat-typography">
+<div class="mat-typography wrapper">
 	<h1>{{title}}</h1>
 	<mat-progress-bar mode="indeterminate"></mat-progress-bar>
 	<h3>{{'standby'|translate}}</h3>
+	<div class="info primary-bg mat-elevation-z6">
+		<div class="info-main">
+			<img src="assets/pics/cabinet2.svg" />
+			<div class="title center-vertical">
+				<mat-icon>help</mat-icon>
+				Did you know?
+			</div>
+			<h3 *ngIf="trivia.length > 0">{{trivia[selectedIndex].str}}</h3>
+		</div>
+		<div class="image-container">
+			<div [style.background-image]="background"></div>
+		</div>
+	</div>
 </div>

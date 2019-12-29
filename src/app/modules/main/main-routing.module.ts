@@ -22,13 +22,6 @@ const routes: Routes = [
         },
       },
       {
-        path: 'blockly',
-        loadChildren: () =>
-          import('../blockly/blockly.module').then(m => m.BlocklyModule),
-        canActivate: [PermissionGuardService],
-        data: { permission: 99 },
-      },
-      {
         path: 'dashboard',
         loadChildren: () =>
           import('../dashboard/dashboard.module').then(m => m.DashboardModule),

@@ -1,3 +1,4 @@
+import { UtilsService } from './../../../core/services/utils.service';
 import {
   Component,
   OnInit,
@@ -24,9 +25,9 @@ const epsilon = 0.1;
 export class PalletLevelDesignerComponent implements OnInit {
   @Input('pallet') pallet: Pallet;
   @Output('change') changed = new EventEmitter<number>();
-  rotation: number = 0;
-  normalizePreview: number = 1;
-  normalizeItem: number = 1;
+  rotation = 0;
+  normalizePreview = 1;
+  normalizeItem = 1;
 
   @ViewChild('container', { static: false }) container: ElementRef;
   @ViewChild('upload', { static: false }) uploadInput: ElementRef;
@@ -36,12 +37,17 @@ export class PalletLevelDesignerComponent implements OnInit {
   }
 
   private _items: CustomPalletItem[] = [];
-  private _order: number = 1;
+  private _order = 1;
 
-  constructor(private dialog: MatDialog, private api: ApiService) {}
+  constructor(
+    private dialog: MatDialog,
+    private api: ApiService,
+    private utils: UtilsService
+  ) {}
 
   showMenu(item: CustomPalletItem) {
-    let ref = this.dialog.open(CustomItemMenuComponent, {
+    const ref = this.dialog.open(CustomItemMenuComponent, {
+      disableClose: false,
       data: {
         items: this._items,
         order: item.order,
@@ -60,13 +66,14 @@ export class PalletLevelDesignerComponent implements OnInit {
   }
 
   refresh() {
-    let width = this.pallet.item_size_x;
-    let height = this.pallet.item_size_y;
-    let max = width > height ? width : height;
+    if (!this.container) return;
+    const width = this.pallet.itemSizeX;
+    const height = this.pallet.itemSizeY;
+    const max = width > height ? width : height;
     this.normalizePreview = max / 70;
     this.normalizeItem = max / 100;
-    let pWidth = this.pallet.pallet_size_x;
-    let pHeight = this.pallet.pallet_size_y;
+    const pWidth = this.pallet.palletSizeX;
+    const pHeight = this.pallet.palletSizeY;
     if (pHeight / 270 > this.normalizeItem) this.normalizeItem = pHeight / 270;
     if (pWidth / 550 > this.normalizeItem) this.normalizeItem = pWidth / 550;
     this.container.nativeElement.style.width =
@@ -78,26 +85,26 @@ export class PalletLevelDesignerComponent implements OnInit {
   validate(item: CustomPalletItem) {
     // CALLED AFTER EVERY DRAG
     item.untouched = false;
-    let element: HTMLElement = item.element;
-    let elementRect = element.getBoundingClientRect();
-    let containerRect = (<HTMLElement>(
+    const element: HTMLElement = item.element;
+    const elementRect = element.getBoundingClientRect();
+    const containerRect = ((
       this.container.nativeElement
-    )).getBoundingClientRect();
+    ) as HTMLElement).getBoundingClientRect();
 
-    let left = element.getBoundingClientRect().left - containerRect.left;
-    let top = element.getBoundingClientRect().top - containerRect.top;
-    let width = element.getBoundingClientRect().width;
-    let height = element.getBoundingClientRect().height;
+    const left = element.getBoundingClientRect().left - containerRect.left;
+    const top = element.getBoundingClientRect().top - containerRect.top;
+    const width = element.getBoundingClientRect().width;
+    const height = element.getBoundingClientRect().height;
 
     // FIND COORDIANTED OF BOTTOM LEFT CORNER
-    let x = left;
-    let y = containerRect.bottom - elementRect.bottom;
+    const x = left;
+    const y = containerRect.bottom - elementRect.bottom;
 
     // UPDATE ITEM WITH NEW POSITION
     item.x = x * this.normalizeItem;
     item.y = y * this.normalizeItem;
 
-    let error: boolean = false;
+    let error = false;
 
     // CHECK BOUNDS
     if (left + width - containerRect.width >= 1 || left < 0) {
@@ -109,15 +116,15 @@ export class PalletLevelDesignerComponent implements OnInit {
     }
 
     // COMPARE ITEM TO ALL OTHER ITEMS
-    for (let other of this._items) {
+    for (const other of this._items) {
       if (error) break;
       if (other === item) continue;
-      let otherLeft =
+      const otherLeft =
         other.element.getBoundingClientRect().left - containerRect.left;
-      let otherTop =
+      const otherTop =
         other.element.getBoundingClientRect().top - containerRect.top;
-      let otherWidth = other.element.getBoundingClientRect().width;
-      let otherHeight = other.element.getBoundingClientRect().height;
+      const otherWidth = other.element.getBoundingClientRect().width;
+      const otherHeight = other.element.getBoundingClientRect().height;
       if (
         (otherTop + otherHeight > top && otherTop <= top) ||
         (top + height > otherTop && top <= otherTop)
@@ -178,7 +185,7 @@ export class PalletLevelDesignerComponent implements OnInit {
 
   getDataAsString(): string {
     let result = '';
-    for (let item of this._items) {
+    for (const item of this._items) {
       result +=
         Math.round(item.x) + ',' + Math.round(item.y) + ',' + item.r + '\n';
     }
@@ -186,24 +193,24 @@ export class PalletLevelDesignerComponent implements OnInit {
   }
 
   private setDataFromString(str: string) {
-    let containerRect = (<HTMLElement>(
+    const containerRect = ((
       this.container.nativeElement
-    )).getBoundingClientRect();
-    let lines = str.split('\n');
-    let items: CustomPalletItem[] = [];
+    ) as HTMLElement).getBoundingClientRect();
+    const lines = str.split('\n');
+    const items: CustomPalletItem[] = [];
     for (let i = 0; i < lines.length; i++) {
-      let line = lines[i];
+      const line = lines[i];
       if (line.indexOf('---') >= 0) break;
-      let parts = line.split(',');
+      const parts = line.split(',');
       if (parts.length !== 3) continue;
-      let x = Number(parts[0]);
-      let y = Number(parts[1]);
-      let r = Number(parts[2]);
+      const x = Number(parts[0]);
+      const y = Number(parts[1]);
+      const r = Number(parts[2]);
       if (!isNaN(x) && !isNaN(y) && !isNaN(r)) {
         items.push({
-          x: x,
-          y: y,
-          r: r,
+          x,
+          y,
+          r,
           order: i + 1,
           error: false,
           element: null,
@@ -218,7 +225,7 @@ export class PalletLevelDesignerComponent implements OnInit {
       // FIX POSITIONS
       // THE FIRST CHILD NODE IS A COMMENT, SO START FROM POSITION i=1...
       for (let i = 1; i < this.container.nativeElement.childNodes.length; i++) {
-        let e = <HTMLElement>this.container.nativeElement.childNodes[i];
+        const e = this.container.nativeElement.childNodes[i] as HTMLElement;
         if (e.style && this.items[i - 1]) {
           e.style.left = this.items[i - 1].x / this.normalizeItem + 'px';
           e.style.top =
@@ -232,20 +239,20 @@ export class PalletLevelDesignerComponent implements OnInit {
   }
 
   download() {
-    let data = this.getDataAsString();
-    //this.api.downloadFromText('PLT_' + this.pallet.name + '.DAT',data);
+    const data = this.getDataAsString();
+    this.utils.downloadFromText('PLT_' + this.pallet.name + '.DAT',data);
   }
 
   uploadFile() {
     this.uploadInput.nativeElement.click();
   }
 
-  onUploadFilesChange(e: any) {
-    let reader = new FileReader();
-    for (let f of e.target.files) {
+  onUploadFilesChange(e: { target: {value: File, files: File[]}}) {
+    const reader = new FileReader();
+    for (const f of e.target.files) {
       reader.readAsText(f, 'UTF-8');
       reader.onload = evt => {
-        this.setDataFromString(<string>reader.result);
+        this.setDataFromString(reader.result as string);
       };
       reader.onerror = evt => {
         console.log('error:');
@@ -258,7 +265,7 @@ export class PalletLevelDesignerComponent implements OnInit {
   changeOrder(oldVal: number, newVal: number) {
     this._items[oldVal - 1].order = newVal;
     this._items[newVal - 1].order = oldVal;
-    let tmp = this._items[oldVal - 1];
+    const tmp = this._items[oldVal - 1];
     this._items[oldVal - 1] = this._items[newVal - 1];
     this._items[newVal - 1] = tmp;
     this.changed.emit(this._items.length);

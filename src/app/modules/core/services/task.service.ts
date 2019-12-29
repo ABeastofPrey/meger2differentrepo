@@ -1,4 +1,4 @@
-import { Injectable, ApplicationRef } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { ErrorFrame } from '../models/error-frame.model';
 import { TpStatService } from './tp-stat.service';
@@ -8,16 +8,16 @@ import { TaskFilterPipe } from '../../task-manager/task-filter.pipe';
 export class TaskService {
   private interval: number = null;
   private lastTaskList: string = null;
-  private isActive: boolean = false;
+  private isActive = false;
   private tasklistCommand = '?tasklist';
 
   tasks: MCTask[] = [];
 
   constructor(
     private ws: WebsocketService,
-    private ref: ApplicationRef,
     private filter: TaskFilterPipe,
-    private stat: TpStatService
+    private stat: TpStatService,
+    private zone: NgZone
   ) {
     this.stat.onlineStatus.subscribe(stat => {
       if (!this.ws.connected) {
@@ -25,9 +25,10 @@ export class TaskService {
         return;
       }
       // TP LIB IS ONLINE
+      const wasActive = this.isActive;
       this.stop();
       this.tasklistCommand = stat ? 'cyc1' : '?tasklist';
-      this.start();
+      if (wasActive) this.start();
     });
   }
 
@@ -36,10 +37,10 @@ export class TaskService {
       this.tasklistCommand = '?tasklist';
       return [];
     }
-    let tasks: MCTask[] = [];
+    const tasks: MCTask[] = [];
     if (list === 'No tasks found') return tasks;
-    let lines = list.split('\n');
-    for (let line of lines) {
+    const lines = list.split('\n');
+    for (const line of lines) {
       if (line.trim().length === 0) continue;
       const parts: string[] = line.split(',');
       let name: string,
@@ -61,13 +62,15 @@ export class TaskService {
         (state = 'Loaded'), (priority = null);
       }
       tasks.push({
-        name: name,
-        state: state,
-        priority: priority,
+        name,
+        state,
+        priority,
         filePath: path,
       });
     }
-    return tasks;
+    return tasks.sort((t1,t2)=>{
+      return t1.name > t2.name ? 1 : -1;
+    });
   }
 
   getList(): Promise<MCTask[]> {
@@ -84,9 +87,10 @@ export class TaskService {
       false,
       (ret: string, cmd: string, err: ErrorFrame) => {
         if (err || ret === this.lastTaskList) return;
-        this.lastTaskList = ret;
-        this.tasks = this.parseTasklist(ret);
-        this.ref.tick();
+        this.zone.run(()=>{
+          this.lastTaskList = ret;
+          this.tasks = this.parseTasklist(ret);
+        });
       },
       200
     );
@@ -99,16 +103,18 @@ export class TaskService {
   }
   
   setDebugMode(on: boolean) {
-    if (on)
+    if (on) {
       this.stop();
-    else
+    }
+    else {
       this.start();
+    }
   }
 
   run(indexes: number[], filters: boolean[]) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
-    for (let i of indexes) {
-      let task = filtered[i];
+    for (const i of indexes) {
+      const task = filtered[i];
       if (task.priority === null) continue;
       this.ws.query('KillTask ' + task.name).then(() => {
         this.ws.query('StartTask ' + task.name);
@@ -118,7 +124,7 @@ export class TaskService {
 
   kill(indexes: number[], filters: boolean[]) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
-    for (let i of indexes) {
+    for (const i of indexes) {
       const task = filtered[i];
       if (task.priority == null) continue;
       this.ws.query('KillTask ' + task.name);
@@ -127,8 +133,8 @@ export class TaskService {
 
   idle(indexes: number[], filters: boolean[]) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
-    for (let i of indexes) {
-      let task = filtered[i];
+    for (const i of indexes) {
+      const task = filtered[i];
       if (task.priority == null) continue;
       this.ws.query('IdleTask ' + task.name);
     }
@@ -136,15 +142,16 @@ export class TaskService {
 
   unload(indexes: number[], filters: boolean[]) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
-    for (let i of indexes) {
-      let task = filtered[i];
+    for (const i of indexes) {
+      const task = filtered[i];
       const promise =
         task.priority == null
           ? Promise.resolve(null)
           : this.ws.query('KillTask ' + task.name);
       promise.then(() => {
-        if (task.priority || task.state.indexOf('Global') === -1)
+        if (task.priority || task.state.indexOf('Global') === -1) {
           this.ws.query('Unload ' + task.name);
+        }
       });
     }
   }
@@ -153,16 +160,18 @@ export class TaskService {
     this.stop();
     this.tasklistCommand = '?tasklist';
     return this.getList()
-      .then(() => {
-        let promises = [];
+      .then(list => {
+        this.tasks = list;
+        const promises = [];
         const tasksCopy = this.tasks.slice();
-        for (let task of tasksCopy) {
-          if (task.priority !== null)
+        for (const task of tasksCopy) {
+          if (task.priority !== null) {
             promises.push(this.ws.query('KillTask ' + task.name));
+          }
         }
         return Promise.all(promises).then(ret => {
           console.log(ret);
-          let promises = [];
+          const promises = [];
           for (let i = 0; i < tasksCopy.length; i++) {
             const task = tasksCopy[i];
             if (task.priority || task.state.indexOf('Global') === -1) {

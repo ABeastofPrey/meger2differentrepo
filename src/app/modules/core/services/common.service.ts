@@ -17,7 +17,7 @@ export class CommonService {
 
   private env = environment;
 
-  private _fontWidth: number = 13.2; // FOR MONOSPACE
+  private _fontWidth = 13.2; // FOR MONOSPACE
   get fontWidth() {
     return this._fontWidth;
   }
@@ -37,7 +37,7 @@ export class CommonService {
     }
     this.refreshTheme();
     // calculate font width
-    let e: HTMLInputElement = document.createElement('input');
+    const e: HTMLInputElement = document.createElement('input');
     e.size = 1;
     e.style.fontFamily = 'monospace';
     e.style.fontSize = '24px';
@@ -47,7 +47,9 @@ export class CommonService {
     document.body.appendChild(e);
     this._fontWidth = e.getBoundingClientRect().width / 2;
     const isWin = navigator && navigator.platform === 'Win32';
-    if (this.isTablet && !isWin) this._fontWidth = this._fontWidth * 1.5; // because of screen scaling
+    if (this.isTablet && !isWin) {
+      this._fontWidth = this._fontWidth * 1.5; // because of screen scaling
+    }
     e.remove();
   }
 
@@ -62,7 +64,7 @@ export class CommonService {
           this.env.platform = this.env.platforms.Kuka;
       }
       const { classList } = this.overlayContainer.getContainerElement();
-      for (let platform in this.env.platforms) {
+      for (const platform of Object.keys(this.env.platforms)) {
         const name: string = this.env.platforms[platform].name;
         if (name.toLowerCase() === theme) {
           classList.add(name);
@@ -86,7 +88,7 @@ export class CommonService {
   }
 
   goFullScreen() {
-    const s = <Screenfull>screenfull;
+    const s = screenfull as Screenfull;
     if (s.enabled) {
       s.request();
     }

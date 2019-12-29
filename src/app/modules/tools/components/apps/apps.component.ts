@@ -1,3 +1,4 @@
+import { TaskService } from './../../../core/services/task.service';
 import { environment } from './../../../../../environments/environment';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LoginService } from '../../../../modules/core/services/login.service';
@@ -12,7 +13,7 @@ import { WebsocketService } from '../../../../modules/core/services/websocket.se
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
-import { MCQueryResponse, DataService } from '../../../core';
+import { MCQueryResponse, DataService, TpStatService } from '../../../core';
 import { FactoryRestoreComponent } from '../factory-restore/factory-restore.component';
 
 @Component({
@@ -24,32 +25,34 @@ export class AppsComponent implements OnInit {
   /**
    * The key to store the upgrade version in the local storage.
    */
-  private readonly OSVersion: string = 'osVersion';
+  private readonly OS_VERSION: string = 'osVersion';
   /**
    * The key to store the gui version in the local storage.
    */
-  private readonly GUIVersion: string = 'guiVersion';
+  private readonly GUI_VERSION: string = 'guiVersion';
   /**
    * The key to store the web server version in the local storage.
    */
-  private readonly WebServerVersion: string = 'webServerVersion';
+  private readonly WEBSERVER_VERSION: string = 'webServerVersion';
   /**
    * The key to store the softMC version in the local storage.
    */
-  private readonly SoftMCVersion: string = 'softMCVersion';
+  private readonly SOFT_MC_VERSION: string = 'softMCVersion';
   /**
    * The key to store the library version in the local storage.
    */
-  private readonly LibraryVersion: string = 'libraryVersion';
+  private readonly LIB_VERSION: string = 'libraryVersion';
 
   /**
    * The query to get the os upgrade version.
    */
-  private readonly OSVersionQuery: string = '?vi_getreleaseversion';
+  private readonly OS_VERSION_QUERY: string = '?vi_getreleaseversion';
 
   @ViewChild('upload', { static: false }) uploadInput: ElementRef;
 
-  private words: any;
+  private words: {};
+  private _factoryAvailable = false;
+  private _interval: number;
 
   constructor(
     public login: LoginService,
@@ -59,14 +62,35 @@ export class AppsComponent implements OnInit {
     private ws: WebsocketService,
     private trn: TranslateService,
     public utils: UtilsService,
-    public data: DataService
+    public data: DataService,
+    private task: TaskService
   ) {
     this.trn.get('apps').subscribe(words => {
       this.words = words;
     });
   }
 
-  ngOnInit() {}
+  get factoryAvailable() {
+    return this._factoryAvailable;
+  }
+
+  ngOnInit() {
+    this.checkFactoryAvailable();
+    this._interval = window.setInterval(()=>{
+      this.checkFactoryAvailable();
+    },2000);
+  }
+
+  private async checkFactoryAvailable() {
+    const tasks = await this.task.getList();
+    this._factoryAvailable = tasks.some(t=>{
+      return t.name === 'FACTORY.LIB';
+    });
+  }
+
+  ngOnDestroy() {
+    clearInterval(this._interval);
+  }
 
   uploadIPK() {
     this.uploadInput.nativeElement.click();
@@ -77,7 +101,7 @@ export class AppsComponent implements OnInit {
   }
 
   reboot() {
-    let ref = this.dialog.open(YesNoDialogComponent, {
+    const ref = this.dialog.open(YesNoDialogComponent, {
       width: '400px',
       data: this.words['reboot_confirm'],
     });
@@ -96,14 +120,14 @@ export class AppsComponent implements OnInit {
         this.ws.query('?user sys_reboot(0,0,0)');
         setTimeout(() => {
           let ok = false;
-          let interval = setInterval(() => {
+          const interval = setInterval(() => {
             if (ok) return;
             this.api
               .getFile('isWebServerAlive.HTML')
               .then(ret => {
                 ok = true;
                 clearInterval(interval);
-                location.reload(true);
+                location.reload();
               })
               .catch(err => {});
           }, 2000);
@@ -116,25 +140,25 @@ export class AppsComponent implements OnInit {
    * Store the version information before OS upgrade.
    */
   private storeVersionInfo() {
-    this.ws.query(this.OSVersionQuery).then((result: MCQueryResponse) => {
-      localStorage.removeItem(this.OSVersion);
-      localStorage.setItem(this.OSVersion, result.result);
-      localStorage.removeItem(this.GUIVersion);
-      localStorage.setItem(this.GUIVersion, environment.gui_ver);
-      localStorage.removeItem(this.WebServerVersion);
-      localStorage.setItem(this.WebServerVersion, this.data.JavaVersion);
-      localStorage.removeItem(this.SoftMCVersion);
-      localStorage.setItem(this.SoftMCVersion, this.data.MCVersion);
-      localStorage.removeItem(this.LibraryVersion);
-      localStorage.setItem(this.LibraryVersion, this.data.cabinetVer);
+    this.ws.query(this.OS_VERSION_QUERY).then(result => {
+      localStorage.removeItem(this.OS_VERSION);
+      localStorage.setItem(this.OS_VERSION, result.result);
+      localStorage.removeItem(this.GUI_VERSION);
+      localStorage.setItem(this.GUI_VERSION, environment.gui_ver);
+      localStorage.removeItem(this.WEBSERVER_VERSION);
+      localStorage.setItem(this.WEBSERVER_VERSION, this.data.JavaVersion);
+      localStorage.removeItem(this.SOFT_MC_VERSION);
+      localStorage.setItem(this.SOFT_MC_VERSION, this.data.MCVersion);
+      localStorage.removeItem(this.LIB_VERSION);
+      localStorage.setItem(this.LIB_VERSION, this.data.cabinetVer);
     });
   }
 
-  onUploadFilesChange(e: any) {
+  onUploadFilesChange(e: {target: {files: File[], value: File }}) {
     const file: File = e.target.files[0];
     this.storeVersionInfo();
     if (file && file.name.toUpperCase() === 'MCU_FW.ZIP') {
-      let dialog = this.dialog.open(UpdateDialogComponent, {
+      const dialog = this.dialog.open(UpdateDialogComponent, {
         disableClose: true,
         width: '100%',
         height: '100%',
@@ -156,7 +180,7 @@ export class AppsComponent implements OnInit {
       });
       return;
     }
-    let ref = this.dialog.open(YesNoDialogComponent, {
+    const ref = this.dialog.open(YesNoDialogComponent, {
       width: '400px',
       data: this.words['firmware_confirm'],
     });
@@ -165,7 +189,7 @@ export class AppsComponent implements OnInit {
         e.target.value = null;
         return;
       }
-      let dialog = this.dialog.open(UpdateDialogComponent, {
+      const dialog = this.dialog.open(UpdateDialogComponent, {
         disableClose: true,
         width: '100%',
         height: '100%',
@@ -174,7 +198,7 @@ export class AppsComponent implements OnInit {
         data: this.words['updating'],
         id: 'update',
       });
-      for (let f of e.target.files) {
+      for (const f of e.target.files) {
         this.api.uploadIPK(f).then(
           (ret: UploadResult) => {
             if (ret.success) {
@@ -182,7 +206,7 @@ export class AppsComponent implements OnInit {
               this.ws.send('?user sys_reboot(0,0,0)', true);
               setTimeout(() => {
                 let ok = false;
-                let interval = setInterval(() => {
+                const interval = setInterval(() => {
                   if (ok) return;
                   this.api.getFile('isWebServerAlive.HTML').then(() => {
                     ok = true;
@@ -199,6 +223,8 @@ export class AppsComponent implements OnInit {
             // ON ERROR
             dialog.close();
             switch (ret.error.err) {
+              default:
+                break;
               case -2:
                 this.trn
                   .get(['files.err_upload', 'dismiss'], { name: f.name })

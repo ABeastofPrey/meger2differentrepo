@@ -1,3 +1,4 @@
+import { TPVariable } from './../../../core/models/tp/tp-variable.model';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { WebsocketService, DataService, MCQueryResponse } from '../../../core';
@@ -10,17 +11,21 @@ import { WebsocketService, DataService, MCQueryResponse } from '../../../core';
 export class FrameCalibrationDialogComponent implements OnInit {
   varName: string;
   positionOK: boolean[] = [false, false, false];
-  setAsCurrent: boolean = false;
+  setAsCurrent = false;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<FrameCalibrationDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      variable: TPVariable,
+      frameType: string
+    },
     private ws: WebsocketService,
     public dataService: DataService
   ) {
     this.varName = this.data.variable.name;
-    if (this.data.variable.isArr)
+    if (this.data.variable.isArr) {
       this.varName += '[' + this.data.variable.selectedIndex + ']';
+    }
   }
 
   ngOnInit() {}
@@ -35,7 +40,7 @@ export class FrameCalibrationDialogComponent implements OnInit {
   }
 
   teach(pos: number) {
-    let cmd =
+    const cmd =
       '?TP_FRAME_CALIBRATION_TEACH("' + this.data.frameType + '",' + pos + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (pos === 4) pos = 3;
@@ -44,7 +49,7 @@ export class FrameCalibrationDialogComponent implements OnInit {
   }
 
   calibrate() {
-    let cmd =
+    const cmd =
       '?TP_FRAME_CALIBRATION("' +
       this.data.frameType +
       '","' +
@@ -54,6 +59,8 @@ export class FrameCalibrationDialogComponent implements OnInit {
       if (ret.result === '0') {
         if (this.setAsCurrent) {
           switch (this.data.frameType) {
+            default:
+              break;
             case 'BASE':
               this.dataService.selectedBase = this.varName;
               break;

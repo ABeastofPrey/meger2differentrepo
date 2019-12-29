@@ -5,12 +5,12 @@
 		<img src="assets/pics/{{ env.platform.spinner }}" />
 	</div>
 	<as-split direction="horizontal" (dragEnd)="onDragEnd()" unit="pixel">
-		<as-split-area size="210">
+		<as-split-area size="210" maxSize="400">
 			<program-editor-side-menu class="mat-elevation-z1"></program-editor-side-menu>
 		</as-split-area>
 		<as-split-area>
 			<as-split direction="vertical" (dragEnd)="onDragEnd()">
-				<as-split-area size="80" class="right-side" style="position: relative;">
+				<as-split-area size="70" class="right-side" style="position: relative;">
 					<mat-tab-group
 						animationDuration="0ms"
 						*ngIf="service.modeToggle === 'mc'"
@@ -146,7 +146,8 @@
 								</div>
 							</div>
 						</div>
-						<program-editor-ace></program-editor-ace>
+						<program-editor-ace *ngIf="!!service.activeFile"></program-editor-ace>
+						<div class="no-file" *ngIf="!service.activeFile"></div>
 					</div>
 					<data-screen *ngIf="service.mode === 'data'" style="overflow: auto; flex: 1;"></data-screen>
 					<data-screen
@@ -162,56 +163,69 @@
 					<io-mapping *ngIf="service.mode === 'io'" style="flex: 1; display: flex;"></io-mapping>
 				</as-split-area>
 				<as-split-area
-					size="20"
+					size="30"
 					[minSize]="service.errors.length > 0 ? 20 : 1"
 					*ngIf="service.mode === 'editor'"
-					style="padding: 8px;"
 				>
 					<as-split direction="horizontal" (dragEnd)="onDragEnd()" unit="pixel">
 						<as-split-area>
-							<div class="err-container">
-								<div *ngIf="!service.backtrace && service.errors.length > 0">
-									{{ 'projects.notification.errMsg' | translate }}
-									<div
-										*ngFor="let e of service.errors"
-										class="center-vertical error-line"
-										(click)="e.number === -1 ? null : service.skipToLine(e.number)"
-										[class.error-line-selectable]="e.number !== -1"
-									>
-										<mat-icon style="margin-right: 8px;">bug_report</mat-icon>
-										<span *ngIf="e.number !== -1">Line {{ e.number + ':' }}&nbsp;&nbsp;</span>
-										<span *ngIf="e.number === -1">Task {{ e.file + ':' }}&nbsp;&nbsp;</span>
-										{{ e.error }}
+							<div class="err-container compact-tabs">
+								<mat-tab-group	[selectedIndex]="selectedTab" (selectedIndexChange)="selectedTab = $event" *ngIf="!cmn.isTablet">
+									<mat-tab label="{{'projects.notification.title' | translate}}"></mat-tab>
+									<mat-tab>
+										<ng-template mat-tab-label>
+											<div>{{'message_log' | translate}}</div>
+											<div class="badge primary-bg">{{notification.count}}</div>
+										</ng-template>
+									</mat-tab>
+									<mat-tab *ngIf="login.isAdmin" label="{{'terminal' | translate}}"></mat-tab>
+								</mat-tab-group>
+								<div *ngIf="selectedTab === 0" class="tab-content">
+									<div *ngIf="!service.backtrace && service.errors.length > 0">
+										{{ 'projects.notification.errMsg' | translate }}
+										<div
+											*ngFor="let e of service.errors"
+											class="center-vertical error-line"
+											(click)="e.number === -1 ? null : service.skipToLine(e.number)"
+											[class.error-line-selectable]="e.number !== -1"
+										>
+											<mat-icon style="margin-right: 8px;">bug_report</mat-icon>
+											<span *ngIf="e.number !== -1">Line {{ e.number + ':' }}&nbsp;&nbsp;</span>
+											<span *ngIf="e.number === -1">Task {{ e.file + ':' }}&nbsp;&nbsp;</span>
+											<span>{{ e.error }}</span>
+										</div>
+									</div>
+									<div *ngIf="service.errors.length === 0 && !service.backtrace">
+										{{ 'projects.notification.none' | translate }}
+									</div>
+									<div *ngIf="service.backtrace && service.errors.length === 0" class="backtrace">
+										<div>Backtrace:</div>
+										<div *ngFor="let file of service.backtrace.files">
+											{{ file.name }}(<a
+												(click)="service.setFile(file.name, file.path, null, file.line, service.backtrace)"
+												>{{ file.path }}{{ file.name }}:{{ file.line }}</a
+											>)
+										</div>
+									</div>
+									<div *ngIf="service.backtrace && service.errors.length > 0" class="backtrace err">
+										Exception at task "{{ service.backtrace.files[service.backtrace.files.length - 1].name }}": &nbsp;<b
+											>{{ service.errors[0].error }}</b
+										>
+										<div *ngFor="let file of service.backtrace.files" class="bt-line">
+											at {{ file.name }}(<a
+												matRipple
+												matRippleUnbounded="false"
+												(click)="
+													login.isAdmin && service.setFile(file.name, file.path, null, file.line, service.backtrace)
+												"
+												[class.disabled]="!login.isAdmin"
+												>{{ file.path }}{{ file.name }}:{{ file.line }}</a
+											>)
+										</div>
 									</div>
 								</div>
-								<div *ngIf="service.errors.length === 0 && !service.backtrace">
-									{{ 'projects.notification.none' | translate }}
-								</div>
-								<div *ngIf="service.backtrace && service.errors.length === 0" class="backtrace">
-									<div>Backtrace:</div>
-									<div *ngFor="let file of service.backtrace.files">
-										{{ file.name }}(<a
-											(click)="service.setFile(file.name, file.path, null, file.line, service.backtrace)"
-											>{{ file.path }}{{ file.name }}:{{ file.line }}</a
-										>)
-									</div>
-								</div>
-								<div *ngIf="service.backtrace && service.errors.length > 0" class="backtrace err">
-									Exception at task "{{ service.backtrace.files[service.backtrace.files.length - 1].name }}": &nbsp;<b
-										>{{ service.errors[0].error }}</b
-									>
-									<div *ngFor="let file of service.backtrace.files" class="bt-line">
-										at {{ file.name }}(<a
-											matRipple
-											matRippleUnbounded="false"
-											(click)="
-												login.isAdmin && service.setFile(file.name, file.path, null, file.line, service.backtrace)
-											"
-											[class.disabled]="!login.isAdmin"
-											>{{ file.path }}{{ file.name }}:{{ file.line }}</a
-										>)
-									</div>
-								</div>
+								<notification-window *ngIf="selectedTab === 1" class="tab-content"></notification-window>
+								<terminal *ngIf="selectedTab === 2" class="tab-content"></terminal>
 							</div>
 						</as-split-area>
 						<as-split-area size="200" minSize="200">

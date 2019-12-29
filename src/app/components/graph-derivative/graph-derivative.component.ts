@@ -7,11 +7,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
   styleUrls: ['./graph-derivative.component.css'],
 })
 export class GraphDerivativeComponent implements OnInit {
-  deg: number = 1;
-  dataIndex: number = 0;
+  deg = 1;
+  dataIndex = 0;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any[],
+    @Inject(MAT_DIALOG_DATA) public data: string[],
     private ref: MatDialogRef<number[]>
   ) {}
 

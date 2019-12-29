@@ -1,3 +1,5 @@
+import { UtilsService } from './../../../core/services/utils.service';
+import { NotificationService } from './../../../core/services/notification.service';
 import { Component, OnInit } from '@angular/core';
 import {
   ProgramEditorService,
@@ -18,6 +20,8 @@ import {
 import { CommonService } from '../../../core/services/common.service';
 import { projectPoints } from '../program-editor-side-menu/program-editor-side-menu.component';
 import {environment} from '../../../../../environments/environment';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'program-editor',
@@ -27,8 +31,11 @@ import {environment} from '../../../../../environments/environment';
 export class ProgramEditorComponent implements OnInit {
   
   pPoints = projectPoints;
-  appDescEditMode: boolean = false;
+  appDescEditMode = false;
   env = environment;
+  selectedTab = 0;
+
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     public service: ProgramEditorService,
@@ -36,10 +43,17 @@ export class ProgramEditorComponent implements OnInit {
     public prj: ProjectManagerService,
     public login: LoginService,
     public cmn: CommonService,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    public notification: NotificationService,
+    public utils: UtilsService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // when errors happen jump to first tab
+    this.service.errLinesChange.pipe(takeUntil(this.notifier)).subscribe(lines => {
+      this.selectedTab = 0;
+    });
+  }
 
   ngOnDestroy() {
     this.service.mode = 'editor';

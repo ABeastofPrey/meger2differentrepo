@@ -5,10 +5,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class PassPipe implements PipeTransform {
 
-  transform(value: string, args?: any): any {
+  transform(value: string) : string {
     let passStr = '';
-    for (let i = 0; i < value.length; i++)
+    for (let i = 0; i < value.length; i++) {
       passStr += '*';
+    }
     return passStr;
   }
 

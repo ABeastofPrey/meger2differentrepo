@@ -9,13 +9,13 @@ import { Gripper } from '../../../../core/models/gripper.model';
   styleUrls: ['./gripper-selector.component.css'],
 })
 export class GripperSelectorComponent implements OnInit {
-  endEffectors: endEffector[];
-  ef: endEffector = null;
+  endEffectors: EndEffector[];
+  ef: EndEffector = null;
   grp: string = null;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<GripperSelectorComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: string,
     private ws: WebsocketService
   ) {}
 
@@ -33,8 +33,8 @@ export class GripperSelectorComponent implements OnInit {
 
   ngOnInit() {
     this.ws.query('?grp_get_grippers_list').then((ret: MCQueryResponse) => {
-      let endEffectors: endEffector[] = [];
-      for (let ef of ret.result.split(';')) {
+      const endEffectors: EndEffector[] = [];
+      for (const ef of ret.result.split(';')) {
         if (ef.trim().length > 0) {
           const index = ef.indexOf(':');
           if (index > -1) {
@@ -50,7 +50,7 @@ export class GripperSelectorComponent implements OnInit {
   }
 }
 
-interface endEffector {
+interface EndEffector {
   name: string;
   grippers: string[];
 }

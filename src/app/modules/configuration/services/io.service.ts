@@ -58,7 +58,7 @@ export class IoService {
   /**
    * The map between io option and query command parameters.
    */
-  private ioOptionMap = new Map<any, any>([
+  private ioOptionMap = new Map<IoOptions, {dio: IoDirection, ioScope: IoScope}>([
     [IoOptions.AllInputs, { dio: IoDirection.Din, ioScope: IoScope.All }],
     [IoOptions.AllOutputs, { dio: IoDirection.Dout, ioScope: IoScope.All }],
     [IoOptions.DriveIoInputs, { dio: IoDirection.Din, ioScope: IoScope.Drv }],
@@ -81,7 +81,7 @@ export class IoService {
    * @returns One promise instance contains query command.
    */
   queryIos(option: IoOptions, bitSize: string, hex: boolean) {
-    let cmd = this.getQueryIOCommand(option, bitSize, hex);
+    const cmd = this.getQueryIOCommand(option, bitSize, hex);
     return this.send(cmd);
   }
 
@@ -90,7 +90,7 @@ export class IoService {
    * @returns One promise instance contains query command.
    */
   queryCustomIoPorts() {
-    let cmd = `${IoServiceCommand.QueryCustomIoPorts}`;
+    const cmd = `${IoServiceCommand.QueryCustomIoPorts}`;
 
     return this.send(cmd);
   }
@@ -102,8 +102,8 @@ export class IoService {
    * @returns One promise instance contains query command.
    */
   queryCustomIos(tableIndex: number, hex: boolean) {
-    let hexValue = hex ? HexValue.Hex : HexValue.Dec;
-    let cmd = `${IoServiceCommand.QueryCustomIo}(${tableIndex}, "${hexValue}")`;
+    const hexValue = hex ? HexValue.Hex : HexValue.Dec;
+    const cmd = `${IoServiceCommand.QueryCustomIo}(${tableIndex}, "${hexValue}")`;
 
     return this.send(cmd);
   }
@@ -122,11 +122,12 @@ export class IoService {
     selectPort: number,
     hex: boolean
   ) {
-    let hexValue = hex ? HexValue.Hex : HexValue.Dec;
-    let values = selectType.key.trim().split(' ');
-    let type = values[0] === 'Input' ? IoDirection.Din : IoDirection.Dout;
-    let bitSize = values[1].trim().toLowerCase();
-    let cmd = `${IoServiceCommand.AddCustomIo}(${tableIndex}, ${selectPort}, "${type}", "${bitSize}", "${hexValue}")`;
+    const hexValue = hex ? HexValue.Hex : HexValue.Dec;
+    const values = selectType.key.trim().split(' ');
+    const type = values[0] === 'Input' ? IoDirection.Din : IoDirection.Dout;
+    const bitSize = values[1].trim().toLowerCase();
+    const cmd = `${IoServiceCommand.AddCustomIo}(${tableIndex}, ${selectPort}, "${type}", "` + 
+                `${bitSize}", "${hexValue}")`;
     return this.send(cmd);
   }
 
@@ -146,11 +147,12 @@ export class IoService {
     selectPort: number,
     hex: boolean
   ) {
-    let hexValue = hex ? HexValue.Hex : HexValue.Dec;
-    let values = selectType.key.trim().split(' ');
-    let type = values[0] === 'Input' ? IoDirection.Din : IoDirection.Dout;
-    let bitSize = values[1].trim().toLowerCase();
-    let cmd = `${IoServiceCommand.ModifyCustomIo}(${tableIndex}, ${index}, ${selectPort}, "${type}", "${bitSize}", "${hexValue}")`;
+    const hexValue = hex ? HexValue.Hex : HexValue.Dec;
+    const values = selectType.key.trim().split(' ');
+    const type = values[0] === 'Input' ? IoDirection.Din : IoDirection.Dout;
+    const bitSize = values[1].trim().toLowerCase();
+    const cmd = `${IoServiceCommand.ModifyCustomIo}(${tableIndex}, ${index}, ${selectPort}, "` +
+                `${type}", "${bitSize}", "${hexValue}")`;
     return this.send(cmd);
   }
 
@@ -161,7 +163,7 @@ export class IoService {
    * @returns One promise instance contains removing command.
    */
   removeCustomIo(tableIndex: number, index: number) {
-    let cmd = `${IoServiceCommand.RemoveCustomIo}(${tableIndex}, ${index})`;
+    const cmd = `${IoServiceCommand.RemoveCustomIo}(${tableIndex}, ${index})`;
     return this.send(cmd);
   }
 
@@ -170,7 +172,7 @@ export class IoService {
    * @returns One promise instance contains query command.
    */
   queryCustomTabs() {
-    let cmd = `${IoServiceCommand.QueryCustomTab}`;
+    const cmd = `${IoServiceCommand.QueryCustomTab}`;
     return this.send(cmd);
   }
 
@@ -181,7 +183,7 @@ export class IoService {
    * @returns One promise instance contains set command.
    */
   setCustomTabName(tabId: number, tabName: string) {
-    let cmd = `${IoServiceCommand.SetCustomTabName}(${tabId}, "${tabName}")`;
+    const cmd = `${IoServiceCommand.SetCustomTabName}(${tabId}, "${tabName}")`;
     return this.send(cmd);
   }
 
@@ -191,7 +193,7 @@ export class IoService {
    * @returns One promise instance contains clear command.
    */
   clearCustomTab(tabId: number) {
-    let cmd = `${IoServiceCommand.ClearCustomTab}(${tabId})`;
+    const cmd = `${IoServiceCommand.ClearCustomTab}(${tabId})`;
     return this.send(cmd);
   }
 
@@ -202,7 +204,7 @@ export class IoService {
    * @returns One promise instance contains set command.
    */
   setIoByBit(port: number, value: string) {
-    let cmd = `${IoServiceCommand.SetIoByBit}(${port}, ${value})`;
+    const cmd = `${IoServiceCommand.SetIoByBit}(${port}, ${value})`;
     return this.send(cmd);
   }
 
@@ -212,9 +214,9 @@ export class IoService {
    */
   getIos(): IO[] {
     if (this.result.length) {
-      let jsonObject = JSON.parse(this.result);
-      let array = [];
-      for (let element of jsonObject) {
+      const jsonObject = JSON.parse(this.result);
+      const array = [];
+      for (const element of jsonObject) {
         array.push({
           port: element[IoKey.Index],
           value: element[IoKey.Value],
@@ -248,11 +250,11 @@ export class IoService {
     customIoPorts: CustomIOPort
   ): CustomIO {
     if (this.result.length) {
-      let element = JSON.parse(this.result);
-      let key = element[CustomIoKey.Type].replace(/\s/g, '');
+      const element = JSON.parse(this.result);
+      const key = element[CustomIoKey.Type].replace(/\s/g, '');
 
       let typeValue = null;
-      for (let type of customIoTypes) {
+      for (const type of customIoTypes) {
         if (element[CustomIoKey.Type] === type.key) {
           typeValue = type.value;
           break;
@@ -282,13 +284,13 @@ export class IoService {
     customIoPorts: CustomIOPort
   ): CustomIO[] {
     if (this.result.length) {
-      let jsonObject = JSON.parse(this.result);
-      let array = [];
-      for (let element of jsonObject) {
-        let key = element[CustomIoKey.Type].replace(/\s/g, '');
+      const jsonObject = JSON.parse(this.result);
+      const array = [];
+      for (const element of jsonObject) {
+        const key = element[CustomIoKey.Type].replace(/\s/g, '');
 
         let typeValue = null;
-        for (let type of customIoTypes) {
+        for (const type of customIoTypes) {
           if (element[CustomIoKey.Type] === type.key) {
             typeValue = type.value;
             break;
@@ -355,7 +357,7 @@ export class IoService {
       ioScope = this.ioOptionMap.get(option).ioScope;
     }
 
-    let hexValue = hex ? HexValue.Hex : HexValue.Dec;
+    const hexValue = hex ? HexValue.Hex : HexValue.Dec;
 
     return `${IoServiceCommand.QueryIO}("${dio}", "${ioScope}", "${bitSize}", "${hexValue}")`;
   }

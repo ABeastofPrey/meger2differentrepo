@@ -160,7 +160,7 @@ describe('HomeSettingComponent', () => {
     const target = { value: '' };
     fixture.detectChanges();
     fixture.whenStable().then(() => {
-      comp.updatePosition(1, target);
+      comp.updatePosition(1, target as HTMLInputElement);
       expect(homeSettingService.clearHomePosition).toHaveBeenCalledWith(1);
     });
   }));
@@ -169,7 +169,7 @@ describe('HomeSettingComponent', () => {
     const target = { value: '' };
     homeSettingService.clearHomePosition.and.returnValue(Left());
     fixture.whenStable().then(() => {
-      comp.updatePosition(1, target);
+      comp.updatePosition(1, target as HTMLInputElement);
       expect(homeSettingService.clearHomePosition).toHaveBeenCalledWith(1);
       homeSettingService.clearHomePosition.calls.reset();
       homeSettingService.clearHomePosition.and.returnValue(Right());
@@ -182,7 +182,7 @@ describe('HomeSettingComponent', () => {
     homeSettingService.clearHomePosition.and.returnValue(Right());
     comp.onFocus('');
     fixture.whenStable().then(() => {
-      comp.updatePosition(1, target);
+      comp.updatePosition(1, target as HTMLInputElement);
       expect(homeSettingService.clearHomePosition.calls.any()).toBe(false);
     });
   }));
@@ -190,7 +190,7 @@ describe('HomeSettingComponent', () => {
   it('should update position failed when enter invalid number', async(() => {
     const target = { value: '20a' };
     fixture.detectChanges();
-    comp.updatePosition(1, target);
+    comp.updatePosition(1, target as HTMLInputElement);
     fixture.whenStable().then(() => {
       expect(openSpy).toHaveBeenCalled();
     });
@@ -202,7 +202,7 @@ describe('HomeSettingComponent', () => {
     fixture.detectChanges();
     const target = { value: '20' };
     comp.onFocus('20');
-    comp.updatePosition(1, target);
+    comp.updatePosition(1, target as HTMLInputElement);
     fixture.whenStable().then(() => {
       expect(homeSettingService.updateHomePostion.calls.any()).toBe(false);
     });
@@ -214,7 +214,7 @@ describe('HomeSettingComponent', () => {
     fixture.detectChanges();
     const target = { value: '20' };
     comp.onFocus('30');
-    comp.updatePosition(undefined, target);
+    comp.updatePosition(undefined, target as HTMLInputElement);
     fixture.whenStable().then(() => {
       expect(homeSettingService.updateHomePostion.calls.any()).toBe(false);
     });
@@ -226,7 +226,7 @@ describe('HomeSettingComponent', () => {
     fixture.detectChanges();
     const target = { value: '20' };
     comp.onFocus('30');
-    comp.updatePosition(1, target);
+    comp.updatePosition(1, target as HTMLInputElement);
     fixture.whenStable().then(() => {
       expect(homeSettingService.updateHomePostion.calls.any()).toBe(false);
     });
@@ -238,7 +238,7 @@ describe('HomeSettingComponent', () => {
     fixture.detectChanges();
     const target = { value: '9' };
     comp.onFocus('30');
-    comp.updatePosition(2, target);
+    comp.updatePosition(2, target as HTMLInputElement);
     fixture.whenStable().then(() => {
       expect(homeSettingService.updateHomePostion.calls.any()).toBe(false);
       homeSettingService.updateHomePostion.calls.reset();

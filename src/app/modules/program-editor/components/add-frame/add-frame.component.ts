@@ -14,9 +14,9 @@ import {
 })
 export class AddFrameComponent implements OnInit {
   name: string;
-  values: any[];
-  isArray: boolean = false;
-  arrSize: number = 0;
+  values: Array<string | number>;
+  isArray = false;
+  arrSize = 0;
 
   constructor(
     public dialogRef: MatDialogRef<AddFrameComponent>,
@@ -38,11 +38,11 @@ export class AddFrameComponent implements OnInit {
     const name = this.isArray
       ? this.name + '[' + this.arrSize + ']'
       : this.name;
-    let value: string = '';
+    let value = '';
     if (!this.isArray) {
       value = this.values.slice(0, this.coos.joints.length).join(',');
     }
-    let cmd: string = '?TP_ADD_FRAME("';
+    let cmd = '?TP_ADD_FRAME("';
     switch (this.data) {
       case 0:
         cmd += 'TOOL';
@@ -55,6 +55,8 @@ export class AddFrameComponent implements OnInit {
         break;
       case 3:
         cmd += 'WP';
+        break;
+      default:
         break;
     }
     cmd +=

@@ -57,7 +57,7 @@ export class IoComponent implements OnInit, AfterViewInit {
   /**
    * Whether the io value is in hex format.
    */
-  hex: boolean = false;
+  hex = false;
 
   /**
    * The selected io option in left table.
@@ -94,11 +94,13 @@ export class IoComponent implements OnInit, AfterViewInit {
   /**
    * The IoTableColumn enum object reference.
    */
+  // tslint:disable-next-line: variable-name
   IoTableColumnReference = IoTableColumn;
 
   /**
    * The IoFormatOptions enum object reference.
    */
+  // tslint:disable-next-line: variable-name
   IoFormatOptionsReference = IoFormatOptions;
 
   /**
@@ -114,9 +116,9 @@ export class IoComponent implements OnInit, AfterViewInit {
   /**
    * The tabs used for custom view display.
    */
-  tabs: Array<string> = [];
-  tabsInLib: Array<string> = [];
-  tabsTemp: Array<string> = [];
+  tabs: string[] = [];
+  tabsInLib: string[] = [];
+  tabsTemp: string[] = [];
 
   /**
    * Current selected tab view.
@@ -128,12 +130,12 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   customTabAddIndex = 1;
   customTabDeleteIndex = 0;
-  customEmptyIndex: Array<number> = [0, 0, 0];
+  customEmptyIndex: number[] = [0, 0, 0];
 
   /**
    * Created formControl for at most 3 custom tab view.
    */
-  customViewFormControl: Array<FormControl> = [];
+  customViewFormControl: FormControl[] = [];
 
   /**
    * The list of matsort directives.
@@ -145,7 +147,7 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   @ViewChildren(CustomIOComponent) customIos: QueryList<CustomIOComponent>;
 
-  private words: any;
+  private words: {};
 
   /**
    * Constructor.
@@ -218,8 +220,8 @@ export class IoComponent implements OnInit, AfterViewInit {
     }
 
     this.customTabAddIndex = this.customEmptyIndex.indexOf(0) + 1;
-    let tabName = this.words['customView'] + ' ' + this.customTabAddIndex;
-    let newCustomViewFormControl = new FormControl(tabName, [
+    const tabName = this.words['customView'] + ' ' + this.customTabAddIndex;
+    const newCustomViewFormControl = new FormControl(tabName, [
       Validators.required,
     ]);
 
@@ -250,7 +252,7 @@ export class IoComponent implements OnInit, AfterViewInit {
    * delete current selected custom tab view.
    */
   deleteCustomTab() {
-    let ref = this.dialog.open(YesNoDialogComponent, {
+    const ref = this.dialog.open(YesNoDialogComponent, {
       disableClose: true,
       data: {
         title: this.words['dialogTitle'],
@@ -409,9 +411,9 @@ export class IoComponent implements OnInit, AfterViewInit {
    * @param index The index of the selected custom io tab.
    */
   private refreshCustomIoTab(index: number) {
-    let selectedIndex = this.calculateCustomIoTabIndex(index);
+    const selectedIndex = this.calculateCustomIoTabIndex(index);
 
-    let customIo = this.customIos.find(
+    const customIo = this.customIos.find(
       item => item.tableIndex === selectedIndex
     );
     if (customIo) {

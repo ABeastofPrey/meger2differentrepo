@@ -1,4 +1,5 @@
 export class ErrorFrame {
+
   errType: string;
   errCode: string;
   errMsg: string;
@@ -22,7 +23,7 @@ export class ErrorFrame {
     i = errString.indexOf('"');
     this.errMsg = errString.substr(0, i);
     errString = errString.substr(i + 2);
-    var parts = errString.split(',');
+    const parts = errString.split(',');
     if (parts.length < 3) return;
     i = parts[0].indexOf('"');
     this.errTask = parts[0].substr(parts[0].indexOf(':') + 1).trim();

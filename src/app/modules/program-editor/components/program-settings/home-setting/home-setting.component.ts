@@ -29,14 +29,14 @@ const transferNum = ifElse(isEmpty, identity, Number);
   styleUrls: ['./home-setting.component.scss'],
 })
 export class HomeSettingComponent implements OnInit, OnDestroy {
-  public orderOptions: number[] = range(1, 10);
-  public orderList: number[] = [];
-  public positionList: number[] = [];
+  orderOptions: number[] = range(1, 10);
+  orderList: number[] = [];
+  positionList: number[] = [];
   private preValue: number | string;
   private preIndex: number;
   private min: number;
   private max: number;
-  private words: any;
+  private words: {};
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
@@ -80,17 +80,18 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
     )(await this.service.getHomeOrder());
   }
 
-  public onFocus(value: string): void {
+  onFocus(value: string): void {
     this.preValue = transferNum(value);
   }
 
-  public onKeyup(event: any): void {
+  // tslint:disable-next-line: no-any
+  onKeyup(event: any): void {
     const isPressEnter = equals(13);
     // tslint:disable-next-line
-    isPressEnter(event.keyCode) && event.target.blur();
+    isPressEnter(event.keyCode) && (event.target as HTMLElement).blur();
   }
 
-  public async updatePosition(index: number, target: any): Promise<void> {
+  async updatePosition(index: number, target: HTMLInputElement): Promise<void> {
     const value = transferNum(target.value);
     const isEqualsToPrevious = equals(this.preValue);
     if (isEmpty(value)) {
@@ -105,7 +106,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
       }
     } else {
       if (isNotValidNumber(value)) {
-        target.value = this.preValue;
+        target.value = this.preValue as string;
         this.snackBar.open(this.words['validNumTip'], '', { duration: 1000 });
         return;
       } else if (isEqualsToPrevious(value)) {
@@ -123,7 +124,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
           ]),
           isOverLimit = complement(positionRange);
         if (isOverLimit(value)) {
-          target.value = this.preValue;
+          target.value = this.preValue as string;
           this.snackBar.open(
             `${this.words['numRange']} [${this.min},${this.max}].`,
             '',
@@ -139,14 +140,14 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
     }
   }
 
-  public async updateOrder(index: number, value: number): Promise<void> {
+  async updateOrder(index: number, value: number): Promise<void> {
     Either.either(
       err => console.warn('Update Home Order failed: ' + err),
       () => this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
     )(await this.service.updateHomeOrder(index, value));
   }
 
-  public async readCurrentPosition(): Promise<void> {
+  async readCurrentPosition(): Promise<void> {
     this.positionList = [];
     Either.either(
       err => console.warn('Read current position failed: ' + err),
@@ -166,6 +167,6 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
       err => console.warn(`Get min of j${index} failed: ` + err),
       res => (min = res)
     )(await this.service.getPositionMin(index));
-    return { min: min, max: max };
+    return { min, max };
   }
 }

@@ -1,4 +1,4 @@
-<div class="main mat-typography">
+<form class="main mat-typography" (ngSubmit)="insert()" [formGroup]="dialogForm">
 	<div class="wrapper">
 		<div class="title">{{ 'projectCommands.call.title' | translate }}</div>
 		<div class="content">
@@ -6,7 +6,7 @@
 				<input
 					matInput
 					placeholder="{{ 'projectCommands.call.name' | translate }}"
-					[(ngModel)]="expression"
+					formControlName="expression"
 					type="text"
 					virtualKeyboard
 					ktype="text"
@@ -18,8 +18,8 @@
 		<button mat-button color="primary" mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="insert()" [disabled]="expression === null || expression.length === 0">
+		<button mat-button color="primary" type="submit" [disabled]="dialogForm.invalid">
 			{{ 'button.insert' | translate }}
 		</button>
 	</div>
-</div>
+</form>

@@ -8,10 +8,8 @@ import {
 import { ScreenManagerService } from '../../../modules/core/services/screen-manager.service';
 import { ApiService } from '../../../modules/core/services/api.service';
 import { TourService } from 'ngx-tour-md-menu';
-import { ApplicationRef } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordGraphComponent } from '../../../components/record-graph/record-graph.component';
 import {GroupManagerService} from '../../core/services/group-manager.service';
 import {RecordParams} from '../../../components/record-dialog/record-dialog.component';
 
@@ -19,8 +17,9 @@ import {RecordParams} from '../../../components/record-dialog/record-dialog.comp
 export class DashboardService {
   private _windows: DashboardWindow[] = [];
   private graphType: string;
-  private _busy: boolean = false;
-  private words: any;
+  private _busy = false;
+  private words: {};
+  private _interval: number;
 
   lastChartData: Graph[] = null;
 
@@ -40,7 +39,7 @@ export class DashboardService {
   }
 
   add(params: DashboardInitParams) {
-    for (let w of this.windows) {
+    for (const w of this.windows) {
       if (w.name === params.name) return;
     }
     this.windows.push(new DashboardWindow(params));
@@ -48,7 +47,7 @@ export class DashboardService {
   }
 
   close(name: string) {
-    let index = this.findWindow(name);
+    const index = this.findWindow(name);
     if (index > -1) {
       this._windows.splice(index, 1);
       this.save();
@@ -63,7 +62,6 @@ export class DashboardService {
     private snack: MatSnackBar,
     private tour: TourService,
     private zone: NgZone,
-    private ref: ApplicationRef,
     private trn: TranslateService,
     private grp: GroupManagerService
   ) {
@@ -88,9 +86,9 @@ export class DashboardService {
         }
       }
     });
-    let cache = localStorage.getItem('dashboards');
+    const cache = localStorage.getItem('dashboards');
     if (cache) {
-      let windows: DashboardWindow[] = JSON.parse(cache);
+      const windows: DashboardWindow[] = JSON.parse(cache);
       for (let i = 0; i < windows.length; i++) {
         if (windows[i].name === 'SCARA (Tour)') {
           windows.splice(i, 1);
@@ -101,27 +99,30 @@ export class DashboardService {
       this.resetWindows();
     }
     this.zone.runOutsideAngular(() => {
-      setInterval(() => {
-        if (this.mgr.screen.name !== 'dashboard') return;
-        for (let w of this.windows) {
+      this._interval = window.setInterval(() => {
+        if (this.mgr.screen.name !== 'dashboard') {
+          return clearInterval(this._interval);
+        };
+        for (const w of this.windows) {
           if (w.name === 'SCARA (Tour)') continue;
-          let promises: Promise<any>[] = [];
-          promises.push(this.ws.query('?' + w.name + '.en'));
-          for (let p of w.params) {
-            promises.push(this.ws.query('?' + w.name + '.' + p.name));
-          }
-          Promise.all(promises).then((ret: MCQueryResponse[]) => {
-            if (ret[0].err) {
-              this.close(w.name);
-              this.ref.tick();
-              return;
+          this.zone.run(()=>{
+            const promises = [];
+            promises.push(this.ws.query('?' + w.name + '.en'));
+            for (const p of w.params) {
+              promises.push(this.ws.query('?' + w.name + '.' + p.name));
             }
-            w.enable = !(ret[0].result === '0' || ret[0].err);
-            for (let i = 0; i < w.params.length; i++) {
-              if (ret[i + 1] && w.params[i])
-                w.params[i].value = ret[i + 1].result;
-            }
-            this.ref.tick();
+            Promise.all(promises).then(ret => {
+              if (ret[0].err) {
+                this.close(w.name);
+                return;
+              }
+              w.enable = !(ret[0].result === '0' || ret[0].err);
+              for (let i = 0; i < w.params.length; i++) {
+                if (ret[i + 1] && w.params[i]) {
+                  w.params[i].value = ret[i + 1].result;
+                }
+              }
+            });
           });
         }
       }, 200);
@@ -129,7 +130,7 @@ export class DashboardService {
   }
 
   resetWindows() {
-    for (let w of this._windows) {
+    for (const w of this._windows) {
       w.isRecording = false;
       w.recordingTime = 0;
     }
@@ -139,7 +140,7 @@ export class DashboardService {
     localStorage.setItem('dashboards', JSON.stringify(this._windows));
   }
 
-  onChange(w: DashboardWindow, p: DashboardParam, v: any) {
+  onChange(w: DashboardWindow, p: DashboardParam, v: boolean | string | number) {
     let cmd = w.name + '.' + p.name + '=';
     switch (v) {
       case true:
@@ -150,21 +151,6 @@ export class DashboardService {
         cmd += v;
     }
     this.ws.query(cmd);
-  }
-
-  showGraphDialog(graphType: string, recName?: string) {
-    this.graphType = graphType;
-    this.getRecordingData(recName).then((ret: boolean) => {
-      this._busy = false;
-      if (!ret) return;
-      this.dialog.open(RecordGraphComponent, {
-        width: '100%',
-        height: '100%',
-        maxWidth: '100%',
-        data: this.lastChartData,
-        autoFocus: false,
-      });
-    });
   }
 
   private getRecordingData(recName: string) {
@@ -187,13 +173,13 @@ export class DashboardService {
    * Returns TRACES array for PlotlyJS
    */
   private csvToGraphs(csv: string): Graph[] {
-    let newData: Graph[] = [];
+    const newData: Graph[] = [];
     // parse CSR
-    let recLines = csv.split('\n');
-    let legends = recLines[1].split(',');
+    const recLines = csv.split('\n');
+    const legends = recLines[1].split(',');
     if (this.graphType === '3d') {
       // 3D GRAPH
-      let chartData: Graph3D = {
+      const chartData: Graph3D = {
         mode: 'lines',
         name: this.words['dashboard.charts.3d'],
         x: [],
@@ -204,7 +190,7 @@ export class DashboardService {
       newData.push(chartData);
     } else if (this.graphType === '2d') {
       // 2D
-      for (let legend of legends) {
+      for (const legend of legends) {
         newData.push({
           mode: 'lines',
           name: legend,
@@ -225,7 +211,7 @@ export class DashboardService {
     const gap = Number(recLines[0]) || 1;
     for (let i = 2; i < recLines.length; i++) {
       if (recLines[i] !== '') {
-        let vals = recLines[i].slice(0, -1).split(',');
+        const vals = recLines[i].slice(0, -1).split(',');
         if (this.graphType !== '3d') {
           // 2D
           if (this.graphType === '2da') {
@@ -244,7 +230,7 @@ export class DashboardService {
           if (vals.length !== 3) continue;
           newData[0].x.push(Number(vals[0]));
           newData[0].y.push(Number(vals[1]));
-          (<Graph3D>newData[0]).z.push(Number(vals[2]));
+          (newData[0] as Graph3D).z.push(Number(vals[2]));
         }
       }
     }
@@ -255,10 +241,10 @@ export class DashboardService {
 export class DashboardWindow {
   name: string;
   axes: string[];
-  enable: boolean = false;
+  enable = false;
   params: DashboardParam[] = [];
-  isExpanded: boolean = false;
-  cartesian: boolean = false;
+  isExpanded = false;
+  cartesian = false;
   target: number[];
   vel: number;
   acc: number;
@@ -286,11 +272,11 @@ export interface DashboardInitParams {
 
 export class DashboardParam {
   name: string = null;
-  value: any = null;
-  base: string = 'DEC'; // DEC, HEX, BIN
-  inputType: string = 'INPUT'; // INPUT, TOGGLE, SLIDER
-  sliderMin: number = 0;
-  sliderMax: number = 100;
+  value: string | number | boolean = null;
+  base = 'DEC'; // DEC, HEX, BIN
+  inputType = 'INPUT'; // INPUT, TOGGLE, SLIDER
+  sliderMin = 0;
+  sliderMax = 100;
 }
 
 interface Graph {

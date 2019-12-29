@@ -19,6 +19,7 @@
 								(change)="$event ? masterToggle() : null"
 								[checked]="selection.hasValue() && isAllSelected()"
 								[indeterminate]="selection.hasValue() && !isAllSelected()"
+                [disabled]="dataSource.data.length === 1"
 							>
 							</mat-checkbox>
 						</mat-header-cell>
@@ -61,11 +62,21 @@
 				</mat-table>
 			</as-split-area>
 			<as-split-area size="70">
-				<mat-card class="mat-elevation-z3 data-card">
+				<div class="behind" *ngIf="!selectedVar && selection.selected.length === 0">
+					<img src="assets/pics/{{currFrameType}}.svg">
+					<h3>{{ 'frames.none' | translate:frameTypeTranslated }}</h3>
+					<img src="assets/pics/Curved_Arrow.svg" class="arrow">
+				</div>
+        <div class="external-buttons" *ngIf="selection.selected.length > 0">
+          <button mat-raised-button color="warn" (click)="deleteChecked()">
+            {{ 'button.delete_selected' | translate }}
+          </button>
+        </div>
+				<mat-card class="mat-elevation-z3 data-card" *ngIf="selectedVar || selection.selected.length > 0">
 					<div class="var-name" *ngIf="selectedVar">
 						{{ selectedVar.name }}{{ selectedVar.isArr ? '[' + selectedVar.selectedIndex + ']' : '' }}
 					</div>
-					<div class="buttons" *ngIf="selectedVar || selection.selected.length > 0">
+					<div class="buttons">
 						<button
 							*ngIf="selectedVar && selectedVar.name !== '-'"
 							mat-raised-button
@@ -84,9 +95,6 @@
 							(click)="deleteSelected()"
 						>
 							{{ 'dataScreen.del' | translate: selectedVar }}
-						</button>
-						<button *ngIf="selection.selected.length > 0" mat-raised-button color="warn" (click)="deleteChecked()">
-							{{ 'button.delete_selected' | translate }}
 						</button>
 					</div>
 					<div class="var-details" *ngIf="selectedVar">

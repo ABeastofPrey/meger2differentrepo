@@ -26,9 +26,9 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
   styleUrls: ['./help.component.css'],
 })
 export class HelpComponent implements OnInit {
-  public online: boolean = false;
-  public env = environment;
-  public isActivated: boolean = false;
+  online = false;
+  env = environment;
+  isActivated = false;
 
   private notifier: Subject<boolean> = new Subject();
 
@@ -70,7 +70,7 @@ export class HelpComponent implements OnInit {
     this.dialog.open(ShortcutsComponent);
   }
 
-  public activation(): void {
+  activation(): void {
     this.dialog
       .open(ActivationComponent, { disableClose: true, width: '250px' })
       .afterClosed()
@@ -104,7 +104,7 @@ export class HelpComponent implements OnInit {
       then(logOrKey),
       getKey
     );
-    return await Promise.all([fetchID(), fetchKey()]);
+    return Promise.all([fetchID(), fetchKey()]);
   }
 
   private checkStatus(machineId: string, key: string): void {

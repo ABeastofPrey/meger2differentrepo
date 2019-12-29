@@ -17,6 +17,8 @@ $primary-IISy: green;
 
 $material-semi-black: rgba(0,0,0,0.54);
 
+$gradient-kuka-end: #ffa473;
+
 $mat-kuka: (
     100: $base-Connect,
     200: $primary-Connect,
@@ -77,14 +79,14 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
     color: #fff;
   }
 
+  .warn {
+    color: mat-color($material-kuka-warn);
+  }
+
   /* Here is the style difinition of content portion.
    *
    */
   mat-sidenav-container mat-sidenav-content {
-    .enabledApp {
-      color: $material-semi-black;
-    }
-
     .home-config .home-position .read-btn:hover {
       color: mat-color($material-kuka-primary);
     }
@@ -187,6 +189,10 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   }
   .kuka-fill {
     background-color: mat-color($material-kuka-primary, 500);
+  }
+
+  .cs-gradient {
+    background: linear-gradient(180deg, rgba(237,238,238,1) 0%, $gradient-kuka-end 100%);
   }
 
   .command-card .mat-card-header {

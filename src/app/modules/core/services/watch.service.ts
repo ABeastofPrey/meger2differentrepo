@@ -17,8 +17,8 @@ export class WatchService {
   newVarContext: string = GLOBAL;
   contexts: string[] = [GLOBAL];
 
-  private _windowOpen: boolean = false;
-  private interval: any;
+  private _windowOpen = false;
+  private interval: number;
   private env = environment;
   private variableListMap = new Map<string, string[]>();
 
@@ -35,9 +35,10 @@ export class WatchService {
     const cachedStr = localStorage.getItem('watch');
     if (cachedStr) {
       try {
-        let vars: WatchVar[] = [];
-        for (let v of JSON.parse(cachedStr))
+        const vars: WatchVar[] = [];
+        for (const v of JSON.parse(cachedStr)) {
           vars.push(new WatchVar(v.name, v.context));
+        }
         this.vars = vars;
       } catch (err) {
         console.log('ERROR', cachedStr, err);
@@ -98,8 +99,8 @@ export class WatchService {
       this.contexts.unshift(GLOBAL);
       }
     });
-    this.interval = setInterval(() => {
-      for (let v of this.vars) {
+    this.interval = window.setInterval(() => {
+      for (const v of this.vars) {
         if (v.name.trim().length === 0) v.record = false;
         if (!v.active) continue;
         if (v.name.length === 0) {
@@ -107,15 +108,17 @@ export class WatchService {
           continue;
         }
         let context: string;
-        let separator:string = ' ';
-        if (v.context === GLOBAL)
+        let separator = ' ';
+        if (v.context === GLOBAL) {
           context = '';
+        }
         else if (v.context.endsWith('_DATA')) {
           context = v.context.slice(0,-5) + '::';
           separator = '';
         }
-        else
+        else {
         context = v.context;
+ }
         this.ws
           .query('watch ' + context + separator + v.name)
           .then((ret: MCQueryResponse) => {
@@ -206,9 +209,9 @@ export class WatchService {
 export class WatchVar {
   name: string;
   context: string;
-  active: boolean = true;
+  active = true;
   value: string;
-  record: boolean = false;
+  record = false;
   public variableList: Observable<string[]>;
 
   constructor(name: string, context: string) {

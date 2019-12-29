@@ -66,7 +66,7 @@ export class ChecklistDatabase {
 
   initialize() {
     // GET INPUTS AND OUTPUTS
-    let promises = [
+    const promises = [
       this.ws.query('?IOMAP_GET_All_SYS_IOS(1)'),
       this.ws.query('?IOMAP_GET_All_SYS_IOS(0)'),
     ];
@@ -77,19 +77,19 @@ export class ChecklistDatabase {
         .query('?grp_end_effector_get_list')
         .then((ret: MCQueryResponse) => {
           if (ret.err || ret.result.length === 0) return;
-          let data: GripperTableNode[] = [];
-          let promises: Promise<any>[] = [];
-          let efs = ret.result.split(',');
-          for (let ef of efs) {
+          const data: GripperTableNode[] = [];
+          const promises = [];
+          const efs = ret.result.split(',');
+          for (const ef of efs) {
             promises.push(this.ws.query('?grp_get_gripper_list("' + ef + '")'));
           }
           Promise.all(promises).then((ret: MCQueryResponse[]) => {
             for (let i = 0; i < efs.length; i++) {
-              let children: GripperTableNode[] = [];
-              let ef = new EndEffector();
-              for (let grp of ret[i].result.split(',')) {
+              const children: GripperTableNode[] = [];
+              const ef = new EndEffector();
+              for (const grp of ret[i].result.split(',')) {
                 if (grp.length === 0) continue;
-                let child = new Gripper();
+                const child = new Gripper();
                 child.item = grp;
                 children.push(child);
                 child.parent = ef;
@@ -129,7 +129,7 @@ export class ChecklistDatabase {
       this.data.splice(index, 1);
       this.dataChange.next(this.data);
     } else {
-      for (let n of this.data) {
+      for (const n of this.data) {
         index = n.children.indexOf(node);
         if (index > -1) {
           n.children.splice(index, 1);
@@ -157,13 +157,13 @@ export class GripperScreenComponent implements OnInit {
     GripperTableFlatNode
   >();
   selectedParent: GripperTableFlatNode | null = null;
-  newItemName: string = '';
+  newItemName = '';
   treeControl: FlatTreeControl<GripperTableFlatNode>;
   treeFlattener: MatTreeFlattener<GripperTableNode, GripperTableFlatNode>;
   dataSource: MatTreeFlatDataSource<GripperTableNode, GripperTableFlatNode>;
   selectedNode: GripperTableNode = null;
 
-  private words: any;
+  private words: {};
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
@@ -200,7 +200,7 @@ export class GripperScreenComponent implements OnInit {
    * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
    */
   transformer = (node: GripperTableNode, level: number) => {
-    let flatNode =
+    const flatNode =
       this.nestedNodeMap.has(node) &&
       this.nestedNodeMap.get(node)!.item === node.item
         ? this.nestedNodeMap.get(node)!
@@ -222,7 +222,7 @@ export class GripperScreenComponent implements OnInit {
       .open(SingleInputDialogComponent, {
         data: {
           icon: 'add',
-          title: title,
+          title,
           placeholder: this.words['name'],
           accept: title,
         },
@@ -255,9 +255,9 @@ export class GripperScreenComponent implements OnInit {
   }
 
   deleteNode(node: GripperTableFlatNode) {
-    let fnode = this.flatNodeMap.get(node);
+    const fnode = this.flatNodeMap.get(node);
     if (!fnode.item) return this.database.deleteItem(fnode);
-    let ref = this.dialog.open(YesNoDialogComponent, {
+    const ref = this.dialog.open(YesNoDialogComponent, {
       data: {
         title: this.words['delete'] + ' ' + fnode.item + '?',
         msg: '',
@@ -295,12 +295,12 @@ export class GripperScreenComponent implements OnInit {
   }
 
   setContent(node: GripperTableFlatNode) {
-    let flatNode = this.flatNodeMap.get(node);
+    const flatNode = this.flatNodeMap.get(node);
     this.selectedNode = flatNode;
     if (flatNode.nodeType === 'ef') {
-      this.getEndEffectorData(<EndEffector>flatNode);
+      this.getEndEffectorData(flatNode as EndEffector);
     } else {
-      this.getGripperData(<Gripper>flatNode);
+      this.getGripperData(flatNode as Gripper);
     }
   }
 
@@ -309,20 +309,20 @@ export class GripperScreenComponent implements OnInit {
     const ef = this.selectedNode.parent.item;
     this.dialog.open(GripperTestDialogComponent, {
       data: {
-        grp: grp,
-        ef: ef,
+        grp,
+        ef,
         dOut: (this.selectedNode as Gripper).cmd1,
       },
     });
   }
 
   private getEndEffectorData(ef: EndEffector) {
-    const promises: Promise<any>[] = [
+    const promises = [
       this.ws.query('?GRP_GET_END_EFFECTOR_PAYLOAD("' + ef.item + '")'),
       this.ws.query('?GRP_GET_ITEM_PAYLOAD("' + ef.item + '")'),
     ];
     Promise.all(promises).then((ret: MCQueryResponse[]) => {
-      for (let p of this.data.payloads) {
+      for (const p of this.data.payloads) {
         if (p.name === ret[0].result) ef.payload = p;
         if (p.name === ret[1].result) ef.payloadItem = p;
       }
@@ -330,20 +330,20 @@ export class GripperScreenComponent implements OnInit {
   }
 
   private getGripperData(grp: Gripper) {
-    const ef_and_grp = '"' + grp.parent.item + '","' + grp.item + '"';
-    const promises: Promise<any>[] = [
-      this.ws.query('?GRP_GRIPPER_CONSIDER_TOOL_GET(' + ef_and_grp + ')'),
-      this.ws.query('?GRP_GRIPPER_GET_TOOL(' + ef_and_grp + ')'),
-      this.ws.query('?GRP_GRIPPER_DOUT_COMMAND_GET(' + ef_and_grp + ',1)'),
-      this.ws.query('?GRP_GRIPPER_DOUT_COMMAND_GET(' + ef_and_grp + ',2)'),
-      this.ws.query('?GRP_GRIPPER_DIN_FEEDBACK_GET(' + ef_and_grp + ',1)'),
-      this.ws.query('?GRP_GRIPPER_DIN_FEEDBACK_GET(' + ef_and_grp + ',2)'),
-      this.ws.query('?GRP_GRIPPER_COMMAND_INVERT_GET(' + ef_and_grp + ',1)'),
-      this.ws.query('?GRP_GRIPPER_COMMAND_INVERT_GET(' + ef_and_grp + ',2)'),
-      this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + ef_and_grp + ',1)'),
-      this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + ef_and_grp + ',2)'),
-      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + ef_and_grp + ',"OPEN")'),
-      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + ef_and_grp + ',"CLOSE")'),
+    const efAndGrp = '"' + grp.parent.item + '","' + grp.item + '"';
+    const promises = [
+      this.ws.query('?GRP_GRIPPER_CONSIDER_TOOL_GET(' + efAndGrp + ')'),
+      this.ws.query('?GRP_GRIPPER_GET_TOOL(' + efAndGrp + ')'),
+      this.ws.query('?GRP_GRIPPER_DOUT_COMMAND_GET(' + efAndGrp + ',1)'),
+      this.ws.query('?GRP_GRIPPER_DOUT_COMMAND_GET(' + efAndGrp + ',2)'),
+      this.ws.query('?GRP_GRIPPER_DIN_FEEDBACK_GET(' + efAndGrp + ',1)'),
+      this.ws.query('?GRP_GRIPPER_DIN_FEEDBACK_GET(' + efAndGrp + ',2)'),
+      this.ws.query('?GRP_GRIPPER_COMMAND_INVERT_GET(' + efAndGrp + ',1)'),
+      this.ws.query('?GRP_GRIPPER_COMMAND_INVERT_GET(' + efAndGrp + ',2)'),
+      this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + efAndGrp + ',1)'),
+      this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + efAndGrp + ',2)'),
+      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"OPEN")'),
+      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"CLOSE")'),
       this.ws.query('?IOMAP_GET_All_SYS_IOS(0)'),
       this.ws.query('?IOMAP_GET_All_SYS_IOS(1)'),
     ];
@@ -367,7 +367,7 @@ export class GripperScreenComponent implements OnInit {
   }
 
   updatePayload() {
-    const ef = <EndEffector>this.selectedNode;
+    const ef = this.selectedNode as EndEffector;
     const cmd =
       '?GRP_SET_END_EFFECTOR_PAYLOAD("' +
       ef.item +
@@ -378,7 +378,7 @@ export class GripperScreenComponent implements OnInit {
   }
 
   updatePayloadItem() {
-    const ef = <EndEffector>this.selectedNode;
+    const ef = this.selectedNode as EndEffector;
     const cmd =
       '?GRP_SET_ITEM_PAYLOAD("' + ef.item + '","' + ef.payloadItem.name + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {});
@@ -387,7 +387,7 @@ export class GripperScreenComponent implements OnInit {
   updateGripperCmd(i: number) {
     const grp = this.selectedNode.item;
     const ef = this.selectedNode.parent.item;
-    const g = <Gripper>this.selectedNode;
+    const g = this.selectedNode as Gripper;
     const inv = i === 1 ? (g.cmd1_invert ? 1 : 0) : g.cmd2_invert ? 1 : 0;
     const val = i === 1 ? g.cmd1 : g.cmd2;
     const cmd =
@@ -411,7 +411,7 @@ export class GripperScreenComponent implements OnInit {
   updateGripperFb(i: number) {
     const grp = this.selectedNode.item;
     const ef = this.selectedNode.parent.item;
-    const g = <Gripper>this.selectedNode;
+    const g = this.selectedNode as Gripper;
     const inv = i === 1 ? (g.fb1_invert ? 1 : 0) : g.fb2_invert ? 1 : 0;
     const val = i === 1 ? g.fb1 : g.fb2;
     const cmd =
@@ -435,7 +435,7 @@ export class GripperScreenComponent implements OnInit {
   updateGripperSleep(openClose: string) {
     const grp = this.selectedNode.item;
     const ef = this.selectedNode.parent.item;
-    const gripper: Gripper = <Gripper>this.selectedNode;
+    const gripper: Gripper = this.selectedNode as Gripper;
     const val = openClose === 'OPEN' ? gripper.sleep_open : gripper.sleep_close;
     const cmd = '?GRP_GRIPPER_SET_SLEEP_TIME';
     this.ws.query(
@@ -493,8 +493,8 @@ export class GripperScreenComponent implements OnInit {
   ngOnDestroy() {
     this.notifier.next(true);
     this.notifier.unsubscribe();
-    let promises: Promise<any>[] = [];
-    for (let ef of this.database.data) {
+    const promises = [];
+    for (const ef of this.database.data) {
       if (ef.nodeType === 'ef') {
         const cmd = '?GRP_STORE_DATA("' + ef.item + '")';
         promises.push(this.ws.query(cmd));
@@ -505,7 +505,7 @@ export class GripperScreenComponent implements OnInit {
 }
 
 export class EndEffector extends GripperTableNode {
-  dInput: number = 0;
+  dInput = 0;
   tool: string;
   invert: boolean[] = [false, false, false, false, false, false, false, false];
   payload: Payload;
@@ -517,6 +517,7 @@ export class EndEffector extends GripperTableNode {
 }
 
 export class Gripper extends GripperTableNode {
+  // tslint:disable: variable-name
   cmd1: string = null;
   cmd1_invert: boolean;
   cmd2: string = null;
@@ -530,8 +531,8 @@ export class Gripper extends GripperTableNode {
   fb2_enabled: boolean;
   tool: string;
   useTool: boolean;
-  sleep_open: number = 1000;
-  sleep_close: number = 1000;
+  sleep_open = 1000;
+  sleep_close = 1000;
   constructor() {
     super();
     this.nodeType = 'grp';

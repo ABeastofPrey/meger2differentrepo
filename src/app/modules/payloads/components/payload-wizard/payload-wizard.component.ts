@@ -1,3 +1,4 @@
+import { CommonService } from './../../../core/services/common.service';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { NewPayloadDialogComponent } from '../new-payload-dialog/new-payload-dialog.component';
@@ -20,11 +21,14 @@ import { IdentDialogComponent } from '../ident-dialog/ident-dialog.component';
   styleUrls: ['./payload-wizard.component.css'],
 })
 export class PayloadWizardComponent implements OnInit {
+
   selectedPayload: Payload = null;
   currPayloadString: string = null;
   ctrlMass = this.initCtrl();
   ctrlInertia = this.initCtrl();
-  ctrlLx = this.initCtrl();
+  ctrllx = this.initCtrl();
+
+  private currValuesInterval: number;
 
   get advanced() {
     return this._advanced;
@@ -34,16 +38,16 @@ export class PayloadWizardComponent implements OnInit {
     if (val) {
       this.ctrlMass.disable();
       this.ctrlInertia.disable();
-      this.ctrlLx.disable();
+      this.ctrllx.disable();
     } else {
       this.ctrlMass.enable();
       this.ctrlInertia.enable();
-      this.ctrlLx.enable();
+      this.ctrllx.enable();
     }
   }
 
-  private _advanced: boolean = false;
-  private words: any;
+  private _advanced = false;
+  private words: {};
 
   constructor(
     public data: DataService,
@@ -52,7 +56,8 @@ export class PayloadWizardComponent implements OnInit {
     private snack: MatSnackBar,
     private trn: TranslateService,
     public login: LoginService,
-    private stat: TpStatService
+    private stat: TpStatService,
+    private cmn: CommonService
   ) {
     this.trn
       .get(['payloads', 'button.delete', 'button.cancel', 'changeOK'])
@@ -62,6 +67,16 @@ export class PayloadWizardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.currValuesInterval = window.setInterval(()=>{
+      this.getCurrentValues();
+    },1000);
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.currValuesInterval);
+  }
+
+  private getCurrentValues() {
     this.ws
       .query('?pay_get_current_values(' + this.data.selectedRobot + ')')
       .then((ret: MCQueryResponse) => {
@@ -106,7 +121,7 @@ export class PayloadWizardComponent implements OnInit {
           title: dialogText['title'],
           msg: dialogText['msg'],
           yes: dialogText['yes'],
-          no: dialogText['cancel'],
+          no: dialogText['no'],
           caution: true,
         },
       })
@@ -118,7 +133,7 @@ export class PayloadWizardComponent implements OnInit {
   }
 
   private startIdent() {
-    this.stat.mode = 'T2';
+    if (!this.cmn.isTablet) this.stat.mode = 'T2';
     setTimeout(()=>{
       if (this.stat.mode !== 'T2') return;
       const cmd = '?PAY_START("' + this.selectedPayload.name + '")';
@@ -188,8 +203,7 @@ export class PayloadWizardComponent implements OnInit {
   }
 
   newPayload() {
-    let ref = this.dialog.open(NewPayloadDialogComponent);
-    ref.afterClosed().subscribe((name: string) => {
+    this.dialog.open(NewPayloadDialogComponent).afterClosed().subscribe((name: string) => {
       name = name.toUpperCase();
       if (name) {
         this.ws
@@ -237,13 +251,13 @@ export class PayloadWizardComponent implements OnInit {
   }
 
   onPayloadChange() {
-    let name = this.selectedPayload.name;
+    const name = this.selectedPayload.name;
     /* GET PAYLOAD INFO */
     // FOR SCARA
-    const promises: Promise<any>[] = [
+    const promises = [
       this.ws.query('?PAY_GET_MASS("' + name + '")'),
       this.ws.query('?PAY_GET_INERTIA("' + name + '")'),
-      this.ws.query('?PAY_GET_LX("' + name + '")'),
+      this.ws.query('?PAY_GET_lx("' + name + '")'),
     ];
 
     // FOR PUMA
@@ -259,9 +273,9 @@ export class PayloadWizardComponent implements OnInit {
         this.ws.query('?PAY_GET_IDENT_TIME(5)'),
         this.ws.query('?PAY_GET_IDENT_TIME(6)'),
         this.ws.query('?PAY_GET_INERTIA("'+name+'")'),
-        this.ws.query('?PAY_GET_LX("'+name+'")'),
+        this.ws.query('?PAY_GET_lx("'+name+'")'),
       ];*/
-    return Promise.all(promises).then((results: MCQueryResponse[]) => {
+    return Promise.all(promises).then(results => {
       /*
       // PARSE REF POS
         const refString = results[0].result.substring(1, results[0].result.length-1);
@@ -282,8 +296,9 @@ export class PayloadWizardComponent implements OnInit {
         this.selectedPayload.j6_ident_time = Number(results[9].result);*/
       this.selectedPayload.inertia = Number(results[1].result);
       this.ctrlInertia.setValue(this.selectedPayload.inertia);
-      this.selectedPayload.Lx = Number(results[2].result);
-      this.ctrlLx.setValue(this.selectedPayload.Lx);
+      this.selectedPayload.lx = Number(results[2].result);
+      console.log(this.selectedPayload);
+      this.ctrllx.setValue(this.selectedPayload.lx);
     });
   }
 
@@ -299,12 +314,13 @@ export class PayloadWizardComponent implements OnInit {
         .join(',') +
       '}")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result === '0')
+      if (ret.result === '0') {
         this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      }
     });
   }
 
-  onMassChange(e: any) {
+  onMassChange(e: {target: {value: number}}) {
     const newVal = e.target.value;
     const oldVal = this.selectedPayload.mass;
     const cmd =
@@ -316,7 +332,7 @@ export class PayloadWizardComponent implements OnInit {
     });
   }
 
-  onInertiaChange(e: any) {
+  onInertiaChange(e: {target: {value: number}}) {
     const newVal = e.target.value;
     const oldVal = this.selectedPayload.inertia;
     const cmd =
@@ -328,25 +344,26 @@ export class PayloadWizardComponent implements OnInit {
     });
   }
 
-  onXOffsetChange(e: any) {
+  onXOffsetChange(e: {target: {value: number}}) {
     const newVal = e.target.value;
-    const oldVal = this.selectedPayload.Lx;
+    const oldVal = this.selectedPayload.lx;
     const cmd =
-      '?PAY_SET_LX("' + this.selectedPayload.name + '",' + newVal + ')';
-    this.selectedPayload.Lx = newVal;
+      '?PAY_SET_lx("' + this.selectedPayload.name + '",' + newVal + ')';
+    this.selectedPayload.lx = newVal;
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result !== '0' || ret.err) this.selectedPayload.Lx = oldVal;
+      if (ret.result !== '0' || ret.err) this.selectedPayload.lx = oldVal;
       else this.snack.open(this.words['changeOK'], '', { duration: 1500 });
     });
   }
 
-  onMaxPosChange(i: number) {
+  /*onMaxPosChange(i: number) {
     const pay = this.selectedPayload;
     const val = i === 5 ? pay.j5_max : pay.j6_max;
     const cmd = '?PAY_SET_IDENT_MAXPOS(' + i + ',' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result === '0')
+      if (ret.result === '0') {
         this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      }
     });
   }
 
@@ -355,8 +372,9 @@ export class PayloadWizardComponent implements OnInit {
     const val = i === 5 ? pay.j5_min : pay.j6_min;
     const cmd = '?PAY_SET_IDENT_MINPOS(' + i + ',' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result === '0')
+      if (ret.result === '0') {
         this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      }
     });
   }
 
@@ -365,8 +383,9 @@ export class PayloadWizardComponent implements OnInit {
     const val = i === 5 ? pay.j5_ident_vel : pay.j6_ident_vel;
     const cmd = '?PAY_SET_IDENT_OVRDVEL(' + i + ',' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result === '0')
+      if (ret.result === '0') {
         this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      }
     });
   }
 
@@ -375,10 +394,11 @@ export class PayloadWizardComponent implements OnInit {
     const val = i === 5 ? pay.j5_ident_time : pay.j6_ident_time;
     const cmd = '?PAY_SET_IDENT_TIME(' + i + ',' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result === '0')
+      if (ret.result === '0') {
         this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      }
     });
-  }
+  }*/
 
   ident(axis: number) {
     this.ws.query('call tp_identification(' + axis + ')');

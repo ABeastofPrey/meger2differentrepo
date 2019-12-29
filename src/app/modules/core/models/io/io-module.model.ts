@@ -19,8 +19,8 @@ export class IoModule {
 
   setInputs(inputString: string) {
     const parts = inputString.split(';');
-    let inputs: Io[] = [];
-    for (let p of parts) {
+    const inputs: Io[] = [];
+    for (const p of parts) {
       if (p.length === 0) continue;
       inputs.push(new Io(p));
     }
@@ -29,8 +29,8 @@ export class IoModule {
 
   setOutputs(outputString: string) {
     const parts = outputString.split(';');
-    let outputs: Io[] = [];
-    for (let p of parts) {
+    const outputs: Io[] = [];
+    for (const p of parts) {
       if (p.length === 0) continue;
       outputs.push(new Io(p));
     }

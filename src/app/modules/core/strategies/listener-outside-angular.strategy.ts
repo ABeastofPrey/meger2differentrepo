@@ -4,6 +4,7 @@ import { EVENT_MANAGER_PLUGINS, EventManager } from '@angular/platform-browser';
 @Injectable()
 export class CustomEventManager extends EventManager {
   constructor(
+    // tslint:disable-next-line: no-any
     @Inject(EVENT_MANAGER_PLUGINS) plugins: any[],
     private zone: NgZone
   ) {

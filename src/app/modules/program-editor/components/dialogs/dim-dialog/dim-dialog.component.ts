@@ -8,12 +8,12 @@ import { DataService } from '../../../../core';
   styleUrls: ['./dim-dialog.component.css'],
 })
 export class DimDialogComponent implements OnInit {
-  public varName: string;
-  public varType: string;
+  varName: string;
+  varType: string;
 
   constructor(
     public dataService: DataService,
-    public dialogRef: MatDialogRef<any>
+    public dialogRef: MatDialogRef<DimDialogComponent>
   ) {}
 
   ngOnInit() {}

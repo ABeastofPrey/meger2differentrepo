@@ -54,9 +54,9 @@ import { UtilsService } from '../../../core/services/utils.service';
   ],
 })
 export class JogScreenComponent implements OnInit {
-  public menuTypes: MenuType[];
-  public selectedMenuTypeIndex: number = 0;
-  public isTeachMenuOpen: boolean = false;
+  menuTypes: MenuType[];
+  selectedMenuTypeIndex = 0;
+  isTeachMenuOpen = false;
 
   constructor(
     public data: DataService,

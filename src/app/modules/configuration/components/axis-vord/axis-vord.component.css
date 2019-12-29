@@ -1,0 +1,10 @@
+.vords {
+  display: grid;
+  grid-template-columns: 50px 100px 200px;
+  place-items: baseline;
+}
+.vord { width: 100%; }
+.title { font-weight: bold; }
+.original.disabled {
+  text-decoration: line-through;
+}

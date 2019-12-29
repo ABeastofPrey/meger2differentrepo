@@ -40,8 +40,9 @@ export class RecordingsScreenComponent implements OnInit {
   
   add() {
     this.dialog.open(ExternalGraphDialogComponent).afterClosed().subscribe(name=>{
-      if (name)
+      if (name) {
         this.service.createTab(name);
+      }
     });
   }
   
@@ -80,8 +81,10 @@ export class RecordingsScreenComponent implements OnInit {
   }
   
   downloadCSV(tab: RecordTab) {
+    // tslint:disable-next-line: no-any
     const windowObj = window as any;
-    let createObjectURL = (windowObj.URL || windowObj.webkitURL || {}).createObjectURL || function(){}; 
+    const createObjectURL = 
+        (windowObj.URL || windowObj.webkitURL || {}).createObjectURL || (()=>{});
     let blob = null;
     const csv = tab.csv;
     const fileType = "application/octet-stream";
@@ -90,14 +93,14 @@ export class RecordingsScreenComponent implements OnInit {
                          windowObj.MozBlobBuilder || 
                          windowObj.MSBlobBuilder;
     if(windowObj.BlobBuilder){
-      let bb = new windowObj.BlobBuilder();
+      const bb = new windowObj.BlobBuilder();
       bb.append(csv);
       blob = bb.getBlob(fileType);
     }else{
       blob = new Blob([csv], {type : fileType});
     }
-    var url = createObjectURL(blob);
-    var a = document.createElement("a");
+    const url = createObjectURL(blob);
+    const a = document.createElement("a");
     a.href = url
     a.download = tab.file + '.CSV';
     document.body.appendChild(a);
@@ -109,11 +112,11 @@ export class RecordingsScreenComponent implements OnInit {
     const tab = this.service.tabs[this.service.selectedTabIndex];
     const data = tab.data;
     const graphData = data[dataIndex];
-    let newY: number[] = [];
+    let newY = [];
     if (graphData.y) {
       for (let i = 0; i < deg; i++) {
-        const y: number[] = i === 0 ? graphData.y : newY;
-        let tmpY: number[] = [];
+        const y = i === 0 ? graphData.y : newY;
+        const tmpY: number[] = [];
         for (let j = 0; j < y.length; j++) {
           if (j === 0 || j === y.length - 1) tmpY[j] = 0;
           else {

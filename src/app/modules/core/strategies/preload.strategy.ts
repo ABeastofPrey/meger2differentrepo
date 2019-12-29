@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { Route } from '@angular/router';
 
 export class PreloadSelectedModulesList implements PreloadingStrategy {
-  preload(route: Route, load: Function): Observable<any> {
+  preload(route: Route, load: Function): Observable<void> {
     return route.data && route.data.preload ? load() : of(null);
   }
 }

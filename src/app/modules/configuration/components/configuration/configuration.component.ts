@@ -7,12 +7,12 @@ import { LoginService } from '../../../core';
   styleUrls: ['./configuration.component.css'],
 })
 export class ConfigurationComponent implements OnInit {
-  public tabs: {
+  tabs: Array<{
     path: string;
     label: string;
     icon: string;
     permission: number;
-  }[] = [];
+  }> = [];
 
   constructor(public login: LoginService) {}
 

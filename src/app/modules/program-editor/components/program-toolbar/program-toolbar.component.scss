@@ -14,9 +14,15 @@
   outline: none;
   padding: 4px 8px 6px 8px;
   border: 1px solid transparent;
-  min-height: 50px;
   display: flex;
   align-items: center;
+  height: 100%;
+  box-sizing: border-box;
+}
+.menu-big li {
+  min-height: 50px;
+  height: auto;
+  box-sizing: content-box;
 }
 .menu li:not(.disabled):hover,
 .dropdown-menu li:hover {
@@ -49,6 +55,10 @@ button .secondary-icon {
   width: 100%;
   height: calc(100% - 64px);
   z-index: 10;
+}
+.dropdown-controller {
+  top: 40px;
+  height: calc(100% - 40px);
 }
 .dropdown-menu {
   position: absolute;

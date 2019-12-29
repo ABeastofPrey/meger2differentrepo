@@ -1,9 +1,9 @@
 .wrapper {
   width: 100%;
   height: 100%;
-  background-size: cover;
   display: flex;
   flex-direction: column;
+  background-color: #FAFAFA;
 }
 .wrapper:before,
 .wrapper:after {
@@ -17,7 +17,7 @@
   height: 30px;
 }
 .login-card {
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: #fff;
   max-width: 500px;
   border-radius: 3px;
   position: absolute;
@@ -27,6 +27,7 @@
   overflow: hidden;
   min-height: 500px;
   box-sizing: border-box;
+  z-index: 3;
 }
 .toolbar {
   height: 100%;
@@ -142,4 +143,51 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+.robot {
+  position: absolute;
+  z-index: 2;
+}
+.robot1 { 
+  right: -400px;
+  bottom: 130px;
+ }
+.robot2 { 
+  left: -400px;
+  z-index: 1;
+  bottom: 150px;
+  width: 250px;
+ }
+.mirror {
+  transform: scale(-1, 1);
+}
+.conveyor {
+  position: absolute;
+  z-index: 1;
+  bottom: 100px;
+  left: -800px;
+  width: 800px;
+}
+.cabinet {
+  position: absolute;
+  bottom: 130px;
+  left: -400px;
+  width: 300px;
+  z-index: 1;
+}
+.floor {
+  height: 200px;
+  width: 100%;
+  position: absolute;
+  background: rgb(238,238,238);
+  background: linear-gradient(180deg, rgb(238, 238, 238) 0%, rgba(204,204,204,1) 100%);
+  bottom: -300px;
+}
+.cs-gradient {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity 1s ease-out;
 }

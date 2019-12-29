@@ -18,6 +18,7 @@ import { Pallet } from '../../core/models/pallet.model';
 import { YesNoDialogComponent } from '../../../components/yes-no-dialog/yes-no-dialog.component';
 import { ErrorFrame } from '../../core/models/error-frame.model';
 import { TranslateService } from '@ngx-translate/core';
+import { App } from '../../core/models/project/mc-project.model';
 
 export const TASKSTATE_NOTLOADED = -1;
 export const TASKSTATE_RUNNING = 1;
@@ -40,45 +41,45 @@ export class ProgramEditorService {
   editorText: string = null;
   status: ProgramStatus = null;
   errors: TRNERRLine[] = [];
-  editorLine: number = -1;
-  isDirty: boolean = false;
+  editorLine = -1;
+  isDirty = false;
   mode: string = null;
-  fileRef: any = null; // A reference to the project file which is active
+  fileRef: App = null; // A reference to the project file which is active
   backtrace: Backtrace = null; // The last backtrace
-  isLib: boolean = false; // True if the active file is a library
-  busy: boolean = false; // TRUE WHEN THE SERVICE IS BUSY (I.E: LOADING APP)
+  isLib = false; // True if the active file is a library
+  busy = false; // TRUE WHEN THE SERVICE IS BUSY (I.E: LOADING APP)
 
   // TABS
   tabs: FileTab[] = [];
-  selectedTabIndex: number = 0;
+  selectedTabIndex = 0;
 
   // EVENTS
   skipLineRequest: EventEmitter<number> = new EventEmitter();
-  dragEnd: EventEmitter<any> = new EventEmitter();
-  onReplaceRange: EventEmitter<any> = new EventEmitter();
+  dragEnd: EventEmitter<void> = new EventEmitter();
+  onReplaceRange: EventEmitter<string> = new EventEmitter();
   editorTextChange: EventEmitter<string> = new EventEmitter<string>();
   statusChange: EventEmitter<ProgramStatus> = new EventEmitter<ProgramStatus>();
   errLinesChange: EventEmitter<TRNERRLine[]> = new EventEmitter<TRNERRLine[]>();
-  onInsertAndJump: EventEmitter<any> = new EventEmitter();
-  onReplaceLine: EventEmitter<any> = new EventEmitter();
-  onUndo: EventEmitter<any> = new EventEmitter();
-  onRedo: EventEmitter<any> = new EventEmitter();
-  onFind: EventEmitter<any> = new EventEmitter();
-  onReplace: EventEmitter<any> = new EventEmitter();
+  onInsertAndJump: EventEmitter<{ cmd: string, lines: number }> = new EventEmitter();
+  onReplaceLine: EventEmitter<{ index: number, cmd: string }> = new EventEmitter();
+  onUndo: EventEmitter<void> = new EventEmitter();
+  onRedo: EventEmitter<void> = new EventEmitter();
+  onFind: EventEmitter<void> = new EventEmitter();
+  onReplace: EventEmitter<void> = new EventEmitter();
   fileChange: Subject<string> = new Subject<string>();
 
-  private statusInterval: any = null;
+  private statusInterval: number = null;
   private oldStatString: string;
   private activeFilePath: string = null;
-  private _modeToggle: string = 'prj';
-  private stepMode: boolean = false; // True when user clicks on STEP button
+  private _modeToggle = 'prj';
+  private stepMode = false; // True when user clicks on STEP button
 
   // LINE PARSING
   parser: LineParser = new LineParser(this.data);
   variablesInLine: TPVariable[] = [];
-  lineParams: any = null;
-  disableStepOver: boolean = false;
-  private lastRow: number = -1;
+  lineParams: {} = null;
+  disableStepOver = false;
+  private lastRow = -1;
 
   // FLOW REMEMBERING
   lastVar: TPVariable;
@@ -89,7 +90,7 @@ export class ProgramEditorService {
   rangeText: string;
 
   // i18
-  private words: any;
+  private words: {};
 
   constructor(
     private stat: TpStatService,
@@ -132,8 +133,9 @@ export class ProgramEditorService {
   
   getStatusString(stat: number) : string {
     const str = stat.toString();
-    if (this.words)
+    if (this.words) {
       return this.words['projects']['status'][str] || this.words['projects']['status']['999'];
+    }
     return '';
   }
 
@@ -152,8 +154,9 @@ export class ProgramEditorService {
   }
   
   setDebugMode(on: boolean) {
-    if (on)
+    if (on) {
       this.close();
+    }
   }
 
   closeTab(i: number) {
@@ -172,7 +175,7 @@ export class ProgramEditorService {
     if (tab) this.setFile(tab.file, tab.path, null, -1);
   }
 
-  setFile(f: string, path: string, ref: any, line: number, bt?: Backtrace) {
+  setFile(f: string, path: string, ref: App, line: number, bt?: Backtrace) {
     // OPEN A FILE
     this.fileRef = ref;
     if (f === this.activeFile) return;
@@ -186,7 +189,7 @@ export class ProgramEditorService {
     if (this.modeToggle === 'mc') {
       // ADD TO TABS, IF DOESN'T ALREADY THERE
       let i;
-      let tabExists: boolean = false;
+      let tabExists = false;
       for (i = 0; i < this.tabs.length; i++) {
         if (this.tabs[i].file === f) {
           tabExists = true;
@@ -244,7 +247,7 @@ export class ProgramEditorService {
     this.onReplaceRange.emit(cmd);
   }
   replaceLine(index: number, cmd: string) {
-    this.onReplaceLine.emit({ index: index, cmd: cmd });
+    this.onReplaceLine.emit({ index, cmd });
   }
 
   onAceEditorCursorChange(rowIndex: number, row: string) {
@@ -253,7 +256,7 @@ export class ProgramEditorService {
     this.rangeStart = NaN;
     this.rangeEnd = NaN;
     this.rangeText = null;
-    let lineType = this.parser.getLineType(row);
+    const lineType = this.parser.getLineType(row);
     if (
       lineType === this.parser.LineType.MOVE ||
       lineType === this.parser.LineType.CIRCLE
@@ -300,7 +303,7 @@ export class ProgramEditorService {
     this.isDirty = false;
   }
 
-  save(): Promise<any> {
+  save() {
     if (this.activeFile === null) return Promise.resolve();
     const path = this.activeFilePath || '';
     return this.api
@@ -323,6 +326,8 @@ export class ProgramEditorService {
           ];
           this.trn.get(words, { name: this.activeFile }).subscribe(words => {
             switch (ret.err) {
+              default:
+                break;
               case -2:
                 this.snack.open(
                   words['files.err_upload'],
@@ -389,6 +394,8 @@ export class ProgramEditorService {
           ];
           this.trn.get(words, { name: this.activeFile }).subscribe(words => {
             switch (ret.err) {
+              default:
+                break;
               case -2:
                 this.snack.open(
                   words['files.err_upload'],
@@ -431,7 +438,7 @@ export class ProgramEditorService {
   }
 
   jump() {
-    let prgName = this.activeFile;
+    const prgName = this.activeFile;
     this.ws.query(
       'ContinueTask ' + prgName + ' programline = ' + this.editorLine
     );
@@ -553,7 +560,7 @@ export class ProgramEditorService {
 
   download() {
     if (this.activeFile === null) return;
-    let element = document.createElement('a');
+    const element = document.createElement('a');
     element.setAttribute(
       'href',
       'data:text/plain;charset=utf-8,' + encodeURIComponent(this.editorText)
@@ -577,7 +584,7 @@ export class ProgramEditorService {
     }
     const file = this.activeFile;
     if (!this.isLib && !file.endsWith('.UPG') && !file.endsWith('.PRG') && !file.endsWith('.BKG')) {
-      let tmpStatus = new ProgramStatus(null);
+      const tmpStatus = new ProgramStatus(null);
       tmpStatus.statusCode = TASKSTATE_NOTLOADED;
       this.status = tmpStatus;
       this.statusChange.emit(this.status);
@@ -605,7 +612,7 @@ export class ProgramEditorService {
           this.oldStatString = ret;
           this.zone.run(() => {
             if (this.isLib) {
-              let tmpStatus = new ProgramStatus(null);
+              const tmpStatus = new ProgramStatus(null);
               tmpStatus.statusCode =
                 err.errCode === '8020'
                   ? TASKSTATE_LIB_LOADED
@@ -688,7 +695,7 @@ export class ProgramEditorService {
   }
 
   insertAndJump(cmd: string, lines: number) {
-    this.onInsertAndJump.emit({ cmd: cmd, lines: lines });
+    this.onInsertAndJump.emit({ cmd, lines });
   }
 
   getBackTrace() {
@@ -721,8 +728,8 @@ export class ProgramEditorService {
         .afterClosed()
         .subscribe(ret => {
           if (ret) {
-            var cmd_teach = '?tp_teach("' + fullName + '","' + v.typeStr + '")';
-            this.ws.query(cmd_teach).then((ret: MCQueryResponse) => {
+            const cmdTeach = '?tp_teach("' + fullName + '","' + v.typeStr + '")';
+            this.ws.query(cmdTeach).then(ret => {
               if (ret.result === '0') {
                 this.getVariable(fullName).then(result=>{
                   this.snack.open(this.words['success'] + ' ( ' + result + ' )', this.words['dismiss']);
@@ -747,9 +754,8 @@ export class ProgramEditorService {
 
   getTRNERR(defaultErrorMessage: string) {
     this.api.getTRNERR().then(result => {
-      let trnerr = new TRNERR(result);
+      const trnerr = new TRNERR(result);
       this.errors = trnerr.errorLines;
-      console.log(trnerr.errorLines);
       this.errLinesChange.emit(trnerr.errorLines);
     });
   }
@@ -770,7 +776,7 @@ export class ProgramStatus {
     this.statusCode = Number(status.substring(6, index).trim()) % 256;
     index = status.indexOf('Source');
     status = status.substr(index + 7);
-    let parts = status.split(' ');
+    const parts = status.split(' ');
     this.sourceLine = Number(parts[0]);
     this.programLine = Number(parts[3]);
   }
@@ -784,10 +790,21 @@ export class TRNERR {
   }
 
   constructor(trnerr: string) {
-    let lines = trnerr.split('\n');
-    for (let i in lines) {
-      if (lines[i].length > 0) this._errorLines.push(new TRNERRLine(lines[i]));
+    const lines = trnerr.split('\n');
+    for (const i in lines) {
+      if (lines[i].length > 0) {
+        const err = new TRNERRLine(lines[i]);
+        if (this._errorLines.some(e=>{
+          return e.number === err.number;
+        })) {
+          continue;
+        }
+        this._errorLines.push(new TRNERRLine(lines[i]));
+      }
     }
+    this._errorLines.sort((e1,e2)=>{
+      return e1.number > e2.number ? 1 : -1;
+    });
   }
 }
 

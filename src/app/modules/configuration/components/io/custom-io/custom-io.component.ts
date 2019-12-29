@@ -43,11 +43,13 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
   /**
    * The CustomIOTypes enum object reference.
    */
+  // tslint:disable-next-line: variable-name
   CustomIOTypeReference = CustomIOTypes;
 
   /**
    * The IoTableColumn enum object reference.
    */
+  // tslint:disable-next-line: variable-name
   IoTableColumnReference = IoTableColumn;
 
   /**
@@ -99,12 +101,12 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
   /**
    * The translation words.
    */
-  private words: any;
+  private words: {};
 
   /**
    *  All the custom IO types.
    */
-  private allCustomIoTypes: any;
+  private allCustomIoTypes: Array<{ key: CustomIOTypes, value: string }>;
 
   /**
    * Constructor.
@@ -168,13 +170,13 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
    * Add one row in the custom IO table.
    */
   addRowInCustomTable() {
-    let defaultType = this.findDefaultType();
+    const defaultType = this.findDefaultType();
 
     if (defaultType) {
-      let portKey = defaultType.replace(/\s/g, '');
+      const portKey = defaultType.replace(/\s/g, '');
 
       let typeValue = null;
-      for (let type of this.allCustomIoTypes) {
+      for (const type of this.allCustomIoTypes) {
         if (type.key === defaultType) {
           typeValue = type.value;
           break;
@@ -190,7 +192,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
         label: '',
       });
 
-      let newRow = this.customDataSource.data[
+      const newRow = this.customDataSource.data[
         this.customDataSource.data.length - 1
       ];
       this.ioService
@@ -265,8 +267,8 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
    * @param value The changed value of the custom IO type.
    */
   typeSelectionChange(index, value) {
-    let ports = this.customIoPorts[value.replace(/\s/g, '')];
-    let select = ports.find(
+    const ports = this.customIoPorts[value.replace(/\s/g, '')];
+    const select = ports.find(
       e => e === this.customDataSource.data[index].selectedPort
     );
 
@@ -352,7 +354,7 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     this.changeSelectRow(null, -1);
     this.enableButtonsInCustomTab(true, false);
 
-    let entry = this.customDataSource.data[index];
+    const entry = this.customDataSource.data[index];
     if (entry.selectedType.key === CustomIOTypes.InputBit) {
       return false;
     }
@@ -409,8 +411,8 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     this.customIOTypes = [];
 
     if (this.customIoPorts) {
-      for (let type of this.allCustomIoTypes) {
-        let key = type.key.replace(/\s/g, '');
+      for (const type of this.allCustomIoTypes) {
+        const key = type.key.replace(/\s/g, '');
         if (this.customIoPorts[key] && this.customIoPorts[key].length) {
           this.customIOTypes.push(type);
         }

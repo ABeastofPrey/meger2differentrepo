@@ -12,7 +12,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { NgModel, FormControlName } from '@angular/forms';
+import { NgModel, FormControlName, AbstractControl } from '@angular/forms';
 import { CommonService } from '../core/services/common.service';
 import { NgControl } from '@angular/forms';
 import { FormControl } from '@angular/forms';
@@ -24,54 +24,79 @@ import { TerminalService } from '../home-screen/services/terminal.service';
   providers: [NgModel, FormControlName],
 })
 export class KeyboardDirective {
-  private _dialogOpen: boolean = false;
-  private ref: MatDialogRef<KeyboardDialog>;
+  private _dialogOpen = false;
+  private ref?: MatDialogRef<KeyboardDialog>;
 
-  @Input() ktype: string;
-  @Input() showArrows: boolean;
-  @Input() enableLineDelete: boolean;
-  @Output() onKeyboardClose: EventEmitter<any> = new EventEmitter();
-  @Output() onLineDelete: EventEmitter<any> = new EventEmitter();
+  @Input() ktype?: string;
+  @Input() showArrows?: boolean;
+  @Input() enableLineDelete?: boolean;
+  @Output() onKeyboardClose: EventEmitter<{ target: { value: string | number} }> = new EventEmitter();
+  @Output() onLineDelete: EventEmitter<void> = new EventEmitter();
 
   @HostListener('focus',['$event'])
-  onClick(e) {
-    //console.log(e);
+  onClick() {
     if (!this.cmn.isTablet || this.ktype === 'none' || this._dialogOpen) {
       if (!this._dialogOpen) this.el.nativeElement.readOnly = false;
       return;
     }
     this.el.nativeElement.blur();
     this.el.nativeElement.readOnly = true;
-    let selectedLayout: any = null;
+    let selectedLayout: string[][] = null;
     switch (this.ktype) {
       case 'numeric':
-        selectedLayout = layout_numeric;
+        selectedLayout = LAYOUT_NUMERIC;
+        break;
+      case 'numeric_pos':
+        selectedLayout = LAYOUT_NUMERIC_POS;
+        break;
+      case 'numeric_int':
+        selectedLayout = LAYOUT_NUMERIC_INT;
+        break;
+      case 'numeric_int_pos':
+        selectedLayout = LAYOUT_NUMERIC_INT_POS;
         break;
       default:
-        selectedLayout = layout_string;
+        selectedLayout = LAYOUT_STRING;
         break;
     }
     this._dialogOpen = true;
     // SHOW KEYBOARD DIALOG
+    const data: KeyboardData = {
+      el: this.el.nativeElement,
+      ngModel: this.ngModel,
+      name: this.name,
+      layout: selectedLayout,
+      keyboardType: this.ktype,
+      accept: [this.onKeyboardClose],
+      ctrl: this.ctrl,
+      showArrows: this.showArrows,
+      enableLineDelete: this.enableLineDelete,
+      onLineDelete: this.onLineDelete,
+    };
     this.ref = this.dialog.open(KeyboardDialog, {
       autoFocus: false,
-      data: {
-        el: this.el.nativeElement,
-        ngModel: this.ngModel,
-        name: this.name,
-        layout: selectedLayout,
-        keyboardType: this.ktype,
-        accept: [this.onKeyboardClose],
-        ctrl: this.ctrl,
-        showArrows: this.showArrows,
-        enableLineDelete: this.enableLineDelete,
-        onLineDelete: this.onLineDelete,
-      },
+      data,
     });
     this.ref.afterClosed().subscribe(() => {
       this.el.nativeElement.blur();
       this._dialogOpen = false;
     });
+  }
+
+  @HostListener('keydown',['$event'])
+  onkeydown(e: KeyboardEvent) {
+    if (!this.cmn.isTablet && this.ktype && e.key.length === 1) {
+      const isNumeric = this.ktype && this.ktype.includes('numeric');
+      if (isNumeric) {
+        const isPos = this.ktype.includes('pos');
+        const isInt = this.ktype.includes('int');
+        if (e.key !== '.' && e.key !== '-' && e.key !== 'e' && isNaN(Number(e.key))) {
+          e.preventDefault();
+        }
+        if (isPos && e.key === '-') e.preventDefault();
+        if (isInt && e.key === '.') e.preventDefault();
+      }
+    }
   }
 
   constructor(
@@ -83,7 +108,8 @@ export class KeyboardDirective {
     @Optional() private ctrl: NgControl,
     private name: FormControlName
   ) {
-    (el.nativeElement as HTMLElement).setAttribute('autocomplete','off');
+    const element = el.nativeElement as HTMLElement;
+    element.setAttribute('autocomplete','off');
   }
 }
 
@@ -94,28 +120,29 @@ export class KeyboardDirective {
 })
 export class KeyboardDialog implements OnInit {
   
-  ngModel: NgModel;
-  placeholder: string;
-  inputType: string;
-  layout: any;
-  ctrl: FormControlName;
-  control: FormControl;
-  currValue: string = '';
-  cursorInitDone: boolean = false;
-  private onKeyboardClose: EventEmitter<any>[];
-  private _shiftMode: boolean = false;
-  private _moreMode: boolean = false;
-  private val: any;
+  ngModel?: NgModel | FormControlName;
+  placeholder?: string;
+  inputType?: string;
+  layout?: string[][];
+  ctrl?: FormControlName;
+  control?: FormControl | AbstractControl;
+  currValue = '';
+  cursorInitDone = false;
+  private onKeyboardClose?: Array<EventEmitter<{ target: { value: string | number} }>>;
+  private _shiftMode = false;
+  private _moreMode = false;
+  private val: number | string;
   private lastCmdIndex = -1;
-  private backKeyDown: boolean = false;
-  private _cursorPos: number = 0; // index of the letter the cursor is at
-  private panLeft: number = 0;
+  private backKeyDown = false;
+  private _cursorPos = 0; // index of the letter the cursor is at
+  private panLeft = 0;
 
-  @ViewChild('displayInput', { static: true }) displayInput: ElementRef;
+  @ViewChild('displayInput', { static: true }) displayInput?: ElementRef;
 
   get cursorX() {
     if (this.displayInput) {
       const el = this.displayInput.nativeElement as HTMLElement;
+      if (el.style.left === null) return 0;
       const left = Math.abs(Number(el.style.left.slice(0,-2)));
       const inputWidth = el.offsetWidth;
       const cursorPos = this._cursorPos * this.cmn.fontWidth - left;
@@ -127,16 +154,13 @@ export class KeyboardDialog implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<KeyboardDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: KeyboardData,
     public terminal: TerminalService,
     private cmn: CommonService
   ) {}
 
   ngOnInit() {
-    this.ngModel =
-      typeof this.data.name.model === 'undefined'
-        ? this.data.ngModel
-        : this.data.name;
+    this.ngModel = this.data.name || this.data.ngModel;
     this.placeholder = this.data.el.getAttribute('placeholder');
     this.inputType = this.data.el.getAttribute('type');
     this.layout = this.data.layout;
@@ -173,10 +197,10 @@ export class KeyboardDialog implements OnInit {
           }
         });
       }
-    } else {
+    } else if (this.ngModel) {
       this.currValue = this.ngModel.value || this.data.el.value || '';
       this._cursorPos = this.currValue.length;
-      if (this.ngModel) {
+      if (this.ngModel && this.ngModel.valueChanges) {
         this.ngModel.valueChanges.subscribe(val => {
           this.currValue = val;
           if (!this.cursorInitDone) {
@@ -195,12 +219,14 @@ export class KeyboardDialog implements OnInit {
     // TODO: REMOVE TIMEOUT AND FIX THIS ISSUE
     const start = new Date().getTime();
     const TIMEOUT = 200; // 200 ms
-    let diff: number = 0;
-    if (this.data.keyboardType === 'numeric') return;
+    let diff = 0;
+    if (this.data.keyboardType === 'numeric' || !this.displayInput) return;
     // scroll to cursor position, if needed
     const el = this.displayInput.nativeElement as HTMLElement;
+    if (el.parentElement === null) return;
     const containerWidth = el.parentElement.clientWidth;
     const charsInLine = Math.floor(containerWidth / this.cmn.fontWidth);
+    if (el.style.left === null) return;
     const currLeft = Number(el.style.left.slice(0,-2)) * -1;
     let min = Math.floor(currLeft / this.cmn.fontWidth);
     if (this._cursorPos >= min && this._cursorPos <= (min + charsInLine)) return;
@@ -215,8 +241,9 @@ export class KeyboardDialog implements OnInit {
         console.log(this._cursorPos, charsInLine, min);
         return;
       }
-      if (min < 0)
+      if (min < 0) {
         min = 0;
+      }
       const left = min * this.cmn.fontWidth;
       el.style.left = -left + 'px';
     } else if (this._cursorPos > (min + charsInLine)) {
@@ -229,8 +256,9 @@ export class KeyboardDialog implements OnInit {
         console.log(this._cursorPos, charsInLine, min);
         return;
       }
-      if (min + charsInLine > this.currValue.length)
+      if (min + charsInLine > this.currValue.length) {
         min = this.currValue.length - charsInLine;
+      }
       const left = (min + 0.5) * this.cmn.fontWidth;
       el.style.left = -left + 'px';
     }
@@ -247,12 +275,15 @@ export class KeyboardDialog implements OnInit {
     );
   }
   
-  onSwipe(e: any, eventType: string) {
+  onSwipe(e: {deltaX: number}, eventType: string) {
+    if (!this.displayInput) return;
     const el = this.displayInput.nativeElement as HTMLElement;
+    if (el.style.left === null) return;
     if (eventType === 'start') {
       const left = Number(el.style.left.slice(0,-2));
       this.panLeft = left;
     }
+    if (el.parentElement === null) return;
     const width = el.getBoundingClientRect().width;
     const containerWidth = el.parentElement.clientWidth;
     el.style.left = 
@@ -270,19 +301,20 @@ export class KeyboardDialog implements OnInit {
     if (target) {
       const tag = target.tagName.toUpperCase();
       if (tag === 'BUTTON') target.blur();
-      else if (tag === 'I') target.parentElement.blur();
+      else if (tag === 'I' && target.parentElement) target.parentElement.blur();
     }
   }
 
   onInput(key: string, e: MouseEvent) {
     e.preventDefault();
     const target = e.target as HTMLElement;
-    if (target) {
+    const parent = target.parentElement;
+    if (target && parent) {
       const tag = target.tagName.toUpperCase();
       if (tag === 'BUTTON') target.focus();
-      else if (tag === 'I') target.parentElement.focus();
+      else if (tag === 'I') parent.focus();
     }
-    var value: string =
+    let value: string =
       '' +
       ((this.control && this.control.value) ||
         (this.ngModel && this.ngModel.value) ||
@@ -326,12 +358,12 @@ export class KeyboardDialog implements OnInit {
         }
         break;
       case 'arrow_upward':
-        this.layout = this._shiftMode ? layout_string : layout_string_shift;
+        this.layout = this._shiftMode ? LAYOUT_STRING : LAYOUT_STRING_SHIFT;
         this._shiftMode = !this._shiftMode;
         this._moreMode = false;
         break;
       case 'more':
-        this.layout = this._moreMode ? layout_string : layout_string_more;
+        this.layout = this._moreMode ? LAYOUT_STRING : LAYOUT_STRING_MORE;
         this._moreMode = !this._moreMode;
         this._shiftMode = false;
         break;
@@ -341,12 +373,10 @@ export class KeyboardDialog implements OnInit {
         break;
       default:
         if (
-          value === '0' &&
-          this.data.keyboardType === 'numeric' &&
-          key !== '.'
-        )
+            value === '0' && this.data.keyboardType === 'numeric' && key !== '.'
+        ) {
           value = key;
-        else if (this.data.keyboardType === 'numeric') {
+        } else if (this.data.keyboardType === 'numeric') {
           value += key;
         } else {
           value =
@@ -364,8 +394,9 @@ export class KeyboardDialog implements OnInit {
   down() {
     if (this.terminal.history.length > 0) {
       this.lastCmdIndex++;
-      if (this.lastCmdIndex >= this.terminal.history.length)
+      if (this.lastCmdIndex >= this.terminal.history.length) {
         this.lastCmdIndex = 0;
+      }
       let cmd: string = this.terminal.history[this.lastCmdIndex];
       let cmdTmp: string = cmd;
       while (
@@ -373,8 +404,9 @@ export class KeyboardDialog implements OnInit {
         (cmdTmp.trim().length === 0 || cmdTmp === this.val)
       ) {
         this.lastCmdIndex++;
-        if (this.lastCmdIndex < this.terminal.history.length)
+        if (this.lastCmdIndex < this.terminal.history.length) {
           cmdTmp = this.terminal.history[this.lastCmdIndex];
+        }
       }
       if (this.lastCmdIndex < this.terminal.history.length) cmd = cmdTmp;
       this.setValue(cmd);
@@ -385,8 +417,9 @@ export class KeyboardDialog implements OnInit {
   up() {
     if (this.terminal.history.length > 0) {
       this.lastCmdIndex--;
-      if (this.lastCmdIndex < 0)
+      if (this.lastCmdIndex < 0) {
         this.lastCmdIndex = this.terminal.history.length - 1;
+      }
       let cmd: string = this.terminal.history[this.lastCmdIndex];
       let cmdTmp: string = cmd;
       while (
@@ -394,8 +427,9 @@ export class KeyboardDialog implements OnInit {
         (cmdTmp.trim().length === 0 || cmdTmp === this.val)
       ) {
         this.lastCmdIndex--;
-        if (this.lastCmdIndex >= 0)
+        if (this.lastCmdIndex >= 0) {
           cmdTmp = this.terminal.history[this.lastCmdIndex];
+        }
       }
       if (this.lastCmdIndex > -1) cmd = cmdTmp;
       this.setValue(cmd);
@@ -410,18 +444,19 @@ export class KeyboardDialog implements OnInit {
       return;
     }
     if (this.ngModel && this.ctrl && !this.ctrl.name) {
-      if (this.ngModel.value !== null) this.ngModel.update.emit(value);
+      if (this.ngModel.value !== null) this.ngModel.control.setValue(value);
       else {
         this.currValue = value;
         if (
           (this.inputType === 'number' && !isNaN(Number(value))) ||
           this.inputType !== 'number'
-        )
+        ) {
           this.data.el.value = value;
+        }
       }
     } else if (this.ctrl && this.ctrl.control) {
       this.ctrl.control.setValue(value);
-    } else if (this.ctrl) {
+    } else if (this.ctrl && this.ctrl.valueAccessor) {
       this.ctrl.valueAccessor.writeValue(value);
     } else {
       this.data.el.value = value;
@@ -430,8 +465,8 @@ export class KeyboardDialog implements OnInit {
 
   accept(fromLineDelete?: boolean) {
     this.dialogRef.close();
-    if (fromLineDelete) return;
-    for (let e of this.onKeyboardClose) {
+    if (fromLineDelete || !this.onKeyboardClose) return;
+    for (const e of this.onKeyboardClose) {
       if (e) {
         e.emit({
           target: {
@@ -448,7 +483,7 @@ export class KeyboardDialog implements OnInit {
   }
 }
 
-const layout_string = [
+const LAYOUT_STRING: string[][] = [
   ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
@@ -456,7 +491,7 @@ const layout_string = [
   ['more', ' ', '.', '?', 'keyboard_return'],
 ];
 
-const layout_string_shift = [
+const LAYOUT_STRING_SHIFT: string[][] = [
   ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
   ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
@@ -464,7 +499,7 @@ const layout_string_shift = [
   ['more', ' ', '.', '?', 'keyboard_return'],
 ];
 
-const layout_string_more = [
+const LAYOUT_STRING_MORE: string[][] = [
   ['+', '*', '/', '=', '_', '-'],
   ['!', '@', '#', '$', '%', '^', '&', '~'],
   ['(', ')', '[', ']', "'", '"', ':', ','],
@@ -472,10 +507,44 @@ const layout_string_more = [
   ['more', ' ', '.', 'keyboard_return'],
 ];
 
-const layout_numeric = [
+const LAYOUT_NUMERIC: string[][] = [
   ['1', '2', '3'],
   ['4', '5', '6'],
   ['7', '8', '9'],
   ['.', '0', '-'],
   ['backspace'],
 ];
+
+const LAYOUT_NUMERIC_POS: string[][] = [
+  ['1', '2', '3'],
+  ['4', '5', '6'],
+  ['7', '8', '9'],
+  ['.', '0', 'backspace']
+];
+
+const LAYOUT_NUMERIC_INT: string[][] = [
+  ['1', '2', '3'],
+  ['4', '5', '6'],
+  ['7', '8', '9'],
+  ['backspace', '0', '-']
+];
+
+const LAYOUT_NUMERIC_INT_POS: string[][] = [
+  ['1', '2', '3'],
+  ['4', '5', '6'],
+  ['7', '8', '9'],
+  ['backspace', '0']
+];
+
+interface KeyboardData {
+  el: HTMLInputElement,
+  ngModel: NgModel,
+  name: FormControlName,
+  layout: string[][],
+  keyboardType: string,
+  accept: Array<EventEmitter<{ target: { value: string | number} }>>,
+  ctrl: NgControl,
+  showArrows: boolean,
+  enableLineDelete: boolean,
+  onLineDelete: EventEmitter<void>,
+}

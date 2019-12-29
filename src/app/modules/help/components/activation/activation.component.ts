@@ -26,26 +26,26 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./activation.component.scss'],
 })
 export class ActivationComponent implements OnInit {
-  public control = new FormControl('', [
+  control = new FormControl('', [
     Validators.required,
     Validators.maxLength(6),
     Validators.minLength(6),
   ]);
 
-  public url: string = 'https://www.baidu.com?token=abcdef';
-  public machineId: string = '';
-  public pinCode: string = '';
-  private verficationCode: string = '';
+  url = 'https://www.baidu.com?token=abcdef';
+  machineId = '';
+  pinCode = '';
+  private verficationCode = '';
   private words: string;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<ActivationComponent, string>,
     public snackBar: MatSnackBar,
     private service: ActivationService,
     private trn: TranslateService
   ) {}
 
-  public get hasError(): boolean {
+  get hasError(): boolean {
     const minLengthErr = invoker(1, 'hasError')('minlength');
     const maxLengthErr = invoker(1, 'hasError')('maxlength');
     const requiredErr = invoker(1, 'hasError')('required');
@@ -60,7 +60,7 @@ export class ActivationComponent implements OnInit {
     this.retriveIDandEncryptRouteParameter();
   }
 
-  public verify(): void {
+  verify(): void {
     const lowerVCode = toLower(this.verficationCode);
     const lowerPCode = toLower(this.pinCode);
     const isVerified: boolean = equals(lowerVCode);

@@ -20,10 +20,10 @@ export class RecordGraphComponent implements OnInit {
   
   @ViewChild('graph', { static: false }) graph: ElementRef;
   
-  @Input('chartData') chartData: RecordTab;
+  @Input() chartData: RecordTab;
 
-  private isViewLoaded: boolean = false;
-  private _lastData: Graph[] = null;
+  private isViewLoaded = false;
+  private _lastData: Array<Partial<Plotly.PlotData>> = null;
   private _lastType: ChartType = null;
 
   constructor(
@@ -49,19 +49,21 @@ export class RecordGraphComponent implements OnInit {
   
   @HostListener('window:resize')
   onResize() {
+    console.log('resize');
     if (this.graph.nativeElement) {
       Plotly.relayout(this.graph.nativeElement, {});
     }
   }
   @HostListener('resize')
   onHostResize() {
+    console.log('host resize');
     this.onResize();
   }
   
   private refreshChart() {
     this._lastData = this.chartData.data;
     this._lastType = this.chartData.chartType;
-    let layout: any = {
+    const layout = {
       title: this.chartData.file + '.REC',
       autosize: true,
       showlegend: true
@@ -88,8 +90,9 @@ export class RecordGraphComponent implements OnInit {
   
   ngDoCheck() {
     if (this.isViewLoaded) {
-      if (this._lastData === this.chartData.data && this._lastType === this.chartData.chartType)
+      if (this._lastData === this.chartData.data && this._lastType === this.chartData.chartType) {
         return;
+      }
       this.refreshChart();
     }
   }

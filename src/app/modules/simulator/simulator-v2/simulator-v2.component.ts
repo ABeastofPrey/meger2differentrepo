@@ -21,10 +21,12 @@ import { SimulatorService } from '../../core/services/simulator.service';
   styleUrls: ['./simulator-v2.component.css'],
 })
 export class SimulatorV2Component implements OnInit {
-  jointsAsArr: number[];
-  loaded: boolean = false;
-  liveMode: boolean = true;
+
+  jointsAsArr: number[] = [];
+  loaded = false;
+  liveMode = true;
   env = environment;
+  resizing = false;
 
   @ViewChild('simulator', { static: false }) simulator: SimulatorComponent;
 
@@ -50,7 +52,7 @@ export class SimulatorV2Component implements OnInit {
     this.sim.getScene();
     this.loaded = this.sim.shouldShowSimulator ? false : true;
   }
-  
+
   openRecording() {
     const cycleTime = this.grp.sysInfo.cycleTime;
     if (!this.liveMode) {
@@ -100,12 +102,14 @@ export class SimulatorV2Component implements OnInit {
           suffix: '.SIM',
           placeholder: 'File Name',
           accept: 'SAVE',
+          regex: '(\\w+)$'
         },
       })
       .afterClosed()
       .subscribe((name: string) => {
-        if (!name || name.indexOf('.') !== -1 || name.indexOf('/') !== -1)
+        if (!name || name.indexOf('.') !== -1 || name.indexOf('/') !== -1) {
           return;
+        }
         name = name.toUpperCase() + '.SIM';
         const str = this.scene.exportToJson();
         const f = new File([new Blob([str])], name);

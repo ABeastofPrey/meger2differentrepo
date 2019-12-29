@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
 import { ApiService } from '../../modules/core';
 
 @Component({
@@ -8,12 +8,11 @@ import { ApiService } from '../../modules/core';
   styleUrls: ['./file-selector-dialog.component.css'],
 })
 export class FileSelectorDialogComponent implements OnInit {
-  selected: string = null;
+  selected = '';
   files: string[] = [];
 
   constructor(
-    private dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogRef: MatDialogRef<FileSelectorDialogComponent,string>,
     private api: ApiService
   ) {}
 

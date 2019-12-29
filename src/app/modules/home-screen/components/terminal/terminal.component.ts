@@ -3,18 +3,19 @@ import {
   OnInit,
   ElementRef,
   ViewChild,
-  HostListener,
   NgZone,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { TerminalService } from '../../services/terminal.service';
 import { Input } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { KeywordService } from '../../../core/services/keywords.service';
-import { ApplicationRef } from '@angular/core';
 import { CommonService } from '../../../core/services/common.service';
 import { LoginService } from '../../../core';
 import { MatInput } from '@angular/material';
 import { trim, equals, complement, compose } from 'ramda';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 const isNotEmptyStr = complement(
   compose(
@@ -22,7 +23,8 @@ const isNotEmptyStr = complement(
     trim
   )
 );
-declare var ace;
+// tslint:disable-next-line: no-any
+declare var ace: any;
 
 @Component({
   selector: 'terminal',
@@ -42,22 +44,19 @@ declare var ace;
   ],
 })
 export class TerminalComponent implements OnInit {
-  private _cmd: string = '';
-  contextMenuShown: boolean = false;
-  contextMenuX: number = 0;
-  contextMenuY: number = 0;
-  contextSelection: string = null;
-  @ViewChild('wrapper', { static: false }) wrapper: ElementRef;
-  @ViewChild('upload', { static: false }) uploadInput: ElementRef;
-  @ViewChild('editorLine', { static: false }) editorLine: ElementRef;
-  @ViewChild('editorDiv', { static: false }) editorDiv: ElementRef;
+  
+  @ViewChild('wrapper', { static: false }) wrapper!: ElementRef;
+  @ViewChild('upload', { static: false }) uploadInput!: ElementRef;
+  @ViewChild('editorLine', { static: false }) editorLine!: ElementRef;
+  @ViewChild('editorDiv', { static: false }) editorDiv!: ElementRef;
 
-  @Input('offsetX') offsetX: number;
-  @Input('offsetY') offsetY: number;
-
-  private changeFlag: boolean = false;
-  private lastCmdIndex: number = -1;
+  private _cmd = '';
+  private notifier: Subject<boolean> = new Subject();
+  private lastCmdIndex = -1;
+  // tslint:disable-next-line: no-any
   private editor: any;
+  // tslint:disable-next-line: no-any
+  private historyEditor: any; // the ace editor of the history commands
   private Range = ace.require('ace/range').Range;
 
   get cmd() {
@@ -75,7 +74,7 @@ export class TerminalComponent implements OnInit {
     public terminal: TerminalService,
     private keywords: KeywordService,
     private zone: NgZone,
-    private ref: ApplicationRef,
+    private ref: ChangeDetectorRef,
     public cmn: CommonService,
     public login: LoginService
   ) {}
@@ -93,7 +92,7 @@ export class TerminalComponent implements OnInit {
   }
 
   private initMainAce() {
-    let editor = ace.edit(this.editorDiv.nativeElement);
+    const editor = ace.edit(this.editorDiv.nativeElement);
     editor.setOptions({
       autoScrollEditorIntoView: true,
       highlightActiveLine: false,
@@ -103,6 +102,7 @@ export class TerminalComponent implements OnInit {
       fontSize: '14px',
       maxLines: Infinity,
       readOnly: true,
+      fontFamily: 'cs-monospace'
     });
     editor.getSession().setUseWrapMode(true);
     editor.renderer.$cursorLayer.element.style.display = 'none';
@@ -116,18 +116,24 @@ export class TerminalComponent implements OnInit {
       const height = this.wrapper.nativeElement.scrollHeight;
       this.wrapper.nativeElement.scrollTop = height;
     }, 50);
-    this.terminal.onNewCommand.subscribe(cmd => {
-      editor.setValue(this.terminal.cmdsAsString, 1);
-      setTimeout(() => {
-        const height = this.wrapper.nativeElement.scrollHeight;
-        this.wrapper.nativeElement.scrollTop = height;
-      }, 50);
+    this.terminal.onNewCommand.subscribe(() => {
+      this.zone.run(()=>{
+        editor.setValue(this.terminal.cmdsAsString, 1);
+        setTimeout(() => {
+          const height = this.wrapper.nativeElement.scrollHeight;
+          this.wrapper.nativeElement.scrollTop = height;
+        }, 50);
+      });
+    });
+    this.historyEditor = editor;
+    this.terminal.resizeRequired.pipe(takeUntil(this.notifier)).subscribe(()=>{
+      editor.resize();
     });
   }
 
   private initAce() {
     this.editor = ace.edit(this.editorLine.nativeElement);
-    let editor = this.editor;
+    const editor = this.editor;
     editor.setOptions({
       maxLines: 1, // make it 1 line
       autoScrollEditorIntoView: true,
@@ -136,22 +142,20 @@ export class TerminalComponent implements OnInit {
       showGutter: false,
       theme: 'ace/theme/cs',
       fontSize: '14px',
-      enableBasicAutocompletion: true,
-      enableLiveAutocompletion: true,
       readOnly: this.cmn.isTablet,
+      fontFamily: 'cs-monospace'
     });
     this.keywords.initDone.subscribe(done => {
       if (!done) return;
-      editor.completers = [this.keywords.staticWordCompleter];
       editor.getSession().setMode('ace/mode/mcbasic');
     });
     editor.$blockScrolling = Infinity;
-    editor.on('paste', function(e) {
+    editor.on('paste', (e: {text: string}) => {
       e.text = e.text.replace(/[\r\n]+/g, ' ');
     });
     // make mouse position clipping nicer
-    editor.renderer.screenToTextCoordinates = function(x, y) {
-      var pos = this.pixelToScreenCoordinates(x, y);
+    editor.renderer.screenToTextCoordinates = function(x: number, y: number) {
+      const pos = this.pixelToScreenCoordinates(x, y);
       return this.session.screenToDocumentPosition(
         Math.min(this.session.getScreenLength() - 1, Math.max(pos.row, 0)),
         Math.max(pos.column, 0)
@@ -170,40 +174,48 @@ export class TerminalComponent implements OnInit {
       this.onKeyUp();
     });
     if (!this.cmn.isTablet) editor.focus();
-  }
-
-  onContextMenu(e: MouseEvent) {
-    e.preventDefault();
-    let rect = this.wrapper.nativeElement.getBoundingClientRect();
-    this.contextMenuX = e.clientX - rect.left;
-    this.contextMenuY = e.clientY - rect.top;
-    this.contextMenuShown = true;
-    this.contextSelection = this.getSelection();
+    this.terminal.resizeRequired.pipe(takeUntil(this.notifier)).subscribe(()=>{
+      editor.resize();
+    });
   }
 
   onClick(e: MouseEvent) {
-    // 0 - down, 1 - up
+    const shouldFocus = this.historyEditor.getSelectedText().trim().length === 0;
+    if (!this.cmn.isTablet && shouldFocus) { // PC
+      this.editor.focus();
+    } else if (shouldFocus) { // TABLET
+      const target = e.target as HTMLElement;
+      if (target.tagName.toUpperCase() === 'DIV') {
+        this.showKeyboard();
+      }
+    }
     const mouseY = e.clientY;
     const editorLineY = this.editorLine.nativeElement.getBoundingClientRect().y;
     if (mouseY > editorLineY) {
-      if (!this.cmn.isTablet) this.editor.focus();
-      else {
-        const target: HTMLElement = <HTMLElement>e.target;
-        if (target.tagName.toUpperCase() === 'DIV') this.showKeyboard();
+      this.historyEditor.clearSelection();
+      if (!this.cmn.isTablet) { // PC
+        this.editor.focus();
       }
     }
   }
 
-  clear(e: MouseEvent) {
-    e.stopImmediatePropagation();
+  clear() {
     this.terminal.clear();
     this.cmd = '';
-    this.contextMenuShown = false;
     if (!this.cmn.isTablet) this.editor.focus();
   }
 
   private send() {
-    this.changeFlag = true;
+    try {
+      if (
+        this.cmd.substring(0,5).toLowerCase() === 'clear' &&
+        this.cmd.length === 5
+      ) {
+        this.terminal.history.push(this.cmd);
+        this.clear();
+        return;
+      }
+    } catch (err) {}
     this.terminal.send(this.cmd).then(() => {
       // tslint:disable-next-line
       isNotEmptyStr(this.cmd) &&
@@ -211,63 +223,9 @@ export class TerminalComponent implements OnInit {
       this.cmd = '';
       this.lastCmdIndex = -1;
       setTimeout(() => {
-        this.ref.tick();
+        this.ref.detectChanges();
       }, 0);
     });
-  }
-
-  private getSelection(): string {
-    let t: string = null;
-    if (window.getSelection) {
-      t = window.getSelection().toString();
-    } else if (
-      document.getSelection &&
-      document.getSelection().type !== 'Control'
-    ) {
-      t = document.getSelection().toString();
-    }
-    let editorSelection = '';
-    if (
-      this.editor &&
-      this.editor.getSelectedText() &&
-      this.editor.getSelectedText().length > 0
-    )
-      editorSelection = this.editor.getSelectedText();
-    if (t && t.trim().length > 0) return t + editorSelection;
-    else if (editorSelection.length > 0) return editorSelection;
-    return null;
-  }
-
-  cut() {
-    document.execCommand('cut');
-    this.contextMenuShown = false;
-    this.editor.focus();
-    this.contextSelection = null;
-  }
-
-  copy() {
-    document.execCommand('copy');
-    this.contextMenuShown = false;
-    this.contextSelection = null;
-  }
-
-  paste() {
-    try {
-      navigator['clipboard']
-        .readText()
-        .then(text => {
-          this.editor.insert(text);
-          this.contextMenuShown = false;
-          this.editor.focus();
-        })
-        .catch(err => {
-          console.log('Something went wrong', err);
-        });
-    } catch (err) {
-      alert('CLIPBOARD OPERATIONS NOT SUPPORTED, USE CTRL + V');
-      this.contextMenuShown = false;
-      this.editor.focus();
-    }
   }
 
   openScriptDialog() {
@@ -277,8 +235,9 @@ export class TerminalComponent implements OnInit {
   onKeyDown() {
     if (this.terminal.history.length > 0) {
       this.lastCmdIndex++;
-      if (this.lastCmdIndex >= this.terminal.history.length)
+      if (this.lastCmdIndex >= this.terminal.history.length) {
         this.lastCmdIndex = 0;
+      }
       let cmd: string = this.terminal.history[this.lastCmdIndex];
       let cmdTmp: string = cmd;
       while (
@@ -286,20 +245,22 @@ export class TerminalComponent implements OnInit {
         (cmdTmp.trim().length === 0 || cmdTmp === this.cmd)
       ) {
         this.lastCmdIndex++;
-        if (this.lastCmdIndex < this.terminal.history.length)
+        if (this.lastCmdIndex < this.terminal.history.length) {
           cmdTmp = this.terminal.history[this.lastCmdIndex];
+        }
       }
       if (this.lastCmdIndex < this.terminal.history.length) cmd = cmdTmp;
       this.cmd = cmd;
     }
-    this.ref.tick();
+    this.ref.detectChanges();
   }
 
   onKeyUp() {
     if (this.terminal.history.length > 0) {
       this.lastCmdIndex--;
-      if (this.lastCmdIndex < 0)
+      if (this.lastCmdIndex < 0) {
         this.lastCmdIndex = this.terminal.history.length - 1;
+      }
       let cmd: string = this.terminal.history[this.lastCmdIndex];
       let cmdTmp: string = cmd;
       while (
@@ -307,51 +268,46 @@ export class TerminalComponent implements OnInit {
         (cmdTmp.trim().length === 0 || cmdTmp === this.cmd)
       ) {
         this.lastCmdIndex--;
-        if (this.lastCmdIndex >= 0)
+        if (this.lastCmdIndex >= 0) {
           cmdTmp = this.terminal.history[this.lastCmdIndex];
+        }
       }
       if (this.lastCmdIndex > -1) cmd = cmdTmp;
       this.cmd = cmd;
     }
-    this.ref.tick();
-  }
-
-  onUploadFilesChange(e: any) {
-    for (let f of e.target.files) {
-    }
+    this.ref.detectChanges();
   }
 
   ngOnInit() {}
 
-  /*@HostListener('document:keydown.enter')
-    onEnterPress() {
-      this.send();
-      this.editor.focus();
-    }*/
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
+  }
 
   /*************** Virtual Keyboard **********************/
-  @ViewChild(MatInput, { static: false }) dummyInput: MatInput;
-  dummyText: string = '';
+  @ViewChild(MatInput, { static: false }) dummyInput!: MatInput;
+  dummyText = '';
   showKeyboard() {
-    var editor = this.editor;
-    var position = editor.getCursorPosition();
-    var row = position.row; // current row
+    const editor = this.editor;
+    const position = editor.getCursorPosition();
+    const row = position.row; // current row
     this.dummyText = editor.session.getLine(row).trim();
     this.dummyInput.focus();
   }
   onDummyKeyboardClose() {
-    var editor = this.editor;
-    var position = editor.getCursorPosition();
-    var row = position.row; // current row
+    const editor = this.editor;
+    const position = editor.getCursorPosition();
+    const row = position.row; // current row
     this.cmd = this.dummyText;
     this.send();
     this.dummyText = '';
   }
   private replaceLine(index: number, newLine: string) {
-    let editor = this.editor;
-    let line: string = editor.session.getLine(index);
-    let tabs = Array(this.numberOfTabs(line) + 1).join('\t');
-    let txtLines = newLine.split('\n');
+    const editor = this.editor;
+    const line: string = editor.session.getLine(index);
+    const tabs = new Array(this.numberOfTabs(line) + 1).join('\t');
+    const txtLines = newLine.split('\n');
     for (let i = 0; i < txtLines.length; i++) txtLines[i] = tabs + txtLines[i];
     newLine = txtLines.join('\n');
     editor.session.replace(

@@ -29,7 +29,7 @@
 			<mat-icon>power_settings_new</mat-icon>
 			<div>{{ 'apps.reboot' | translate }}...</div>
 		</a>
-		<a (click)="restore()" *ngIf="login.isAdmin">
+		<a (click)="restore()" *ngIf="login.isAdmin && factoryAvailable">
 			<mat-icon>restore</mat-icon>
 			<div>{{ 'apps.restore.desc' | translate }}...</div>
 		</a>

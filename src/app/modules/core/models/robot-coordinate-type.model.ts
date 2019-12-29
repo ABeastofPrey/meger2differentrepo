@@ -12,7 +12,11 @@ export class RobotCoordinateType {
       console.error('invalid legend string:' + str);
       return;
     }
-    this.legends = parts[0].split(',');
-    this.flags = parts[1].split(',');
+    this.legends = parts[0].split(',').filter(p=>{
+      return p.length > 0;
+    });
+    this.flags = parts[1].split(',').filter(p=>{
+      return p.length > 0;
+    });
   }
 }

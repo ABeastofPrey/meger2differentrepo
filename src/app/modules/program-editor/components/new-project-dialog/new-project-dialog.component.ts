@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-project-dialog',
@@ -8,20 +9,18 @@ import { MatDialogRef } from '@angular/material';
 })
 export class NewProjectDialogComponent implements OnInit {
   
-  fileName: string;
-  valid: boolean = false;
+  dialogForm = new FormGroup({
+    val: new FormControl('',[Validators.required, Validators.pattern('(\\w+)$')])
+  });
 
-  constructor(public dialogRef: MatDialogRef<any>) {}
+  constructor(public dialogRef: MatDialogRef<NewProjectDialogComponent, string>) {}
 
   create() {
-    this.dialogRef.close(this.fileName.toUpperCase());
+    if (this.dialogForm.invalid) return;
+    const name = this.dialogForm.controls['val'].value as string;
+    this.dialogRef.close(name.toUpperCase());
   }
 
   ngOnInit() {
-    this.fileName = '';
-  }
-  
-  validateInput() {
-    this.valid = this.fileName.match(/[a-zA-Z0-9]*$/).index === 0;
   }
 }

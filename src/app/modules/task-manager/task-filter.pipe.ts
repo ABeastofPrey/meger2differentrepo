@@ -5,7 +5,7 @@ import { MCTask } from '../core';
   name: 'taskFilter',
 })
 export class TaskFilterPipe implements PipeTransform {
-  transform(tasks: MCTask[], filter: boolean[]): any {
+  transform(tasks: MCTask[], filter: boolean[]): MCTask[] {
     if (!tasks || !filter) {
       return tasks;
     }

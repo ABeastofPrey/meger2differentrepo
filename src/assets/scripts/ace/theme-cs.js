@@ -31,6 +31,7 @@ color: rgb(191, 191, 191);\
 .ace-cs .ace_storage,\
 .ace-cs .ace_keyword {\
 color: blue;\
+font-weight: 500;\
 }\
 .ace-cs .ace_constant.ace_buildin {\
 color: rgb(88, 72, 246);\
@@ -139,7 +140,7 @@ color:#099;\
 color: rgb(255, 0, 0)\
 }\
 .ace-cs .ace_indent-guide {\
-background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;\
+border-right: 1px solid #ccc;\
 }';
 
   var dom = require('../lib/dom');

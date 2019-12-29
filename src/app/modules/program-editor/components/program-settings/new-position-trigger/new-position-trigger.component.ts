@@ -54,25 +54,25 @@ const isPressShift: (keyCode: number) => boolean = equals(16);
   styleUrls: ['./new-position-trigger.component.scss'],
 })
 export class NewPositionTriggerComponent implements OnInit {
-  public namePrefix = 'PT_';
-  public name: string;
-  public nameControl = new FormControl('', [Validators.required]);
-  public nameMatcher = ParameterErrorStateMatcher.of();
+  namePrefix = 'PT_';
+  name: string;
+  nameControl = new FormControl('', [Validators.required]);
+  nameMatcher = ParameterErrorStateMatcher.of();
   private pressingShift = false;
 
-  constructor(public dialogRef: MatDialogRef<any>) {}
+  constructor(public dialogRef: MatDialogRef<NewPositionTriggerComponent, string>) {}
 
-  public get canNotCreate(): boolean {
+  get canNotCreate(): boolean {
     return or(isNil(this.name), this.nameControl.hasError('required'));
   }
 
   ngOnInit(): void {}
 
-  public close(): void {
+  close(): void {
     this.dialogRef.close(this.namePrefix + this.name);
   }
 
-  public onKeyDown(keyCode: number): boolean {
+  onKeyDown(keyCode: number): boolean {
     if (isOverLimit(this.name)) {
       if (isBackSpace(keyCode)) {
         return true;
@@ -88,7 +88,7 @@ export class NewPositionTriggerComponent implements OnInit {
     }
   }
 
-  public onKeyUp(keyCode: number): void {
+  onKeyUp(keyCode: number): void {
     // tslint:disable-next-line
     isPressShift(keyCode) && (this.pressingShift = false);
   }

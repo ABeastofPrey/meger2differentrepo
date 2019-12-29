@@ -12,7 +12,7 @@ export class NewPayloadDialogComponent implements OnInit {
 
   constructor(
     public dataService: DataService,
-    private ref: MatDialogRef<any>
+    private ref: MatDialogRef<NewPayloadDialogComponent, string>
   ) {}
 
   ngOnInit() {}

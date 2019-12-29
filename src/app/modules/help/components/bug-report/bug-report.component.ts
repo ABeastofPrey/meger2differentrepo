@@ -18,10 +18,10 @@ import { FormControl, Validators } from '@angular/forms';
 })
 export class BugReportComponent implements OnInit {
   private env = environment;
-  private words: any;
+  private words: {};
 
-  contact: string = '';
-  isSending: boolean = false;
+  contact = '';
+  isSending = false;
   email = new FormControl('', [Validators.required, Validators.email]);
   msg = new FormControl('', [Validators.required, Validators.minLength(5)]);
 
@@ -30,7 +30,7 @@ export class BugReportComponent implements OnInit {
     private ws: WebsocketService,
     private login: LoginService,
     private api: ApiService,
-    private ref: MatDialogRef<any>,
+    private ref: MatDialogRef<void>,
     private snack: MatSnackBar,
     private trn: TranslateService
   ) {}

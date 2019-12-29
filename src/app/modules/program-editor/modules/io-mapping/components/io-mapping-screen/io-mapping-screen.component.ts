@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {
   DataService,
   WebsocketService,
@@ -16,7 +16,6 @@ import {
 } from '@angular/material';
 import { Io } from '../../../../../core/models/io/io.model';
 import { NgZone } from '@angular/core';
-import { ApplicationRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {UpdateDialogComponent} from '../../../../../../components/update-dialog/update-dialog.component';
 import {YesNoDialogComponent} from '../../../../../../components/yes-no-dialog/yes-no-dialog.component';
@@ -53,16 +52,16 @@ export class IoMappingScreenComponent implements OnInit {
   activeModule: ActiveModule = null;
 
   /* Data interval */
-  private interval: any = null;
+  private interval: number = null;
 
-  private words: any;
+  private words: {};
 
   constructor(
     private data: DataService,
     private ws: WebsocketService,
     private snack: MatSnackBar,
     private zone: NgZone,
-    private ref: ApplicationRef,
+    private ref: ChangeDetectorRef,
     public prj: ProjectManagerService,
     private trn: TranslateService,
     private dialog: MatDialog,
@@ -84,9 +83,9 @@ export class IoMappingScreenComponent implements OnInit {
   }
 
   private buildTree(): TreeNode[] {
-    let data: TreeNode[] = [];
+    const data: TreeNode[] = [];
     const modules = this.data.ioModules;
-    for (let m of modules) {
+    for (const m of modules) {
       data.push(new TreeNode(m.name, m, true));
     }
     return data;
@@ -118,8 +117,9 @@ export class IoMappingScreenComponent implements OnInit {
         }
       })
       .then((ret: MCQueryResponse) => {
-        if (this.activeModule.showInputs)
+        if (this.activeModule.showInputs) {
           this.activeModule.io.setInputs(ret.result);
+        }
         else this.activeModule.io.setOutputs(ret.result);
       });
   }
@@ -137,7 +137,7 @@ export class IoMappingScreenComponent implements OnInit {
       });
   }
 
-  updateName(e: any, io: Io) {
+  updateName(e: {target: {value: string}}, io: Io) {
     const newVal = e.target.value;
     const ioType = this.activeModule.showInputs ? 1 : 0;
     this.ws
@@ -155,7 +155,7 @@ export class IoMappingScreenComponent implements OnInit {
       });
   }
 
-  updateDescription(e: any, io: Io) {
+  updateDescription(e: {target: {value: string}}, io: Io) {
     const newVal = e.target.value;
     const ioType = this.activeModule.showInputs ? 1 : 0;
     this.ws
@@ -198,7 +198,7 @@ export class IoMappingScreenComponent implements OnInit {
       this.ws.query('?iomap_remap'); // ALSO REBOOTS MC!
       setTimeout(() => {
         let ok = false;
-        let interval = setInterval(() => {
+        const interval = setInterval(() => {
           if (ok) return;
           this.api
             .getFile('isWebServerAlive.HTML')
@@ -216,7 +216,7 @@ export class IoMappingScreenComponent implements OnInit {
   startDataRefreshInterval() {
     if (this.interval) clearInterval(this.interval);
     this.zone.runOutsideAngular(() => {
-      this.interval = setInterval(() => {
+      this.interval = window.setInterval(() => {
         const ioType = this.activeModule.showInputs ? 1 : 0;
         let start, end;
         if (this.activeModule.showInputs) {
@@ -243,7 +243,7 @@ export class IoMappingScreenComponent implements OnInit {
                 this.activeModule.io.outputs[i].value = innerparts[1] === '1';
               }
             }
-            this.ref.tick();
+            this.ref.detectChanges();
           });
       }, 200);
     });

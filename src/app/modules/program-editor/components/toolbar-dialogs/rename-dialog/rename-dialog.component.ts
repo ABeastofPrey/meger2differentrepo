@@ -13,10 +13,10 @@ import {
 })
 export class RenameDialogComponent implements OnInit {
   name: string;
-  submitting: boolean = false;
+  submitting = false;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<RenameDialogComponent, void>,
     private ws: WebsocketService,
     private prj: ProjectManagerService
   ) {}

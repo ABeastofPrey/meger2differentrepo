@@ -28,9 +28,9 @@ export class DashboardWindowComponent implements OnInit {
 
   @ViewChild('window', { static: false }) window: ElementRef;
 
-  private words: any;
+  private words: {};
 
-  public cart: string[];
+  cart: string[];
 
   constructor(
     private dashboard: DashboardService,
@@ -79,14 +79,13 @@ export class DashboardWindowComponent implements OnInit {
 
   onDragEnd() {
     const el = this.window.nativeElement as HTMLElement;
-    let matrix = new WebKitCSSMatrix(
-      getComputedStyle(el).webkitTransform
+    const matrix = new WebKitCSSMatrix(
+      getComputedStyle(el).transform
     );
     this.params.pos = {
       x: matrix.m41,
       y: matrix.m42,
     };
-    console.log(this.params.pos);
     this.dashboard.save();
   }
 
@@ -104,11 +103,12 @@ export class DashboardWindowComponent implements OnInit {
   }
 
   move() {
-    for (let t of this.params.target) {
-      if (isNaN(t) || t === null)
+    for (const t of this.params.target) {
+      if (isNaN(t) || t === null) {
         return this.snack.open(this.words['dashboard.err_target'], '', {
           duration: 1500,
         });
+      }
     }
     let cmd = 'move ' + this.params.name;
     let target = this.params.isGroup
@@ -139,7 +139,7 @@ export class DashboardWindowComponent implements OnInit {
   }
 
   addParam() {
-    let ref = this.dialog.open(NewDashboardParameterDialogComponent);
+    const ref = this.dialog.open(NewDashboardParameterDialogComponent);
     ref.afterClosed().subscribe((ret: DashboardParam) => {
       if (ret) {
         this.params.params.push(ret);
@@ -155,7 +155,7 @@ export class DashboardWindowComponent implements OnInit {
 
   record() {
     if (this.params.isRecording) return this.stop();
-    let ref = this.dialog.open(RecordDialogComponent, { data: this.params });
+    const ref = this.dialog.open(RecordDialogComponent, { data: this.params });
     ref.afterClosed().subscribe((params: RecordParams) => {
       if (params) {
         this.dashboard.lastChartData = null;
@@ -172,9 +172,10 @@ export class DashboardWindowComponent implements OnInit {
             this.params.name + '.' + params.y,
           ];
         } else {
-          for (let p of this.params.params) {
-            if (!this.params.isGroup || (p.value as string).indexOf(',') === -1)
+          for (const p of this.params.params) {
+            if (!this.params.isGroup || (p.value as string).indexOf(',') === -1) {
               varList.push(this.params.name + '.' + p.name);
+            }
             else {
               for (let i = 1; i <= this.params.axes.length; i++) {
                 varList.push(this.params.name + '.' + p.name + '{' + i + '}');
@@ -182,7 +183,7 @@ export class DashboardWindowComponent implements OnInit {
             }
           }
         }
-        let cmd =
+        const cmd =
           'Record ' + params.name + '.rec ' +
           Math.ceil(params.duration / this.grp.sysInfo.cycleTime) +
           ' Gap=' + params.gap + ' RecData=' +
@@ -195,7 +196,7 @@ export class DashboardWindowComponent implements OnInit {
             this.params.recordingParams = params;
             this.params.recordingTime = 0;
             let time = 0;
-            let interval = setInterval(() => {
+            const interval = setInterval(() => {
               time += 200;
               this.params.recordingTime = (time / params.duration) * 100;
               if (

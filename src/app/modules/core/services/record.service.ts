@@ -4,17 +4,18 @@ import { MatSnackBar } from '@angular/material';
 import {GroupManagerService} from './group-manager.service';
 import {ApiService} from './api.service';
 import {BehaviorSubject} from 'rxjs';
+import { PlotData } from 'plotly.js';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RecordService {
   
-  private timeout: any;
-  private _isRecording: boolean = false;
+  private timeout: number;
+  private _isRecording = false;
   
   private _tabs: RecordTab[] = [];
-  private _selectedTabIndex: number = 0;
+  private _selectedTabIndex = 0;
   
   available: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -37,10 +38,11 @@ export class RecordService {
   
   openTab(i: number) {
     const tab = this._tabs[i];
-    if (tab && !tab.csv)
+    if (tab && !tab.csv) {
       return this.api.getRecordingCSV(tab.file).then(result=>{
         tab.init(result);
       });
+    }
   }
   
   createTab(name: string) {
@@ -49,8 +51,9 @@ export class RecordService {
   }
   
   closeTab(i: number) {
-    if (i >= 0 && i < this._tabs.length)
+    if (i >= 0 && i < this._tabs.length) {
       this._tabs.splice(i,1);
+    }
   }
 
   constructor(
@@ -85,7 +88,7 @@ export class RecordService {
           if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
           this._isRecording = true;
           clearTimeout(this.timeout);
-          this.timeout = setTimeout(() => {
+          this.timeout = window.setTimeout(() => {
             this._isRecording = false;
             this.snack.open('Motion Recording finished!', null, {
               duration: 1500,
@@ -100,10 +103,10 @@ export class RecordService {
 export class RecordTab {
   
   file: string = null;
-  data: Graph[] = null;
+  data: Array<Partial<PlotData>> = null;
   csv: string = null;
   
-  private _err: boolean = false;
+  private _err = false;
   private _serviceRef: RecordService = null;
   private _legends: string[] = [];
   private _chartType: ChartType = ChartType.Time;
@@ -111,7 +114,7 @@ export class RecordTab {
   private _legendY: number = null;
   private _legendZ: number = null;
   private _recLines: string[] = [];
-  private _derData: Graph[] = [];
+  private _derData: Array<Partial<Plotly.PlotData>> = [];
   private _compareTo: RecordTab = null;
   
   constructor(fileName: string, ref: RecordService) {
@@ -135,7 +138,7 @@ export class RecordTab {
     return this._derData;
   }
   
-  set derData(data: Graph[]) {
+  set derData(data: Array<Partial<Plotly.PlotData>>) {
     this._derData = data;
     this.init(this.csv);
   }
@@ -178,21 +181,23 @@ export class RecordTab {
   init(csv: string) {
     this.csv = csv;
     try {
-      let newData: Graph[] = [];
+      let newData = [];
       if (this._legendX === null) { // FIRST INIT
         // parse CSR
         this._recLines = csv.split('\n');
         // parse legends string
         const line = this._recLines[1];
-        let legends = [];
+        const legends = [];
         let isFuncFlag = false;
         let currLegend = '';
         for (let i = 0; i < line.length; i++) {
           const c = line.charAt(i);
-          if (c === '(')
+          if (c === '(') {
             isFuncFlag = true;
-          else if (c === ')')
+          }
+          else if (c === ')') {
             isFuncFlag = false;
+ }
           if (c !== ',' || isFuncFlag) {
             currLegend += c;
           } else {
@@ -210,7 +215,7 @@ export class RecordTab {
       }
       if (this.chartType === ChartType.Three) {
         // 3D GRAPH
-        let chartData: Graph3D = {
+        const chartData: Graph3D = {
           mode: 'lines',
           name: this.file,
           x: [],
@@ -221,7 +226,7 @@ export class RecordTab {
         newData.push(chartData);
       } else if (this.chartType === ChartType.Time) {
         // X/T
-        for (let legend of this.legends) {
+        for (const legend of this.legends) {
           newData.push({
             mode: 'lines',
             name: legend,
@@ -242,7 +247,7 @@ export class RecordTab {
       const gap = Number(this._recLines[0]) || 1;
       for (let i = 2; i < this._recLines.length; i++) {
         if (this._recLines[i] !== '') {
-          let vals = this._recLines[i].slice(0, -1).split(',');
+          const vals = this._recLines[i].slice(0, -1).split(',');
           if (this.chartType !== ChartType.Three) {
             // 2D
             if (this.chartType === ChartType.Two) {
@@ -261,7 +266,7 @@ export class RecordTab {
             if (vals.length < 3) continue;
             newData[0].x.push(Number(vals[this.legendX]));
             newData[0].y.push(Number(vals[this.legendY]));
-            (<Graph3D>newData[0]).z.push(Number(vals[this.legendZ]));
+            (newData[0] as Graph3D).z.push(Number(vals[this.legendZ]));
           }
         }
       }

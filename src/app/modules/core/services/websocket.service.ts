@@ -24,24 +24,24 @@ export interface MCQueryResponse {
 
 @Injectable()
 export class WebsocketService {
-  private socketQueueId: number = 0;
+  private socketQueueId = 0;
   private socketQueue: Function[] = [];
   private socketQueueIntervals: boolean[] = [];
   private _isConnected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
   private _isTimeout: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-  private timeout: any;
+  private timeout: number;
   private worker = new Worker('assets/scripts/conn.js');
   private _port: string = null;
-  private _otherClients: number = 0;
+  private _otherClients = 0;
 
-  private words: any;
+  private words: {};
 
   get port() {
     return this._port;
   }
-  updateFirmwareMode: boolean = false;
+  updateFirmwareMode = false;
 
   get connected(): boolean {
     return this._isConnected.value;
@@ -61,7 +61,7 @@ export class WebsocketService {
 
   connect() {
     this.worker.postMessage({ msg: 0, serverMsg: true }); // CONNECT REQUEST
-    this.timeout = setTimeout(() => {
+    this.timeout = window.setTimeout(() => {
       if (!this._isConnected.value) {
         this._isTimeout.next(true);
         this.timeout = null;
@@ -96,12 +96,14 @@ export class WebsocketService {
         if (e.data.serverMsg) {
           this._zone.run(() => {
             switch (e.data.msg) {
+              default:
+                console.error('UNKNOWN MSG CODE:',e.data.msg);
+                break;
               case 0: // ONOPEN - Websocket connected, Testing connection...
                 Promise.all([
                   this.query('java_port'),
                   this.query('java_es'),
-                ]).then(
-                  (ret: any[]) => {
+                ]).then(ret => {
                     this._port = ret[0].result;
                     this._otherClients = Number(ret[1].result) - 1;
                     this._isConnected.next(true);
@@ -125,7 +127,7 @@ export class WebsocketService {
                   clearTimeout(this.timeout);
                   this.timeout = null;
                 }
-                for (let ref of this.dialog.openDialogs) {
+                for (const ref of this.dialog.openDialogs) {
                   if (ref.id !== 'update' && ref.id !== 'system') ref.close();
                 }
                 if (e.data.code === 4003) {
@@ -158,53 +160,57 @@ export class WebsocketService {
   send(msg: string, force: boolean, callback?, interval?: number) {
     //console.log('send',msg);
     this.socketQueueId++;
-    if (this.socketQueueId === 32766)
+    if (this.socketQueueId === 32766) {
       this.socketQueueId = 1000;
+    }
     if (callback) {
       this.socketQueue['i_' + this.socketQueueId] = callback;
       if (interval) this.socketQueueIntervals['i_' + this.socketQueueId] = true;
     }
-    var MCMessage = {
-      msg: msg,
+    const mcMessage = {
+      msg,
       cmd_id: this.socketQueueId,
       token: this.jwt.getToken(),
     };
-    var str = JSON.stringify(MCMessage);
+    const str = JSON.stringify(mcMessage);
     this.worker.postMessage({
       msg: str,
       serverMsg: false,
-      interval: interval,
+      interval,
       id: this.socketQueueId,
-      force: force,
+      force,
     });
     msg = null;
     return this.socketQueueId;
   }
 
-  query(query) {
-    return new Promise((resolve, reject) => {
-      this.send(query, false, function(result, cmd: string, err) {
-        resolve({ result: result, cmd: cmd, err: err });
+  query(query) : Promise<MCQueryResponse> {
+    return new Promise<MCQueryResponse>((resolve, reject) => {
+      this.send(query, false, (result, cmd: string, err) => {
+        resolve({ result, cmd, err });
       });
-    }).catch(reason => {});
+    }).catch(reason => {
+      return Promise.reject(reason);
+    });
   }
 
-  public observableQuery(api: string): Observable<MCQueryResponse | ErrorFrame> {
-    return Observable.create((observer: Observer<MCQueryResponse | ErrorFrame>) => {
+  observableQuery(api: string): Observable<MCQueryResponse | ErrorFrame> {
+    return new Observable(observer => {
       this.send(api, false, (result: string, cmd: string, err: ErrorFrame) => {
         if (!!err) {
           observer.error(err);
         } else {
-          observer.next({ result: result, cmd: cmd, err: err });
+          observer.next({ result, cmd, err });
         }
       });
     });
+      
   }
 
   handleMessage(data: MCResponse) {
-    var errFrame = null;
+    let errFrame = null;
     //console.log('receive',data['cmd']);
-    var isErrorFrame = data['msg'].indexOf('$ERRORFRAME$') === 0;
+    const isErrorFrame = data['msg'].indexOf('$ERRORFRAME$') === 0;
     if (isErrorFrame) {
       data['msg'] = data['msg'].substr(12);
       errFrame = new ErrorFrame(data['msg']);
@@ -220,7 +226,7 @@ export class WebsocketService {
       // Server Announcment
       if (data['msg'].indexOf('>>>') === 0) {
         // TP DIALOG MSG
-        let strings: string[] = data['msg'].slice(3, -5).split(',');
+        const strings: string[] = data['msg'].slice(3, -5).split(',');
         this._zone.run(() => {
           this.dialog
             .open(TpDialogComponent, {
@@ -244,6 +250,8 @@ export class WebsocketService {
                 case 3:
                   this.query('?TP_DIALOG_ANSWER(0,0,1)');
                   break;
+                default:
+                  break;
               }
             });
         });
@@ -254,14 +262,16 @@ export class WebsocketService {
         });
       } else {
         // Other Server announcements
-        this.notification.onAsyncMessage(data['msg']);
+        this._zone.run(() => {
+          this.notification.onAsyncMessage(data['msg']);
+        });
       }
     }
     if (
       typeof data['cmd_id'] !== 'undefined' &&
       typeof this.socketQueue['i_' + data['cmd_id']] === 'function'
     ) {
-      var execFunc = this.socketQueue['i_' + data['cmd_id']];
+      let execFunc = this.socketQueue['i_' + data['cmd_id']];
       execFunc(data['msg'], data['cmd'], errFrame);
       execFunc = null;
       if (!this.socketQueueIntervals['i_' + data['cmd_id']]) {
@@ -272,15 +282,15 @@ export class WebsocketService {
   }
 
   clearInterval(id: number) {
-    this.worker.postMessage({ msg: 2, serverMsg: true, id: id }); // CLEAR INTERVAL REQUEST
+    this.worker.postMessage({ msg: 2, serverMsg: true, id }); // CLEAR INTERVAL REQUEST
   }
 
   private getCookie(cname) {
-    var name = cname + '=';
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
+    const name = cname + '=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
       while (c.charAt(0) === ' ') {
         c = c.substring(1);
       }

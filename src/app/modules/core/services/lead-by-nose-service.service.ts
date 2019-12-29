@@ -9,12 +9,12 @@ export class LeadByNoseServiceService {
   private _frame: string;
   private _motionTypes: string[];
   private _motionType: string;
-  private _vrate: number = 0;
+  private _vrate = 0;
   private _joint: number = null;
-  private _lbnStatus: boolean = false;
+  private _lbnStatus = false;
   private keepAlive: number = null;
 
-  private word_errTimeout: string;
+  private wordErrTimeout: string;
 
   get status() {
     return this._lbnStatus;
@@ -32,9 +32,9 @@ export class LeadByNoseServiceService {
     return this._vrate;
   }
   set vrate(val: number) {
-    let oldRate = this._vrate;
+    const oldRate = this._vrate;
     this._vrate = val;
-    let cmd = '?LBN_SET_VRATE(' + val + ')';
+    const cmd = '?LBN_SET_VRATE(' + val + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err || ret.result !== '0') this._vrate = oldRate;
     });
@@ -53,9 +53,9 @@ export class LeadByNoseServiceService {
   }
 
   set frame(val: string) {
-    let oldFrame = this.frame;
+    const oldFrame = this.frame;
     this._frame = val;
-    var cmd = '?LBN_SET_FRAME("' + val + '")';
+    const cmd = '?LBN_SET_FRAME("' + val + '")';
     this.ws
       .query(cmd)
       .then((ret: MCQueryResponse) => {
@@ -75,9 +75,9 @@ export class LeadByNoseServiceService {
   }
 
   set motionType(val: string) {
-    let oldType = this._motionType;
+    const oldType = this._motionType;
     this._motionType = val;
-    var cmd = '?LBN_SET_MOTION_TYPE("' + val + '")';
+    const cmd = '?LBN_SET_MOTION_TYPE("' + val + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err || ret.result !== '0') {
         this._motionType = oldType;
@@ -89,7 +89,7 @@ export class LeadByNoseServiceService {
   }
 
   set joint(val: number) {
-    let oldJoint = this._joint;
+    const oldJoint = this._joint;
     this._joint = val;
     this.ws
       .query('?tp_set_lead_by_nose_joint_number(' + val + ')')
@@ -109,7 +109,7 @@ export class LeadByNoseServiceService {
       }
     });
     this.trn.get('lbn.err_timeout').subscribe(ret => {
-      this.word_errTimeout = ret;
+      this.wordErrTimeout = ret;
     });
   }
 
@@ -149,8 +149,8 @@ export class LeadByNoseServiceService {
       /*this.mgr.setLoadingText(this.lang.get('lbn_init'));
       this.mgr.mode = this.mgr.ScreenMode.BUSY;*/
       let counter = 0;
-      let initInterval = setInterval(() => {
-        let cmd = '?LBN_GET_FORCE_SENSOR_INIT_DONE';
+      const initInterval = setInterval(() => {
+        const cmd = '?LBN_GET_FORCE_SENSOR_INIT_DONE';
         this.ws.query(cmd).then((result: MCQueryResponse) => {
           counter++;
           if (result.result === '1') {
@@ -160,7 +160,7 @@ export class LeadByNoseServiceService {
           }
           if (counter === 10) {
             clearInterval(initInterval);
-            this.snackbar.open(this.word_errTimeout, '', { duration: 2000 });
+            this.snackbar.open(this.wordErrTimeout, '', { duration: 2000 });
             //this.mgr.mode = this.mgr.ScreenMode.TP;
             this.ws.clearInterval(this.keepAlive);
             this.ws.send('?LBN_EXECUTE(0)', true);

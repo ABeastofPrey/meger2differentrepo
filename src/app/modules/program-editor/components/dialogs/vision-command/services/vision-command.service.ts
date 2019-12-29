@@ -11,7 +11,7 @@ import { DataService, MCQueryResponse } from '../../../../../core/services';
 export class VisionCommandService {
     constructor(private ws: WebsocketService, private ds: DataService) { }
 
-    public retrieveVisionCommandList(): Observable<VisionCommand[]> {
+    retrieveVisionCommandList(): Observable<VisionCommand[]> {
         const queries = [
             this.getStationAndJob(),
             this.getVariables(),
@@ -43,7 +43,7 @@ export class VisionCommandService {
         );
     }
 
-    public getStationAndJob(): Observable<{ [CommandOptions.Station], jobNames: string[] }[]> {
+    getStationAndJob(): Observable<Array<{ [CommandOptions.Station], jobNames: string[] }>> {
         const api = '?VGetStationTree';
         const getStation = (x: { stationName: string, jobs: string[] }) => Object({
             stationName: x.stationName,
@@ -59,37 +59,37 @@ export class VisionCommandService {
         );
     }
 
-    public getDimensions(): Observable<string[]> {
+    getDimensions(): Observable<string[]> {
         const notArrLongs = this.ds.longs.filter(x => !x.isArr);
         const dimNamelist = map(prop('name'), notArrLongs);
         return of(dimNamelist);
     }
 
-    public getDataNums(): Observable<string[]> {
+    getDataNums(): Observable<string[]> {
         const notArrLongs = this.ds.longs.filter(x => !x.isArr);
         const namelist = map(prop('name'), notArrLongs);
         return of(namelist);
     }
 
-    public getAsDatas(): Observable<string[]> {
+    getAsDatas(): Observable<string[]> {
         const notArrLongs = this.ds.strings.filter(x => x.isTwoDimension);
         const namelist = map(prop('name'), notArrLongs);
         return of(namelist);
     }
 
-    public getStatus(): Observable<string[]> {
+    getStatus(): Observable<string[]> {
         const notArrLongs = this.ds.strings.filter(x => !x.isArr);
         const namelist = map(prop('name'), notArrLongs);
         return of(namelist);
     }
 
-    public getErrors(): Observable<string[]> {
+    getErrors(): Observable<string[]> {
         const notArrLongs = this.ds.strings.filter(x => !x.isArr);
         const namelist = map(prop('name'), notArrLongs);
         return of(namelist);
     }
 
-    public getVariables(): Observable<string[]> {
+    getVariables(): Observable<string[]> {
         const notArrLongs = this.ds.longs.filter(x => !x.isArr);
         const dimNamelist = map(prop('name'), notArrLongs);
         return of(dimNamelist);

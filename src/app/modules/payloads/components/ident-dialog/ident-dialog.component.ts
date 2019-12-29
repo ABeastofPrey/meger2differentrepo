@@ -13,15 +13,15 @@ import {SimulatorService} from '../../../core/services/simulator.service';
 })
 export class IdentDialogComponent implements OnInit {
   
-  timeLeft: number = 0;
-  started: boolean = false;
-  finished: boolean = false;
+  timeLeft = 0;
+  started = false;
+  finished = false;
 
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: any,
-    private dialogRef: MatDialogRef<boolean>,
+    @Inject(MAT_DIALOG_DATA) private data: { duration: number },
+    private dialogRef: MatDialogRef<IdentDialogComponent, boolean>,
     private ws: WebsocketService,
     public robot: RobotService,
     public sim: SimulatorService,

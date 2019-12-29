@@ -22,6 +22,7 @@ import { ReferenceMasteringComponent } from './components/reference-mastering/re
 import { ReferenceMasteringService } from './services/reference-mastering.service';
 import { VersionComponent } from './components/version/version.component';
 import { ReleaseNoteComponent } from './components/version/release-note/release-note.component';
+import { AxisVordComponent } from './components/axis-vord/axis-vord.component';
 
 @NgModule({
   imports: [CommonModule, SharedModule, ConfigurationRoutingModule],
@@ -42,6 +43,7 @@ import { ReleaseNoteComponent } from './components/version/release-note/release-
     ReferenceMasteringComponent,
     VersionComponent,
     ReleaseNoteComponent,
+    AxisVordComponent,
   ],
   providers: [
     IoService,

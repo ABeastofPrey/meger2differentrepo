@@ -68,9 +68,10 @@
         <div *ngIf="service.tabs[service.selectedTabIndex] && !service.tabs[service.selectedTabIndex].err && !service.tabs[service.selectedTabIndex].data">
           <img src="assets/pics/{{ env.platform.spinner }}" />
         </div>
-        <h2 *ngIf="!service.tabs[service.selectedTabIndex]">
-          {{ 'dashboard.record.empty' | translate }}
-        </h2>
+        <div *ngIf="!service.tabs[service.selectedTabIndex]" class="none-open">
+          <img src="assets/pics/charts.svg">
+          <div>{{ 'dashboard.record.empty' | translate }}</div>
+        </div>
       </div>
       <img *ngIf="!service.tabs[service.selectedTabIndex]" src="assets/pics/Curved_Arrow.svg" class="arrow">
     </div>

@@ -1,6 +1,10 @@
-<div class="wrapper mat-typography" [@login]="ws.connected ? 'in' : 'out'" [@init]="compInit ? 'in' : 'out'">
+<div class="wrapper mat-typography">
+	<div class="cs-gradient" [style.opacity]="!ws.connected && compInit ? 1 : 0"></div>
+	<img src="assets/pics/robot2_{{utils.theme}}.svg" class="robot robot1" [@robot1]="!ws.connected && compInit ? 'shown' : 'none'" />
+	<img src="assets/pics/cabinet_{{utils.theme}}.svg" class="cabinet" [@cabinet]="!ws.connected && compInit ? 'shown' : 'none'" />
+	<div class="floor" [@floor]="!ws.connected && compInit ? 'shown' : 'none'"></div>
 	<div
-		class="login-card mat-elevation-z3"
+		class="login-card mat-elevation-z24"
 		[@cardIsToolbar]="ws.connected ? 'toolbar' : 'card'"
 		[class.card-full]="!cmn.isTablet"
 	>

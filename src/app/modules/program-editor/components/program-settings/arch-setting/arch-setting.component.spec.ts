@@ -162,7 +162,7 @@ describe('ArchSettingComponent', () => {
 
   it('should call resetTable api to fetch init data.', async(() => {
     fixture.whenStable().then(() => {
-      comp.onReset(null);
+      comp.onReset();
       expect(resetTableSpy.calls.any()).toBe(
         true,
         'resetTableSpy should be called.'

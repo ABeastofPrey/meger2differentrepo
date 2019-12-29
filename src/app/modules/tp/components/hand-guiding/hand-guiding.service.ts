@@ -7,7 +7,7 @@ import { compose, then, identity } from 'ramda';
 export class HandGuidingService {
   constructor(private ws: WebsocketService) {}
 
-  public async setJoints([j1, j2, j3, j4]: number[]): Promise<number> {
+  async setJoints([j1, j2, j3, j4]: number[]): Promise<number> {
     const api = `?sFreeInternal(${j1}, ${j2}, ${j3}, ${j4})`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -18,7 +18,7 @@ export class HandGuidingService {
     return _setJoint(api);
   }
 
-  public async getJoints(): Promise<number[]> {
+  async getJoints(): Promise<number[]> {
     const api = `?getSFreeInternal()`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(JSON.parse, errMsgProp);

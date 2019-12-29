@@ -20,12 +20,12 @@ const columns = ['archCol', 'departZCol', 'approachZCol'];
   styleUrls: ['arch-setting.component.css'],
 })
 export class ArchSettingComponent implements OnInit, OnDestroy {
-  public displayedColumns: string[] = columns;
-  public dataSource: ArchElement[] = null;
+  displayedColumns: string[] = columns;
+  dataSource: ArchElement[] = null;
 
   private previousValue: string;
   private currentValue: string;
-  private words: any;
+  private words: {};
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
@@ -53,21 +53,21 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     this.notifier.unsubscribe();
   }
 
-  public onFocus(event: any): void {
-    this.previousValue = event.target.value;
+  onFocus(event: FocusEvent | { target: { value: string | number }}): void {
+    this.previousValue = (event.target as HTMLInputElement).value;
   }
 
-  public async onBlur(
-    event: any,
+  async onBlur(
+    event: FocusEvent | { target: { value: string | number }},
     index: string,
     changedValue: string,
     departOrApproach: '1' | '2'
   ): Promise<void> {
-    if (this.previousValue === event.target.value) {
+    if (this.previousValue === (event.target as HTMLInputElement).value) {
       return;
     }
-    if (!this.validator(event.target.value)) {
-      event.target.value = this.previousValue;
+    if (!this.validator((event.target as HTMLInputElement).value)) {
+      (event.target as HTMLInputElement).value = this.previousValue;
       this.snackBar.open(this.words['positiveNumTip'], '', { duration: 2000 });
       return;
     }
@@ -83,13 +83,13 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onKeyup(event: any): void {
-    if (event.keyCode === 13) {
-      event.target.blur();
+  onKeyup(event: KeyboardEvent | { target: { value: string | number }, key?: string }): void {
+    if (event.key === 'Enter') {
+      (event.target as HTMLElement).blur();
     }
   }
 
-  public async onReset(event: any): Promise<void> {
+  async onReset(): Promise<void> {
     try {
       await this.asService.resetTable();
     } catch (err) {
@@ -98,8 +98,8 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     this.getTableData();
   }
 
-  public onKeydown(event: any): void {
-    this.currentValue = event.target.value;
+  onKeydown(event: KeyboardEvent | { target: { value: string | number }}): void {
+    this.currentValue = (event.target as HTMLInputElement).value;
   }
 
   private async getTableData(): Promise<void> {

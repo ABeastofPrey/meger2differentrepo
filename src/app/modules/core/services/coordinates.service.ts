@@ -1,11 +1,11 @@
-import { Injectable, NgZone, ApplicationRef } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { WebsocketService, MCQueryResponse } from './websocket.service';
+import { WebsocketService } from './websocket.service';
 import { DataService } from './data.service';
 import { EventEmitter } from '@angular/core';
 import {ErrorFrame} from '../models/error-frame.model';
 
-const POLL_INTERVAL: number = 100;
+const POLL_INTERVAL = 100;
 
 export class Coordinate {
   key: string;
@@ -19,13 +19,13 @@ export class Coordinate {
 
 @Injectable()
 export class CoordinatesService {
-  private lastTick: number = 0;
+  private lastTick = 0;
 
   private _joints: Coordinate[] = [];
   private _locations: Coordinate[] = [];
   private _axis: Coordinate = null;
   private oldString: string = null;
-  private interval: any = null;
+  private interval: number = null;
   private _locationKeysString: string;
   private _jointKeysString: string;
 
@@ -61,8 +61,8 @@ export class CoordinatesService {
     });
   }
 
-  public coosLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public positonChange: EventEmitter<number[]> = new EventEmitter();
+  coosLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  positonChange: EventEmitter<number[]> = new EventEmitter();
 
   private update(coordinates: string) {
     if (this.oldString === coordinates) {
@@ -70,56 +70,53 @@ export class CoordinatesService {
       return;
     }
     this.oldString = coordinates;
-    var newLocations = [];
-    var newJoints = [];
-    var parts = coordinates.split(';');
+    const newLocations = [];
+    const newJoints = [];
+    const parts = coordinates.split(';');
     if (parts.length > 2) {
       if (
         this._locationKeysString !== parts[0].substring(1, parts[0].length - 1)
-      )
+      ) {
         this._locationKeysString = parts[0].substring(1, parts[0].length - 1);
-      if (this._jointKeysString !== parts[2].substring(1, parts[2].length - 1))
+      }
+      if (this._jointKeysString !== parts[2].substring(1, parts[2].length - 1)) {
         this._jointKeysString = parts[2].substring(1, parts[2].length - 1);
-      var locationKeys = this._locationKeysString.split(',');
-      var locationValues = parts[1]
+      }
+      const locationKeys = this._locationKeysString.split(',');
+      const locationValues = parts[1]
         .substring(1, parts[1].length - 1)
         .split(',');
-      var jointKeys = this._jointKeysString.split(',');
-      var jointValues = parts[3].substring(1, parts[3].length - 1).split(',');
-      for (var i = 0; i < locationKeys.length; i++) {
+      const jointKeys = this._jointKeysString.split(',');
+      const jointValues = parts[3].substring(1, parts[3].length - 1).split(',');
+      for (let i = 0; i < locationKeys.length; i++) {
         newLocations.push(
-          new Coordinate(locationKeys[i], parseFloat(locationValues[i]))
+          new Coordinate(locationKeys[i], Number(locationValues[i]))
         );
         newJoints.push(
-          new Coordinate(jointKeys[i], parseFloat(jointValues[i]))
+          new Coordinate(jointKeys[i], Number(jointValues[i]))
         );
       }
       this._joints = newJoints;
       this._locations = newLocations;
       this._axis = null;
-      var now = new Date().getTime();
-      if (now - this.lastTick > POLL_INTERVAL) {
-        this.ref.tick();
-        this.lastTick = now;
-        now = null;
-      }
     } else if (parts.length === 2) {
       this._joints = null;
       this._locations = null;
       this._locationKeysString = null;
       this._jointKeysString = null;
-      var key = parts[0].substring(1, parts[0].length - 1);
-      var val = parts[1].substring(1, parts[1].length - 1);
-      this._axis = new Coordinate(key, parseFloat(val));
-      var now = new Date().getTime();
-      if (now - this.lastTick > POLL_INTERVAL) {
-        this.ref.tick();
-        this.lastTick = now;
-        now = null;
-      }
+      const key = parts[0].substring(1, parts[0].length - 1);
+      const val = parts[1].substring(1, parts[1].length - 1);
+      this._axis = new Coordinate(key, Number(val));
     }
     coordinates = null;
-    this.positonChange.emit(this.jointsAsArr);
+    let now = new Date().getTime();
+    if (now - this.lastTick > POLL_INTERVAL) {
+      this._zone.run(()=>{
+        this.positonChange.emit(this.jointsAsArr);
+      });
+      this.lastTick = now;
+      now = null;
+    }
   }
   
   setDebugMode(on: boolean) {
@@ -134,27 +131,27 @@ export class CoordinatesService {
   constructor(
     private ws: WebsocketService,
     private _zone: NgZone,
-    private ref: ApplicationRef,
     private data: DataService
   ) {
     this.data.dataLoaded.subscribe(stat => {
       if (stat && this.interval === null) {
         //LOADED and INTERVAL ISN'T SET
         this._zone.runOutsideAngular(() => {
-          this.interval = this.ws.send('cyc2',false,(result: string, cmd: string, err: ErrorFrame) => {
+          this.interval = 
+              this.ws.send('cyc2',false,(result: string, cmd: string, err: ErrorFrame) => {
             if (err || result.length === 0) {
               this.ws.clearInterval(this.interval);
               console.log('cyc2 returned wrong value:');
               console.log(result,cmd,err);
+              this.interval = null;
               return;
             }
-            setTimeout(() => {
-              this.update(result);
-              if (!this.coosLoaded.value)
-                this._zone.run(() => {
-                  this.coosLoaded.next(true);
-                });
-            }, 0);
+            this.update(result);
+            if (!this.coosLoaded.value) {
+              this._zone.run(() => {
+                this.coosLoaded.next(true);
+              });
+            }
           }, POLL_INTERVAL);
         });
       }

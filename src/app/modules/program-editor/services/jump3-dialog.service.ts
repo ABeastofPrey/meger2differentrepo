@@ -7,7 +7,7 @@ import { map, filter } from 'ramda';
 export class Jump3DialogService {
   constructor(private ws: WebsocketService, private dataService: DataService) {}
 
-  public async retriveMotionElements(): Promise<string[]> {
+  async retriveMotionElements(): Promise<string[]> {
     const res = (await this.ws.query('?TP_GET_ROBOT_LIST')) as MCQueryResponse;
     if (res.err) {
       console.error(res.err.errMsg);
@@ -16,15 +16,15 @@ export class Jump3DialogService {
     return res.result.length !== 0 ? res.result.split(',') : [];
   }
 
-  public retriveDestFrames(): string[] {
+  retriveDestFrames(): string[] {
     return map(x => x.name, filter(x => !x.isArr, this.dataService.locations));
   }
 
-  public retriveVolocityMax(motionElement: string): Promise<number> {
+  retriveVolocityMax(motionElement: string): Promise<number> {
     return this.queryMax(`?${motionElement}.VELOCITYMAX`);
   }
 
-  public retriveAccelearationMax(motionElement: string): Promise<number> {
+  retriveAccelearationMax(motionElement: string): Promise<number> {
     return this.queryMax(`?${motionElement}.ACCELERATIONMAX`);
   }
 

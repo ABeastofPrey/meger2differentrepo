@@ -5,10 +5,10 @@ export class MCProject {
   dependencies: string[] = [];
   macros: Macro[] = [];
   settings: ProjectSettings;
-  errors: {
+  errors: Array<{
     id: number;
     name: string;
-  }[] = [];
+  }> = [];
   apps: App[] = [];
   backgroundTaskList: string[] = [];
   dependenciesLoaded: boolean;
@@ -25,7 +25,7 @@ export class MCProject {
     this.apps = [];
     if (str.length === 0) return;
     const apps = str.split(';');
-    for (let app of apps) {
+    for (const app of apps) {
       const parts = app.split(',');
       this.apps.push({
         name: parts[0],

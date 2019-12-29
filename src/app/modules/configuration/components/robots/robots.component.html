@@ -64,7 +64,22 @@
 								<mat-icon>gps_fixed</mat-icon
 								><span style="margin-left: 8px;">{{ 'robots.btnSetCurrent' | translate }}</span>
 							</button>
+							<div class="battery center-vertical" [class.battery-warn]="battery[i] !== 0" *ngIf="battery.length > 0">
+								<mat-icon [color]="battery[i] === 2 ? 'warn' : ''" matTooltip="{{'robots.battery.status' | translate}}" [class.battery-critical]="battery[i] === 2">
+									{{ battery[i] === 0 ? 'battery_full' : 'battery_alert' }}
+								</mat-icon>
+								<div *ngIf="battery[i] !== 0" class="battery-warn-box center-vertical">
+									<mat-icon>arrow_right</mat-icon>
+									<button mat-raised-button color="primary" (click)="clearBattery(i)" [disabled]="busy">
+										<mat-spinner color="primary" *ngIf="busy" diameter="24" style="margin: 8px;"></mat-spinner>
+										<span *ngIf="!busy">{{ 'button.reset' | translate }}</span>
+									</button>
+								</div>
+							</div>
 						</div>
+						<button *ngIf="masteringAck" mat-raised-button color="warn" (click)="acknowledgeMastering()">
+							{{ 'robots.battery.masteringAck' | translate }}
+						</button>
 					</div>
 				</mat-tab>
 				<mat-tab label="{{ 'robots.reference.title' | translate }}" #refMasteringTab>
@@ -75,8 +90,8 @@
 				<mat-tab label="DH">
 					<div class="container">
 						<div class="images">
-							<img *ngIf="dh_img_path_1" src="assets/pics/dh/{{ dh_img_path_1 }}" />
-							<img *ngIf="dh_img_path_2" src="assets/pics/dh/{{ dh_img_path_2 }}" style="align-self:flex-end;" />
+							<img *ngIf="dhImgPath1" src="assets/pics/dh/{{ dhImgPath1 }}" />
+							<img *ngIf="dhImgPath2" src="assets/pics/dh/{{ dhImgPath2 }}" style="align-self:flex-end;" />
 						</div>
 						<mat-form-field appearance="outline" *ngFor="let d of dh; let i = index; trackBy: trackByFn" class="dh">
 							<mat-label>{{ d.name }}</mat-label>
@@ -86,10 +101,15 @@
 								(change)="onSettingsKeyboardClose(i)"
 								virtualKeyboard
 								ktype="numeric"
-								(onKeyboardClose)="onSettingsKeyboardClose()"
+								(onKeyboardClose)="onSettingsKeyboardClose(i)"
 							/>
 							<span matSuffix>[mm]</span>
 						</mat-form-field>
+					</div>
+				</mat-tab>
+				<mat-tab label="{{ 'robots.vord.title' | translate }}" #refVordTab>
+					<div *ngIf="refVordTab.isActive" class="container">
+						<app-axis-vord></app-axis-vord>
 					</div>
 				</mat-tab>
 			</mat-tab-group>
@@ -100,7 +120,7 @@
 			{{ 'robots.title' | translate }}
 		</h2>
     <mat-slide-toggle *ngIf="login.isSuper" color="warn" style="margin-bottom: 8px;" (change)="toggleDebug($event.checked)">DEBUG MODE</mat-slide-toggle>
-		<div *ngIf="sysName !== null">
+		<div *ngIf="sysName">
 			<mat-form-field appearance="outline">
 				<mat-label>{{ 'robots.name' | translate }}</mat-label>
 				<input
@@ -119,7 +139,7 @@
 					[(ngModel)]="mcuThreshold"
 					(change)="onThresholdUpdate()"
 					virtualKeyboard
-					ktype="numeric"
+					ktype="numeric_pos"
 					(onKeyboardClose)="onThresholdUpdate()"
           [disabled]="!mcuConnected"
 				/>

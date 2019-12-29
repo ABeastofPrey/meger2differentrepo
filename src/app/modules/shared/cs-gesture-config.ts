@@ -9,7 +9,7 @@ import * as hammer from 'hammerjs';
 @Injectable()
 export class ControlStudioGestureConfig extends GestureConfig {
   buildHammer(element: HTMLElement): HammerInstance {
-    let mc = <HammerManager>super.buildHammer(element);
+    const mc = super.buildHammer(element) as HammerManager;
     mc.set({ touchAction: 'pan-y' });
 
     // Your other configurations

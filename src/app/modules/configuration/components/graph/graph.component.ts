@@ -23,10 +23,10 @@ export class GraphComponent implements OnInit {
         console.log(graphData);
         return;
       }
-      let data = [];
+      const data = [];
       let layout = null;
       if (graphData.graphType === 'BAR') {
-        for (let y of graphData.Y) {
+        for (const y of graphData.Y) {
           data.push({
             x: graphData.X,
             y: y.data,
@@ -40,10 +40,10 @@ export class GraphComponent implements OnInit {
           title: graphData.title,
         };
       } else if (graphData.graphType === 'LINE') {
-        for (let y of graphData.Y) {
+        for (const y of graphData.Y) {
           data.push({
             x: graphData.X,
-            y: y,
+            y,
             type: 'scatter',
           });
         }
@@ -64,7 +64,9 @@ export interface GraphData {
   title: string;
   XLegend: string;
   YLegend: string;
+  // tslint:disable-next-line: no-any
   X: any[];
+  // tslint:disable-next-line: no-any
   Y: any[];
   graphType: string;
 }

@@ -40,10 +40,10 @@ export class TpLoadingComponent implements OnInit {
     },
   ];
 
-  progressValue: number = 0;
+  progressValue = 0;
 
   private notifier: Subject<boolean> = new Subject();
-  private words: any;
+  private words: {};
 
   constructor(
     private ref: MatDialogRef<void>,
@@ -52,7 +52,7 @@ export class TpLoadingComponent implements OnInit {
     private stat: TpStatService,
     private trn: TranslateService,
     private snack: MatSnackBar,
-    private cmn: CommonService,
+    public cmn: CommonService,
     private login: LoginService,
     private _zone: NgZone,
     public utils: UtilsService
@@ -76,8 +76,12 @@ export class TpLoadingComponent implements OnInit {
     });
     setTimeout(()=>{
       this._zone.run(()=>{
-        const notDone = this.steps.some(s=>{return !s.done;});
+        const notDone = this.steps.some(s=>!s.done);
         if (notDone) {
+          console.log(this.steps);
+          console.log(this.stat);
+          console.log(this.data.dataLoaded.value);
+          console.log(this.prj.currProject.value);
           this.ref.close();
           const word = this.cmn.isTablet ? 'error.tp_tablet' : 'error.tp';
           this.snack.open(this.words[word],this.words['dismiss']);

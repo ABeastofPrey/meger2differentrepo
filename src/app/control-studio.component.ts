@@ -20,7 +20,7 @@ export class ControlStudioComponent {
   env = environment;
   landscape: boolean;
 
-  public getRouterOutletState(outlet: RouterOutlet) {
+  getRouterOutletState(outlet: RouterOutlet) {
     return outlet.isActivated ? outlet.activatedRouteData : '';
   }
 
@@ -35,8 +35,9 @@ export class ControlStudioComponent {
     this.overlayContainer
       .getContainerElement()
       .classList.add(this.env.platform.name);
-    if (this.cmn.isTablet)
+    if (this.cmn.isTablet) {
       overlayContainer.getContainerElement().classList.add('tablet-ui');
+    }
     this.lang.init();
     this.translate
       .get('tour')
@@ -173,7 +174,13 @@ export class ControlStudioComponent {
   }
   
   private getOrientation() {
-    const s = screen as any;
+    const s = screen as {
+      msOrientation?: string,
+      mozOrientation?: string,
+      orientation?: {
+        type?: string
+      }
+    };
     const orientation: string = s.msOrientation || s.mozOrientation || (s.orientation || {}).type;
     console.log(orientation);
     this.landscape = !this.cmn.isTablet || orientation.startsWith('landscape');

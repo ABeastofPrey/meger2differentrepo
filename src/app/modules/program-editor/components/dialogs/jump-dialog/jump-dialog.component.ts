@@ -31,7 +31,8 @@ export class ParameterErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
-const hasInvalid = x => [...Object.values(x)].findIndex((item: any) => item.invalid) !== -1;
+const hasInvalid = 
+    x => [...Object.values(x)].findIndex((item: FormControl) => item.invalid) !== -1;
 
 @Component({
   selector: 'app-jump-dialog',
@@ -42,24 +43,25 @@ const hasInvalid = x => [...Object.values(x)].findIndex((item: any) => item.inva
  * This class describes the logics to insert jump command into the user program.
  */
 export class JumpDialogComponent implements OnInit {
-  private words: any = {};
+
+  private words = {};
 
   /**
    * The max value of the speed.
    */
-  private speedMax: Number;
+  private speedMax: number;
   /**
    * The min value of the Z limit.
    */
-  private limitZMin: Number;
+  private limitZMin: number;
   /**
    * The max value of the Z limit.
    */
-  private limitZMax: Number;
+  private limitZMax: number;
   /**
    * The max value of the acceleration.
    */
-  private accelerationMax: Number;
+  private accelerationMax: number;
 
   /**
    * The destination location of the jump command.
@@ -69,12 +71,12 @@ export class JumpDialogComponent implements OnInit {
   /**
    * The error messages for the value validation.
    */
-  private errorMessages: any;
+  private errorMessages: {};
 
   /**
    * The motion element of the jump command.
    */
-  motionRobot: string = '';
+  motionRobot = '';
   /**
    * The avaible motion elements.
    */
@@ -82,27 +84,27 @@ export class JumpDialogComponent implements OnInit {
   /**
    * Whether the advanced mode is enabled.
    */
-  advancedMode: boolean = false;
+  advancedMode = false;
   /**
    * The blendling value of the jump command.
    */
-  blending: Number = null;
+  blending: number = null;
   /**
    * The arc number of the jump command.
    */
-  arcNumber: Number = null;
+  arcNumber: number = null;
   /**
    * The z limit of the jump command.
    */
-  limitZ: Number = null;
+  limitZ: number = null;
   /**
    * The speed of the jump command.
    */
-  speed: Number = null;
+  speed: number = null;
   /**
    * The acceleration of the jump command.
    */
-  acceleration: Number = null;
+  acceleration: number = null;
 
   /**
    * The JumpParameter enum reference.
@@ -133,7 +135,7 @@ export class JumpDialogComponent implements OnInit {
         1,
         7,
         JumpParameterErrorKey.NotIntegerArcNumber,
-        (value: Number, min: Number, max: Number): boolean => {
+        (value: number, min: number, max: number): boolean => {
           return Number(value) % 1 === 0 ? true : false;
         }
       ),
@@ -141,7 +143,7 @@ export class JumpDialogComponent implements OnInit {
         1,
         7,
         JumpParameterErrorKey.InValidArcNumber,
-        (value: Number, min: Number, max: Number): boolean => {
+        (value: number, min: number, max: number): boolean => {
           return value >= min && value <= max ? true : false;
         }
       ),
@@ -151,7 +153,7 @@ export class JumpDialogComponent implements OnInit {
         0,
         100,
         JumpParameterErrorKey.InValidBlending,
-        (value: Number, min: Number, max: Number): boolean => {
+        (value: number, min: number, max: number): boolean => {
           return value >= min && value <= max ? true : false;
         }
       ),
@@ -188,7 +190,7 @@ export class JumpDialogComponent implements OnInit {
    */
   constructor(
     public dataService: DataService,
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<JumpDialogComponent>,
     private prgService: ProgramEditorService,
     private ws: WebsocketService,
     private trn: TranslateService,
@@ -219,7 +221,7 @@ export class JumpDialogComponent implements OnInit {
     });
   }
 
-  public createPoint(): void {
+  createPoint(): void {
     const option = {
       hasBackdrop: false,
       data: { hotVariableOption: [1, 1, 0, 0, 0] }
@@ -258,7 +260,7 @@ export class JumpDialogComponent implements OnInit {
   insert() {
     let isValid = true;
 
-    for (let formControl of Object.values(this.requiredFormControls)) {
+    for (const formControl of Object.values(this.requiredFormControls)) {
       if (formControl.invalid) {
         formControl.markAsTouched();
         isValid = false;
@@ -266,7 +268,7 @@ export class JumpDialogComponent implements OnInit {
     }
 
     if (this.advancedMode) {
-      for (let formControl of Object.values(this.advancedFormControls)) {
+      for (const formControl of Object.values(this.advancedFormControls)) {
         if (formControl.invalid) {
           formControl.markAsTouched();
           isValid = false;
@@ -298,7 +300,7 @@ ${this.acceleration ? this.acceleration : -1})`;
    */
   getErrors(formControl: FormControl) {
     if (formControl.errors) {
-      for (let errorKey of Object.keys(this.errorMessages)) {
+      for (const errorKey of Object.keys(this.errorMessages)) {
         if (
           formControl.hasError(errorKey[0].toLowerCase() + errorKey.slice(1))
         ) {
@@ -315,7 +317,7 @@ ${this.acceleration ? this.acceleration : -1})`;
   isAdancedModeDisable(): boolean {
     let disable = false;
 
-    for (let formControl of Object.values(this.requiredFormControls)) {
+    for (const formControl of Object.values(this.requiredFormControls)) {
       if (formControl.invalid) {
         disable = true;
       }
@@ -336,7 +338,7 @@ ${this.acceleration ? this.acceleration : -1})`;
    */
   onAdvancedModeChanged() {
     if (!this.advancedMode) {
-      for (let formControl of Object.values(this.advancedFormControls)) {
+      for (const formControl of Object.values(this.advancedFormControls)) {
         formControl.setValue(null);
         formControl.markAsUntouched();
       }
@@ -375,7 +377,7 @@ ${this.acceleration ? this.acceleration : -1})`;
               0,
               this.accelerationMax,
               JumpParameterErrorKey.InValidAcceleration,
-              (value: Number, min: Number, max: Number): boolean => {
+              (value: number, min: number, max: number): boolean => {
                 return value > min && value < max ? true : false;
               }
             ),
@@ -403,7 +405,7 @@ ${this.acceleration ? this.acceleration : -1})`;
             0,
             this.speedMax,
             JumpParameterErrorKey.InValidSpeed,
-            (value: Number, min: Number, max: Number): boolean => {
+            (value: number, min: number, max: number): boolean => {
               return value > min && value < max ? true : false;
             }
           ),
@@ -437,7 +439,7 @@ ${this.acceleration ? this.acceleration : -1})`;
             this.limitZMin,
             this.limitZMax,
             JumpParameterErrorKey.InValidLimitZ,
-            (value: Number, min: Number, max: Number): boolean => {
+            (value: number, min: number, max: number): boolean => {
               return value >= min && value <= max ? true : false;
             }
           ),
@@ -455,10 +457,10 @@ ${this.acceleration ? this.acceleration : -1})`;
    * @returns ValidatorFn instance.
    */
   private createValidator(
-    min: Number,
-    max: Number,
+    min: number,
+    max: number,
     errorKey: JumpParameterErrorKey,
-    validateFunction: (value: Number, min: Number, max: Number) => boolean
+    validateFunction: (value: number, min: number, max: number) => boolean
   ): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') {

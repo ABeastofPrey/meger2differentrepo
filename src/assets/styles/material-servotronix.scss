@@ -27,6 +27,8 @@ $material-servotronix-primary: mat-palette($mat-servotronix, 500, 100, 800);
 
 $material-semi-black: rgba(0,0,0,0.54);
 
+$gradient-stx-end: rgb(8,129,107);
+
 $servotronix-theme: mat-light-theme($material-servotronix-primary, $material-servotronix-accent, $material-servotronix-warn);
 
 $material-black: rgb(0.51,0.51,0.51);
@@ -107,5 +109,9 @@ $material-semi-black: rgba(0,0,0,0.54);
 
   .command-card .mat-card-header {
     background-color: mat-color($material-servotronix-primary, 500)
+  }
+
+  .cs-gradient {
+    background: linear-gradient(180deg, rgba(237,238,238,1) 0%, $gradient-stx-end 100%);
   }
 }

@@ -1,4 +1,4 @@
-<div class="main mat-typography">
+<form class="main mat-typography" (ngSubmit)="insert()" [formGroup]="dialogForm">
 	<div class="wrapper">
 		<div class="title">{{ 'projectCommands.sleep.title' | translate }}</div>
 		<div class="content">
@@ -6,10 +6,10 @@
 				<input
 					matInput
 					placeholder="{{ 'projectCommands.sleep.time' | translate }}"
-					[(ngModel)]="time"
+					formControlName="time"
 					type="number"
 					virtualKeyboard
-					ktype="numeric"
+					ktype="numeric_int_pos"
 				/>
 				<span matSuffix>ms.</span>
 			</mat-form-field>
@@ -19,8 +19,8 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="insert()" [disabled]="time < 1">
+		<button mat-button color="primary" type="submit" [disabled]="dialogForm.invalid">
 			{{ 'button.insert' | translate }}
 		</button>
 	</div>
-</div>
+</form>

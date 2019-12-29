@@ -1,6 +1,6 @@
 export class Feature {
-  name: string = '';
-  code: string = '';
+  name = '';
+  code = '';
   hash: string;
 
   constructor() {}

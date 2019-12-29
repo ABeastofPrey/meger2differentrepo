@@ -14,14 +14,18 @@ import {
 })
 export class NewAppDialogComponent implements OnInit {
   name: string;
-  submitting: boolean = false;
+  submitting = false;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<NewAppDialogComponent, void>,
     private ws: WebsocketService,
     private prj: ProjectManagerService,
     private dataService: DataService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: {
+      newBackgroundTask: boolean,
+      title: string,
+      placeholder: string
+    }
   ) {}
 
   create() {
@@ -29,7 +33,10 @@ export class NewAppDialogComponent implements OnInit {
     const name = this.name.toUpperCase();
     const proj = this.prj.currProject.value;
     this.submitting = true;
-    const cmd = (!this.data.newBackgroundTask) ? `?prj_add_app("${proj.name}","${name}")` : `BKG_addBgTask("${proj.name}", "${name}")`;
+    const cmd = 
+        (!this.data.newBackgroundTask) ? 
+          `?prj_add_app("${proj.name}","${name}")` :
+          `BKG_addBgTask("${proj.name}", "${name}")`;
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if ((!this.data.newBackgroundTask) && (ret.result !== '0' || ret.err)) {
           this.submitting = false;

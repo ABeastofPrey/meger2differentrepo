@@ -1,3 +1,4 @@
+import { TPVariable } from './../../../core/models/tp/tp-variable.model';
 import { Component, OnInit, Inject } from '@angular/core';
 import {
   MatDialogRef,
@@ -17,26 +18,29 @@ import { ToolCalibrationResultDialogComponent } from '../tool-calibration-result
 })
 export class ToolCalibrationDialogComponent implements OnInit {
   varName: string;
-  pointsAdded: number = 0;
-  maxPoints: number = 4;
-  isScara: boolean = false;
+  pointsAdded = 0;
+  maxPoints = 4;
+  isScara = false;
 
-  private _singlePointStepTwo: boolean = false;
+  private _singlePointStepTwo = false;
   get singlePointStepTwo() {
     return this._singlePointStepTwo;
   }
 
   constructor(
     private dialog: MatDialog,
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<ToolCalibrationDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      variable: TPVariable
+    },
     private ws: WebsocketService,
     public dataService: DataService,
     private snack: MatSnackBar
   ) {
     this.varName = this.data.variable.name;
-    if (this.data.variable.isArr)
+    if (this.data.variable.isArr) {
       this.varName += '[' + this.data.variable.selectedIndex + ']';
+    }
     this.calibType = 'MULTIPLE_POINTS';
   }
 
@@ -58,7 +62,7 @@ export class ToolCalibrationDialogComponent implements OnInit {
     return this._calibType;
   }
   set calibType(newType: string) {
-    let oldType = this._calibType;
+    const oldType = this._calibType;
     this._calibType = newType;
     this.ws
       .query('?TP_TOOL_CALIBRATION_TYPE("' + newType + '")')
@@ -93,14 +97,14 @@ export class ToolCalibrationDialogComponent implements OnInit {
   }
 
   calibrate(multi: boolean) {
-    let cmd = '?TP_TOOL_CALIBRATION("' + this.varName + '")';
+    const cmd = '?TP_TOOL_CALIBRATION("' + this.varName + '")';
 
-    let dialog: ComponentType<any> = ToolCalibrationResultDialogComponent;
+    const dialog = ToolCalibrationResultDialogComponent;
 
     if (multi || this._singlePointStepTwo) {
-      this.ws.query(cmd).then((successRes: MCQueryResponse) => {
+      this.ws.query(cmd).then(successRes => {
         if (successRes.result === '0') {
-          let ref = this.dialog.open(dialog, {
+          const ref = this.dialog.open(dialog, {
             width: '500px',
             minHeight: '500px',
             data: {

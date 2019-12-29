@@ -33,22 +33,22 @@ export class McFileTreeComponent implements OnInit {
   nestedDataSource: MatTreeNestedDataSource<TreeNode>;
   unfilteredDataSource: TreeNode[];
   lastSelectedNode: TreeNode = null;
-  filterByString: string = '';
+  filterByString = '';
   env = environment;
-  isRefreshing: boolean = false;
-  enableSelect: boolean = false;
+  isRefreshing = false;
+  enableSelect = false;
 
   /*
    * CONTEXT MENU
    */
-  menuVisible: boolean = false;
-  menuLeft: string = '0';
-  menuTop: string = '0';
-  private menuHeight: number = 0;
+  menuVisible = false;
+  menuLeft = '0';
+  menuTop = '0';
+  private menuHeight = 0;
 
   private notifier: Subject<boolean> = new Subject();
-  private lastSearchTimeout: any = null;
-  private words: any;
+  private lastSearchTimeout: number = null;
+  private words: {};
 
   constructor(
     private api: ApiService,
@@ -60,6 +60,10 @@ export class McFileTreeComponent implements OnInit {
     private snack: MatSnackBar,
     private login: LoginService
   ) {
+    
+  }
+
+  ngOnInit() {
     this.trn
       .get([
         'copy',
@@ -98,13 +102,10 @@ export class McFileTreeComponent implements OnInit {
             this.isRefreshing = false;
           }
           setTimeout(() => {
-            (<HTMLElement>document.activeElement).blur();
+            (document.activeElement as HTMLElement).blur();
           }, 0);
         }
       });
-  }
-
-  ngOnInit() {
     this.prj.fileRefreshNeeded.pipe(takeUntil(this.notifier)).subscribe(() => {
       this.refreshFiles();
     });
@@ -120,8 +121,8 @@ export class McFileTreeComponent implements OnInit {
     event.preventDefault();
     event.stopImmediatePropagation();
     this.lastSelectedNode = node;
-    let x = event.pageX + 5;
-    let y = event.pageY + 5;
+    const x = event.pageX + 5;
+    const y = event.pageY + 5;
     if (this.menuHeight > 0) {
       this.updateMenuPosition(x, y);
     } else {
@@ -146,13 +147,17 @@ export class McFileTreeComponent implements OnInit {
     this.menuVisible = false;
   }
 
-  onSearchChange() {
+  onSearchChange(force?: boolean) {
     clearTimeout(this.lastSearchTimeout);
     const curr = this.filterByString;
-    this.lastSearchTimeout = setTimeout(() => {
-      if (curr === this.filterByString)
+    if (force) {
+      return this.filterData();
+    }
+    this.lastSearchTimeout = window.setTimeout(() => {
+      if (curr === this.filterByString) {
         // not changed for 500 ms
         this.filterData();
+      }
     }, 1500);
   }
 
@@ -166,7 +171,7 @@ export class McFileTreeComponent implements OnInit {
       .toPromise()
       .then((ret: JsonNode) => {
         const parent = new TreeNode(ret, null);
-        let data = [];
+        const data = [];
         if (this.login.isAdmin) {
           data.push(new TreeNode(null, null));
         }
@@ -202,8 +207,9 @@ export class McFileTreeComponent implements OnInit {
 
   toggleNode(node: TreeNode) {
     this.nestedTreeControl.toggle(node);
-    if (!this.nestedTreeControl.isExpanded(node))
+    if (!this.nestedTreeControl.isExpanded(node)) {
       this.nestedTreeControl.collapseDescendants(node);
+    }
   }
 
   /* ANGULAR MATERIAL DEMO FUNCTIONS FOR CHECKBOX SELECTION */
@@ -212,8 +218,9 @@ export class McFileTreeComponent implements OnInit {
     if (!node) {
       return false;
     }
-    if (!node.isFolder || node.children.length === 0)
+    if (!node.isFolder || node.children.length === 0) {
       return this.prj.checklistSelection.isSelected(node);
+    }
     const descendants = this.nestedTreeControl.getDescendants(node);
     const descAllSelected = descendants.every(child =>
       this.prj.checklistSelection.isSelected(child)
@@ -336,8 +343,9 @@ export class McFileTreeComponent implements OnInit {
           const f = new File([new Blob([''])], ret);
           let path = '';
           if (node.isFolder && node.name !== 'SSMC') path = node.decodedPath;
-          else if (node.parent && node.parent.name !== 'SSMC')
+          else if (node.parent && node.parent.name !== 'SSMC') {
             path = node.parent.decodedPath;
+ }
           this.api.uploadToPath(f, false, path).then((result: UploadResult) => {
             if (result.success) {
               this.snack.open(this.words['success'], this.words['dismiss'], {
@@ -410,8 +418,9 @@ export class McFileTreeComponent implements OnInit {
         if (name) {
           let path = '';
           if (node.isFolder && node.name !== 'SSMC') path = node.decodedPath;
-          else if (node.parent && node.parent.name !== 'SSMC')
+          else if (node.parent && node.parent.name !== 'SSMC') {
             path = node.parent.decodedPath;
+ }
           this.api.createFolder(path + name).then(result => {
             if (result) {
               this.snack.open(this.words['success'], this.words['dismiss'], {
@@ -435,7 +444,7 @@ export class McFileTreeComponent implements OnInit {
     if (node.isFolder) path = node.path;
     else if (node.parent) path = node.parent.path;
     let files = '';
-    for (let n of selected) files += n.path + ',';
+    for (const n of selected) files += n.path + ',';
     files = files.slice(0, -1); // remove last comma
     this.api.moveFiles(files, path).then(result => {
       if (result) {
@@ -494,10 +503,10 @@ export class McFileTreeComponent implements OnInit {
       });
   }
 
-  private deleteRecursive(n: TreeNode): Promise<any> {
-    let arr: Promise<any>[] = [];
+  private deleteRecursive(n: TreeNode) {
+    let arr = [];
     if (n.isFolder) {
-      for (let c of n.children) {
+      for (const c of n.children) {
         arr = arr.concat(this.deleteRecursive(c));
       }
     }
@@ -510,7 +519,7 @@ export class McFileTreeComponent implements OnInit {
    * Deletes a file or folder
    */
   delete(n: TreeNode) {
-    let ref = this.dialog.open(YesNoDialogComponent, {
+    const ref = this.dialog.open(YesNoDialogComponent, {
       data: {
         title: this.words['are_you_sure'],
         msg: this.words['files.confirm_delete'],
@@ -572,10 +581,10 @@ export class TreeNode {
       // a folder
       this.name = node.path;
       this.isFolder = true;
-      for (let c of node.children) {
+      for (const c of node.children) {
         this.children.push(new TreeNode(c, this));
       }
-      for (let f of node.files) {
+      for (const f of node.files) {
         this.children.push(new TreeNode(f, this));
       }
     }

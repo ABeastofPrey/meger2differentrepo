@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { ApiService } from './api.service';
-import { ApplicationRef } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -14,14 +13,13 @@ export class GroupManagerService {
   sysInfoLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   groupsLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  private groupInterval: any;
+  private groupInterval = NaN;
   private lastGrouplist: string = null;
 
   constructor(
     private ws: WebsocketService,
     private api: ApiService,
-    private zone: NgZone,
-    private ref: ApplicationRef
+    private zone: NgZone
   ) {
     this.ws.isConnected.subscribe(stat => {
       if (stat) {
@@ -29,7 +27,7 @@ export class GroupManagerService {
           ret.ver = ret.ver.substring(0, ret.ver.indexOf(','));
           this.sysInfo = ret;
           this.zone.runOutsideAngular(() => {
-            this.groupInterval = setInterval(() => {
+            this.groupInterval = window.setInterval(() => {
               this.refreshGroupsAndInfo();
             }, 2000);
           });
@@ -50,7 +48,7 @@ export class GroupManagerService {
       clearInterval(this.groupInterval);
     } else {
       this.zone.runOutsideAngular(() => {
-        this.groupInterval = setInterval(() => {
+        this.groupInterval = window.setInterval(() => {
           this.refreshGroupsAndInfo();
         }, 2000);
       });
@@ -72,37 +70,37 @@ export class GroupManagerService {
 
   getGroup(name: string) {
     if (!name) return null;
-    for (let g of this.groups) {
+    for (const g of this.groups) {
       if (g.name.toLowerCase() === name.toLowerCase()) return g;
     }
     return null;
   }
 
   private refreshGroupsAndInfo() {
-    let promises = [this.ws.query('?grouplist')];
-    Promise.all(promises).then((ret: any[]) => {
-      let grouplist: MCQueryResponse = ret[0];
+    const promises = [this.ws.query('?grouplist')];
+    Promise.all(promises).then(ret => {
+      const grouplist: MCQueryResponse = ret[0];
       if (grouplist.result === this.lastGrouplist) return;
-      this.refreshSysInfo();
-      this.lastGrouplist = grouplist.result;
-      let elements: Group[] = [];
-      if (grouplist.result.indexOf('No groups') === 0) {
-        this.groups = [];
-        this.ref.tick();
+      this.zone.run(()=>{
+        this.refreshSysInfo();
+        this.lastGrouplist = grouplist.result;
+        const elements: Group[] = [];
+        if (grouplist.result.indexOf('No groups') === 0) {
+          this.groups = [];
+          this.groupsLoaded.next(true);
+          return;
+        }
+        const groups = grouplist.result.split('\n');
+        for (const g of groups) {
+          const parts = g.split(':');
+          elements.push({
+            name: parts[0].trim(),
+            axes: parts[1].trim().split(','),
+          });
+        }
+        this.groups = elements;
         this.groupsLoaded.next(true);
-        return;
-      }
-      let groups = grouplist.result.split('\n');
-      for (let g of groups) {
-        let parts = g.split(':');
-        elements.push({
-          name: parts[0].trim(),
-          axes: parts[1].trim().split(','),
-        });
-      }
-      this.groups = elements;
-      this.groupsLoaded.next(true);
-      this.ref.tick();
+      });
     });
   }
 }

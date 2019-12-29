@@ -15,6 +15,13 @@ mat-expansion-panel {
   display: flex;
   align-items: center;
   margin-right: 24px;
+  font-size: 24px;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  justify-content: center;
+  font-weight: bold;
 }
 .error-short {
   flex: 1;
@@ -44,8 +51,8 @@ mat-expansion-panel {
   padding: 0 72px 16px !important;
 }
 .error-panel .mat-badge-content {
-  right: -22px!important;
-  top: auto!important;
+  left: 22px;
+  bottom: 0;
 }
 .link {
   color: blue;
@@ -55,13 +62,25 @@ mat-expansion-panel {
 }
 
 .severity-error {
-  color: #b71c1c;
+  background-color: #b71c1c;
 }
 .severity-note {
-  color: #9e9d24;
+  background-color: #9e9d24;
 }
 .severity-info {
-  color: #039be5;
+  background-color: #039be5;
+}
+.severity-fault {
+  border-radius: 0;
+  height: 0;
+  border-left: 18px solid transparent;
+  width: 0;
+  border-right: 18px solid transparent;
+  border-bottom: 36px solid #b71c1c;
+  background-color: transparent;
+}
+.severity-fault .letter {
+  transform: translateY(23px);
 }
 
 .buttons {
@@ -69,4 +88,9 @@ mat-expansion-panel {
 }
 .buttons button {
   margin-right: 8px;
+}
+.times {
+  list-style-type: circle;
+  font-size: 12px;
+  margin-left: 24px;
 }

@@ -23,13 +23,14 @@ export class PalletIndexDialogComponent implements OnInit {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<PalletIndexDialogComponent>,
     public dataService: DataService,
     private prg: ProgramEditorService
   ) {
     if (this.prg.lastPallet) this._pallet = this.prg.lastPallet;
-    else if (this.dataService.pallets.length === 1)
+    else if (this.dataService.pallets.length === 1) {
       this.pallet = this.dataService.pallets[0];
+    }
   }
 
   ngOnInit() {}
@@ -41,6 +42,8 @@ export class PalletIndexDialogComponent implements OnInit {
   insert() {
     let cmd: string = null;
     switch (this.option) {
+      default:
+        break;
       case 'custom':
         cmd =
           'PLT_SET_INDEX_STATUS("' +

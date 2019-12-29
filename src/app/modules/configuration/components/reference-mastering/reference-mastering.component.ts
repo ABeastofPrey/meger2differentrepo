@@ -35,6 +35,7 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 const { Nothing } = Maybe;
 
+// tslint:disable-next-line: interface-name
 interface IAxis {
   index: number;
   position: number;
@@ -47,20 +48,20 @@ interface IAxis {
   styleUrls: ['./reference-mastering.component.scss'],
 })
 export class ReferenceMasteringComponent implements OnInit, OnDestroy {
-  public isBasicMode: boolean = true;
-  public tableColumns: string[] = ['a', 'b', 'c'];
-  public tableData: IAxis[] = [];
-  public referencePoints: string[] = [];
-  public firstFormGroup: FormGroup;
-  public zeroAxis: string = null;
-  public selectedPoint: string;
-  public isMoveingComplete: boolean = true;
-  public moveCommand: string;
+  isBasicMode = true;
+  tableColumns: string[] = ['a', 'b', 'c'];
+  tableData: IAxis[] = [];
+  referencePoints: string[] = [];
+  firstFormGroup: FormGroup;
+  zeroAxis: string = null;
+  selectedPoint: string;
+  isMoveingComplete = true;
+  moveCommand: string;
   @ViewChild('stepper', { static: false }) stepper: MatHorizontalStepper;
 
   private notifier: Subject<boolean> = new Subject();
 
-  public hotJoint(index: number): boolean {
+  hotJoint(index: number): boolean {
     if (!this.zeroAxis) {
       return false;
     }
@@ -99,17 +100,17 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     }
   }
 
-  public canNotUse(): boolean {
+  canNotUse(): boolean {
     const isNotT1Mode = this.stat.mode !== 'T1';
     const _canNotUse = isNotT1Mode ? true : false;
     return _canNotUse;
   }
 
-  public isInvalidForm(formGroup: FormGroup): boolean {
+  isInvalidForm(formGroup: FormGroup): boolean {
     return formGroup.status === 'INVALID' ? true : false;
   }
 
-  public masterZero(): void {
+  masterZero(): void {
     const callApi = bind(this.service.masterZero, this.service);
     const promptError = () => {
       this.trn.get('robots.mastering.masterZeroWarm').subscribe(word => {
@@ -126,7 +127,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     _masterZero(this.zeroAxis);
   }
 
-  public masterFinal(): void {
+  masterFinal(): void {
     const callApi = bind(this.service.masterFinal, this.service);
     const promptError = () => {
       this.trn
@@ -143,7 +144,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     _masterZero(this.zeroAxis);
   }
 
-  public recordPoint(): void {
+  recordPoint(): void {
     const callApi = bind(this.service.recordPoint, this.service);
     const promptError = () => {
       this.trn.get('robots.mastering.recordPointWarm').subscribe(word => {
@@ -159,7 +160,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     _recordPoint();
   }
 
-  public masterLeftRight(): void {
+  masterLeftRight(): void {
     const callApi = bind(this.service.masterLeftRight, this.service);
     const promptError = () => {
       this.trn.get('robots.mastering.masterLeftRightWarm').subscribe(word => {
@@ -175,7 +176,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     _masterLeftRight();
   }
 
-  public moveToRef(isBasicMode = true): void {
+  moveToRef(isBasicMode = true): void {
     this.isMoveingComplete = false;
     const moveToRef = this.service.moveToRef.bind(this.service, isBasicMode);
     const isMoveing = bind(this.service.isMoveing, this.service);
@@ -211,7 +212,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     _moveToRef();
   }
 
-  public changeMode(isChanged = false): void {
+  changeMode(isChanged = false): void {
     this.service.initRobot();
     if (isChanged) {
       this.isBasicMode = !this.isBasicMode;
@@ -225,7 +226,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     }
   }
 
-  public async cancel(): Promise<void> {
+  async cancel(): Promise<void> {
     this.trn
       .get([
         'robots.mastering.cancelTitle',
@@ -270,7 +271,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
       });
   }
 
-  public async stepBackAndReset(): Promise<void> {
+  async stepBackAndReset(): Promise<void> {
     const res = await this.resetOriginal();
     if (res) {
       this.stepper.previous();
@@ -283,7 +284,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     }
   }
 
-  public finish(): void {
+  finish(): void {
     const preSelectedPoint = this.selectedPoint;
     const preMode = this.isBasicMode;
     const preAxis = this.zeroAxis;
@@ -297,7 +298,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  public selectionChange(event: MatSelectChange): void {
+  selectionChange(event: MatSelectChange): void {
     const callApi = bind(this.service.setReferencePoint, this.service);
     const logError = err =>
       console.warn('Retrieve reference points failed: ' + err);
@@ -341,8 +342,8 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     const assembleRow = ([position, offset], index) =>
       Object({
         index: ++index,
-        position: position,
-        offset: offset,
+        position,
+        offset,
       });
     const bindToTable = axisInfo => (this.tableData = axisInfo);
     const detectChanges = () => this.cd.detectChanges();

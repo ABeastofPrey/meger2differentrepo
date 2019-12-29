@@ -1,26 +1,24 @@
-<div class="mat-typography">
+<form class="mat-typography" [formGroup]="control" (ngSubmit)="emitCmd()">
 	<h1 class="title">{{ 'projectCommands.goHome.title' | translate }}</h1>
 	<div mat-dialog-content>
 		<mat-form-field>
 			<input
 				matInput
 				placeholder="{{ 'projectCommands.goHome.vCruisePh' | translate }}"
-				[(ngModel)]="velocity"
-				[formControl]="control"
-				[errorStateMatcher]="matcher"
+				formControlName="velocity"
 				virtualKeyboard
 				ktype="numeric"
 			/>
 			<span matSuffix>deg/s</span>
-			<mat-error> {{ errorMessage }} </mat-error>
+			<mat-error *ngIf="control.invalid"> {{ errorMessage }} </mat-error>
 		</mat-form-field>
 	</div>
 	<div mat-dialog-actions class="actions">
-		<button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>
+		<button mat-button color="primary" mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" [disabled]="cannotInsert" (click)="emitCmd()">
+		<button mat-button color="primary" [disabled]="cannotInsert" type="submit">
 			{{ 'button.insert' | translate }}
 		</button>
 	</div>
-</div>
+</form>

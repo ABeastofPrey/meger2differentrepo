@@ -45,7 +45,7 @@ const getLevel = (node: FileFlatNode) => node.level;
 const isExpandable = (node: FileFlatNode) => node.expandable;
 const getChildren = (node: DeviceNode): Observable<DeviceNode[]> => observableOf(node.children);
 const transformer = (node: DeviceNode, level: number) => {
-  let flatNode = new FileFlatNode();
+  const flatNode = new FileFlatNode();
   flatNode.name = node.name;
   flatNode.type = node.type;
   flatNode.level = level;
@@ -65,13 +65,13 @@ const treeFlattener = new MatTreeFlattener(
   styleUrls: ['./topology.component.scss'],
 })
 export class TopologyComponent implements OnInit, OnDestroy {
-  private interval: any;
+  private interval: number;
   private oldNodes: DeviceNode[] = [];
-  public systemBusType: number;
-  public treeControl: FlatTreeControl<FileFlatNode>;
-  public dataSource: MatTreeFlatDataSource<DeviceNode, FileFlatNode>;
-  public hasErr: boolean = false;
-  public hasChild = (_: number, nodeData: FileFlatNode) => nodeData.expandable;
+  systemBusType: number;
+  treeControl: FlatTreeControl<FileFlatNode>;
+  dataSource: MatTreeFlatDataSource<DeviceNode, FileFlatNode>;
+  hasErr = false;
+  hasChild = (_: number, nodeData: FileFlatNode) => nodeData.expandable;
 
   constructor(private service: TopologyService) {
     this.treeControl = new FlatTreeControl<FileFlatNode>(getLevel, isExpandable);
@@ -94,7 +94,7 @@ export class TopologyComponent implements OnInit, OnDestroy {
       this.treeControl.expandAll();
     }, 100);
     this.hasErr = isErrState ? true : false; // set status
-    this.interval = setInterval(async () => {
+    this.interval = window.setInterval(async () => {
       isErrState = await this.checkStateWithOpMode();
       unless(equals(false), this.retrieveAndAssemble.bind(this))(isErrState);
       this.hasErr = isErrState ? true : false;
@@ -141,7 +141,7 @@ export class TopologyComponent implements OnInit, OnDestroy {
     doIt();
   }
 
-  private async retriveSystemBusType(): Promise<any> {
+  private async retriveSystemBusType() {
     const getBusType = bind(this.service.getBusType, this.service);
     const logErr = err => console.warn(`Get systembustype failed: ${err}`);
     const setBus = busType => this.systemBusType = busType

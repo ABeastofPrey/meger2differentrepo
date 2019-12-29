@@ -13,7 +13,7 @@
 			<mat-icon>delete</mat-icon>
 		</button>
 	</div>
-  <table class="full" style="text-align: left;" *ngIf="pallet">
+  <table class="full" *ngIf="pallet">
     <thead>
 			<tr>
 				<td>{{ 'simulator_screen.prop' | translate }}</td>
@@ -35,9 +35,9 @@
         {{ 'pallets.wizard.dimensions_pallet' | translate }}:
       </td>
       <td>
-        {{pallet.pallet_size_x}},
-        {{pallet.pallet_size_y}},
-        {{pallet.pallet_size_z}}
+        {{pallet.palletSizeX}},
+        {{pallet.palletSizeY}},
+        {{pallet.palletSizeZ}}
       </td>
     </tr>
     <tr *ngIf="lastSelectedNode.color">
@@ -66,7 +66,6 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.positionMM.x"
-					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_x')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
@@ -79,7 +78,6 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.positionMM.y"
-					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_y')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
@@ -92,7 +90,6 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.positionMM.z"
-					(ngModelChange)="sim.onObjectParamChanged($event, 'pos_z')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
@@ -105,7 +102,6 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.eulerXYZDeg.x"
-					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_x')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
@@ -118,7 +114,6 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.eulerXYZDeg.y"
-					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_y')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
@@ -131,7 +126,6 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.eulerXYZDeg.z"
-					(ngModelChange)="sim.onObjectParamChanged($event, 'rot_z')"
 					virtualKeyboard
 					ktype="numeric"
 				/>
@@ -144,9 +138,8 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.scale.x"
-					(ngModelChange)="sim.onObjectParamChanged($event, lastSelectedNode, 'scale_x')"
 					virtualKeyboard
-					ktype="numeric"
+					ktype="numeric_pos"
 				/>
 			</td>
 			<td></td>
@@ -157,9 +150,8 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.scale.y"
-					(ngModelChange)="sim.onObjectParamChanged($event, lastSelectedNode, 'scale_y')"
 					virtualKeyboard
-					ktype="numeric"
+					ktype="numeric_pos"
 				/>
 			</td>
 			<td></td>
@@ -170,9 +162,8 @@
 				<input
 					type="number"
 					[(ngModel)]="lastSelectedNode.scale.z"
-					(ngModelChange)="sim.onObjectParamChanged($event, lastSelectedNode, 'scale_z')"
 					virtualKeyboard
-					ktype="numeric"
+					ktype="numeric_pos"
 				/>
 			</td>
 			<td></td>

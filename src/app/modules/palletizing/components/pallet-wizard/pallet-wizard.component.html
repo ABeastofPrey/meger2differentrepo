@@ -48,12 +48,12 @@
 										matInput
 										min="1"
 										placeholder="nX"
-										[(ngModel)]="dataService.selectedPallet.items_x"
+										[(ngModel)]="dataService.selectedPallet.itemsX"
 										formControlName="itemsX"
 										required
 										(ngModelChange)="onWindowResize()"
 										virtualKeyboard
-										ktype="numeric"
+										ktype="numeric_int_pos"
 									/>
 								</mat-form-field>
 								<mat-form-field class="input-small">
@@ -61,12 +61,12 @@
 										matInput
 										placeholder="nY"
 										min="1"
-										[(ngModel)]="dataService.selectedPallet.items_y"
+										[(ngModel)]="dataService.selectedPallet.itemsY"
 										formControlName="itemsY"
 										required
 										(ngModelChange)="onWindowResize()"
 										virtualKeyboard
-										ktype="numeric"
+										ktype="numeric_int_pos"
 									/>
 								</mat-form-field>
 								<mat-form-field class="input-small">
@@ -74,12 +74,12 @@
 										matInput
 										placeholder="nZ"
 										min="1"
-										[(ngModel)]="dataService.selectedPallet.items_z"
+										[(ngModel)]="dataService.selectedPallet.itemsZ"
 										formControlName="itemsZ"
 										required
 										(ngModelChange)="onWindowResize()"
 										virtualKeyboard
-										ktype="numeric"
+										ktype="numeric_int_pos"
 									/>
 								</mat-form-field>
 							</div>
@@ -92,36 +92,36 @@
 										<input
 											matInput
 											placeholder="X"
-											[(ngModel)]="dataService.selectedPallet.item_size_x"
+											[(ngModel)]="dataService.selectedPallet.itemSizeX"
 											formControlName="itemSizeX"
 											required
 											(ngModelChange)="onWindowResize()"
 											virtualKeyboard
-											ktype="numeric"
+											ktype="numeric_pos"
 										/>
 									</mat-form-field>
 									<mat-form-field class="input-small">
 										<input
 											matInput
 											placeholder="Y"
-											[(ngModel)]="dataService.selectedPallet.item_size_y"
+											[(ngModel)]="dataService.selectedPallet.itemSizeY"
 											formControlName="itemSizeY"
 											required
 											(ngModelChange)="onWindowResize()"
 											virtualKeyboard
-											ktype="numeric"
+											ktype="numeric_pos"
 										/>
 									</mat-form-field>
 									<mat-form-field class="input-small">
 										<input
 											matInput
 											placeholder="Z"
-											[(ngModel)]="dataService.selectedPallet.item_size_z"
+											[(ngModel)]="dataService.selectedPallet.itemSizeZ"
 											formControlName="itemSizeZ"
 											required
 											(ngModelChange)="onWindowResize()"
 											virtualKeyboard
-											ktype="numeric"
+											ktype="numeric_pos"
 										/>
 									</mat-form-field>
 								</div>
@@ -133,36 +133,36 @@
 										<input
 											matInput
 											placeholder="X"
-											[(ngModel)]="dataService.selectedPallet.pallet_size_x"
+											[(ngModel)]="dataService.selectedPallet.palletSizeX"
 											formControlName="palletSizeX"
 											required
 											(ngModelChange)="onWindowResize()"
 											virtualKeyboard
-											ktype="numeric"
+											ktype="numeric_pos"
 										/>
 									</mat-form-field>
 									<mat-form-field class="input-small">
 										<input
 											matInput
 											placeholder="Y"
-											[(ngModel)]="dataService.selectedPallet.pallet_size_y"
+											[(ngModel)]="dataService.selectedPallet.palletSizeY"
 											formControlName="palletSizeY"
 											required
 											(ngModelChange)="onWindowResize()"
 											virtualKeyboard
-											ktype="numeric"
+											ktype="numeric_pos"
 										/>
 									</mat-form-field>
 									<mat-form-field class="input-small">
 										<input
 											matInput
 											placeholder="Z"
-											[(ngModel)]="dataService.selectedPallet.pallet_size_z"
+											[(ngModel)]="dataService.selectedPallet.palletSizeZ"
 											formControlName="palletSizeZ"
 											required
 											(ngModelChange)="onWindowResize()"
 											virtualKeyboard
-											ktype="numeric"
+											ktype="numeric_pos"
 										/>
 									</mat-form-field>
 								</div>
@@ -179,7 +179,7 @@
 										formControlName="levels"
 										required
 										virtualKeyboard
-										ktype="numeric"
+										ktype="numeric_int_pos"
 									/>
 								</mat-form-field>
 								<mat-checkbox
@@ -198,9 +198,9 @@
 							<mat-radio-group formControlName="index">
 								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'"
 									>{{ 'pallets.wizard.index_full' | translate }} ({{
-										dataService.selectedPallet.items_x *
-											dataService.selectedPallet.items_y *
-											dataService.selectedPallet.items_z
+										dataService.selectedPallet.itemsX *
+											dataService.selectedPallet.itemsY *
+											dataService.selectedPallet.itemsZ
 									}})</mat-radio-button
 								>
 								<mat-radio-button value="empty" style="margin: 0 16px;" color="primary"
@@ -216,7 +216,7 @@
 											[ngModelOptions]="{ standalone: true }"
 											(ngModelChange)="onIndexChange()"
 											virtualKeyboard
-											ktype="numeric"
+											ktype="numeric_int_pos"
 										/>
 									</mat-form-field>
 								</mat-radio-button>
@@ -269,7 +269,7 @@
 							(change)="onLevelChange(2, $event)"
 						></pallet-level-designer>
 					</div>
-					<input type="hidden" [value]="designer.items.length" formControlName="levelExists" />
+					<input type="hidden" [value]="designer2.items.length" formControlName="levelExists" />
 				</div>
 			</form>
 		</mat-step>
@@ -602,7 +602,7 @@
 								><input
 									matInput
 									placeholder="{{ 'pallets.wizard.offV' | translate }}"
-									[(ngModel)]="dataService.selectedPallet.approach_offset_vertical"
+									[(ngModel)]="dataService.selectedPallet.approachOffsetVertical"
 									formControlName="app_off_v"
 									virtualKeyboard
 									ktype="numeric"
@@ -611,7 +611,7 @@
 								><input
 									matInput
 									placeholder="{{ 'pallets.wizard.offH' | translate }}"
-									[(ngModel)]="dataService.selectedPallet.approach_offset_horizontal"
+									[(ngModel)]="dataService.selectedPallet.approachOffsetHorizontal"
 									formControlName="app_off_h"
 									virtualKeyboard
 									ktype="numeric"
@@ -626,7 +626,7 @@
 						>
 						<h3>{{ 'pallets.wizard.app_dir' | translate }}:</h3>
 						<div class="direction-picker">
-							<mat-radio-group [(ngModel)]="dataService.selectedPallet.approach_direction" formControlName="app_dir">
+							<mat-radio-group [(ngModel)]="dataService.selectedPallet.approachDirection" formControlName="app_dir">
 								<mat-radio-button value="-X+Y+Z" style="left: 0; top: 0;" color="primary"></mat-radio-button>
 								<mat-radio-button value="+Y+Z" style="left: 85px; top: 0;" color="primary"></mat-radio-button>
 								<mat-radio-button value="+X+Y+Z" style="left: 180px; top: 0;" color="primary"></mat-radio-button>
@@ -655,7 +655,7 @@
 								><input
 									matInput
 									placeholder="{{ 'pallets.wizard.offV' | translate }}"
-									[(ngModel)]="dataService.selectedPallet.retract_offset_vertical"
+									[(ngModel)]="dataService.selectedPallet.retractOffsetVertical"
 									formControlName="ret_off_v"
 									virtualKeyboard
 									ktype="numeric"
@@ -664,7 +664,7 @@
 								><input
 									matInput
 									placeholder="{{ 'pallets.wizard.offH' | translate }}"
-									[(ngModel)]="dataService.selectedPallet.retract_offset_horizontal"
+									[(ngModel)]="dataService.selectedPallet.retractOffsetHorizontal"
 									formControlName="ret_off_h"
 									virtualKeyboard
 									ktype="numeric"
@@ -679,7 +679,7 @@
 						>
 						<h3>{{ 'pallets.wizard.ret_dir' | translate }}:</h3>
 						<div class="direction-picker">
-							<mat-radio-group [(ngModel)]="dataService.selectedPallet.retract_direction" formControlName="ret_dir">
+							<mat-radio-group [(ngModel)]="dataService.selectedPallet.retractDirection" formControlName="ret_dir">
 								<mat-radio-button value="-X+Y+Z" style="left: 0; top: 0;" color="primary"></mat-radio-button>
 								<mat-radio-button value="+Y+Z" style="left: 85px; top: 0;" color="primary"></mat-radio-button>
 								<mat-radio-button value="+X+Y+Z" style="left: 180px; top: 0;" color="primary"></mat-radio-button>
@@ -717,17 +717,17 @@
 				<tr>
 					<td>{{ 'pallets.wizard.num_of_items' | translate }}:</td>
 					<td>
-						X:{{ dataService.selectedPallet.items_x }}&nbsp;&nbsp;Y:{{
-							dataService.selectedPallet.items_y
-						}}&nbsp;&nbsp;Z:{{ dataService.selectedPallet.items_z }}
+						X:{{ dataService.selectedPallet.itemsX }}&nbsp;&nbsp;Y:{{
+							dataService.selectedPallet.itemsY
+						}}&nbsp;&nbsp;Z:{{ dataService.selectedPallet.itemsZ }}
 					</td>
 				</tr>
 				<tr>
 					<td>{{ 'pallets.wizard.dimensions_item' | translate }}:</td>
 					<td>
-						X:{{ dataService.selectedPallet.item_size_x }}mm.&nbsp;&nbsp;Y:{{
-							dataService.selectedPallet.item_size_y
-						}}mm.&nbsp;&nbsp;Z:{{ dataService.selectedPallet.item_size_z }}mm.
+						X:{{ dataService.selectedPallet.itemSizeX }}mm.&nbsp;&nbsp;Y:{{
+							dataService.selectedPallet.itemSizeY
+						}}mm.&nbsp;&nbsp;Z:{{ dataService.selectedPallet.itemSizeZ }}mm.
 					</td>
 				</tr>
 				<tr>
@@ -758,15 +758,15 @@
 							dataService.selectedPallet.appEnabled
 								? ('pallets.wizard.offV' | translate) +
 								  ': ' +
-								  dataService.selectedPallet.approach_offset_vertical +
+								  dataService.selectedPallet.approachOffsetVertical +
 								  ', ' +
 								  ('pallets.wizard.offH' | translate) +
 								  ': ' +
-								  dataService.selectedPallet.approach_offset_horizontal +
+								  dataService.selectedPallet.approachOffsetHorizontal +
 								  ', ' +
 								  ('pallets.wizard.dir' | translate) +
 								  ': ' +
-								  dataService.selectedPallet.approach_direction
+								  dataService.selectedPallet.approachDirection
 								: ('disabled' | translate)
 						}}
 					</td>
@@ -778,15 +778,15 @@
 							dataService.selectedPallet.retEnabled
 								? ('pallets.wizard.offV' | translate) +
 								  ': ' +
-								  dataService.selectedPallet.retract_offset_vertical +
+								  dataService.selectedPallet.retractOffsetVertical +
 								  ', ' +
 								  ('pallets.wizard.offH' | translate) +
 								  ': ' +
-								  dataService.selectedPallet.retract_offset_horizontal +
+								  dataService.selectedPallet.retractOffsetHorizontal +
 								  ', ' +
 								  ('pallets.wizard.dir' | translate) +
 								  ': ' +
-								  dataService.selectedPallet.retract_direction
+								  dataService.selectedPallet.retractDirection
 								: ('disabled' | translate)
 						}}
 					</td>
@@ -795,7 +795,7 @@
 
 			<div style="display: flex; align-items: center;">
 				<button mat-raised-button color="primary" (click)="finish()" style="margin-right: 16px;">
-					{{ 'button.finish' | translate }}
+					{{ 'button.save' | translate }}
 				</button>
 				<div class="red" *ngIf="this.lastError">{{ this.lastError }}</div>
 			</div>

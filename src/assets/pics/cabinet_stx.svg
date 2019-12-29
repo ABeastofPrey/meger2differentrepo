@@ -1,0 +1,106 @@
+<svg width="1119" height="507.00000000000006" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <defs>
+  <filter height="200%" width="200%" y="-50%" x="-50%" id="svg_2_blur">
+   <feGaussianBlur stdDeviation="10"/>
+  </filter>
+  <linearGradient id="svg_28" x1="1" y1="0" x2="1" y2="1">
+   <stop stop-color="#6d6d6d" offset="0"/>
+   <stop stop-color="#929292" offset="1"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <title>background</title>
+  <rect x="-1" y="-1" width="1121" height="509" id="canvas_background" fill="none"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <path fill="#b2b2b2" stroke-width="0" d="m20.16629,35.12685c6.06061,-9.09091 878.78741,-6.06061 878.78741,-6.06061c0,0 119.6969,15.15151 119.6969,15.15151c0,0 -825.75713,13.63636 -826.74238,12.12123c0.98525,1.51513 -141.43891,-9.09093 -142.42417,-10.60606" id="svg_113" stroke="null"/>
+  <path stroke="null" filter="url(#svg_2_blur)" opacity="0.33" id="svg_2" d="m140.59428,423.92007c0,0 -112.50187,9.59269 -112.89848,7.99392c0.39661,1.59877 167.70708,47.96345 167.70708,47.96345c0,0 911.55357,-12.79026 911.55357,-12.79026c0,0 -197.59943,-46.36468 -197.59943,-46.36468c0,0 -768.76274,3.19757 -768.76274,3.19757z" stroke-width="0" fill="#2d2d2d"/>
+  <path fill="#c6c6c6" stroke="#000" stroke-width="0" d="m205.01468,54.82381c0,0 -183.33324,-25.75757 -183.33324,-25.75757c0,0 -3.0303,369.69677 7.57576,369.69677c10.60605,0 178.78778,48.48483 178.78778,48.48483c0,0 -3.0303,-392.42404 -3.0303,-392.42404l0,0.00001z" id="svg_112"/>
+  <rect fill="#e2e2e2" stroke-width="0" x="190.115303" y="35.445742" width="913.79638" height="410.764284" id="svg_6" rx="10" stroke="null"/>
+  <rect fill="#000000" stroke-width="0" x="623.486689" y="79.347592" width="206.896543" height="56.896549" id="svg_9" stroke="null"/>
+  <g id="svg_16">
+   <path fill="#b2b2b2" stroke="null" stroke-width="0" stroke-opacity="null" d="m895.43272,113.9761c0,0 44.44442,-3.70372 49.38269,0c4.93827,3.70369 27.16048,51.85182 27.16048,51.85182c0,0 -19.75308,38.27158 -20.98764,40.74071c-1.23457,2.46914 -23.45678,4.93827 -30.86418,4.93827c-7.40741,0 -25.92591,-6.17284 -28.39505,-4.93827c-2.46913,1.23457 -20.98764,-45.67898 -20.98764,-45.67898c0,0 24.69134,-46.91355 24.69134,-46.91355z" id="svg_11"/>
+   <ellipse fill="#dbdbdb" stroke-width="0" stroke-opacity="null" cx="921.935617" cy="160.192403" id="svg_12" rx="39.037013" ry="41.006148" stroke="null"/>
+   <ellipse fill="#303030" stroke-width="0" stroke-opacity="null" cx="921.935618" cy="160.444608" id="svg_14" rx="34.03701" ry="35.753931" stroke="null"/>
+   <ellipse fill="#e2e2e2" stroke-width="0" stroke-opacity="null" cx="921.435619" cy="160.171609" id="svg_15" rx="29.537007" ry="31.026935" stroke="null"/>
+  </g>
+  <g id="svg_21">
+   <path fill="#b2b2b2" stroke="null" stroke-width="0" stroke-opacity="null" d="m896.43272,269.97609c0,0 44.44442,-3.70371 49.38269,0c4.93827,3.70371 27.16048,51.85182 27.16048,51.85182c0,0 -19.75308,38.27158 -20.98764,40.74071c-1.23457,2.46914 -23.45678,4.93827 -30.86418,4.93827c-7.40741,0 -25.92591,-6.17284 -28.39505,-4.93827c-2.46913,1.23457 -20.98764,-45.67898 -20.98764,-45.67898c0,0 24.69134,-46.91355 24.69134,-46.91355z" id="svg_17"/>
+   <ellipse fill="#dbdbdb" stroke-width="0" stroke-opacity="null" cx="922.935617" cy="316.192403" id="svg_18" rx="39.037013" ry="41.006148" stroke="null"/>
+   <ellipse fill="#303030" stroke-width="0" stroke-opacity="null" cx="922.935618" cy="316.444608" id="svg_19" rx="34.03701" ry="35.753931" stroke="null"/>
+   <ellipse fill="#e2e2e2" stroke-width="0" stroke-opacity="null" cx="922.435619" cy="316.171609" id="svg_20" rx="29.537007" ry="31.026935" stroke="null"/>
+  </g>
+  <g id="svg_29">
+   <rect fill="#b2b2b2" stroke="null" stroke-width="0" x="979.734215" y="114.581635" width="87" height="114" id="svg_22"/>
+   <path fill="url(#svg_28)" stroke-width="0" d="m1066.70002,186.58164c0,0 -83.96511,0 -83.96511,0c0,0 -3.03489,-14 -3.03489,-14c0,0 84.97674,0 84.97674,0c0,0 2.02326,14 2.02326,14z" id="svg_23" stroke="null"/>
+  </g>
+  <g id="svg_37">
+   <rect fill="#e2e2e2" stroke="null" stroke-width="0" x="987.575233" y="267.429106" width="73" height="137" id="svg_30" rx="19"/>
+   <rect fill="#b7b7b7" stroke-width="0" x="998.575271" y="298.929106" width="50.999999" height="74" id="svg_31" stroke="null" rx="11"/>
+   <rect fill="#4c4c4c" stroke-width="0" stroke-opacity="null" x="1030.535936" y="311.429106" width="8" height="17.142858" id="svg_33" stroke="null"/>
+   <rect fill="#4c4c4c" stroke-width="0" stroke-opacity="null" x="1030.535925" y="343.861548" width="8" height="17.142858" id="svg_35" stroke="null"/>
+   <rect fill="#4c4c4c" stroke-width="0" stroke-opacity="null" x="1008.013406" y="325.843526" width="8" height="17.142858" id="svg_36" stroke="null"/>
+  </g>
+  <g id="svg_48" stroke="null" transform="rotate(-35.758663177490234 747.3555297851564,265.2291259765626) ">
+   <path fill="#5b5b5b" stroke-width="0" stroke-opacity="null" d="m734.74699,242.86047c0,0 21.61475,-1.72806 24.01638,0c2.40164,1.72806 13.20901,24.19278 13.20901,24.19278c0,0 -9.60655,17.85659 -10.20696,19.00863c-0.60041,1.15203 -11.40778,2.30407 -15.01024,2.30407c-3.60245,0 -12.6086,-2.88009 -13.80942,-2.30407c-1.20082,0.57602 -10.20696,-21.3127 -10.20696,-21.3127c0,0 12.00819,-21.88872 12.00819,-21.88872l0,0.00001z" id="svg_38" stroke="null"/>
+   <ellipse fill="#6b6b6b" stroke-width="0" stroke-opacity="null" cx="747.6362" cy="264.423867" id="svg_39" rx="18.98495" ry="19.132468" stroke="null"/>
+   <ellipse fill="#8c8c8c" stroke-width="0" stroke-opacity="null" cx="747.6362" cy="264.54154" id="svg_40" rx="16.553289" ry="16.681912" stroke="null"/>
+   <ellipse fill="#5b5b5b" stroke-width="0" cx="747.393035" cy="264.414165" id="svg_41" rx="14.364793" ry="14.476411" stroke="null"/>
+  </g>
+  <g id="svg_52" stroke="null" transform="rotate(4.411890983581543 489.75018310547034,381.5161743164061) ">
+   <path fill="#5b5b5b" stroke-width="0" d="m467.43002,371.23946c0,0 39.99617,-8.00014 42.70778,-2.00003c2.7116,6.0001 3.72845,18.00031 1.3558,22.00038c-2.37266,4.00007 -42.36882,6.00011 -44.06358,4.00007c-1.69475,-2.00003 0,-24.00042 0,-24.00042z" id="svg_50" stroke="null"/>
+   <path fill="#b2b2b2" stroke-width="0" d="m468.39708,372.86054c0,0 37.3522,-6.50853 39.88456,-1.62713c2.53235,4.88139 3.48198,14.64418 1.26617,17.89845c-2.21581,3.25426 -39.56801,4.88139 -41.15073,3.25426c-1.58272,-1.62714 0,-19.52558 0,-19.52558z" id="svg_51" stroke="null"/>
+  </g>
+  <g id="svg_55">
+   <path fill="#5b5b5b" stroke="null" stroke-width="0" d="m727.90361,367.23939c0,0 118.00207,-8.00014 126.00221,-2.00004c8.00014,6.00011 11.00019,18.00032 4.00007,22.00038c-7.00012,4.00007 -125.00219,6.0001 -130.00228,4.00007c-5.00009,-2.00004 0,-24.00042 0,-24.00042l0,0.00001z" id="svg_53"/>
+   <path fill="#b2b2b2" stroke-width="0" d="m730.75676,368.86046c0,0 110.20148,-6.50853 117.67277,-1.62714c7.47128,4.8814 10.27302,14.64419 3.73564,17.89846c-6.53738,3.25426 -116.73886,4.88139 -121.40841,3.25426c-4.66955,-1.62713 0,-19.52558 0,-19.52558z" id="svg_54" stroke="null"/>
+  </g>
+  <g id="svg_59" stroke="null">
+   <path fill="#5b5b5b" stroke-width="0" d="m568.36217,369.23942c0,0 89.39991,-8.00014 95.46092,-2.00003c6.06102,6.0001 8.33389,18.00031 3.03051,22.00039c-5.30339,4.00007 -94.7033,6.00009 -98.49143,4.00007c-3.78813,-2.00005 0,-24.00043 0,-24.00043l0,0z" id="svg_56" stroke="null"/>
+   <path fill="#b2b2b2" stroke-width="0" d="m570.52375,370.8605c0,0 83.49009,-6.50852 89.15043,-1.62714c5.66035,4.8814 7.78298,14.64419 2.83017,17.89846c-4.9528,3.25427 -88.44289,4.8814 -91.9806,3.25427c-3.53772,-1.62714 0,-19.52559 0,-19.52559z" id="svg_58" stroke="null"/>
+  </g>
+  <g id="svg_81">
+   <rect fill="#5b5b5b" stroke="null" stroke-width="0" x="467.986557" y="186.2341" width="44.444046" height="39.393586" id="svg_67"/>
+   <rect fill="#b2b2b2" stroke-width="0" x="473.184952" y="190.483859" width="41.41377" height="38.383492" id="svg_60" stroke="null"/>
+   <g id="svg_80">
+    <rect fill="#5b5b5b" stroke-width="0" x="481.584135" y="195.060198" width="16.153851" height="29.230774" id="svg_78" stroke="null"/>
+    <rect fill="#5b5b5b" stroke-width="0" x="490.045673" y="203.52173" width="16.153851" height="11.538486" id="svg_79" stroke="null"/>
+   </g>
+  </g>
+  <g id="svg_87">
+   <rect fill="#5b5b5b" stroke="null" stroke-width="0" x="467.986558" y="133.926409" width="44.444046" height="39.393586" id="svg_82"/>
+   <rect fill="#b2b2b2" stroke-width="0" x="473.184953" y="138.176169" width="41.41377" height="38.383492" id="svg_83" stroke="null"/>
+   <g id="svg_86">
+    <rect fill="#5b5b5b" stroke-width="0" x="481.584136" y="142.752508" width="16.153851" height="29.230774" id="svg_84" stroke="null"/>
+    <rect fill="#5b5b5b" stroke-width="0" x="490.045674" y="151.214039" width="16.153851" height="11.538486" id="svg_85" stroke="null"/>
+   </g>
+  </g>
+  <g id="svg_93">
+   <rect fill="#5b5b5b" stroke="null" stroke-width="0" x="467.986552" y="236.2341" width="44.444046" height="39.393586" id="svg_88"/>
+   <rect fill="#b2b2b2" stroke-width="0" x="473.184948" y="240.483859" width="41.41377" height="38.383492" id="svg_89" stroke="null"/>
+   <g id="svg_92">
+    <rect fill="#5b5b5b" stroke-width="0" x="481.58413" y="245.060198" width="16.153851" height="29.230774" id="svg_90" stroke="null"/>
+    <rect fill="#5b5b5b" stroke-width="0" x="490.045669" y="253.52173" width="16.153851" height="11.538486" id="svg_91" stroke="null"/>
+   </g>
+  </g>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="703.737634" y="-232.267184" id="svg_94" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.5082661275421798,0,0,0.5242151618003845,216.8305720491253,222.97953807748854) " stroke="null">E-STOP</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="1220.199233" y="-234.101431" id="svg_95" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.5082661275421798,0,0,0.5242151618003845,216.8305720491253,222.97953807748854) " stroke="null">T1</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="709.413036" y="-199.250802" id="svg_96" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.5082661275421798,0,0,0.5242151618003845,216.8305720491253,222.97953807748854) " stroke="null">ERROR</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="692.386828" y="-166.23442" id="svg_97" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.5082661275421798,0,0,0.5242151618003845,216.8305720491253,222.97953807748854) " stroke="null">REMOTE</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="1220.199234" y="-201.085048" id="svg_98" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.5082661275421798,0,0,0.5242151618003845,216.8305720491253,222.97953807748854) " stroke="null">T2</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="1222.091034" y="-169.837484" id="svg_99" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.5082661275421798,0,0,0.5242151618003845,216.8305720491253,222.97953807748854) " stroke="null">AUTO</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="920.157289" y="-122.212577" id="svg_101" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">MEMORY</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="1249.180861" y="-234.101431" id="svg_102" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">M/C POWER</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="1017.297592" y="165.763646" id="svg_103" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">TP</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="1249.180861" y="55.709035" id="svg_104" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">M/C SIGNAL</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="1443.461451" y="-234.101435" id="svg_105" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">POWER</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="671.039453" y="-24.997678" id="svg_106" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">EtherCAT</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="1087.802646" y="262.978546" id="svg_107" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">I/O</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="754.078731" y="266.647033" id="svg_108" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">EMERGENCY</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="577.032717" y="268.481273" id="svg_109" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">RS-232</text>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="671.039453" y="75.885717" id="svg_110" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" transform="matrix(0.6137038217027785,0,0,0.5242151618003845,113.4300798334186,222.97953807748854) " stroke="null">LAN</text>
+  <image stroke="null" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAAyCAYAAAATIfj2AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QERBywI9qyO1AAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAADI0lEQVRo3t2aTW7iQBCFH71jBTewb4DnBMMN4pwAZ48UskBCQmIsJEuWvIgjsR9ygjg3MDdwbgA3ICuWzGKKyEPoX7p7opTEhoSGz6/qdVXbnePxCNfRXY4jAP3DYlW7/q6OC6DuchwCmACIAQRnf34HUNOrOixW2y8L1F2O+wBKACONj70CKG2pZw2IYGoAA8MlNgDSa8FsAjVXwLTjicD2Jh9msn/I8qKf5UUqgUktwQDAPYCajMQuUJYXpzSSLZ5Y9pWBKRRTgBkAaCSOFjhw4J4JFFOAkUXocFvRhuIptLZYEzagKnJRfaAsLyYAbs7eHgrWaDxABXSR9YCyvAgBXHI0ruRkrxsPUDfd5TjWVSgliT/JnuWFSKXSU/qVykCkzsjEmg+LVeVJpaC7HE9UFUoli42yvBC5TUyNp+uQA5FNx9dITrU09AAViGqJta5uT2Gxn+SCPKjGE5QSkGo8ilLPE5QUaKi5YK0AFQJ4c7XZ8roHRu7W011QAWp/WKwiAM+OoCKeQqa9mBSKwBIAdw5SMOQBRddIrwi1prTe+VCof20+E1QsgWroR7xaAuobTawaUC8iS2/VVQzgwZX9McvrPWZ5saaNWgRWArh1Ye3MwUUaKdZV5aCuwABsHUANNOvKZL9qfAK16yqV1RUppQu15wG5njh/ZXlRierKEKq+CDSfTfcOW5SPaZNSUAalM4I0IlOoPcwxAwCNpF3aKjbKG97JKmud8viIQKEHrPH3OFgUldC257NpY9s+JWZRSfaqVJJ6axsjuG2lKkk98abjZ9FB/gfQfDZde1TpNP0mBiqkOp2CT5WE30cGce6+T7I7fv8AkUobn6knOe9ru+9O5YIzzrz+7hFqqNgNJCo3wT4B0UYb42vESaEH1VuVF7vt+Wxa09j8v2NIrqZ81MwdH6iefEBVIqejMwnlkN40Jmv97QhmN59NQ5sLSgc8UuqHoz0qsb2g0sRKrVGk0GPpxB3VqtXQfk6hdVNsZJpmABIXMEZAZ2C853kuxRuAklLYWVh5koTgIlw+/GsA1LS/OY+Oj8fLfAbDN4tvB/QHoe9bnC6Rqo0AAAAASUVORK5CYII=" id="svg_1" height="104.807687" width="108.999994" y="164.692313" x="284.5"/>
+ </g>
+</svg>

@@ -8,8 +8,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class TpDialogComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<TpDialogComponent, number>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      msg: string,
+      action1: string,
+      action2: string,
+      action3: string
+    }
   ) {}
 
   ngOnInit() {}

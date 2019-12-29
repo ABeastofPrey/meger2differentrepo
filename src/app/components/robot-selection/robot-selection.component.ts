@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MatSelect } from '@angular/material';
 import { RobotService } from '../../modules/core/services/robot.service';
 
 @Component({
@@ -8,11 +8,12 @@ import { RobotService } from '../../modules/core/services/robot.service';
   styleUrls: ['./robot-selection.component.css'],
 })
 export class RobotSelectionComponent implements OnInit {
-  @ViewChild('model', { static: false }) model: any;
+
+  @ViewChild('model', { static: false }) model: MatSelect;
 
   constructor(
     public robot: RobotService,
-    private dialogRef: MatDialogRef<any>
+    private dialogRef: MatDialogRef<RobotSelectionComponent,string>
   ) {}
 
   ngOnInit() {}

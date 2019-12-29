@@ -10,6 +10,11 @@
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="icon" type="image/x-icon" href="assets/pics/CS+.png">
   <link rel="manifest" href="assets/manifest.json">
+
+  <script src="assets/scripts/ace/src-min/ace.js"></script>
+  <script src="assets/scripts/ace/src-min/ext-language_tools.js"></script>
+  <script src="assets/scripts/ace/src-min/ext-searchbox.js"></script>
+  <script src="assets/scripts/ace/theme-cs.js"></script>
   
   <script src="assets/scripts/blockly/blockly_compressed.js"></script>
   <script src="assets/scripts/blockly/blocks_compressed.js"></script>
@@ -54,7 +59,10 @@
       width: 100%;
       transform-origin: left;
     }
-    .kuka-fill {
+    .stx-fill, .stx-theme #loading-bar::before, .stx-theme .custom-fill {
+      background-color: #11826c; 
+    }
+    .kuka-fill, .kuka-theme #loading-bar::before, .kuka-theme .custom-fill {
       background-color: #ff7300; 
     }
     /* Safari 4.0 - 8.0 */
@@ -76,15 +84,218 @@
       }
     }
   </style>
+  <style>
+    #loading {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      background-color: #fff
+    }
+
+    .loading-text {
+      color: #888;
+      font: 24px Arial;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #loading-bar {
+      animation: fade-in .5s 2.5s 1 forwards;
+      background-color: #eeeeee;
+      height: 12px;
+      border-radius: 16px;
+      margin: 48px auto 24px;
+      opacity: 0;
+      overflow: hidden;
+      position: relative;
+      width: 250px
+    }
+
+    #loading-bar::before {
+      animation: bar-load 10s 2s linear forwards;
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      transform: translateX(-300px);
+      width: 100%
+    }
+
+    @keyframes bar-load {
+      0% {
+        transform: translateX(-300px)
+      }
+
+      5% {
+        transform: translateX(-240px)
+      }
+
+      15% {
+        transform: translateX(-50px)
+      }
+
+      25% {
+        transform: translateX(-30px)
+      }
+
+      30% {
+        transform: translateX(-20px)
+      }
+
+      45% {
+        transform: translateX(-15px)
+      }
+
+      50% {
+        transform: translateX(-10px)
+      }
+
+      65% {
+        transform: translateX(-10px)
+      }
+
+      70% {
+        transform: translateX(-5px)
+      }
+
+      95% {
+        transform: translateX(-3px)
+      }
+
+      100% {
+        transform: translateX(-3px)
+      }
+    }
+
+    @keyframes fade-in {
+      100% {
+        opacity: 1
+      }
+    }
+
+    @keyframes fade-out {
+      100% {
+        opacity: 0
+      }
+    }
+
+    @keyframes animate-transform {
+      100% {
+        transform: none
+      }
+    }
+
+    @keyframes container {
+      43% {
+        animation-timing-function: cubic-bezier(.8, 0, .2, 1);
+        transform: scale(0.7);
+      }
+
+      100% {
+        transform: none
+      }
+    }
+
+    @keyframes cmd1 {
+      24% {
+        transform: scale(1);
+      }
+
+      52% {
+        transform: rotate(-41deg);
+      }
+
+      83% {
+        transform: rotate(-44deg);
+      }
+
+      100% {
+        transform: rotate(-45deg);
+      }
+    }
+
+    @keyframes cmd2 {
+      24% {
+        transform: scale(1) translateY(-6px);
+      }
+
+      52% {
+        transform: rotate(41deg) translateY(-6px);
+      }
+
+      83% {
+        transform: rotate(48deg);
+      }
+
+      100% {
+        transform: rotate(45deg);
+      }
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .shadow {
+      -webkit-box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.33);
+      -moz-box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.33);
+      box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.33);
+    }
+
+    .glass {
+      animation: animate-transform .5s 1.2s 1 cubic-bezier(.5,0,.25,1) forwards;
+      background: linear-gradient(225deg, rgba(255,255,255,0.16) 0%, rgba(0,0,0,0) 100%);
+      height: 135px;
+      right: 0;
+      position: absolute;
+      top: 0;
+      transform: translateY(-200px);
+      width: 78px;
+    }
+
+    .logo-robot {
+      animation: animate-transform .5s 1.5s 1 cubic-bezier(.5,0,.25,1) forwards;
+      height: 160px;
+      right: -36px;
+      position: absolute;
+      top: -20;
+      transform: translateX(300px);
+      width: 120px;
+
+    }
+  </style>
 </head>
-<body>
+<body class="kuka-theme">
   <control-studio>
-    <div class="spinerlogo">
-      <img src="assets/pics/cs+.gif">
-      <!-- <img class="kuka-loader" src="assets/pics/cs+_kuka.gif"> -->
-      <div class="loader" id="loader">
-        <div class="fill"></div>
-        <!-- <div class="fill kuka-fill"></div> -->
+    <div id="loading">
+      <div style="height:100%;text-align:center">
+        <div style="height:50%;margin:0 0 -140px"></div>
+        <div style="height:128px;margin:0 auto;position:relative;width:176px">
+          <div style="animation:fade-in 1s 0s 1 linear forwards,container 1.75s .5s 1 cubic-bezier(0,0,.67,1) forwards;opacity:0;transform:scale(0)">
+            <div style="background:#eeeeee;border-radius:12px;box-shadow:0 16px 16px -16px rgba(0,0,0,0.33);height:128px;left:0;overflow:hidden;position:absolute;top:0;transform:scale(1);width:176px">
+              <div style="animation:animate-transform .5s 1s 1 cubic-bezier(.5,0,.25,1) forwards;background:#3b3838;border-radius:50%;height:270px;left:88px;margin:-135px;position:absolute;top:25px;transform:scale(0);width:270px"></div>
+              <div class="glass"></div>
+              <div class="custom-fill"
+                style="animation:animate-transform .5s 0.75s 1 cubic-bezier(.5,0,.25,1) forwards;bottom:0;height:225px;left:0;position:absolute;transform:scale(0);width:24px">
+              </div>
+              <div class="shadow custom-fill"
+                style="animation:cmd1 .5s 1.2s 1 cubic-bezier(.5,0,.25,1) forwards;border-radius:4px;height:18px;left:40px;position:absolute;top:18px;transform:scale(0);width:8px;z-index:1;">
+              </div>
+              <div class="custom-fill"
+                style="animation:cmd2 .5s 1.2s 1 cubic-bezier(.5,0,.25,1) forwards;border-radius:4px;height:18px;left:40px;position:absolute;top:27px;transform:scale(0);width:8px;">
+              </div>
+              <div class="shadow custom-fill"
+                style="animation:animate-transform .5s 1.2s 1 cubic-bezier(.5,0,.25,1) forwards, blink 0.5s 1.2s 4 linear forwards;border-radius: 3px;width: 18px;left: 58px;position: absolute;top: 42px;height: 4px;transform: scale(0);">
+              </div>
+            </div>
+          </div>
+          <img src="assets/pics/logo-robot.svg" class="logo-robot">
+        </div>
+        <div id="loading-bar"></div>
+        <div style="animation:fade-in .25s 1.25s 1 forwards;opacity:0" class="loading-text">Loading ControlStudio+...</div>
       </div>
     </div>
   </control-studio>

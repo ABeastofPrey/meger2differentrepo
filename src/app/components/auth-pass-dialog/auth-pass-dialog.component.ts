@@ -1,5 +1,7 @@
+import { TranslateService } from '@ngx-translate/core';
+import { ApiService } from './../../modules/core/services/api.service';
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { LoginService } from '../../modules/core/services/login.service';
 import { CommonService } from '../../modules/core/services/common.service';
 
@@ -10,15 +12,20 @@ import { CommonService } from '../../modules/core/services/common.service';
 })
 export class AuthPassDialogComponent implements OnInit {
   
-  val: string = '';
-  username: string;
-  mode: string;
+  val = '';
+  username = '';
+  mode = '';
+  isError = false;
 
   constructor(
     public cmn: CommonService,
     private login: LoginService,
-    private dialogRef: MatDialogRef<string>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    private dialogRef: MatDialogRef<AuthPassDialogComponent,string | {}>,
+    private api: ApiService,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      withModeSelector?: boolean,
+      currentMode: string
+    }
   ) {}
 
   ngOnInit() {
@@ -26,12 +33,17 @@ export class AuthPassDialogComponent implements OnInit {
     this.username = this.login.getCurrentUser().user.username;
   }
 
-  confirm() {
+  async confirm() {
     if (this.val.length === 0) return;
-    const result = this.data.withModeSelector ? {
-      mode: this.mode,
-      pass: this.val
-    } : this.val;
-    this.dialogRef.close(result);
+    try {
+      const ret = await this.api.confirmPass(this.username, this.val);
+      if (ret) {
+        this.dialogRef.close(this.mode);
+      } else {
+        this.isError = true;
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

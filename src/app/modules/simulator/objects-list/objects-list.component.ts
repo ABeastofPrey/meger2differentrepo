@@ -22,7 +22,7 @@ export class ObjectsListComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   onKeyPress(event: KeyboardEvent) {
-    if (event.keyCode !== 46 || !this.sim.selected) return;
+    if (event.key !== 'Delete' || !this.sim.selected) return;
     this.sim.deleteSelected();
   }
 
@@ -82,8 +82,9 @@ export class ObjectsListComponent implements OnInit {
     if (
       this.isParentNode(node, this.draggedNode) ||
       node === this.draggedNode.parent
-    )
+    ) {
       return;
+    }
     e.preventDefault();
     e.stopImmediatePropagation();
     node = node || this.sim.scene;
@@ -98,7 +99,8 @@ export class ObjectsListComponent implements OnInit {
 
   toggleNode(node: SceneObject) {
     this.nestedTreeControl.toggle(node);
-    if (!this.nestedTreeControl.isExpanded(node))
+    if (!this.nestedTreeControl.isExpanded(node)) {
       this.nestedTreeControl.collapseDescendants(node);
+    }
   }
 }

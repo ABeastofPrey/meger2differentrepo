@@ -24,13 +24,13 @@ export class MainMenuComponent implements OnInit {
   @Input('drawer') drawer: MatDrawer;
 
   profileSrc: string;
-  tpOnline: boolean = false;
+  tpOnline = false;
   env = environment;
 
   private notifier: Subject<boolean> = new Subject();
 
   /* TRUE when menu is busy (i.e: when uploading profile pic) */
-  private _busy: boolean = false;
+  private _busy = false;
   get busy() {
     return this._busy;
   }
@@ -67,7 +67,7 @@ export class MainMenuComponent implements OnInit {
       this.mgr.screen = this.mgr.screens[0];
       return;
     }
-    for (let s of this.mgr.screens) {
+    for (const s of this.mgr.screens) {
       if (s.url.length === 0) continue;
       if (route.indexOf(s.url) === 0) {
         this.mgr.screen = s;
@@ -83,15 +83,16 @@ export class MainMenuComponent implements OnInit {
 
   showUploadWindow() {
     const username = this.login.getCurrentUser().user.username;
-    if (username !== 'admin' && username !== 'super')
+    if (username !== 'admin' && username !== 'super') {
       this.uploadInput.nativeElement.click();
+    }
   }
 
-  onUploadImage(event: any) {
-    let fileList: FileList = event.target.files;
+  onUploadImage(event: {target: {files: FileList}}) {
+    const fileList: FileList = event.target.files;
     if (fileList.length > 0) {
       this._busy = true;
-      let file: File = fileList[0];
+      const file: File = fileList[0];
       this.api
         .uploadProfilePic(file, this.login.getCurrentUser().user.username)
         .then((ret: boolean) => {

@@ -4,11 +4,11 @@ import { CSNotification } from '../notification.model';
 
 @Injectable()
 export class NotificationService {
-  private _notificationWindowOpen: boolean = false;
-  private _unread: number = 0;
+  private _notificationWindowOpen = false;
+  private _unread = 0;
   private _notifications: CSNotification[] = [];
 
-  newMessage: EventEmitter<any> = new EventEmitter();
+  newMessage: EventEmitter<void> = new EventEmitter();
 
   get count() {
     return this._unread;
@@ -20,7 +20,7 @@ export class NotificationService {
 
   get notifications() {
     let str = '';
-    for (let n of this._notifications) str += n.err ? n.err.msg + '\n' : n.msg;
+    for (const n of this._notifications) str += n.err ? n.err.msg + '\n' : n.msg;
     return str;
   }
 
@@ -36,7 +36,6 @@ export class NotificationService {
   onAsyncMessage(msg: string) {
     this._notifications.push(new CSNotification(msg));
     if (!this.windowOpen) this._unread++;
-    this.ref.tick();
     this.newMessage.emit();
   }
 

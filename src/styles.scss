@@ -69,6 +69,24 @@ html, body {
        url('assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'cs-monospace';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/SourceCodePro-Regular.otf');
+  src: local('cs-monospace'),
+        url('assets/fonts/SourceCodePro-Medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'cs-monospace';
+  font-style: normal;
+  font-weight: 500;
+  src: url('assets/fonts/SourceCodePro-Semibold.otf');
+  src: local('cs-monospace'),
+        url('assets/fonts/SourceCodePro-Semibold.otf') format('opentype');
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -103,6 +121,9 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.compact-tabs .mat-tab-label {
+  height: 36px;
 }
 .mat-tab-label-active { opacity: 1!important; }
 mat-slide-toggle { display: block!important; }
@@ -160,6 +181,11 @@ mat-slide-toggle { display: block!important; }
   background:rgba(200,100,100,0.5);
   z-index:20;
 }
+.line-syntax-error {
+  position:absolute;
+  border-bottom: 1.5px dashed red;
+  z-index:20;
+}
 .line-highlight-motion {
   position:absolute;
   background:rgba(100,100,200,0.5);
@@ -171,7 +197,7 @@ mat-slide-toggle { display: block!important; }
 }
 .ace_gutter-cell { 
   cursor: pointer;
-  padding-right: 2px!important;
+  /*padding-right: 2px!important;*/
 }
 .ace_gutter-cell:hover {
   background-color: #bdbdbd;
@@ -180,6 +206,26 @@ mat-slide-toggle { display: block!important; }
 .ace_tooltip {
   font-family: monospace;
   white-space: pre-wrap;
+  margin-right: 24px!important;
+}
+.ace_mobile-menu {
+  display: none!important;
+}
+.ac_ovrld {
+  font-weight: bold;
+  background: #444;
+  color: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.ac_cmd {
+  font-size: 16px;
+}
+.ac_selected {
+  font-weight: bold;
+  color: blue;
 }
 
 // shrink ovealy css

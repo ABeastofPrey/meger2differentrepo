@@ -4,14 +4,6 @@
 			<mat-icon>access_time</mat-icon>
 			<span>{{ date }}&nbsp;&nbsp;{{ time }}</span>
 		</div>
-		<div class="header-box primary-bg-dark center-vertical" style="min-width: 155px;">
-			<mat-icon>local_library</mat-icon>
-			<span
-				>{{ 'mode_selector' | translate }}: {{ (stat.onlineStatus.value ? 'online' : 'offline') | translate }} ({{
-					stat.mode || ('na' | translate)
-				}})</span
-			>
-		</div>
 		<div class="header-box primary-bg-dark center-vertical">
 			<mat-icon>devices</mat-icon>
 			<span *ngIf="stat.systemErrorCode === 1000 || stat.systemErrorCode < 0">
@@ -59,8 +51,7 @@
 					*ngIf="mcImage !== '' && viewInit"
 					class="center-vertical-horizontal"
 					[style.background-image]="'url(' + mcImage + ')'"
-					@scaleIn
-          [class.kuka-image]="utils.IsKuka"
+					@fade
 				>
 					<div *ngIf="simulated" class="primary-bg mat-elevation-z3 simulated">
 						{{ 'home.virtual_controller' | translate }}

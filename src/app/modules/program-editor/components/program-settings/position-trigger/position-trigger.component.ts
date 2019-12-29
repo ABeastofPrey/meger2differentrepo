@@ -39,6 +39,7 @@ import { TerminalService } from '../../../../home-screen/services/terminal.servi
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs';
 
+// tslint:disable-next-line: interface-name
 export interface IPositionTrigger {
   name: string;
   checked: boolean;
@@ -123,6 +124,7 @@ export const canCreate: (x: string) => boolean = complement(
   converge(or, [isNil, isEmpty])
 );
 
+// tslint:disable-next-line: no-any
 export const isNumber: (x: any) => boolean = converge(and, [
   compose(
     not,
@@ -170,17 +172,17 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
   private positiveNumTip: string;
   private notifier: Subject<boolean> = new Subject();
 
-  public data: IPositionTrigger[] = []; // table data source.
-  public get columns(): ReadonlyArray<string> {
+  data: IPositionTrigger[] = []; // table data source.
+  get columns(): ReadonlyArray<string> {
     return initColumns();
   }
-  public get isAllChecked(): boolean {
+  get isAllChecked(): boolean {
     return isAllChecked(this.data);
   }
-  public get hasChecked(): boolean {
+  get hasChecked(): boolean {
     return hasChecked(this.data);
   }
-  public get partialChecked(): boolean {
+  get partialChecked(): boolean {
     return partialChecked(this.data);
   }
 
@@ -216,11 +218,11 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
     this.notifier.unsubscribe();
   }
 
-  public toggleAll(event: any): void {
+  toggleAll(event: { checked: boolean }): void {
     this.data = toggleAll(event)(this.data);
   }
 
-  public createPls(): void {
+  createPls(): void {
     this.dialog
       .open(NewPositionTriggerComponent, { disableClose: true })
       .afterClosed()
@@ -234,14 +236,14 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
       );
   }
 
-  public async updatePls(element: IPositionTrigger): Promise<void> {
+  async updatePls(element: IPositionTrigger): Promise<void> {
     Either.either(
       err => console.log(err), // handle error.
       Nothing
     )(await this.service.updatePls(element));
   }
 
-  public async deletePls(): Promise<void> {
+  async deletePls(): Promise<void> {
     const bindDelete = bind(this.service.deletePls, this.service);
     const deleteAll = await Promise.all(
       map(bindDelete, getSelectedNames(this.data))
@@ -256,11 +258,11 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
     this.assembleData();
   }
 
-  public onFocus(distance: number) {
+  onFocus(distance: number) {
     this.preDistance = distance;
   }
 
-  public onBlur(element: IPositionTrigger): void {
+  onBlur(element: IPositionTrigger): void {
     if (isNotPositiveNumber(element.distance)) {
       element.distance = Number(this.preDistance);
       this.snackBar.open(this.positiveNumTip, '', { duration: 2000 });

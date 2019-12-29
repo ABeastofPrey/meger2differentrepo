@@ -1,3 +1,4 @@
+import { TerminalService } from './../../../home-screen/services/terminal.service';
 import {
   Component,
   OnInit,
@@ -89,26 +90,28 @@ import {ProgramEditorService} from '../../../program-editor/services/program-edi
   ],
 })
 export class MainComponent implements OnInit {
-  isRouterLoading: boolean = false;
-  simLoaded: boolean = false;
-  mouseDownIndex: number = 0;
+  isRouterLoading = false;
+  simLoaded = false;
+  mouseDownIndex = 0;
   screenWidth: number;
-  tpOnline: boolean = false;
-  terminalOpen: boolean = false;
-  simOpen: boolean = false;
+  tpOnline = false;
+  terminalOpen = false;
+  simOpen = false;
   appName: string = environment.appName;
   lastWindowsZindex = 5;
   env = environment;
-  allowHiddenMenu: boolean = false; // Sets if the hidden menu feature is active
-  hiddenMenuVisible: boolean = false;
+  allowHiddenMenu = false; // Sets if the hidden menu feature is active
+  hiddenMenuVisible = false;
+  resizing = false; // true while resizing the simulator window
+  toolbarShown = true;
 
   @ViewChild('drawer', { static: true }) drawer: MatSidenav;
 
-  private jogButtonPressed: boolean = false;
-  private lastKeyDownTime: number = -1;
-  private jogInterval: any;
-  private motionFlag: boolean = false;
-  private words: any;
+  private jogButtonPressed = false;
+  private lastKeyDownTime = -1;
+  private jogInterval: number;
+  private motionFlag = false;
+  private words: {};
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
@@ -131,9 +134,7 @@ export class MainComponent implements OnInit {
     public utils: UtilsService,
     public rec: RecordService,
     public sim: SimulatorService,
-    private grp: GroupManagerService,
-    private task: TaskService,
-    private prg: ProgramEditorService
+    public terminal: TerminalService
   ) {
     this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(event => {
       this.refreshLang();
@@ -155,6 +156,11 @@ export class MainComponent implements OnInit {
     });
   }
 
+  toggleToolbar() {
+    this.toolbarShown = !this.toolbarShown;
+    if (this.screenManager.menuExpanded) this.toggleMenu();
+  }
+
   private refreshLang() {
     this.trn.get(['main.errJog', 'main.jogControlsToggle']).subscribe(words => {
       this.words = words;
@@ -173,6 +179,10 @@ export class MainComponent implements OnInit {
     this.screenWidth = window.innerWidth;
   }
 
+  // ngDoCheck() {
+  //   console.log('change!');
+  // }
+
   ngOnInit() {
     this.allowHiddenMenu = this.cmn.isTablet;
     this.screenWidth = window.innerWidth;
@@ -187,6 +197,11 @@ export class MainComponent implements OnInit {
         this.isRouterLoading = true;
       } else if (event instanceof RouteConfigLoadEnd) {
         this.isRouterLoading = false;
+      }
+    });
+    this.stat.wackChange.pipe(takeUntil(this.notifier)).subscribe(stat => {
+      if (stat && !this.toolbarShown) { // WAITING FOR ACK
+        this.toolbarShown = true;
       }
     });
     this.robot.init();
@@ -244,9 +259,9 @@ export class MainComponent implements OnInit {
     this.notifier.unsubscribe();
   }
 
-  onWindowMoving(el: any) {
+  onWindowMoving(el: HTMLElement) {
     this.lastWindowsZindex++;
-    el.style.zIndex = this.lastWindowsZindex;
+    el.style.zIndex = this.lastWindowsZindex.toString();
   }
 
   toggleMenu() {
@@ -261,7 +276,7 @@ export class MainComponent implements OnInit {
     }
     this._zone.runOutsideAngular(() => {
       this.jogButtonPressed = true;
-      var diff = 5000;
+      let diff = 5000;
       if (this.lastKeyDownTime > 0) {
         diff = new Date().getTime() - this.lastKeyDownTime;
       }
@@ -272,7 +287,7 @@ export class MainComponent implements OnInit {
       this.mouseDownIndex = i;
       this.ws.send('?tp_jog(' + i + ')', true);
       //console.log('jog');
-      this.jogInterval = setInterval(() => {
+      this.jogInterval = window.setInterval(() => {
         if (this.motionFlag) {
           this.ws.send('?tp_jog(' + i + ')', true);
           navigator.vibrate(200);
@@ -286,7 +301,7 @@ export class MainComponent implements OnInit {
   }
 
   mouseUp(e: MouseEvent) {
-    let target: HTMLElement = e ? <HTMLElement>e.target : null;
+    const target: HTMLElement = e ? e.target as HTMLElement : null;
     if (
       target && e &&
       e.type === 'mouseout' &&
@@ -312,7 +327,7 @@ export class MainComponent implements OnInit {
     this.terminalOpen = !this.terminalOpen;
   }
 
-  public closeJog(): void {
+  closeJog(): void {
     this.screenManager.toggleControls();
     this.utils.stretchOverlay();
   }
@@ -329,13 +344,14 @@ export class MainComponent implements OnInit {
     if (typeof this.words === 'undefined') return null;
     if (!this.tpOnline) return this.words['main.errJog']['lib'];
     if (this.prj.activeProject) return this.words['main.errJog']['project'];
-    if (!this.cooService.coosLoaded.value)
+    if (!this.cooService.coosLoaded.value) {
       return this.words['main.errJog']['coos'];
+    }
     return this.words['main.jogControlsToggle'];
   }
   
   quitDebugMode() {
-    location.reload(true);
+    location.reload();
     //    this.screenManager.debugMode = false;
     //    this.cooService.setDebugMode(false);
     //    this.grp.setDebugMode(false);

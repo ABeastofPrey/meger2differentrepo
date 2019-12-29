@@ -20,7 +20,7 @@ import { DOCUMENT } from '@angular/common';
   providedIn: 'root',
 })
 export class UtilsService {
-  private words: any;
+  private words: {};
   private upperRightOverlayEle = document.getElementById('overlaycover');
   private globalOverlayWrappers: HTMLCollectionOf<Element>;
 
@@ -39,8 +39,36 @@ export class UtilsService {
     });
   }
 
+  /* Download a text file */
+  downloadFromText(fileName: string, content: string) {
+    // tslint:disable-next-line: no-any
+    const windowObj = window as any;
+    const createObjectURL = 
+        (windowObj.URL || windowObj.webkitURL || {}).createObjectURL || (()=>{});
+    let blob = null;
+    const fileType = "application/octet-stream";
+    windowObj.BlobBuilder = windowObj.BlobBuilder || 
+                         windowObj.WebKitBlobBuilder || 
+                         windowObj.MozBlobBuilder || 
+                         windowObj.MSBlobBuilder;
+    if(windowObj.BlobBuilder){
+      const bb = new windowObj.BlobBuilder();
+      bb.append(content);
+      blob = bb.getBlob(fileType);
+    }else{
+      blob = new Blob([content], {type : fileType});
+    }
+    const url = createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
   resetAllDialog(title: string) {
-    let dialog = this.dialog.open(UpdateDialogComponent, {
+    const dialog = this.dialog.open(UpdateDialogComponent, {
       disableClose: true,
       width: '100%',
       height: '100%',
@@ -61,14 +89,14 @@ export class UtilsService {
       } else {
         dialog.close();
       }
+    }).catch(err=>{
+      console.log('ERROR IN RESET ALL DIALOG:',err);
     });
   }
 
-  resetAll(loadautoexec?: boolean) {
+  resetAll(loadautoexec?: boolean): Promise<boolean> {
     return this.stat
-      .resetAll().catch(err=>{
-        console.log(err);
-    })
+      .resetAll()
       .then(() => {
         return this.task.resetAll();
       })
@@ -80,7 +108,7 @@ export class UtilsService {
         if (!env.production) console.log('reset all');
         return this.ws.query('reset all');
       })
-      .then((ret: MCQueryResponse) => {
+      .then(ret => {
         if (!env.production) console.log('reset all returned:', ret);
         if (ret.err) {
           this.trn
@@ -88,7 +116,7 @@ export class UtilsService {
             .subscribe(err => {
               this.snack.open(err, this.words['acknowledge']);
             });
-          return false;
+          return Promise.reject(false);
         }
         this.snack.open(this.words['utils.success'], null, { duration: 1500 });
         this.stat.startTpLibChecker();
@@ -100,26 +128,32 @@ export class UtilsService {
       .then(() => {
         if (!env.production) console.log('reset all done');
         return true;
+      }).catch(err=>{
+        return false;
       });
   }
 
-  public get PlatformList(): Platform[] {
+  get PlatformList(): Platform[] {
     const platformList: Platform[] = [];
-    for (let value of <Platform[]>Object.values(env.platforms)) {
+    for (const value of Object.values(env.platforms) as Platform[]) {
       platformList.push(value);
     }
     return platformList;
   }
 
-  public get IsKuka(): boolean {
+  get IsKuka(): boolean {
     return env.platform.name === env.platforms.Kuka.name;
   }
 
-  public get IsScara(): boolean {
+  get theme(): string {
+    return env.platform.name;
+  }
+
+  get IsScara(): boolean {
     return this.dataService.robotType === 'SCARA' ? true : false;
   }
 
-  public hiddenOverlayWrappers(): void {
+  hiddenOverlayWrappers(): void {
     this.globalOverlayWrappers = document.getElementsByClassName('cdk-global-overlay-wrapper');
     if (this.globalOverlayWrappers && this.globalOverlayWrappers.length > 1) {
       for (let i = 0; i < this.globalOverlayWrappers.length - 1; i++) {
@@ -128,7 +162,7 @@ export class UtilsService {
     }
   }
 
-  public displayOverlayWrappers(): void {
+  displayOverlayWrappers(): void {
     if (this.globalOverlayWrappers && this.globalOverlayWrappers.length >= 1) {
       for (let i = 0; i < this.globalOverlayWrappers.length; i++) {
         this.globalOverlayWrappers[i].classList.remove('global-hidden');
@@ -136,7 +170,7 @@ export class UtilsService {
     }
   }
 
-  public shrinkOverlay(): void {
+  shrinkOverlay(): void {
     this.hiddenOverlayWrappers();
     this.overlayContainer.getContainerElement().classList.add('shrink-overlay');
     this.overlayContainer.getContainerElement().classList.remove('stretch-overlay');
@@ -144,7 +178,7 @@ export class UtilsService {
     this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-shrink');
   }
 
-  public stretchOverlay(): void {
+  stretchOverlay(): void {
     this.displayOverlayWrappers();
     this.overlayContainer.getContainerElement().classList.remove('shrink-overlay');
     this.overlayContainer.getContainerElement().classList.add('stretch-overlay');
@@ -152,7 +186,7 @@ export class UtilsService {
     this.upperRightOverlayEle.classList.add('upper-right-conner-overlay-shrink');
   }
 
-  public removeShrinkStretchOverlay(): void {
+  removeShrinkStretchOverlay(): void {
     this.overlayContainer.getContainerElement().classList.remove('shrink-overlay');
     this.overlayContainer.getContainerElement().classList.remove('stretch-overlay');
     this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-stretch');

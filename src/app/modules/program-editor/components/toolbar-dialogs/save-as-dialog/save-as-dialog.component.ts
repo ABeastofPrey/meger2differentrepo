@@ -13,10 +13,10 @@ import {
 })
 export class SaveAsDialogComponent implements OnInit {
   name: string;
-  submitting: boolean = false;
+  submitting = false;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<SaveAsDialogComponent, void>,
     private ws: WebsocketService,
     private prj: ProjectManagerService
   ) {}

@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 export class RobotService {
   changed: BehaviorSubject<RobotModel> = new BehaviorSubject(null);
 
-  private interval: any = null;
+  private interval: number = null;
 
   private _types: RobotTypes = null;
   get types() {
@@ -31,7 +31,7 @@ export class RobotService {
         return;
       }
       if (this.interval) clearInterval(this.interval);
-      this.interval = setInterval(() => {
+      this.interval = window.setInterval(() => {
         this.ws.query('?rob_ver').then((ret: MCQueryResponse) => {
           if (ret.err) return;
           this.getRobots();
@@ -43,9 +43,9 @@ export class RobotService {
 
   updateMap(rType: RobotAxesType[]) {
     if (rType) {
-      for (let axes of rType) {
-        for (let series of axes.series) {
-          for (let m of series.models) {
+      for (const axes of rType) {
+        for (const series of axes.series) {
+          for (const m of series.models) {
             this.stringToModelMapper.set(m.part_number, m);
           }
         }

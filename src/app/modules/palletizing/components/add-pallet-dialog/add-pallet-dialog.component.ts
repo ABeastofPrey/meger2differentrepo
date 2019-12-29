@@ -8,19 +8,20 @@ import { DataService } from '../../../core';
   styleUrls: ['./add-pallet-dialog.component.css'],
 })
 export class AddPalletDialogComponent implements OnInit {
-  public palletName: string = null;
-  public palletType: string = null;
-  public showWizard: boolean = true;
+
+  palletName: string = null;
+  palletType: string = null;
+  showWizard = true;
 
   constructor(
     public dataService: DataService,
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<AddPalletDialogComponent, NewPalletOptions>
   ) {}
 
   ngOnInit() {
-    if (this.dataService.palletTypeOptions.length > 0)
+    if (this.dataService.palletTypeOptions.length > 0) {
       this.palletType = this.dataService.palletTypeOptions[0];
+    }
   }
 
   cancel() {
@@ -28,7 +29,7 @@ export class AddPalletDialogComponent implements OnInit {
   }
 
   insert() {
-    let options: NewPalletOptions = {
+    const options: NewPalletOptions = {
       name: this.palletName,
       type: this.palletType,
       showWizard: this.showWizard,

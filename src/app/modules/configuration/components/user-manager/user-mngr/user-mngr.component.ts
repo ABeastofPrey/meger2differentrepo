@@ -18,7 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./user-mngr.component.css'],
 })
 export class UserMngrComponent implements OnInit {
-  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  dataSource: MatTableDataSource<UserWithPic> = new MatTableDataSource();
   selection: SelectionModel<UserWithPic> = new SelectionModel<UserWithPic>(
     true,
     []
@@ -26,7 +26,7 @@ export class UserMngrComponent implements OnInit {
 
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  private words: any;
+  private words: {};
 
   constructor(
     private api: ApiService,
@@ -51,7 +51,7 @@ export class UserMngrComponent implements OnInit {
 
   refreshUsers() {
     return this.api.getUsers().then((users: UserWithPic[]) => {
-      for (let u of users) {
+      for (const u of users) {
         u.pic = this.api.getProfilePic(u.username);
       }
       this.dataSource.data = users;
@@ -63,7 +63,7 @@ export class UserMngrComponent implements OnInit {
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
+    return numSelected === numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
@@ -76,30 +76,32 @@ export class UserMngrComponent implements OnInit {
   }
 
   deleteSelected() {
-    let ref = this.dialog.open(YesNoDialogComponent, {
+    const ref = this.dialog.open(YesNoDialogComponent, {
       data: this.words['userManager.delete'],
     });
     ref.afterClosed().subscribe(ret => {
       if (ret) {
-        let promises: Promise<any>[] = [];
-        for (let u of this.selection.selected) {
+        const promises = [];
+        for (const u of this.selection.selected) {
           promises.push(this.api.deleteUser(u.username));
         }
         Promise.all(promises)
           .then(
             (ret: boolean[]) => {
               let success = true;
-              for (let r of ret) success = success && r;
-              if (success)
+              for (const r of ret) success = success && r;
+              if (success) {
                 this.snack.open(
                   this.words['userManager.delete']['success'],
                   '',
                   { duration: 2000 }
                 );
-              else
+              }
+              else {
                 this.snack.open(this.words['userManager.delete']['fail'], '', {
                   duration: 2000,
                 });
+              }
             },
             () => {
               this.snack.open(this.words['userManager.delete']['err'], '', {
@@ -110,13 +112,15 @@ export class UserMngrComponent implements OnInit {
           .then(() => {
             this.refreshUsers().then(() => {
               let found = false;
-              for (let u of <UserWithPic[]>this.dataSource.data) {
-                if (u.username === this.login.getCurrentUser().user.username)
+              for (const u of this.dataSource.data as UserWithPic[]) {
+                if (u.username === this.login.getCurrentUser().user.username) {
                   found = true;
+                }
               }
-              if (!found)
+              if (!found) {
                 // ACTIVE USER IS NOT ON THE LIST, PROBABLY DELETED
                 this.login.logout();
+              }
             });
           });
       }
@@ -124,7 +128,7 @@ export class UserMngrComponent implements OnInit {
   }
 
   create() {
-    let ref = this.dialog.open(NewUserDialogComponent,{
+    const ref = this.dialog.open(NewUserDialogComponent,{
       minWidth: '320px'
     });
     ref.afterClosed().subscribe(ret => {

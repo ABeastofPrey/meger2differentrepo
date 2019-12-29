@@ -8,7 +8,7 @@ import { Input } from '@angular/core';
   styleUrls: ['./work-piece-selector.component.css'],
 })
 export class WorkPieceSelectorComponent implements OnInit {
-  @Input('disabled') disabled: boolean;
+  @Input('disabled') disabled?: boolean;
 
   constructor(public dataService: DataService) {}
 

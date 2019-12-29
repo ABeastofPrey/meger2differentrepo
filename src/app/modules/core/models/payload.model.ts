@@ -1,10 +1,10 @@
 export class Payload {
   name: string;
-  refPos: position[];
+  refPos: Position[];
   mass: number;
   inertia: number;
-  Lx: number;
-  j5_max: number;
+  lx: number;
+  /*j5_max: number;
   j5_min: number;
   j5_ident_vel: number;
   j5_ident_time: number;
@@ -13,7 +13,7 @@ export class Payload {
   j6_min: number;
   j6_ident_vel: number;
   j6_ident_time: number;
-  j6_ident_done: boolean;
+  j6_ident_done: boolean;*/
 
   constructor(name: string, axes: number) {
     this.name = name;
@@ -24,6 +24,6 @@ export class Payload {
   }
 }
 
-export interface position {
+export interface Position {
   value: number;
 }

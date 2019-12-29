@@ -11,11 +11,11 @@ import {RobotService} from './robot.service';
 export class SimulatorService {
   
   data: BehaviorSubject<SceneObject[]> = new BehaviorSubject([]);
-  bgColor: string = '#7c99b7';
-  traceColor: string = '#ffd740';
-  showTrace: boolean = false;
+  bgColor = '#7c99b7';
+  traceColor = '#ffd740';
+  showTrace = false;
   
-  private sceneLoaded: boolean = false;
+  private sceneLoaded = false;
 
   private _selected: SceneObject = null;
   get selected() {
@@ -57,26 +57,27 @@ export class SimulatorService {
 
   private refreshPallets() {
     // REMOVE OLD PALLETS
-    let childrenToRemove = [];
+    const childrenToRemove = [];
     for (let i = 0; i < this.scene.children.length; i++) {
       const c = this.scene.children[i];
       if (c.name.startsWith('Pallet_')) {
         childrenToRemove.push(i);
       }
     }
-    for (var i = childrenToRemove.length-1; i >= 0; i--) {
+    for (let i = childrenToRemove.length-1; i >= 0; i--) {
       this.scene.removeChild(this.scene.children[i]);
     }
     let promises = [];
-    for (let p of this.dataService.pallets) {
+    for (const p of this.dataService.pallets) {
       promises.push(this.ws.query('?PLT_IS_ORIGIN_CALIBRATED("' + p.name + '")'));
     }
-    let calibratedIndexes: number[] = [];
+    const calibratedIndexes: number[] = [];
     return Promise.all(promises)
       .then((rets: MCQueryResponse[]) => {
         for (let i = 0; i < rets.length; i++) {
-          if (rets[i].result === '1')
+          if (rets[i].result === '1') {
             calibratedIndexes.push(i);
+          }
         }
         promises = [];
         for (let i = 0; i < calibratedIndexes.length; i++) {
@@ -90,9 +91,10 @@ export class SimulatorService {
         for (let i = 0; i < rets.length; i++) {
           const j = calibratedIndexes[i];
           const ret = rets[i];
-          if (ret.result.length === 3)
+          if (ret.result.length === 3) {
             // NO ORIGIN
             continue;
+          }
           const origin = ret.result
             .substring(2, ret.result.length - 1)
             .split(',')
@@ -125,12 +127,12 @@ export class SimulatorService {
           const key = legends[i].toLowerCase();
           p.origin[key] = origin[i];
         }
-        p.pallet_size_x = sizes[0] * 1000;
-        p.pallet_size_y = sizes[1] * 1000;
-        p.pallet_size_z = sizes[2] * 1000;
+        p.palletSizeX = sizes[0] * 1000;
+        p.palletSizeY = sizes[1] * 1000;
+        p.palletSizeZ = sizes[2] * 1000;
         // FIND CENTER
         // calculate distance from origin to center
-        const R = Math.sqrt(Math.pow(p.pallet_size_x, 2) + Math.pow(p.pallet_size_y, 2)) / 2;
+        const R = Math.sqrt(Math.pow(p.palletSizeX, 2) + Math.pow(p.palletSizeY, 2)) / 2;
         const A = Math.atan(sizes[1] / sizes[0]);
         const THETA = (origin[3] * Math.PI) / 180;
         const X = origin[0] + R * Math.cos(A + THETA);
@@ -180,15 +182,6 @@ export class SimulatorService {
     }
     if (obj) this.selected = obj;
     this.data.next(this.scene.children);
-  }
-
-  onObjectParamChanged(e: Event, changeType: string) {
-    const el = e.target as HTMLInputElement;
-    switch (changeType) {
-      case 'pos_x':
-        console.log(el.value);
-        break;
-    }
   }
 
   deleteSelected() {

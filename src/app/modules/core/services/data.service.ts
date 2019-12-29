@@ -19,20 +19,20 @@ const DOMAIN_FRAMES = ['BASE', 'TOOL', 'MACHINETABLE', 'WORKPIECE'];
 
 @Injectable()
 export class DataService {
-  public dataLoaded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+  dataLoaded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
 
   teachServiceNeedsReset: Subject<void> = new Subject();
 
-  private words: any;
+  private words: {};
 
   private _varRefreshInProgress: boolean;
   get varRefreshInProgress() {
     return this._varRefreshInProgress;
   }
 
-  public dataRefreshed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+  dataRefreshed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
 
@@ -57,7 +57,7 @@ export class DataService {
   // Robots
   private _robots: string[] = [];
   private _selectedRobot: string = null;
-  private _isRobotType: boolean = true;
+  private _isRobotType = true;
   private _locationDescriptions: string[];
   private _robotType: string = null;
   private _robotCoordinateType: RobotCoordinateType = null;
@@ -80,7 +80,7 @@ export class DataService {
     return this._selectedRobot;
   }
   set selectedRobot(val: string) {
-    let oldRobot = this._selectedRobot;
+    const oldRobot = this._selectedRobot;
     this._selectedRobot = val;
     this.ws
       .query('?TP_SET_MOTION_ELEMENT("' + val + '")')
@@ -91,7 +91,7 @@ export class DataService {
         }
         this.teachServiceNeedsReset.next();
         //Blockly.selectedRobot = this._selectedRobot;
-        const promises: any = Promise.all([
+        const promises = Promise.all([
           this.ws.query('?tp_is_robot_type'),
           this.ws.query('?TP_GET_MOTION_ELEMENT_TYPE'),
           this.ws.query('?TP_GET_ROBOT_COORDINATES_TYPE'),
@@ -121,7 +121,7 @@ export class DataService {
     return this._selectedFrame;
   }
   set selectedFrame(val: string) {
-    let oldFrame = this._selectedFrame;
+    const oldFrame = this._selectedFrame;
     this._selectedFrame = val;
     this.ws
       .query('?TP_SET_JOGGING_FRAME("' + val + '")')
@@ -145,7 +145,7 @@ export class DataService {
     return this._selectedTool;
   }
   set selectedTool(val: string) {
-    let oldTool = this._selectedTool;
+    const oldTool = this._selectedTool;
     this._selectedTool = val;
     this.ws
       .query('?tp_set_frame("tool","' + val + '")')
@@ -164,7 +164,7 @@ export class DataService {
     return this._selectedBase;
   }
   set selectedBase(val: string) {
-    let oldBase = this._selectedBase;
+    const oldBase = this._selectedBase;
     this._selectedBase = val;
     this.ws
       .query('?tp_set_frame("base","' + val + '")')
@@ -176,7 +176,7 @@ export class DataService {
   // Domains
   private _domains: string[] = [];
   private _selectedDomain: string = null;
-  private _domainIsFrame: boolean = false;
+  private _domainIsFrame = false;
   get domainIsFrame() {
     return this._domainIsFrame;
   }
@@ -187,7 +187,7 @@ export class DataService {
     return this._selectedDomain;
   }
   set selectedDomain(val: string) {
-    let oldDomain = this._selectedDomain;
+    const oldDomain = this._selectedDomain;
     this._selectedDomain = val;
     this.ws
       .query('?tp_set_application("' + val + '")')
@@ -211,7 +211,7 @@ export class DataService {
     return this._selectedMachineTable;
   }
   set selectedMachineTable(val: string) {
-    let old = this._selectedMachineTable;
+    const old = this._selectedMachineTable;
     this._selectedMachineTable = val;
     this.ws
       .query('?TP_SET_FRAME("MACHINETABLE","' + val + '")')
@@ -230,7 +230,7 @@ export class DataService {
     return this._selectedWorkPiece;
   }
   set selectedWorkPiece(val: string) {
-    let old = this._selectedWorkPiece;
+    const old = this._selectedWorkPiece;
     this._selectedWorkPiece = val;
     this.ws
       .query('?TP_SET_FRAME("WORKPIECE","' + val + '")')
@@ -371,7 +371,7 @@ export class DataService {
     this._isEmulator = isEmulator;
   }
   private _isRealDevice = false;
-  tabletMode: number = 0;
+  tabletMode = 0;
   get isRealDevice() {
     return this._isRealDevice;
   }
@@ -393,13 +393,13 @@ export class DataService {
         this._jogIncrements = ret.result === '0' ? val : oldVal;
       });
   }
-  _refreshCycle: number = 200;
+  _refreshCycle = 200;
   private _tpVersion: string = null;
   _inactivityTimeout: number = null;
   _softMCTimeout: number = null;
   private _softTPType: string = null;
   private _softTPTypes: string[] = null;
-  private _keyboardFormat: any = null;
+  private _keyboardFormat: {} = null;
   private _JavaVersion: string = null;
   private _MCVersion: string = null;
   get TPVersion() {
@@ -473,42 +473,43 @@ export class DataService {
   private updateJoint(name: string, value: number, arrIndex?: number) {
     this._joints.forEach((jnt, index) => {
       if (jnt.name === name) {
-        if (arrIndex) (<TPVariable>jnt.value[arrIndex]).value = value;
+        if (arrIndex) (jnt.value[arrIndex] as TPVariable).value = value;
         else jnt.value = value;
       }
     });
   }
 
-  refreshTools(): Promise<any> {
+  refreshTools() {
     if (!this.isRobotType) {
       return Promise.resolve();
     }
-    var queries: Promise<any>[] = [
+    const queries = [
       this.ws.query('?TP_GET_FRAME_LIST("TOOL")'),
       this.ws.query('?TP_GET_FRAME_NAME("TOOL")'),
     ];
     return Promise.all(queries).then((result: MCQueryResponse[]) => {
       this._tools =
         result[0].result.length > 0 ? result[0].result.split(',') : [];
-      if (this._selectedTool !== result[1].result)
+      if (this._selectedTool !== result[1].result) {
         this._selectedTool = result[1].result;
+      }
     });
   }
 
-  refreshPallets(selectedPallet?: string): Promise<any> {
+  refreshPallets(selectedPallet?: string) {
     return this.ws
       .query('?PLT_GET_PALLET_LIST')
       .then((result: MCQueryResponse) => {
-        let pallets: string[] =
+        const pallets: string[] =
           result.result.length > 0 ? result.result.split(',') : [];
-        var palletObjects = [];
-        var queries: Promise<any>[] = [];
-        for (let p of pallets) {
+        const palletObjects = [];
+        const queries = [];
+        for (const p of pallets) {
           queries.push(this.ws.query('?PLT_GET_PALLET_TYPE("' + p + '")'));
         }
         return Promise.all(queries).then((ret: MCQueryResponse[]) => {
           let i = 0;
-          for (let p of pallets) {
+          for (const p of pallets) {
             palletObjects.push(new Pallet(p, ret[i].result));
             if (p === selectedPallet) this.selectedPallet = palletObjects[i];
             i++;
@@ -524,8 +525,8 @@ export class DataService {
       .then((ret: MCQueryResponse) => {
         if (ret.err) return;
         const names = ret.result.split(',');
-        let payloads: Payload[] = [];
-        for (let name of names) {
+        const payloads: Payload[] = [];
+        for (const name of names) {
           if (name.length > 0) payloads.push(new Payload(name, 6)); // 6 axis
         }
         this._payloads = payloads;
@@ -539,7 +540,7 @@ export class DataService {
         ]);
       });
   }
-  private refreshPayloadStart(): Promise<any> {
+  private refreshPayloadStart() {
     return this.ws
       .query('?PAY_GET_START_POSITION')
       .then((ret: MCQueryResponse) => {
@@ -551,7 +552,7 @@ export class DataService {
           });
       });
   }
-  private refreshPayloadRelative(): Promise<any> {
+  private refreshPayloadRelative() {
     return this.ws
       .query('?PAY_GET_RELATIVE_TARGET_POSITION')
       .then((ret: MCQueryResponse) => {
@@ -563,7 +564,7 @@ export class DataService {
           });
       });
   }
-  private refreshPayloadFreq(): Promise<any> {
+  private refreshPayloadFreq() {
     return this.ws
       .query('?PAY_GET_FREQUENCIES')
       .then((ret: MCQueryResponse) => {
@@ -575,7 +576,7 @@ export class DataService {
           });
       });
   }
-  private refreshPayloadDuration(): Promise<any> {
+  private refreshPayloadDuration() {
     return this.ws
       .query('?PAY_GET_IDENT_TIME_SECONDS')
       .then((ret: MCQueryResponse) => {
@@ -583,80 +584,85 @@ export class DataService {
       });
   }
 
-  refreshBases(): Promise<any> {
+  refreshBases() {
     if (!this.isRobotType) {
       return Promise.resolve();
     }
-    var queries: Promise<any>[] = [
+    const queries = [
       this.ws.query('?TP_GET_FRAME_LIST("BASE")'),
       this.ws.query('?TP_GET_FRAME_NAME("BASE")'),
     ];
     return Promise.all(queries).then((result: MCQueryResponse[]) => {
       this._bases =
         result[0].result.length > 0 ? result[0].result.split(',') : [];
-      if (this._selectedBase !== result[1].result)
+      if (this._selectedBase !== result[1].result) {
         this._selectedBase = result[1].result;
+      }
     });
   }
 
-  refreshDomains(): Promise<any> {
-    var queries: Promise<any>[] = [
+  refreshDomains() {
+    const queries = [
       this.ws.query('?TP_GET_APPLICATIONS_LIST'),
       this.ws.query('?TP_GET_APPLICATION'),
     ];
     return Promise.all(queries)
       .then((result: MCQueryResponse[]) => {
-        let apps =
+        const apps =
           result[0].result.length > 0 ? result[0].result.split(';') : [];
         for (let i = 0; i < apps.length; i++) apps[i] = apps[i].split(',')[0];
         this._domains = apps;
-        if (this._selectedDomain !== result[1].result)
+        if (this._selectedDomain !== result[1].result) {
           this._selectedDomain = result[1].result;
+        }
       })
       .then(() => {
         this.refreshVariables();
       });
   }
 
-  refreshMachineTables(): Promise<any> {
+  refreshMachineTables() {
     if (!this.isRobotType) {
       return Promise.resolve();
     }
-    var queries: Promise<any>[] = [
+    const queries = [
       this.ws.query('?TP_GET_FRAME_LIST("MACHINETABLE")'),
       this.ws.query('?TP_GET_FRAME_NAME("MACHINETABLE")'),
     ];
     return Promise.all(queries).then((result: MCQueryResponse[]) => {
       this._machineTables =
         result[0].result.length > 0 ? result[0].result.split(',') : [];
-      if (this._selectedMachineTable !== result[1].result)
+      if (this._selectedMachineTable !== result[1].result) {
         this._selectedMachineTable = result[1].result;
+      }
     });
   }
 
-  refreshWorkPieces(): Promise<any> {
+  refreshWorkPieces() {
     if (!this.isRobotType) {
       return Promise.resolve();
     }
-    var queries: Promise<any>[] = [
+    const queries = [
       this.ws.query('?TP_GET_FRAME_LIST("WORKPIECE")'),
       this.ws.query('?TP_GET_FRAME_NAME("WORKPIECE")'),
     ];
     return Promise.all(queries).then((result: MCQueryResponse[]) => {
       this._workPieces =
         result[0].result.length > 0 ? result[0].result.split(',') : [];
-      if (this._selectedWorkPiece !== result[1].result)
+      if (this._selectedWorkPiece !== result[1].result) {
         this._selectedWorkPiece = result[1].result;
+      }
     });
   }
 
-  private refreshMotionElements(): Promise<any> {
+  private refreshMotionElements() {
     return this.ws
       .query('?tp_get_motion_elements')
       .then((ret: MCQueryResponse) => {
         this._robots = ret.result.length > 0 ? ret.result.split(',') : [];
-        if (this.robots.length === 0 || this._selectedRobot !== null)
+        if (this.robots.length === 0 || this._selectedRobot !== null) {
           return null;
+        }
         return this.ws
           .query('?TP_SET_MOTION_ELEMENT("' + this.robots[0] + '")')
           .then((ret: MCQueryResponse) => {
@@ -681,7 +687,7 @@ export class DataService {
       });
   }
 
-  private refreshData(): Promise<any> {
+  private refreshData() {
     return this.refreshMotionElements()
       .then(() => {
         return this.refreshTools();
@@ -690,7 +696,7 @@ export class DataService {
         return this.refreshBases();
       })
       .then(() => {
-        var queries: Promise<any>[] = [];
+        const queries = [];
         queries.push(this.ws.query('?TP_GET_COORDINATES_FRAMES_TYPES'));
         queries.push(this.ws.query('?TP_GET_LOCATION_DESCRIPTION'));
         queries.push(this.ws.query('?TP_GET_JOGGING_FRAME'));
@@ -720,8 +726,9 @@ export class DataService {
 
             // SET DEFAULT VALUES, ON FIRST INIT
             if (this._selectedFrame === null) {
-              if (result[2].result.length > 0)
+              if (result[2].result.length > 0) {
                 this._selectedFrame = result[2].result;
+              }
               else this.selectedFrame = 'JOINT';
             } else if (
               result[2].result.length > 0 &&
@@ -795,10 +802,12 @@ export class DataService {
       }
     });
     this.ws.isConnected.subscribe(stat => {
-      if (!stat) 
+      if (!stat) { 
         this.dataLoaded.next(false);
-      else if (this._JavaVersion === null)
+      }
+      else if (this._JavaVersion === null) {
         this.getMinimumVersions();
+ }
     });
   }
 
@@ -806,7 +815,7 @@ export class DataService {
     //this._selectedPallet = null;
   }
   
-  getMinimumVersions() : Promise<any> {
+  getMinimumVersions() {
     const promises = [
       this.ws.query('?ver'),
       this.ws.query('java_ver')
@@ -835,7 +844,9 @@ export class DataService {
         return this.ws.query('?tp_get_switch_mode');
       })
       .then((ret: MCQueryResponse) => {
-        if (ret.result !== 'A') this.stat.mode = 'A';
+        if (ret.result !== 'A' && !this.cmn.isTablet) {
+          this.stat.mode = 'A';
+        }
         return this.refreshData();
       })
       .then(() => {
@@ -864,7 +875,7 @@ export class DataService {
       ':' +
       ('0' + date.getSeconds()).slice(-2);
 
-    var promises = [
+    const promises = [
       this.ws.query('?TP_VER'),
       this.ws.query('?tp_get_inactivity_timeout'),
       this.ws.query('?tp_get_mc_timeout'),
@@ -877,9 +888,9 @@ export class DataService {
     return Promise.all(promises)
       .then((results: MCQueryResponse[]) => {
         this._tpVersion = results[0].result;
-        this._inactivityTimeout = parseInt(results[1].result);
-        this._softMCTimeout = parseInt(results[2].result);
-        this._refreshCycle = parseInt(results[3].result);
+        this._inactivityTimeout = Number(results[1].result);
+        this._softMCTimeout = Number(results[2].result);
+        this._refreshCycle = Number(results[3].result);
         this._softTPType = results[4].result;
         this._softTPTypes = results[5].result.split(',');
         this._jogIncrements = results[7].result;
@@ -914,9 +925,9 @@ export class DataService {
 
   refreshIos() {
     this.ws.query('?iomap_get_init_info').then((ret: MCQueryResponse) => {
-      let modules: IoModule[] = [];
+      const modules: IoModule[] = [];
       const parts = ret.result.split(';');
-      for (let p of parts) {
+      for (const p of parts) {
         if (p.length > 0) {
           modules.push(new IoModule(p));
         }
@@ -927,7 +938,7 @@ export class DataService {
 
   refreshVariables() {
     this._varRefreshInProgress = true;
-    var promises = [
+    const promises = [
       this.ws.query('?TP_GET_JOINTS("ALL")'),
       this.ws.query('?TP_get_locations("all")'),
       this.ws.query('?TP_GET_LONGS("")'),
@@ -938,50 +949,56 @@ export class DataService {
     return Promise.all(promises).then((result: MCQueryResponse[]) => {
       // ADD JOINTS
       this._joints.length = 0;
-      var data = result[0].result.split(',').sort();
+      let data = result[0].result.split(',').sort();
       data.forEach((name: string) => {
-        if (name.length > 0)
+        if (name.length > 0) {
           this.addJoint(new TPVariable(TPVariableType.JOINT, name));
+        }
       });
 
       // ADD LOCATIONS
       this._locations.length = 0;
-      var data = result[1].result.split(',').sort();
+      data = result[1].result.split(',').sort();
       data.forEach((name: string) => {
-        if (name.length > 0)
+        if (name.length > 0) {
           this.addLocation(new TPVariable(TPVariableType.LOCATION, name));
+        }
       });
 
       // ADD LONGS
       this._longs.length = 0;
-      var data = result[2].result.split(',').sort();
+      data = result[2].result.split(',').sort();
       data.forEach((name: string) => {
-        if (name.length > 0)
+        if (name.length > 0) {
           this.addLong(new TPVariable(TPVariableType.LONG, name));
+        }
       });
 
       // ADD DOUBLES
       this._doubles.length = 0;
-      var data = result[3].result.split(',').sort();
+      data = result[3].result.split(',').sort();
       data.forEach((name: string) => {
-        if (name.length > 0)
+        if (name.length > 0) {
           this.addDouble(new TPVariable(TPVariableType.DOUBLE, name));
+        }
       });
 
       // ADD STRINGS
       this._strings.length = 0;
-      var data = result[4].result.split(',').sort();
+      data = result[4].result.split(',').sort();
       data.forEach((name: string) => {
-        if (name.length > 0)
+        if (name.length > 0) {
           this.addString(new TPVariable(TPVariableType.STRING, name));
+        }
       });
 
       // ADD Project joits
       this._pJoints.length = 0;
-      var data = result[5].result.split(',');
+      data = result[5].result.split(',');
       data.forEach((name: string) => {
-        if (name.length > 0)
+        if (name.length > 0) {
           this.addPJoint(new TPVariable(TPVariableType.JOINT, name));
+        }
       });
 
       this._varRefreshInProgress = false;

@@ -14,13 +14,13 @@ import { AddVarComponent } from '../../add-var/add-var.component';
 export class CircleDialogComponent implements OnInit {
   circlePoint: TPVariable;
   targetPoint: TPVariable;
-  circlePointIndex: number = -1;
-  targetPointIndex: number = -1;
+  circlePointIndex = -1;
+  targetPointIndex = -1;
   motionElement: string = null;
   vtran: string = null;
-  advancedMode: boolean = false;
-  angle: string = '';
-  withParams: boolean = false;
+  advancedMode = false;
+  angle = '';
+  withParams = false;
   blending: string = null;
   ptList: string[] = [];
   pts: string[] = [];
@@ -42,16 +42,21 @@ export class CircleDialogComponent implements OnInit {
 
   constructor(
     public dataService: DataService,
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<CircleDialogComponent>,
     private mtService: PositionTriggerService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      angle: boolean,
+      isArr: boolean,
+      name: string,
+      params: {},
+    },
     private dialog: MatDialog
   ) {
     this.withParams = typeof this.data.params !== 'undefined';
   }
 
   ngAfterContentInit() {
-    let params = this.data.params;
+    const params = this.data.params;
     if (params) {
       if (params['element'] || params['vtran'] || params['blending']) {
         this.advancedMode = true;
@@ -64,7 +69,7 @@ export class CircleDialogComponent implements OnInit {
 
       // PARSE TARGET
       if (params['target']) {
-        for (let v of this.dataService.joints.concat(
+        for (const v of this.dataService.joints.concat(
           this.dataService.locations
         )) {
           if (v.name === params['target'][0].name) {
@@ -91,7 +96,7 @@ export class CircleDialogComponent implements OnInit {
     }
   }
 
-  public createPoint(type: string): void {
+  createPoint(type: string): void {
     const preCPoint = this.circlePoint;
     const preTPoint = this.targetPoint;
     const option = {
@@ -123,7 +128,7 @@ export class CircleDialogComponent implements OnInit {
 
   invalidBlending(): boolean {
     if (this.blending) {
-      let n = Number(this.blending);
+      const n = Number(this.blending);
       if (!isNaN(n) && (n < 0 || n > 100)) return true;
     }
     return false;
@@ -143,15 +148,17 @@ export class CircleDialogComponent implements OnInit {
     let cmd = 'Circle ';
     let name1 = this.circlePoint.name;
     let name2 = this.data.angle ? '' : this.targetPoint.name;
-    let robot = this.motionElement ? this.motionElement + ' ' : '';
+    const robot = this.motionElement ? this.motionElement + ' ' : '';
     if (this.circlePoint.isArr) name1 += '[' + this.circlePointIndex + ']';
-    if (!this.data.angle && this.targetPoint.isArr)
+    if (!this.data.angle && this.targetPoint.isArr) {
       name2 += '[' + this.targetPointIndex + ']';
+    }
     let vtranString = '';
-    if (this.vtran && Number(this.vtran) > 0)
+    if (this.vtran && Number(this.vtran) > 0) {
       vtranString = ' Vtran=' + this.vtran;
-    let circlePoint = this.data.angle ? 'Angle=' + this.angle : 'CirclePoint=' + name1;
-    let targetPoint = this.data.angle
+    }
+    const circlePoint = this.data.angle ? 'Angle=' + this.angle : 'CirclePoint=' + name1;
+    const targetPoint = this.data.angle
       ? ' CircleCenter=' + name1
       : ' TargetPoint=' + name2;
     let blendingString = '';

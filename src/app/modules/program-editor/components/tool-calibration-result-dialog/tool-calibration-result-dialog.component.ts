@@ -36,6 +36,7 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
   /**
    * The instance reference to CalibrationResultTableColumn enum.
    */
+  // tslint:disable-next-line: variable-name
   CalibrationTableColumnReference = CalibrationResultTableColumn;
 
   /**
@@ -70,8 +71,10 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
    * @param ws The WebsocketService instance.
    */
   constructor(
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<ToolCalibrationResultDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      toolName: string
+    },
     private ws: WebsocketService
   ) {
     this.calibrationResultSource = new MatTableDataSource([]);
@@ -127,17 +130,17 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
    */
   private getCalibrationResult(result: string): CalibrationAxis[] {
     if (result.length) {
-      let jsonObject = JSON.parse(result);
+      const jsonObject = JSON.parse(result);
 
-      let toolValueArray = jsonObject[CalibratedResultKey.ToolValue]
+      const toolValueArray = jsonObject[CalibratedResultKey.ToolValue]
         .match(/[\d.-]+/g)
         .map(Number);
 
-      let calibrationValueArray = [];
-      let calibrationValue = jsonObject[CalibratedResultKey.CalibrationValue];
+      const calibrationValueArray = [];
+      const calibrationValue = jsonObject[CalibratedResultKey.CalibrationValue];
 
       for (let index = 0; index < calibrationValue.length; index++) {
-        let element = calibrationValue[index];
+        const element = calibrationValue[index];
         calibrationValueArray.push({
           name: element[CalibratedResultKey.Name],
           unit: element[CalibratedResultKey.Unit],

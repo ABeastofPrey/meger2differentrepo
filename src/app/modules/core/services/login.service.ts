@@ -11,30 +11,32 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 
 @Injectable()
 export class LoginService {
+
   private currentUserSubject = new BehaviorSubject<User>({} as User);
-  public currentUser = this.currentUserSubject
-    .asObservable()
-    .pipe(distinctUntilChanged());
+  currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged());
+
   private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
-  public isAuthenticated = this.isAuthenticatedSubject.asObservable();
+  isAuthenticated = this.isAuthenticatedSubject.asObservable();
 
   get fName(): string {
     if (this.getCurrentUser().user) {
       const fullName = this.getCurrentUser().user.fullName;
       const i = fullName.indexOf(' ');
-      return fullName.substring(0, i);
+      return i > -1 ? fullName.substring(0, i) : fullName;
     }
     return null;
   }
   get permission(): string {
-    if (this.getCurrentUser().user)
+    if (this.getCurrentUser().user) {
       return this.api.getUserPermission(this.getCurrentUser().user.permission);
+    }
     return null;
   }
 
   get permissionCode(): number {
-    if (this.getCurrentUser().user)
+    if (this.getCurrentUser().user) {
       return this.getCurrentUser().user.permission;
+    }
     return -1;
   }
 
@@ -59,7 +61,7 @@ export class LoginService {
     if (this.jwtService.getToken()) {
       this.api
         .get('/cs/api/user')
-        .subscribe(user => this.setAuth(user), err => this.purgeAuth());
+        .subscribe((user: User) => this.setAuth(user), err => this.purgeAuth());
     } else {
       // Remove any potential remnants of previous auth states
       this.purgeAuth();
@@ -82,11 +84,7 @@ export class LoginService {
             this.currentUserSubject.next(user);
             // Set isAuthenticated to true
             this.isAuthenticatedSubject.next(true);
-            this.api
-              .put('/cs/api/license', {
-                username: user.user.username,
-              })
-              .toPromise()
+            this.api.put('/cs/api/license', { username: user.user.username }).toPromise()
               .then(result => {
                 if (!result) this.purgeAuth();
                 else if (!this.ws.connected) this.ws.connect();
@@ -117,7 +115,7 @@ export class LoginService {
 
   attemptAuth(credentials): Observable<User> {
     return this.api.post('/cs/api/users', { user: credentials }).pipe(
-      map(data => {
+      map((data: User) => {
         this.setAuth(data);
         return data;
       })

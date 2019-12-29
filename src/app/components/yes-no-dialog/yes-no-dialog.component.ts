@@ -8,8 +8,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class YesNoDialogComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<YesNoDialogComponent, boolean>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      caution: boolean,
+      title: string,
+      msg: string,
+      yes: string,
+      no: string,
+      warnBtn: boolean
+    }
   ) {}
 
   ngOnInit() {}

@@ -11,11 +11,11 @@ import { ErrorFrame } from '../../core/models/error-frame.model';
 export class ArchSettingService {
   constructor(private ws: WebsocketService) {}
 
-  public getInitTable(): Promise<ErrorFrame | Array<ArchElement>> {
+  getInitTable(): Promise<ErrorFrame | ArchElement[]> {
     return this.queryWithApi(`${ArchApi.JP_getTable}`);
   }
 
-  public resetTable(): Promise<ErrorFrame | Array<ArchElement>> {
+  resetTable(): Promise<ErrorFrame | ArchElement[]> {
     return this.queryWithApi(`${ArchApi.JP_reset}`);
   }
 
@@ -28,11 +28,11 @@ export class ArchSettingService {
    * @returns {(Promise<ErrorFrame | Array<ArchElement>>)}
    * @memberof ArchSettingService
    */
-  public setArch(
+  setArch(
     index: number,
     departOrApproach: 1 | 2,
     value: number
-  ): Promise<ErrorFrame | Array<ArchElement>> {
+  ): Promise<ErrorFrame | ArchElement[]> {
     return this.queryWithApi(
       `${ArchApi.JP_setArch}(${index}, ${departOrApproach}, ${value})`
     );
@@ -40,7 +40,7 @@ export class ArchSettingService {
 
   private queryWithApi(
     queryStr: string
-  ): Promise<ErrorFrame | Array<ArchElement>> {
+  ): Promise<ErrorFrame | ArchElement[]> {
     return new Promise((resolve, reject) => {
       this.ws.query(queryStr).then((res: MCQueryResponse) => {
         return res && res.err

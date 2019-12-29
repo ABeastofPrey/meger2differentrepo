@@ -121,6 +121,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         hasBackdrop: true,
         restoreFocus: false,
         closeOnNavigation: true,
+        disableClose: true,
         data: null
       }
     }

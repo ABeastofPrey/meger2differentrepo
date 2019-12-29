@@ -32,10 +32,6 @@
               "src/assets/scripts/plotly-latest.min.js",
               "src/assets/scripts/numeric.min.js",
               "src/assets/scripts/isomer.min.js",
-              "node_modules/ace-builds/src-min/ace.js",
-              "src/assets/scripts/ace/theme-cs.js",
-              "node_modules/ace-builds/src-min/ext-searchbox.js",
-              "node_modules/ace-builds/src-min/ext-language_tools.js",
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/jquery-ui-dist/jquery-ui.min.js"
             ]
@@ -119,10 +115,7 @@
             "scripts": [
               "src/assets/scripts/plotly-latest.min.js",
               "src/assets/scripts/numeric.min.js",
-              "src/assets/scripts/kuka-decrypt.js",
-              "node_modules/ace-builds/src-min/ace.js",
-              "node_modules/ace-builds/src-min/theme-eclipse.js",
-              "node_modules/ace-builds/src-min/ext-searchbox.js"
+              "src/assets/scripts/kuka-decrypt.js"
             ],
             "styles": [
               "src/styles.scss",

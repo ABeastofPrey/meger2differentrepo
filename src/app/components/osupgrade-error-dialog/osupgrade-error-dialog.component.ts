@@ -10,7 +10,14 @@ import { MAT_DIALOG_DATA } from '@angular/material';
  * This class describes the error dialog for the OS upgrade.
  */
 export class OSUpgradeErrorDialogComponent implements OnInit {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {
+    title: string,
+    message: string,
+    guiVersion: string,
+    webServerVersion: string,
+    softMCVersion: string,
+    libraryVersion: string
+  }) {}
 
   ngOnInit() {}
 }

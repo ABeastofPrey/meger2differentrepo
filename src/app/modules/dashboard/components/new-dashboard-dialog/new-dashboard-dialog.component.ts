@@ -21,20 +21,21 @@ export class NewDashboardDialogComponent implements OnInit {
   motionElements: DashboardInitParams[];
   selectedElement: DashboardInitParams = null;
 
-  private words: any;
+  private words: string;
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
     private ws: WebsocketService,
     private dashboard: DashboardService,
     private snack: MatSnackBar,
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<DashboardInitParams>,
     private trn: TranslateService
   ) {}
 
   add() {
-    if (this.dashboard.findWindow(this.selectedElement.name) === -1)
+    if (this.dashboard.findWindow(this.selectedElement.name) === -1) {
       this.dialogRef.close(this.selectedElement);
+    }
     else this.snack.open(this.words, '', { duration: 1500 });
   }
 
@@ -44,23 +45,23 @@ export class NewDashboardDialogComponent implements OnInit {
     });
     this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) {
-        let promises = [
+        const promises = [
           this.ws.query('?grouplist'),
           this.ws.query('?axislist'),
         ];
         Promise.all(promises).then((ret: MCQueryResponse[]) => {
-          let elements: DashboardInitParams[] = [];
-          let groups = ret[0].result.split('\n');
-          let axes = ret[1].result.split(',');
-          for (let g of groups) {
-            let parts = g.split(':');
+          const elements: DashboardInitParams[] = [];
+          const groups = ret[0].result.split('\n');
+          const axes = ret[1].result.split(',');
+          for (const g of groups) {
+            const parts = g.split(':');
             if (parts.length < 2) continue;
             elements.push({
               name: parts[0].trim(),
               axes: parts[1].trim().split(','),
             });
           }
-          for (let a of axes) {
+          for (const a of axes) {
             elements.push({
               name: a,
               axes: [a],

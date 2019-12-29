@@ -26,7 +26,7 @@ export class ProjectDeleteDialogComponent implements OnInit {
   >;
 
   constructor(
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<ProjectDeleteDialogComponent>,
     private ws: WebsocketService
   ) {}
 

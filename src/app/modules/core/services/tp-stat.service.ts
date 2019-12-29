@@ -22,14 +22,11 @@ import { LoginService } from './login.service';
 class TPStatResponse {
   ENABLE: number;
   MOVING: number;
-  SETTELED: number;
+  WACK: number;
   ERRMESSAGE: string;
   VRATE: number;
-  BIP: number;
-  REFRESH: number;
   DEADMAN: number;
   SWITCH: string;
-  CART_REACH: number;
   ESTOP: number;
 }
 
@@ -37,8 +34,9 @@ const refreshRate = 200;
 
 @Injectable()
 export class TpStatService {
-  modeChanged: EventEmitter<any> = new EventEmitter();
+  modeChanged: EventEmitter<string> = new EventEmitter();
   estopChange: Subject<boolean> = new Subject();
+  wackChange: Subject<boolean> = new Subject();
   onProjectLoaded: EventEmitter<boolean> = new EventEmitter();
   onlineStatus: BehaviorSubject<boolean> = new BehaviorSubject(false);
   get jogEnabled() {
@@ -48,28 +46,25 @@ export class TpStatService {
     return this._tpStatErrorHistory;
   }
 
-  private _online: boolean = false;
-  private interval: any = null;
-  private tpInterval: any = null;
-  private _systemErrorCode: number = 0;
+  private _online = false;
+  private interval = NaN;
+  private tpInterval = NaN;
+  private _systemErrorCode = 0;
   private lastStatString: string = null;
   private lastErrString: string = null;
-  private _virtualDeadman: boolean = false;
-  private _virtualModeSelector: string = 'A';
+  private _virtualDeadman = false;
+  private _virtualModeSelector = 'A';
   private _tpStatErrorHistory: TpStatError[] = [];
-  private words: any;
+  private words: {};
 
   _enabled: boolean;
   _isMoving: boolean;
-  _isSetteled: boolean;
   _errorString: string;
   _velocityRate: number;
-  _bipRequest: boolean;
-  _isRefresh: boolean;
   _estop: boolean;
   _deadman: boolean;
   _switch: string;
-  _cart_reach: boolean;
+  _wack: boolean;
 
   get systemErrorCode() {
     return this._systemErrorCode;
@@ -84,8 +79,8 @@ export class TpStatService {
   }
   set deadman(active: boolean) {
     console.log('set deadman to ' + active);
-    let oldStat = this._deadman;
-    let dm = active ? 1 : 0;
+    const oldStat = this._deadman;
+    const dm = active ? 1 : 0;
     this._virtualDeadman = active;
     this._deadman = active;
     this.ws.send('?tp_set_deadman(' + dm + ')', true, (result, cmd, err) => {
@@ -111,21 +106,9 @@ export class TpStatService {
           }
         })
         .afterClosed()
-        .subscribe((result: {pass: string, mode: string}) => {
-          const pass = result.pass;
-          const mode = result.mode;
-          if (pass) {
-            const username = this.login.getCurrentUser().user.username;
-            this.api.confirmPass(username, pass).then(ret => {
-              if (ret) {
-                this.mode = mode;
-              } else {
-                this.snack.open(
-                  this.words['password_err'],
-                  this.words['acknowledge']
-                );
-              }
-            });
+        .subscribe((mode: string) => {
+          if (mode) {
+            this.mode = mode;
           }
         });
     });
@@ -136,7 +119,7 @@ export class TpStatService {
   }
   set mode(mode: string) {
     if (!environment.production) console.log(this.mode + ' --> ' + mode);
-    let oldStat = this.mode;
+    const oldStat = this.mode;
     if (oldStat === mode) return;
     this.ws
       .query('?tp_set_switch_mode("' + mode + '")')
@@ -154,7 +137,7 @@ export class TpStatService {
                 appName: environment.appName,
               })
               .subscribe(words => {
-                let ref = this.dialog.open(ErrorDialogComponent, {
+                const ref = this.dialog.open(ErrorDialogComponent, {
                   data: {
                     title: words['stat.err_critical.title'],
                     message: words['stat.err_critical.message'],
@@ -183,87 +166,89 @@ export class TpStatService {
   get velocityRate(): number {
     return this._velocityRate;
   }
-  get cartReach(): boolean {
-    return this._cart_reach;
+  get wack(): boolean {
+    return this._wack;
   }
   get enabled(): boolean {
     return this._enabled;
   }
   toggleEnabled() {
-    let newVal = this.enabled ? 0 : 1;
+    const newVal = this.enabled ? 0 : 1;
     this.ws.send('?tp_enable(' + newVal + ')', true);
   }
 
   updateState(statString: string) {
     if (this.lastStatString === statString) return;
-    this.lastStatString = statString;
-    if (statString.length === 0) {
-      console.log('ERROR: CYCLIC FUNCTION 0 (TP_STAT) RETURNS A BLANK RESULT');
-      this._systemErrorCode = -999;
-      this.ws.clearInterval(this.interval);
-      this.onlineStatus.next(false);
-      this._online = false;
-      return;
-    }
-    try {
-      //this.zone.run(()=>{
-      var stat: TPStatResponse = JSON.parse(statString);
-      this._enabled = stat.ENABLE == 1;
-      this._isMoving = stat.MOVING == 1;
-      this._isSetteled = stat.SETTELED == 1;
-      this._errorString = stat.ERRMESSAGE;
-      this._velocityRate = stat.VRATE;
-      this._bipRequest = stat.BIP == 1; // NOT IMPLEMENTED
-      this._isRefresh = stat.REFRESH == 1;
-      this._cart_reach = stat.CART_REACH === 1;
-      if (this._estop !== ((stat.ESTOP) === 1)) {
-        this._estop = stat.ESTOP === 1;
-        this.estopChange.next(this._estop);
+    this.zone.run(()=>{
+      this.lastStatString = statString;
+      if (statString.length === 0) {
+        console.log('ERROR: CYCLIC FUNCTION 0 (TP_STAT) RETURNS A BLANK RESULT');
+        this._systemErrorCode = -999;
+        this.ws.clearInterval(this.interval);
+        this.onlineStatus.next(false);
+        this._online = false;
+        return;
       }
-
-      if (typeof stat.DEADMAN === 'undefined')
-        this._deadman = this._virtualDeadman;
-      else this._deadman = stat.DEADMAN == 1;
-
-      if (typeof stat.SWITCH === 'undefined' || !this.cmn.isTablet) {
-        if (this._switch !== this._virtualModeSelector) {
-          this._switch = this._virtualModeSelector;
-          this.modeChanged.emit(this._switch);
+      try {
+        const stat: TPStatResponse = JSON.parse(statString);
+        this._enabled = stat.ENABLE === 1;
+        this._isMoving = stat.MOVING === 1;
+        this._errorString = stat.ERRMESSAGE;
+        this._velocityRate = stat.VRATE;
+        if (this._estop !== ((stat.ESTOP) === 1)) {
+          this._estop = stat.ESTOP === 1;
+          this.estopChange.next(this._estop);
         }
-      } else {
-        if (this._switch !== stat.SWITCH) this.modeChanged.emit(this._switch);
-        this._switch = stat.SWITCH;
-      }
-
-      if (this.lastErrString !== this.errorString) {
-        this.lastErrString = this.errorString;
-        const err = this.errorString.trim();
-        if (err.length > 0) {
-          this._tpStatErrorHistory.unshift({
-            time: new Date().getTime(),
-            err: err,
-          });
-          this.zone.run(() => {
-            setTimeout(() => {
-              this.snack
-                .open(err, this.words['acknowledge'])
-                .afterDismissed()
-                .subscribe(() => {
-                  if (!this.onlineStatus.value) return;
-                  this.ws.send('?TP_CONFIRM_ERROR', true);
-                });
-            }, 0);
-          });
+        if (this._wack !== (stat.WACK === 1)) {
+          this._wack = stat.WACK === 1;
+          this.wackChange.next(this._wack);
         }
-      }
+        if (typeof stat.DEADMAN === 'undefined') {
+          this._deadman = this._virtualDeadman;
+        }
+        else this._deadman = stat.DEADMAN === 1;
 
-      this.ref.tick();
-      //});
-    } catch (err) {
-      console.log("can't update TP STAT:");
-      console.log('stat was:' + statString + '...');
-      console.log(err);
-    }
+        if (typeof stat.SWITCH === 'undefined' || !this.cmn.isTablet) {
+          if (this._switch !== this._virtualModeSelector) {
+            this._switch = this._virtualModeSelector;
+            this.modeChanged.emit(this._switch);
+          }
+        } else {
+          if (this._switch !== stat.SWITCH) this.modeChanged.emit(this._switch);
+          this._switch = stat.SWITCH;
+        }
+
+        if (this.lastErrString !== this.errorString) {
+          this.lastErrString = this.errorString;
+          const err = this.errorString.trim();
+          if (err.length > 0) {
+            this._tpStatErrorHistory.unshift({
+              time: new Date().getTime(),
+              err,
+            });
+            this.zone.run(() => {
+              setTimeout(() => {
+                this.snack
+                  .open(err, this.words['acknowledge'])
+                  .afterDismissed()
+                  .subscribe(() => {
+                    if (!this.onlineStatus.value) return;
+                    this.ws.send('?TP_CONFIRM_ERROR', true);
+                  });
+              }, 0);
+            });
+          }
+        }
+      } catch (err) {
+        console.log("can't update TP STAT:");
+        console.log('stat was:' + statString + '...');
+        console.log(err);
+      }
+    });
+  }
+
+  safetyAck() {
+    this.ws.query('?sc_acknowledge');
   }
 
   startTpLibChecker() {
@@ -292,7 +277,7 @@ export class TpStatService {
             this.zone.run(() => {
               this.trn
                 .get(['stat.err_init.title', 'stat.err_init.msg'], {
-                  result: result,
+                  result,
                 })
                 .subscribe(words => {
                   this.dialog.open(ErrorDialogComponent, {
@@ -315,15 +300,12 @@ export class TpStatService {
   resetStat() {
     this._enabled = false;
     this._isMoving = false;
-    this._isSetteled = false;
+    this._wack = false;
     this._errorString = null;
     this._velocityRate = null;
-    this._bipRequest = false;
-    this._isRefresh = false;
     this._estop = false;
     this._deadman = false;
     this._switch = null;
-    this._cart_reach = false;
   }
 
   resetAll() {
@@ -337,6 +319,7 @@ export class TpStatService {
         if (ret.result === '0') {
           this.onlineStatus.next(false);
           this._online = false;
+          this.resetStat();
         } else {
           return Promise.reject(null);
         }
@@ -367,7 +350,7 @@ export class TpStatService {
     private login: LoginService
   ) {
     this.trn
-      .get(['acknowledge', 'offline', 'online', 'password_err'])
+      .get(['acknowledge', 'offline', 'online'])
       .subscribe(words => {
         this.words = words;
         this.init();
@@ -394,8 +377,9 @@ export class TpStatService {
         // TP_VER is OK
         const cmd = '?tp_set_language("' + this.trn.currentLang + '")';
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
-          if (ret.err || ret.result !== '0')
+          if (ret.err || ret.result !== '0') {
             console.log('LANG ERR', ret.result);
+          }
         });
       }
     });

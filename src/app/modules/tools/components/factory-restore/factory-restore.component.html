@@ -3,13 +3,7 @@
 		{{ 'apps.restore.title' | translate }}
 	</div>
 	<div class="content">
-		<mat-radio-group [(ngModel)]="mode">
-			<mat-radio-button value="1">{{ 'apps.restore.default' | translate }}</mat-radio-button>
-			<mat-radio-button value="2" [disabled]="selectedRobot === null">{{
-				'apps.restore.robot' | translate
-			}}</mat-radio-button>
-		</mat-radio-group>
-		<div class="robot center-vertical" *ngIf="mode === '2'">
+		<div class="robot center-vertical">
 			<div>
 				<div>
 					<span style="font-weight: bold;">{{ 'robots.selected' | translate }}:&nbsp;</span>
@@ -24,7 +18,7 @@
 				{{ 'robots.btnChange' | translate }}...
 			</button>
 		</div>
-		<div class="warn" *ngIf="mode === '2'">
+		<div class="warn">
 			{{ 'apps.restore.msg' | translate }}
 		</div>
 	</div>

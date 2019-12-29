@@ -12,7 +12,8 @@
         <mat-button-toggle color="primary" value="R" [disabled]="data.currentMode === 'R'">R</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-		<mat-form-field appearance="outline" style="margin: 24px 0;">
+		<mat-form-field appearance="outline" style="margin-top: 24px;">
+
 			<input
 				matInput
 				type="password"
@@ -20,15 +21,15 @@
 				[(ngModel)]="val"
 				virtualKeyboard
 				ktype="password"
-				(onKeyboardClose)="confirm()"
 			/>
 		</mat-form-field>
+		<div class="warn" *ngIf="isError">{{ 'password_err' | translate }}</div>
 	</div>
 	<div class="actions">
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="confirm()" [disabled]="val === null || val.length === 0">
+		<button mat-raised-button color="primary" (click)="confirm()" [disabled]="val === null || val.length === 0">
 			{{ 'button.confirm' | translate }}
 		</button>
 	</div>

@@ -14,10 +14,10 @@ import { ProgramEditorService } from '../program-editor/services/program-editor.
 })
 export class ErrorHistoryComponent implements OnInit {
   
-  public initDone: boolean = false;
+  initDone = false;
 
   private _errors: MCError[] = [];
-  private interval: any;
+  private interval: number;
   private lastErrString: string = null;
 
   constructor(
@@ -30,7 +30,7 @@ export class ErrorHistoryComponent implements OnInit {
 
   ngOnInit() {
     this.refreshErrors();
-    this.interval = setInterval(() => {
+    this.interval = window.setInterval(() => {
       this.refreshErrors();
     }, 1000);
   }
@@ -51,7 +51,7 @@ export class ErrorHistoryComponent implements OnInit {
       this.initDone = true;
       return;
     }
-    let errors: string[] = errString.split('\n').reverse();
+    const errors: string[] = errString.split('\n').reverse();
     let newErrors: MCError[] = [];
     for (let i = 1; i < errors.length - 3; i++) {
       newErrors.push(new MCError(errors[i]));
@@ -64,7 +64,7 @@ export class ErrorHistoryComponent implements OnInit {
          arr[i - 1].line === err.line
       ) {
         err.parent = arr[i - 1].parent || arr[i-1];
-        err.parent.repeatCount++;
+        err.parent.children.push(err);
       }
     });
     newErrors = newErrors.filter(err=>{
@@ -125,11 +125,12 @@ export class MCError {
   private message: string;
   private _parent: MCError = null;
   
-  public repeatCount: number = 0;
+  children: MCError[] = [];
   
   get timestamp(): number {
-    if (this.date && this.time)
+    if (this.date && this.time) {
       return Date.parse(this.date + ' ' + this.time);
+    }
     return 0;
   }
   
@@ -154,26 +155,54 @@ export class MCError {
   }
 
   constructor(str: string) {
-    var index = str.indexOf('"');
-    var data = str.substr(0, index).split(' ');
-    var parts: string[] = [];
-    data.forEach(str => {
-      if (str !== null && str.length > 0) parts.push(str);
-    });
-    this.date = parts[0];
-    this.time = parts[1];
-    this.severity = parts[2].toUpperCase();
-    this._code = parts[3];
-    this._task = parts[4];
-    this.file = parts[5];
-    this._line = parts[6];
-    this.module = parts[7];
-    if (this.module === undefined) {
-      this.module = this.line;
-      this._line = this.file;
-      this.file = ' ';
+    try {
+      const index = str.indexOf('"');
+      const data = str.substr(0, index).split(' ');
+      const parts: string[] = [];
+      data.forEach(str => {
+        if (str !== null && str.length > 0) parts.push(str);
+      });
+      let count = 0;
+      this.date = parts[count];
+      count++;
+      this.time = parts[count];
+      count++;
+      this.severity = parts[count].toUpperCase();
+      if (this.severity === 'FATAL') {
+        count++;
+        this.severity += ' ' + parts[count].toUpperCase();
+      }
+      count++;
+      this._code = parts[count];
+      count++;
+      this._task = parts[count];
+      count++;
+      this.file = parts[count];
+      count++;
+      this._line = parts[count];
+      count++;
+      this.module = parts[count];
+      if (this.module === undefined) {
+        this.module = this.line;
+        this._line = this.file;
+        this.file = ' ';
+      }
+      count++;
+      this.message = str.substr(index + 1).slice(0, -2);
+      for (let j = count; j < parts.length; j++) {
+        this.message += parts[j] + ' ';
+      }
+    } catch (err) {
+      this.date = '';
+      this.time = '';
+      this.severity = '';
+      this._code = '';
+      this._task = '';
+      this.file = '';
+      this._line = '';
+      this.module = '';
+      this.message = '';
+      console.log(err);
     }
-    this.message = str.substr(index + 1).slice(0, -2);
-    for (var j = 8; j < parts.length; j++) this.message += parts[j] + ' ';
   }
 }

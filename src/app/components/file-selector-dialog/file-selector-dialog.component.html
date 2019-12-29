@@ -14,7 +14,7 @@
 		<button mat-button color="primary" mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-raised-button color="primary" (click)="open()" [disabled]="selected === null">
+		<button mat-raised-button color="primary" (click)="open()" [disabled]="selected === ''">
 			{{ 'button.open' | translate }}
 		</button>
 	</div>

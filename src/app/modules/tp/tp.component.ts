@@ -18,9 +18,9 @@ const TABS = ['jog', lbnTab, hGTab];
 })
 export class TpComponent implements OnInit, OnDestroy {
   
-  tabs: Tab[];
+  tabs: Tab[] = [];
 
-  private timeout: any = null;
+  private timeout: number = null;
   private unsubscribeEvent = new Subject<void>();
 
   constructor(
@@ -32,8 +32,8 @@ export class TpComponent implements OnInit, OnDestroy {
     private stat: TpStatService
   ) {
     this.trn.get('jogScreen.tabs').subscribe(words => {
-      let tabs: Tab[] = [];
-      for (let t of TABS) {
+      const tabs: Tab[] = [];
+      for (const t of TABS) {
         tabs.push({
           path: t,
           label: words[t],
@@ -56,12 +56,11 @@ export class TpComponent implements OnInit, OnDestroy {
     this.stat.modeChanged
       .pipe(takeUntil(this.unsubscribeEvent))
       .subscribe(mode => {
-        console.log(mode);
         if (mode !== 'T1' && mode !== 'T2') {
           this.router.navigateByUrl('/');
         }
       });
-    this.timeout = setTimeout(()=>{
+    this.timeout = window.setTimeout(()=>{
       if (this.stat.mode !== 'T1' && this.stat.mode !== 'T2') {
         this.router.navigateByUrl('/');
       }
@@ -69,8 +68,9 @@ export class TpComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.timeout !== null)
+    if (this.timeout !== null) {
       clearTimeout(this.timeout);
+    }
     if (!this.cmn.isTablet) {
       this.stat.mode = 'A';
     }
@@ -86,9 +86,10 @@ export class TpComponent implements OnInit, OnDestroy {
    * @returns {boolean}
    * @memberof TpComponent
    */
-  public shouldShow(tabPath: string): boolean {
-    const isLbn = _tabPath => (_tabPath === lbnTab ? true : false);
-    const isHandGuiding = _tabPath => (_tabPath === hGTab ? true : false);
+  shouldShow(tabPath: string): boolean {
+    const isLbn = (_tabPath: string) => (_tabPath === lbnTab ? true : false);
+    const isHandGuiding = 
+        (_tabPath: string) => (_tabPath === hGTab ? true : false);
     if (isLbn(tabPath)) {
       return this.utils.IsScara ? false : true;
     } else if (isHandGuiding(tabPath)) {

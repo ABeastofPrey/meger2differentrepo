@@ -58,6 +58,7 @@ import { HomeDialogService } from './services/home-dialog.service';
 import { FileTreeModule } from '../file-tree/file-tree.module';
 import { ProjectDeleteDialogComponent } from './components/project-delete-dialog/project-delete-dialog.component';
 import { VisioinCommandModule } from './components/dialogs/vision-command/vision-command.module';
+import { HomeScreenModule } from '../home-screen/home-screen.module';
 
 @NgModule({
   imports: [
@@ -70,6 +71,7 @@ import { VisioinCommandModule } from './components/dialogs/vision-command/vision
     IoMappingModule,
     FileTreeModule,
     VisioinCommandModule,
+    HomeScreenModule
   ],
   declarations: [
     ProgramEditorComponent,

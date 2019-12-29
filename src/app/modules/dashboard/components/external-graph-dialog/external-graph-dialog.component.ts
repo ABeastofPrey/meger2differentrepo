@@ -13,9 +13,9 @@ export class ExternalGraphDialogComponent implements OnInit {
   
   files: string[] = [];
   selectedFile: string = null;
-  err: boolean = false;
+  err = false;
   
-  private _mode: string = 'mc';
+  private _mode = 'mc';
   get mode() {
     return this._mode;
   }
@@ -25,7 +25,7 @@ export class ExternalGraphDialogComponent implements OnInit {
   }
 
   constructor(
-    private ref: MatDialogRef<any>,
+    private ref: MatDialogRef<string>,
     private api: ApiService
   ) {}
 
@@ -40,11 +40,12 @@ export class ExternalGraphDialogComponent implements OnInit {
     this.ref.close(this.selectedFile);
   }
   
-  onUploadFilesChange(e: any) {
+  onUploadFilesChange(e: { target: { files: FileList } } ) {
     this.err = false;
     let count = 0;
-    let targetCount = e.target.files.length;
-    for (let f of e.target.files) {
+    const targetCount = e.target.files.length;
+    for (let i=0; i<e.target.files.length; i++) {
+      const f = e.target.files.item(i);
       this.api.uploadRec(f).then(
         (ret: UploadResult) => {
           // ON SUCCUESS

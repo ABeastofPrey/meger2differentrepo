@@ -2,7 +2,10 @@
 	<div [class.hidden]="!isRouterLoading" class="spinner mat-elevation-z6">
 		<img src="assets/pics/{{ env.platform.spinner }}" />
 	</div>
-	<mat-toolbar class="mat-elevation-z3" [color]="(stat.systemErrorCode < 0 || screenManager.debugMode) ? 'warn' : 'primary'"
+	<button mat-mini-fab color="primary" (click)="toggleToolbar()" class="toolbar-fab" *ngIf="!toolbarShown && !cmn.isTablet" @fadeSimple matTooltip="{{'app_bar.toolbar_expand' | translate}}">
+		<mat-icon>expand_more</mat-icon>
+	</button>
+	<mat-toolbar [class.contracted]="!toolbarShown" class="mat-elevation-z3" [color]="(stat.systemErrorCode < 0 || screenManager.debugMode) ? 'warn' : 'primary'"
 		[class.primary-bg-dark]="stat.systemErrorCode >= 0">
     <div class="hidden-menu" *ngIf="allowHiddenMenu && !screenManager.debugMode" [class.visible]="hiddenMenuVisible" (click)="closeHiddenMenu()">
       <button
@@ -23,14 +26,17 @@
         mat-mini-fab
         matTooltip="{{ 'simulator' | translate }}"
         (click)="toggleSimulator()"
-        [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator"
+        [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator || screenManager.screen.url === 'simulator'"
       >
         <mat-icon>3d_rotation</mat-icon>
       </button>
     </div>
     <div class="toolbar-wrapper">
-      <button mat-icon-button (click)="toggleMenu()" tourAnchor="menu">
+      <button mat-icon-button (click)="toggleMenu()" tourAnchor="menu" matTooltip="{{'app_bar.menu_toggle' | translate}}">
         <mat-icon>menu</mat-icon>
+			</button>
+			<button mat-icon-button (click)="toggleToolbar()" *ngIf="!cmn.isTablet" matTooltip="{{'app_bar.toolbar_contract' | translate}}">
+        <mat-icon>expand_less</mat-icon>
       </button>
       <div class="center-vertical main-header">
         <img src="assets/pics/{{ env.platform.logo }}" class="stx-logo" />
@@ -38,25 +44,35 @@
       <mat-icon *ngIf="stat.systemErrorCode < 0" [matTooltip]="'Error ' + stat.systemErrorCode">warning</mat-icon>
       <div class="remote" *ngIf="!cmn.isTablet && stat.mode === 'R'">
         <mat-icon>settings_remote</mat-icon>
-        REMOTE MODE
+        {{ 'mode_remote' | translate }}
       </div>
       <div class="remote" *ngIf="screenManager.debugMode">
         <mat-icon>bug_report</mat-icon>
-        DEBUG MODE
+        {{ 'mode_debug' | translate }}
         <button mat-button (click)="quitDebugMode()"><mat-icon>close</mat-icon></button>
       </div>
-		<mat-icon color="accent" *ngIf="ws.otherClients > 0"
-			[matTooltip]="ws.otherClients + ' Other connections are active'">warning</mat-icon>
-    <button mat-raised-button *ngIf="tpOnline && stat.mode && cmn.isTablet" class="mode-selector" [disabled]="login.isViewer" (click)="stat.changeMode()">
-      {{ stat.mode === 'None' ? '--' : stat.mode }}
-    </button>
-		<mat-slide-toggle *ngIf="!login.isViewer && data.dataLoaded.value && !data.simulatedSystem" color="accent"
-			[checked]="data.simulated" (change)="data.toggleSimulated($event)">{{ 'simulative' | translate }}
-		</mat-slide-toggle>
-		<button mat-mini-fab [disabled]="login.isViewer || !stat.onlineStatus.value" color="warn"
-			[class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()" *ngIf="!screenManager.debugMode"
-			matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}">
-        <mat-icon>power_settings_new</mat-icon>
+			<mat-icon color="accent" *ngIf="ws.otherClients > 0"
+				[matTooltip]="ws.otherClients + ' Other connections are active'">warning</mat-icon>
+				<button 
+					matTooltip="{{ 'safety.ack_tooltip' | translate }}"
+					mat-raised-button
+					class="safety-ack"
+					color="accent"
+					*ngIf="tpOnline"
+					[disabled]="login.isViewer || !stat.wack"
+					(click)="stat.safetyAck()">
+					ACK
+				</button>
+			<button mat-raised-button *ngIf="tpOnline && stat.mode && cmn.isTablet" class="mode-selector" [disabled]="login.isViewer" (click)="stat.changeMode()">
+				{{ stat.mode === 'None' ? '--' : stat.mode }}
+			</button>
+			<mat-slide-toggle *ngIf="!login.isViewer && data.dataLoaded.value && !data.simulatedSystem" color="accent"
+				[checked]="data.simulated" (change)="data.toggleSimulated($event)">{{ 'simulative' | translate }}
+			</mat-slide-toggle>
+			<button mat-mini-fab [disabled]="login.isViewer || !stat.onlineStatus.value" color="warn"
+				[class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()" *ngIf="!screenManager.debugMode"
+				matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}">
+					<mat-icon>power_settings_new</mat-icon>
       </button>
       <button
         *ngIf="!allowHiddenMenu && !screenManager.debugMode"
@@ -80,7 +96,7 @@
             prj.activeProject ||
             !cooService.coosLoaded.value ||
             screenManager.controlsAnimating.value ||
-            (cmn.isTablet && stat.mode !== 'T1')
+            (cmn.isTablet && stat.mode !== 'T1' && stat.mode !== 'T2')
 				" tourAnchor="jog-controls">
           <mat-icon>touch_app</mat-icon>
         </button>
@@ -92,15 +108,15 @@
         mat-mini-fab
         matTooltip="{{ 'simulator' | translate }}"
         (click)="toggleSimulator()"
-        [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator"
+        [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator || screenManager.screen.url === 'simulator'"
         *ngIf="!allowHiddenMenu && !screenManager.debugMode"
       >
         <mat-icon>3d_rotation</mat-icon>
       </button>
-		<button mat-mini-fab matTooltip="{{ 'message_log' | translate }}" (click)="notification.toggleWindow()"
-			[matBadge]="notification.count" matBadgePosition="below after" matBadgeColor="warn"
-			tourAnchor="message-log-button">
-        <mat-icon>notifications</mat-icon>
+			<button mat-mini-fab matTooltip="{{ 'message_log' | translate }}" (click)="notification.toggleWindow()"
+				[matBadge]="notification.count" matBadgePosition="below after" matBadgeColor="warn"
+				tourAnchor="message-log-button">
+					<mat-icon>notifications</mat-icon>
       </button>
       <button *ngIf="login.isAdmin" mat-mini-fab matTooltip="{{ 'terminal' | translate }}" (click)="toggleTerminal()">
         <mat-icon>featured_play_list</mat-icon>
@@ -121,6 +137,7 @@
 			[mode]="!cmn.isTablet ? 'side' : 'over'"
 			[opened]="!cmn.isTablet"
 			class="mat-elevation-z1"
+			[class.contracted]="!toolbarShown"
 		>
 			<main-menu [drawer]="drawer" [class.menu-small]="!screenManager.menuExpanded"></main-menu>
 		</mat-sidenav>
@@ -235,6 +252,8 @@
 		class="window window-large mat-elevation-z6"
 		ngDraggable
 		ngResizable
+		rzMinWidth="240"
+		rzMinHeight="160"
 		rzContainment="#container"
 		[bounds]="container"
 		inBounds="true"
@@ -249,19 +268,41 @@
 		</div>
 		<notification-window></notification-window>
 	</div>
-	<div #watchWindow (started)="onWindowMoving(watchWindow)" *ngIf="watch.windowOpen" class="window mat-elevation-z6"
-		ngDraggable [bounds]="container" inBounds="true" [handle]="handleWatch">
+	<div 
+			#watchWindow
+			(started)="onWindowMoving(watchWindow)"
+			*ngIf="watch.windowOpen"
+			class="window mat-elevation-z6"
+			ngDraggable
+			ngResizable
+			rzMinWidth="500"
+			rzMinHeight="180"
+			[bounds]="container"
+			inBounds="true"
+			[handle]="handleWatch">
 		<div class="title primary-bg" #handleWatch>
 			<span>{{ 'watch.title' | translate }}</span>
 			<button mat-icon-button style="color: #fff;" (click)="watch.toggleWindow()">
 				<mat-icon>close</mat-icon>
 			</button>
 		</div>
-		<watch-window ngResizable></watch-window>
+		<watch-window></watch-window>
 	</div>
-	<div #terminalWindow (started)="onWindowMoving(terminalWindow)" *ngIf="terminalOpen"
-		class="window window-large mat-elevation-z6" style="left: 20%; top: 20%" ngDraggable ngResizable
-		rzContainment="#container" [bounds]="container" inBounds="true" [handle]="handleTerminal">
+	<div 
+			#terminalWindow
+			(started)="onWindowMoving(terminalWindow)"
+			*ngIf="terminalOpen"
+			class="window window-large mat-elevation-z6"
+			style="left: 20%; top: 20%"
+			ngDraggable
+			ngResizable
+			rzContainment="#container"
+			rzMinWidth="240"
+			rzMinHeight="160"
+			[bounds]="container"
+			inBounds="true"
+			(rzStop)="terminal.resizeRequired.emit()"
+			[handle]="handleTerminal">
 		<div class="title primary-bg" #handleTerminal>
 			<span>{{ 'terminal' | translate }}</span>
 			<button mat-icon-button color="accent" (click)="terminalOpen = false">
@@ -273,15 +314,20 @@
 	<div
 		#simWindow
 		(started)="onWindowMoving(simWindow)"
-		*ngIf="simOpen"
+		*ngIf="simOpen && screenManager.screen.url !== 'simulator'"
 		class="window window-sim mat-elevation-z6"
 		style="left: 20%; top: 20%"
 		ngDraggable
 		ngResizable
+		rzMinWidth="200"
+		rzMinHeight="150"
 		rzContainment="#container"
 		[bounds]="container"
 		inBounds="true"
 		[handle]="handleSim"
+		(rzStart)="resizing=true"
+		(rzStop)="resizing=false"
+		[style.background] = "resizing ? sim.bgColor : auto"
 	>
 		<div class="sim-wrapper">
 			<div class="title primary-bg" #handleSim>
@@ -300,6 +346,7 @@
 				[roboturl]="robot.get3DModelPath(robot.selectedRobot.part_number)"
 				[jntValues]="cooService.jointsAsArr"
 				(onload)="simLoaded = true"
+				[class.simResize] = "resizing"
 			></lib-app-simulator>
 			<div [class.hidden]="simLoaded" class="spinner mat-elevation-z6">
 				<img src="assets/pics/{{ env.platform.spinner }}" />

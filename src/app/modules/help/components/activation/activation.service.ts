@@ -7,7 +7,7 @@ import { WebsocketService } from '../../../core/services/websocket.service';
 export class ActivationService {
   constructor(private ws: WebsocketService) {}
 
-  public async getMachineId(): Promise<any> {
+  async getMachineId() {
     const api = '?sys.serialnumber';
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -18,7 +18,7 @@ export class ActivationService {
     return retrieveID(api);
   }
 
-  public async getKey(): Promise<any> {
+  async getKey() {
     const api = '?ACT_getKey';
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);
@@ -29,7 +29,7 @@ export class ActivationService {
     return retrieveKey(api);
   }
 
-  public async setKey(key: string): Promise<any> {
+  async setKey(key: string) {
     const api = `ACT_setKey("${key}")`;
     const query = _api => this.ws.query(_api);
     const resHandler = handler(identity, errMsgProp);

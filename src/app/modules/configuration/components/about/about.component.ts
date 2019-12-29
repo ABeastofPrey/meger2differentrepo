@@ -12,6 +12,7 @@ import {takeUntil} from 'rxjs/internal/operators/takeUntil';
 })
 export class AboutComponent implements OnInit {
   
+  // tslint:disable-next-line: variable-name
   CSVer: string = environment.gui_ver;
   serial: string;
   
