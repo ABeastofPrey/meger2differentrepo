@@ -1,6 +1,8 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
+  ViewChild,
   ViewChildren,
   AfterViewInit,
   QueryList,
@@ -9,7 +11,7 @@ import {
   MatSort,
   MatTableDataSource,
   MatTabChangeEvent,
-  MatDialog,
+  MatDialog, MatTab
 } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 import { IO, IoService } from '../../services/io.service';
@@ -34,7 +36,7 @@ import { LoginService } from '../../../core';
 /**
  * This class describes the logics to io monitor.
  */
-export class IoComponent implements OnInit, AfterViewInit {
+export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * The io table columns.
    */
@@ -57,7 +59,7 @@ export class IoComponent implements OnInit, AfterViewInit {
   /**
    * Whether the io value is in hex format.
    */
-  hex = false;
+  hex: boolean = false;
 
   /**
    * The selected io option in left table.
@@ -94,13 +96,11 @@ export class IoComponent implements OnInit, AfterViewInit {
   /**
    * The IoTableColumn enum object reference.
    */
-  // tslint:disable-next-line: variable-name
   IoTableColumnReference = IoTableColumn;
 
   /**
    * The IoFormatOptions enum object reference.
    */
-  // tslint:disable-next-line: variable-name
   IoFormatOptionsReference = IoFormatOptions;
 
   /**
@@ -116,9 +116,9 @@ export class IoComponent implements OnInit, AfterViewInit {
   /**
    * The tabs used for custom view display.
    */
-  tabs: string[] = [];
-  tabsInLib: string[] = [];
-  tabsTemp: string[] = [];
+  tabs: Array<string> = [];
+  tabsInLib: Array<string> = [];
+  tabsTemp: Array<string> = [];
 
   /**
    * Current selected tab view.
@@ -130,12 +130,12 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   customTabAddIndex = 1;
   customTabDeleteIndex = 0;
-  customEmptyIndex: number[] = [0, 0, 0];
+  customEmptyIndex: Array<number> = [0, 0, 0];
 
   /**
    * Created formControl for at most 3 custom tab view.
    */
-  customViewFormControl: FormControl[] = [];
+  customViewFormControl: Array<FormControl> = [];
 
   /**
    * The list of matsort directives.
@@ -147,7 +147,11 @@ export class IoComponent implements OnInit, AfterViewInit {
    */
   @ViewChildren(CustomIOComponent) customIos: QueryList<CustomIOComponent>;
 
-  private words: {};
+  @ViewChild('standardIOTab', { static: true }) standardIOTab: MatTab;
+
+  private words: any;
+
+  private refreshInterval: any;
 
   /**
    * Constructor.
@@ -206,9 +210,18 @@ export class IoComponent implements OnInit, AfterViewInit {
     });
   }
 
+  ngOnDestroy() {
+    clearInterval(this.refreshInterval);
+  }
+
   ngAfterViewInit() {
     this.onViewSelectionChange('all');
     this.customTabDeleteIndex = 0;
+    this.refreshInterval = setInterval(() => {
+      if (this.standardIOTab.isActive) {
+        this.onViewSelectionChange('all');
+      }
+    }, 200);
   }
 
   /**
@@ -220,8 +233,8 @@ export class IoComponent implements OnInit, AfterViewInit {
     }
 
     this.customTabAddIndex = this.customEmptyIndex.indexOf(0) + 1;
-    const tabName = this.words['customView'] + ' ' + this.customTabAddIndex;
-    const newCustomViewFormControl = new FormControl(tabName, [
+    let tabName = this.words['customView'] + ' ' + this.customTabAddIndex;
+    let newCustomViewFormControl = new FormControl(tabName, [
       Validators.required,
     ]);
 
@@ -252,7 +265,7 @@ export class IoComponent implements OnInit, AfterViewInit {
    * delete current selected custom tab view.
    */
   deleteCustomTab() {
-    const ref = this.dialog.open(YesNoDialogComponent, {
+    let ref = this.dialog.open(YesNoDialogComponent, {
       disableClose: true,
       data: {
         title: this.words['dialogTitle'],
@@ -411,9 +424,9 @@ export class IoComponent implements OnInit, AfterViewInit {
    * @param index The index of the selected custom io tab.
    */
   private refreshCustomIoTab(index: number) {
-    const selectedIndex = this.calculateCustomIoTabIndex(index);
+    let selectedIndex = this.calculateCustomIoTabIndex(index);
 
-    const customIo = this.customIos.find(
+    let customIo = this.customIos.find(
       item => item.tableIndex === selectedIndex
     );
     if (customIo) {

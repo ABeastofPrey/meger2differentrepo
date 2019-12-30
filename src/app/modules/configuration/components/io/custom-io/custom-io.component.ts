@@ -1,9 +1,10 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   ViewChild,
   AfterViewInit,
-  Input,
+  Input
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatTable, MatTableDataSource, MatRow } from '@angular/material';
@@ -19,6 +20,8 @@ import {
   CustomIOPort,
 } from '../../../services/io.service';
 
+let refreshInterval: number;
+
 @Component({
   selector: 'app-custom-io',
   templateUrl: './custom-io.component.html',
@@ -27,7 +30,7 @@ import {
 /**
  * This class describes the logics to custom io view.
  */
-export class CustomIOComponent implements OnInit, AfterViewInit {
+export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() tableIndex: number;
 
   /**
@@ -132,7 +135,12 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
+
+  ngOnDestroy() {
+    clearInterval(refreshInterval);
+    refreshInterval = null;
+  }
 
   ngAfterViewInit() {
     this.ioService
@@ -142,17 +150,10 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
         this.checkCustomIoTypes();
       })
       .then(() => {
-        if (this.customIOTypes.length) {
-          this.ioService
-            .queryCustomIos(this.tableIndex, this.customHex)
-            .then(() => {
-              this.customDataSource.data = this.ioService.getCustomIos(
-                this.customIOTypes,
-                this.customIoPorts
-              );
-              this.enableButtonsInCustomTab(true, false);
-            });
-        }
+        this.refreshTable();
+        !refreshInterval && (refreshInterval = setInterval(() => {
+          this.refreshTable();
+        }, 500) as any);
       });
   }
 
@@ -438,5 +439,34 @@ export class CustomIOComponent implements OnInit, AfterViewInit {
       }
     }
     return null;
+  }
+
+  private refreshTable(): void {
+    if (this.customIOTypes.length) {
+      this.ioService
+        .queryCustomIos(this.tableIndex, this.customHex)
+        .then(() => {
+          const res = this.ioService.getCustomIos(
+            this.customIOTypes,
+            this.customIoPorts
+          );
+          if (this.customDataSource.data.length === 0) {
+            this.customDataSource.data = res;
+          } else {
+            res.forEach((x, i) => {
+              this.customDataSource.data[i].selectedType = x.selectedType;
+              this.customDataSource.data[i].selectedPort = x.selectedPort;
+              this.customDataSource.data[i].label = x.label;
+              this.customDataSource.data[i].value = x.value;
+              (this.customDataSource.data[i].type.length !== x.type.length) && 
+              (this.customDataSource.data[i].type = x.type);
+              (this.customDataSource.data[i].port.length = x.port.length) && 
+              (this.customDataSource.data[i].port = x.port);
+            });
+          }
+
+          this.enableButtonsInCustomTab(true, false);
+        });
+    }
   }
 }

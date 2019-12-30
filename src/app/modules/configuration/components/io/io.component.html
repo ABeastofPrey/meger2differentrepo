@@ -5,7 +5,7 @@
 		[selectedIndex]="selected.value"
 		(selectedIndexChange)="selected.setValue($event)"
 	>
-		<mat-tab label="{{ 'io.standardView' | translate }}">
+		<mat-tab #standardIOTab label="{{ 'io.standardView' | translate }}">
 			<div class="center-vertical">
 				<div class="content">
 					<div>
@@ -176,11 +176,11 @@
 				}}</mat-checkbox>
 			</div>
 		</mat-tab>
-		<mat-tab *ngFor="let tab of tabs; let index = index" class="content" #myTab>
+		<mat-tab *ngFor="let tab of tabs; let index = index" class="content" #customIOTab>
 			<ng-template mat-tab-label>
-				<input *ngIf="!myTab.isActive" matInput [(ngModel)]="customViewFormControl[index].value" />
+				<input *ngIf="!customIOTab.isActive" matInput [(ngModel)]="customViewFormControl[index].value" />
 				<input
-					*ngIf="myTab.isActive"
+					*ngIf="customIOTab.isActive"
 					matInput
 					placeholder=""
 					[(ngModel)]="customViewFormControl[index].value"
@@ -196,7 +196,7 @@
 					{{ 'io.invalidName' | translate }}
 				</mat-error>
 			</ng-template>
-			<app-custom-io [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
+			<app-custom-io *ngIf="customIOTab.isActive" [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
 		</mat-tab>
 	</mat-tab-group>
 
