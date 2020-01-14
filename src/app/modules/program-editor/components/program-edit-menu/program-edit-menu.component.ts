@@ -1,5 +1,3 @@
-import { Jump3DialogComponent } from './../dialogs/jump3-dialog/jump3-dialog.component';
-import { JumpDialogComponent } from './../dialogs/jump-dialog/jump-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DataService, WebsocketService } from '../../../core';
@@ -24,9 +22,11 @@ import { PayloadSelectorComponent } from '../dialogs/payload-selector/payload-se
 import { HomeDialogComponent } from '../dialogs/home-dialog/home-dialog.component';
 import { IoSelectorDialogComponent } from '../../../../components/io-selector-dialog/io-selector-dialog.component';
 import { PLSSourceComponent } from '../dialogs/pls-source/pls-source.component';
-import { CommandType as VisionCommandType } from '../dialogs/vision-command/enums/command-type.enum';
-import { VisionCommandComponent } from '../dialogs/vision-command/components/vision-command/vision-command.component';
-import { VisionLoadStationBookComponent } from '../dialogs/vision-command/components/vision-load-station-book/vision-load-station-book.component';
+import { CommandType as VisionCommandType } from '../combined-dialogs/enums/vision-command.enum';
+import { CommandType as JumpxCommandType } from '../combined-dialogs/enums/jumpx-command.enums';
+import { VisionCommandComponent } from '../combined-dialogs/components/vision-command/vision-command.component';
+import { VisionLoadStationBookComponent } from '../dialogs/vision-load-station-book/vision-load-station-book.component';
+import { JumpxCommandComponent } from '../combined-dialogs/components/jumpx-command/jumpx-command.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -35,8 +35,9 @@ import { VisionLoadStationBookComponent } from '../dialogs/vision-command/compon
 })
 export class ProgramEditMenuComponent implements OnInit {
   parser: LineParser;
-  isScara = false;
-  visionCommandType = VisionCommandType;
+  isScara: boolean = false;
+  public visionCommandType = VisionCommandType;
+  public jumpxCommandType = JumpxCommandType;
 
   constructor(
     public prg: ProgramEditorService,
@@ -199,7 +200,9 @@ export class ProgramEditMenuComponent implements OnInit {
           this.prg.lineParams
         );
         break;
-      default:
+      case this.prg.parser.LineType.JUMP:
+          const {commandName, payload} = this.prg.lineParams;
+          this.jumpxCommand(commandName, payload);
         break;
     }
   }
@@ -318,32 +321,6 @@ export class ProgramEditMenuComponent implements OnInit {
         this.prg.insertAndJump(cmd, 0);
       }
     });
-  }
-  menu_jump() {
-    const ref = this.dialog.open(JumpDialogComponent, {
-      width: '400px',
-      disableClose: true,
-    });
-    ref.afterClosed().subscribe((cmd: string) => {
-      if (cmd) {
-        this.prg.insertAndJump(cmd, 0);
-      }
-    });
-  }
-  menu_jump3(commandType: string) {
-    const type = commandType === 'jump3' ? 'Jump3' : 'Jump3cp';
-    this.dialog
-      .open(Jump3DialogComponent, {
-        width: '400px',
-        disableClose: true,
-        data: { type },
-      })
-      .afterClosed()
-      .subscribe((cmd: string) => {
-        if (cmd) {
-          this.prg.insertAndJump(commandType + cmd, 0);
-        }
-      });
   }
   menu_gohome() {
     this.dialog
@@ -480,7 +457,25 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
 
-  vLoadStationBook(): void {
+  public jumpxCommand(type: JumpxCommandType, model = null): void {
+    this.dialog.open(JumpxCommandComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        type,
+        model
+      }
+    }).afterClosed().subscribe((cmd: string) => {
+      if (cmd && !model) {
+        this.prg.insertAndJump(cmd, 0);
+      } else if (cmd && !!model) {
+        let index = this.prg.lineParams['line']; // Line index
+        this.prg.replaceLine(index, cmd);
+      }
+    });
+  }
+
+  public vLoadStationBook(): void {
     this.dialog.open(VisionLoadStationBookComponent, {
       width: '400px',
       disableClose: true,

@@ -17,7 +17,7 @@ import { HttpClient } from '@angular/common/http';
 import { of, Observable } from 'rxjs';
 import { CommonService } from '../core/services/common.service';
 import { ApiService } from '../core/services/api.service';
-import { NgrxRootModule } from '../../modules/ngrx-root/ngrx-root.module';
+import { NgrxRootModule } from '../../modules/ngrx-root/ngrx-root-test.module';
 
 // tslint:disable-next-line: no-any
 declare const require: any;

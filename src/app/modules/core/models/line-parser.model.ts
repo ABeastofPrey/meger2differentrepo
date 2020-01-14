@@ -1,17 +1,53 @@
 import { DataService } from '..';
 import { TPVariable } from './tp/tp-variable.model';
+import { JumpxCommand } from '../../program-editor/components/combined-dialogs/models/jumpx-command.model';
+import { CommandType as JumpxCommandType, CommandOptions } from '../../program-editor/components/combined-dialogs/enums/jumpx-command.enums';
+import { split, filter, toLower, map, compose, prop, equals, ifElse } from 'ramda';
+import { isNotEmpty } from 'ramda-adjunct';
 
 enum LineType {
   MOVE,
   CIRCLE,
   PROGRAM,
   OTHER,
+  JUMP,
 }
+
+/**
+ * getArrIndex("P1[2]"); // => [ 'P1', 2 ]
+ * getArrIndex("P1[2][100]"); // => [ 'P1', 2, 100 ]
+ * @param str 
+ */
+export const getArrIndex = str => {
+  if (typeof str !== 'string') return [];
+  const isLeftMark = x => x === '[';
+  const isRightMark = x => x === ']';
+  const isMatch = (x, y) => isLeftMark(x) && isRightMark(y);
+  const getVal = x => Number.isNaN(parseFloat(x)) ? x : parseFloat(x);
+  const markStack = [];
+  const result = [];
+  let tempStr = '';
+  [...str].forEach(x => {
+    if (isLeftMark(x)) {
+      isNotEmpty(tempStr) && result.push(getVal(tempStr));
+      markStack.push(x);
+      tempStr = '';
+    } else if (isRightMark(x)) {
+      if (isMatch(markStack.pop(), x)) {
+        isNotEmpty(tempStr) && result.push(getVal(tempStr));
+        tempStr = '';
+      }
+    } else {
+      tempStr += x;
+    }
+  });
+  return result;
+};
 
 export class LineParser {
   LineType = LineType;
 
-  constructor(private data: DataService) {}
+  constructor(private data: DataService) { }
 
   getLineType(row: string): LineType {
     row = row.toUpperCase().trim();
@@ -21,13 +57,15 @@ export class LineParser {
     if (i === 0) return LineType.CIRCLE;
     i = row.indexOf('PROGRAM');
     if (i === 0) return LineType.PROGRAM;
+    i = row.indexOf('JUMP');
+    if (i === 0) return LineType.JUMP;
     return LineType.OTHER;
   }
 
   getVariablesFromLine(row: string): TPVariable[] {
     row = row
       .toUpperCase()
-      .replace(/CIRCLEPOINT|TARGETPOINT|CIRCLECENTER|=/gi, '')
+      .replace(/CIRCLEPOINT|ASCENDINGPOINT|DESCENDINGPOINT|TARGETPOINT|=/gi, '')
       .trim();
     const result: TPVariable[] = [];
     const tmp = row.split(' ');
@@ -82,15 +120,15 @@ export class LineParser {
   getLineParameters(line: string, lineType: LineType, rowIndex: number) {
     let searchWord: string;
     let index: number;
-    const params = {
+    let params = {
       lineType,
       line: rowIndex,
     };
-    line = line.toUpperCase().trim();
     switch (lineType) {
-      case LineType.MOVE: {
-        const lineVars = this.getVariablesFromLine(line);
-        const element = this.getMotionElementFromLine(line);
+      case LineType.MOVE:
+        line = line.toUpperCase().trim();
+        var lineVars = this.getVariablesFromLine(line);
+        var element = this.getMotionElementFromLine(line);
         if (lineVars.length > 0) params['target'] = lineVars[0];
         if (element) params['element'] = element;
         params['moves'] = line.indexOf('MOVES') === 0;
@@ -121,10 +159,10 @@ export class LineParser {
           }
         }
         break;
-      }
-      case LineType.CIRCLE: {
-        const lineVars = this.getVariablesFromLine(line);
-        const element = this.getMotionElementFromLine(line);
+      case LineType.CIRCLE:
+        line = line.toUpperCase().trim();
+        var lineVars = this.getVariablesFromLine(line);
+        var element = this.getMotionElementFromLine(line);
         if (lineVars.length > 0) params['target'] = lineVars;
         if (element) params['element'] = element;
         searchWord = 'ANGLE';
@@ -171,10 +209,104 @@ export class LineParser {
           }
         }
         break;
-      }
+      case LineType.JUMP:
+        const res = this.parseJumpxCommand(line);
+        params = { ...params, ...res };
+        break;
       default:
         return null;
     }
     return params;
+  }
+
+  private parseJumpxCommand(command: string): { commandName: JumpxCommandType, payload: JumpxCommand } {
+    const cmdObj = { commandName: null, payload: { [CommandOptions.WithPls]: [] } } as { commandName: JumpxCommandType, payload: JumpxCommand };
+    const isMotionElement = x => this.data.robots.includes(x) ? true : false;
+    const splitSpace = split(' ');
+    const hasBracket = str => str.indexOf('[') !== -1;
+    const hasOnlyOne = compose(equals(1), prop('length'));
+    const splitEqualMark = map(split('='));
+    const filterEmpty = filter(isNotEmpty);
+    const filterWithSpace = compose(filterEmpty, splitSpace);
+    const isJumpx = x => {
+      switch (toLower(x)) {
+        case toLower(JumpxCommandType.Jump):
+          return true;
+        case toLower(JumpxCommandType.Jump3):
+          return true;
+        case toLower(JumpxCommandType.Jump3cp):
+          return true;
+        default: return false;
+      }
+    };
+    const bindKey = ([key]) => {
+      if (isJumpx(key)) {
+        cmdObj.commandName = key;
+      } else if (isMotionElement(key)) {
+        cmdObj.payload[CommandOptions.MotionElement] = key;
+      } else {
+        if(hasBracket(key)) {
+          const [_key, index] = getArrIndex(key);
+          cmdObj.payload[CommandOptions.TargetPoint] = _key;
+          cmdObj.payload[CommandOptions.TargetPointIndex] = index;
+        } else {
+          cmdObj.payload[CommandOptions.TargetPoint] = key;
+        }
+      }
+    };
+    const bindVal = ([key, val]) => {
+      const _key = toLower(key);
+      if (_key === toLower(CommandOptions.AscendingPoint)) {
+        if(hasBracket(val)) {
+          const [_key, index] = getArrIndex(val);
+          cmdObj.payload[CommandOptions.AscendingPoint] = _key;
+          cmdObj.payload[CommandOptions.AscendingPointIndex] = index;
+        } else {
+          cmdObj.payload[CommandOptions.AscendingPoint] = val;
+        }
+      }
+      if (_key === toLower(CommandOptions.DescendingPoint)) {
+        if(hasBracket(val)) {
+          const [_key, index] = getArrIndex(val);
+          cmdObj.payload[CommandOptions.DescendingPoint] = _key;
+          cmdObj.payload[CommandOptions.DescendingPointIndex] = index;
+        } else {
+          cmdObj.payload[CommandOptions.DescendingPoint] = val;
+        }
+      }
+      if (_key === toLower(CommandOptions.TargetPoint)) {
+        if(hasBracket(val)) {
+          const [_key, index] = getArrIndex(val);
+          cmdObj.payload[CommandOptions.TargetPoint] = _key;
+          cmdObj.payload[CommandOptions.TargetPointIndex] = index;
+        } else {
+          cmdObj.payload[CommandOptions.TargetPoint] = val;
+        }
+      }
+      if (_key === toLower(CommandOptions.ArchNo)) {
+        cmdObj.payload[CommandOptions.ArchNo] = val;
+      }
+      if (_key === toLower(CommandOptions.LimZ)) {
+        cmdObj.payload[CommandOptions.LimZ] = val;
+      }
+      if (_key === toLower(CommandOptions.BlendingPercentage)) {
+        cmdObj.payload[CommandOptions.BlendingPercentage] = val;
+      }
+      if (_key === toLower(CommandOptions.Vcruise)) {
+        cmdObj.payload[CommandOptions.Vcruise] = val;
+      }
+      if (_key === toLower(CommandOptions.Vtran)) {
+        cmdObj.payload[CommandOptions.Vtran] = val;
+      }
+      if (_key === toLower(CommandOptions.Acc)) {
+        cmdObj.payload[CommandOptions.Acc] = val;
+      }
+      if (_key === toLower(CommandOptions.WithPls)) {
+        cmdObj.payload[CommandOptions.WithPls].push(val);
+      }
+    };
+    const bindTocommand = map(ifElse(hasOnlyOne, bindKey, bindVal));
+    compose(bindTocommand, splitEqualMark, filterWithSpace)(command);
+    return cmdObj;
   }
 }

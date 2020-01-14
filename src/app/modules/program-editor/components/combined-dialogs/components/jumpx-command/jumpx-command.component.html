@@ -1,0 +1,199 @@
+<form [formGroup]="form" (ngSubmit)="submitForm(form)">
+	<mat-card class="command-card">
+		<mat-card-header>
+			<mat-card-title>
+                {{ 'projectCommands.commandDialog.commandTitle' | translate:{ command: commandType } }}
+			</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+            <ng-container *ngIf="commandOptionAuth.hasAscendingPoint">
+			    <mat-form-field>
+                    <mat-select [formControlName]="CommandOptions.AscendingPoint"
+                        (selectionChange)="updateStore(CommandOptions.AscendingPoint, $event.value)"
+                        placeholder="{{'projectCommands.jumpx.ascending' | translate}}">
+                        <mat-optgroup *ngIf="model && model[CommandOptions.AscendingJoPoints]?.length !== 0" label="{{ 'joints' | translate }}">
+                            <mat-option *ngFor="let item of model[CommandOptions.AscendingJoPoints]" [value]="item">
+                                {{item.name}}<span *ngIf="item.isArr">[...]</span>
+                            </mat-option>
+                        </mat-optgroup>
+                        <mat-optgroup *ngIf="model && model[CommandOptions.AscendingLoPoints]?.length !== 0" label="{{ 'locations' | translate }}">
+                            <mat-option *ngFor="let item of model[CommandOptions.AscendingLoPoints]" [value]="item">
+                                {{item.name}}<span *ngIf="item.isArr">[...]</span>
+                            </mat-option>
+                        </mat-optgroup>
+                        <mat-option class="create-point-option" [value]="null" (click)="createVar(CommandOptions.AscendingPoint, 'JOINT')">
+                            + {{ 'projectCommands.createVar' | translate }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="model && model[CommandOptions.AscendingPoint]?.isArr">
+                    <mat-select [formControlName]="CommandOptions.AscendingPointIndex" 
+                        placeholder="{{ 'index' | translate }}"
+                        (selectionChange)="updateStore(CommandOptions.AscendingPointIndex, $event.value)">
+                        <mat-option *ngFor="let data of model[CommandOptions.AscendingPoint]?.value; let i = index" [value]="i + 1">
+                            {{ i + 1 }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
+                </mat-form-field>
+            </ng-container>
+			<ng-container *ngIf="commandOptionAuth.hasDescendingPoint">
+                <mat-form-field>
+                    <mat-select [formControlName]="CommandOptions.DescendingPoint"
+                        (selectionChange)="updateStore(CommandOptions.DescendingPoint, $event.value)"
+                        placeholder="{{'projectCommands.jumpx.descending' | translate}}">
+                        <mat-optgroup *ngIf="model && model[CommandOptions.DescendingJoPoints]?.length !== 0" label="{{ 'joints' | translate }}">
+                            <mat-option *ngFor="let item of model[CommandOptions.DescendingJoPoints]" [value]="item">
+                                {{item.name}}<span *ngIf="item.isArr">[...]</span>
+                            </mat-option>
+                        </mat-optgroup>
+                        <mat-optgroup *ngIf="model && model[CommandOptions.DescendingLoPoints]?.length !== 0" label="{{ 'locations' | translate }}">
+                            <mat-option *ngFor="let item of model[CommandOptions.DescendingLoPoints]" [value]="item">
+                                {{item.name}}<span *ngIf="item.isArr">[...]</span>
+                            </mat-option>
+                        </mat-optgroup>
+                        <mat-option class="create-point-option" [value]="null" (click)="createVar(CommandOptions.DescendingPoint, 'JOINT')">
+                            + {{ 'projectCommands.createVar' | translate }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="model && model[CommandOptions.DescendingPoint]?.isArr">
+                    <mat-select placeholder="{{ 'index' | translate }}"
+                        [formControlName]="CommandOptions.DescendingPointIndex"
+                        (selectionChange)="updateStore(CommandOptions.DescendingPointIndex, $event.value)">
+                        <mat-option *ngFor="let data of model[CommandOptions.DescendingPoint]?.value; let i = index" [value]="i + 1">
+                            {{ i + 1 }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
+                </mat-form-field>
+            </ng-container>
+            <ng-container *ngIf="commandOptionAuth.hasTargetPoint">
+                <mat-form-field>
+                    <mat-select [formControlName]="CommandOptions.TargetPoint"
+                        (selectionChange)="updateStore(CommandOptions.TargetPoint, $event.value)"
+                        placeholder="{{'projectCommands.jumpx.target' | translate}}">
+                        <mat-optgroup *ngIf="model && model[CommandOptions.TargetJoPoints]?.length !== 0"label="{{ 'joints' | translate }}">
+                            <mat-option *ngFor="let item of model[CommandOptions.TargetJoPoints]" [value]="item">
+                                {{item.name}}<span *ngIf="item.isArr">[...]</span>
+                            </mat-option>
+                        </mat-optgroup>
+                        <mat-optgroup *ngIf="model && model[CommandOptions.TargetLoPoints]?.length !== 0"label="{{ 'locations' | translate }}">
+                            <mat-option *ngFor="let item of model[CommandOptions.TargetLoPoints]" [value]="item">
+                                {{item.name}}<span *ngIf="item.isArr">[...]</span>
+                            </mat-option>
+                        </mat-optgroup>
+                        <mat-option class="create-point-option" [value]="null" (click)="createVar(CommandOptions.TargetPoint, 'JOINT')">
+                            + {{ 'projectCommands.createVar' | translate }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="model && model[CommandOptions.TargetPoint]?.isArr">
+                    <mat-select placeholder="{{ 'index' | translate }}"
+                        [formControlName]="CommandOptions.TargetPointIndex"
+                        (selectionChange)="updateStore(CommandOptions.TargetPointIndex, $event.value)">
+                        <mat-option *ngFor="let data of model[CommandOptions.TargetPoint]?.value; let i = index" [value]="i + 1">
+                            {{ i + 1 }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
+                </mat-form-field>
+            </ng-container>
+            
+            <mat-slide-toggle [(ngModel)]="isAdvanced" [ngModelOptions]="{ standalone: true }" style="margin-bottom: 8px;" color="primary">
+                {{ 'projectCommands.jumpx.advanced' | translate }}
+            </mat-slide-toggle>
+
+            <div *ngIf="isAdvanced">
+                <mat-form-field *ngIf="commandOptionAuth.hasMotionElement">
+                    <mat-select placeholder="{{'projectCommands.jumpx.motion' | translate}}"
+                        [formControlName]="CommandOptions.MotionElement"
+                        (selectionChange)="updateStore(CommandOptions.MotionElement, $event.value)">
+                        <mat-option [value]="null">
+                            {{'options.none' | translate}}
+                        </mat-option>
+                        <mat-option *ngFor="let item of model && model[CommandOptions.MotionElements]" [value]="item">
+                            {{item}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field *ngIf="commandOptionAuth.hasArchNo">
+                    <input matInput type="number"
+                        placeholder="{{'projectCommands.jumpx.arch' | translate}}" 
+                        [formControlName]="CommandOptions.ArchNo"
+                        (blur)="updateStore(CommandOptions.ArchNo, $event.target.value)">
+                    <mat-error *ngIf="model">
+                        {{'projectCommands.jumpx.intRange' | translate: {range: '['+model[CommandOptions.ArchNoLimit]+']'} }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="commandOptionAuth.hasLimZ">
+                    <input matInput type="number"
+                        placeholder="{{'projectCommands.jumpx.limZ' | translate}} [mm]"
+                        [formControlName]="CommandOptions.LimZ"
+                        (blur)="updateStore(CommandOptions.LimZ, $event.target.value)">
+                    <mat-error *ngIf="model">
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '['+model[CommandOptions.LimZLimit]+']'} }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="commandOptionAuth.hasBlendingPercentage">
+                    <input matInput type="number"
+                        placeholder="{{'projectCommands.jumpx.blending' | translate}}"
+                        [formControlName]="CommandOptions.BlendingPercentage"
+                        (blur)="updateStore(CommandOptions.ArchNo, $event.target.value)">
+                    <span matSuffix>%</span>
+                    <mat-error *ngIf="model">
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '['+model[CommandOptions.BlendingPercentageLimit]+']'} }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="commandOptionAuth.hasVcruise">
+                    <input matInput type="number"
+                        placeholder="{{'projectCommands.jumpx.vcruise' | translate}} [deg/s]"
+                        [formControlName]="CommandOptions.Vcruise"
+                        (blur)="updateStore(CommandOptions.Vcruise, $event.target.value)">
+                    <mat-error *ngIf="model">
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '['+model[CommandOptions.VcruiseLimit]+']'} }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="commandOptionAuth.hasVtran">
+                    <input matInput type="number"
+                        placeholder="{{'projectCommands.jumpx.vtran' | translate}} [mm/s]"
+                        [formControlName]="CommandOptions.Vtran"
+                        (blur)="updateStore(CommandOptions.Vtran, $event.target.value)">
+                    <mat-error *ngIf="model">
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '['+model[CommandOptions.VtranLimit]+']'} }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="commandOptionAuth.hasAcc">
+                    <input matInput type="number"
+                        placeholder="{{'projectCommands.jumpx.acc' | translate}} [deg/s^2]"
+                        [formControlName]="CommandOptions.Acc"
+                        (blur)="updateStore(CommandOptions.Acc, $event.target.value)">
+                    <mat-error *ngIf="model">
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '['+model[CommandOptions.AccLimit]+']'} }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="commandOptionAuth.hasWithPls">
+                    <mat-select multiple
+                        placeholder="{{'projectCommands.jumpx.withPls' | translate}}"
+                        [formControlName]="CommandOptions.WithPls"
+                        (selectionChange)="updateStore(CommandOptions.WithPls, $event.value)">
+                        <mat-option *ngFor="let item of model && model[CommandOptions.WithPlsList]" [value]="item">
+                            {{item}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+		</mat-card-content>
+		<mat-card-actions>
+			<button mat-button [mat-dialog-close]="null" cdkFocusInitial>
+				{{ 'button.cancel' | translate }}
+            </button>
+			<button mat-button color="primary" type="submit" [disabled]="form.pristine || form.invalid">
+				{{ (!data.model ? 'button.insert' : 'button.edit') | translate }}
+			</button>
+		</mat-card-actions>
+	</mat-card>
+</form>

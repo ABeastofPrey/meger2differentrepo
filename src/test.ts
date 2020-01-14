@@ -28,12 +28,6 @@ programSettingsContext.keys().map(programSettingsContext);
 const resultDialogContext = require.context('./app/modules/program-editor/components/tool-calibration-result-dialog/', true, /\.spec\.ts$/);
 resultDialogContext.keys().map(resultDialogContext);
 
-const jumpDialogContext = require.context('./app/modules/program-editor/components/dialogs/jump-dialog/', true, /\.spec\.ts$/);
-jumpDialogContext.keys().map(jumpDialogContext);
-
-const jump3DialogContext = require.context('./app/modules/program-editor/components/dialogs/jump3-dialog/', true, /\.spec\.ts$/);
-jump3DialogContext.keys().map(jump3DialogContext);
-
 const osUpgradeSuccessDialogContext = require.context('./app/components/osupgrade-success-dialog/', true, /\.spec\.ts$/);
 osUpgradeSuccessDialogContext.keys().map(osUpgradeSuccessDialogContext);
 
@@ -70,5 +64,8 @@ versionContext.keys().map(versionContext);
 const topologyContext = require.context('./app/modules/configuration/components/topology/', true, /\.spec\.ts$/);
 topologyContext.keys().map(topologyContext);
 
-const vCommandContext = require.context('./app/modules/program-editor/components/dialogs/vision-command/components/vision-command/', true, /\.spec\.ts$/);
+const vCommandContext = require.context('./app/modules/program-editor/components/combined-dialogs/components/vision-command/', true, /\.spec\.ts$/);
 vCommandContext.keys().map(vCommandContext);
+
+const jumpxCommandContext = require.context('./app/modules/program-editor/components/combined-dialogs/components/jumpx-command/', true, /\.spec\.ts$/);
+jumpxCommandContext.keys().map(jumpxCommandContext);

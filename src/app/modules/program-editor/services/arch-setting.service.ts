@@ -34,7 +34,7 @@ export class ArchSettingService {
     value: number
   ): Promise<ErrorFrame | ArchElement[]> {
     return this.queryWithApi(
-      `${ArchApi.JP_setArch}(${index}, ${departOrApproach}, ${value})`
+      `${ArchApi.JP_setArch}("ARCH","${index},${departOrApproach}", "${value}")`
     );
   }
 

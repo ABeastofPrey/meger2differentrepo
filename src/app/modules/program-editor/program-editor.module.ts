@@ -41,9 +41,6 @@ import { CircleDialogComponent } from './components/dialogs/circle-dialog/circle
 import { IoMappingModule } from './modules/io-mapping/io-mapping.module';
 import { ArchSettingComponent } from './components/program-settings/arch-setting/arch-setting.component';
 import { ArchSettingService } from './services/arch-setting.service';
-import { JumpDialogComponent } from './components/dialogs/jump-dialog/jump-dialog.component';
-import { DataNotArrayPipe } from './components/dialogs/jump-dialog/jump-dialog.pipe';
-import { Jump3DialogComponent } from './components/dialogs/jump3-dialog/jump3-dialog.component';
 import { Jump3DialogService } from './services/jump3-dialog.service';
 import { PositionTriggerComponent } from './components/program-settings/position-trigger/position-trigger.component';
 import { NewPositionTriggerComponent } from './components/program-settings/new-position-trigger/new-position-trigger.component';
@@ -57,7 +54,12 @@ import { PLSSourceComponent } from './components/dialogs/pls-source/pls-source.c
 import { HomeDialogService } from './services/home-dialog.service';
 import { FileTreeModule } from '../file-tree/file-tree.module';
 import { ProjectDeleteDialogComponent } from './components/project-delete-dialog/project-delete-dialog.component';
-import { VisioinCommandModule } from './components/dialogs/vision-command/vision-command.module';
+// import { VisioinCommandModule } from './components/dialogs/vision-command/vision-command.module';
+import { JumpxCommandComponent } from './components/combined-dialogs/components/jumpx-command/jumpx-command.component';
+import { JumpxCommandService } from './components/combined-dialogs/services/jumpx-command.service';
+import { VisionLoadStationBookComponent } from './components/dialogs/vision-load-station-book/vision-load-station-book.component';
+import { VisionCommandComponent } from './components/combined-dialogs/components/vision-command/vision-command.component';
+import { VisionCommandService } from './components/combined-dialogs/services/vision-command.service';
 import { HomeScreenModule } from '../home-screen/home-screen.module';
 
 @NgModule({
@@ -70,7 +72,6 @@ import { HomeScreenModule } from '../home-screen/home-screen.module';
     PayloadsModule,
     IoMappingModule,
     FileTreeModule,
-    VisioinCommandModule,
     HomeScreenModule
   ],
   declarations: [
@@ -107,20 +108,18 @@ import { HomeScreenModule } from '../home-screen/home-screen.module';
     SleepDialogComponent,
     ArchSettingComponent,
     WhileDialogComponent,
-    JumpDialogComponent,
-    DataNotArrayPipe,
     WhileDialogComponent,
-    JumpDialogComponent,
-    Jump3DialogComponent,
     HomeDialogComponent,
     PLSSourceComponent,
     PositionTriggerComponent,
     NewPositionTriggerComponent,
-    DataNotArrayPipe,
     StopDialogComponent,
     PayloadSelectorComponent,
     HomeSettingComponent,
-    ProjectDeleteDialogComponent
+    ProjectDeleteDialogComponent,
+    JumpxCommandComponent,
+    VisionLoadStationBookComponent,
+    VisionCommandComponent,
   ],
   entryComponents: [
     NewProjectDialogComponent,
@@ -147,8 +146,6 @@ import { HomeScreenModule } from '../home-screen/home-screen.module';
     RobotSelectorDialogComponent,
     SleepDialogComponent,
     WhileDialogComponent,
-    JumpDialogComponent,
-    Jump3DialogComponent,
     HomeDialogComponent,
     PLSSourceComponent,
     PositionTriggerComponent,
@@ -156,8 +153,16 @@ import { HomeScreenModule } from '../home-screen/home-screen.module';
     StopDialogComponent,
     PayloadSelectorComponent,
     ProjectDeleteDialogComponent,
+    JumpxCommandComponent,
+    VisionLoadStationBookComponent,
+    VisionCommandComponent,
   ],
-  exports: [ProgramEditorComponent],
+  exports: [
+    ProgramEditorComponent,
+    JumpxCommandComponent,
+    VisionLoadStationBookComponent,
+    VisionCommandComponent,
+  ],
   providers: [
     ProgramEditorService,
     ArchSettingService,
@@ -165,6 +170,8 @@ import { HomeScreenModule } from '../home-screen/home-screen.module';
     HomeDialogService,
     PositionTriggerService,
     HomeSettingService,
+    JumpxCommandService,
+    VisionCommandService,
   ],
 })
 export class ProgramEditorModule {}

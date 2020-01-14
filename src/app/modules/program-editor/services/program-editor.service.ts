@@ -77,7 +77,7 @@ export class ProgramEditorService {
   // LINE PARSING
   parser: LineParser = new LineParser(this.data);
   variablesInLine: TPVariable[] = [];
-  lineParams: {} = null;
+  lineParams = null;
   disableStepOver = false;
   private lastRow = -1;
 
@@ -259,7 +259,8 @@ export class ProgramEditorService {
     const lineType = this.parser.getLineType(row);
     if (
       lineType === this.parser.LineType.MOVE ||
-      lineType === this.parser.LineType.CIRCLE
+      lineType === this.parser.LineType.CIRCLE || 
+      lineType === this.parser.LineType.JUMP
     ) {
       this.variablesInLine = this.parser.getVariablesFromLine(row);
       this.lineParams = this.parser.getLineParameters(row, lineType, rowIndex);

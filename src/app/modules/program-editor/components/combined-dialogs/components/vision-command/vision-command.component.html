@@ -1,0 +1,130 @@
+<form [formGroup]="form" (ngSubmit)="submitForm(form)">
+	<mat-card class="command-card">
+		<mat-card-header>
+			<mat-card-title>
+				{{ 'projectCommands.commandDialog.commandTitle' | translate:{ command: commandType } }}
+			</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<mat-form-field>
+				<mat-select placeholder="{{ 'projectCommands.visionCommand.stationNamePlaceHolder' | translate }}" [formControlName]="CommandOptions.Station">
+					<mat-option *ngFor="let item of modelList | async " [value]="item.stationName" (click)="selectItem(item)">
+						{{item.stationName}}
+					</mat-option>
+				</mat-select>
+				<mat-error>
+					{{ 'projectCommands.visionCommand.stationNameRequiredErr' | translate }}
+				</mat-error>
+            </mat-form-field>
+            
+			<mat-form-field>
+				<mat-select placeholder="{{ 'projectCommands.visionCommand.jobNamePlaceHolder' | translate }}" [formControlName]="CommandOptions.Job" (selectionChange)="updateStore(form.value)">
+					<mat-option *ngFor="let jobName of (selectedModel | async)?.jobNames" [value]="jobName">
+						{{jobName}}
+					</mat-option>
+				</mat-select>
+				<mat-error>
+					{{ 'projectCommands.visionCommand.jobNameRequiredErr' | translate }}
+				</mat-error>
+            </mat-form-field>
+            
+			<mat-form-field *ngIf="commandOptionAuth.hasDimension">
+				<mat-select placeholder="{{ 'projectCommands.visionCommand.dimensionPlaceHolder' | translate }}" [formControlName]="CommandOptions.Dimension" (selectionChange)="updateStore(form.value)">
+					<mat-option *ngFor="let dimension of (selectedModel | async)?.dimensions" [value]="dimension">
+						{{dimension}}
+					</mat-option>
+					<mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null" (click)="createVar(CommandOptions.Dimension, 'LONG')">
+						+ {{ 'projectCommands.createVar' | translate }}
+					</mat-option>
+				</mat-select>
+				<mat-error>
+					{{ 'projectCommands.visionCommand.dimensionRequiredErr' | translate }}
+				</mat-error>
+            </mat-form-field>
+            
+			<mat-form-field *ngIf="commandOptionAuth.hasDataNum">
+				<mat-select placeholder="{{ 'projectCommands.visionCommand.dataNumPlaceHolder' | translate }}" [formControlName]="CommandOptions.DataNum" (selectionChange)="updateStore(form.value)">
+					<mat-option *ngFor="let dataNum of (selectedModel | async)?.dataNums" [value]="dataNum">
+						{{dataNum}}
+					</mat-option>
+					<mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null" (click)="createVar(CommandOptions.DataNum, 'LONG')">
+						+ {{ 'projectCommands.createVar' | translate }}
+					</mat-option>
+				</mat-select>
+				<mat-error>
+					{{ 'projectCommands.visionCommand.dataNumRequiredErr' | translate }}
+				</mat-error>
+            </mat-form-field>
+            
+			<mat-form-field *ngIf="commandOptionAuth.hasAsData">
+				<mat-select placeholder="{{ 'projectCommands.visionCommand.asDataPlaceHolder' | translate }}" [formControlName]="CommandOptions.AsData" (selectionChange)="updateStore(form.value)">
+					<mat-option *ngFor="let asData of (selectedModel | async)?.asDatas" [value]="asData">
+						{{asData}}
+					</mat-option>
+					<mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null" (click)="createVar(CommandOptions.AsData, 'STRING')">
+						+ {{ 'projectCommands.createVar' | translate }}
+					</mat-option>
+				</mat-select>
+				<mat-error>
+					{{ 'projectCommands.visionCommand.asDataRequiredErr' | translate }}
+				</mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="commandOptionAuth.hasStatus">
+				<mat-select placeholder="{{ 'projectCommands.visionCommand.statusPlaceHolder' | translate }}" [formControlName]="CommandOptions.Status" (selectionChange)="updateStore(form.value)">
+					<mat-option *ngFor="let status of (selectedModel | async)?.statusList" [value]="status">
+						{{status}}
+					</mat-option>
+					<mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null" (click)="createVar(CommandOptions.Status, 'STRING')">
+						+ {{ 'projectCommands.createVar' | translate }}
+					</mat-option>
+				</mat-select>
+				<mat-error>
+					{{ 'projectCommands.visionCommand.statusRequiredErr' | translate }}
+				</mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="commandOptionAuth.hasError">
+				<mat-select placeholder="{{ 'projectCommands.visionCommand.errorPlaceHolder' | translate }}" [formControlName]="CommandOptions.Error" (selectionChange)="updateStore(form.value)">
+					<mat-option *ngFor="let error of (selectedModel | async)?.errors" [value]="error">
+						{{error}}
+					</mat-option>
+					<mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null" (click)="createVar(CommandOptions.Error, 'STRING')">
+						+ {{ 'projectCommands.createVar' | translate }}
+					</mat-option>
+				</mat-select>
+				<mat-error>
+					{{ 'projectCommands.visionCommand.errorRequiredErr' | translate }}
+				</mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="commandOptionAuth.hasTimeout">
+				<input matInput [formControlName]="CommandOptions.Timeout" placeholder="{{ 'projectCommands.visionCommand.timeoutPlaceHolder' | translate }} [ms]" (blur)="updateStore(form.value)" [readonly]="!(selectedModel | async)">
+                <!-- <span matSuffix>ms</span> -->
+                <mat-error>
+                    {{ 'projectCommands.visionCommand.timeoutPositiveErr' | translate }}
+                </mat-error>
+			</mat-form-field>
+            
+            <mat-form-field *ngIf="commandOptionAuth.hasVariable">
+				<mat-select placeholder="{{ 'projectCommands.visionCommand.variablePlaceHolder' | translate }}" [formControlName]="CommandOptions.Variable" (selectionChange)="updateStore(form.value)">
+                    <mat-option *ngIf="!!(selectedModel | async)" [value]="null">{{'options.none' | translate}}</mat-option>
+					<mat-option *ngFor="let variable of (selectedModel | async)?.variables" [value]="variable">
+						{{variable}}
+					</mat-option>
+					<mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null" (click)="createVar(CommandOptions.Variable, 'LONG')">
+						+ {{ 'projectCommands.createVar' | translate }}
+					</mat-option>
+				</mat-select>
+            </mat-form-field>
+		</mat-card-content>
+		<mat-card-actions>
+			<button mat-button [mat-dialog-close]="null" cdkFocusInitial>
+				{{ 'button.cancel' | translate }}
+			</button>
+			<button mat-raised-button color="primary" type="submit" [disabled]="form.pristine || form.invalid">
+				{{ 'button.insert' | translate }}
+			</button>
+		</mat-card-actions>
+	</mat-card>
+</form>

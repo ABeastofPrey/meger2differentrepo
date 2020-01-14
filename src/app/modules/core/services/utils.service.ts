@@ -11,7 +11,7 @@ import {
 } from '../../../../environments/environment';
 import { DataService } from './data.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 /*
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
@@ -191,5 +191,19 @@ export class UtilsService {
     this.overlayContainer.getContainerElement().classList.remove('stretch-overlay');
     this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-stretch');
     this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-shrink');
+  }
+
+  public limitValidator(min: number, max: number, canBeDecimal = true): ValidatorFn {
+      return ({ value }: AbstractControl): { [key: string]: any } | null => {
+          if (value !== 0 && !!value === false) {
+              return null;
+          }
+          let forbidden =
+              Number(value).toString() === 'NaN' ||
+              Number(value) > max ||
+              Number(value) < min ||
+              (canBeDecimal ? false : (Number(value) % 1 !== 0)); // Check decimal number.
+          return forbidden ? { limit: { min, max, value } } : null;
+      };
   }
 }

@@ -111,6 +111,9 @@
     "next": "Next",
     "excute": "Execute"
   },
+  "options": {
+    "none": "None"
+  },
   "calibrate": "Calibrate",
   "cartesian": "Cartesian",
   "changeError": "An error occurred, changes not saved",
@@ -267,7 +270,7 @@
     "calibration": {
       "origin": "Origin",
       "posX": "Position X",
-      "posXY": "Position XY",
+      "posY": "Position Y",
       "posXY": "Position XY",
       "set": "Set as current",
       "title": "Calibrate"
@@ -761,9 +764,27 @@
       "sourceTime": "Time",
       "sourcePercentage": "Percentage"
     },
+    "commandDialog": {
+      "commandTitle": "Insert {{command}} Command"
+    },
+    "jumpx": {
+      "target": "Target Point",
+      "ascending": "Ascending Point",
+      "descending": "Descending Point",
+      "motion": "Motion Element",
+      "arch": "Arch Number",
+      "limZ": "LimZ",
+      "blending": "Blending Percentage",
+      "vcruise": "Vcruise",
+      "vtran": "Vtran",
+      "acc": "Acc",
+      "withPls": "Position Trigger",
+      "requireErr": "This field is required",
+      "numRange": "Please enter a number in {{range}}",
+      "intRange": "Please enter an integer in {{range}}",
+      "advanced": "Advanced"
+    },
     "visionCommand": {
-      "loadStationBookTitle": "Insert VLoadStationBook Command",
-      "vCommandTitle": "Insert {{command}} Command",
       "jobNamePlaceHolder": "Job Name",
       "jobNameRequiredErr": "Job Name is required",
       "stationNamePlaceHolder": "Station Name",

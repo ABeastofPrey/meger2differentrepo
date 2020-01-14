@@ -122,9 +122,12 @@
 		<button mat-menu-item [matMenuTriggerFor]="circle">Circle</button>
 		<button mat-menu-item (click)="menu_dopass()">DoPass...</button>
 		<ng-container *ngIf="isScara">
-			<button mat-menu-item (click)="menu_jump()">Jump...</button>
-			<button mat-menu-item (click)="menu_jump3('jump3')">Jump3...</button>
-			<button mat-menu-item (click)="menu_jump3('jump3cp')">Jump3cp...</button>
+			<button mat-menu-item [matMenuTriggerFor]="jumpx">JumpX</button>
+			<mat-menu #jumpx="matMenu">
+				<button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump)">Jump...</button>
+				<button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump3)">Jump3...</button>
+				<button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump3cp)">Jump3cp...</button>
+			</mat-menu>
 		</ng-container>
 		<button mat-menu-item (click)="menu_gohome()">GoHome</button>
 	</mat-menu>
