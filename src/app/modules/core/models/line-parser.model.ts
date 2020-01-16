@@ -2,7 +2,7 @@ import { DataService } from '..';
 import { TPVariable } from './tp/tp-variable.model';
 import { JumpxCommand } from '../../program-editor/components/combined-dialogs/models/jumpx-command.model';
 import { CommandType as JumpxCommandType, CommandOptions } from '../../program-editor/components/combined-dialogs/enums/jumpx-command.enums';
-import { split, filter, toLower, map, compose, prop, equals, ifElse } from 'ramda';
+import { split, filter, toLower, map, compose, prop, equals, ifElse, trim, reduce, replace } from 'ramda';
 import { isNotEmpty } from 'ramda-adjunct';
 
 enum LineType {
@@ -229,7 +229,8 @@ export class LineParser {
     const filterEmpty = filter(isNotEmpty);
     const filterWithSpace = compose(filterEmpty, splitSpace);
     const isJumpx = x => {
-      switch (toLower(x)) {
+      const cmd = compose(trim, toLower)(x);
+      switch (toLower(cmd)) {
         case toLower(JumpxCommandType.Jump):
           return true;
         case toLower(JumpxCommandType.Jump3):
@@ -241,7 +242,7 @@ export class LineParser {
     };
     const bindKey = ([key]) => {
       if (isJumpx(key)) {
-        cmdObj.commandName = key;
+        cmdObj.commandName = trim(key);
       } else if (isMotionElement(key)) {
         cmdObj.payload[CommandOptions.MotionElement] = key;
       } else {
@@ -305,8 +306,9 @@ export class LineParser {
         cmdObj.payload[CommandOptions.WithPls].push(val);
       }
     };
+    const replaceBlank = replace(/(\s*)=(\s*)/g, '=');
     const bindTocommand = map(ifElse(hasOnlyOne, bindKey, bindVal));
-    compose(bindTocommand, splitEqualMark, filterWithSpace)(command);
+    compose(bindTocommand, splitEqualMark, filterWithSpace, replaceBlank)(command);
     return cmdObj;
   }
 }
