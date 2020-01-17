@@ -2,7 +2,7 @@ import { DataService } from '..';
 import { TPVariable } from './tp/tp-variable.model';
 import { JumpxCommand } from '../../program-editor/components/combined-dialogs/models/jumpx-command.model';
 import { CommandType as JumpxCommandType, CommandOptions } from '../../program-editor/components/combined-dialogs/enums/jumpx-command.enums';
-import { split, filter, toLower, map, compose, prop, equals, ifElse, trim, reduce, replace } from 'ramda';
+import { split, filter, toLower, map, compose, prop, equals, ifElse, trim, replace } from 'ramda';
 import { isNotEmpty } from 'ramda-adjunct';
 
 enum LineType {
@@ -57,8 +57,14 @@ export class LineParser {
     if (i === 0) return LineType.CIRCLE;
     i = row.indexOf('PROGRAM');
     if (i === 0) return LineType.PROGRAM;
-    i = row.indexOf('JUMP');
-    if (i === 0) return LineType.JUMP;
+    // for jumpx command
+    const cmd = row.split(' ')[0];
+    const _jump = JumpxCommandType.Jump.toUpperCase();
+    const _jump3 = JumpxCommandType.Jump3.toUpperCase();
+    const _jump3cp = JumpxCommandType.Jump3cp.toUpperCase();
+    if (cmd === _jump || cmd === _jump3 || cmd === _jump3cp) {
+      return LineType.JUMP;
+    }
     return LineType.OTHER;
   }
 

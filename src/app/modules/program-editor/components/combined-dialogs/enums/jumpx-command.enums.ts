@@ -108,7 +108,7 @@ const WithPlsAuthorized = [
     CommandType.Jump3cp
 ];
 
-const fined = (types: CommandType[], type: CommandType) => types.findIndex(x => x === type) === -1 ? false : true;
+const fined = (types: CommandType[], type: CommandType) => types.findIndex(x => x.toLowerCase() === type.toLowerCase()) === -1 ? false : true;
 
 export class CommandOptionAuth {
     private type: CommandType;
