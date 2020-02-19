@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MatAutocompleteSelectedEvent } from '@angular/material';
+import { DOCS } from './../../../core/defs/docs.constants';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MatAutocompleteSelectedEvent, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { DashboardParam } from '../../services/dashboard.service';
-import { ApiService } from '../../../../modules/core/services/api.service';
 import { CommonService } from '../../../core/services/common.service';
 
 @Component({
@@ -13,23 +13,33 @@ import { CommonService } from '../../../core/services/common.service';
 export class NewDashboardParameterDialogComponent implements OnInit {
   newParam: DashboardParam = new DashboardParam();
   ctrl: FormControl = new FormControl();
-  filteredOptions: MCCommand[];
+  filteredOptions: string[];
 
-  private _params: MCCommand[];
+  private _params: string[];
   get params() {
     return this._params;
   }
 
   constructor(
-    private api: ApiService,
     public ref: MatDialogRef<DashboardParam>,
-    public cmn: CommonService
+    public cmn: CommonService,
+    @Inject(MAT_DIALOG_DATA) private data: {isGroup: boolean }
   ) {
-    this.api.getMCProperties().then((ret: MCCommand[]) => {
-      this._params = ret;
-      this.ctrl.valueChanges.subscribe(ret => {
-        this.filteredOptions = this.filter(ret);
-      });
+    let list = DOCS.element.map(el=>{
+      return el.short || el.name;
+    });
+    if (this.data.isGroup) {
+      list = list.concat(DOCS.group.map(g=>{
+        return g.short || g.name;
+      }));
+    } else {
+      list = list.concat(DOCS.axis.map(a=>{
+        return a.short || a.name;
+      }));
+    }
+    this._params = list.sort();
+    this.ctrl.valueChanges.subscribe(ret => {
+      this.filteredOptions = this.filter(ret);
     });
   }
 
@@ -37,9 +47,9 @@ export class NewDashboardParameterDialogComponent implements OnInit {
     this.newParam.name = e.option.value;
   }
 
-  filter(name: string): MCCommand[] {
+  filter(name: string): string[] {
     return this._params.filter(option => {
-      return option.text.toLowerCase().indexOf(name.toLowerCase()) > -1;
+      return option.toLowerCase().indexOf(name.toLowerCase()) > -1;
     });
   }
 
@@ -47,7 +57,7 @@ export class NewDashboardParameterDialogComponent implements OnInit {
     if (!this.cmn.isTablet) return true;
     return (
       this._params.filter(option => {
-        return option.text.toLowerCase() === name.toLowerCase();
+        return option.toLowerCase() === name.toLowerCase();
       }).length > 0
     );
   }
@@ -57,9 +67,4 @@ export class NewDashboardParameterDialogComponent implements OnInit {
   add() {
     this.ref.close(this.newParam);
   }
-}
-
-interface MCCommand {
-  text: string;
-  value: string;
 }

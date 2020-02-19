@@ -1,20 +1,7 @@
 .hand-guiding {
   padding: 16px;
-  .container {
-    display: flex;
-    flex-direction: row;
-  }
-  .joints {
-    display: flex;
-    flex-direction: column;
-    border: #c1baba 1px solid;
-    border-radius: 5px;
-    padding: 15px;
-  }
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    margin-left: 20px;
-    justify-content: space-around;
+  mat-slide-toggle {
+    display: block;
+    margin-bottom: 8px;
   }
 }

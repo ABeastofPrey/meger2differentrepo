@@ -23,6 +23,7 @@ import { ReferenceMasteringService } from './services/reference-mastering.servic
 import { VersionComponent } from './components/version/version.component';
 import { ReleaseNoteComponent } from './components/version/release-note/release-note.component';
 import { AxisVordComponent } from './components/axis-vord/axis-vord.component';
+import { BrakeTestComponent } from './components/brake-test/brake-test.component';
 
 @NgModule({
   imports: [CommonModule, SharedModule, ConfigurationRoutingModule],
@@ -44,6 +45,7 @@ import { AxisVordComponent } from './components/axis-vord/axis-vord.component';
     VersionComponent,
     ReleaseNoteComponent,
     AxisVordComponent,
+    BrakeTestComponent,
   ],
   providers: [
     IoService,

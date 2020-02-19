@@ -1,15 +1,15 @@
 <div class="wrapper">
 	<div class="title">{{ 'apps.title' | translate }}</div>
 	<input
-		*ngIf="!utils.IsKuka"
+		*ngIf="!utils.IsKuka && !cmn.isCloud"
 		type="file"
-		accept=".ipk, .rpm, .IPK, .RPM, .zip, .ZIP"
+		accept=".ipk, .rpm, .IPK, .RPM, .zip, .ZIP, .tar.gz, .TAR.GZ"
 		#upload
 		(change)="onUploadFilesChange($event)"
 		class="file-input"
 	/>
 	<input
-		*ngIf="utils.IsKuka"
+		*ngIf="utils.IsKuka && !cmn.isCloud"
 		type="file"
 		accept=".zip, .ZIP"
 		#upload
@@ -21,15 +21,18 @@
 			<mat-icon>perm_data_setting</mat-icon>
 			<div>{{ 'apps.modbus' | translate }}</div>
 		</a>
-		<a (click)="uploadIPK()" *ngIf="login.isAdmin">
+		<a (click)="uploadIPK()" *ngIf="login.isAdmin"
+				[class.disabled]="cmn.isCloud " matTooltip="{{'cloud.na' | translate}}" [matTooltipDisabled]="!cmn.isCloud">
 			<mat-icon>system_update</mat-icon>
 			<div>{{ 'apps.firmware' | translate }}...</div>
 		</a>
-		<a (click)="reboot()">
+		<a (click)="reboot()"
+				[class.disabled]="cmn.isCloud" matTooltip="{{'cloud.na' | translate}}" [matTooltipDisabled]="!cmn.isCloud">
 			<mat-icon>power_settings_new</mat-icon>
 			<div>{{ 'apps.reboot' | translate }}...</div>
 		</a>
-		<a (click)="restore()" *ngIf="login.isAdmin && factoryAvailable">
+		<a (click)="restore()" *ngIf="login.isAdmin && factoryAvailable"
+				[class.disabled]="cmn.isCloud" matTooltip="{{'cloud.na' | translate}}" [matTooltipDisabled]="!cmn.isCloud">
 			<mat-icon>restore</mat-icon>
 			<div>{{ 'apps.restore.desc' | translate }}...</div>
 		</a>

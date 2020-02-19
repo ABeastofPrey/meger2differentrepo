@@ -134,7 +134,7 @@ export class LoginScreenComponent implements OnInit {
 
   get loginBgImgUrl(): string {
     const imgName = this.utils.IsKuka ? 'kuka_robot_bg.jpg' : 'stx1.jpg';
-    const imgUrl = `assets/pics/${imgName}`;
+    const imgUrl = `/rs/assets/pics/${imgName}`;
     return imgUrl;
   }
 
@@ -208,7 +208,7 @@ export class LoginScreenComponent implements OnInit {
   private getEtag() : string {
     if (!this.env.production) return '';
     const req = new XMLHttpRequest();
-    req.open('GET', this.env.api_url + '/rs/assets/scripts/conn.js', false);
+    req.open('GET', this.api.api_url + '/rs/assets/scripts/conn.js', false);
     req.send(null);
     const etag = req.getResponseHeader('etag');
     return etag ? etag.trim() : '';

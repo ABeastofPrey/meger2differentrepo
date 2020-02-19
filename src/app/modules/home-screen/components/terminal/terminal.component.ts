@@ -5,6 +5,7 @@ import {
   ViewChild,
   NgZone,
   ChangeDetectorRef,
+  HostListener,
 } from '@angular/core';
 import { TerminalService } from '../../services/terminal.service';
 import { Input } from '@angular/core';
@@ -120,6 +121,7 @@ export class TerminalComponent implements OnInit {
       this.zone.run(()=>{
         editor.setValue(this.terminal.cmdsAsString, 1);
         setTimeout(() => {
+          if (!this.wrapper) return;
           const height = this.wrapper.nativeElement.scrollHeight;
           this.wrapper.nativeElement.scrollTop = height;
         }, 50);
@@ -143,15 +145,27 @@ export class TerminalComponent implements OnInit {
       theme: 'ace/theme/cs',
       fontSize: '14px',
       readOnly: this.cmn.isTablet,
-      fontFamily: 'cs-monospace'
+      fontFamily: 'cs-monospace',
+      enableBasicAutocompletion: true,
+      enableLiveAutocompletion: true,
+      enableSnippets: true,
+      mode: 'ace/mode/mcbasic'
     });
     this.keywords.initDone.subscribe(done => {
       if (!done) return;
-      editor.getSession().setMode('ace/mode/mcbasic');
+      editor.completers = [this.keywords.getNewWordCompleter(true)];
+      //editor.getSession().setMode('ace/mode/mcbasic');
     });
     editor.$blockScrolling = Infinity;
     editor.on('paste', (e: {text: string}) => {
       e.text = e.text.replace(/[\r\n]+/g, ' ');
+    });
+    editor.getSession().on('change', e=>{
+      if (e.action !== 'remove' && e.lines[0] && (e.lines[0] === '.' || e.lines[0] === ' ') || e.lines[0] === '=') {
+        setTimeout(() => {
+          this.editor.commands.byName.startAutocomplete.exec(this.editor);
+        }, 50);
+      }
     });
     // make mouse position clipping nicer
     editor.renderer.screenToTextCoordinates = function(x: number, y: number) {
@@ -223,7 +237,7 @@ export class TerminalComponent implements OnInit {
       this.cmd = '';
       this.lastCmdIndex = -1;
       setTimeout(() => {
-        this.ref.detectChanges();
+        if (this.ref) this.ref.detectChanges();
       }, 0);
     });
   }

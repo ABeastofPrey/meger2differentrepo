@@ -1,3 +1,4 @@
+import { TourModule } from './../tour/tour.module';
 import { NgModule } from '@angular/core';
 import { MainComponent } from './components/main/main.component';
 import { SharedModule } from '../shared/shared.module';
@@ -13,6 +14,7 @@ import { GraphDerivativeComponent } from '../../components/graph-derivative/grap
 import { FileSelectorDialogComponent } from '../../components/file-selector-dialog/file-selector-dialog.component';
 import { StxsimNgModule } from 'stxsim-ng';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TourMatMenuModule } from 'ngx-tour-md-menu';
 
 @NgModule({
   imports: [
@@ -22,6 +24,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     ProgramEditorModule,
     StxsimNgModule,
     ScrollingModule,
+    TourModule,
+    TourMatMenuModule
   ],
   declarations: [
     MainComponent,

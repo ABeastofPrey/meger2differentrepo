@@ -21,10 +21,13 @@
 		<li
 			class="screen"
 			*ngFor="let s of (mgr.debugMode ? [mgr.screens[0]] : mgr.screens)"
+			[id]="'screen-' + s.name"
 			[tourAnchor]="'screen-' + s.name"
 			(click)="onClick(s)"
 			matTooltip="{{ 'tabs.' + s.name | translate }}"
+			matTooltipPosition="after"
 			[matTooltipDisabled]="mgr.menuExpanded"
+			matTooltipClass="menu-tooltip"
 			[ngClass]="{
 				primary: mgr.screen === s,
 				selected: mgr.screen === s,

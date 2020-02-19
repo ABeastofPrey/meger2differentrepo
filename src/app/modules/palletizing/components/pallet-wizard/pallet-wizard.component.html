@@ -196,13 +196,14 @@
 								'pallets.wizard.invalid_val' | translate
 							}}</mat-error>
 							<mat-radio-group formControlName="index">
-								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'"
-									>{{ 'pallets.wizard.index_full' | translate }} ({{
+								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'">
+									<span>{{ 'pallets.wizard.index_full' | translate }}</span>
+									<span *ngIf="dataService.selectedPallet.itemsX && dataService.selectedPallet.itemsY && dataService.selectedPallet.itemsZ">({{
 										dataService.selectedPallet.itemsX *
 											dataService.selectedPallet.itemsY *
 											dataService.selectedPallet.itemsZ
-									}})</mat-radio-button
-								>
+									}})</span>
+								</mat-radio-button>
 								<mat-radio-button value="empty" style="margin: 0 16px;" color="primary"
 									>{{ 'pallets.wizard.index_empty' | translate }} (0)</mat-radio-button
 								>

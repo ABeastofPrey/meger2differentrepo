@@ -80,7 +80,7 @@
       <mat-icon>photo_camera</mat-icon>
     </button>-->
 	</div>
-	<as-split direction="horizontal" class="main" (dragStart)="resizing = true" (dragEnd)="resizing = false">
+	<as-split direction="horizontal" class="main" (dragStart)="resizing = true" (dragEnd)="resizing = false" (mouseup)="resizing = false">
 		<as-split-area size="15" class="side-panel">
 			<as-split direction="vertical">
 				<as-split-area size="35">

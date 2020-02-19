@@ -80,7 +80,7 @@
 				<h4 class="mat-subtitle-color" style="margin-top: -24px;">
 					{{ selectedNode.parent.item }} > {{ selectedNode.item }}
 				</h4>
-        <img src="assets/pics/grp/grp.gif" class="helper" [style.position]="mgr.openedControls ? 'relative' : 'absolute'">
+        <img src="assets/pics/grp/grp.gif" class="helper" [style.position]="(mgr.openedControls | async) ? 'relative' : 'absolute'">
 				<div class="row">
 					<mat-form-field>
 						<mat-select
@@ -160,8 +160,8 @@
 					<mat-form-field>
 						<mat-select
 							placeholder="{{ 'grippers.fb1' | translate }}"
-							[(ngModel)]="selectedNode.fb1"
-							(selectionChange)="updateGripperFb(1)"
+							[value]="selectedNode.fb1"
+							(selectionChange)="updateGripperFb(1,$event.value)"
 							[disabled]="login.isOperator || !selectedNode.fb1_enabled"
 						>
 							<mat-option *ngIf="database.inputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
@@ -183,8 +183,8 @@
 					<mat-form-field>
 						<mat-select
 							placeholder="{{ 'grippers.fb2' | translate }}"
-							[(ngModel)]="selectedNode.fb2"
-							(selectionChange)="updateGripperFb(2)"
+							[value]="selectedNode.fb2"
+							(selectionChange)="updateGripperFb(2,$event.value)"
 							[disabled]="login.isOperator || !selectedNode.fb2_enabled"
 						>
 							<mat-option *ngIf="database.inputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>

@@ -46,7 +46,7 @@ export class TpLoadingComponent implements OnInit {
   private words: {};
 
   constructor(
-    private ref: MatDialogRef<void>,
+    private ref: MatDialogRef<boolean>,
     private data: DataService,
     private prj: ProjectManagerService,
     private stat: TpStatService,
@@ -71,8 +71,10 @@ export class TpLoadingComponent implements OnInit {
       this.checkStatus();
     });
     this.stat.modeChanged.pipe(takeUntil(this.notifier)).subscribe(mode => {
-      this.steps[2].done = true;
-      this.checkStatus();
+      if (mode !== null) {
+        this.steps[2].done = true;
+        this.checkStatus();
+      }
     });
     setTimeout(()=>{
       this._zone.run(()=>{
@@ -110,7 +112,7 @@ export class TpLoadingComponent implements OnInit {
         return step.done;
       })
     ) {
-      this.ref.close();
+      this.ref.close(true);
     }
   }
 

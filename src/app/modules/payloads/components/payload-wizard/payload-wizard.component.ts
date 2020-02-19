@@ -132,74 +132,71 @@ export class PayloadWizardComponent implements OnInit {
       });
   }
 
-  private startIdent() {
-    if (!this.cmn.isTablet) this.stat.mode = 'T2';
-    setTimeout(()=>{
-      if (this.stat.mode !== 'T2') return;
-      const cmd = '?PAY_START("' + this.selectedPayload.name + '")';
-      this.ws.query(cmd).then((ret: MCQueryResponse) => {
-        if (ret.result === '0') {
-          const dialog = this.dialog.open(IdentDialogComponent, {
-            disableClose: true,
-            width: '100%',
-            height: '100%',
-            maxWidth: '100%',
-            closeOnNavigation: false,
-            data: {
-              duration: this.data.payloadDuration,
-            },
-            id: 'update',
+  private async startIdent() {
+    if (!this.cmn.isTablet) {
+      await this.stat.setMode('T2');
+    }
+    if (this.stat.mode !== 'T2') return;
+    const cmd = '?PAY_START("' + this.selectedPayload.name + '")';
+    const ret = await this.ws.query(cmd);
+    if (ret.result === '0') {
+      const dialog = this.dialog.open(IdentDialogComponent, {
+        disableClose: true,
+        width: '100%',
+        height: '100%',
+        maxWidth: '100%',
+        closeOnNavigation: false,
+        data: {
+          duration: this.data.payloadDuration,
+        },
+        id: 'update',
+      });
+      dialog.afterClosed().subscribe(async ret => {
+        if (ret) {
+          await this.data.refreshPayloads();
+          this.selectedPayload = this.data.payloads.find(p=>{
+            return p.name === this.selectedPayload.name;
           });
-          dialog.afterClosed().subscribe(ret => {
-            if (ret) {
-              this.data.refreshPayloads().then(()=>{
-                this.selectedPayload = this.data.payloads.find(p=>{
-                  return p.name === this.selectedPayload.name;
-                });
-                return this.onPayloadChange();
-              }).then(()=>{
-                this.snack.open(this.words['payloads']['done'], '', { duration: 1500 });
-              });
-            }
-          });
-          const interval = setInterval(() => {
-            this.ws
-              .query('?PAY_GET_IDENT_STATUS')
-              .then((ret: MCQueryResponse) => {
-                const val = Number(ret.result);
-                switch (val) {
-                  case 1: // DONE
-                    clearInterval(interval);
-                    dialog.close(true);
-                    break;
-                  case 2: // RUNNING
-                    dialog.componentInstance.start();
-                    break;
-                  case 3: // PROCESSING
-                    break;
-                  case 4: // ERROR
-                    clearInterval(interval);
-                    dialog.close(false);
-                    break;
-                  case 5: // NOT STARTED
-                    clearInterval(interval);
-                    dialog.close(false);
-                    break;
-                  case 6: // MOVING TO START
-                    break;
-                  case 7: // MOVING TO ORIGINAL POSITION
-                    dialog.componentInstance.finish();
-                    break;
-                  default:
-                    console.log('invalid value:' + val);
-                    clearInterval(interval);
-                    break;
-                }
-              });
-          }, 1000);
+          await this.onPayloadChange();
+          this.snack.open(this.words['payloads']['done'], '', { duration: 1500 });
         }
       });
-    },400);
+      const interval = setInterval(() => {
+        this.ws
+          .query('?PAY_GET_IDENT_STATUS')
+          .then((ret: MCQueryResponse) => {
+            const val = Number(ret.result);
+            switch (val) {
+              case 1: // DONE
+                clearInterval(interval);
+                dialog.close(true);
+                break;
+              case 2: // RUNNING
+                dialog.componentInstance.start();
+                break;
+              case 3: // PROCESSING
+                break;
+              case 4: // ERROR
+                clearInterval(interval);
+                dialog.close(false);
+                break;
+              case 5: // NOT STARTED
+                clearInterval(interval);
+                dialog.close(false);
+                break;
+              case 6: // MOVING TO START
+                break;
+              case 7: // MOVING TO ORIGINAL POSITION
+                dialog.componentInstance.finish();
+                break;
+              default:
+                console.log('invalid value:' + val);
+                clearInterval(interval);
+                break;
+            }
+          });
+      }, 1000);
+    }
   }
 
   newPayload() {
@@ -325,10 +322,13 @@ export class PayloadWizardComponent implements OnInit {
     const oldVal = this.selectedPayload.mass;
     const cmd =
       '?PAY_SET_MASS("' + this.selectedPayload.name + '",' + newVal + ')';
-    this.selectedPayload.mass = newVal;
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result !== '0' || ret.err) this.selectedPayload.mass = oldVal;
-      else this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      if (ret.result !== '0' || ret.err) {
+        this.ctrlMass.setValue(oldVal);
+      } else {
+        this.selectedPayload.mass = newVal;
+        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      }
     });
   }
 
@@ -337,10 +337,13 @@ export class PayloadWizardComponent implements OnInit {
     const oldVal = this.selectedPayload.inertia;
     const cmd =
       '?PAY_SET_INERTIA("' + this.selectedPayload.name + '",' + newVal + ')';
-    this.selectedPayload.inertia = newVal;
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result !== '0' || ret.err) this.selectedPayload.inertia = oldVal;
-      else this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      if (ret.result !== '0' || ret.err) {
+        this.ctrlInertia.setValue(oldVal);
+      } else {
+        this.selectedPayload.inertia = newVal;
+        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      }
     });
   }
 
@@ -349,10 +352,13 @@ export class PayloadWizardComponent implements OnInit {
     const oldVal = this.selectedPayload.lx;
     const cmd =
       '?PAY_SET_lx("' + this.selectedPayload.name + '",' + newVal + ')';
-    this.selectedPayload.lx = newVal;
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result !== '0' || ret.err) this.selectedPayload.lx = oldVal;
-      else this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      if (ret.result !== '0' || ret.err) {
+        this.ctrllx.setValue(oldVal);
+      } else {
+        this.selectedPayload.lx = newVal;
+        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      }
     });
   }
 

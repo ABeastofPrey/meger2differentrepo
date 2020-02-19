@@ -96,29 +96,8 @@ mat-card-content {
   margin-bottom: -8px;
   font-weight: bold;
 }
-.context-menu {
-  position: absolute;
-  background: #fff;
-  z-index: 6;
-}
-.context-menu mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
-}
-.context-menu .button-text {
-  font-size: 13px;
-  font-weight: 400;
-}
-.context-menu button {
-  padding: 0 32px 0 8px;
-  width: 100%;
-  display: block;
-}
-::ng-deep .context-menu .mat-button-wrapper {
-  display: flex;
-  align-items: center;
+message-log {
+  height: 100%;
 }
 .graphs {
   overflow-y: auto;

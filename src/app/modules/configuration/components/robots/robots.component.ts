@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RobotService } from '../../../core/services/robot.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, MatDatepickerInputEvent } from '@angular/material';
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
 import {
   WebsocketService,
@@ -22,10 +22,8 @@ import { RobotSelectionComponent } from '../../../../components/robot-selection/
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
+import { FormControl, Validators } from '@angular/forms';
 
-declare var Plotly;
-
-const MAXVAL = 3000;
 const DEFAULT_MC_NAME = 'MC';
 
 @Component({
@@ -53,6 +51,8 @@ export class RobotsComponent implements OnInit {
   dhImgPath1: string | undefined;
   dhImgPath2: string | undefined;
   busy = false;
+  sysDate = new FormControl(new Date());
+  sysTime = new FormControl('',[Validators.pattern(/^(?:\d\d:\d\d)$/)]);
 
   // BATTERY
   private _batteryInterval: number;
@@ -93,12 +93,10 @@ export class RobotsComponent implements OnInit {
   }
 
   // SYSTEM
-  sysName?: string;
+  sysName: string = null;
   
   // MCU
-  @ViewChild('mcu', { static: false }) mcu?: HTMLElement;
   mcuThreshold = 0;
-  private mcuInterval: number | undefined;
   mcuConnected = false;
 
   private wordOk = '';
@@ -125,7 +123,7 @@ export class RobotsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const words = ['changeOK', 'robots.updating', 'connected', 'disconnected'];
+    const words = ['changeOK', 'robots.updating'];
     this.trn.get(words).subscribe(words => {
       this.wordOk = words['changeOK'];
       this.wordUpdating = words['robots.updating'];
@@ -158,6 +156,18 @@ export class RobotsComponent implements OnInit {
         this.ws.query('?sys.name').then((ret: MCQueryResponse) => {
           this.sysName = ret.result;
         });
+        this.ws.query('?sys.date').then(ret=>{
+          const s = ret.result.split('/');
+          const d = new Date();
+          d.setFullYear(Number('20' + s[2]));
+          d.setMonth(Number(s[1])-1);
+          d.setDate(Number(s[0]));
+          this.sysDate.setValue(d);
+        });
+        this.ws.query('?sys.time').then(ret=>{
+          const t = ret.result;
+          this.sysTime.setValue(t.substring(0,t.lastIndexOf(':')));
+        });
       }
     });
   }
@@ -175,75 +185,54 @@ export class RobotsComponent implements OnInit {
     });
   }
 
+  private pad(n){return n<10 ? '0'+n : n}
+
+  async onDateChange(e:MatDatepickerInputEvent<Date>) {
+      const d = e.value;
+      if (d === null) return;
+      const day = this.pad(d.getDate());
+      const month = this.pad(d.getMonth()+1);
+      const year = d.getFullYear().toString().slice(-2);
+      const dateFormated = `${day}/${month}/${year}`;
+      const ret = await this.api.get('/cs/api/timeChangeMode/on').toPromise();
+      if (ret) {
+        const ret2 = await this.ws.query('sys.date="'+dateFormated+'"');
+        if (!ret2.err) {
+          this.snack.open(this.wordOk, '', { duration: 1500 });
+        }
+      }
+      setTimeout(async()=>{
+        await this.api.get('/cs/api/timeChangeMode/off').toPromise();
+      },1000);
+  }
+
+  async onTimeChange() {
+    if (this.sysTime.invalid) return;
+    const t = this.sysTime.value + ':00';
+    const ret = await this.api.get('/cs/api/timeChangeMode/on').toPromise();
+    if (ret) {
+      const ret2 = await this.ws.query('sys.time="'+t+'"');
+      if (!ret2.err) {
+        this.snack.open(this.wordOk, '', { duration: 1500 });
+      }
+    }
+    setTimeout(async()=>{
+      await this.api.get('/cs/api/timeChangeMode/off').toPromise();
+    },1000);
+  }
+
   initMCU() {
     this.ws.query('?MCU_GET_CONNECTION_STATUS').then((ret: MCQueryResponse)=>{
       this.mcuConnected = ret.result === '1';
     }).then(()=>{
-      //clearInterval(this.mcuInterval);
       this.ws.query('?MCU_GET_FAN_THRESHOLD').then((ret: MCQueryResponse) => {
         this.mcuThreshold = Number(ret.result);
-        //this.mcuInterval = setInterval(()=>{
-        this.ws
-          .query('?MCU_SEND_GETFANVALUE_COMMAND')
-          .then((ret: MCQueryResponse) => {
-            const val = Number(ret.result);
-            if (val === -1 && !isNaN(val)) {
-              //clearInterval(this.mcuInterval);
-              this.generateMcuChart(0);
-              return;
-            }
-            this.generateMcuChart(val);
-          });
-        //},2000);
       });
     });
   }
 
-  private generateMcuChart(val: number) {
-    const color = val <= this.mcuThreshold ? '#ff0000' : '#00ff00';
-    const mcuStatus = 
-        this.mcuConnected ? this.words['connected'] : this.words['disconnected'];
-    const trace1 = {
-      x: ['MCU Fan'],
-      y: [val],
-      name: 'MCU Fan Level',
-      type: 'bar',
-      marker: { color: [color] },
-    };
-    const trace2 = {
-      x: ['MCU Fan'],
-      y: [MAXVAL - val],
-      hoverinfo: 'skip',
-      type: 'bar',
-      marker: { color: ['#cccccc'] },
-    };
-    const data = [trace1, trace2];
-    const layout = {
-      barmode: 'stack',
-      showlegend: false,
-      title: 'MCU Fan (' + mcuStatus + ')',
-      annotations: [
-        {
-          x: 0,
-          y: this.mcuThreshold,
-          xref: 'x',
-          yref: 'y',
-          text: 'Threshold',
-          showarrow: true,
-          arrowhead: 7,
-          ax: 70,
-          ay: 0,
-        },
-      ],
-    };
-    Plotly.newPlot('mcu', data as Array<Partial<Plotly.PlotData>>, layout as Partial<Plotly.Annotations>, {
-      responsive: true,
-      displayModeBar: false,
-    });
-  }
-
   onNameChange() {
-    if (this.sysName && this.sysName.length === 0) {
+    if (this.sysName !== null && this.sysName.length === 0) {
       this.sysName = DEFAULT_MC_NAME;
     }
     this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName + '")');

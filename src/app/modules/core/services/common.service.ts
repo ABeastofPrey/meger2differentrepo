@@ -1,3 +1,5 @@
+import { MCProject } from './../models/project/mc-project.model';
+import { MatDialog } from '@angular/material';
 import { Injectable } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
 import * as screenfull from 'screenfull';
@@ -6,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ApiService } from './api.service';
 import { BehaviorSubject } from 'rxjs';
+import { TourWelcomeComponent } from '../../tour/tour-welcome/tour-welcome.component';
 
 @Injectable()
 export class CommonService {
@@ -25,7 +28,8 @@ export class CommonService {
   constructor(
     private platform: Platform,
     private api: ApiService,
-    private overlayContainer: OverlayContainer
+    private overlayContainer: OverlayContainer,
+    private dialog: MatDialog
   ) {
     const cachedTheme = localStorage.getItem('theme');
     switch (cachedTheme) {
@@ -51,6 +55,10 @@ export class CommonService {
       this._fontWidth = this._fontWidth * 1.5; // because of screen scaling
     }
     e.remove();
+  }
+
+  get isCloud() {
+    return location.port !== '1207' && location.port !== '4200';
   }
 
   refreshTheme() {
@@ -91,6 +99,18 @@ export class CommonService {
     const s = screenfull as Screenfull;
     if (s.enabled) {
       s.request();
+    }
+  }
+
+  showTourDialog(force: boolean, prj: MCProject) {
+    if (this.isTablet) return;
+    const tourQuestion = localStorage.getItem('tourQuestion');
+    if (force || tourQuestion === null || !tourQuestion || this.isCloud) {
+      localStorage.setItem('tourQuestion', 'true');
+      this.dialog.open(TourWelcomeComponent,{
+        maxWidth: '500px',
+        data: prj
+      });
     }
   }
 }

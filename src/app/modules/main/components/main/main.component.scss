@@ -126,7 +126,9 @@ login-screen {
 .window .title span {
   flex: 1;
 }
-notification-window,
+message-log {
+  flex: 1;
+}
 terminal-window {
   flex: 1;
   display: flex;
@@ -167,6 +169,12 @@ lib-app-simulator {
   width: 400px;
   height: 300px;
 }
+.demoSim {
+  right: 180px !important;
+  top: 130px !important;
+  left: auto!important;
+  height: 350px!important;
+}
 .sim-wrapper {
   flex: 1;
   position: relative;
@@ -184,15 +192,15 @@ lib-app-simulator {
 }
 .emulator-settings {
   box-sizing: border-box;
-  transition: max-width 200ms ease-in;
-  max-width: 0;
+  display: none;
   padding: 0;
   overflow: hidden;
   z-index: 11;
+  max-width: 250px;
 }
 .emulator-settings.open {
   padding: 16px 24px;
-  max-width: 250px;
+  display: block;
 }
 .emulator-settings h2 {
   margin: 0 0 0 16px;

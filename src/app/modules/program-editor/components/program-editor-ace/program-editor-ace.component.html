@@ -1,5 +1,5 @@
 <div class="wrapper" [class.disabled]="isEditorDisabled">
-	<div #ace class="editor"></div>
+	<div #ace class="editor" tourAnchor="program-editor-ace"></div>
 	<div class="tooltip mat-elevation-z1" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
 		{{ lastWord }}: {{ tooltipValue }}
 	</div>

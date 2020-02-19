@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { IPosition } from 'angular2-draggable';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import {
-  WebsocketService,
-  MCQueryResponse,
-} from '../../../modules/core/services/websocket.service';
+import {WebsocketService } from '../../../modules/core/services/websocket.service';
 import { ScreenManagerService } from '../../../modules/core/services/screen-manager.service';
 import { ApiService } from '../../../modules/core/services/api.service';
-import { TourService } from 'ngx-tour-md-menu';
 import { NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {GroupManagerService} from '../../core/services/group-manager.service';
@@ -60,7 +56,6 @@ export class DashboardService {
     private dialog: MatDialog,
     private api: ApiService,
     private snack: MatSnackBar,
-    private tour: TourService,
     private zone: NgZone,
     private trn: TranslateService,
     private grp: GroupManagerService
@@ -75,17 +70,6 @@ export class DashboardService {
       .subscribe(words => {
         this.words = words;
       });
-    this.tour.start$.subscribe(start => {
-      localStorage.removeItem('dashboards');
-    });
-    this.tour.end$.subscribe(end => {
-      for (let i = 0; i < this._windows.length; i++) {
-        if (this._windows[i].name === 'SCARA (Tour)') {
-          this._windows.splice(i, 1);
-          break;
-        }
-      }
-    });
     const cache = localStorage.getItem('dashboards');
     if (cache) {
       const windows: DashboardWindow[] = JSON.parse(cache);

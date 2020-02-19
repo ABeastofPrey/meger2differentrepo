@@ -126,10 +126,10 @@ export class LoginService {
     return this.currentUserSubject.value;
   }
 
-  logout(serverDisconnected?: boolean) {
+  async logout(serverDisconnected?: boolean) {
     if (!this.jwtService.getToken()) return;
     if (!serverDisconnected) {
-      this.ws.send('?tp_exit', true);
+      await this.ws.query('?tp_exit');
       this.ws.reset();
     }
     this.purgeAuth();

@@ -1,3 +1,4 @@
+import { CommonService } from './../../../core/services/common.service';
 import { TaskService } from './../../../core/services/task.service';
 import { environment } from './../../../../../environments/environment';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
@@ -63,7 +64,8 @@ export class AppsComponent implements OnInit {
     private trn: TranslateService,
     public utils: UtilsService,
     public data: DataService,
-    private task: TaskService
+    private task: TaskService,
+    public cmn: CommonService
   ) {
     this.trn.get('apps').subscribe(words => {
       this.words = words;

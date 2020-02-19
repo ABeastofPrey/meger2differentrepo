@@ -19,7 +19,6 @@
   },
   "private": true,
   "dependencies": {
-    "@essetwide/material-walkthrough": "^2.1.5",
     "@ngrx/data": "^8.4.0",
     "@ngrx/effects": "^8.4.0",
     "@ngrx/entity": "^8.4.0",
@@ -43,7 +42,7 @@
     "ramda-fantasy": "^0.8.0",
     "rxjs-compat": "^6.5.3",
     "screenfull": "^4.2.1",
-    "stxsim-ng": "^0.1.0"
+    "stxsim-ng": "^0.1.5"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.800.6",

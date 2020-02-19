@@ -1,0 +1,13 @@
+<div class="mat-typography">
+  <div class="header"></div>
+  <div class="mat-typography">
+    <h1 class="primary">{{ 'main.tour.title' | translate }}</h1>
+    <h2>{{ 'main.tour.msg' | translate }}</h2>
+    <div>{{ 'main.tour.msg2' | translate }}</div>
+  </div>
+  <div class="buttons center-vertical">
+    <button mat-button color="primary" mat-dialog-close>{{ 'main.tour.no' | translate }}</button>
+    <button mat-raised-button color="primary" (click)="startTour()" [disabled]="disableReason">{{ 'main.tour.yes' | translate }}</button>
+  </div>
+  <h3 class="warn" *ngIf="disableReason">{{ ('main.tour.err.'+disableReason) | translate }}</h3>
+</div>

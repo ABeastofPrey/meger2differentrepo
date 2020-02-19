@@ -123,15 +123,15 @@ export class MCError {
   private _line: string;
   private module: string;
   private message: string;
+  private uuid: string;
+  private sernum: number;
   private _parent: MCError = null;
   
   children: MCError[] = [];
   
   get timestamp(): number {
-    if (this.date && this.time) {
-      return Date.parse(this.date + ' ' + this.time);
-    }
-    return 0;
+    const t = this.date && this.time ? Date.parse(this.date + ' ' + this.time) : 0;
+    return t;
   }
   
   get code() {
@@ -158,7 +158,7 @@ export class MCError {
     try {
       const index = str.indexOf('"');
       const data = str.substr(0, index).split(' ');
-      const parts: string[] = [];
+      let parts: string[] = [];
       data.forEach(str => {
         if (str !== null && str.length > 0) parts.push(str);
       });
@@ -188,10 +188,11 @@ export class MCError {
         this.file = ' ';
       }
       count++;
-      this.message = str.substr(index + 1).slice(0, -2);
-      for (let j = count; j < parts.length; j++) {
-        this.message += parts[j] + ' ';
-      }
+      this.message = str.substring(index + 1, str.lastIndexOf('"'));
+      str = str.substring(str.lastIndexOf('"')+3);
+      parts = str.trim().split(',');
+      this.uuid = parts[0].substring(6);
+      this.sernum = Number(parts[1].trim().substring(8));
     } catch (err) {
       this.date = '';
       this.time = '';

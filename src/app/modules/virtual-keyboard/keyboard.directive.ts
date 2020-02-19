@@ -85,6 +85,7 @@ export class KeyboardDirective {
 
   @HostListener('keydown',['$event'])
   onkeydown(e: KeyboardEvent) {
+    if (!e.key) return;
     if (!this.cmn.isTablet && this.ktype && e.key.length === 1) {
       const isNumeric = this.ktype && this.ktype.includes('numeric');
       if (isNumeric) {

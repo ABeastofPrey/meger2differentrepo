@@ -113,7 +113,6 @@ export class AddVarComponent implements OnInit {
       const canNotOpen = !stat ||
         this.prj.activeProject ||
         !this.coos.coosLoaded.value ||
-        this.screenManagerService.controlsAnimating.value ||
         (this.cmn.isTablet && this.stat.mode !== 'T1' && this.stat.mode !== 'T2');
 
       if (!canNotOpen) {
@@ -255,10 +254,13 @@ export class AddVarComponent implements OnInit {
   }
 
   private changeOverlayAndToggleJog(): void {
-    const isOpened = this.screenManagerService.openedControls;
+    const isOpened = this.screenManagerService.openedControls.value;
     this.shrinkOverlayAndExpandJog(isOpened);
     this.dialogRef.afterClosed().subscribe(() => {
-      this.stretchOverlayAndCollapseJog(isOpened);
+      const isOpened = this.screenManagerService.openedControls.value;
+      if (isOpened) {
+        this.stretchOverlayAndCollapseJog(isOpened);
+      }
     });
   }
 

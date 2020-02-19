@@ -100,8 +100,22 @@ export class PalletizingComponent implements OnInit {
     }, 200);
   }
 
-  private getPalletInfo() {
+  private isPalletNew() : Promise<boolean | null> {
     const name = this.data.selectedPallet.name;
+    return this.ws.query(`?PLT_IS_PALLET_SAVED("${name}")`).then(ret=>{
+      if (ret.result === '1') return false;
+      if (ret.result === '0') return true;
+      return null;
+    });
+  }
+
+  private async getPalletInfo() {
+    const name = this.data.selectedPallet.name;
+    const isNew = await this.isPalletNew();
+    if (isNew === null || isNew) {
+      this.data.selectedPallet.reset();
+      return;
+    }
     const queries = [
       this.ws.query('?plt_get_number_of_items("' + name + '")'),
       this.ws.query('?PLT_GET_ITEM_DIMENSION("' + name + '","X")'),

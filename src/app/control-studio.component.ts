@@ -1,13 +1,18 @@
+import { ProgramEditorService, TASKSTATE_NOTLOADED, TASKSTATE_RUNNING } from './modules/program-editor/services/program-editor.service';
+import { ScreenManagerService } from './modules/core/services/screen-manager.service';
+import { TourService } from 'ngx-tour-md-menu';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, HostListener } from '@angular/core';
 import { fadeAnimation } from './fade.animation';
 import { LoginService } from './modules/core';
-import { TourService } from 'ngx-tour-md-menu';
-import { RouterOutlet } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { LangService } from './modules/core/services/lang.service';
 import { environment } from '../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { CommonService } from './modules/core/services/common.service';
+import { TourState } from 'ngx-tour-core';
+
+declare var gtag;
 
 @Component({
   selector: 'control-studio',
@@ -27,10 +32,13 @@ export class ControlStudioComponent {
   constructor(
     public cmn: CommonService,
     private login: LoginService,
-    private tour: TourService,
-    private translate: TranslateService,
     private lang: LangService,
-    private overlayContainer: OverlayContainer
+    private overlayContainer: OverlayContainer,
+    private router: Router,
+    private trn: TranslateService,
+    public tour: TourService,
+    private mgr: ScreenManagerService,
+    private prg: ProgramEditorService
   ) {
     this.overlayContainer
       .getContainerElement()
@@ -39,133 +47,157 @@ export class ControlStudioComponent {
       overlayContainer.getContainerElement().classList.add('tablet-ui');
     }
     this.lang.init();
-    this.translate
-      .get('tour')
-      .toPromise()
-      .then((tour: TourStep[]) => {
-        let steps = [
-          {
-            anchorId: 'menu',
-            title: tour[0].title,
-            content: tour[0].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'jog-controls',
-            title: tour[1].title,
-            content: tour[1].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'watch',
-            title: tour[2].title,
-            content: tour[2].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'message-log-button',
-            title: tour[3].title,
-            content: tour[3].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'message-log',
-            title: tour[4].title,
-            content: tour[4].content,
-            enableBackdrop: true,
-            route: '/',
-          },
-          {
-            anchorId: 'terminal',
-            title: tour[5].title,
-            content: tour[5].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'sys-info',
-            title: tour[6].title,
-            content: tour[6].content,
-          },
-        ];
-        if (window.innerWidth >= 1024) {
-          // ADD STEPS THAT WILL BE ONLY SHOWN IN NORMAL SCREEN RESOLUTIONS
-          steps = steps.concat([
-            {
-              anchorId: 'screen-Motion Dashboard',
-              title: tour[7].title,
-              content: tour[7].content,
-              enableBackdrop: true,
-            },
-          ]);
+  }
+
+  get currStepIndex() {
+    for (let i=0; i<this.tour.steps.length; i++) {
+      if (this.tour.steps[i] === this.tour.currentStep) {
+        return i+1;
+      }
+    }
+    return 0;
+  }
+
+  @HostListener('click')
+  onclick() {
+    const isTourActive = this.tour.getStatus() === TourState.ON;
+    if (!isTourActive) return;
+    const step = this.tour.currentStep;
+    setTimeout(()=>{
+      if (this.tour.currentStep !== step) return;
+      const disableNext = step['disableNext'];
+      if (!disableNext) return;
+      if (!disableNext() && this.tour.hasNext(step)) {
+        this.tour.next();
+      }
+    },400);
+  }
+
+  initTour() {
+    this.trn.get('tour').toPromise().then((tour: TourStep[]) => {
+      const steps = [
+        {
+          anchorId: 'main-content',
+          title: tour[0].title,
+          content: tour[0].content,
+          enableBackdrop: false
+        },
+        {
+          anchorId: 'screen-editor',
+          title: tour[1].title,
+          content: tour[1].content,
+          enableBackdrop: true,
+          disableNext: ()=>{
+            return this.mgr.screen.name !== 'editor';
+          }
+        },
+        {
+          anchorId: 'menuToggle',
+          title: tour[2].title,
+          content: tour[2].content,
+          enableBackdrop: true,
+          disableNext: ()=>{
+            return this.mgr.menuExpanded;
+          }
+        },
+        {
+          anchorId: 'main-content',
+          title: tour[3].title,
+          content: tour[3].content,
+          enableBackdrop: false,
+          route: '/projects',
+        },
+        {
+          anchorId: 'project-tree',
+          title: tour[4].title,
+          content: tour[4].content,
+          enableBackdrop: true,
+          route: '/projects',
+        },
+        {
+          anchorId: 'Apps',
+          title: tour[5].title,
+          content: tour[5].content,
+          enableBackdrop: true,
+          route: '/projects',
+        },
+        {
+          anchorId: 'Apps-App-CIRCLE',
+          title: tour[6].title,
+          content: tour[6].content,
+          enableBackdrop: true,
+          route: '/projects',
+        },
+        {
+          anchorId: 'program-editor-ace',
+          title: tour[7].title,
+          content: tour[7].content,
+          enableBackdrop: true,
+          route: '/projects',
+        },
+        {
+          anchorId: 'saveAndLoad',
+          title: tour[8].title,
+          content: tour[8].content,
+          enableBackdrop: true,
+          route: '/projects',
+          disableNext: ()=>{
+            return this.prg.status && this.prg.status.statusCode === TASKSTATE_NOTLOADED;
+          }
+        },
+        {
+          anchorId: 'programStatus',
+          title: tour[9].title,
+          content: tour[9].content,
+          enableBackdrop: true,
+          route: '/projects',
+        },
+        {
+          anchorId: 'programRun',
+          title: tour[10].title,
+          content: tour[10].content,
+          enableBackdrop: true,
+          route: '/projects',
+          disableNext: ()=>{
+            return this.prg.status && this.prg.status.statusCode !== TASKSTATE_RUNNING;
+          }
+        },
+        {
+          anchorId: 'program-editor-ace',
+          title: tour[11].title,
+          content: tour[11].content,
+          enableBackdrop: false,
+          route: '/projects',
+        },
+        {
+          anchorId: 'program-editor-ace',
+          title: tour[12].title,
+          content: tour[12].content,
+          enableBackdrop: true,
+          route: '/projects',
+        },
+        {
+          anchorId: 'simWindow',
+          title: tour[13].title,
+          content: tour[13].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'btnToggleSimulator',
+          title: tour[14].title,
+          content: tour[14].content,
+          enableBackdrop: true
+        },
+        {
+          anchorId: 'main-content',
+          title: tour[15].title,
+          content: tour[15].content,
+          enableBackdrop: false,
+          endBtnTitle: 'END DEMO'
         }
-        steps = steps.concat([
-          {
-            anchorId: 'dashboard-fab',
-            title: tour[8].title,
-            content: tour[8].content,
-            enableBackdrop: true,
-            route: '/dashboard',
-          },
-          {
-            anchorId: 'dashboard-window',
-            title: tour[9].title,
-            content: tour[9].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'dashboard-enable',
-            title: tour[10].title,
-            content: tour[10].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'dashboard-expand',
-            title: tour[11].title,
-            content: tour[11].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'dashboard-move',
-            title: tour[12].title,
-            content: tour[12].content,
-            enableBackdrop: true,
-          },
-          {
-            anchorId: 'dashboard-rec',
-            title: tour[13].title,
-            content: tour[13].content,
-            enableBackdrop: true,
-          },
-        ]);
-        if (window.innerWidth >= 1024) {
-          // ADD STEPS THAT WILL BE ONLY SHOWN IN NORMAL SCREEN RESOLUTIONS
-          steps = steps.concat([
-            {
-              anchorId: 'screen-Project Editor',
-              title: tour[14].title,
-              content: tour[14].content,
-              enableBackdrop: true,
-              route: '/projects',
-            },
-          ]);
-        }
-        steps = steps.concat([
-          {
-            anchorId: 'project-tree',
-            title: tour[15].title,
-            content: tour[15].content,
-            enableBackdrop: true,
-            route: '/projects',
-          },
-          {
-            anchorId: 'project-toolbar-1',
-            title: tour[16].title,
-            content: tour[16].content,
-            enableBackdrop: true,
-          },
-        ]);
-        this.tour.initialize(steps);
-      });
+      ];
+      this.tour.initialize(steps);
+    });
   }
   
   @HostListener('window:orientationchange', ['$event'])
@@ -188,8 +220,18 @@ export class ControlStudioComponent {
   
   
   ngOnInit() {
+    this.initTour();
     this.getOrientation();
     this.login.populate();
+    // capture router events and forward them to Google Analytics
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        gtag('config', 'UA-157702087-1', {
+          'page_title': '/rs' + event.urlAfterRedirects,
+          'page_path': '/rs' + event.urlAfterRedirects
+        });
+      }
+    });
   }
   
   ngOnDestroy() {

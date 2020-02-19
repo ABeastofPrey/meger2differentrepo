@@ -6,8 +6,6 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { RecordingData } from '../models/rec-data.model';
 
-export const imgPath = environment.api_url + '/blockly/';
-
 export const PERMISSION_ADMIN = 0;
 export const PERMISSION_PROGRAMMER = 1;
 export const PERMISSION_OPERATOR = 2;
@@ -20,38 +18,47 @@ export class ApiService {
 
   profilePicChanged: EventEmitter<void> = new EventEmitter();
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   private formatErrors(error: { error: Error }) {
     return throwError(error.error);
   }
 
+  get api_url() {
+    if (!environment.production) {
+      return environment.api_url;
+    }
+    return location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+  }
+
   get(path: string, params: HttpParams = new HttpParams()): Observable<{}> {
     return this.http
-      .get(`${environment.api_url}${path}`, { params })
+      .get(`${this.api_url}${path}`, { params })
       .pipe(catchError(this.formatErrors));
   }
 
   put(path: string, body: {} = {}): Observable<{}> {
     return this.http
-      .put(`${environment.api_url}${path}`, JSON.stringify(body))
+      .put(`${this.api_url}${path}`, JSON.stringify(body))
       .pipe(catchError(this.formatErrors));
   }
 
   post(path: string, body: {} = {}): Observable<{}> {
     return this.http
-      .post(`${environment.api_url}${path}`, JSON.stringify(body))
+      .post(`${this.api_url}${path}`, JSON.stringify(body))
       .pipe(catchError(this.formatErrors));
   }
 
   delete(path): Observable<{}> {
     return this.http
-      .delete(`${environment.api_url}${path}`)
+      .delete(`${this.api_url}${path}`)
       .pipe(catchError(this.formatErrors));
   }
 
   private get token() {
-    return localStorage.getItem('jwtToken');
+    return window.localStorage['jwtToken'];
   }
 
   confirmPass(username: string, pass: string) {
@@ -73,7 +80,7 @@ export class ApiService {
   }
 
   upload(file: File, overwrite: boolean) {
-    let url = environment.api_url + '/cs/upload';
+    let url = this.api_url + '/cs/upload';
     if (overwrite) url += '/overwrite';
     const formData = new FormData();
     formData.append('token', this.token);
@@ -82,7 +89,7 @@ export class ApiService {
   }
 
   uploadToDrive(file: File, ip: string) {
-    const url = environment.api_url + '/drive/api/upload';
+    const url = this.api_url + '/drive/api/upload';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('ip', ip);
@@ -90,7 +97,7 @@ export class ApiService {
   }
 
   uploadToPath(file: File, overwrite: boolean, path: string) {
-    const url = environment.api_url + '/cs/api/upload';
+    const url = this.api_url + '/cs/api/upload';
     const formData = new FormData();
     formData.append('file', file);
     let body = new HttpParams();
@@ -101,7 +108,7 @@ export class ApiService {
   }
 
   uploadRec(file: File) {
-    const url = environment.api_url + '/cs/api/uploadRec';
+    const url = this.api_url + '/cs/api/uploadRec';
     const formData = new FormData();
     formData.append('file', file);
     let body = new HttpParams();
@@ -110,7 +117,7 @@ export class ApiService {
   }
 
   uploadIPK(file: File) {
-    const url = environment.api_url + '/cs/firmware';
+    const url = this.api_url + '/cs/firmware';
     const formData = new FormData();
     formData.append('token', this.token);
     formData.append('file', file);
@@ -118,7 +125,7 @@ export class ApiService {
   }
 
   verifyProject(file: File) {
-    const url = environment.api_url + '/cs/api/verifyProject';
+    const url = this.api_url + '/cs/api/verifyProject';
     const formData = new FormData();
     formData.append('token', this.token);
     formData.append('file', file);
@@ -126,20 +133,20 @@ export class ApiService {
   }
 
   importProject(fileName: string) {
-    const url = environment.api_url + '/cs/api/importProject';
+    const url = this.api_url + '/cs/api/importProject';
     const body = new HttpParams().set('fileName', fileName);
     return this.http.get(url, { params: body }).toPromise();
   }
 
   deleteProjectZip(fileName: string) {
-    const url = environment.api_url + '/cs/api/projectZip';
+    const url = this.api_url + '/cs/api/projectZip';
     const body = new HttpParams().set('fileName', fileName);
     return this.http.delete(url, { params: body }).toPromise();
   }
 
   uploadProfilePic(file: File, username: string) {
     const url =
-      environment.api_url +
+      this.api_url +
       '/cs/api/' +
       username +
       '/pic?token=' +
@@ -157,7 +164,7 @@ export class ApiService {
   getProfilePic(username: string) {
     //return 'assets/pics/logo_cs.png';
     return (
-      environment.api_url +
+      this.api_url +
       '/cs/api/' +
       username +
       '/pic?token=' +
@@ -173,7 +180,7 @@ export class ApiService {
     body = body.set('asJSON', 'true');
     if (extensions) body = body.set('ext', extensions);
     return this.http
-      .get<MCFile[]>(environment.api_url + '/cs/files', { params: body })
+      .get<MCFile[]>(this.api_url + '/cs/files', { params: body })
       .toPromise();
   }
 
@@ -181,11 +188,17 @@ export class ApiService {
     let body = new HttpParams();
     body = body.set('token', this.token);
     return this.http
-      .get(environment.api_url + '/cs/file/' + name, {
+      .get(this.api_url + '/cs/file/' + name, {
         responseType: 'text',
         params: body,
       })
       .toPromise();
+  }
+
+  getKukaReleaseNotes() {
+    return this.http.get(this.api_url + '/cs/file/RELEASENOTE.DAT',{
+      responseType: 'text'
+    });
   }
 
   getPathFile(path: string) {
@@ -193,7 +206,7 @@ export class ApiService {
     body = body.set('token', this.token);
     body = body.set('path', path);
     return this.http
-      .get(environment.api_url + '/cs/path', {
+      .get(this.api_url + '/cs/path', {
         responseType: 'text',
         params: body,
       })
@@ -201,7 +214,7 @@ export class ApiService {
   }
 
   getPkgdResult() {
-    return this.http.get(environment.api_url + '/cs/api/pkgd').toPromise();
+    return this.http.get(this.api_url + '/cs/api/pkgd').toPromise();
   }
 
   downloadZip(files: string[]) {
@@ -211,16 +224,16 @@ export class ApiService {
       body = body.set('files', files.join());
     }
     return this.http
-      .post(environment.api_url + '/cs/mczip', body)
+      .post(this.api_url + '/cs/mczip', body)
       .toPromise()
       .then(ret => {
-        if (ret) window.location.href = environment.api_url + '/cs/api/zipFile';
+        if (ret) window.location.href = this.api_url + '/cs/api/zipFile';
       });
   }
 
   downloadProjectZip(project: string) {
     const url =
-      environment.api_url + '/cs/api/zipProject/' + project.toUpperCase();
+      this.api_url + '/cs/api/zipProject/' + project.toUpperCase();
     return this.http
       .get(url, { responseType: 'arraybuffer' })
       .toPromise()
@@ -239,14 +252,14 @@ export class ApiService {
   }
 
   downloadSysZip() {
-    window.location.href = environment.api_url + '/cs/api/zipSysFile';
+    window.location.href = this.api_url + '/cs/api/zipSysFile';
   }
 
   deleteFile(name: string) {
     let body = new HttpParams();
     body = body.set('token', this.token);
     return this.http
-      .delete(environment.api_url + '/cs/file/' + name, { params: body })
+      .delete(this.api_url + '/cs/file/' + name, { params: body })
       .toPromise();
   }
 
@@ -254,7 +267,7 @@ export class ApiService {
     let body = new HttpParams();
     body = body.set('token', this.token);
     return this.http
-      .delete(environment.api_url + '/cs/file/' + name, { params: body })
+      .delete(this.api_url + '/cs/file/' + name, { params: body })
       .toPromise();
   }
 
@@ -262,7 +275,7 @@ export class ApiService {
     let body = new HttpParams();
     body = body.set('token', this.token);
     return this.http
-      .get(environment.api_url + '/cs/api/sysinfo', { params: body })
+      .get(this.api_url + '/cs/api/sysinfo', { params: body })
       .toPromise();
   }
 
@@ -270,7 +283,7 @@ export class ApiService {
     let body = new HttpParams();
     body = body.set('token', this.token);
     return this.http
-      .get(environment.api_url + '/cs/trnerr', {
+      .get(this.api_url + '/cs/trnerr', {
         params: body,
         responseType: 'text',
       })
@@ -295,12 +308,12 @@ export class ApiService {
 
   getMCKeywords() {
     return this.http
-      .get(environment.api_url + '/cs/MCCommands/all', { responseType: 'text' })
+      .get(this.api_url + '/cs/MCCommands/all', { responseType: 'text' })
       .toPromise();
   }
 
   getMCProperties() {
-    return this.http.get(environment.api_url + '/cs/MCCommands').toPromise();
+    return this.http.get(this.api_url + '/cs/MCCommands').toPromise();
   }
 
   getDocs() {
@@ -320,7 +333,7 @@ export class ApiService {
       permission: permission.toString(),
     };
     return this.http
-      .post(environment.api_url + '/cs/api/signup', user)
+      .post(this.api_url + '/cs/api/signup', user)
       .toPromise();
   }
 
@@ -337,13 +350,13 @@ export class ApiService {
       permission: permission.toString(),
     };
     return this.http
-      .put(environment.api_url + '/cs/api/user', user)
+      .put(this.api_url + '/cs/api/user', user)
       .toPromise();
   }
 
   deleteUser(username: string) {
     return this.http
-      .delete(environment.api_url + '/cs/api/user/' + username)
+      .delete(this.api_url + '/cs/api/user/' + username)
       .toPromise();
   }
 
@@ -368,6 +381,11 @@ export class ApiService {
     return this.get('/cs/api/log').toPromise();
   }
 
+  /* Clears the Webserver LOG */
+  clearLog() {
+    return this.get('/cs/api/logClear').toPromise();
+  }
+
   getRecordingFiles() {
     return this.get('/cs/api/dashboard/recfiles')
       .toPromise()
@@ -379,7 +397,7 @@ export class ApiService {
   }
   
   getRecordingFile(recName: string) {
-    const url = environment.api_url + '/cs/api/dashboard/recFile/' + recName;
+    const url = this.api_url + '/cs/api/dashboard/recFile/' + recName;
     return this.http
       .get(url, { responseType: 'arraybuffer' })
       .toPromise()
@@ -422,7 +440,7 @@ export class ApiService {
       body = body.set('fileName', fileName);
     }
     return this.http
-      .post(environment.api_url + '/tp/pallet/', body, {
+      .post(this.api_url + '/tp/pallet/', body, {
         responseType: 'text',
       })
       .toPromise();
@@ -432,29 +450,29 @@ export class ApiService {
     let body = new HttpParams();
     body = body.set('palletData', data);
     return this.http
-      .post(environment.api_url + '/tp/pallet/' + name, body)
+      .post(this.api_url + '/tp/pallet/' + name, body)
       .toPromise();
   }
 
   createFolder(path: string): Promise<boolean> {
-    const url = environment.api_url + '/cs/api/folder';
+    const url = this.api_url + '/cs/api/folder';
     return this.http.post(url, { path }).toPromise() as Promise<boolean>;
   }
 
   moveFiles(files: string, target: string): Promise<boolean> {
-    const url = environment.api_url + '/cs/api/move';
+    const url = this.api_url + '/cs/api/move';
     return (
       this.http.post(url, { files, target }).toPromise()
     ) as Promise<boolean>;
   }
 
   restoreToFactory() {
-    const url = environment.api_url + '/cs/api/factoryRestore';
+    const url = this.api_url + '/cs/api/factoryRestore';
     return this.http.get(url).toPromise() as Promise<boolean>;
   }
 
   bugReport(info: string, user: string, history: string) {
-    const url = environment.api_url + '/cs/api/bugreport';
+    const url = this.api_url + '/cs/api/bugreport';
     return this.http
       .post(url, {
         user,
@@ -465,7 +483,7 @@ export class ApiService {
   }
 
   copy(fromPath: string, to: string) {
-    const url = environment.api_url + '/cs/api/copy';
+    const url = this.api_url + '/cs/api/copy';
     return this.http
       .post(url, {
         from: fromPath,
@@ -491,6 +509,7 @@ export interface Log {
   username: string;
   time: number;
   msg: string;
+  UUID: string;
 }
 
 export interface ProjectVerificationResult {

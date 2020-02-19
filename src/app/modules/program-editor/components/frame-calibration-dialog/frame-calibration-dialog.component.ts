@@ -54,21 +54,21 @@ export class FrameCalibrationDialogComponent implements OnInit {
       this.data.frameType +
       '","' +
       this.varName +
-      '",1)';
+      '",' + (this.setAsCurrent ? 1 : 0) + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result === '0') {
         if (this.setAsCurrent) {
-          switch (this.data.frameType) {
+          switch (this.data.frameType.toUpperCase()) {
             default:
               break;
             case 'BASE':
-              this.dataService.selectedBase = this.varName;
+              this.dataService._selectedBase = this.varName;
               break;
             case 'MACHINETABLE':
-              this.dataService.selectedMachineTable = this.varName;
+              this.dataService._selectedMachineTable = this.varName;
               break;
             case 'WORKPIECE':
-              this.dataService.selectedWorkPiece = this.varName;
+              this.dataService._selectedWorkPiece = this.varName;
               break;
           }
         }

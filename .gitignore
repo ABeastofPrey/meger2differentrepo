@@ -42,3 +42,13 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+/TESTS-Chrome_75.0.3770_(Windows_7.0.0).xml
+/TESTS-Chrome_77.0.3865_(Windows_7.0.0).xml
+/TESTS-Chrome_78.0.3904_(Windows_7.0.0).xml
+/TESTS-Chrome_79.0.3945_(Windows_7.0.0).xml
+/nbproject/private/retriever/catalog.xml
+/nbproject/private/retriever/wiki.ros.org/xacro
+/report.20191126.194917.17488.0.001.json
+/report.20191127.103715.16588.0.001.json
+/report.20191127.104843.15436.0.001.json
+/report.20191127.113459.6088.0.001.json

@@ -4,8 +4,8 @@
   <div *ngIf="prj.isLoading" class="center-block">
 		<img src="assets/pics/{{ env.platform.spinner }}" />
 	</div>
-	<as-split direction="horizontal" (dragEnd)="onDragEnd()" unit="pixel">
-		<as-split-area size="210" maxSize="400">
+	<as-split direction="horizontal" (dragEnd)="onDragEnd()" unit="pixel" (gutterDblClick)="toggleGutter($event.gutterNum)" useTransition="true" [gutterDblClickDuration]="500">
+		<as-split-area [size]="showGutterLeft ? '210' : '0'" maxSize="400">
 			<program-editor-side-menu class="mat-elevation-z1"></program-editor-side-menu>
 		</as-split-area>
 		<as-split-area>
@@ -72,6 +72,7 @@
 									src="assets/pics/icons/load.png"
 									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
 									(click)="service.load()"
+									tourAnchor="saveAndLoad"
 									matTooltip="{{ 'projects.toolbar.save_load' | translate }}"
 									[class.disabled]="service.status.statusCode !== taskStates[0]"
 								/>
@@ -91,6 +92,7 @@
 								>
 								<mat-icon
 									(click)="service.run()"
+									tourAnchor="programRun"
 									*ngIf="!login.isViewer && !service.isLib"
 									matTooltip="{{ 'projects.toolbar.run' | translate }}"
 									[class.disabled]="service.status.statusCode === taskStates[0]"
@@ -136,6 +138,7 @@
 								<div class="status" *ngIf="service.status">
 									{{ 'status' | translate }}:
 									<span
+										tourAnchor="programStatus"
 										[class.primary]="service.status.statusCode === taskStates[1]"
 										[class.warn]="
 											service.status.statusCode === taskStates[0] || service.status.statusCode === taskStates[3]
@@ -161,35 +164,38 @@
 					<gripper-screen *ngIf="service.mode === 'grippers'" style="flex: 1; display: flex;"></gripper-screen>
 					<app-payload-wizard *ngIf="service.mode === 'payloads'" style="flex: 1; display: flex;"></app-payload-wizard>
 					<io-mapping *ngIf="service.mode === 'io'" style="flex: 1; display: flex;"></io-mapping>
+					<fwconfig-editor *ngIf="service.mode === 'fwconfig'"></fwconfig-editor>
 				</as-split-area>
 				<as-split-area
 					size="30"
-					[minSize]="service.errors.length > 0 ? 20 : 1"
+					[minSize]="10"
 					*ngIf="service.mode === 'editor'"
 				>
 					<as-split direction="horizontal" (dragEnd)="onDragEnd()" unit="pixel">
 						<as-split-area>
 							<div class="err-container compact-tabs">
-								<mat-tab-group	[selectedIndex]="selectedTab" (selectedIndexChange)="selectedTab = $event" *ngIf="!cmn.isTablet">
+								<mat-tab-group	[selectedIndex]="selectedTab" (selectedIndexChange)="onTabChange($event)" *ngIf="!cmn.isTablet" animationDuration="0ms">
 									<mat-tab label="{{'projects.notification.title' | translate}}"></mat-tab>
-									<mat-tab>
+									<mat-tab [disabled]="notification.windowOpen">
 										<ng-template mat-tab-label>
 											<div>{{'message_log' | translate}}</div>
-											<div class="badge primary-bg">{{notification.count}}</div>
+											<div class="badge primary-bg">{{ notification.count | async }}</div>
 										</ng-template>
 									</mat-tab>
 									<mat-tab *ngIf="login.isAdmin" label="{{'terminal' | translate}}"></mat-tab>
 								</mat-tab-group>
 								<div *ngIf="selectedTab === 0" class="tab-content">
 									<div *ngIf="!service.backtrace && service.errors.length > 0">
+										<span style="font-weight: 500;">{{service.errors.length}}</span>
 										{{ 'projects.notification.errMsg' | translate }}
 										<div
 											*ngFor="let e of service.errors"
 											class="center-vertical error-line"
 											(click)="e.number === -1 ? null : service.skipToLine(e.number)"
 											[class.error-line-selectable]="e.number !== -1"
+											[class.warning-line] = "e.type === 'warning'"
 										>
-											<mat-icon style="margin-right: 8px;">bug_report</mat-icon>
+											<mat-icon style="margin-right: 8px;">{{ e.type !== 'warning' ? 'bug_report' : 'warning' }}</mat-icon>
 											<span *ngIf="e.number !== -1">Line {{ e.number + ':' }}&nbsp;&nbsp;</span>
 											<span *ngIf="e.number === -1">Task {{ e.file + ':' }}&nbsp;&nbsp;</span>
 											<span>{{ e.error }}</span>
@@ -224,7 +230,7 @@
 										</div>
 									</div>
 								</div>
-								<notification-window *ngIf="selectedTab === 1" class="tab-content"></notification-window>
+								<message-log *ngIf="selectedTab === 1" class="tab-content"></message-log>
 								<terminal *ngIf="selectedTab === 2" class="tab-content"></terminal>
 							</div>
 						</as-split-area>
@@ -236,8 +242,7 @@
 			</as-split>
 		</as-split-area>
 		<as-split-area
-			size="170"
-			style="padding: 8px; box-sizing: border-box;"
+			[size]="showGutterRight ? '170' : '0'"
 			*ngIf="service.mode === 'editor' && !login.isOperator && !login.isViewer"
 		>
 			<program-edit-menu class="mat-elevation-z1"></program-edit-menu>

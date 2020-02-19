@@ -13,8 +13,8 @@
 					[matAutocomplete]="auto"
 				/>
 				<mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
-					<mat-option *ngFor="let option of filteredOptions" [value]="option.text">
-						{{ option.text }}
+					<mat-option *ngFor="let option of filteredOptions" [value]="option">
+						{{ option }}
 					</mat-option>
 				</mat-autocomplete>
 			</mat-form-field>
@@ -28,13 +28,13 @@
 					[(ngModel)]="newParam.name"
 				/>
 			</mat-form-field>
-			<mat-form-field>
+			<!--<mat-form-field>
 				<mat-select placeholder="{{ 'base' | translate }}" [(ngModel)]="newParam.base">
 					<mat-option value="DEC">{{ 'decimal' | translate }}</mat-option>
 					<mat-option value="HEX">{{ 'hexadecimal' | translate }}</mat-option>
 					<mat-option value="BIN">{{ 'binary' | translate }}</mat-option>
 				</mat-select>
-			</mat-form-field>
+			</mat-form-field>-->
 			<mat-form-field>
 				<mat-select placeholder="{{ 'inputs.type' | translate }}" [(ngModel)]="newParam.inputType">
 					<mat-option value="INPUT">{{ 'inputs.text' | translate }}</mat-option>

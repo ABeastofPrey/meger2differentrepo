@@ -156,7 +156,7 @@ export class DataService {
 
   // Bases
   private _bases: string[] = [];
-  private _selectedBase: string = null;
+  public _selectedBase: string = null;
   get bases() {
     return this._bases;
   }
@@ -203,7 +203,7 @@ export class DataService {
 
   // Machine Table
   private _machineTables: string[] = [];
-  private _selectedMachineTable: string = null;
+  public _selectedMachineTable: string = null;
   get machineTables() {
     return this._machineTables;
   }
@@ -222,7 +222,7 @@ export class DataService {
 
   // Work Piece
   private _workPieces: string[] = [];
-  private _selectedWorkPiece: string = null;
+  public _selectedWorkPiece: string = null;
   get workPieces() {
     return this._workPieces;
   }
@@ -402,6 +402,23 @@ export class DataService {
   private _keyboardFormat: {} = null;
   private _JavaVersion: string = null;
   private _MCVersion: string = null;
+  private _safetyCardVer: string = null;
+  private _safetyCardRunning = false;
+  private _cabinetFwVer: string = null;
+  private _FPGAVer: string = null;
+
+  get safetyCardVer() {
+    return this._safetyCardVer;
+  }
+  get safetyCardRunning() {
+    return this._safetyCardRunning;
+  }
+  get cabinetFwVer() {
+    return this._cabinetFwVer;
+  }
+  get FPGAVer() {
+    return this._FPGAVer;
+  }
   get TPVersion() {
     return this._tpVersion;
   }
@@ -568,9 +585,7 @@ export class DataService {
     return this.ws
       .query('?PAY_GET_FREQUENCIES')
       .then((ret: MCQueryResponse) => {
-        this._payloadFreq = ret.result
-          .substring(1, ret.result.length - 1)
-          .split(',')
+        this._payloadFreq = ret.result.split(',')
           .map(s => {
             return Number(s);
           });
@@ -711,6 +726,9 @@ export class DataService {
         queries.push(this.ws.query('?system_version'));
         queries.push(this.ws.query('?TP_IS_SYSTEM_SIMULATED'));
         queries.push(this.ws.query('?MCU_DEV_VER'));
+        queries.push(this.ws.query('?TPBUS_GetMaxxSC(1)'));
+        queries.push(this.ws.query('?TPBUS_GetMaxxFW(1)'));
+        queries.push(this.ws.query('?TPBUS_GetMaxxFPGA(1)'));
 
         return Promise.all(queries)
           .then((result: MCQueryResponse[]) => {
@@ -747,7 +765,10 @@ export class DataService {
             this._simulated = result[10].result === '1';
             this._cabinetVer = result[11].err ? null : result[11].result;
             this._simulatedSystem = result[12].result === '1';
-            this._mcuDevVer = result[13].result;
+            this._mcuDevVer = result[13].err ? null : result[13].result;
+            this._safetyCardVer = result[14].err ? null : result[14].result;
+            this._cabinetFwVer = result[15].err ? null : result[15].result;
+            this._FPGAVer = result[16].err ? null : result[16].result;
 
             return this.refreshMachineTables()
               .then(() => {
@@ -831,7 +852,7 @@ export class DataService {
     const TP_TYPE = this.cmn.isTablet ? 'TP' : 'CS+';
     const promises = [
       this.ws.query('?TP_ENTER("' + TP_TYPE + '")'),
-      this.ws.query('?TP_SET_STAT_FORMAT(2)'),
+      this.ws.query('?TP_SET_STAT_FORMAT(2)')
     ];
     this.teachServiceNeedsReset.next();
     this.reset();
@@ -843,16 +864,19 @@ export class DataService {
       .then(() => {
         return this.ws.query('?tp_get_switch_mode');
       })
-      .then((ret: MCQueryResponse) => {
+      .then(async (ret: MCQueryResponse) => {
         if (ret.result !== 'A' && !this.cmn.isTablet) {
-          this.stat.mode = 'A';
+          await this.stat.setMode('A');
         }
         return this.refreshData();
       })
       .then(() => {
         return this.getSettings();
-      })
-      .then(() => {
+      }).then(() => {
+        return this.ws.query('?SC_IS_SAFETY_CARD_RUNNING').then(ret=>{
+          this._safetyCardRunning = ret.result === '1';
+        });
+      }).then(() => {
         this.dataLoaded.next(true);
       });
   }
@@ -1000,7 +1024,7 @@ export class DataService {
           this.addPJoint(new TPVariable(TPVariableType.JOINT, name));
         }
       });
-
+      this.teachServiceNeedsReset.next();
       this._varRefreshInProgress = false;
       this.dataRefreshed.next(true);
     });

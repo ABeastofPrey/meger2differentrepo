@@ -1,3 +1,4 @@
+import { MessageLogComponent } from './../../components/message-log/message-log.component';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialComponentsModule } from '../material-components/material-components.module';
@@ -40,6 +41,7 @@ import { CoordinatesComponent } from '../main/components/coordinates/coordinates
 import { RecordDialogComponent } from '../../components/record-dialog/record-dialog.component';
 import { RecordGraphComponent } from '../../components/record-graph/record-graph.component';
 import { NotificationWindowComponent } from '../main/components/notification-window/notification-window.component';
+import { ExternalGraphDialogComponent } from '../dashboard/components/external-graph-dialog/external-graph-dialog.component';
 
 @NgModule({
   imports: [
@@ -90,7 +92,9 @@ import { NotificationWindowComponent } from '../main/components/notification-win
     ColorfulSpanComponent,
     CoordinatesComponent,
     RecordGraphComponent,
-    NotificationWindowComponent
+    NotificationWindowComponent,
+    ExternalGraphDialogComponent,
+    MessageLogComponent
   ],
   declarations: [
     YesNoDialogComponent,
@@ -116,7 +120,9 @@ import { NotificationWindowComponent } from '../main/components/notification-win
     CoordinatesComponent,
     RecordDialogComponent,
     RecordGraphComponent,
-    NotificationWindowComponent
+    NotificationWindowComponent,
+    ExternalGraphDialogComponent,
+    MessageLogComponent,
   ],
   entryComponents: [
     YesNoDialogComponent,
@@ -127,7 +133,8 @@ import { NotificationWindowComponent } from '../main/components/notification-win
     RichSelectComponent,
     ColorfulSpanComponent,
     RecordDialogComponent,
-    RecordGraphComponent
+    RecordGraphComponent,
+    ExternalGraphDialogComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

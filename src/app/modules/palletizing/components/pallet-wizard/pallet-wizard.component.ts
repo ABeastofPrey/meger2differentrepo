@@ -26,7 +26,7 @@ import {
   ApiService,
   MCQueryResponse,
 } from '../../../core';
-import { PalletLocation } from '../../../core/models/pallet.model';
+import { PalletLocation, Pallet } from '../../../core/models/pallet.model';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -133,8 +133,62 @@ export class PalletWizardComponent implements OnInit {
     }
   }
 
-  private getPalletInfo() {
+  private isPalletNew() : Promise<boolean | null> {
     const name = this.dataService.selectedPallet.name;
+    return this.ws.query(`?PLT_IS_PALLET_SAVED("${name}")`).then(ret=>{
+      if (ret.result === '1') return false;
+      if (ret.result === '0') return true;
+      return null;
+    });
+  }
+
+  private resetPallet() {
+    const plt = this.dataService.selectedPallet;
+    plt.reset();
+    const promises = [
+      this.ws.query('?PLT_GET_PALLETIZING_ORDERS_LIST("' + name + '")')
+    ];
+    return Promise.all(promises).then(ret=>{
+      plt.orderList = ret[0].result.length === 0 ? [] : ret[0].result.split(',');
+      this.toggleRetEnable(
+        new MatSlideToggleChange(
+          null,
+          this.dataService.selectedPallet.retEnabled
+        ),
+        true
+      );
+      this.toggleAppEnable(
+        new MatSlideToggleChange(
+          null,
+          this.dataService.selectedPallet.appEnabled
+        ),
+        true
+      );
+      this.toggleEntryEnable(
+        new MatSlideToggleChange(
+          null,
+          this.dataService.selectedPallet.entryEnabled
+        ),
+        true
+      );
+      this.toggleAppExceed(
+        { source: null, checked: this.dataService.selectedPallet.appExceed },
+        true
+      );
+      this.toggleRetExceed(
+        { source: null, checked: this.dataService.selectedPallet.retExceed },
+        true
+      );
+    });
+  }
+
+  private async getPalletInfo() {
+    const name = this.dataService.selectedPallet.name;
+    const isNew = await this.isPalletNew();
+    if (isNew === null || isNew) {
+      return this.resetPallet();
+    }
+    this.dataService.selectedPallet.isNew = false;
     const queries = [
       this.ws.query('?PLT_GET_PALLETIZING_ORDERS_LIST("' + name + '")'),
       this.ws.query('?plt_get_number_of_items("' + name + '")'),
@@ -924,9 +978,8 @@ export class PalletWizardComponent implements OnInit {
     const y = changed === 'y' ? control.value : origin.y;
     const z = changed === 'z' ? control.value : origin.z;
     if (
-      typeof x !== 'undefined' &&
-      typeof y !== 'undefined' &&
-      typeof z !== 'undefined' &&
+      x !== null && y !== null && z !== null &&
+      typeof x !== 'undefined' && typeof y !== 'undefined' && typeof z !== 'undefined' &&
       !isNaN(Number(x)) && !isNaN(Number(y)) && !isNaN(Number(z))
     ) {
       if (!control.touched && !control.dirty) return Promise.resolve(null);
@@ -963,9 +1016,9 @@ export class PalletWizardComponent implements OnInit {
     const y = changed === 'y' ? control.value : pos.y;
     const z = changed === 'z' ? control.value : pos.z;
     if (
-      typeof x !== 'undefined' &&
-      typeof y !== 'undefined' &&
-      typeof z !== 'undefined'
+      x !== null && y !== null && z !== null &&
+      typeof x !== 'undefined' && typeof y !== 'undefined' && typeof z !== 'undefined' &&
+      !isNaN(Number(x)) && !isNaN(Number(y)) && !isNaN(Number(z))
     ) {
       if (!control.touched && !control.dirty) return Promise.resolve(null);
       const cmd =
@@ -1221,6 +1274,10 @@ export class PalletWizardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initControls();
+  }
+
+  private initControls() {
     const pallet = this.dataService.selectedPallet;
     this.step1 = this._formBuilder.group({
       order:

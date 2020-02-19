@@ -1413,14 +1413,18 @@ var Mirror = exports.Mirror = function(sender) {
 define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
 "use strict";
 
-    exports.parse = parse;
-
     let input;
     let stack; // block stack
     let errors;
     let line, idx;
     let isProgramBlockStarted;
     let varList;
+    let functions = [];
+    let subs = [];
+    let currFunction;
+    let currSub;
+
+    exports.parse = parse;
 
     function parse(_input) {
         
@@ -1429,8 +1433,14 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         errors = [];
         stack = [];
         varList = [];
+        functions = [];
+        currFunction = null;
+        currSub = null;
         isProgramBlockStarted = false;
-        return startParsing();
+        const result = startParsing();
+        exports.functions = functions;
+        exports.subs = subs;
+        return result;
     }
 
     function indexOfGroup(match, n) {
@@ -1443,27 +1453,120 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         return ix;
     }
 
+    function parseFunction() {
+        const re = /(public )?\s*function\s+(\w+)(\(((byval )?\s*(\w+)\s+as\s+(\w+),?)+\))?\s+as\s+(.+)/i;
+        const parts = re.exec(line);
+        if (parts === null) return null;
+        const func = {
+            name: parts[2],
+            isPublic: parts[1] ? parts[1].length > 0 : false,
+            retType: parts[8],
+            line: idx
+        };
+        functions.push(func);
+        return func;
+    }
+
+    function parseSub() {
+        const re = /(public )?\s*sub\s+(\w+)(\(((byval )?\s*(\w+)\s+as\s+(\w+),?)+\))?/i;
+        const parts = re.exec(line);
+        if (parts === null) return null;
+        const sub = {
+            name: parts[2],
+            isPublic: parts[1] ? parts[1].length > 0 : false,
+            line: idx
+        };
+        subs.push(sub);
+        return sub;
+    }
+
+    /*
+        Checks if the current line contains a variable(s) declared
+        in the current function block, and sets these variables to USED
+        if found.
+    */
+    function isCurrFuncVar() {
+        for (let i=0; i<currFunction.vars.length; i++) {
+            const v = currFunction.vars[i];
+            if (v.used) continue;
+            if (new RegExp('\\b'+v.name+'\\b','i').test(line)) {
+                v.used = true;
+            }
+        }
+    }
+
+    /*
+        Checks if the current line contains a variable(s) declared
+        in the current SUBROUTINE block, and sets these variables to USED
+        if found.
+    */
+   function isCurrSubVar() {
+    for (let i=0; i<currSub.vars.length; i++) {
+        const v = currSub.vars[i];
+        if (v.used) continue;
+        if (new RegExp('\\b'+v.name+'\\b','i').test(line)) {
+            v.used = true;
+        }
+    }
+}
+
     function startParsing() {
         const time = new Date().getTime();
-        const lines = input.split('\n'); // Takes ~8ms for TP.LIB
+        const lines = input.split('\n');
         let token;
+        let lineSkip = 0;
         for (let i=0; i<lines.length; i++) {
             idx = i;
+            lineSkip = 0;
             line = lines[idx];
             if (isComment()){
                 continue;
             };
+            while (idx + lineSkip < lines.length && /\s*\\\s*$/.test(lines[idx + lineSkip])) {
+                lineSkip++;
+                line += lines[idx + lineSkip];
+            }
+            line = line.replace(/[\n\r]/g,' ');
+            i = i + lineSkip;
+            if (currFunction) {
+                isCurrFuncVar(); // checks if line uses a declared variable
+                if (isCurrFuncReturnValue()) {
+                    currFunction.returned = true;
+                    continue;
+                }
+            } else if (currSub) {
+                isCurrSubVar(); // checks if line uses a declared variable
+            }
             if (token = isBlockStart()) {
                 var err;
                 token = token.toLowerCase();
                 switch(token) {
                     case 'if':
-                        err = validateIfCommand(line);
+                        err = validateIfCommand();
                         break;
                     case 'for':
                         err = validateForCommand(line);
                     case 'program':
                         isProgramBlockStarted = true;
+                        break;
+                    case 'function':
+                        const func = parseFunction();
+                        if (func) {
+                            currFunction = {
+                                name: func.name.toLowerCase(),
+                                returned: false,
+                                vars: []
+                            };
+                        }
+                        break;
+                    case 'sub':
+                        const sub = parseSub();
+                        if (sub) {
+                            currSub = {
+                                name: sub.name.toLowerCase(),
+                                vars: []
+                            };
+                        }
                         break;
                     default:
                         break;
@@ -1488,6 +1591,27 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
                 }
                 if (token.blockType === 'try') {
                     // TODO: CHECK THAT CATCH WAS FOUND INSIDE THE BLOCK
+                } else if (token.blockType === 'function') {
+                    if (currFunction && !currFunction.returned) {
+                        error('Function did not return a value',idx,'warning');
+                    }
+                    if (currFunction) {
+                        currFunction.vars.filter(v=>{
+                            return !v.used;
+                        }).forEach(v=>{
+                            error('Unused variable ' + v.name + ' in function',v.line,'warning');
+                        });
+                    }
+                    currFunction = null;
+                } else if (token.blockType === 'sub') {
+                    if (currSub) {
+                        currSub.vars.filter(v=>{
+                            return !v.used;
+                        }).forEach(v=>{
+                            error('Unused variable ' + v.name + ' in subroutine',v.line,'warning');
+                        });
+                    }
+                    currSub = null;
                 }
                 const currBlock = stack[0];
                 if (currBlock.token === token.blockType) {
@@ -1507,7 +1631,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
                 error('No closing tag found',s.line,'error');
             }
         }
-        console.log(new Date().getTime() - time);
+        //console.log('parse time:',new Date().getTime() - time);
         return errors;
     }
 
@@ -1516,21 +1640,22 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
     }
 
     function isBlockStart() {
-        const match = /^\s*(public)?\s*(program|if|while|for|type|function|sub|with|try|select)/i.exec(line);
+        const match = /^\s*(public)?\s*\b(program|if|while|for|type|function|sub|with|try|select|OnSystemError)\b/i.exec(line);
         return match !== null ? match[2] : null;
+    }
+
+    function isCurrFuncReturnValue() {
+        const reg = new RegExp(`^\\s*${currFunction.name}\\s+=\\s+.+`,'i');
+        return reg.test(line);
     }
 
     /*
         returns null or {blockType: string|null, err: string|null}
     */
     function isBlockEnd() {
-        const match = /^\s*(next|end|terminate)\s*(program|if|type|while|function|sub|with|try|select)?(\S+)?/i.exec(line.toLowerCase());
+        const match = /^\s*(?:\b(next|end|terminate)\b)\s*(program|if|type|while|function|sub|with|try|select|OnSystemError|onerror)?(\S+)?/i.exec(line.toLowerCase());
         if (match === null) return null;
         if (match[1] === 'next') {
-            if (match[3]) return {
-                blockType: null,
-                err: 'Unexpected token "' + match[3] + '" after next'
-            };
             return {
                 blockType: 'for',
                 err: null
@@ -1553,8 +1678,8 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
     /*
         returns error string or null if everything is OK.
     */
-    function validateIfCommand(line) {
-        const re = /^(\s*)(if)(\s*)(.+?(?=\s+then))?(\s*)(then)?\s*(\S+)?/i;
+    function validateIfCommand() {
+        const re = /^(\s*)(if)(\s*)(.+?(?=\s*then))?(\s*)(then)?\s*(\S+)?/i;
         const match = re.exec(line.toLowerCase());
         if (!match[6]) return new SyntaxError('Expected "then" after if',match,2);
         if (!match[4]) return new SyntaxError('Expected condition before "then"',match,2);
@@ -1585,8 +1710,9 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
     }
 
     function parseDim() {
-        const regex = /^(\s*)(dim)(\s*)(shared)?(\s*)(\w+(?:\[\d+\])?(?:\[\d+\])?)?\s*(as)?\s*(const)?\s*(string|long|double|generic location|generic joint|generic axis|generic group|(?:joint|location) of \w+|\w+)?\s*(=)?\s*(".*"|(?:#?{.*})|\S+)?/i;
+        const regex = /^(\s*)(dim)(\s*)(shared)?(\s*)(\w+(?:(?:\[\d+\])+)?)?\s*(as)?\s*(const)?\s*(string|long|double|generic location|generic joint|generic axis|generic group|(?:joint|location) of \w+|\w+)?\s*(=)?\s*(".*"|(?:#?{.*})|\S+)?/i;
         const parts = regex.exec(line);
+        let isShared = false;
         if (parts === null) return;
         if (!parts[6]) { // just dim
             let msg = 'Syntax Error: expected variable name';
@@ -1601,6 +1727,8 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
                 'error'
             );
             return;
+        } else if (parts[4]) {
+            isShared = true;
         }
         if (!parts[7]) {
             error(new SyntaxError('Expected "as" in command',parts,6),idx,'error');
@@ -1611,8 +1739,16 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
             return;
         }
         const varType = parts[9];
-        const v2 = varList.find(v=>{
-            return v.name.toLowerCase() === parts[6];
+        let list;
+        if (currFunction) {
+            list = currFunction.vars;
+        } else if (currSub) {
+            list = currSub.vars;
+        } else {
+            list = varList;
+        }
+        const v2 = list.find(v=>{
+            return v.name.toLowerCase() === parts[6] && v.shared === isShared;
         });
         if (v2) {
             error('Multiple definitions of the same variable', idx, 'error');
@@ -1622,10 +1758,31 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         if (!stack.some(s=>{ // IF NOT INSIDE A FUNCTION OR SUB
             return s.token === 'function' || s.token === 'sub';
         })) {
+            const arrIdx = parts[6].indexOf('[');
+            const varName = arrIdx === -1 ? parts[6] : parts[6].substring(0,arrIdx);
             varList.push({
-                name: parts[6],
+                name: varName,
                 type: varType,
-                line: idx
+                line: idx,
+                shared: !!parts[4]
+            });
+        } else if (currFunction) {
+            const arrIdx = parts[6].indexOf('[');
+            const varName = arrIdx === -1 ? parts[6] : parts[6].substring(0,arrIdx);
+            currFunction.vars.push({
+                name: varName,
+                type: varType,
+                line: idx,
+                used: false
+            });
+        } else if (currSub) {
+            const arrIdx = parts[6].indexOf('[');
+            const varName = arrIdx === -1 ? parts[6] : parts[6].substring(0,arrIdx);
+            currSub.vars.push({
+                name: varName,
+                type: varType,
+                line: idx,
+                used: false
             });
         }
         if (parts[10]) {
@@ -1676,6 +1833,8 @@ oop.inherits(MCBasicWorker, Mirror);
         var value = this.doc.getValue();
         var errors = parser.parse(value);
         this.sender.emit("annotate", errors);
+        this.sender.emit("functions", parser.functions);
+        this.sender.emit("subs", parser.subs);
     };
 
 }).call(MCBasicWorker.prototype);

@@ -44,7 +44,7 @@
 					<div class="container">
 						<div class="center-vertical" *ngFor="let d of disp; let i = index; trackBy: trackByFn">
 							<mat-form-field appearance="outline" class="disp">
-								<mat-label>J{{ i + 1 }}</mat-label>
+								<mat-label>A{{ i + 1 }}</mat-label>
 								<input
 									matInput
 									[(ngModel)]="disp[i]"
@@ -112,6 +112,11 @@
 						<app-axis-vord></app-axis-vord>
 					</div>
 				</mat-tab>
+				<mat-tab label="{{ 'robots.brakes.title' | translate }}" #refBrakeTab>
+					<div *ngIf="refBrakeTab.isActive" class="container">
+						<brake-test></brake-test>
+					</div>
+				</mat-tab>
 			</mat-tab-group>
 		</mat-card>
 	</div>
@@ -133,6 +138,24 @@
 				/>
 			</mat-form-field>
 			<mat-form-field appearance="outline">
+				<input 
+					matInput
+					[matDatepicker]="datePicker"
+					[formControl]="sysDate"
+					(dateChange)="onDateChange($event)"
+					placeholder="{{ 'date' | translate }} {{'date_format' | translate}}">
+				<mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+				<mat-datepicker #datePicker></mat-datepicker>
+			</mat-form-field>
+			<mat-form-field appearance="outline">
+				<mat-label>{{ 'time' | translate }}</mat-label>
+				<input
+					matInput
+					[formControl]="sysTime"
+					(change)="onTimeChange()"
+				/>
+			</mat-form-field>
+			<mat-form-field appearance="outline">
 				<mat-label>{{ 'robots.mcu.fan-threshold' | translate }}</mat-label>
 				<input
 					matInput
@@ -145,9 +168,5 @@
 				/>
 			</mat-form-field>
 		</div>
-		<button *ngIf="sysName" mat-fab color="primary" class="refresh-mcu" (click)="initMCU()">
-			<mat-icon>refresh</mat-icon>
-		</button>
-		<div #mcu id="mcu"></div>
 	</mat-card>
 </div>

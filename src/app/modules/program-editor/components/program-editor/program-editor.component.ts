@@ -1,6 +1,6 @@
 import { UtilsService } from './../../../core/services/utils.service';
 import { NotificationService } from './../../../core/services/notification.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ProgramEditorService,
   TASKSTATE_NOTLOADED,
@@ -9,6 +9,7 @@ import {
   TASKSTATE_ERROR,
   TASKSTATE_READY,
   TASKSTATE_KILLED,
+  TASKSTATE_INTERRUPTED
 } from '../../services/program-editor.service';
 import {
   DataService,
@@ -22,6 +23,7 @@ import { projectPoints } from '../program-editor-side-menu/program-editor-side-m
 import {environment} from '../../../../../environments/environment';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { SplitAreaDirective } from 'angular-split';
 
 @Component({
   selector: 'program-editor',
@@ -29,6 +31,10 @@ import { Subject } from 'rxjs';
   styleUrls: ['./program-editor.component.scss'],
 })
 export class ProgramEditorComponent implements OnInit {
+
+  // GUTTER VISIBLITY
+  showGutterLeft = true;
+  showGutterRight = true;
   
   pPoints = projectPoints;
   appDescEditMode = false;
@@ -57,6 +63,17 @@ export class ProgramEditorComponent implements OnInit {
 
   ngOnDestroy() {
     this.service.mode = 'editor';
+    if (this.notification.messagesShowing) {
+      this.notification.toggleMessagesShowing(false);
+    }
+  }
+
+  toggleGutter(i: number) {
+    if (i === 1) {
+      this.showGutterLeft = !this.showGutterLeft;
+    } else if (i === 2) {
+      this.showGutterRight = !this.showGutterRight;
+    }
   }
 
   onDragEnd() {
@@ -82,8 +99,22 @@ export class ProgramEditorComponent implements OnInit {
     return (
       code !== TASKSTATE_STOPPED &&
       code !== TASKSTATE_ERROR &&
+      code !== TASKSTATE_INTERRUPTED &&
       code !== TASKSTATE_READY
     );
+  }
+
+  onTabChange(i: number) {
+    this.selectedTab = i;
+    if (i === 1 && this.notification.windowOpen) {
+      this.notification.toggleWindow();
+    }
+    if (
+      (i === 1 && !this.notification.messagesShowing) ||
+      (i !== 1 && this.notification.messagesShowing && !this.notification.windowOpen)
+    ) {
+        this.notification.toggleMessagesShowing(true);
+      }
   }
 
   taskStates = [

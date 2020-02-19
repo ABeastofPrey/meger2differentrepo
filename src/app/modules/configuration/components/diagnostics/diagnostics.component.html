@@ -9,14 +9,20 @@
 			<mat-radio-group class="options" [(ngModel)]="state" (change)="refresh()">
 				<mat-radio-button value="1">{{ 'diagnostics.devices' | translate }}</mat-radio-button>
 				<mat-radio-button value="2">{{ 'diagnostics.master' | translate }}</mat-radio-button>
+				<mat-radio-button value="3">{{ 'diagnostics.mcu' | translate }}</mat-radio-button>
 			</mat-radio-group>
 		</div>
 		<div class="diagnostics-container">
 			<div *ngIf="isRefreshing">
 				<img src="assets/pics/{{ env.platform.spinner }}" />
 			</div>
-			<div translate [innerHTML]="content"></div>
-			<div #container></div>
+			<div *ngIf="state !== '3'">
+				<div translate [innerHTML]="content"></div>
+				<div #container></div>
+			</div>
+			<div *ngIf="state === '3'" class="mcu-container">
+				<div #mcu id="mcu"></div>
+			</div>
 		</div>
 	</div>
 </div>

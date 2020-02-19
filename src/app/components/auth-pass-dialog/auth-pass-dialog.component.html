@@ -12,7 +12,7 @@
         <mat-button-toggle color="primary" value="R" [disabled]="data.currentMode === 'R'">R</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-		<mat-form-field appearance="outline" style="margin-top: 24px;">
+		<mat-form-field appearance="outline" style="margin-top: 24px;" *ngIf="hasSafety">
 
 			<input
 				matInput
@@ -23,13 +23,13 @@
 				ktype="password"
 			/>
 		</mat-form-field>
-		<div class="warn" *ngIf="isError">{{ 'password_err' | translate }}</div>
+		<div class="warn" *ngIf="isError">{{ (hasSafety ? 'password_err' : 'error.err') | translate }}</div>
 	</div>
 	<div class="actions">
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-raised-button color="primary" (click)="confirm()" [disabled]="val === null || val.length === 0">
+		<button mat-raised-button color="primary" (click)="confirm()" [disabled]="hasSafety && (val === null || val.length === 0)">
 			{{ 'button.confirm' | translate }}
 		</button>
 	</div>

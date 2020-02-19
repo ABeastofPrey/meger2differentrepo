@@ -127,6 +127,9 @@ program-editor-ace {
   margin-left: 24px;
   font-weight: bold;
 }
+.warning-line {
+  color: orange;
+}
 .error-line-selectable {
   cursor: pointer;
 }
@@ -144,7 +147,7 @@ program-editor-ace {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: monospace;
+  font-family: cs-monospace;
   display: flex;
   flex-direction: column;
 }
@@ -176,7 +179,7 @@ program-editor-ace {
 }
 .no-file {
   flex: 1;
-  background-image: url("assets/pics/no-file.svg");
+  background-image: url("/rs/assets/pics/no-file.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 301px;
@@ -188,6 +191,9 @@ program-editor-ace {
   display: flex;
   flex-direction: column;
   position: relative;
+}
+program-edit-menu {
+  margin: 8px;
 }
 .tablet-ui {
   .toolbar mat-icon,

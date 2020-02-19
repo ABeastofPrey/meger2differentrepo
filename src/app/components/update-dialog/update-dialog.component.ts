@@ -17,7 +17,7 @@ export class UpdateDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public title: string,
     private trn: TranslateService,
-    private cmn: CommonService
+    public cmn: CommonService
   ) {}
 
   get background() {

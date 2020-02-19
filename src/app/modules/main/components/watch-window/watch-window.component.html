@@ -31,7 +31,11 @@
 					</button>
 				</td>
 				<td>
-					<button mat-icon-button style="color: #f00;" [class.disable-record]="!v.record"
+					<button 
+						mat-icon-button
+						style="color: #f00;"
+						matTooltip="{{ 'record' | translate }}"
+						[class.disable-record]="!v.record"
 						(click)="v.record = !v.record">
 						<mat-icon>fiber_manual_record</mat-icon>
 					</button>

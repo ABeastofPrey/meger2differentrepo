@@ -35,9 +35,9 @@ import { JumpxCommandComponent } from '../combined-dialogs/components/jumpx-comm
 })
 export class ProgramEditMenuComponent implements OnInit {
   parser: LineParser;
-  isScara: boolean = false;
-  public visionCommandType = VisionCommandType;
-  public jumpxCommandType = JumpxCommandType;
+  isScara = false;
+  visionCommandType = VisionCommandType;
+  jumpxCommandType = JumpxCommandType;
 
   constructor(
     public prg: ProgramEditorService,
@@ -48,8 +48,10 @@ export class ProgramEditMenuComponent implements OnInit {
 
   ngOnInit() {
     this.parser = this.prg.parser;
-
-    this.isScara = this.data.robotType === 'SCARA';
+    this.data.dataLoaded.subscribe(stat=>{
+      if (!stat) return;
+      this.isScara = this.data.robotType === 'SCARA';
+    });
   }
 
   menu_grp_use() {
@@ -201,8 +203,9 @@ export class ProgramEditMenuComponent implements OnInit {
         );
         break;
       case this.prg.parser.LineType.JUMP:
-          const {commandName, payload} = this.prg.lineParams;
-          this.jumpxCommand(commandName, payload);
+        const params = this.prg.lineParams;
+        this.jumpxCommand(params['commandName'], params['payload']);
+      default:
         break;
     }
   }
@@ -306,22 +309,6 @@ export class ProgramEditMenuComponent implements OnInit {
       this.prg.insertAndJump(cmd, 2);
     });
   }
-  menu_dopass() {
-    const ref = this.dialog.open(RobotSelectorDialogComponent, {
-      width: '400px',
-      data: {
-        title: 'projectCommands.other.title_doPass',
-        must: false,
-      },
-    });
-    ref.afterClosed().subscribe((robot: string) => {
-      if (robot) {
-        let cmd = 'DoPass';
-        if (robot !== 'NULL') cmd += ' ' + robot;
-        this.prg.insertAndJump(cmd, 0);
-      }
-    });
-  }
   menu_gohome() {
     this.dialog
       .open(HomeDialogComponent, {
@@ -366,30 +353,10 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
   menu_enable() {
-    const ref = this.dialog.open(RobotSelectorDialogComponent, {
-      width: '400px',
-      data: { title: 'projectCommands.other.title_en', must: false },
-    });
-    ref.afterClosed().subscribe((robot: string) => {
-      if (robot) {
-        let cmd = 'En = 1';
-        if (robot !== 'NULL') cmd = robot + '.' + cmd;
-        this.prg.insertAndJump(cmd, 0);
-      }
-    });
+    this.prg.insertAndJump('power_on()', 0);
   }
   menu_disable() {
-    const ref = this.dialog.open(RobotSelectorDialogComponent, {
-      width: '400px',
-      data: { title: 'projectCommands.other.title_disable', must: false },
-    });
-    ref.afterClosed().subscribe((robot: string) => {
-      if (robot) {
-        let cmd = 'En = 0';
-        if (robot !== 'NULL') cmd = robot + '.' + cmd;
-        this.prg.insertAndJump(cmd, 0);
-      }
-    });
+    this.prg.insertAndJump('power_off()', 0);
   }
 
   menu_pls_source() {
@@ -457,7 +424,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
 
-  public jumpxCommand(type: JumpxCommandType, model = null): void {
+  jumpxCommand(type: JumpxCommandType, model = null): void {
     this.dialog.open(JumpxCommandComponent, {
       width: '400px',
       disableClose: true,
@@ -475,7 +442,7 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
 
-  public vLoadStationBook(): void {
+  vLoadStationBook(): void {
     this.dialog.open(VisionLoadStationBookComponent, {
       width: '400px',
       disableClose: true,

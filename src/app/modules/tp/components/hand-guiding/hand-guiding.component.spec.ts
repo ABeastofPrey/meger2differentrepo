@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TpStatService } from '../../../../modules/core/services/tp-stat.service';
-import { HandGuidingService } from './hand-guiding.service';
 import { HandGuidingComponent } from './hand-guiding.component';
 
 describe('JogScreenComponent', () => {
@@ -10,7 +9,7 @@ describe('JogScreenComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HandGuidingComponent],
-      providers: [HandGuidingService, TpStatService],
+      providers: [TpStatService],
     }).compileComponents();
   }));
 

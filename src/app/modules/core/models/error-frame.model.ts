@@ -6,6 +6,7 @@ export class ErrorFrame {
   errTask: string;
   errLine: string;
   errModule: string;
+  errUUID: string;
   msg: string;
 
   constructor(private errString: string) {
@@ -31,11 +32,17 @@ export class ErrorFrame {
     if (i > 0) {
       this.errLine = parts[1].substr(i + 1).trim();
       this.errModule = parts[2].substr(parts[2].indexOf(':') + 1).trim();
+      if (parts[3]) {
+        this.errUUID = parts[3].substr(parts[3].indexOf(':')+1).trim();
+      }
     } else {
       this.errTask += ',' + parts[1];
       i = parts[2].indexOf(':');
       this.errLine = parts[2].substr(i + 1).trim();
       this.errModule = parts[3].substr(parts[3].indexOf(':') + 1).trim();
+      if (parts[4]) {
+        this.errUUID = parts[4].substr(parts[4].indexOf(':')+1).trim();
+      }
     }
   }
 }

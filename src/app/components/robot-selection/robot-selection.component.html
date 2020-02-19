@@ -4,7 +4,7 @@
 	</div>
 	<div class="name-wrapper">
 		<mat-form-field>
-			<mat-select placeholder="{{ 'robots.type' | translate }}" #rtype>
+			<mat-select placeholder="{{ 'robots.type' | translate }}" #rtype (selectionChange)="axes.value=null;series.value=null;model.value=null;">
 				<mat-option *ngIf="robot.types.SCARA" [value]="robot.types.SCARA">SCARA</mat-option>
 				<mat-option *ngIf="robot.types.PUMA" [value]="robot.types.PUMA">PUMA</mat-option>
 				<mat-option *ngIf="robot.types.DELTA" [value]="robot.types.DELTA">DELTA</mat-option>
@@ -12,13 +12,13 @@
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field>
-			<mat-select placeholder="{{ 'robots.axes' | translate }}" #axes [disabled]="!rtype.value">
+			<mat-select placeholder="{{ 'robots.axes' | translate }}" #axes [disabled]="!rtype.value" (selectionChange)="series.value=null;model.value=null;">
 				<mat-option *ngFor="let ax of rtype.value" [value]="ax">{{ ax.axes }}</mat-option>
 				<mat-option *ngIf="rtype.value && rtype.value.length === 0">{{ 'robots.no-axes' | translate }}</mat-option>
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field>
-			<mat-select placeholder="{{ 'robots.series' | translate }}" [disabled]="!axes.value" #series>
+			<mat-select placeholder="{{ 'robots.series' | translate }}" [disabled]="!axes.value" #series (selectionChange)="model.value=null;">
 				<div *ngIf="axes.value">
 					<mat-option *ngFor="let s of axes.value.series" [value]="s">{{ s.name }}</mat-option>
 					<mat-option *ngIf="axes.value.series && axes.value.series.length === 0">{{

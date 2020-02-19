@@ -4,10 +4,10 @@
 	<h3>{{'standby'|translate}}</h3>
 	<div class="info primary-bg mat-elevation-z6">
 		<div class="info-main">
-			<img src="assets/pics/cabinet2.svg" />
+			<img src="assets/pics/cabinet_{{cmn.theme}}.svg" />
 			<div class="title center-vertical">
 				<mat-icon>help</mat-icon>
-				Did you know?
+				{{ 'trivia_title' | translate }}
 			</div>
 			<h3 *ngIf="trivia.length > 0">{{trivia[selectedIndex].str}}</h3>
 		</div>

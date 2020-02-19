@@ -1,0 +1,8 @@
+mat-checkbox {
+  display: block;
+  margin-bottom: 16px;
+}
+.btn-start {
+  align-self: flex-start;
+  margin-left: 24px;
+}

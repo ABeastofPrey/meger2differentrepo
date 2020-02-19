@@ -1,3 +1,5 @@
+import { TranslateService } from '@ngx-translate/core';
+import { DataService } from './../../core/services/data.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CoordinatesService, ApiService, GroupManagerService } from '../../core';
 import {
@@ -14,6 +16,7 @@ import { FileSelectorDialogComponent } from '../../../components/file-selector-d
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs';
 import { SimulatorService } from '../../core/services/simulator.service';
+import { ExternalGraphDialogComponent } from '../../dashboard/components/external-graph-dialog/external-graph-dialog.component';
 
 @Component({
   selector: 'simulator-v2',
@@ -32,6 +35,8 @@ export class SimulatorV2Component implements OnInit {
 
   private notifier: Subject<boolean> = new Subject();
 
+  private words: {};
+
   constructor(
     public coos: CoordinatesService,
     public robots: RobotService,
@@ -41,10 +46,15 @@ export class SimulatorV2Component implements OnInit {
     private dialog: MatDialog,
     private snack: MatSnackBar,
     private scene: SceneService,
-    private grp: GroupManagerService
+    private grp: GroupManagerService,
+    private dataService: DataService,
+    private trn: TranslateService
   ) {}
 
   ngOnInit() {
+    this.trn.get(['error.invalid_rec_motion','dismiss','error.err','success']).subscribe(words=>{
+      this.words = words;
+    });
     this.jointsAsArr = this.coos.jointsAsArr;
     this.coos.positonChange.pipe(takeUntil(this.notifier)).subscribe(ret => {
       this.jointsAsArr = ret;
@@ -60,36 +70,73 @@ export class SimulatorV2Component implements OnInit {
       this.liveMode = true;
       return;
     }
-    this.loaded = false;
-    this.api.getRecordingCSV(null).then((result: string) => {
-      if (result === null) {
-        this.loaded = true;
-        this.liveMode = true;
-        return;
-      }
-      let gap = 1;
-      const data: MotionSample[] = result
-        .split('\n')
-        .map((line: string, i: number) => {
-          if (i < 2) {
-            if (i === 0) gap = Number(line);
-            return null;
+    this.dialog.open(ExternalGraphDialogComponent).afterClosed().subscribe(name=>{
+      if (!name) return;
+      this.loaded = false;
+      this.api.getRecordingCSV(name).then((result: string) => {
+        if (result === null) {
+          this.loaded = true;
+          this.liveMode = true;
+          return;
+        }
+        let gap = 1;
+        const lines = result.split('\n');
+        // parse legends string
+        const legendLine = lines[1];
+        const legends = [];
+        let isFuncFlag = false;
+        let currLegend = '';
+        for (let i = 0; i < legendLine.length; i++) {
+          const c = legendLine.charAt(i);
+          if (c === '(') {
+            isFuncFlag = true;
           }
-          return {
-            jointValues: line
-              .slice(0, -1)
-              .split(',')
-              .map(val => {
-                return Number(val);
-              }),
-            timeFromStartMs: (i - 2) * cycleTime * gap,
-          };
-        });
-      data.shift();
-      data.shift();
-      this.player.load(data);
-      this.loaded = true;
-      this.liveMode = false;
+          else if (c === ')') {
+            isFuncFlag = false;
+          }
+          if (c !== ',' || isFuncFlag) {
+            currLegend += c;
+          } else {
+            legends.push(currLegend);
+            currLegend = '';
+          }
+          if (i === legendLine.length-1) {
+            legends.push(currLegend);
+          }
+        }
+        console.log(legends);
+        // VERIFY LEGENDS MATCH MOTION RECORDING
+        const axesCount = this.dataService.robotCoordinateType.flags.length;
+        for (let i=1; i<=axesCount; i++) {
+          const name1 = 'A' + i + '.PFB';
+          const name2 = 'A' + i + '.PCMD';
+          if (legends[i-1] !== name1 && legends[i-1] !== name2) {
+            this.loaded = true;
+            this.snack.open(this.words['error.invalid_rec_motion'],this.words['dismiss']);
+            return;
+          }
+        }
+        const data: MotionSample[] = lines.map((line: string, i: number) => {
+            if (i < 2) {
+              if (i === 0) gap = Number(line);
+              return null;
+            }
+            return {
+              jointValues: line
+                .slice(0, -1)
+                .split(',')
+                .map(val => {
+                  return Number(val);
+                }),
+              timeFromStartMs: (i - 2) * cycleTime * gap,
+            };
+          });
+        data.shift();
+        data.shift();
+        this.player.load(data);
+        this.loaded = true;
+        this.liveMode = false;
+      });
     });
   }
 
@@ -114,7 +161,7 @@ export class SimulatorV2Component implements OnInit {
         const str = this.scene.exportToJson();
         const f = new File([new Blob([str])], name);
         this.api.upload(f, true).then(ret => {
-          const msg = ret ? 'SUCCUSS' : 'FAILED';
+          const msg = ret ? this.words['success'] : this.words['error.err'];
           this.snack.open(msg, null, { duration: 1500 });
         });
       });

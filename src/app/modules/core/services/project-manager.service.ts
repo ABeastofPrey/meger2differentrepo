@@ -99,8 +99,12 @@ export class ProjectManagerService {
             .query('cyc3,' + this.currProject.value.name)
             .then((ret: MCQueryResponse) => {
               waiting = false;
-              if (this.currProject.value === null) return;
-              if (this.oldStat === ret.result) return;
+              if (ret.result.length === 0) {
+                console.log('CYC3 RETURNED BLANK RESULT');
+                this.stopStatusRefresh();
+                return;
+              }
+              if (this.currProject.value === null || this.oldStat === ret.result) return;
               this.zone.run(()=>{
                 this.oldStat = ret.result;
                 const parts = ret.result.split(';');
@@ -261,11 +265,40 @@ export class ProjectManagerService {
     });
   }
 
-  private loadProgramSettings(proj: MCProject): Promise<void> {
-    const promises = [
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("vcruise","")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("vtran","")'),
-      this.ws.query('?TP_GET_PROJECT_PARAMETER("blendingmethod","")'),
+  private loadProgramSetting(setting: string, proj: MCProject): Promise<void> {
+    switch (setting) {
+      case 'vcruise':
+        return this.ws.query('?TP_GET_PROJECT_PARAMETER("vcruise","")').then(ret=>{
+          if (ret.err || ret.result.length === 0) return;
+          const n = Number(ret.result);
+          if (!isNaN(n)) proj.settings.vcruise = n;
+        });
+      case 'vtran':
+        return this.ws.query('?TP_GET_PROJECT_PARAMETER("vtran","")').then(ret=>{
+          if (ret.err || ret.result.length === 0) return;
+          const n = Number(ret.result);
+          if (!isNaN(n)) proj.settings.vtran = n;
+        });
+      case 'blendingmethod':
+        return this.ws.query('?TP_GET_PROJECT_PARAMETER("blendingmethod","")').then(ret=>{
+          if (ret.err || ret.result.length === 0) return;
+          const n = Number(ret.result);
+          if (!isNaN(n)) proj.settings.blendingMethod = n;
+        });
+      default:
+        break;
+    }
+    return Promise.reject();
+  }
+
+  private async loadProgramSettings(proj: MCProject): Promise<void> {
+    let promises: Array<Promise<void | MCQueryResponse>> = [
+      this.loadProgramSetting('vcruise',proj),
+      this.loadProgramSetting('vtran',proj),
+      this.loadProgramSetting('blendingmethod',proj)
+    ];
+    await Promise.all(promises);
+    promises =[
       this.ws.query('?TP_GET_PROJECT_PARAMETER("tool","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("base","")'),
       this.ws.query('?TP_GET_PROJECT_PARAMETER("machinetable","")'),
@@ -274,40 +307,27 @@ export class ProjectManagerService {
       this.ws.query('?TP_GET_PROJECT_VRATE'),
       this.ws.query('?PRJ_GET_AUTO_START("' + proj.name + '")'),
     ];
-    return Promise.all(promises)
+    return Promise.all(promises as Array<Promise<MCQueryResponse>>)
       .then(results => {
         if (results[0].err === null && results[0].result.length > 0) {
-          const n = Number(results[0].result);
-          if (!isNaN(n)) proj.settings.vcruise = n;
+          proj.settings.tool = results[0].result;
         }
         if (results[1].err === null && results[1].result.length > 0) {
-          const n = Number(results[1].result);
-          if (!isNaN(n)) proj.settings.vtran = n;
+          proj.settings.base = results[1].result;
         }
         if (results[2].err === null && results[2].result.length > 0) {
-          const n = Number(results[2].result);
-          if (!isNaN(n)) proj.settings.blendingMethod = n;
+          proj.settings.mtable = results[2].result;
         }
         if (results[3].err === null && results[3].result.length > 0) {
-          proj.settings.tool = results[3].result;
+          proj.settings.wpiece = results[3].result;
         }
-        if (results[4].err === null && results[4].result.length > 0) {
-          proj.settings.base = results[4].result;
-        }
-        if (results[5].err === null && results[5].result.length > 0) {
-          proj.settings.mtable = results[5].result;
-        }
-        if (results[6].err === null && results[6].result.length > 0) {
-          proj.settings.wpiece = results[6].result;
-        }
-        proj.settings.overlap = results[7].result === '1';
-        proj.settings.vrate = Number(results[8].result);
-        proj.settings.autoStart = results[9].result === '1';
+        proj.settings.overlap = results[4].result === '1';
+        proj.settings.vrate = Number(results[5].result);
+        proj.settings.autoStart = results[6].result === '1';
         const posArr: Limit[] = [];
         const promises = [];
         for (let j = 1; j <= this.data.locationDescriptions.length; j++) {
-          const unit =
-            j === 3 && this.data.robotType === 'SCARA' ? 'mm' : 'deg';
+          const unit = j === 3 && this.data.robotType === 'SCARA' ? 'mm' : 'deg';
           posArr.push(new Limit('P', unit));
           promises.push(
             this.ws.query('?TP_GET_PROJECT_PARAMETER("PMIN","' + j + '")')
@@ -465,8 +485,12 @@ export class ProjectManagerService {
       default:
         return;
     }
-    this.ws.query(cmd).then(() => {
-      this.snack.open(this.words, '', { duration: 1500 });
+    this.ws.query(cmd).then(ret => {
+      let ok = false;
+      if (ret.result === '0') {
+        ok = true;
+        this.snack.open(this.words, '', { duration: 1500 });
+      }
       switch (setting) {
         case 'tool':
           this.data.refreshTools();
@@ -479,6 +503,12 @@ export class ProjectManagerService {
           break;
         case 'wpiece':
           this.data.refreshWorkPieces();
+          break;
+        case 'vcruise':
+        case 'vtran':
+          if (!ok) {
+            this.loadProgramSetting(setting, this.currProject.value);
+          }
           break;
         default:
           return;

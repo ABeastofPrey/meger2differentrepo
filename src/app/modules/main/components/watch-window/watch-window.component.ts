@@ -1,3 +1,4 @@
+import { GroupManagerService } from './../../../core/services/group-manager.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { WatchService, WatchVar } from '../../../../modules/core/services/watch.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
@@ -26,7 +27,8 @@ export class WatchWindowComponent implements OnInit {
     private snack: MatSnackBar,
     private api: ApiService,
     private rec: RecordService,
-    private router: Router
+    private router: Router,
+    private grp: GroupManagerService
   ) { }
 
   ngOnInit() {
@@ -61,7 +63,7 @@ export class WatchWindowComponent implements OnInit {
   private startRecording(params: string[], recParams: RecordParams) {
     const cmd =
       'Record ' + recParams.name + '.rec ' +
-      Math.ceil(recParams.duration) +
+      Math.ceil(recParams.duration / this.grp.sysInfo.cycleTime) +
       ' Gap=' + recParams.gap + ' RecData=' +
       params.join();
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
@@ -70,10 +72,11 @@ export class WatchWindowComponent implements OnInit {
         if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
         this.isRecording = true;
         let time = 0;
-        const interval = setInterval(() => {
+        const interval = setInterval(async() => {
           time += 200;
           this.recPercentage = (time / recParams.duration) * 100;
-          if (this.recPercentage >= 100 || !this.isRecording) {
+          const mcRecording = (await this.ws.query('?recording')).result;
+          if (mcRecording === '0' || mcRecording === '4' || !this.isRecording) {
             clearInterval(interval);
             this.onRecordFinish(recParams);
           }
@@ -109,7 +112,7 @@ export class WatchWindowComponent implements OnInit {
     }
   }
 
-  public getVariablesWithContext(v: WatchVar, changeContext: boolean): void {
+  getVariablesWithContext(v: WatchVar, changeContext: boolean): void {
     if (changeContext) v.name = '';
     this.watch.getVariablesWithContext(v.context).subscribe(res => {
       v.variableList = of(res);

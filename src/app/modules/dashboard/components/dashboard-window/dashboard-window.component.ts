@@ -10,7 +10,6 @@ import {
   WebsocketService,
   MCQueryResponse,
 } from '../../../../modules/core/services/websocket.service';
-import { TourService } from 'ngx-tour-md-menu';
 import { TranslateService } from '@ngx-translate/core';
 import { LoginService, GroupManagerService } from '../../../core';
 import {RecordDialogComponent, RecordParams} from '../../../../components/record-dialog/record-dialog.component';
@@ -37,7 +36,6 @@ export class DashboardWindowComponent implements OnInit {
     private ws: WebsocketService,
     private snack: MatSnackBar,
     private dialog: MatDialog,
-    private tour: TourService,
     private trn: TranslateService,
     public login: LoginService,
     private grp: GroupManagerService,
@@ -60,21 +58,6 @@ export class DashboardWindowComponent implements OnInit {
         this.cart = ['X', 'Y', 'Z', 'Y', 'P', 'R'];
         break;
     }
-    this.tour.stepHide$.subscribe(step => {
-      if (step.anchorId === 'dashboard-rec') {
-        this.close();
-      }
-    });
-    this.tour.stepShow$.subscribe(step => {
-      if (step.anchorId === 'dashboard-expand') {
-        setTimeout(() => {
-          this.toggleExpand();
-        }, 400);
-        setTimeout(() => {
-          this.tour.next();
-        }, 800);
-      }
-    });
   }
 
   onDragEnd() {
@@ -139,7 +122,11 @@ export class DashboardWindowComponent implements OnInit {
   }
 
   addParam() {
-    const ref = this.dialog.open(NewDashboardParameterDialogComponent);
+    const ref = this.dialog.open(NewDashboardParameterDialogComponent,{
+      data: {
+        isGroup: this.params.isGroup
+      }
+    });
     ref.afterClosed().subscribe((ret: DashboardParam) => {
       if (ret) {
         this.params.params.push(ret);
@@ -196,13 +183,11 @@ export class DashboardWindowComponent implements OnInit {
             this.params.recordingParams = params;
             this.params.recordingTime = 0;
             let time = 0;
-            const interval = setInterval(() => {
+            const interval = setInterval(async() => {
               time += 200;
               this.params.recordingTime = (time / params.duration) * 100;
-              if (
-                this.params.recordingTime >= 100 ||
-                !this.params.isRecording
-              ) {
+              const mcRecording = (await this.ws.query('?recording')).result;
+              if (mcRecording === '0' || mcRecording === '4' || !this.params.isRecording) {
                 clearInterval(interval);
                 this.onRecordFinish(params);
                 this.params.recordingTime = 0;

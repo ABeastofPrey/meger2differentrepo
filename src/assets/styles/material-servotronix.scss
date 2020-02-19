@@ -30,13 +30,25 @@ $material-semi-black: rgba(0,0,0,0.54);
 $gradient-stx-end: rgb(8,129,107);
 
 $servotronix-theme: mat-light-theme($material-servotronix-primary, $material-servotronix-accent, $material-servotronix-warn);
+$servotronix-dark-theme: mat-dark-theme($material-servotronix-primary, $material-servotronix-accent, $material-servotronix-warn);
 
 $material-black: rgb(0.51,0.51,0.51);
 $material-semi-black: rgba(0,0,0,0.54);
 
+.stx-dark {
+  @include angular-material-theme($servotronix-dark-theme);
+  $background: map-get($servotronix-dark-theme, background);
+  .main-menu {
+    background: mat-color($background, card);
+  }
+
+}
+
 .stx {
   @include angular-material-theme($servotronix-theme);
+}
 
+.stx, .stx-dark {
   .primary, main-menu li:hover:not(.disabled),
     main-menu li.selected:not(.disabled),
     .mat-form-field-appearance-outline .mat-form-field-outline-thick {
@@ -112,6 +124,9 @@ $material-semi-black: rgba(0,0,0,0.54);
   }
 
   .cs-gradient {
-    background: linear-gradient(180deg, rgba(237,238,238,1) 0%, $gradient-stx-end 100%);
+    background-image: url('/rs/assets/pics/1.jpg');
+    background-size: cover;
+    background-position: center;
+    //background: linear-gradient(180deg, rgba(237,238,238,1) 0%, $gradient-stx-end 100%);
   }
 }

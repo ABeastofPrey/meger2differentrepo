@@ -52,6 +52,9 @@ export class ProgramToolbarComponent implements OnInit {
     } else {
       this.onFocus = !this.onFocus;
     }
+    if (!this.onFocus) {
+      this.currMenu = 0;
+    }
   }
   doImport(fromBackup: boolean) {
     this.uploadInput.nativeElement.click();
@@ -644,14 +647,7 @@ export class ProgramToolbarComponent implements OnInit {
 
   toggleRemote() {
     if (this.cmn.isTablet) return;
-    switch (this.stat.mode) {
-      case 'R':
-        this.stat.mode = 'A';
-        break;
-      default:
-        this.stat.mode = 'R';
-        break;
-    }
+    this.stat.setMode(this.stat.mode === 'R' ? 'A' : 'R');
   }
   
   toggleDependencies() {

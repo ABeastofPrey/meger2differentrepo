@@ -61,30 +61,30 @@ html, body {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url('assets/fonts/material/MaterialIcons-Regular.eot'); /* For IE6-8 */
+  src: url('/rs/assets/fonts/material/MaterialIcons-Regular.eot'); /* For IE6-8 */
   src: local('Material Icons'),
        local('MaterialIcons-Regular'),
-       url('assets/fonts/material/MaterialIcons-Regular.woff2') format('woff2'),
-       url('assets/fonts/material/MaterialIcons-Regular.woff') format('woff'),
-       url('assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
+       url('/rs/assets/fonts/material/MaterialIcons-Regular.woff2') format('woff2'),
+       url('/rs/assets/fonts/material/MaterialIcons-Regular.woff') format('woff'),
+       url('/rs/assets/fonts/material/MaterialIcons-Regular.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'cs-monospace';
   font-style: normal;
   font-weight: 400;
-  src: url('assets/fonts/SourceCodePro-Regular.otf');
+  src: url('/rs/assets/fonts/SourceCodePro-Regular.otf');
   src: local('cs-monospace'),
-        url('assets/fonts/SourceCodePro-Medium.otf') format('opentype');
+        url('/rs/assets/fonts/SourceCodePro-Medium.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'cs-monospace';
   font-style: normal;
   font-weight: 500;
-  src: url('assets/fonts/SourceCodePro-Semibold.otf');
+  src: url('/rs/assets/fonts/SourceCodePro-Semibold.otf');
   src: local('cs-monospace'),
-        url('assets/fonts/SourceCodePro-Semibold.otf') format('opentype');
+        url('/rs/assets/fonts/SourceCodePro-Semibold.otf') format('opentype');
 }
 
 .material-icons {
@@ -149,6 +149,29 @@ mat-slide-toggle { display: block!important; }
   text-overflow: ellipsis;
 }
 
+/* HIDE INPUT[NUMBER] ARROWS */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance:textfield;
+}
+
+/* TOUR BACKDROP STYLES */
+.tour .cdk-overlay-backdrop, .ngx-tour_backdrop {
+  pointer-events: none! important;
+}
+
+/* MAIN MENU TOOLTIPS STYLE */
+.menu-tooltip {
+  position: absolute;
+  white-space: nowrap;
+  left: -24px;
+  top: -24px;
+}
+
 /* DOCS TOOLTIP FOR ACE EDITOR */
 .docs {
   white-space: pre-line;
@@ -186,6 +209,17 @@ mat-slide-toggle { display: block!important; }
   border-bottom: 1.5px dashed red;
   z-index:20;
 }
+.line-syntax-warning {
+  position:absolute;
+  border-bottom: 1.5px dashed yellow;
+  z-index:20;
+}
+.ace-link {
+  position:absolute;
+  border-bottom: 1.5px solid blue;
+  z-index:20;
+  cursor: pointer;
+}
 .line-highlight-motion {
   position:absolute;
   background:rgba(100,100,200,0.5);
@@ -205,8 +239,14 @@ mat-slide-toggle { display: block!important; }
 }
 .ace_tooltip {
   font-family: monospace;
-  white-space: pre-wrap;
+  white-space: pre-line;
   margin-right: 24px!important;
+}
+.ace_tooltip ul {
+  list-style: initial;
+  margin: 0 32px;
+  line-height: 2;
+  white-space: initial;
 }
 .ace_mobile-menu {
   display: none!important;
@@ -231,67 +271,11 @@ mat-slide-toggle { display: block!important; }
 // shrink ovealy css
 .shrink-overlay {
   width: calc(100% - 250px);
-  animation: shirnkoverlayanimation 300ms;
-  -moz-animation: shirnkoverlayanimation 300ms;	/* Firefox */
-  -webkit-animation: shirnkoverlayanimation 300ms;	/* Safari 和 Chrome */
-  -o-animation: shirnkoverlayanimation 300ms;	/* Opera */
-}
-
-@keyframes shirnkoverlayanimation
-{
-  from { width: 100%; }
-  to { width: calc(100% - 250px); }
-}
-
-@-moz-keyframes shirnkoverlayanimation /* Firefox */
-{
-  from { width: 100%; }
-  to { width: calc(100% - 250px); }
-}
-
-@-webkit-keyframes shirnkoverlayanimation /* Safari 和 Chrome */
-{
-  from { width: 100%; }
-  to { width: calc(100% - 250px); }
-}
-
-@-o-keyframes shirnkoverlayanimation /* Opera */
-{
-  from { width: 100%; }
-  to { width: calc(100% - 250px); }
 }
 
 // stretch overlay css
 .stretch-overlay {
   width: 100%;
-  animation: stretchkoverlayanimation 300ms;
-  -moz-animation: stretchkoverlayanimation 300ms;	/* Firefox */
-  -webkit-animation: stretchkoverlayanimation 300ms;	/* Safari 和 Chrome */
-  -o-animation: stretchkoverlayanimation 300ms;	/* Opera */
-}
-
-@keyframes stretchkoverlayanimation
-{
-  from { width: calc(100% - 250px); }
-  to { width: 100%; }
-}
-
-@-moz-keyframes stretchkoverlayanimation /* Firefox */
-{
-  from { width: calc(100% - 250px); }
-  to { width: 100%; }
-}
-
-@-webkit-keyframes stretchkoverlayanimation /* Safari 和 Chrome */
-{
-  from { width: calc(100% - 250px); }
-  to { width: 100%; }
-}
-
-@-o-keyframes stretchkoverlayanimation /* Opera */
-{
-  from { width: calc(100% - 250px); }
-  to { width: 100%; }
 }
 
 .upper-right-conner-overlay {
@@ -306,67 +290,10 @@ mat-slide-toggle { display: block!important; }
 
 .upper-right-conner-overlay-stretch {
   width: 250px !important;
-  animation: stretchkoverlaycoveranimation 300ms;
-  -moz-animation: stretchkoverlaycoveranimation 300ms;	/* Firefox */
-  -webkit-animation: stretchkoverlaycoveranimation 300ms;	/* Safari 和 Chrome */
-  -o-animation: stretchkoverlaycoveranimation 300ms;	/* Opera */
 }
-
-@keyframes stretchkoverlaycoveranimation
-{
-  from { width: 0; }
-  to { width: 250px; }
-}
-
-@-moz-keyframes stretchkoverlaycoveranimation /* Firefox */
-{
-  from { width: 0; }
-  to { width: 250px; }
-}
-
-@-webkit-keyframes stretchkoverlaycoveranimation /* Safari 和 Chrome */
-{
-  from { width: 0; }
-  to { width: 250px; }
-}
-
-@-o-keyframes stretchkoverlaycoveranimation /* Opera */
-{
-  from { width: 0; }
-  to { width: 250px; }
-}
-
 
 .upper-right-conner-overlay-shrink {
   width: 0;
-  animation: shrinkoverlaycoveranimation 300ms;
-  -moz-animation: shrinkoverlaycoveranimation 300ms;	/* Firefox */
-  -webkit-animation: shrinkoverlaycoveranimation 300ms;	/* Safari 和 Chrome */
-  -o-animation: shrinkoverlaycoveranimation 300ms;	/* Opera */
-}
-
-@keyframes shrinkoverlaycoveranimation
-{
-  from { width: 250px; }
-  to { width: 0; }
-}
-
-@-moz-keyframes shrinkoverlaycoveranimation /* Firefox */
-{
-  from { width: 250px; }
-  to { width: 0; }
-}
-
-@-webkit-keyframes shrinkoverlaycoveranimation /* Safari 和 Chrome */
-{
-  from { width: 250px; }
-  to { width: 0; }
-}
-
-@-o-keyframes shrinkoverlaycoveranimation /* Opera */
-{
-  from { width: 250px; }
-  to { width: 0; }
 }
 
 .global-hidden {

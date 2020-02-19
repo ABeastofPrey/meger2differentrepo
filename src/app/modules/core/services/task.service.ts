@@ -3,6 +3,8 @@ import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { ErrorFrame } from '../models/error-frame.model';
 import { TpStatService } from './tp-stat.service';
 import { TaskFilterPipe } from '../../task-manager/task-filter.pipe';
+import { MatSnackBar } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class TaskService {
@@ -10,6 +12,7 @@ export class TaskService {
   private lastTaskList: string = null;
   private isActive = false;
   private tasklistCommand = '?tasklist';
+  private words: {};
 
   tasks: MCTask[] = [];
 
@@ -17,8 +20,13 @@ export class TaskService {
     private ws: WebsocketService,
     private filter: TaskFilterPipe,
     private stat: TpStatService,
-    private zone: NgZone
+    private zone: NgZone,
+    private snack: MatSnackBar,
+    private trn: TranslateService
   ) {
+    this.trn.get(['dismiss']).subscribe(words=>{
+      this.words = words;
+    });
     this.stat.onlineStatus.subscribe(stat => {
       if (!this.ws.connected) {
         this.tasklistCommand = '?tasklist';
@@ -34,7 +42,11 @@ export class TaskService {
 
   parseTasklist(list: string): MCTask[] {
     if (list.length === 0) {
+      console.log('CYC1 RETURNED BLANK RESULT');
       this.tasklistCommand = '?tasklist';
+      if (this.isActive) {
+        this.start();
+      }
       return [];
     }
     const tasks: MCTask[] = [];
@@ -81,6 +93,7 @@ export class TaskService {
 
   start() {
     if (this.isActive) return;
+    if (this.interval) this.ws.clearInterval(this.interval);
     this.isActive = true;
     this.interval = this.ws.send(
       this.tasklistCommand,
@@ -111,36 +124,45 @@ export class TaskService {
     }
   }
 
-  run(indexes: number[], filters: boolean[]) {
+  run(indexes: number[], filters: boolean[], showErrors?: boolean) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
     for (const i of indexes) {
       const task = filtered[i];
       if (task.priority === null) continue;
       this.ws.query('KillTask ' + task.name).then(() => {
-        this.ws.query('StartTask ' + task.name);
+        this.ws.query('StartTask ' + task.name).then(ret=>{
+          if (!showErrors || !ret.err) return;
+          this.snack.open(ret.err.errMsg,this.words['dismiss']);
+        });
       });
     }
   }
 
-  kill(indexes: number[], filters: boolean[]) {
+  kill(indexes: number[], filters: boolean[], showErrors?:boolean) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
     for (const i of indexes) {
       const task = filtered[i];
       if (task.priority == null) continue;
-      this.ws.query('KillTask ' + task.name);
+      this.ws.query('KillTask ' + task.name).then(ret=>{
+        if (!showErrors || !ret.err) return;
+        this.snack.open(ret.err.errMsg,this.words['dismiss']);
+      });
     }
   }
 
-  idle(indexes: number[], filters: boolean[]) {
+  idle(indexes: number[], filters: boolean[], showErrors?: boolean) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
     for (const i of indexes) {
       const task = filtered[i];
       if (task.priority == null) continue;
-      this.ws.query('IdleTask ' + task.name);
+      this.ws.query('IdleTask ' + task.name).then(ret=>{
+        if (!showErrors || !ret.err) return;
+        this.snack.open(ret.err.errMsg,this.words['dismiss']);
+      });
     }
   }
 
-  unload(indexes: number[], filters: boolean[]) {
+  unload(indexes: number[], filters: boolean[], showErrors?: boolean) {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
     for (const i of indexes) {
       const task = filtered[i];
@@ -150,7 +172,10 @@ export class TaskService {
           : this.ws.query('KillTask ' + task.name);
       promise.then(() => {
         if (task.priority || task.state.indexOf('Global') === -1) {
-          this.ws.query('Unload ' + task.name);
+          this.ws.query('Unload ' + task.name).then(ret=>{
+            if (!showErrors || !ret.err) return;
+            this.snack.open(ret.err.errMsg,this.words['dismiss']);
+          });
         }
       });
     }

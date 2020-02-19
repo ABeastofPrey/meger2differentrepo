@@ -1,0 +1,10 @@
+.wrapper {
+  padding: 24px;
+}
+
+mat-form-field {
+  margin-top: 24px;
+  font-size: 18px;
+  width: 400px;
+  font-family: cs-monospace;
+}

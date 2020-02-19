@@ -141,7 +141,7 @@ export class DataScreenComponent implements OnInit {
     }
     this.displayVarType = this.data.isRobotType ? 'joints' : 'longs';
     this.data.dataRefreshed.pipe(takeUntil(this.notifier)).subscribe(stat => {
-      if (stat) this.updateDataType();
+      if (stat && !this.data.varRefreshInProgress) this.updateDataType();
     });
   }
 

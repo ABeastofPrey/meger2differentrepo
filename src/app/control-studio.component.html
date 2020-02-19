@@ -1,4 +1,27 @@
-<tour-step-template></tour-step-template>
+<tour-step-template>
+  <ng-template let-step="step">
+    <mat-card (click)="$event.stopPropagation()" class="tour-card">
+      <mat-card-title class="primary-bg tour-title">
+        <img src="/rs/assets/pics/Curved_Arrow.svg" class="tour-arrow" *ngIf="step.disableNext && step.disableNext(step)">
+        <span class="step-title">{{step?.title}}</span>
+        <div class="step-count">{{currStepIndex}} / {{tour.steps.length}}</div>
+      </mat-card-title>
+      <mat-card-content class="tour-content" [innerHTML]="step?.content"></mat-card-content>
+      <div *ngIf="step.disableNext && step.disableNext(step)" class="warn">
+        {{ 'main.tour.err.0' | translate }}
+      </div>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" [disabled]="!tour.hasPrev(step)" (click)="tour.prev()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button mat-raised-button color="primary" [disabled]="!tour.hasNext(step) || (step.disableNext && step.disableNext(step))" (click)="tour.next()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+        <button mat-raised-button style="margin: 0;" [color]="tour.hasNext(step) ? 'accent' : 'primary'" (click)="tour.end()">{{ 'main.tour.btnFinish' | translate }}</button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-template>
+</tour-step-template>
 <main [@fadeAnimation]="getRouterOutletState(o)" class="{{ env.platform.name }}" [class.tablet-ui]="cmn.isTablet">
 	<router-outlet #o="outlet"></router-outlet>
 </main>

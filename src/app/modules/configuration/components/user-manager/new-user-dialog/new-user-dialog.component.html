@@ -7,13 +7,13 @@
 		<input
 			matInput
 			placeholder="{{ 'userManager.username' | translate }}"
-			[(ngModel)]="username"
-			[disabled]="data"
+			[formControl]="userNameControl"
 			virtualKeyboard
 			ktype="text"
 		/>
-		<mat-error *ngIf="!data && username.toLowerCase() === 'admin'">
-			{{ 'userManager.err_username_reserved' | translate }}
+		<mat-error *ngIf="!data && userNameControl.invalid">
+			<span *ngIf="userNameControl.hasError('reserved')">{{ 'error.invalid_username2' | translate }}</span>
+			<span *ngIf="!userNameControl.hasError('reserved')">{{ 'error.invalid_username' | translate }}</span>
 		</mat-error>
 	</mat-form-field>
 	<mat-form-field>
@@ -33,11 +33,11 @@
 			matInput
 			type="password"
 			placeholder="{{ 'password' | translate }}"
-			[(ngModel)]="password"
+			[formControl]="passwordValidator"
 			virtualKeyboard
 			ktype="text"
 		/>
-		<mat-hint align="start" *ngIf="data && password.length === 0"
+		<mat-hint align="start" *ngIf="data && passwordValidator.invalid"
 			><strong>Leave blank to remain unchanged</strong>
 		</mat-hint>
 	</mat-form-field>
@@ -47,7 +47,6 @@
 			type="password"
 			placeholder="{{ 'password_confirm' | translate }}"
 			[formControl]="passwordConfirm"
-			[disabled]="password.length === 0"
 			virtualKeyboard
 			ktype="text"
 		/>
@@ -59,7 +58,7 @@
 		<mat-select
 			placeholder="{{ 'userManager.permission' | translate }}"
 			[(ngModel)]="permission"
-			[disabled]="username === 'admin' || (data && !login.isAdmin)"
+			[disabled]="userNameControl.value === 'admin' || (data && !login.isAdmin)"
 		>
 			<mat-option [value]="0">Administrator</mat-option>
 			<mat-option [value]="1">Programmer</mat-option>
@@ -76,10 +75,10 @@
 			color="primary"
 			(click)="create()"
 			[disabled]="
-				username.length === 0 ||
-				(username === 'admin' && !data) ||
-				(password.length === 0 && !data) ||
-				(password.length > 0 && passwordConfirm.invalid) ||
+				userNameControl.invalid ||
+				(userNameControl.value === 'admin' && !data) ||
+				(!data && passwordValidator.invalid) ||
+				(!passwordValidator.invalid && passwordConfirm.invalid) ||
 				fullNameControl.errors ||
 				permission === -1
 			"

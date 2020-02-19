@@ -3,6 +3,7 @@
   "about": {
     "title": "About",
     "subtitle": "Version information for this softMC controller",
+    "cabinet": "Cabinet FW",
     "grippers": "Grippers Library",
     "io": "I/O Mapping Library",
     "lbn": "Lead By Nose Library",
@@ -10,6 +11,7 @@
     "mcuDev": "MCU S/N",
     "pallet": "Pallets Library",
     "payloads": "Payloads Library",
+    "safetyVer": "Safety Card",
     "server": "Web Server",
     "system": "System",
     "tp": "TP Libraries"
@@ -20,8 +22,8 @@
   "Administrator": "Administrator",
   "advanced": "Advanced",
   "app_bar": {
-    "menu_toggle": "Expand/Contract App Menu",
-    "toolbar_contract": "Contract App Toolbar",
+    "menu_toggle": "Expand/Collapse App Menu",
+    "toolbar_contract": "Collapse App Toolbar",
     "toolbar_expand": "Expand App Toolbar"
   },
   "apps": {
@@ -72,6 +74,7 @@
   },
   "button": {
     "add": "ADD",
+    "back": "BACK",
     "calibrate": "CALIBRATE",
     "cancel": "CANCEL",
     "change": "CHANGE",
@@ -89,9 +92,11 @@
     "logout": "LOGOUT",
     "move": "MOVE",
     "moves": "MOVES",
+    "next": "NEXT",
     "ok": "OK",
     "open": "OPEN",
     "overwrite": "OVERWRITE",
+    "previous": "PREVIOUS",
     "record": "RECORD",
     "refresh": "REFRESH",
     "rename": "RENAME",
@@ -107,8 +112,6 @@
     "apply": "APPLY",
     "no": "NO",
     "yes": "YES",
-    "previous": "Previous",
-    "next": "Next",
     "excute": "Execute"
   },
   "options": {
@@ -123,6 +126,9 @@
   "circlePoint": "CirclePoint",
   "clear_msgs": "Clear messages",
   "close": "Close",
+  "cloud": {
+    "na": "This feature is not available in the cloud, only on real softMC."
+  },
   "connected": "Connected",
   "connecting": "Connecting",
   "copy": "Copy",
@@ -180,6 +186,8 @@
     },
     "no-var": "No Variable is selected"
   },
+  "date": "Date",
+  "date_format": "[MM/DD/YYYY]",
   "decimal": "Decimal",
   "delete": "Delete",
   "derivative": "Derivative",
@@ -187,6 +195,7 @@
   "diagnostics": {
     "devices": "Devices State",
     "master": "Master State",
+    "mcu": "MCU",
     "no-data": "Data not available. Load TP libraries and try again.",
     "title": "Diagnostics"
   },
@@ -225,6 +234,9 @@
     "invalid_feature": "Invalid feature",
     "invalid_full_name": "A Full name is made of a First AND Last name",
     "invalid_regex": "Invalid input",
+    "invalid_username": "Username must include letter, numbers or '_'",
+    "invalid_username2": "This username is reserved",
+    "invalid_rec_motion": "Invalid motion recording file",
     "invalid_webserver": "Use web server {{ver}} (current is {{current}})",
     "mismatch_pass": "Password doesn't match the previous field",
     "orientation": "ControlStudio+ works in Landscape mode only.",
@@ -335,25 +347,26 @@
     "code": "Code Examples",
     "contact": "Contact Support",
     "downloads": "Downloads",
-    "education": "softMC Education Center",
     "keys": "Keyboard Shortcuts",
     "shortcuts": {
       "desc_autocomplete": "Show Autocomplete options",
       "desc_delete": "Delete selected object",
       "desc_duplicate": "Duplicate selected object",
       "desc_find": "Find",
+      "desc_gotoLine": "Go to line",
       "desc_replace": "Replace",
       "desc_terminal_down": "Go to next command",
       "desc_terminal_up": "Go to previous command",
       "editor": "Program Editor",
       "terminal": "Terminal",
+      "fold_unfold": "Fold/Unfold current block",
       "toggle_comment": "Comment/Uncomment line"
     },
     "soon": "Coming Soon",
     "title": "softMC Help Center",
     "tour": "Tour",
     "tourDisabled": "Tour is disabled because TP.LIB is not loaded",
-    "wiki": "softMC Wikipedia",
+    "wiki": "softMC Wiki",
     "activation": {
       "title": "Activation",
       "xpert": "KUKA Xpert",
@@ -458,7 +471,7 @@
     "sim_tooltip": "System IOs are always simulated",
     "table": {
       "0": "Id",
-      "1": "Value",
+      "1": "State",
       "2": "Name",
       "3": "Description",
       "4": "Simulated"
@@ -491,9 +504,8 @@
     "var_none": "No variables"
   },
   "handGuiding": {
-    "joint": "J",
-    "free": "Free All",
-    "lock": "Lock All"
+    "toggleMode": "Enable S-FREE Mode",
+    "toggleJ3J4": "Enable S-FREE J3 + J4"
   },
   "joint": "Joint",
   "joints": "Joints",
@@ -541,10 +553,18 @@
     "jogControlsToggle": "Toggle Jog Controls",
     "no_robot": "No robot is selected",
     "tour": {
-      "title": "Welcome!",
-      "msg": "Since this is your first time using ControlStudio+, do you want a quick tour?",
-      "yes": "YES, LET'S GO!",
-      "no": "NO, THANKS"
+      "btnFinish": "END DEMO",
+      "err": {
+        "0": "Follow this step's instructions in order to proceed to the next step.",
+        "1": "No project is loaded",
+        "2": "Project DEMO must be loaded",
+        "3": "Missing app: CIRCLE"
+      },
+      "msg": "Would you like to take a guided demo tour now?",
+      "msg2": "Don't worry, you can always take the demo tour later from the HELP screen.",
+      "no": "NO, THANKS",
+      "title": "Welcome to ControlStudio+",
+      "yes": "YES, LET'S GO!"
     }
   },
   "message_log": "Message Log",
@@ -820,10 +840,11 @@
       "message": "The following projects will be removed from the system. This operation cannot be undone.",
       "title": "Delete Projects"
     },
+    "loaded": "Loaded",
     "name": "Project Name",
     "new": "New Project",
     "notification": {
-      "errMsg": "Errors found in the following lines:",
+      "errMsg": "problems were found in the following lines:",
       "none": "No compilation errors.",
       "title": "Problems"
     },
@@ -843,6 +864,7 @@
       "11": "Interrupted",
       "99": "Loaded Library"
     },
+    "time": "Time",
     "toolbar": {
       "app": "App",
       "app_create": "CREATE APP",
@@ -950,8 +972,8 @@
       "desc": "Define the parameters for Arch command",
       "title": "Arch Settings",
       "archCol": "Arch",
-      "departZCol": "DepartZ",
-      "approachZCol": "ApproachZ",
+      "departZCol": "AscendingZ",
+      "approachZCol": "DescendingZ",
       "positiveNumTip": "Input a positive number!",
       "valChangedTip": "Value has been updated!"
     },
@@ -1050,6 +1072,7 @@
     "Vision": "Vision"
   },
   "record": "Record",
+  "record_done": "Motion recording is finished",
   "restore": {
     "restoring": "Restoring system from file",
     "success": "System restored successfully!",
@@ -1071,6 +1094,16 @@
     "battery": {
       "masteringAck": "CONFIRM MASTERING DONE",
       "status": "Battery Status"
+    },
+    "brakes": {
+      "btnStart": "START BRAKE TEST",
+      "dialog": {
+        "title": "Brake Test",
+        "msg": "The robot will perform subtle movements to test the brakes. Make sure there are no people in the proximate vicinity of the robot.",
+        "yes": "START TEST NOW",
+        "no": "CANCEL"
+      },
+      "title": "Brakes Test"
     },
     "btnChange": "CHANGE ROBOT",
     "btnSetCurrent": "SET CURRENT",
@@ -1264,81 +1297,78 @@
   "tools": "Tools",
   "tour": [
     {
-      "title": "Navigation Menu",
-      "content": "This button shows/hides the navigation menu"
-    },
-    {
-      "title": "Jog Controls",
-      "content": "This button shows/hides the JOG controls. This feature is disabled when TP.LIB is not loaded."
-    },
-    {
-      "title": "Watch & Record Window",
-      "content": "This button shows/hides the WATCH & RECORD window. This window can be used to monitor system and program variables."
-    },
-    {
-      "title": "Message Log",
-      "content": "This button shows/hides the MESSAGE LOG window. This window displays messages sent from the controller."
-    },
-    {
-      "title": "Message Log",
-      "content": "When you are in the Home screen, messages will also appear here."
-    },
-    {
-      "title": "Terminal",
-      "content": "Use the terminal to send MC-Basic commands to the controller."
-    },
-    {
-      "title": "System Information",
-      "content": "System information is displayed at the bottom of the Home screen."
-    },
-    {
-      "title": "Motion Dashboard",
-      "content": "Now, let's take a look at the Motion Dashboard screen."
-    },
-    {
-      "title": "Add a New Dashboard",
-      "content": "Use this button to create a new Motion Dashboard window."
-    },
-    {
-      "title": "Dashboard Window",
-      "content": "This is a Motion Dashboard window. You can create a window for each motion element in the system, and drag it around the screen."
-    },
-    {
-      "title": "Enable/Disable the Robot",
-      "content": "Use this toggle button to enable and disable the robot."
-    },
-    {
-      "title": "Moving the Robot",
-      "content": "Use this panel to perform simple move commands."
-    },
-    {
-      "title": "Moving the Robot",
-      "content": "Use this panel to perform simple move commands."
-    },
-    {
-      "title": "Recorder",
-      "content": "Use this button to record data in 2D and 3D formats."
+      "title": "Getting Started",
+      "content": "In this demo, we will load and run your first program. Click the <b>NEXT</b> button to continue."
     },
     {
       "title": "Project Editor",
-      "content": "Now, let's take a look at the Project Editor."
+      "content": " Click on <b>Project Editor</b> (the highlighted button) in the <b>main menu</b> to enter the Project Editor screen."
+    },
+    {
+      "title": "Menu Collapse",
+      "content": "In order to save screen space, click the <b>MENU EXPAND/COLLAPSE button</b> in the app's <b>toolbar</b>."
+    },
+    {
+      "title": "Project Editor",
+      "content": "In this demo we will go through the basic elements of the project editor."
     },
     {
       "title": "This is the Project Tree",
-      "content": "The Project Tree contains all the programs, libraries and configuration files for your project."
+      "content": "The <b>Project Tree</b> contains all the programs, libraries, data and configuration files for your project."
     },
     {
-      "title": "Toolbar",
-      "content": "Use this toolbar to open, edit and execute your project."
+      "title": "Apps",
+      "content": "A project can contain <b>many applications</b>, listed under the <b>\"Apps\"</b> folder."
+    },
+    {
+      "title": "App Structure",
+      "content": "Each app has a <b>PROGRAM</b> file, a <b>DATA</b> file, and <b>LIBRARY</b> files."
+    },
+    {
+      "title": "Program Editor",
+      "content": "This is where you'll write your code. softMC applications are written in the <b>MC-Basic</b> language."
+    },
+    {
+      "title": "Loading an App",
+      "content": "When you're done writing your code, use the <b>SAVE & LOAD</b> button to save your code and then load it to the controller."
+    },
+    {
+      "title": "App Status",
+      "content": "Once the app is loaded, its <b>status</b> would change to <b>READY</b>."
+    },
+    {
+      "title": "Running the app",
+      "content": "To run the app, <b>click</b> on the <b>RUN</b> button and the app will start running."
+    },
+    {
+      "title": "Note #1",
+      "content": "While an app is loaded, you <b>CAN'T edit</b> it (notice how the editor is greyed out)."
+    },
+    {
+      "title": "Note #2",
+      "content": "You can monitor the progress of the app by looking at the <span style=\"color:green;\"><b>green lines</b></span> in the editor."
+    },
+    {
+      "title": "3D Preview",
+      "content": "You can use the <b>mouse's left and right</b> buttons to <b>rotate/pan</b> the 3D view. Use the <b>WHEEL</b> button to zoom in/out."
+    },
+    {
+      "title": "Toggle 3D Preview",
+      "content": "You can use this <b>toggle button</b> in order to show/hide the 3D simulator window."
+    },
+    {
+      "title": "Demo Completed!",
+      "content": "Congratulations, you just ran your first MC-Basic program!<p>To learn even more, visit the <b>HELP screen</b> (located at the bottom of the main menu).</p>"
     }
   ],
   "trivia": [
     "You can record the robot's motion by pressing the RECORD button on the main app toolbar.",
     "You can add a new application to the project by right clicking the Apps folder.",
-    "You can EXPAND or CONTRACT the application's toolbar by clicking on the arrow button in the app toolbar.",
+    "You can EXPAND or COLLAPSE the application's toolbar by clicking on the arrow button in the app toolbar.",
     "You can CLEAR all commands from the terminal by using the command CLEAR in the terminal.",
     "You can UPLOAD a new PROFILE PICTURE by expanding the app's side menu, clicking the profile picture, and choosing a photo."
   ],
+  "trivia_title": "Did you know?",
   "type": "Type",
   "userManager": {
     "btnCreate": "CREATE USER",
@@ -1350,6 +1380,7 @@
       "no": "CANCEL",
       "success": "SELECTED USERS WERE DELETED",
       "fail": "ERROR: ONE OR MORE USERS COULD NOT BE DELETED",
+      "fail2": "ERROR: ADMIN USER CANNOT BE DELETED",
       "err": "INVALID REQUEST"
     },
     "err": "Error: User already exists or invalid parameters sent",

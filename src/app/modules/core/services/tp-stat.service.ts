@@ -1,13 +1,11 @@
 import {
   Injectable,
   NgZone,
-  ApplicationRef,
   EventEmitter,
 } from '@angular/core';
 import {
   MatDialog,
   MatSnackBar,
-  MatButtonToggleChange,
 } from '@angular/material';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { ErrorDialogComponent } from '../../../components/error-dialog/error-dialog.component';
@@ -15,9 +13,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { ApiService } from './api.service';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthPassDialogComponent } from '../../../components/auth-pass-dialog/auth-pass-dialog.component';
 import { CommonService } from './common.service';
-import { LoginService } from './login.service';
 
 class TPStatResponse {
   ENABLE: number;
@@ -34,7 +30,7 @@ const refreshRate = 200;
 
 @Injectable()
 export class TpStatService {
-  modeChanged: EventEmitter<string> = new EventEmitter();
+  modeChanged: BehaviorSubject<string> = new BehaviorSubject(null);
   estopChange: Subject<boolean> = new Subject();
   wackChange: Subject<boolean> = new Subject();
   onProjectLoaded: EventEmitter<boolean> = new EventEmitter();
@@ -91,32 +87,33 @@ export class TpStatService {
     });
   }
 
-  /*
-   * IF THE USER USES A TABLET, AND CHANGES THE MODE (T1,T2...) SO FIRST HE
-   * WILL BE PROMPT TO ENTER HIS PASSWORD AGAIN.
-   */
-  changeMode() {
-    this.zone.run(() => {
-      this.dialog
-        .open(AuthPassDialogComponent, {
-          minWidth: '400px',
-          data: {
-            withModeSelector: true,
-            currentMode: this.mode
-          }
-        })
-        .afterClosed()
-        .subscribe((mode: string) => {
-          if (mode) {
-            this.mode = mode;
-          }
-        });
-    });
-  }
-
   get mode(): string {
     return this._switch;
   }
+  // SET MODE SYNC 
+  async setMode(mode: string, pass?: string): Promise<boolean> {
+    if (!environment.production) console.log(this.mode + ' --> ' + mode);
+    const oldStat = this.mode;
+    if (oldStat === mode) return true;
+    pass = pass || '';
+    const ret = await this.ws.query(`?tp_set_switch_mode("${mode}","${pass}")`);
+    if (ret.result !== '0') {
+      this._virtualModeSelector = oldStat;
+      this._switch = this._virtualModeSelector;
+      if (this._switch == null) {
+        // CAN'T SET MODE ON INIT - THIS IS CRITICAL...
+        this._systemErrorCode = -998;
+      }
+      this._switch = oldStat;
+      return false;
+    } else {
+      this._virtualModeSelector = mode;
+      this._switch = this._virtualModeSelector;
+      this.modeChanged.next(this._switch);
+      return true;
+    }
+  }
+
   set mode(mode: string) {
     if (!environment.production) console.log(this.mode + ' --> ' + mode);
     const oldStat = this.mode;
@@ -152,7 +149,7 @@ export class TpStatService {
         } else {
           this._virtualModeSelector = mode;
           this._switch = this._virtualModeSelector;
-          this.modeChanged.emit(this._switch);
+          this.modeChanged.next(this._switch);
         }
       });
   }
@@ -211,10 +208,10 @@ export class TpStatService {
         if (typeof stat.SWITCH === 'undefined' || !this.cmn.isTablet) {
           if (this._switch !== this._virtualModeSelector) {
             this._switch = this._virtualModeSelector;
-            this.modeChanged.emit(this._switch);
+            this.modeChanged.next(this._switch);
           }
         } else {
-          if (this._switch !== stat.SWITCH) this.modeChanged.emit(this._switch);
+          if (this._switch !== stat.SWITCH) this.modeChanged.next(this._switch);
           this._switch = stat.SWITCH;
         }
 
@@ -298,6 +295,7 @@ export class TpStatService {
   }
   
   resetStat() {
+    console.log('reset stat');
     this._enabled = false;
     this._isMoving = false;
     this._wack = false;
@@ -316,7 +314,7 @@ export class TpStatService {
         return this.ws.query('?TP_setKeepAliveBreakable(1)');
       }).then((ret: MCQueryResponse) => {
         console.log(ret);
-        if (ret.result === '0') {
+        if (ret.result === '0' || !this.onlineStatus.value) {
           this.onlineStatus.next(false);
           this._online = false;
           this.resetStat();
@@ -341,17 +339,18 @@ export class TpStatService {
   constructor(
     private ws: WebsocketService,
     private dialog: MatDialog,
-    private ref: ApplicationRef,
     private zone: NgZone,
     private snack: MatSnackBar,
     private api: ApiService,
     private trn: TranslateService,
-    private cmn: CommonService,
-    private login: LoginService
+    private cmn: CommonService
   ) {
     this.trn
-      .get(['acknowledge', 'offline', 'online'])
-      .subscribe(words => {
+      .get([
+        'acknowledge', 'offline', 'online',
+        'stat.err_critical.title', 'stat.err_critical.message'],{
+        appName: environment.appName,
+      }).subscribe(words => {
         this.words = words;
         this.init();
       });

@@ -32,12 +32,20 @@ export class ShortcutsComponent implements OnInit {
           desc: 'help.shortcuts.desc_replace',
         },
         {
+          keys: 'CTRL + L',
+          desc: 'help.shortcuts.desc_gotoLine',
+        },
+        {
           keys: 'CTRL + SPACE',
           desc: 'help.shortcuts.desc_autocomplete',
         },
         {
           keys: 'CTRL + /',
           desc: 'help.shortcuts.toggle_comment',
+        },
+        {
+          keys: 'F2',
+          desc: 'help.shortcuts.fold_unfold',
         },
       ],
     },

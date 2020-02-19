@@ -24,6 +24,7 @@ export class FactoryRestoreComponent implements OnInit {
   password = '';
   selectedRobot: RobotModel = null;
   busy = false; // true when the dialog is busy checking user password
+  wrongPass = false;
 
   private words: {};
   private notifier: Subject<boolean> = new Subject();
@@ -70,6 +71,7 @@ export class FactoryRestoreComponent implements OnInit {
 
   restore() {
     this.busy = true;
+    this.wrongPass = false;
     this.api.confirmPass(this.username, this.password).then(ret => {
       this.busy = false;
       if (ret) {
@@ -103,6 +105,8 @@ export class FactoryRestoreComponent implements OnInit {
             dialog.close();
           }
         });
+      } else {
+        this.wrongPass = true;
       }
     });
   }

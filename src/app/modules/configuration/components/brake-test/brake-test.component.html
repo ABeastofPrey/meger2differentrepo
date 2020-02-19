@@ -1,0 +1,13 @@
+<div class="center-vertical">
+  <div>
+    <mat-checkbox
+      color="primary"
+      *ngFor="let b of brakes"
+      [(ngModel)]="b.val"
+      (change)="onBitmapChange()">{{b.name}}</mat-checkbox>
+  </div>
+  <button mat-raised-button color="primary" (click)="start()" class="btn-start" [disabled]="busy">
+    {{ 'robots.brakes.btnStart' | translate }}...
+  </button>
+  <mat-spinner *ngIf="busy" color="primary"></mat-spinner>
+</div>

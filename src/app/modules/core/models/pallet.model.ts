@@ -7,6 +7,41 @@ export class Pallet {
     this._type = palletType;
   }
 
+  reset() {
+    delete this.index;
+    delete this.order;
+    delete this.itemsX;
+    delete this.itemsY;
+    delete this.itemsZ;
+    delete this.itemSizeX;
+    delete this.itemSizeY;
+    delete this.itemSizeZ;
+    delete this.palletSizeX;
+    delete this.palletSizeY;
+    delete this.palletSizeZ;
+    delete this.levels;
+    this.diffOddEven = false;
+    this.origin = new PalletLocation();
+    this.posX = new PalletLocation();
+    this.posY = new PalletLocation();
+    this.entry = new PalletLocation();
+    delete this.approachOffsetVertical;
+    delete this.approachOffsetHorizontal;
+    delete this.approachDirection;
+    delete this.retractOffsetVertical;
+    delete this.retractOffsetHorizontal;
+    delete this.retractDirection;
+    this.isFrameCalibrated = false;
+    this.appEnabled = false;
+    this.retEnabled = false;
+    this.entryEnabled = false;
+    this.retExceed = false;
+    this.appExceed = false;
+    this.dataFile = null;
+    this.flags = [0, 0, 0];
+    this.isNew = true;
+  }
+
   get name() {
     return this._name;
   }
@@ -46,6 +81,7 @@ export class Pallet {
   appExceed = false;
   dataFile: string = null;
   flags: number[] = [0, 0, 0];
+  isNew = true;
 }
 
 export class PalletLocation {

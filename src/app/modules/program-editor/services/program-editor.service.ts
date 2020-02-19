@@ -1,3 +1,4 @@
+import { TourService } from 'ngx-tour-md-menu';
 import { Injectable, EventEmitter, NgZone } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import {
@@ -31,10 +32,11 @@ export const TASKSTATE_KILLED = 10;
 export const TASKSTATE_INTERRUPTED = 11;
 export const TASKSTATE_LIB_LOADED = 99;
 
-const endsWithBKG = (x: string) => x.endsWith('BKG');
+const endsWithBKG = (x: string) => x && x.endsWith('BKG');
 
 @Injectable()
 export class ProgramEditorService {
+
   files: MCFile[] = [];
   activeFile: string = null; // The currently opened context in the editor
   displayedFile: string = null; // The file that's actually displayed in the editor
@@ -77,7 +79,7 @@ export class ProgramEditorService {
   // LINE PARSING
   parser: LineParser = new LineParser(this.data);
   variablesInLine: TPVariable[] = [];
-  lineParams = null;
+  lineParams: {} = null;
   disableStepOver = false;
   private lastRow = -1;
 
@@ -101,8 +103,21 @@ export class ProgramEditorService {
     private snack: MatSnackBar,
     private data: DataService,
     private trn: TranslateService,
-    private api: ApiService
+    private api: ApiService,
+    private tour: TourService
   ) {
+    this.tour.stepShow$.subscribe(step=>{
+      if ((
+          step === this.tour.steps[3] ||
+          step === this.tour.steps[4] ||
+          step === this.tour.steps[5] ||
+          step === this.tour.steps[6]
+          ) &&
+          this.status && this.status.statusCode !== TASKSTATE_NOTLOADED
+      ) {
+        this.kill();
+      }
+    });
     this.refreshFiles();
     this.ws.isConnected.subscribe(stat => {
       if (!stat) {
@@ -116,6 +131,7 @@ export class ProgramEditorService {
         this.status = null;
         this.statusChange.emit(null);
         this.backtrace = null;
+        this.busy = false;
       }
     });
     const words = [
@@ -129,6 +145,10 @@ export class ProgramEditorService {
     this.trn.get(words).subscribe(words => {
       this.words = words;
     });
+  }
+
+  showFwconfigEditor() {
+    this.mode = 'fwconfig';
   }
   
   getStatusString(stat: number) : string {
@@ -302,6 +322,7 @@ export class ProgramEditorService {
     if (!bt) this.errors = [];
     this.editorLine = -1;
     this.isDirty = false;
+    // this.fileRef = null;
   }
 
   save() {
@@ -451,7 +472,7 @@ export class ProgramEditorService {
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
-      this.ws.query('?tp_reset_app("' + prj + '","' + file + '")').then(() => {
+      this.ws.query('?tp_reset_app("' + prj + '","' + file + '")').then(ret => {
         this.busy = false;
       });
       return;
@@ -466,7 +487,7 @@ export class ProgramEditorService {
         });
       });
     } else {
-      this.ws.query('KillTask ' + this.activeFile).then(() => {
+      this.ws.query('KillTask ' + this.activeFile).then(ret => {
         this.busy = false;
       });
     }
@@ -488,12 +509,13 @@ export class ProgramEditorService {
     });
   }
 
-  unload() {
-    if (this.activeFile === null) return;
+  unload(force?: boolean) {
+    const f = this.activeFile;
+    if (!f) return;
     this.busy = true;
-    this.ws.query('KillTask ' + this.activeFile).then(() => {
-      this.ws.query('Unload ' + this.activeFile).then((ret: MCQueryResponse) => {
-        if (ret.result.length > 0) {
+    return this.ws.query('KillTask ' + f).then(() => {
+      return this.ws.query('Unload ' + f).then((ret: MCQueryResponse) => {
+        if (!force && ret.result.length > 0) {
           this.snack.open(ret.result, '', { duration: 2000 });
         }
         this.busy = false;
@@ -507,11 +529,9 @@ export class ProgramEditorService {
     if (this.fileRef) {
       const prj = this.prj.currProject.value.name;
       const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
-      console.log('step');
       this.ws
         .query('?tp_step_over_app("' + prj + '","' + file + '")')
         .then(() => {
-          console.log('step done');
           this.busy = false;
         });
       return;
@@ -566,7 +586,6 @@ export class ProgramEditorService {
       'href',
       'data:text/plain;charset=utf-8,' + encodeURIComponent(this.editorText)
     );
-    console.log(this.activeFile);
     element.setAttribute('download', this.activeFile);
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -577,8 +596,7 @@ export class ProgramEditorService {
   refreshStatus(on: boolean) {
     this.ws.clearInterval(this.statusInterval);
     if (
-      !on ||
-      this.activeFile === null ||
+      !on || this.activeFile === null ||
       (this.status && this.status.statusCode === -2)
     ) {
       return;
@@ -606,6 +624,7 @@ export class ProgramEditorService {
       false,
       (ret: string, command: string, err: ErrorFrame) => {
         if (ret.length === 0) {
+          console.log('CYC4 RETURNED BLANK RESULT');
           this.refreshStatus(false);
           return;
         }
@@ -615,7 +634,7 @@ export class ProgramEditorService {
             if (this.isLib) {
               const tmpStatus = new ProgramStatus(null);
               tmpStatus.statusCode =
-                err.errCode === '8020'
+                err && err.errCode === '8020'
                   ? TASKSTATE_LIB_LOADED
                   : TASKSTATE_NOTLOADED;
               this.status = tmpStatus;
@@ -810,9 +829,11 @@ export class TRNERR {
 }
 
 export class TRNERRLine {
+
   number: number;
   file: string;
   error: string;
+  type?: string;
 
   constructor(line: string) {
     let index = line.indexOf(':');

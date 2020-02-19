@@ -1,3 +1,5 @@
+import { ScreenManagerService } from './../../../core/services/screen-manager.service';
+import { TranslateService } from '@ngx-translate/core';
 import {
   Component,
   OnInit,
@@ -12,12 +14,16 @@ import { Subscription, Subject } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
+declare var Plotly;
+const MAXVAL = 3000;
+
 @Component({
   selector: 'app-diagnostics',
   templateUrl: './diagnostics.component.html',
   styleUrls: ['./diagnostics.component.css'],
 })
 export class DiagnosticsComponent implements OnInit {
+
   content: string;
   state = '1';
   isRefreshing = false;
@@ -26,22 +32,41 @@ export class DiagnosticsComponent implements OnInit {
   @ViewChild('container', { read: ViewContainerRef, static: false })
   ref: ViewContainerRef;
 
+  private words: {};
   private notifier: Subject<boolean> = new Subject();
+
+  // MCU
+  private mcuThreshold = 0;
+  private mcuInterval: number | undefined;
+  mcuConnected = false;
 
   constructor(
     private ws: WebsocketService,
-    private resolver: ComponentFactoryResolver
+    private resolver: ComponentFactoryResolver,
+    private trn: TranslateService,
+    private mgr: ScreenManagerService
   ) {}
 
   ngOnInit() {
+    this.trn.get(['connected', 'disconnected']).subscribe(words=>{
+      this.words = words;
+    })
     this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) this.refresh();
+    });
+    this.mgr.openedControls.pipe(takeUntil(this.notifier)).subscribe(()=>{
+      try {
+        Plotly.plots.resize('mcu');
+      } catch (err) {
+        
+      }
     });
   }
 
   ngOnDestroy() {
     this.notifier.next(true);
     this.notifier.unsubscribe();
+    clearInterval(this.mcuInterval);
   }
 
   private getGraphsFromText() {
@@ -101,11 +126,91 @@ export class DiagnosticsComponent implements OnInit {
     }
   }
 
+  initMCU() {
+    this.ws.query('?MCU_GET_CONNECTION_STATUS').then((ret: MCQueryResponse)=>{
+      this.mcuConnected = ret.result === '1';
+    }).then(()=>{
+      this.ws.query('?MCU_GET_FAN_THRESHOLD').then((ret: MCQueryResponse) => {
+        this.mcuThreshold = Number(ret.result);
+        this.mcuInterval = window.setInterval(()=>{
+        this.ws
+          .query('?MCU_SEND_GETFANVALUE_COMMAND')
+          .then((ret: MCQueryResponse) => {
+            if (ret.err) {
+              this.generateMcuChart(0);
+              this.isRefreshing = false;
+              return clearInterval(this.mcuInterval);
+            }
+            const val = Number(ret.result);
+            if (val === -1 && !isNaN(val)) {
+              clearInterval(this.mcuInterval);
+              this.generateMcuChart(0);
+              this.isRefreshing = false;
+              return;
+            }
+            this.generateMcuChart(val);
+            this.isRefreshing = false;
+          });
+        },2000);
+      });
+    });
+  }
+
+  private generateMcuChart(val: number) {
+    const color = val <= this.mcuThreshold ? '#ff0000' : '#00ff00';
+    const mcuStatus = 
+        this.mcuConnected ? this.words['connected'] : this.words['disconnected'];
+    const trace1 = {
+      x: ['MCU Fan'],
+      y: [val],
+      name: 'MCU Fan Level',
+      type: 'bar',
+      marker: { color: [color] },
+    };
+    const trace2 = {
+      x: ['MCU Fan'],
+      y: [MAXVAL - val],
+      hoverinfo: 'skip',
+      type: 'bar',
+      marker: { color: ['#cccccc'] },
+    };
+    const data = [trace1, trace2];
+    const layout = {
+      barmode: 'stack',
+      showlegend: false,
+      title: 'MCU Fan (' + mcuStatus + ')',
+      yaxis: {fixedrange: true},
+      xaxis : {fixedrange: true},
+      annotations: [
+        {
+          x: 0,
+          y: this.mcuThreshold,
+          xref: 'x',
+          yref: 'y',
+          text: 'Threshold',
+          showarrow: true,
+          arrowhead: 7,
+          ax: 70,
+          ay: 0,
+        },
+      ],
+    };
+    Plotly.newPlot('mcu', data as Array<Partial<Plotly.PlotData>>, layout as Partial<Plotly.Annotations>, {
+      responsive: true,
+      displayModeBar: false
+    });
+  }
+
   refresh() {
     if (this.interval) clearInterval(this.interval);
+    if (this.mcuInterval) clearInterval(this.mcuInterval);
     if (this.ref) this.ref.clear();
     this.isRefreshing = true;
     this.content = null;
+    if (this.state === '3') {
+      this.initMCU();
+      return;
+    }
     const cmd =
       this.state === '1'
         ? '?TP_GET_MOTION_DEVICES_STATE'

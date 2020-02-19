@@ -36,7 +36,7 @@ import { NgrxRootModule } from './modules/ngrx-root/ngrx-root.module';
     RobotSelectionComponent,
     OSUpgradeErrorDialogComponent,
     OSUpgradeSuccessDialogComponent,
-    TpLoadingComponent,
+    TpLoadingComponent
   ],
   imports: [
     BrowserModule,

@@ -40,6 +40,10 @@
   flex: 1;
 }
 
+.mcu-container {
+  max-width: 300px;
+}
+
 ::ng-deep .diagnostics-container table {
   width: 100%;
   border: 1px solid black;

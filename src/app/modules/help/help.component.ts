@@ -1,11 +1,7 @@
+import { ProjectManagerService } from './../core/services/project-manager.service';
+import { CommonService } from './../core/services/common.service';
 import { Component, OnInit } from '@angular/core';
-import { TourService } from 'ngx-tour-md-menu';
-import {
-  TpStatService,
-  WebsocketService,
-  MCQueryResponse,
-  DataService,
-} from '../core';
+import { TpStatService } from '../core';
 import { environment } from '../../../environments/environment';
 import { MatDialog } from '@angular/material';
 import { ShortcutsComponent } from './components/shortcuts/shortcuts.component';
@@ -33,11 +29,12 @@ export class HelpComponent implements OnInit {
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
-    private tour: TourService,
     private stat: TpStatService,
     private dialog: MatDialog,
     private actService: ActivationService,
-    public utils: UtilsService
+    public utils: UtilsService,
+    public cmn: CommonService,
+    private prj: ProjectManagerService
   ) {}
 
   get isNotKuka(): boolean {
@@ -45,9 +42,7 @@ export class HelpComponent implements OnInit {
   }
 
   startTour() {
-    if (this.online) {
-      this.tour.start();
-    }
+    this.cmn.showTourDialog(true, this.prj.currProject.value);
   }
 
   ngOnInit() {

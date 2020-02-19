@@ -1,3 +1,4 @@
+import { TourService } from 'ngx-tour-md-menu';
 import { CoordinatesService } from './coordinates.service';
 import { OSUpgradeSuccessDialogComponent } from './../../../components/osupgrade-success-dialog/osupgrade-success-dialog.component';
 import { environment } from './../../../../environments/environment';
@@ -98,8 +99,8 @@ export class ScreenManagerService {
     }
   }
 
-  openedControls = false;
-  controlsAnimating: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  openedControls: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  // controlsAnimating: BehaviorSubject<boolean> = new BehaviorSubject(false);
   projectActiveStatusChange: BehaviorSubject<boolean> = new BehaviorSubject(
     false
   );
@@ -114,11 +115,11 @@ export class ScreenManagerService {
 
   toggleMenu() {
     (document.activeElement as HTMLElement).blur();
-    this.controlsAnimating.next(true);
+    //this.controlsAnimating.next(true);
     this._menuExpanded = !this._menuExpanded;
-    setTimeout(() => {
-      this.controlsAnimating.next(false);
-    }, 300);
+    // setTimeout(() => {
+    //   this.controlsAnimating.next(false);
+    // }, 300);
   }
 
   private _screens: ControlStudioScreen[] = [
@@ -189,46 +190,43 @@ export class ScreenManagerService {
     }
   }
 
-  toggleControls(isToggleByAddVar?) {
+  async toggleControls(isToggleByAddVar?) {
     if (!isToggleByAddVar) {
       this.utils.removeShrinkStretchOverlay();
     }
-    this.controlsAnimating.next(true);
-    this.openedControls = !this.openedControls;
-    if (!this.cmn.isTablet) this.stat.mode = this.openedControls ? 'T1' : 'A';
-    setTimeout(() => {
-      this.controlsAnimating.next(false);
-    }, 300);
-    setTimeout(() => {
-      if (
-        this.stat.mode !== 'T1' &&
-        this.stat.mode !== 'T2' &&
-        this.openedControls &&
-        !this.controlsAnimating.value) {
-        this.closeControls();
-      }
-    }, 1000);
+    // this.controlsAnimating.next(true);
+    this.openedControls.next(!this.openedControls.value);
+    if (!this.cmn.isTablet) {
+      const newMode = this.openedControls.value ? 'T1' : 'A';
+      const result = await this.stat.setMode(newMode);
+    }
+    // setTimeout(() => {
+    //   this.controlsAnimating.next(false);
+    // }, 300);
+    if (
+      this.stat.mode !== 'T1' &&
+      this.stat.mode !== 'T2' &&
+      this.openedControls) {
+      this.closeControls();
+    }
   }
 
-  showControls() {
+  async showControls() {
     if (this.openedControls) return;
-    this.controlsAnimating.next(true);
-    this.openedControls = true;
+    // this.controlsAnimating.next(true);
+    this.openedControls.next(true);
     if (!this.cmn.isTablet) {
-      this.stat.mode = 'T1';
+      await this.stat.setMode('T1');
     }
-    setTimeout(() => {
-      this.controlsAnimating.next(false);
-    }, 300);
-    setTimeout(() => {
-      if (
-        this.stat.mode !== 'T1' &&
-        this.stat.mode !== 'T2' &&
-        this.openedControls &&
-        !this.controlsAnimating.value) {
-        this.closeControls();
-      }
-    }, 1000);
+    // setTimeout(() => {
+    //   this.controlsAnimating.next(false);
+    // }, 300);
+    if (
+      this.stat.mode !== 'T1' &&
+      this.stat.mode !== 'T2' &&
+      this.openedControls) {
+      this.closeControls();
+    }
   }
 
   isScreenDisabled(s: ControlStudioScreen) {
@@ -244,7 +242,6 @@ export class ScreenManagerService {
         return (
           cond1 ||
           cond2 ||
-          this.controlsAnimating.value ||
           (this.cmn.isTablet && this.stat.mode !== 'T1' && this.stat.mode !== 'T2')
         );
       default:
@@ -252,16 +249,16 @@ export class ScreenManagerService {
     }
   }
 
-  closeControls() {
+  async closeControls() {
     if (!this.openedControls) return;
-    this.controlsAnimating.next(true);
-    this.openedControls = false;
+    // this.controlsAnimating.next(true);
+    this.openedControls.next(false);
     if (!this.cmn.isTablet) {
-      this.stat.mode = 'A';
+      await this.stat.setMode('A');
     }
-    setTimeout(() => {
-      this.controlsAnimating.next(false);
-    }, 300);
+    // setTimeout(() => {
+    //   this.controlsAnimating.next(false);
+    // }, 300);
   }
 
   constructor(
@@ -276,8 +273,18 @@ export class ScreenManagerService {
     private utils: UtilsService,
     private webSocketService: WebsocketService,
     private container: OverlayContainer,
-    private coos: CoordinatesService
+    private coos: CoordinatesService,
+    private tour: TourService
   ) {
+    this.tour.start$.subscribe(()=>{
+        if (!this._menuExpanded) {
+          this.tour.end();
+          this.toggleMenu();
+          setTimeout(()=>{
+            this.tour.start();
+          },600);
+        }
+    });
     // HANDLE CDK CONTAINER WHEN JOG PANEL IS OPENED
     this.dialog.afterOpened.subscribe(dialog => {
       const data = dialog._containerInstance._config.data;
@@ -293,7 +300,7 @@ export class ScreenManagerService {
           }
         },0);
       }
-      if (data && data.enableJog && this.openedControls) {
+      if (data && data.enableJog && this.openedControls.value) {
         const { classList } = this.container.getContainerElement();
         if (!classList.contains('jog-panel-open')) {
           classList.add('jog-panel-open');
@@ -303,14 +310,14 @@ export class ScreenManagerService {
         }
       }
     });
-    this.controlsAnimating.subscribe(stat => {
-      if (!stat) {
-        const { classList } = this.container.getContainerElement();
-        if (classList.contains('jog-panel-open') && !this.openedControls) {
-          classList.remove('jog-panel-open');
-        }
-      }
-    });
+    // this.controlsAnimating.subscribe(stat => {
+    //   if (!stat) {
+    //     const { classList } = this.container.getContainerElement();
+    //     if (classList.contains('jog-panel-open') && !this.openedControls) {
+    //       classList.remove('jog-panel-open');
+    //     }
+    //   }
+    // });
     this._menuExpanded = this.cmn.isTablet;
     this.trn
       .get([
@@ -374,22 +381,23 @@ export class ScreenManagerService {
       }
     }
     this.stat.modeChanged.subscribe((mode: string) => {
+      if (mode === null) return;
       if (mode !== 'T1' && mode !== 'T2') {
-        if (!this.openedControls) return;
-        this.controlsAnimating.next(true);
+        if (!this.openedControls.value) return;
+        // this.controlsAnimating.next(true);
         setTimeout(() => {
-          this.controlsAnimating.next(false);
+          // this.controlsAnimating.next(false);
           if (this.stat.mode === mode) {
-            this.openedControls = false;
+            this.openedControls.next(false);
           }
         }, 300);
       } else {
-        if (this.openedControls) return;
-        this.controlsAnimating.next(true);
+        if (this.openedControls.value) return;
+        // this.controlsAnimating.next(true);
         setTimeout(() => {
-          this.controlsAnimating.next(false);
+          // this.controlsAnimating.next(false);
           if (this.stat.mode === mode) {
-            this.openedControls = true;
+            this.openedControls.next(true);
           }
         }, 300);
       }
@@ -420,7 +428,7 @@ export class ScreenManagerService {
       let navUrl: string = e.urlAfterRedirects;
       if (!navUrl) return;
       if (navUrl === '/') navUrl = '';
-      const currScreenUrl = this._screen.url === '/' ? '' : this._screen.url;
+      const currScreenUrl = this._screen && this._screen.url === '/' ? '' : (this._screen ? this._screen.url : '');
       if (
         !navUrl.startsWith(currScreenUrl) ||
         (currScreenUrl === '' && navUrl !== currScreenUrl)

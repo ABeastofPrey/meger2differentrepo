@@ -1,5 +1,6 @@
+import { AuthPassDialogComponent } from '../../../components/auth-pass-dialog/auth-pass-dialog.component';
 import { Injectable } from '@angular/core';
-import { WebsocketService, MCQueryResponse } from './websocket.service';
+import { WebsocketService } from './websocket.service';
 import { TpStatService } from './tp-stat.service';
 import { TaskService } from './task.service';
 import { MatSnackBar, MatDialog } from '@angular/material';
@@ -94,6 +95,19 @@ export class UtilsService {
     });
   }
 
+  /*
+   * IF THE USER USES A TABLET, AND CHANGES THE MODE (T1,T2...) SO FIRST HE
+   * WILL BE PROMPT TO ENTER A PASSWORD.
+   */
+  changeMode() {
+    this.dialog.open(AuthPassDialogComponent, {
+      minWidth: '400px',
+      data: {
+        withModeSelector: true
+      }
+    });
+  }
+
   resetAll(loadautoexec?: boolean): Promise<boolean> {
     return this.stat
       .resetAll()
@@ -143,6 +157,10 @@ export class UtilsService {
 
   get IsKuka(): boolean {
     return env.platform.name === env.platforms.Kuka.name;
+  }
+
+  get isDebug(): boolean {
+    return !env.production;
   }
 
   get theme(): string {

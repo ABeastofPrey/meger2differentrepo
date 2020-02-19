@@ -1,22 +1,6 @@
 <div class="hand-guiding mat-typography">
-	<mat-card class="container">
-		<section class="joints">
-			<mat-checkbox
-				*ngFor="let joint of joints; let index = index"
-				(change)="setJoints()"
-				[(ngModel)]="joint.checked"
-				[disabled]="canNotUse()"
-			>
-				{{ 'handGuiding.joint' | translate }} {{ index + 1 }}
-			</mat-checkbox>
-		</section>
-		<section class="buttons">
-			<button mat-raised-button color="primary" (click)="freeAll()" [disabled]="canNotUse()">
-				{{ 'handGuiding.free' | translate }}
-			</button>
-			<button mat-raised-button color="primary" (click)="lockAll()" [disabled]="canNotUse()">
-				{{ 'handGuiding.lock' | translate }}
-			</button>
-		</section>
+	<mat-card>
+		<mat-slide-toggle [checked]="mode" color="primary" (change)="onSfreeChange($event)">{{ 'handGuiding.toggleMode' | translate }}</mat-slide-toggle>
+		<mat-slide-toggle [checked]="j3j4" color="primary" (change)="onJ3J4Change($event)">{{ 'handGuiding.toggleJ3J4' | translate }}</mat-slide-toggle>
 	</mat-card>
 </div>

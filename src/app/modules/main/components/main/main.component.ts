@@ -5,6 +5,7 @@ import {
   NgZone,
   ViewChild,
   HostListener,
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   NotificationService,
@@ -16,9 +17,7 @@ import {
   ScreenManagerService,
   WebsocketService,
   ProjectManagerService,
-  MCQueryResponse,
-  GroupManagerService,
-  TaskService,
+  MCQueryResponse
 } from '../../../core';
 import {
   Router,
@@ -47,6 +46,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { SimulatorService } from '../../../core/services/simulator.service';
 import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
+import { TourState } from 'ngx-tour-core';
 
 @Component({
   selector: 'app-main',
@@ -126,7 +126,7 @@ export class MainComponent implements OnInit {
     private _zone: NgZone,
     public ws: WebsocketService,
     private dialog: MatDialog,
-    private tour: TourService,
+    public tour: TourService,
     public prj: ProjectManagerService,
     private robot: RobotService,
     private trn: TranslateService,
@@ -134,17 +134,25 @@ export class MainComponent implements OnInit {
     public utils: UtilsService,
     public rec: RecordService,
     public sim: SimulatorService,
-    public terminal: TerminalService
+    public terminal: TerminalService,
+    private cd: ChangeDetectorRef
   ) {
     this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(event => {
       this.refreshLang();
     });
     this.refreshLang();
     this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
-      if (stat) {
+      this.tpOnline = stat;
+      if (!stat) {
+        // TP LIB IS NOT AVAILABLE
+        this.screenManager.openedControls.next(false);
+      } else {
         this.dialog.open(TpLoadingComponent, {
           disableClose: true,
           height: '300px',
+        }).afterClosed().subscribe(ret=>{
+          if (!ret || this.utils.IsKuka) return;
+          this.cmn.showTourDialog(false, this.prj.currProject.value);
         });
       }
     });
@@ -184,6 +192,14 @@ export class MainComponent implements OnInit {
   // }
 
   ngOnInit() {
+    this.tour.stepShow$.pipe(takeUntil(this.notifier)).subscribe(step => {
+      if (step === this.tour.steps[4]) {
+        this.simOpen = true;
+      }
+    });
+    this.notification.newMessage.pipe(takeUntil(this.notifier)).subscribe(() => {
+      this.cd.detectChanges();
+    });
     this.allowHiddenMenu = this.cmn.isTablet;
     this.screenWidth = window.innerWidth;
     this.prj.currProject.pipe(takeUntil(this.notifier)).subscribe(prj => {
@@ -205,30 +221,6 @@ export class MainComponent implements OnInit {
       }
     });
     this.robot.init();
-    this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
-      this.tpOnline = stat;
-      if (!stat) {
-        // TP LIB IS NOT AVAILABLE
-        this.screenManager.openedControls = false;
-      } else {
-        /*const tourQuestion = localStorage.getItem('tourQuestion');
-          if (tourQuestion === null || !tourQuestion) {
-            localStorage.setItem('tourQuestion', 'true');
-            this.trn.get('main.tour').subscribe(data => {
-              this.dialog
-                .open(YesNoDialogComponent, {
-                  data: data,
-                })
-                .afterClosed()
-                .subscribe(ret => {
-                  if (ret) {
-                    this.tour.start();
-                  }
-                });
-            });
-          }*/
-      }
-    });
     this.login.isAuthenticated
       .pipe(takeUntil(this.notifier))
       .subscribe(auth => {
@@ -267,6 +259,9 @@ export class MainComponent implements OnInit {
   toggleMenu() {
     if (!this.cmn.isTablet) this.screenManager.toggleMenu();
     else this.drawer.toggle();
+    setTimeout(()=>{
+      this.cd.detectChanges();
+    },200);
   }
 
   mouseDown(i: number, e?: Event) {

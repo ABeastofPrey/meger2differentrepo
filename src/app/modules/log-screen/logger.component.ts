@@ -30,10 +30,12 @@ class FullLog {
   profilePic: string;
   time: number;
   data: string[];
+  UUID: string;
   
   constructor(log: Log) {
     this.username = log.username;
     this.time = log.time;
+    this.UUID = log.UUID;
     const parts = log.msg.split(';');
     this.msg = parts[0];
     this.data = parts[1] ? parts[1].split(',') : [];

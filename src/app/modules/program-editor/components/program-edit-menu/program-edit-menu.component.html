@@ -120,7 +120,6 @@
 		<button mat-menu-item (click)="menu_move(false)">Move...</button>
 		<button mat-menu-item (click)="menu_move(true)">Moves...</button>
 		<button mat-menu-item [matMenuTriggerFor]="circle">Circle</button>
-		<button mat-menu-item (click)="menu_dopass()">DoPass...</button>
 		<ng-container *ngIf="isScara">
 			<button mat-menu-item [matMenuTriggerFor]="jumpx">JumpX</button>
 			<mat-menu #jumpx="matMenu">

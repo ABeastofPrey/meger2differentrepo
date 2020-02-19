@@ -13,21 +13,58 @@ import { FormControl, Validators, ValidatorFn } from '@angular/forms';
 })
 export class NewUserDialogComponent implements OnInit {
 
-  username = '';
-  password = '';
   permission = -1;
 
   private wordErr: string;
+
+  private checkUsername: ValidatorFn = ctrl=>{
+    const name = ctrl.value as string;
+    if (name.trim().length === 0) {
+      return {empty: true};
+    }
+    if (name.toLowerCase() === 'admin' || name.toLowerCase() === 'super') {
+      return {reserved: true};
+    }
+    return null;
+  }
+
+  private checkPassword: ValidatorFn = ctrl=>{
+    const pass = ctrl.value as string;
+    if (!this.passwordConfirm) return null;
+    if (pass.trim().length === 0) {
+      this.passwordConfirm.disable();
+      return { empty: true };
+    }
+    this.passwordConfirm.enable();
+    return null;
+  }
+
+  private checkPasswords: ValidatorFn = ctrl=>{ // here we have the 'passwords' group
+    if (!this.passwordValidator) {
+      ctrl.disable();
+      return null;
+    }
+    const pass = this.passwordValidator.value;
+    const confirmPass = ctrl.value as string;
+    return pass === confirmPass ? null : { mismatch: true };
+  }
 
   fullNameControl = new FormControl('', [
     Validators.required,
     Validators.pattern('[A-Za-z]+ {1}[A-Za-z]+( [A-Za-z]+)*'),
   ]);
 
-  private checkPasswords: ValidatorFn = ctrl=>{ // here we have the 'passwords' group
-    const confirmPass = ctrl.value as string;
-    return this.password === confirmPass ? null : { mismatch: true };
-  }
+  userNameControl = new FormControl('', [
+    Validators.required,
+    Validators.minLength(1),
+    Validators.pattern('\\w+'),
+    this.checkUsername
+  ]);
+
+  passwordValidator = new FormControl('', [
+    Validators.required,
+    this.checkPassword,
+  ]);
 
   passwordConfirm = new FormControl('', [
     Validators.required,
@@ -46,7 +83,8 @@ export class NewUserDialogComponent implements OnInit {
   ngOnInit() {
     if (this.data) {
       const user: UserWithPic = this.data;
-      this.username = user.username;
+      this.userNameControl.setValue(user.username);
+      this.userNameControl.disable();
       this.fullNameControl.setValue(user.fullName);
       this.permission = user.permission;
     }
@@ -60,8 +98,8 @@ export class NewUserDialogComponent implements OnInit {
     if (this.data) {
       return this.api
         .editUser(
-          this.username,
-          this.password,
+          this.userNameControl.value,
+          this.passwordValidator.value,
           this.fullNameControl.value,
           this.permission
         )
@@ -72,8 +110,8 @@ export class NewUserDialogComponent implements OnInit {
     }
     this.api
       .signup(
-        this.username,
-        this.password,
+        this.userNameControl.value,
+        this.passwordValidator.value,
         this.fullNameControl.value,
         this.permission
       )

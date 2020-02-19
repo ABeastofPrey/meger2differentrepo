@@ -64,6 +64,21 @@
 					<h4 mat-line>{{ 'about.mcuDev' | translate }}</h4>
 					<p mat-line>{{ data.mcuDevVer }}</p>
 				</mat-list-item>
+				<mat-list-item *ngIf="data.safetyCardVer">
+					<mat-icon mat-list-icon>assignment</mat-icon>
+					<h4 mat-line>{{ 'about.safetyVer' | translate }}</h4>
+					<p mat-line>{{ data.safetyCardVer }}</p>
+				</mat-list-item>
+				<mat-list-item *ngIf="data.cabinetFwVer">
+					<mat-icon mat-list-icon>assignment</mat-icon>
+					<h4 mat-line>{{ 'about.cabinet' | translate }}</h4>
+					<p mat-line>{{ data.cabinetFwVer }}</p>
+				</mat-list-item>
+				<mat-list-item *ngIf="data.FPGAVer">
+					<mat-icon mat-list-icon>assignment</mat-icon>
+					<h4 mat-line>FPGA</h4>
+					<p mat-line>{{ data.FPGAVer }}</p>
+				</mat-list-item>
 			</mat-list>
 		</mat-card-content>
 	</mat-card>

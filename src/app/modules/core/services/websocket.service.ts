@@ -27,9 +27,7 @@ export class WebsocketService {
   private socketQueueId = 0;
   private socketQueue: Function[] = [];
   private socketQueueIntervals: boolean[] = [];
-  private _isConnected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
+  private _isConnected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _isTimeout: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private timeout: number;
   private worker = new Worker('assets/scripts/conn.js');
@@ -220,7 +218,7 @@ export class WebsocketService {
         errFrame.errType !== 'INFO' &&
         typeof this.socketQueue['i_' + data['cmd_id']] !== 'function'
       ) {
-        alert(errFrame.errMsg);
+        //console.log(errFrame.errMsg);
       }
     } else if (typeof data['cmd_id'] !== 'undefined' && data['cmd_id'] === -1) {
       // Server Announcment
@@ -262,9 +260,9 @@ export class WebsocketService {
         });
       } else {
         // Other Server announcements
-        this._zone.run(() => {
+        //this._zone.run(() => {
           this.notification.onAsyncMessage(data['msg']);
-        });
+        //});
       }
     }
     if (

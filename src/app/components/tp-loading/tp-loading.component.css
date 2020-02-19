@@ -20,7 +20,7 @@
   transform-origin: left;
 }
 .stx {
-  background-image: url('assets/pics/stx2.jpg');
+  background-image: url('/rs/assets/pics/stx2.jpg');
   margin: -24px;
   width: calc(100% + 48px);
   height: calc(100% + 48px);

@@ -2,13 +2,14 @@
 	<div [class.hidden]="!isRouterLoading" class="spinner mat-elevation-z6">
 		<img src="assets/pics/{{ env.platform.spinner }}" />
 	</div>
-	<button mat-mini-fab color="primary" (click)="toggleToolbar()" class="toolbar-fab" *ngIf="!toolbarShown && !cmn.isTablet" @fadeSimple matTooltip="{{'app_bar.toolbar_expand' | translate}}">
+	<button id="btnToggleToolbar" mat-mini-fab color="primary" (click)="toggleToolbar()" class="toolbar-fab" *ngIf="!toolbarShown && !cmn.isTablet" @fadeSimple matTooltip="{{'app_bar.toolbar_expand' | translate}}">
 		<mat-icon>expand_more</mat-icon>
 	</button>
 	<mat-toolbar [class.contracted]="!toolbarShown" class="mat-elevation-z3" [color]="(stat.systemErrorCode < 0 || screenManager.debugMode) ? 'warn' : 'primary'"
 		[class.primary-bg-dark]="stat.systemErrorCode >= 0">
     <div class="hidden-menu" *ngIf="allowHiddenMenu && !screenManager.debugMode" [class.visible]="hiddenMenuVisible" (click)="closeHiddenMenu()">
-      <button
+			<button
+				id="btnToggleRecording"
         mat-mini-fab
         class="rec-button"
         [disabled]="login.isViewer || !data.dataLoaded.value"
@@ -19,10 +20,10 @@
       >
         <mat-icon>{{ rec.recording ? 'stop' : 'fiber_manual_record' }}</mat-icon>
       </button>
-      <button mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow()" tourAnchor="watch">
+      <button id="btnToggleWatch" mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow()" tourAnchor="watch">
         <mat-icon>update</mat-icon>
       </button>
-      <button
+			<button
         mat-mini-fab
         matTooltip="{{ 'simulator' | translate }}"
         (click)="toggleSimulator()"
@@ -32,7 +33,7 @@
       </button>
     </div>
     <div class="toolbar-wrapper">
-      <button mat-icon-button (click)="toggleMenu()" tourAnchor="menu" matTooltip="{{'app_bar.menu_toggle' | translate}}">
+      <button mat-icon-button (click)="toggleMenu()" tourAnchor="menuToggle" matTooltip="{{'app_bar.menu_toggle' | translate}}">
         <mat-icon>menu</mat-icon>
 			</button>
 			<button mat-icon-button (click)="toggleToolbar()" *ngIf="!cmn.isTablet" matTooltip="{{'app_bar.toolbar_contract' | translate}}">
@@ -63,7 +64,7 @@
 					(click)="stat.safetyAck()">
 					ACK
 				</button>
-			<button mat-raised-button *ngIf="tpOnline && stat.mode && cmn.isTablet" class="mode-selector" [disabled]="login.isViewer" (click)="stat.changeMode()">
+			<button mat-raised-button *ngIf="tpOnline && stat.mode && cmn.isTablet" class="mode-selector" [disabled]="login.isViewer" (click)="utils.changeMode()">
 				{{ stat.mode === 'None' ? '--' : stat.mode }}
 			</button>
 			<mat-slide-toggle *ngIf="!login.isViewer && data.dataLoaded.value && !data.simulatedSystem" color="accent"
@@ -95,7 +96,6 @@
             !tpOnline ||
             prj.activeProject ||
             !cooService.coosLoaded.value ||
-            screenManager.controlsAnimating.value ||
             (cmn.isTablet && stat.mode !== 'T1' && stat.mode !== 'T2')
 				" tourAnchor="jog-controls">
           <mat-icon>touch_app</mat-icon>
@@ -104,7 +104,9 @@
       <button mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow()" tourAnchor="watch" *ngIf="!allowHiddenMenu && !screenManager.debugMode">
         <mat-icon>update</mat-icon>
       </button>
-      <button
+			<button
+				id="btnToggleSimulator"
+				tourAnchor="btnToggleSimulator"
         mat-mini-fab
         matTooltip="{{ 'simulator' | translate }}"
         (click)="toggleSimulator()"
@@ -114,8 +116,8 @@
         <mat-icon>3d_rotation</mat-icon>
       </button>
 			<button mat-mini-fab matTooltip="{{ 'message_log' | translate }}" (click)="notification.toggleWindow()"
-				[matBadge]="notification.count" matBadgePosition="below after" matBadgeColor="warn"
-				tourAnchor="message-log-button">
+				[matBadge]="notification.count | async" matBadgePosition="below after" matBadgeColor="warn"
+				tourAnchor="message-log-button" [disabled]="!notification.windowOpen && notification.messagesShowing">
 					<mat-icon>notifications</mat-icon>
       </button>
       <button *ngIf="login.isAdmin" mat-mini-fab matTooltip="{{ 'terminal' | translate }}" (click)="toggleTerminal()">
@@ -143,10 +145,10 @@
 		</mat-sidenav>
 		<mat-sidenav-content>
 			<div style="flex: 1; display: flex; width: 100%;">
-				<div style="flex:1; overflow-x: hidden;">
+				<div style="flex:1; overflow-x: hidden;" tourAnchor="main-content">
 					<router-outlet></router-outlet>
 				</div>
-				<mat-card class="emulator-settings" [class.open]="screenManager.openedControls" style="flex:1;">
+				<mat-card class="emulator-settings" [class.open]="screenManager.openedControls | async" style="flex:1;">
 					<div class="center-vertical" style="margin-bottom: 8px;">
 						<button mat-mini-fab color="primary" (click)="openJogSettings()"
 							matTooltip="{{ 'dialogs.jogSettings' | translate }}">
@@ -266,7 +268,7 @@
 				<mat-icon>close</mat-icon>
 			</button>
 		</div>
-		<notification-window></notification-window>
+		<message-log></message-log>
 	</div>
 	<div 
 			#watchWindow
@@ -313,6 +315,7 @@
 	</div>
 	<div
 		#simWindow
+		tourAnchor="simWindow"
 		(started)="onWindowMoving(simWindow)"
 		*ngIf="simOpen && screenManager.screen.url !== 'simulator'"
 		class="window window-sim mat-elevation-z6"
@@ -327,11 +330,13 @@
 		[handle]="handleSim"
 		(rzStart)="resizing=true"
 		(rzStop)="resizing=false"
+		[class.demoSim]="tour.getStatus() !== 0"
 		[style.background] = "resizing ? sim.bgColor : auto"
 	>
 		<div class="sim-wrapper">
 			<div class="title primary-bg" #handleSim>
 				<span>{{ 'simulator' | translate }}</span>
+				<mat-slide-toggle color="accent" style="margin-right: 16px;" [(ngModel)]="sim.showTrace" [disabled]="!simLoaded || !sim.shouldShowSimulator">{{'simulator_screen.trace' | translate}}</mat-slide-toggle>
 				<button mat-icon-button color="accent" (click)="toggleSimulator()">
 					<mat-icon>close</mat-icon>
 				</button>

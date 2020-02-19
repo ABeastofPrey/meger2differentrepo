@@ -4,7 +4,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DashboardWindowComponent } from './components/dashboard-window/dashboard-window.component';
 import { NewDashboardParameterDialogComponent } from './components/new-dashboard-parameter-dialog/new-dashboard-parameter-dialog.component';
 import { NewDashboardDialogComponent } from './components/new-dashboard-dialog/new-dashboard-dialog.component';
-import { ExternalGraphDialogComponent } from './components/external-graph-dialog/external-graph-dialog.component';
 import { DashboardService } from './services/dashboard.service';
 import { SharedModule } from '../shared/shared.module';
 import { DashboardRoutingModule } from './dashboard-routing.module';
@@ -18,15 +17,13 @@ import { RecordingsScreenComponent } from './components/recordings-screen/record
     DashboardWindowComponent,
     NewDashboardDialogComponent,
     NewDashboardParameterDialogComponent,
-    ExternalGraphDialogComponent,
     DashboardScreenComponent,
     RecordingsScreenComponent,
   ],
   exports: [DashboardComponent],
   entryComponents: [
     NewDashboardDialogComponent,
-    NewDashboardParameterDialogComponent,
-    ExternalGraphDialogComponent,
+    NewDashboardParameterDialogComponent
   ],
   providers: [DashboardService],
 })

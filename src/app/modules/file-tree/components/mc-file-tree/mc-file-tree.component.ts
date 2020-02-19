@@ -326,6 +326,10 @@ export class McFileTreeComponent implements OnInit {
     setTimeout(() => {
       this.service.dragEnd.emit();
     }, 200);
+    if (n.name === 'FWCONFIG' && !this.login.isSuper) {
+      this.service.showFwconfigEditor();
+      return;
+    }
     this.service.setFile(
       n.name,
       n.parent ? n.parent.decodedPath : '',

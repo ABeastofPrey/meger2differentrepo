@@ -65,23 +65,19 @@ export class HomeScreenComponent implements OnInit {
   @ViewChild('graphDisk', { static: false }) gDisk: ElementRef;
   @ViewChild('msgLogContainer', { static: false }) msgContainer: ElementRef;
 
-  style: object = {};
-  contextMenuShown = false;
-  contextMenuX = 0;
-  contextMenuY = 0;
   mcImage = '';
   simulated = false;
   viewInit = false;
   profileSrc: string;
-  contextSelection: string = null;
   mainVer: string[] = [];
   guiVer: string = environment.gui_ver;
   appNameKuka: string = environment.appName_Kuka;
 
-  private chartInit = false;
   private words: {};
   private timeInterval: number;
   private notifier: Subject<boolean> = new Subject();
+  private chartsLoaded = false;
+
   libVer: string;
 
   // Header Info
@@ -97,7 +93,7 @@ export class HomeScreenComponent implements OnInit {
     private api: ApiService,
     private screenMngr: ScreenManagerService,
     private trn: TranslateService,
-    private utils: UtilsService,
+    public utils: UtilsService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
     public stat: TpStatService,
@@ -105,25 +101,6 @@ export class HomeScreenComponent implements OnInit {
     private router: Router,
     public robot: RobotService
   ) {}
-
-  private getSelection(): string {
-    let t: string = null;
-    if (window.getSelection) {
-      t = window.getSelection().toString();
-    } else if (
-      document.getSelection &&
-      document.getSelection().type !== 'Control'
-    ) {
-      t = document.getSelection().toString();
-    }
-    return t && t.trim().length > 0 ? t : null;
-  }
-
-  copy() {
-    document.execCommand('copy');
-    this.contextMenuShown = false;
-    this.contextSelection = null;
-  }
 
   private afterSysInfoLoaded() {
     this.updateCharts();
@@ -146,6 +123,9 @@ export class HomeScreenComponent implements OnInit {
   }
 
   private updateCharts() {
+    if (this.chartsLoaded) {
+      return;
+    }
     const sysInfo = this.groupManager.sysInfo;
     if (sysInfo === null) return;
     const layout = {
@@ -197,15 +177,17 @@ export class HomeScreenComponent implements OnInit {
         },
       },
     ];
-    setTimeout(() => {
+    setTimeout(()=>{
       Plotly.newPlot(this.gDisk.nativeElement, data as Array<Partial<Plotly.PlotData>>, layout, {
         staticPlot: true,
+        responsive: true
       });
       Plotly.newPlot(this.gMem.nativeElement, data2 as Array<Partial<Plotly.PlotData>>, layout2, {
         staticPlot: true,
+        responsive: true
       });
-      this.chartInit = true;
-    }, 200);
+      this.chartsLoaded = true;
+    },0);
   }
 
   ngOnInit() {
@@ -226,12 +208,6 @@ export class HomeScreenComponent implements OnInit {
     ];
     this.trn.get(wordsArr).subscribe(words => {
       this.words = words;
-      this.notification.newMessage
-        .pipe(takeUntil(this.notifier))
-        .subscribe(() => {
-          const objDiv = this.msgContainer.nativeElement;
-          objDiv.scrollTop = objDiv.scrollHeight;
-        });
       this.groupManager.sysInfoLoaded
         .pipe(takeUntil(this.notifier))
         .subscribe(loaded => {
@@ -239,10 +215,10 @@ export class HomeScreenComponent implements OnInit {
             this.afterSysInfoLoaded();
           }
         });
-      this.screenMngr.controlsAnimating
+      this.screenMngr.openedControls
         .pipe(takeUntil(this.notifier))
         .subscribe(stat => {
-          if (!stat) this.updateCharts();
+            window.dispatchEvent(new Event("resize"));
         });
     });
     this.getLibVer().then(ver => {
@@ -267,7 +243,10 @@ export class HomeScreenComponent implements OnInit {
 
   @HostListener('window:resize')
   onResize() {
-    this.updateCharts();
+    if (this.chartsLoaded) {
+      Plotly.Plots.resize(this.gDisk.nativeElement);
+      Plotly.Plots.resize(this.gMem.nativeElement);
+    }
   }
 
   private refreshTime() {
@@ -281,29 +260,21 @@ export class HomeScreenComponent implements OnInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.viewInit = true;
+      if (this.notification.windowOpen) {
+        this.notification.toggleWindow();
+      }
+      if (!this.notification.messagesShowing) {
+        this.notification.toggleMessagesShowing(true);
+      }
     }, 0);
   }
 
   ngOnDestroy() {
+    if (this.notification.messagesShowing) {
+      this.notification.toggleMessagesShowing(true);
+    }
     this.notifier.next(true);
     this.notifier.unsubscribe();
-  }
-
-  onContextMenu(e: MouseEvent) {
-    e.preventDefault();
-    this.contextMenuX = e.offsetX;
-    this.contextMenuY = e.offsetY;
-    this.contextMenuShown = true;
-    this.contextSelection = this.getSelection();
-  }
-
-  onMessageLogClick() {
-    this.contextMenuShown = false;
-  }
-
-  clear() {
-    this.notification.clear();
-    this.contextMenuShown = false;
   }
 
   addFeature() {

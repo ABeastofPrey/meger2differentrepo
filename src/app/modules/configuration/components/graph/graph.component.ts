@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ScreenManagerService } from './../../../core/services/screen-manager.service';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 
 declare var Plotly;
 
@@ -12,9 +13,20 @@ const MAX_GRAPHS = 20;
 export class GraphComponent implements OnInit {
   @ViewChild('graph', { static: true }) graph: ElementRef;
 
-  constructor() {}
+  constructor(private mgr: ScreenManagerService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.mgr.openedControls.subscribe(()=>{
+      window.dispatchEvent(new Event("resize"));
+    });
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (this.graph) {
+      Plotly.Plots.resize(this.graph.nativeElement);
+    }
+  }
 
   setData(graphData: GraphData) {
     try {
@@ -53,7 +65,9 @@ export class GraphComponent implements OnInit {
           title: graphData.title,
         };
       }
-      Plotly.newPlot(this.graph.nativeElement, data, layout);
+      Plotly.newPlot(this.graph.nativeElement, data, layout, {
+        responsive: true
+      });
     } catch (err) {
       console.log(err);
     }

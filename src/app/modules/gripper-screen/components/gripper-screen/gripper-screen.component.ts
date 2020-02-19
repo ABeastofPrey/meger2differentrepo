@@ -408,12 +408,19 @@ export class GripperScreenComponent implements OnInit {
     });
   }
 
-  updateGripperFb(i: number) {
+  updateGripperFb(i: number, val: string) {
     const grp = this.selectedNode.item;
     const ef = this.selectedNode.parent.item;
     const g = this.selectedNode as Gripper;
     const inv = i === 1 ? (g.fb1_invert ? 1 : 0) : g.fb2_invert ? 1 : 0;
-    const val = i === 1 ? g.fb1 : g.fb2;
+    let oldVal;
+    if (i === 1) {
+      oldVal = g.fb1;
+      g.fb1 = val;
+    } else {
+      oldVal = g.fb2;
+      g.fb2 = val;
+    }
     const cmd =
       '?GRP_GRIPPER_DIN_FEEDBACK_SET("' +
       ef +
@@ -428,6 +435,11 @@ export class GripperScreenComponent implements OnInit {
       ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result !== '0') {
+        if (i === 1) {
+          g.fb1 = oldVal;
+        } else {
+          g.fb2 = oldVal;
+        }
       }
     });
   }

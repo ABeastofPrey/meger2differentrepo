@@ -13,6 +13,9 @@
         {{ 'system_state.state' | translate }}: {{ 'system_state.loading' | translate }}({{stat.systemErrorCode}})
       </span>
 		</div>
+		<div class="header-box primary-bg-dark center-vertical" *ngIf="utils.isDebug">
+			{{ stat.mode }}  
+		</div>
 		<div class="header-box primary-bg-dark center-vertical">
 			<mat-icon>comment</mat-icon>
 			<span style="flex:1;"
@@ -84,32 +87,9 @@
 			</mat-card>
 		</mat-grid-tile>
 		<mat-grid-tile colspan="9" rowspan="1">
-			<mat-card style="white-space: pre-wrap;" (contextmenu)="onContextMenu($event)" tourAnchor="message-log">
+			<mat-card style="white-space: pre-wrap;" tourAnchor="message-log">
 				{{ 'message_log' | translate }}
-				<mat-card-content #msgLogContainer style="user-select: text;">{{
-					notification.notifications
-				}}</mat-card-content>
-				<ul
-					class="context-menu mat-title-color mat-elevation-z3"
-					*ngIf="contextMenuShown"
-					@fade
-					[style.top.px]="contextMenuY"
-					[style.left.px]="contextMenuX"
-					(clickOutside)="onMessageLogClick()"
-				>
-					<button mat-button (click)="clear()">
-						<div class="center-vertical">
-							<mat-icon>clear</mat-icon>
-							<span class="button-text">{{ 'clear_msgs' | translate }}</span>
-						</div>
-					</button>
-					<button mat-button (mousedown)="copy($event)" *ngIf="contextSelection && contextSelection.length > 0">
-						<div class="center-vertical">
-							<img src="assets/pics/icons/content-copy.png" />
-							<span class="button-text">{{ 'copy' | translate }}</span>
-						</div>
-					</button>
-				</ul>
+				<message-log></message-log>
 			</mat-card>
 		</mat-grid-tile>
 		<mat-grid-tile colspan="3" rowspan="1" tourAnchor="sys-info">
@@ -174,7 +154,7 @@
 		<mat-grid-tile colspan="3" rowspan="1">
 			<mat-card class="info-card" *ngIf="groupManager.sysInfo">
 				<div class="center-vertical title primary-bg-dark">
-					<mat-icon>touch_app</mat-icon>
+					<mat-icon>check_circle</mat-icon>
 					<span style="flex:1;">{{ 'home.features' | translate }}</span>
 					<button mat-icon-button class="feature-add" *ngIf="login.isAdmin" (click)="addFeature()">
 						<mat-icon>add</mat-icon>

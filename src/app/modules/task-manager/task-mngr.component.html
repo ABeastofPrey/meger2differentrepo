@@ -19,11 +19,11 @@
 		</div>
 		<div class="center-vertical" style="margin-top: 16px;">
 			{{ 'tasks.display' | translate }}:
-			<mat-checkbox color="primary" [(ngModel)]="filterPrograms">{{ 'tasks.prg' | translate }}</mat-checkbox>
-			<mat-checkbox color="primary" [(ngModel)]="filterLibs">{{ 'tasks.lib' | translate }}</mat-checkbox>
-			<mat-checkbox color="primary" [(ngModel)]="filterGlobalLibs">{{ 'tasks.lib_g' | translate }}</mat-checkbox>
+			<mat-checkbox color="primary" [(ngModel)]="filterPrograms" *ngIf="login.isAdmin">{{ 'tasks.prg' | translate }}</mat-checkbox>
+			<mat-checkbox color="primary" [(ngModel)]="filterLibs" *ngIf="login.isAdmin">{{ 'tasks.lib' | translate }}</mat-checkbox>
+			<mat-checkbox color="primary" [(ngModel)]="filterGlobalLibs" *ngIf="login.isAdmin">{{ 'tasks.lib_g' | translate }}</mat-checkbox>
 			<mat-checkbox color="primary" [(ngModel)]="filterUser">{{ 'tasks.user' | translate }}</mat-checkbox>
-      		<mat-checkbox color="primary" [(ngModel)]="filterBackground">{{'tasks.background' | translate}}</mat-checkbox>
+			<mat-checkbox color="primary" [(ngModel)]="filterBackground">{{'tasks.background' | translate}}</mat-checkbox>
 		</div>
 	</div>
 	<table class="mat-elevation-z3">
@@ -45,7 +45,7 @@
 			(dblclick)="openFile(t)"
 		>
 			<td>{{ t.name }}</td>
-			<td [colSpan]="t.priority ? 1 : 2">{{ t.state }}</td>
+			<td [colSpan]="t.priority ? 1 : 2" [class.warn]="t.state === 'Error'">{{ t.state }}</td>
 			<td *ngIf="t.priority">{{ t.priority }}</td>
 		</tr>
 	</table>

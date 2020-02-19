@@ -82,7 +82,8 @@ export class UserMngrComponent implements OnInit {
     ref.afterClosed().subscribe(ret => {
       if (ret) {
         const promises = [];
-        for (const u of this.selection.selected) {
+        const selected = this.selection.selected;
+        for (const u of selected) {
           promises.push(this.api.deleteUser(u.username));
         }
         Promise.all(promises)
@@ -97,7 +98,11 @@ export class UserMngrComponent implements OnInit {
                   { duration: 2000 }
                 );
               }
-              else {
+              else if (selected.find(u=>u.username === 'admin')) {
+                this.snack.open(this.words['userManager.delete']['fail2'], '', {
+                  duration: 2000,
+                });
+              } else {
                 this.snack.open(this.words['userManager.delete']['fail'], '', {
                   duration: 2000,
                 });

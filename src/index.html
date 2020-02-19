@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157702087-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  </script>
   <meta charset="utf-8">
   <title>ControlStudio+</title>
   <base href="/rs/">
@@ -14,6 +21,8 @@
   <script src="assets/scripts/ace/src-min/ace.js"></script>
   <script src="assets/scripts/ace/src-min/ext-language_tools.js"></script>
   <script src="assets/scripts/ace/src-min/ext-searchbox.js"></script>
+  <script src="assets/scripts/ace/src-min/ext-linking.js"></script>
+  <script src="assets/scripts/ace/src-min/ext-prompt.js"></script>
   <script src="assets/scripts/ace/theme-cs.js"></script>
   
   <script src="assets/scripts/blockly/blockly_compressed.js"></script>
@@ -268,7 +277,7 @@
     }
   </style>
 </head>
-<body class="kuka-theme">
+<body class="stx-theme">
   <control-studio>
     <div id="loading">
       <div style="height:100%;text-align:center">

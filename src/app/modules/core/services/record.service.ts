@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { MatSnackBar } from '@angular/material';
@@ -16,6 +17,8 @@ export class RecordService {
   
   private _tabs: RecordTab[] = [];
   private _selectedTabIndex = 0;
+
+  private _words: {};
   
   available: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -60,40 +63,46 @@ export class RecordService {
     private ws: WebsocketService,
     private snack: MatSnackBar,
     public grp: GroupManagerService,
-    private api: ApiService
+    private api: ApiService,
+    private trn: TranslateService
   ) {
     this.grp.sysInfoLoaded.subscribe(loaded=>{
       this.available.next(loaded);
     });
+    this.trn.get(['record_done']).subscribe(words=>{
+      this._words = words;
+    });
+  }
+
+  private closeRecording() {
+    this.ws.query('RecordClose').then(() => {
+      this.snack.open(this._words['record_done'], null, { duration: 1500 });
+    });
+    clearTimeout(this.timeout);
+    this._isRecording = false;
   }
 
 
   toggle() {
+    const samples = 120000; // 120000 samples
     if (this._isRecording) {
-      this.ws.query('RecordClose').then(() => {
-        this.snack.open('Motion Recording finished!', null, { duration: 1500 });
-      });
-      clearTimeout(this.timeout);
-      this._isRecording = false;
-      return;
+      return this.closeRecording();
     }
     this.ws.query('?TP_GET_MOTION_ELEMENT_AXES_NAMES').then((ret: MCQueryResponse)=>{
       const axes = ret.result.split(',').map(a=>{
         return a + '.PFB'
       }).join();
-      const cmd = 'Record CSRECORD.rec 120000 Gap=1 RecData=' + axes;
+      const cmd = `Record CSRECORD.rec ${samples} Gap=1 RecData=${axes}`;
       this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
         this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
           if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
           this._isRecording = true;
-          clearTimeout(this.timeout);
-          this.timeout = window.setTimeout(() => {
-            this._isRecording = false;
-            this.snack.open('Motion Recording finished!', null, {
-              duration: 1500,
-            });
-          }, 120000);
+          clearInterval(this.timeout);
+          const time = this.grp.sysInfo.cycleTime * samples + 1000;
+          this.timeout = window.setInterval(() => {
+            return this.closeRecording();
+          }, time);
         });
       });
     });
@@ -145,7 +154,8 @@ export class RecordTab {
   
   set chartType(val: ChartType) {
     this._chartType = val;
-    this.init(this.csv);
+    this.derData = [];
+    //this.init(this.csv);
   }
   
   get legendX() {
@@ -197,7 +207,7 @@ export class RecordTab {
           }
           else if (c === ')') {
             isFuncFlag = false;
- }
+          }
           if (c !== ',' || isFuncFlag) {
             currLegend += c;
           } else {

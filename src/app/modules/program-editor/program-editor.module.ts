@@ -61,6 +61,8 @@ import { VisionLoadStationBookComponent } from './components/dialogs/vision-load
 import { VisionCommandComponent } from './components/combined-dialogs/components/vision-command/vision-command.component';
 import { VisionCommandService } from './components/combined-dialogs/services/vision-command.service';
 import { HomeScreenModule } from '../home-screen/home-screen.module';
+import { FwconfigEditorComponent } from './components/fwconfig-editor/fwconfig-editor.component';
+import { TourMatMenuModule } from 'ngx-tour-md-menu';
 
 @NgModule({
   imports: [
@@ -72,7 +74,8 @@ import { HomeScreenModule } from '../home-screen/home-screen.module';
     PayloadsModule,
     IoMappingModule,
     FileTreeModule,
-    HomeScreenModule
+    HomeScreenModule,
+    TourMatMenuModule
   ],
   declarations: [
     ProgramEditorComponent,
@@ -117,6 +120,7 @@ import { HomeScreenModule } from '../home-screen/home-screen.module';
     PayloadSelectorComponent,
     HomeSettingComponent,
     ProjectDeleteDialogComponent,
+    FwconfigEditorComponent,
     JumpxCommandComponent,
     VisionLoadStationBookComponent,
     VisionCommandComponent,

@@ -31,12 +31,10 @@ export class RecordGraphComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.mgr.controlsAnimating.subscribe(anim=>{
-      if (anim) {
+    this.mgr.openedControls.subscribe(()=>{
         setTimeout(()=>{
           this.onResize();
-        },400);
-      }
+        },0);
     });
   }
 

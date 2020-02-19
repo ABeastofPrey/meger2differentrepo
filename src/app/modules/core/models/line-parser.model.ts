@@ -71,7 +71,7 @@ export class LineParser {
   getVariablesFromLine(row: string): TPVariable[] {
     row = row
       .toUpperCase()
-      .replace(/CIRCLEPOINT|ASCENDINGPOINT|DESCENDINGPOINT|TARGETPOINT|=/gi, '')
+      .replace(/CIRCLEPOINT|ASCENDINGPOINT|DESCENDINGPOINT|TARGETPOINT|CIRCLECENTER|=/gi, '')
       .trim();
     const result: TPVariable[] = [];
     const tmp = row.split(' ');
@@ -131,10 +131,10 @@ export class LineParser {
       line: rowIndex,
     };
     switch (lineType) {
-      case LineType.MOVE:
+      case LineType.MOVE: {
         line = line.toUpperCase().trim();
-        var lineVars = this.getVariablesFromLine(line);
-        var element = this.getMotionElementFromLine(line);
+        const lineVars = this.getVariablesFromLine(line);
+        const element = this.getMotionElementFromLine(line);
         if (lineVars.length > 0) params['target'] = lineVars[0];
         if (element) params['element'] = element;
         params['moves'] = line.indexOf('MOVES') === 0;
@@ -165,10 +165,11 @@ export class LineParser {
           }
         }
         break;
-      case LineType.CIRCLE:
+      }
+      case LineType.CIRCLE: {
         line = line.toUpperCase().trim();
-        var lineVars = this.getVariablesFromLine(line);
-        var element = this.getMotionElementFromLine(line);
+        const lineVars = this.getVariablesFromLine(line);
+        const element = this.getMotionElementFromLine(line);
         if (lineVars.length > 0) params['target'] = lineVars;
         if (element) params['element'] = element;
         searchWord = 'ANGLE';
@@ -215,6 +216,7 @@ export class LineParser {
           }
         }
         break;
+      }
       case LineType.JUMP:
         const res = this.parseJumpxCommand(line);
         params = { ...params, ...res };

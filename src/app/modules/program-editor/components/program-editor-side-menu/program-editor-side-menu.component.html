@@ -1,10 +1,9 @@
 <div class="wrapper mat-typography">
-	<div class="project-tree" *ngIf="currProject && service.modeToggle === 'prj'">
-		<div class="title">{{ currProject.name }}</div>
+	<div class="project-tree" *ngIf="currProject && service.modeToggle === 'prj'" tourAnchor="project-tree">
+		<div class="title" tourAnchor="projectName">{{ currProject.name }}</div>
 		<mat-tree
 			[dataSource]="nestedDataSource"
 			[treeControl]="nestedTreeControl"
-			tourAnchor="project-tree"
 			[class.busy]="service.busy"
 		>
 			<mat-tree-node *matTreeNodeDef="let node" [class.disabled]="isNodeDisabled(node)">
@@ -34,6 +33,7 @@
 			</mat-tree-node>
 			<mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
 				<li (contextmenu)="openContextMenu($event, node)"
+					[tourAnchor]="(node.parent && node.parent.name.length > 0 ? (node.parent.name + '-') : (node.parent?.type ? node.parent.type + '-' : '')) + node.type + (node.name && node.name.length > 0 ? '-' + node.name : '')"
 					[id]="node.type + (node.name && node.name.length > 0 ? '-' + node.name : '')">
 					<div [class.selected]="lastSelectedNode === node"
 						(click)="toggleNode(node); selectNode(node)"
@@ -57,6 +57,9 @@
 						</span>
 						<span class="status" *ngIf="node.type === 'Dependencies'">
 						({{ ('projects.status.' + (currProject.dependenciesLoaded ? '7' : '-1')) | translate }})
+						</span>
+						<span class="status" *ngIf="node.type === 'Apps' && prj.activeProject">
+							({{ 'projects.loaded' | translate }})
 						</span>
 					</div>
 					<ul [class.invisible]="!nestedTreeControl.isExpanded(node)"

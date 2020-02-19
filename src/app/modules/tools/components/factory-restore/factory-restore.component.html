@@ -18,22 +18,23 @@
 				{{ 'robots.btnChange' | translate }}...
 			</button>
 		</div>
-		<div class="warn">
+		<div class="warn warn-msg">
 			{{ 'apps.restore.msg' | translate }}
 		</div>
+		<mat-form-field appearance="fill" class="confirm">
+			<mat-label>{{ 'password_confirm' | translate }} ({{ username }})</mat-label>
+			<input
+				matInput
+				placeholder="{{ 'password' | translate }}"
+				type="password"
+				[(ngModel)]="password"
+				virtualKeyboard
+				ktype="text"
+			/>
+			<mat-icon matSuffix>security</mat-icon>
+		</mat-form-field>
+		<div class="warn" *ngIf="wrongPass">{{ 'password_err' | translate }}</div>
 	</div>
-	<mat-form-field appearance="fill" class="confirm">
-		<mat-label>{{ 'password_confirm' | translate }} ({{ username }})</mat-label>
-		<input
-			matInput
-			placeholder="{{ 'password' | translate }}"
-			type="password"
-			[(ngModel)]="password"
-			virtualKeyboard
-			ktype="text"
-		/>
-		<mat-icon matSuffix>security</mat-icon>
-	</mat-form-field>
 	<div class="buttons">
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}

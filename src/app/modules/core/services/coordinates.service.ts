@@ -141,9 +141,12 @@ export class CoordinatesService {
               this.ws.send('cyc2',false,(result: string, cmd: string, err: ErrorFrame) => {
             if (err || result.length === 0) {
               this.ws.clearInterval(this.interval);
-              console.log('cyc2 returned wrong value:');
-              console.log(result,cmd,err);
+              console.error('cyc2 returned wrong value:');
+              console.error(result,cmd,err);
               this.interval = null;
+              this._zone.run(() => {
+                this.coosLoaded.next(false);
+              });
               return;
             }
             this.update(result);

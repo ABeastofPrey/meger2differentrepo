@@ -55,6 +55,30 @@ function timer(id, interval, msg, force) {
   }
 }
 
+function getWebsocketPort(ip) {
+  //const PORT  = '32093';
+  const PORT = self.location.port === '4200' ? '1207' : self.location.port;
+  return new Promise((resolve,reject)=>{
+    const http = new XMLHttpRequest();
+    const url = 'http://' + ip + ':' + PORT + '/cs/api/ports';
+    const timeout = setTimeout(()=>{
+      reject();
+    },2000);
+    http.open('get',url);
+    http.send();
+    http.onreadystatechange=(e)=>{
+      if (http.readyState === 4 && http.status === 200) {
+        clearTimeout(timeout);
+        try {
+          resolve(JSON.parse(http.response).ws);
+        } catch (err) {
+          reject();
+        }
+      }
+    };
+  });
+}
+
 function MCConnection() {
   var conn = this;
 
@@ -62,7 +86,7 @@ function MCConnection() {
   var ws = null;
   var MCPORT = 3010;
   var IP = self.location.hostname;
-  //var IP = '10.4.20.23';
+  var IP = '10.4.20.23';
   var reset = true;
   var isConnected = false;
   var pingPongInterval = null;
@@ -93,17 +117,18 @@ function MCConnection() {
     },PING_INTERVAL);
   };
 
-  this.connect = function() {
+  this.connect = async function() {
     //Initiate a websocket connection
+    const port = await getWebsocketPort(IP) || MCPORT;
     try {
-      ws = new WebSocket('ws://' + IP + ':' + MCPORT);
+      ws = new WebSocket('ws://' + IP + ':' + port);
       ws.onopen = function() {
+        console.log('WEBSOCKET OPENED');
         console.log('X');
         ws.send('X');
         setTimeout(() => {
           worker.postMessage({ serverMsg: true, msg: 0 }); // ONOPEN MESSAGE
         }, 100);
-        console.log('WEBSOCKET OPENED');
         reset = false;
         isConnected = true;
         //conn.pingPong();
@@ -146,7 +171,7 @@ function MCConnection() {
         }
       }, 5000);
     } catch (err) {
-      console.log(err.message);
+      console.log(err ? err.message : 'Websocket could not connect to port ' + port);
     }
   };
 

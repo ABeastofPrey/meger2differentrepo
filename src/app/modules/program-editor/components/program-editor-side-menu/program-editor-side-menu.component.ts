@@ -1,3 +1,4 @@
+import { TourService } from 'ngx-tour-md-menu';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource, MatDialog } from '@angular/material';
@@ -114,7 +115,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     private trn: TranslateService,
     private dd: DragDrop,
     private login: LoginService,
-    private cmn: CommonService
+    private cmn: CommonService,
+    private tour: TourService
   ) {
     this.trn
       .get([
@@ -152,6 +154,22 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           this.currProject = null;
           this.nestedDataSource._data.next(null);
           this.nestedTreeControl.dataNodes = [];
+        }
+      })
+    );
+    this.subscriptions.push(
+      this.tour.stepShow$.subscribe(step=>{
+        if (step.anchorId === 'Apps') {
+          const apps = this.nestedDataSource.data.find(a=>{
+            return a.type === 'Apps';
+          });
+          const circle = apps.children.find(c=>{
+            return c.name === 'CIRCLE';
+          });
+          this.nestedTreeControl.expand(apps);
+          this.nestedTreeControl.expand(circle);
+        } else if (step.anchorId === 'Apps-App-CIRCLE') {
+          this.openAppInTree('CIRCLE');
         }
       })
     );
@@ -481,12 +499,27 @@ export class ProgramEditorSideMenuComponent implements OnInit {
             }
             this.service.close();
             this.prj.refreshAppList(prj, true).then(() => {
-              const path = prj.name + '/' + name + '/';
-              this.service.setFile(name + '.UPG', path, null, -1);
+              this.openAppInTree(name);
             });
           });
         }
       });
+  }
+
+  private openAppInTree(name: string) {
+    const appsNode = this.nestedDataSource.data.find(n=>{
+      return n.type === 'Apps';
+    });
+    this.nestedTreeControl.expand(appsNode);
+    if (appsNode) {
+      const c = appsNode.children.find(c=>{
+        return c.name === name;
+      });
+      if (c) {
+        this.openFile(c.children[0]);
+        this.nestedTreeControl.expand(c);
+      }
+    }
   }
 
   renameDep(dep: string) {

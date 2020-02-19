@@ -19,7 +19,7 @@ mat-radio-button {
   padding: 16px;
   box-sizing: border-box;
 }
-.warn {
+.warn-msg {
   max-width: 400px;
   margin-top: 16px;
 }
@@ -27,6 +27,6 @@ mat-radio-button {
   margin: 16px 0;
 }
 .confirm {
-  margin: 0 24px;
-  width: calc(100% - 48px);
+  width: 100%;
+  margin-top: 16px;
 }

@@ -34,7 +34,7 @@ a {
   max-width: 160px;
   box-sizing: border-box;
 }
-a:hover {
+a:not(.disabled):hover {
   box-shadow: 0 4px 16px #e4e4e4;
   color: rgba(0, 0, 0, 0.87) !important;
   text-decoration: none;
@@ -44,6 +44,10 @@ a mat-icon {
   width: 64px;
   height: 64px;
   font-size: 64px;
+}
+a.disabled {
+  cursor: not-allowed;
+  color: #ccc!important;
 }
 .file-input {
   visibility: hidden;

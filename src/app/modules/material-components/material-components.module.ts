@@ -35,6 +35,8 @@ import {
   MatChipsModule,
   MatPaginatorModule,
   MAT_DIALOG_DEFAULT_OPTIONS,
+  MatDatepickerModule,
+  MatNativeDateModule,
 } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -75,6 +77,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatBadgeModule,
     MatChipsModule,
     MatPaginatorModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   exports: [
     MatButtonModule,
@@ -111,6 +115,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatBadgeModule,
     MatChipsModule,
     MatPaginatorModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   declarations: [],
   providers: [

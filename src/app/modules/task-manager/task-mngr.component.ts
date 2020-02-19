@@ -27,7 +27,7 @@ export class TaskMngrComponent implements OnInit {
     private mgr: ScreenManagerService,
     private router: Router,
     private prg: ProgramEditorService,
-    private login: LoginService
+    public login: LoginService
   ) {
     this.task.start();
   }
@@ -78,16 +78,16 @@ export class TaskMngrComponent implements OnInit {
     return [this.filterPrograms, this.filterLibs, this.filterGlobalLibs, this.filterUser, this.filterBackground];
   }
   run() {
-    this.task.run(this.selected, this.filtersAsArr);
+    this.task.run(this.selected, this.filtersAsArr, true);
   }
   kill() {
-    this.task.kill(this.selected, this.filtersAsArr);
+    this.task.kill(this.selected, this.filtersAsArr, true);
   }
   idle() {
-    this.task.idle(this.selected, this.filtersAsArr);
+    this.task.idle(this.selected, this.filtersAsArr, true);
   }
   unload() {
-    this.task.unload(this.selected, this.filtersAsArr);
+    this.task.unload(this.selected, this.filtersAsArr, true);
     this.selected = [];
   }
   resetAll() {
