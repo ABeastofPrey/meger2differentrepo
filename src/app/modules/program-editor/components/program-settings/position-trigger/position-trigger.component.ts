@@ -1,43 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { NewPositionTriggerComponent } from '../new-position-trigger/new-position-trigger.component';
+import { PositionTriggerService, IResPLS } from '../../../services/position-trigger.service';
 import {
-  PositionTriggerService,
-  IResPLS,
-} from '../../../services/position-trigger.service';
-import {
-  T,
-  F,
-  ifElse,
-  always,
-  map,
-  compose,
-  converge,
-  propEq,
-  equals,
-  filter,
-  bind,
-  forEach,
-  all,
-  any,
-  not,
-  and,
-  lensProp,
-  set,
-  or,
-  isNil,
-  isEmpty,
-  gte,
-  __,
-  prop,
-  reduce,
-  complement,
+  T, F, ifElse, always, map, compose, converge, propEq, equals, filter,
+  bind, forEach, all, any, not, and, lensProp, set, or, isNil, isEmpty, gte,
+  __, prop, reduce, complement,
 } from 'ramda';
-import { Either, Maybe } from 'ramda-fantasy';
+import { Either } from 'ramda-fantasy';
 import { TranslateService } from '@ngx-translate/core';
-import { TerminalService } from '../../../../home-screen/services/terminal.service';
-import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { Subject } from 'rxjs';
 
 // tslint:disable-next-line: interface-name
 export interface IPositionTrigger {
@@ -50,6 +21,7 @@ export interface IPositionTrigger {
   selectedOutput: number;
   selectedState: number;
   selectedFrom: number;
+  selectedSourceType: string;
 }
 
 type JudgeCheckFn = (elements: IPositionTrigger[]) => boolean;
@@ -57,8 +29,6 @@ type CheckElesFn = (elements: IPositionTrigger[]) => IPositionTrigger[];
 type ToggleAllFn = (element: {
   checked: boolean;
 }) => (elements: IPositionTrigger[]) => IPositionTrigger[];
-
-const { Nothing } = Maybe;
 
 export const freeze = x => Object.freeze(x);
 
@@ -77,13 +47,12 @@ export const assemblePLS: (x: IResPLS) => IPositionTrigger = x => {
     selectedOutput: x.DigitalOut,
     selectedState: x.Polarity,
     selectedFrom: x.RelatedTo,
+    selectedSourceType: x.Source
   };
   return obj;
 };
 
-export const assemblePLSList: (x: IResPLS[]) => IPositionTrigger[] = map(
-  assemblePLS
-);
+export const assemblePLSList: (x: IResPLS[]) => IPositionTrigger[] = map(assemblePLS);
 
 export const isChecked = propEq('checked', T());
 
@@ -93,44 +62,25 @@ export const notAllChecked: JudgeCheckFn = complement(isAllChecked);
 
 export const hasChecked: JudgeCheckFn = any(isChecked);
 
-export const partialChecked: JudgeCheckFn = converge(and, [
-  hasChecked,
-  notAllChecked,
-]);
+export const partialChecked: JudgeCheckFn = converge(and, [hasChecked, notAllChecked]);
 
 export const checkedLensProp = lensProp('checked');
 
-export const checkElement: (x: IPositionTrigger) => IPositionTrigger = set(
-  checkedLensProp,
-  T()
-);
+export const checkElement: (x: IPositionTrigger) => IPositionTrigger = set(checkedLensProp, T());
 
-export const uncheckElement: (x: IPositionTrigger) => IPositionTrigger = set(
-  checkedLensProp,
-  F()
-);
+export const uncheckElement: (x: IPositionTrigger) => IPositionTrigger = set(checkedLensProp, F());
 
 export const checkAll: CheckElesFn = map(checkElement);
 
 export const uncheckAll: CheckElesFn = map(uncheckElement);
 
-export const toggleAll: ToggleAllFn = ifElse(
-  isChecked,
-  always(checkAll),
-  always(uncheckAll)
-);
+export const toggleAll: ToggleAllFn = ifElse(isChecked, always(checkAll), always(uncheckAll));
 
-export const canCreate: (x: string) => boolean = complement(
-  converge(or, [isNil, isEmpty])
-);
+export const canCreate: (x: string) => boolean = complement(converge(or, [isNil, isEmpty]));
 
 // tslint:disable-next-line: no-any
 export const isNumber: (x: any) => boolean = converge(and, [
-  compose(
-    not,
-    isNaN,
-    Number
-  ),
+  compose(not, isNaN, Number),
   complement(isEmpty),
 ]);
 
@@ -167,10 +117,10 @@ export const combineNames: (x: IPositionTrigger[]) => string = compose(
   templateUrl: './position-trigger.component.html',
   styleUrls: ['./position-trigger.component.scss'],
 })
-export class PositionTriggerComponent implements OnInit, OnDestroy {
+export class PositionTriggerComponent implements OnInit {
   private preDistance: number;
   private positiveNumTip: string;
-  private notifier: Subject<boolean> = new Subject();
+  // private notifier: Subject<boolean> = new Subject();
 
   data: IPositionTrigger[] = []; // table data source.
   get columns(): ReadonlyArray<string> {
@@ -189,19 +139,9 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
   constructor(
     public snackBar: MatSnackBar,
     public dialog: MatDialog,
-    private terminalService: TerminalService,
     private service: PositionTriggerService,
     private trn: TranslateService
-  ) {
-    this.service.broadcaster
-      .pipe(takeUntil(this.notifier))
-      .subscribe(this.assembleData.bind(this));
-    this.terminalService.sentCommandEmitter
-      .pipe(takeUntil(this.notifier))
-      .subscribe(cmd => {
-        this.assembleData();
-      });
-  }
+  ) { }
 
   ngOnInit(): void {
     this.trn
@@ -213,12 +153,7 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
     this.assembleData();
   }
 
-  ngOnDestroy(): void {
-    this.notifier.next(true);
-    this.notifier.unsubscribe();
-  }
-
-  toggleAll(event: { checked: boolean }): void {
+  public toggleAll(event: any): void {
     this.data = toggleAll(event)(this.data);
   }
 
@@ -226,20 +161,27 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
     this.dialog
       .open(NewPositionTriggerComponent, { disableClose: true })
       .afterClosed()
-      .subscribe(
-        async (name: string) =>
-          canCreate(name) &&
-          Either.either(
-            err => console.log(err), // handle error.
-            Nothing
-          )(await this.service.createPls(name))
+      .subscribe(async (name: string) =>
+        canCreate(name) &&
+        Either.either(
+          err => console.log(err), // handle error.
+          (res: IResPLS[]) => {
+            this.data = assemblePLSList(res);
+          }
+        )(await this.service.createPls(name))
       );
+  }
+
+  resetValue(element: IPositionTrigger): void {
+    element.distance = 0;
   }
 
   async updatePls(element: IPositionTrigger): Promise<void> {
     Either.either(
       err => console.log(err), // handle error.
-      Nothing
+      (res: IResPLS[]) => {
+        this.data = assemblePLSList(res);
+      }
     )(await this.service.updatePls(element));
   }
 
@@ -251,11 +193,10 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
     forEach(
       Either.either(
         err => console.log(err), // handle error.
-        Nothing
-      ),
-      deleteAll
-    );
-    this.assembleData();
+        (res: IResPLS[]) => {
+          this.data = assemblePLSList(res);
+        }
+      ), deleteAll);
   }
 
   onFocus(distance: number) {
@@ -267,6 +208,11 @@ export class PositionTriggerComponent implements OnInit, OnDestroy {
       element.distance = Number(this.preDistance);
       this.snackBar.open(this.positiveNumTip, '', { duration: 2000 });
     } else if (isChanged(this.preDistance, element.distance)) {
+      if (element.selectedSourceType === 'Percentage' && element.distance > 100) {
+        element.distance = Number(this.preDistance);
+        this.snackBar.open(this.positiveNumTip, '', { duration: 2000 });
+        return;
+      }
       this.updatePls(element);
     }
   }

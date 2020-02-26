@@ -17,6 +17,7 @@ import { Either } from 'ramda-fantasy';
 export interface IResPLS {
   index: number;
   PLSname: string; // name
+  Source: string;
   DigitalOut: number; // selected output
   Position: number; // distance
   Polarity: number; // selected state
@@ -27,26 +28,21 @@ export interface IResPLS {
 @Injectable()
 export class PositionTriggerService {
   // Notify the observer who should update table data or not.
-  broadcaster = new EventEmitter<boolean>();
+  // public broadcaster = new EventEmitter<boolean>();
 
   private query: Function;
   private cud: Function; // create update delete
 
   constructor(private ws: WebsocketService) {
-    const commonHandler = handler(
-      tap(() => this.broadcaster.emit(true)),
-      errMsgProp
-    );
     this.query = _api => this.ws.query(_api);
-    this.cud = compose(
-      then(commonHandler),
-      this.query
-    );
+    const resHandler = handler(JSON.parse, errMsgProp);
+    this.cud = compose(then(resHandler), this.query);
   }
 
   async createPls(name: string) {
     const api = `?PLS_create("${name}")`;
-    return this.cud(api);
+    const res = <MCQueryResponse>await this.ws.query(api);
+    return this.bindIO(res);
   }
 
   async updatePls({
@@ -55,19 +51,26 @@ export class PositionTriggerService {
     selectedOutput,
     selectedState,
     selectedFrom,
-  }) {
-    const api = `?Pls_update("${name}", ${selectedOutput}, ${distance}, ${selectedState}, ${selectedFrom})`; // position is distance.
-    return this.cud(api);
+    selectedSourceType,
+  }: any): Promise<any> {
+    const api = `?Pls_update("${name}", ${selectedOutput}, ${distance}, ${selectedState}, ${selectedFrom}, "${selectedSourceType}")`; // position is distance.
+    const res = <MCQueryResponse>await this.ws.query(api);
+    return this.bindIO(res);
   }
 
   async deletePls(name: string) {
     const api = `?Deleterow("${name}")`;
-    return this.cud(api);
+    const res = <MCQueryResponse>await this.ws.query(api);
+    return this.bindIO(res);
   }
 
   async retrievePls() {
     const api = '?PLS_getTable';
-    const res = await this.ws.query(api) as MCQueryResponse;
+    const res = <MCQueryResponse>await this.ws.query(api);
+    return this.bindIO(res);
+  }
+
+  private async bindIO(res: MCQueryResponse): Promise<any> {
     const ios = await this.retrieveIos();
     if (hasError(res)) {
       return Left(res.result);
@@ -78,6 +81,7 @@ export class PositionTriggerService {
       Either.either(() => (iosList = []), val => (iosList = val))(ios);
       const plsRes = map(x => {
         x.Output = iosList;
+        // x.PLSsource = 'Time';
         return x;
       }, JSON.parse(res.result)) as IResPLS[];
       return Right(plsRes);
@@ -100,10 +104,7 @@ export class PositionTriggerService {
       dropLast(1)
     );
     const resHandler = handler(parseIos, errMsgProp);
-    const retrieve = compose(
-      then(resHandler),
-      this.query
-    );
+    const retrieve = compose(then(resHandler), this.query);
     return retrieve(api);
   }
 

@@ -1022,7 +1022,7 @@
       "fromColEnd": "END",
       "valueCol": "Value",
       "deleteBtn": "DELETE SELECTED",
-      "positiveNumTip": "Input a non-negative number",
+      "positiveNumTip": "Please input a non-negative number, and shouldn't greater than 100 for percentage",
       "newPositionTrigger": {
         "namePlaceholder": "Name",
         "requireErr": "Name is required."

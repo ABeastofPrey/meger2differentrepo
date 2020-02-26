@@ -67,6 +67,7 @@ describe('PositionTriggerComponent', () => {
     Polarity: 0,
     RelatedTo: 0,
     Output: [1, 2, 3],
+    Source: 'Percentage',
   };
   const resPlsList: IResPLS[] = map(always(resPls), range(0, count));
   const element: IPositionTrigger = assemblePLS(resPls);

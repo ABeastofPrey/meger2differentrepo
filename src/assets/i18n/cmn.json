@@ -987,7 +987,7 @@
       "fromColEnd": "结束",
       "valueCol": "值",
       "deleteBtn": "删除已选",
-      "positiveNumTip": "输入一个非负值",
+      "positiveNumTip": "输入一个非负数，并且Percentage的值不能大于100",
       "newPositionTrigger": {
         "namePlaceholder": "名称",
         "requireErr": "输入名称。"

@@ -25,8 +25,8 @@
 		</ng-container>
 		<!-- name -->
 		<ng-container matColumnDef="{{ columns[1] }}">
-			<mat-header-cell *matHeaderCellDef>{{ 'projectSettings.position_trigger.nameCol' | translate }}</mat-header-cell>
-			<mat-cell *matCellDef="let element" [title]="element.name">{{ element.name }}</mat-cell>
+			<mat-header-cell [ngStyle]="{'max-width': '150px'}" *matHeaderCellDef>{{ 'projectSettings.position_trigger.nameCol' | translate }}</mat-header-cell>
+			<mat-cell [ngStyle]="{'max-width': '150px'}" *matCellDef="let element" [title]="element.name">{{ element.name }}</mat-cell>
 		</ng-container>
 		<!-- output -->
 		<ng-container matColumnDef="{{ columns[2] }}">
@@ -77,11 +77,11 @@
 		</ng-container>
 		<!-- distance -->
 		<ng-container matColumnDef="{{ columns[5] }}">
-			<mat-header-cell *matHeaderCellDef
-				>{{ 'projectSettings.position_trigger.valueCol' | translate }} [mm/ms/%]</mat-header-cell
+			<mat-header-cell *matHeaderCellDef [ngStyle]="{'text-align': 'center'}"
+				>{{ 'projectSettings.position_trigger.valueCol' | translate }}</mat-header-cell
 			>
 			<mat-cell *matCellDef="let element">
-				<mat-form-field>
+				<mat-form-field [ngStyle]="{'width': '40%', 'text-align': 'center'}">
 					<input
 						matInput
 						type="text"
@@ -92,6 +92,14 @@
 						ktype="text"
 						(onKeyboardClose)="onBlur(element)"
 					/>
+				</mat-form-field>
+				&nbsp;&nbsp;
+				<mat-form-field [ngStyle]="{'width': '55%'}">
+					<mat-select [(ngModel)]="element.selectedSourceType" (selectionChange)="resetValue(element)" (selectionChange)="updatePls(element)">
+						<mat-option [value]="'Length'">Length / mm</mat-option>
+						<mat-option [value]="'Percentage'">Percentage / %</mat-option>
+						<mat-option [value]="'Time'">Time / ms</mat-option>
+					</mat-select>
 				</mat-form-field>
 			</mat-cell>
 		</ng-container>
