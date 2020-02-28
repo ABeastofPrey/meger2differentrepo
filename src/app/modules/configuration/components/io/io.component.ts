@@ -223,7 +223,7 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.standardIOTab.isActive) {
         this.onViewSelectionChange('all');
   }
-    }, 200);
+    }, 1000);
   }
 
   /**
