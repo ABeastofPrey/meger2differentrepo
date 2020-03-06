@@ -15,8 +15,9 @@
 }
 .actions {
   display: flex;
-  padding: 8px 8px 8px 24px;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 .big-warning {
   font-size: 86px;
