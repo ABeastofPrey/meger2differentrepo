@@ -2,6 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material';
 import { ApiService, UploadResult } from './../../../core/services/api.service';
 import { Component, OnInit } from '@angular/core';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'fwconfig-editor',
@@ -27,7 +28,8 @@ export class FwconfigEditorComponent implements OnInit {
   constructor(
     private api: ApiService,
     private snack: MatSnackBar,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService
   ) { }
 
   ngOnInit() {
@@ -44,7 +46,10 @@ export class FwconfigEditorComponent implements OnInit {
     return this.api.uploadToPath(new File([new Blob([text])], 'FWCONFIG'),true,'')
       .then((ret: UploadResult) => {
         const result = ret.success ? this.words['changeOK'] : this.words['error.err'];
-        this.snack.open(result, '', { duration: 1500 });
+        if(!this.utils.IsKuka)
+        {
+          this.snack.open(result, '', { duration: 1500 });
+        }
       }).catch(err => {
         console.warn(err);
       });

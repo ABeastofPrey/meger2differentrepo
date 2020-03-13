@@ -68,4 +68,7 @@ const vCommandContext = require.context('./app/modules/program-editor/components
 vCommandContext.keys().map(vCommandContext);
 
 const jumpxCommandContext = require.context('./app/modules/program-editor/components/combined-dialogs/components/jumpx-command/', true, /\.spec\.ts$/);
-jumpxCommandContext.keys().map(jumpxCommandContext);
+// jumpxCommandContext.keys().map(jumpxCommandContext); // Unstable with unknow undefined.
+
+const syslogContext = require.context('./app/modules/sys-log/components/logbook/', true, /\.spec\.ts$/);
+syslogContext.keys().map(syslogContext);

@@ -14,6 +14,7 @@ import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-n
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl, Validators } from '@angular/forms';
 import { IdentDialogComponent } from '../ident-dialog/ident-dialog.component';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'app-payload-wizard',
@@ -57,7 +58,8 @@ export class PayloadWizardComponent implements OnInit {
     private trn: TranslateService,
     public login: LoginService,
     private stat: TpStatService,
-    private cmn: CommonService
+    private cmn: CommonService,
+    private utils: UtilsService
   ) {
     this.trn
       .get(['payloads', 'button.delete', 'button.cancel', 'changeOK'])
@@ -158,7 +160,10 @@ export class PayloadWizardComponent implements OnInit {
             return p.name === this.selectedPayload.name;
           });
           await this.onPayloadChange();
-          this.snack.open(this.words['payloads']['done'], '', { duration: 1500 });
+          if(!this.utils.IsKuka)
+          {
+            this.snack.open(this.words['payloads']['done'], '', { duration: 1500 });
+          }
         }
       });
       const interval = setInterval(() => {
@@ -312,7 +317,9 @@ export class PayloadWizardComponent implements OnInit {
       '}")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result === '0') {
-        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        if (!this.utils.IsKuka) {
+          this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        }
       }
     });
   }
@@ -327,7 +334,9 @@ export class PayloadWizardComponent implements OnInit {
         this.ctrlMass.setValue(oldVal);
       } else {
         this.selectedPayload.mass = newVal;
-        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        if (!this.utils.IsKuka) {
+          this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        }
       }
     });
   }
@@ -342,7 +351,9 @@ export class PayloadWizardComponent implements OnInit {
         this.ctrlInertia.setValue(oldVal);
       } else {
         this.selectedPayload.inertia = newVal;
-        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        if (!this.utils.IsKuka) {
+          this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        }
       }
     });
   }
@@ -357,7 +368,9 @@ export class PayloadWizardComponent implements OnInit {
         this.ctrllx.setValue(oldVal);
       } else {
         this.selectedPayload.lx = newVal;
-        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        if (!this.utils.IsKuka) {
+          this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        }
       }
     });
   }

@@ -1,6 +1,17 @@
 <cdk-virtual-scroll-viewport itemSize="20" #wrapper (contextmenu)="onContextMenu($event)" class="content">
 	<div *cdkVirtualFor="let n of notification.notificationsAsArray" style="height: 20px;">
-		<div *ngIf="n.msg">{{ n.msg }}</div>
+		<div *ngIf="n.msg">
+			<ng-container [ngSwitch]="isLibLog(n.msg)">
+				<span *ngSwitchCase="false">{{n.msg}}</span>
+				<span *ngSwitchCase="true">
+					{{firstPortion}}
+					{{'lib_code.' + libLogcode | translate}}
+					{{(!!secondPortion) ? ': ' + secondPortion : ''}}
+					{{thirdPortioin}}
+				</span>
+			</ng-container>
+			
+		</div>
 		<div *ngIf="n.err">
 			Error: {{ n.err.errCode }}, "{{ n.err.errMsg }}", Task:
 			<span matRipple [matRippleRadius]="16" class="link" (mousedown)="goToError(n.err)">{{ n.err.errTask }}</span

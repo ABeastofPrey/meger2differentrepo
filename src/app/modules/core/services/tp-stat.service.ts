@@ -28,6 +28,8 @@ class TPStatResponse {
 
 const refreshRate = 200;
 
+const IsNotKuka = environment.platform.name !== environment.platforms.Kuka.name;
+
 @Injectable()
 export class TpStatService {
   modeChanged: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -225,13 +227,15 @@ export class TpStatService {
             });
             this.zone.run(() => {
               setTimeout(() => {
-                this.snack
+                if (IsNotKuka) {
+                  this.snack
                   .open(err, this.words['acknowledge'])
                   .afterDismissed()
                   .subscribe(() => {
                     if (!this.onlineStatus.value) return;
                     this.ws.send('?TP_CONFIRM_ERROR', true);
                   });
+                }
               }, 0);
             });
           }

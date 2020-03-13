@@ -101,6 +101,19 @@ export class HomeScreenComponent implements OnInit {
     private router: Router,
     public robot: RobotService
   ) {}
+  
+  get dateTime(): number {
+    const [date, month, year] = this.date.split('/');
+    const [hours, minutes] = this.time.split(':');
+    return Date.UTC(
+      parseInt('20' + year),
+      parseInt(month) - 1,
+      parseInt(date),
+      parseInt(hours),
+      parseInt(minutes),
+      0
+    );
+  }
 
   private afterSysInfoLoaded() {
     this.updateCharts();
@@ -315,10 +328,12 @@ export class HomeScreenComponent implements OnInit {
                   }, 2000);
                 }, 10000);
               } else {
-                this.snack.open(
-                  this.words['error.invalid_feature'],
-                  this.words['dismiss']
-                );
+                if (!this.utils.IsKuka) {
+                  this.snack.open(
+                    this.words['error.invalid_feature'],
+                    this.words['dismiss']
+                  );
+                }
               }
             });
           });

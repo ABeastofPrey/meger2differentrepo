@@ -23,6 +23,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
 import { FormControl, Validators } from '@angular/forms';
+import {UtilsService} from '../../../../modules/core/services/utils.service';
 
 const DEFAULT_MC_NAME = 'MC';
 
@@ -119,7 +120,8 @@ export class RobotsComponent implements OnInit {
     private prj: ProjectManagerService,
     private task: TaskService,
     private prg: ProgramEditorService,
-    public login: LoginService
+    public login: LoginService,
+    private utils: UtilsService,
   ) {}
 
   ngOnInit() {
@@ -198,7 +200,9 @@ export class RobotsComponent implements OnInit {
       if (ret) {
         const ret2 = await this.ws.query('sys.date="'+dateFormated+'"');
         if (!ret2.err) {
-          this.snack.open(this.wordOk, '', { duration: 1500 });
+          if (!this.utils.IsKuka) {
+            this.snack.open(this.wordOk, '', { duration: 1500 });
+          }
         }
       }
       setTimeout(async()=>{
@@ -213,7 +217,9 @@ export class RobotsComponent implements OnInit {
     if (ret) {
       const ret2 = await this.ws.query('sys.time="'+t+'"');
       if (!ret2.err) {
-        this.snack.open(this.wordOk, '', { duration: 1500 });
+        if (!this.utils.IsKuka) {
+          this.snack.open(this.wordOk, '', { duration: 1500 });
+        }
       }
     }
     setTimeout(async()=>{
@@ -236,7 +242,9 @@ export class RobotsComponent implements OnInit {
       this.sysName = DEFAULT_MC_NAME;
     }
     this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName + '")');
-    this.snack.open(this.wordOk, '', { duration: 1500 });
+    if (!this.utils.IsKuka) {
+      this.snack.open(this.wordOk, '', { duration: 1500 });
+    }
   }
 
   private async refreshDisp() {
@@ -312,7 +320,9 @@ export class RobotsComponent implements OnInit {
     const cmd = `?TP_SET_ROBOT_DISPLACEMENTS(${robot},"${values}")`;
     this.ws.query(cmd).then(() => {
       if (index === -1) {
-        this.snack.open(this.wordOk, '', { duration: 1500 });
+        if(!this.utils.IsKuka) {
+          this.snack.open(this.wordOk, '', { duration: 1500 });
+        }
       } else {
         this.ws
           .query(
@@ -326,7 +336,9 @@ export class RobotsComponent implements OnInit {
           )
           .then((ret: MCQueryResponse) => {
             if (ret.result === '0') {
-              this.snack.open(this.wordOk, '', { duration: 1500 });
+              if (!this.utils.IsKuka) {
+                this.snack.open(this.wordOk, '', { duration: 1500 });
+              }
             }
           });
       }

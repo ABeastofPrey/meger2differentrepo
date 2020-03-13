@@ -15,6 +15,7 @@ import { LoginService, GroupManagerService } from '../../../core';
 import {RecordDialogComponent, RecordParams} from '../../../../components/record-dialog/record-dialog.component';
 import {RecordService} from '../../../core/services/record.service';
 import {Router} from '@angular/router';
+import {UtilsService} from '../../../../modules/core/services/utils.service';
 
 @Component({
   selector: 'dashboard-window',
@@ -40,7 +41,8 @@ export class DashboardWindowComponent implements OnInit {
     public login: LoginService,
     private grp: GroupManagerService,
     private rec: RecordService,
-    private router: Router
+    private router: Router,
+    private utils: UtilsService
   ) {
     this.trn
       .get(['dashboard.err_target', 'dismiss', 'dashboard.move_sent'])
@@ -88,9 +90,12 @@ export class DashboardWindowComponent implements OnInit {
   move() {
     for (const t of this.params.target) {
       if (isNaN(t) || t === null) {
-        return this.snack.open(this.words['dashboard.err_target'], '', {
-          duration: 1500,
-        });
+        if (this.utils.IsNotKuka) {
+          return this.snack.open(this.words['dashboard.err_target'], '', {
+            duration: 1500,
+          });
+        }
+        return;
       }
     }
     let cmd = 'move ' + this.params.name;
@@ -111,7 +116,9 @@ export class DashboardWindowComponent implements OnInit {
             msg: ret.err.errMsg,
           })
           .subscribe(word => {
-            this.snack.open(word, this.words['dismiss']);
+            if (this.utils.IsNotKuka) {
+              this.snack.open(word, this.words['dismiss']);
+            }
           });
       }
     });
@@ -176,9 +183,19 @@ export class DashboardWindowComponent implements OnInit {
           ' Gap=' + params.gap + ' RecData=' +
           varList.join();
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
-          if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
+          if (ret.err) {
+            if (this.utils.IsNotKuka) {
+              return this.snack.open(ret.err.errMsg, 'DISMISS');
+            }
+            return;
+          }
           this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
-            if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
+            if (ret.err) {
+              if (this.utils.IsNotKuka) {
+                return this.snack.open(ret.err.errMsg, 'DISMISS');
+              }
+              return;
+            }
             this.params.isRecording = true;
             this.params.recordingParams = params;
             this.params.recordingTime = 0;

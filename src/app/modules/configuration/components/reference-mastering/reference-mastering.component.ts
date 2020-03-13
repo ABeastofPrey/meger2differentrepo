@@ -114,7 +114,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     const callApi = bind(this.service.masterZero, this.service);
     const promptError = () => {
       this.trn.get('robots.mastering.masterZeroWarm').subscribe(word => {
-        this.snack.open(word, '', { duration: 1500 });
+        // this.snack.open(word, '', { duration: 1500 });
       });
     };
     const moveToNext = () => this.stepper.next();
@@ -130,9 +130,9 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
   masterFinal(): void {
     const callApi = bind(this.service.masterFinal, this.service);
     const promptError = () => {
-      this.trn
-        .get('robots.mastering.masterFinalWarm')
-        .subscribe(word => this.snack.open(word, '', { duration: 1500 }));
+      // this.trn
+      //   .get('robots.mastering.masterFinalWarm')
+      //   .subscribe(word => this.snack.open(word, '', { duration: 1500 }));
     };
     const moveToNext = () => this.stepper.next();
     const logOrMove = Either.either(promptError, moveToNext);
@@ -147,9 +147,9 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
   recordPoint(): void {
     const callApi = bind(this.service.recordPoint, this.service);
     const promptError = () => {
-      this.trn.get('robots.mastering.recordPointWarm').subscribe(word => {
-        this.snack.open(word, '', { duration: 1500 });
-      });
+      // this.trn.get('robots.mastering.recordPointWarm').subscribe(word => {
+      //   this.snack.open(word, '', { duration: 1500 });
+      // });
     };
     const moveToNext = () => this.stepper.next();
     const logOrMove = Either.either(promptError, moveToNext);
@@ -163,9 +163,9 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
   masterLeftRight(): void {
     const callApi = bind(this.service.masterLeftRight, this.service);
     const promptError = () => {
-      this.trn.get('robots.mastering.masterLeftRightWarm').subscribe(word => {
-        this.snack.open(word, '', { duration: 1500 });
-      });
+      // this.trn.get('robots.mastering.masterLeftRightWarm').subscribe(word => {
+      //   this.snack.open(word, '', { duration: 1500 });
+      // });
     };
     const moveToNext = () => this.stepper.next();
     const logOrMove = Either.either(promptError, moveToNext);
@@ -181,9 +181,9 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     const moveToRef = this.service.moveToRef.bind(this.service, isBasicMode);
     const isMoveing = bind(this.service.isMoveing, this.service);
     const promptError = () => {
-      this.trn.get('robots.mastering.moveToRefWarn').subscribe(word => {
-        this.snack.open(word, '', { duration: 1500 });
-      });
+      // this.trn.get('robots.mastering.moveToRefWarn').subscribe(word => {
+      //   this.snack.open(word, '', { duration: 1500 });
+      // });
     };
     const watchMove = () => {
       const watchInterval = setInterval(() => {
@@ -262,9 +262,9 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
                   this.isBasicMode = preMode;
                 }, 0);
               } else {
-                this.snack.open(words['robots.mastering.cancelWarm'], '', {
-                  duration: 1500,
-                });
+                // this.snack.open(words['robots.mastering.cancelWarm'], '', {
+                //   duration: 1500,
+                // });
               }
             }
           });
@@ -276,11 +276,11 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
     if (res) {
       this.stepper.previous();
     } else {
-      this.trn.get(['robots.mastering.previousWarm']).subscribe(words => {
-        this.snack.open(words['robots.mastering.previousWarm'], '', {
-          duration: 1500,
-        });
-      });
+      // this.trn.get(['robots.mastering.previousWarm']).subscribe(words => {
+      //   this.snack.open(words['robots.mastering.previousWarm'], '', {
+      //     duration: 1500,
+      //   });
+      // });
     }
   }
 

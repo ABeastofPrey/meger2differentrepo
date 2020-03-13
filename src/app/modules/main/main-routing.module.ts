@@ -91,6 +91,14 @@ const routes: Routes = [
         data: { permission: 1 },
       },
       {
+        path: 'logbook',
+        loadChildren: () =>
+          import('../sys-log/sys-log.module').then(
+            m => m.SystemLogModule
+          ),
+        canActivate: [PermissionGuardService],
+        data: { permission: 99 },
+      },{
         path: 'help',
         loadChildren: () =>
           import('../help/help.module').then(m => m.HelpModule),

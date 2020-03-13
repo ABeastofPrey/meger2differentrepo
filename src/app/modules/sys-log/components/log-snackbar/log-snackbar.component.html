@@ -1,0 +1,35 @@
+<mat-card class="log-snakbar">
+    <div class="left-portion">
+        <ng-container [ngSwitch]="data?.type">
+            <mat-icon *ngSwitchCase="'error'" aria-hidden="false" class="warn" aria-label="Example home icon">cancel</mat-icon>
+            <mat-icon *ngSwitchCase="'warning'" aria-hidden="false" color="primary" aria-label="Example home icon">warning</mat-icon>
+            <mat-icon *ngSwitchCase="'information'" aria-hidden="false" color="accent" aria-label="Example home icon">info</mat-icon>
+        </ng-container>
+        <!-- <mat-icon aria-hidden="false" color="primary" aria-label="Example home icon">error</mat-icon> -->
+        <span>{{count}}</span>
+    </div>
+    <mat-divider [vertical]="true"></mat-divider>
+    <div class="center-portion" (click)="clickContent()">
+        <!-- <span>{{data?.date}} &nbsp; {{data?.time}}</span> -->
+        <span>{{data?.timestamp | date:'yyyy/MM/dd h:mm:ss a'}}</span>
+        <ng-container [ngSwitch]="data.source">
+            <span *ngSwitchCase="'webServer'">
+                {{('log.' + data?.message) | translate:{ name: data.userName.toUpperCase() } }} 
+                {{data?.paras[0]?.toUpperCase()}}
+            </span>
+            <span *ngSwitchCase="'lib'">
+                {{data?.code}}&nbsp;&nbsp;{{'lib_code.' + data?.code | translate}} 
+                {{!!data?.message ? ': ' + data.message : ''}}
+            </span>
+            <span *ngSwitchDefault>
+                {{data?.code}}&nbsp;&nbsp;{{data?.message}}
+            </span>
+        </ng-container>
+    </div>
+    <mat-divider [vertical]="true"></mat-divider>
+    <div class="right-portion">
+        <button mat-flat-button color="primary" (click)="clickQuestionMark()" [disabled]="(data && data.type === 'information')">?</button>
+        <button mat-flat-button color="primary" (click)="clickConform()">{{ 'sys_log.confirm' | translate }}</button>
+        <button mat-flat-button color="primary" (click)="clickConformAll()">{{ 'sys_log.confirm_all' | translate }}</button>
+    </div>
+</mat-card>

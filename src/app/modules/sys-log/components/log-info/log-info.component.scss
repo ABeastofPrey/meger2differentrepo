@@ -1,0 +1,18 @@
+.log-info-container {
+    position: relative;
+    overflow-x: hidden;
+    padding: 4px;
+    .close-button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        min-width: 0;
+    }
+    .profile-container {
+        padding-bottom: 5px;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+    }
+    .details-container {
+        margin-top: 15px;
+    }
+}

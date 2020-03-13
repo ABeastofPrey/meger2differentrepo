@@ -20,6 +20,7 @@ import { YesNoDialogComponent } from '../../../components/yes-no-dialog/yes-no-d
 import { ErrorFrame } from '../../core/models/error-frame.model';
 import { TranslateService } from '@ngx-translate/core';
 import { App } from '../../core/models/project/mc-project.model';
+import { UtilsService } from '../../core/services/utils.service';
 
 export const TASKSTATE_NOTLOADED = -1;
 export const TASKSTATE_RUNNING = 1;
@@ -79,7 +80,7 @@ export class ProgramEditorService {
   // LINE PARSING
   parser: LineParser = new LineParser(this.data);
   variablesInLine: TPVariable[] = [];
-  lineParams: {} = null;
+  lineParams: any = null;
   disableStepOver = false;
   private lastRow = -1;
 
@@ -104,7 +105,8 @@ export class ProgramEditorService {
     private data: DataService,
     private trn: TranslateService,
     private api: ApiService,
-    private tour: TourService
+    private tour: TourService,
+    private utils: UtilsService
   ) {
     this.tour.stepShow$.subscribe(step=>{
       if ((
@@ -336,9 +338,12 @@ export class ProgramEditorService {
       )
       .then((ret: UploadResult) => {
         if (ret.success) {
-          this.snack.open(this.words['projects']['saved'], '', {
-            duration: 1500,
-          });
+          if(!this.utils.IsKuka)
+          {
+            this.snack.open(this.words['projects']['saved'], '', {
+              duration: 1500,
+            });
+          }
           this.isDirty = false;
         } else {
           const words = [
@@ -351,19 +356,28 @@ export class ProgramEditorService {
               default:
                 break;
               case -2:
-                this.snack.open(
-                  words['files.err_upload'],
-                  this.words['dismiss']
-                );
+                if(!this.utils.IsKuka)
+                {
+                  this.snack.open(
+                    words['files.err_upload'],
+                    this.words['dismiss']
+                  );
+                }
                 break;
               case -3:
-                this.snack.open(words['files.err_ext'], this.words['dismiss']);
+                if(!this.utils.IsKuka)
+                {
+                  this.snack.open(words['files.err_ext'], this.words['dismiss']);
+                }
                 break;
               case -4:
-                this.snack.open(
-                  words['files.err_permission'],
-                  this.words['dismiss']
-                );
+                if (!this.utils.IsKuka) 
+                {
+                  this.snack.open(
+                    words['files.err_permission'],
+                    this.words['dismiss']
+                  );
+                }
                 break;
             }
           });
@@ -419,19 +433,26 @@ export class ProgramEditorService {
               default:
                 break;
               case -2:
-                this.snack.open(
-                  words['files.err_upload'],
-                  this.words['dismiss']
-                );
+                if(!this.utils.IsKuka)
+                {
+                  this.snack.open(
+                    words['files.err_upload'],
+                    this.words['dismiss']
+                  );
+                }
                 break;
               case -3:
-                this.snack.open(words['files.err_ext'], this.words['dismiss']);
+                if (!this.utils.IsKuka) {
+                  this.snack.open(words['files.err_ext'], this.words['dismiss']);
+                }
                 break;
               case -4:
-                this.snack.open(
-                  words['files.err_permission'],
-                  this.words['dismiss']
-                );
+                if (!this.utils.IsKuka) {
+                  this.snack.open(
+                    words['files.err_permission'],
+                    this.words['dismiss']
+                  );
+                }
                 break;
             }
             this.busy = false;
@@ -481,7 +502,11 @@ export class ProgramEditorService {
       this.ws.query('KillTask ' + this.activeFile).then(() => {
         this.ws.query('Unload ' + this.activeFile).then((ret: MCQueryResponse) => {
           if (ret.result.length > 0) {
-            this.snack.open(ret.result, '', { duration: 2000 });
+            if(!this.utils.IsKuka)
+            {
+              this.snack.open(ret.result, '', { duration: 2000 });
+            }
+            
           }
           this.busy = false;
         });
@@ -516,7 +541,10 @@ export class ProgramEditorService {
     return this.ws.query('KillTask ' + f).then(() => {
       return this.ws.query('Unload ' + f).then((ret: MCQueryResponse) => {
         if (!force && ret.result.length > 0) {
-          this.snack.open(ret.result, '', { duration: 2000 });
+          if(!this.utils.IsKuka)
+          {
+            this.snack.open(ret.result, '', { duration: 2000 });
+          }
         }
         this.busy = false;
       });
@@ -756,7 +784,10 @@ export class ProgramEditorService {
                 });
               } else {
                 const err = this.words['error.err'] + ' ' + ret.result;
-                this.snack.open(err, '', { duration: 2000 });
+                if(!this.utils.IsKuka)
+                {
+                  this.snack.open(err, '', { duration: 2000 });
+                }
               }
             });
           }

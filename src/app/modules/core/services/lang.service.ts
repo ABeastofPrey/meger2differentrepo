@@ -24,4 +24,8 @@ export class LangService {
     localStorage.setItem('lang', lang);
     this.translate.use(lang);
   }
+
+  public getLang(): string {
+    return localStorage.getItem('lang');
+  }
 }

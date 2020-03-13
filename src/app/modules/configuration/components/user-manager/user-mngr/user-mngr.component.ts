@@ -11,6 +11,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { YesNoDialogComponent } from '../../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import {UtilsService} from '../../../../../modules/core/services/utils.service';
 
 @Component({
   selector: 'user-mngr',
@@ -33,7 +34,8 @@ export class UserMngrComponent implements OnInit {
     private dialog: MatDialog,
     private snack: MatSnackBar,
     public login: LoginService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService
   ) {
     this.refreshUsers();
     this.trn
@@ -92,26 +94,34 @@ export class UserMngrComponent implements OnInit {
               let success = true;
               for (const r of ret) success = success && r;
               if (success) {
-                this.snack.open(
-                  this.words['userManager.delete']['success'],
-                  '',
-                  { duration: 2000 }
-                );
+                if (!this.utils.IsKuka) {
+                  this.snack.open(
+                    this.words['userManager.delete']['success'],
+                    '',
+                    { duration: 2000 }
+                  );
+                }
               }
               else if (selected.find(u=>u.username === 'admin')) {
-                this.snack.open(this.words['userManager.delete']['fail2'], '', {
-                  duration: 2000,
-                });
+                if (!this.utils.IsKuka) {
+                  this.snack.open(this.words['userManager.delete']['fail2'], '', {
+                    duration: 2000,
+                  });
+                }
               } else {
-                this.snack.open(this.words['userManager.delete']['fail'], '', {
-                  duration: 2000,
-                });
+                if (!this.utils.IsKuka) {
+                  this.snack.open(this.words['userManager.delete']['fail'], '', {
+                    duration: 2000,
+                  });
+                }
               }
             },
             () => {
-              this.snack.open(this.words['userManager.delete']['err'], '', {
-                duration: 2000,
-              });
+              if (!this.utils.IsKuka) {
+                this.snack.open(this.words['userManager.delete']['err'], '', {
+                  duration: 2000,
+                });
+              }
             }
           )
           .then(() => {
@@ -151,9 +161,11 @@ export class UserMngrComponent implements OnInit {
       .subscribe(ret => {
         if (ret) {
           this.refreshUsers();
-          this.snack.open(this.words['success'], this.words['dismiss'], {
-            duration: 1500,
-          });
+          if (!this.utils.IsKuka){
+            this.snack.open(this.words['success'], this.words['dismiss'], {
+              duration: 1500,
+            });
+          }
         }
       });
   }

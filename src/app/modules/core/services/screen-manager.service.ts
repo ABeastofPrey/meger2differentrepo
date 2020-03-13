@@ -156,8 +156,9 @@ export class ScreenManagerService {
     },
     { icon: 'playlist_play', name: 'task', permission: 1, url: 'tasks' },
     { icon: 'apps', name: 'tools', permission: 1, url: 'tools' },
-    { icon: 'error', name: 'history', permission: 0, url: 'errors' },
-    { icon: 'list', name: 'log', permission: 1, url: 'log' },
+    // { icon: 'error', name: 'history', permission: 0, url: 'errors' },
+    // { icon: 'list', name: 'log', permission: 1, url: 'log' },
+    { icon: 'list', name: 'log_book', permission: 99, url: 'logbook' },
     { icon: 'help_outline', name: 'help', permission: 99, url: 'help' },
   ];
 

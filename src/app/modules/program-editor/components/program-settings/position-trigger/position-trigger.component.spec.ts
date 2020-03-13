@@ -108,8 +108,8 @@ describe('PositionTriggerComponent', () => {
   );
   const createPlsSpy = fakeService.createPls;
   fakeService.broadcaster = new EventEmitter();
-  const fakeMatSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
-  const openSpy = fakeMatSnackBar.open;
+  // const fakeMatSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
+  // const openSpy = fakeMatSnackBar.open;
   const fakeMatDialog = jasmine.createSpyObj('MatDialog', ['']);
   fakeMatDialog.open = (com, op) =>
     Object({ afterClosed: () => new EventEmitter<string>() });
@@ -122,7 +122,7 @@ describe('PositionTriggerComponent', () => {
       imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
       providers: [
         { provide: PositionTriggerService, useValue: fakeService },
-        { provide: MatSnackBar, useValue: fakeMatSnackBar },
+        // { provide: MatSnackBar, useValue: fakeMatSnackBar },
         { provide: MatDialog, useValue: fakeMatDialog },
         { provide: TerminalService, useValue: terminalService },
       ],
@@ -330,11 +330,11 @@ describe('PositionTriggerComponent', () => {
     const fakeMotion = { distance: 4 } as IPositionTrigger;
     comp.onFocus(preDistance);
     comp.onBlur(fakeMotion);
-    expect(openSpy.calls.any()).toBe(false, 'should not open snakbar.');
+    // expect(openSpy.calls.any()).toBe(false, 'should not open snakbar.');
     expect(updatePlsSpy.calls.any()).toBe(false, 'should not update pls');
     fakeMotion.distance = -5;
     comp.onBlur(fakeMotion);
-    expect(openSpy.calls.any()).toBe(true, 'open snakbar.');
+    // expect(openSpy.calls.any()).toBe(true, 'open snakbar.');
     expect(updatePlsSpy.calls.any()).toBe(false, 'should not update pls');
     fakeMotion.distance = 5;
     comp.onBlur(fakeMotion);

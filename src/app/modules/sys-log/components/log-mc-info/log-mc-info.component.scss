@@ -1,0 +1,9 @@
+mat-card-content {
+    padding-left: 16px;
+    .link {
+        color: blue;
+        text-decoration: underline;
+        font-weight: 500;
+        cursor: pointer;
+    }
+}

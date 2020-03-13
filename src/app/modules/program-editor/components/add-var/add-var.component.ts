@@ -118,7 +118,9 @@ export class AddVarComponent implements OnInit {
       if (!canNotOpen) {
         this.changeOverlayAndToggleJog();
       } else {
-        this.snackbar.open(this.words['variables.cannot_use_jog_tip'], '', { duration: 2000 });
+        if (!this.utils.IsKuka) {
+          this.snackbar.open(this.words['variables.cannot_use_jog_tip'], '', { duration: 2000 });
+        }
       }
     });
 
@@ -230,7 +232,8 @@ export class AddVarComponent implements OnInit {
         return Promise.all(queries).then(() => {
           this.data.refreshVariables().then(() => {
             this.closeDialog();
-            this.snackbar.open(this.words['success'], '', { duration: 2000 });
+            // this.snackbar.open(this.words['success'], '', { duration: 2000 });
+            console.log('Replace snack: ' + this.words['success']);
           });
         });
       }

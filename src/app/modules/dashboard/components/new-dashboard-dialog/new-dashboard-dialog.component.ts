@@ -11,6 +11,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import {UtilsService} from '../../../../modules/core/services/utils.service';
 
 @Component({
   selector: 'new-dashboard-dialog',
@@ -29,14 +30,19 @@ export class NewDashboardDialogComponent implements OnInit {
     private dashboard: DashboardService,
     private snack: MatSnackBar,
     public dialogRef: MatDialogRef<DashboardInitParams>,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService,
   ) {}
 
   add() {
     if (this.dashboard.findWindow(this.selectedElement.name) === -1) {
       this.dialogRef.close(this.selectedElement);
     }
-    else this.snack.open(this.words, '', { duration: 1500 });
+    else {
+      if (this.utils.IsNotKuka) {
+        this.snack.open(this.words, '', { duration: 1500 });
+      }
+    }
   }
 
   ngOnInit() {

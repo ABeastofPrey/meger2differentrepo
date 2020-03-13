@@ -1,0 +1,64 @@
+{
+    "err_code": {
+        "5049": {
+            "effects": [
+                "Execution of command in Entry station took too long."
+            ],
+            "possiable_causes": [
+                {
+                    "cause": "Interpretation of command takes too much time.",
+                    "solution": "Use USER_SET_ES_LOCK_DETECT_TIMEOUT(timeout,0,0) user function to change the default timeout (3000 ms)",
+                    "description": [
+                        "Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.",
+                        "Typically happens at load of large library from the terminal.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop."
+                    ]
+                }
+            ]
+        },
+        "20107": {
+            "effects": [
+                "The robot can not move in this direction."
+            ],
+            "possiable_causes": [
+                {
+                    "cause": "robot has reached the the maximum working range of the robot",
+                    "solution": "change the move joint or change the move direction",
+                    "description": [
+                        "This will happen when the robot has reached the the maximum working range of the robot.",
+                        "Typically happens in jog screen"
+                    ]
+                }
+            ]
+        },
+        "20411": {
+            "effects": [
+                "The parameters of current project can not be loaded."
+            ],
+            "possiable_causes": [
+                {
+                    "cause": "file lose or other issues",
+                    "solution": "make a new project setting parameters file",
+                    "description": [
+                        "This will happen when changing the project or restart the system",
+                        "Typically happens in project module"
+                    ]
+                }
+            ]
+        },
+        "20004": {
+            "effects": [
+                "Execution of command in Entry station took too long."
+            ],
+            "possiable_causes": [
+                {
+                    "cause": "Interpretation of command takes too much time.",
+                    "solution": "Use USER_SET_ES_LOCK_DETECT_TIMEOUT(timeout,0,0) user function to change the default timeout (3000 ms)",
+                    "description": [
+                        "Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.",
+                        "Typically happens at load of large library from the terminal.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop.Typically happens if function/procedure from global library called from terminal has endless loop."
+                    ]
+                }
+            ]
+        }
+    }
+}

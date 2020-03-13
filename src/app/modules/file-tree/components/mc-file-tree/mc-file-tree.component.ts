@@ -20,6 +20,7 @@ import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-n
 import { NewFileDialogComponent } from '../new-file-dialog/new-file-dialog.component';
 import { SingleInputDialogComponent } from '../../../../components/single-input-dialog/single-input-dialog.component';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'mc-file-tree',
@@ -58,7 +59,8 @@ export class McFileTreeComponent implements OnInit {
     private trn: TranslateService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
-    private login: LoginService
+    private login: LoginService,
+    private utils: UtilsService
   ) {
     
   }
@@ -352,9 +354,11 @@ export class McFileTreeComponent implements OnInit {
  }
           this.api.uploadToPath(f, false, path).then((result: UploadResult) => {
             if (result.success) {
-              this.snack.open(this.words['success'], this.words['dismiss'], {
-                duration: 1500,
-              });
+              if (!this.utils.IsKuka) {
+                this.snack.open(this.words['success'], this.words['dismiss'], {
+                  duration: 1500,
+                });
+              }
               this.prj.fileRefreshNeeded.emit();
               this.service.setFile(ret, null, null, -1);
             } else if (result.err === -1) {
@@ -379,28 +383,34 @@ export class McFileTreeComponent implements OnInit {
                           .uploadToPath(f, true, path)
                           .then((result: UploadResult) => {
                             if (result.success) {
-                              this.snack.open(
-                                this.words['success'],
-                                this.words['dismiss'],
-                                { duration: 1500 }
-                              );
+                              if (!this.utils.IsKuka) {
+                                this.snack.open(
+                                  this.words['success'],
+                                  this.words['dismiss'],
+                                  { duration: 1500 }
+                                );
+                              }
                               this.prj.fileRefreshNeeded.emit();
                               this.service.setFile(ret, null, null, -1);
                             } else {
-                              this.snack.open(
-                                this.words['error.err'],
-                                this.words['dismiss'],
-                                { duration: 2000 }
-                              );
+                              if (!this.utils.IsKuka) {
+                                this.snack.open(
+                                  this.words['error.err'],
+                                  this.words['dismiss'],
+                                  { duration: 2000 }
+                                );
+                              }
                             }
                           });
                       }
                     });
                 });
             } else {
-              this.snack.open(this.words['error.err'], this.words['dismiss'], {
-                duration: 2000,
-              });
+              if (!this.utils.IsKuka) {
+                this.snack.open(this.words['error.err'], this.words['dismiss'], {
+                  duration: 2000,
+                });
+              }
             }
           });
         }
@@ -427,14 +437,18 @@ export class McFileTreeComponent implements OnInit {
  }
           this.api.createFolder(path + name).then(result => {
             if (result) {
-              this.snack.open(this.words['success'], this.words['dismiss'], {
-                duration: 1500,
-              });
+              if (!this.utils.IsKuka) {
+                this.snack.open(this.words['success'], this.words['dismiss'], {
+                  duration: 1500,
+                });
+              }
               this.prj.fileRefreshNeeded.emit();
             } else {
-              this.snack.open(this.words['error.err'], this.words['dismiss'], {
-                duration: 2000,
-              });
+              if (!this.utils.IsKuka) {
+                this.snack.open(this.words['error.err'], this.words['dismiss'], {
+                  duration: 2000,
+                });
+              }
             }
           });
         }
@@ -454,9 +468,11 @@ export class McFileTreeComponent implements OnInit {
       if (result) {
         this.prj.fileRefreshNeeded.emit();
       } else {
-        this.snack.open(this.words['error.err'], this.words['dismiss'], {
-          duration: 2000,
-        });
+        if (!this.utils.IsKuka) {
+          this.snack.open(this.words['error.err'], this.words['dismiss'], {
+            duration: 2000,
+          });
+        }
       }
     });
   }
@@ -494,14 +510,18 @@ export class McFileTreeComponent implements OnInit {
             : '') + name;
         this.api.copy(fromPath, toPath).then(result => {
           if (result) {
-            this.snack.open(this.words['success'], this.words['dismiss'], {
-              duration: 1500,
-            });
+            if (!this.utils.IsKuka) {
+              this.snack.open(this.words['success'], this.words['dismiss'], {
+                duration: 1500,
+              });
+            }
             this.prj.fileRefreshNeeded.emit();
           } else {
-            this.snack.open(this.words['error.err'], this.words['dismiss'], {
-              duration: 2000,
-            });
+            if (!this.utils.IsKuka) {
+              this.snack.open(this.words['error.err'], this.words['dismiss'], {
+                duration: 2000,
+              });
+            }
           }
         });
       });
@@ -545,7 +565,9 @@ export class McFileTreeComponent implements OnInit {
           const msg = ret
             ? this.words['files.success_delete']
             : this.words['files.err_delete'];
-          this.snack.open(msg, '', { duration: 2000 });
+          if (!this.utils.IsKuka) {
+            this.snack.open(msg, '', { duration: 2000 });
+          }
           if (ret) this.prj.fileRefreshNeeded.emit();
         });
       }

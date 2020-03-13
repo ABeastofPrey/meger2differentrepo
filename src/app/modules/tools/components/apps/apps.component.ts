@@ -174,7 +174,10 @@ export class AppsComponent implements OnInit {
         if (ret.success) {
           this.ws.query('?UTL_UPDATE_MCU_FW').then((ret: MCQueryResponse) => {
             if (ret.result !== '0') {
-              this.snack.open(this.words['err_mcu'], '', { duration: 1500 });
+              if(!this.utils.IsKuka)
+              {
+                this.snack.open(this.words['err_mcu'], '', { duration: 1500 });
+              }
             }
             dialog.close();
           });
@@ -231,27 +234,37 @@ export class AppsComponent implements OnInit {
                 this.trn
                   .get(['files.err_upload', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                    this.snack.open(
-                      words['files.err_upload'],
-                      words['dismiss']
-                    );
+                    if(!this.utils.IsKuka)
+                    {
+                      this.snack.open(
+                        words['files.err_upload'],
+                        words['dismiss']
+                      );
+                    }
                   });
                 break;
               case -3:
                 this.trn
                   .get(['files.err_ext', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                    this.snack.open(words['files.err_ext'], words['dismiss']);
+                    if(!this.utils.IsKuka)
+                    {
+                      this.snack.open(words['files.err_ext'], words['dismiss']);
+                    }
                   });
                 break;
               case -3:
                 this.trn
                   .get(['files.err_permission', 'dismiss'])
                   .subscribe(words => {
-                    this.snack.open(
-                      words['files.err_upload'],
-                      words['dismiss']
-                    );
+                    if(!this.utils.IsKuka)
+                    {
+                      this.snack.open(
+                        words['files.err_upload'],
+                        words['dismiss']
+                      );
+                    }
+   
                   });
                 break;
             }

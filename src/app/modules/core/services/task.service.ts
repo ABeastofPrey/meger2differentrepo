@@ -5,6 +5,9 @@ import { TpStatService } from './tp-stat.service';
 import { TaskFilterPipe } from '../../task-manager/task-filter.pipe';
 import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../../../../environments/environment';
+
+const IsNotKuka = environment.platform.name !== environment.platforms.Kuka.name;
 
 @Injectable()
 export class TaskService {
@@ -132,7 +135,9 @@ export class TaskService {
       this.ws.query('KillTask ' + task.name).then(() => {
         this.ws.query('StartTask ' + task.name).then(ret=>{
           if (!showErrors || !ret.err) return;
-          this.snack.open(ret.err.errMsg,this.words['dismiss']);
+          if (IsNotKuka) {
+            this.snack.open(ret.err.errMsg,this.words['dismiss']);
+          }
         });
       });
     }
@@ -145,7 +150,9 @@ export class TaskService {
       if (task.priority == null) continue;
       this.ws.query('KillTask ' + task.name).then(ret=>{
         if (!showErrors || !ret.err) return;
-        this.snack.open(ret.err.errMsg,this.words['dismiss']);
+        if (IsNotKuka) {
+          this.snack.open(ret.err.errMsg,this.words['dismiss']);
+        }
       });
     }
   }
@@ -157,7 +164,9 @@ export class TaskService {
       if (task.priority == null) continue;
       this.ws.query('IdleTask ' + task.name).then(ret=>{
         if (!showErrors || !ret.err) return;
-        this.snack.open(ret.err.errMsg,this.words['dismiss']);
+        if (IsNotKuka) {
+          this.snack.open(ret.err.errMsg,this.words['dismiss']);
+        }
       });
     }
   }
@@ -174,7 +183,9 @@ export class TaskService {
         if (task.priority || task.state.indexOf('Global') === -1) {
           this.ws.query('Unload ' + task.name).then(ret=>{
             if (!showErrors || !ret.err) return;
-            this.snack.open(ret.err.errMsg,this.words['dismiss']);
+            if (IsNotKuka) {
+              this.snack.open(ret.err.errMsg,this.words['dismiss']);
+            }
           });
         }
       });

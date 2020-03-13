@@ -19,6 +19,7 @@ import { NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {UpdateDialogComponent} from '../../../../../../components/update-dialog/update-dialog.component';
 import {YesNoDialogComponent} from '../../../../../../components/yes-no-dialog/yes-no-dialog.component';
+import { UtilsService } from '../../../../../../../app/modules/core/services/utils.service';
 
 export class TreeNode {
   children: TreeNode[] = [];
@@ -65,7 +66,8 @@ export class IoMappingScreenComponent implements OnInit {
     public prj: ProjectManagerService,
     private trn: TranslateService,
     private dialog: MatDialog,
-    private api: ApiService
+    private api: ApiService,
+    private utils: UtilsService
   ) {
     this.treeControl = new NestedTreeControl<TreeNode>(this._getChildren);
     this.dataSource = new MatTreeNestedDataSource();
@@ -147,10 +149,20 @@ export class IoMappingScreenComponent implements OnInit {
       .then((ret: MCQueryResponse) => {
         if (ret.result !== '0') {
           e.target.value = io.name;
-          this.snack.open(this.words['changeError'], '', { duration: 2000 });
+          // this.snack.open(this.words['changeError'], '', { duration: 2000 });
+          if(!this.utils.IsKuka)
+          {
+            console.log('Replace snack: ' + this.words['changeError']);
+          }
+          
         } else {
           io.name = newVal;
-          this.snack.open(this.words['changeOK'], '', { duration: 1000 });
+          // this.snack.open(this.words['changeOK'], '', { duration: 1000 });
+          if(!this.utils.IsKuka)
+          {
+            console.log('Replace snack: ' + this.words['changeOK']);
+          }
+          
         }
       });
   }
@@ -165,10 +177,18 @@ export class IoMappingScreenComponent implements OnInit {
       .then((ret: MCQueryResponse) => {
         if (ret.result !== '0') {
           e.target.value = io.description;
-          this.snack.open(this.words['changeError'], '', { duration: 2000 });
+          // this.snack.open(this.words['changeError'], '', { duration: 2000 });
+          if(!this.utils.IsKuka)
+          {
+            console.log('Replace snack: ' + this.words['changeError']);
+          }
         } else {
           io.description = newVal;
-          this.snack.open(this.words['changeOK'], '', { duration: 1000 });
+          // this.snack.open(this.words['changeOK'], '', { duration: 1000 });
+          if(!this.utils.IsKuka)
+          {
+            console.log('Replace snack: ' + this.words['changeError']);
+          }
         }
       });
   }

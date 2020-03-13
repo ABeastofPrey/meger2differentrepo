@@ -1,0 +1,46 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <b class="cause-title">{{ 'sys_log.possiable_causes' | translate }}</b>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-accordion *ngIf="canExpand else placeholderTemplate">
+            <ng-container *ngFor="let pCause of possiableCauses; let i=index">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <div class="title-container">
+                                <span class="title-span" [matTooltip]="pCause.cause">
+                                    <b class="cause-item">{{ 'sys_log.cause' | translate }}: </b>
+                                    {{ pCause.cause }}
+                                </span>
+                                <br />
+                                <span class="title-span" [matTooltip]="pCause.solution">
+                                    <b class="cause-item">{{ 'sys_log.solution' | translate }}: </b>
+                                    {{ pCause.solution }}
+                                </span>
+                            </div>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ng-template matExpansionPanelContent>
+                        <div class="cause-item-container">
+                            <b class="cause-item">{{ 'sys_log.description' | translate }}: </b>
+                            <span *ngFor="let desc of pCause.description; let index=index">
+                                <ng-container *ngIf="index !== 0">
+                                    &nbsp;&nbsp;&nbsp;
+                                </ng-container>
+                                {{ desc }}
+                            </span>
+                        </div>
+                    </ng-template>
+                </mat-expansion-panel>
+            </ng-container>
+        </mat-accordion>
+        <ng-template #placeholderTemplate>
+            <ng-container *ngFor="let pCause of possiableCauses">
+                <div [ngStyle]="{'height': '48px'}"></div>
+            </ng-container>
+        </ng-template>
+    </mat-card-content>
+</mat-card>

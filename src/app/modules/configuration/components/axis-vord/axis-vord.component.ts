@@ -3,7 +3,7 @@ import { GroupManagerService } from './../../../core/services/group-manager.serv
 import { WebsocketService, MCQueryResponse } from './../../../core/services/websocket.service';
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-
+import {UtilsService} from '../../../../modules/core/services/utils.service';
 @Component({
   selector: 'app-axis-vord',
   templateUrl: './axis-vord.component.html',
@@ -21,7 +21,8 @@ export class AxisVordComponent implements OnInit {
     private ws: WebsocketService,
     private grp: GroupManagerService,
     private snack: MatSnackBar,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService
   ) { }
 
   async ngOnInit() {
@@ -64,7 +65,9 @@ export class AxisVordComponent implements OnInit {
       if (ret.result !== '0') {
         this.vords[i].vord = prev;
       } else {
-        this.snack.open(this.words['changeOK'], '', {duration: 1500});
+        if (!this.utils.IsKuka) {
+          this.snack.open(this.words['changeOK'], '', {duration: 1500});
+        }
       }
     });
   }

@@ -1,0 +1,44 @@
+.log-profile {
+    display: flex;
+    flex-direction: row;
+    // background: #3d6f9a;
+    &-icon {
+        padding: 5px 5px 5px 5px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        mat-icon {
+            font-size: 20px;
+            height: 20px;
+            width: 20px;
+        }
+    }
+    &-content {
+        flex-grow: 1;
+        padding: 5px 5px 5px 5px;
+    }
+    &-date {
+        color: gray;
+        font-size: 0.9em;
+        height: 20px;
+        // margin-bottom: 4px;
+    }
+    &-desc {
+        color: black !important;
+        font-size: 0.9em;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        span:nth-child(2) {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: inline-block;
+            max-width: 85%;
+            margin-left: 5px;
+            // line-height: 17px;
+        }
+    }
+}

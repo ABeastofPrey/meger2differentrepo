@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserWithPic } from '../user-mngr/user-mngr.component';
 import { LoginService } from '../../../../core';
 import { FormControl, Validators, ValidatorFn } from '@angular/forms';
+import {UtilsService} from '../../../../../modules/core/services/utils.service';
 
 @Component({
   selector: 'app-new-user-dialog',
@@ -77,6 +78,7 @@ export class NewUserDialogComponent implements OnInit {
     private ref: MatDialogRef<boolean>,
     private trn: TranslateService,
     public login: LoginService,
+    private utils: UtilsService,
     @Inject(MAT_DIALOG_DATA) public data: UserWithPic
   ) {}
 
@@ -105,7 +107,11 @@ export class NewUserDialogComponent implements OnInit {
         )
         .then((res: string) => {
           if (res) this.ref.close(true);
-          else this.snack.open(this.wordErr, '', { duration: 2000 });
+          else {
+            if (!this.utils.IsKuka) {
+              this.snack.open(this.wordErr, '', { duration: 2000 });
+            }
+          }
         });
     }
     this.api
@@ -117,7 +123,11 @@ export class NewUserDialogComponent implements OnInit {
       )
       .then((res: string) => {
         if (res) this.ref.close(true);
-        else this.snack.open(this.wordErr, '', { duration: 2000 });
+        else {
+          if (!this.utils.IsKuka) {
+            this.snack.open(this.wordErr, '', { duration: 2000 });
+          }
+        }
       });
   }
 }

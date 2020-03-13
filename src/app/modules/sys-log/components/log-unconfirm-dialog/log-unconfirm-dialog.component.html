@@ -1,0 +1,45 @@
+<div class="log-unconfirm-container">
+    <button class="close-button" mat-button [mat-dialog-close]="false" cdkFocusInitial>X</button>
+    <div class="content-portion">
+        <div class="head-portion">
+            <div class="counter-container">
+                <div class="counter">
+                    <mat-icon aria-hidden="false" class="warn">cancel</mat-icon>&nbsp;
+                    <span>{{errCount}}</span>
+                </div>
+                <div class="counter">
+                    <mat-icon aria-hidden="false" color="primary">warning</mat-icon>&nbsp;
+                    <span>{{warnCount}}</span>
+                </div>
+                <div class="counter">
+                    <mat-icon aria-hidden="false" color="accent">info</mat-icon>&nbsp;
+                    <span>{{infoCount}}</span>
+                </div>
+            </div>
+            <button class="confirm-all-btn" mat-raised-button color="primary" (click)="confirmAll($event)">{{ 'sys_log.confirm_all' | translate }}</button>
+        </div>
+        <div class="accordion-container">
+            <mat-accordion>
+                <cdk-virtual-scroll-viewport itemSize="50" class="view-port">
+                    <hr [style.border-width]="0" />
+                     <ng-container *cdkVirtualFor="let item of unconfirmLog; templateCacheSize: 0">
+                        <mat-expansion-panel *ngIf="canExpand">
+                            <mat-expansion-panel-header>
+                                <div class="panel-container">
+                                    <app-log-profile [log]="item"></app-log-profile>
+                                    <button class="confirm-btn" mat-raised-button color="primary" (click)="confirm($event, item)">
+                                        {{ 'sys_log.confirm' | translate }}
+                                    </button>
+                                </div>
+                            </mat-expansion-panel-header><br />
+                            <ng-template matExpansionPanelContent>
+                                <app-log-details [ngStyle]="{'max-height': '250px'}" [log]="item"></app-log-details>
+                            </ng-template>
+                        </mat-expansion-panel>
+                    </ng-container>
+                    <hr [style.border-width]="0" />
+                </cdk-virtual-scroll-viewport>
+            </mat-accordion>
+        </div>
+    </div>
+</div>

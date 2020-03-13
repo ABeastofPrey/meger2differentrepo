@@ -68,7 +68,8 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     }
     if (!this.validator((event.target as HTMLInputElement).value)) {
       (event.target as HTMLInputElement).value = this.previousValue;
-      this.snackBar.open(this.words['positiveNumTip'], '', { duration: 2000 });
+      // this.snackBar.open(this.words['positiveNumTip'], '', { duration: 2000 });
+      console.log('Replace snack: ' + this.words['positiveNumTip']);
       return;
     }
     try {
@@ -77,7 +78,8 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
         Number(departOrApproach) as 1 | 2,
         Number(changedValue)
       );
-      this.snackBar.open(this.words['valChangedTip'], '', { duration: 1500 });
+      // this.snackBar.open(this.words['valChangedTip'], '', { duration: 1500 });
+      console.log('Replace snack: ' + this.words['valChangedTip']);
     } catch (err) {
       console.error('Change value failed: ' + err.errString);
     }

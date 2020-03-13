@@ -1,0 +1,5 @@
+<div>
+    <app-log-mc-info [log]="log"></app-log-mc-info> <br />
+    <app-log-effect *ngIf="log.type !== 'information'" [log]="log"></app-log-effect> <br />
+    <app-log-cause *ngIf="log.type !== 'information'" [log]="log"></app-log-cause>
+</div>

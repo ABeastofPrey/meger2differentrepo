@@ -21,6 +21,7 @@ import { OSUpgradeSuccessDialogComponent } from './components/osupgrade-success-
 import { TpLoadingComponent } from './components/tp-loading/tp-loading.component';
 import { CustomEventManager } from './modules/core/strategies/listener-outside-angular.strategy';
 import { NgrxRootModule } from './modules/ngrx-root/ngrx-root.module';
+import { SystemLogModule } from './modules/sys-log/sys-log.module';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { NgrxRootModule } from './modules/ngrx-root/ngrx-root.module';
     ControlStudioRoutingModule,
     TourMatMenuModule.forRoot(),
     NgrxRootModule,
+    SystemLogModule
   ],
   bootstrap: [ControlStudioComponent],
   entryComponents: [

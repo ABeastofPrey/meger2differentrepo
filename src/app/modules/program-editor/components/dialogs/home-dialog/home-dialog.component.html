@@ -14,7 +14,7 @@
 		</mat-form-field>
 	</div>
 	<div mat-dialog-actions class="actions">
-		<button mat-button color="primary" mat-dialog-close>
+		<button mat-button [mat-dialog-close]="null" cdkFocusInitial>
 			{{ 'button.cancel' | translate }}
 		</button>
 		<button mat-button color="primary" [disabled]="cannotInsert" type="submit">

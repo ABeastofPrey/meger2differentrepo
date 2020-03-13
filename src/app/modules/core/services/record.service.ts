@@ -6,6 +6,7 @@ import {GroupManagerService} from './group-manager.service';
 import {ApiService} from './api.service';
 import {BehaviorSubject} from 'rxjs';
 import { PlotData } from 'plotly.js';
+import {UtilsService} from '../../../modules/core/services/utils.service';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +65,8 @@ export class RecordService {
     private snack: MatSnackBar,
     public grp: GroupManagerService,
     private api: ApiService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService,
   ) {
     this.grp.sysInfoLoaded.subscribe(loaded=>{
       this.available.next(loaded);
@@ -76,7 +78,9 @@ export class RecordService {
 
   private closeRecording() {
     this.ws.query('RecordClose').then(() => {
-      this.snack.open(this._words['record_done'], null, { duration: 1500 });
+      if (this.utils.IsNotKuka) {
+        this.snack.open(this._words['record_done'], null, { duration: 1500 });
+      }
     });
     clearTimeout(this.timeout);
     this._isRecording = false;
@@ -94,9 +98,19 @@ export class RecordService {
       }).join();
       const cmd = `Record CSRECORD.rec ${samples} Gap=1 RecData=${axes}`;
       this.ws.query(cmd).then((ret: MCQueryResponse) => {
-        if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
+        if (ret.err) {
+          if (this.utils.IsNotKuka) {
+            return this.snack.open(ret.err.errMsg, 'DISMISS');
+          }
+          return;
+        }
         this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
-          if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
+          if (ret.err) {
+            if (this.utils.IsNotKuka) {
+              return this.snack.open(ret.err.errMsg, 'DISMISS');
+            }
+            return;
+          }
           this._isRecording = true;
           clearInterval(this.timeout);
           const time = this.grp.sysInfo.cycleTime * samples + 1000;

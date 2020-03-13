@@ -1,0 +1,38 @@
+<mat-card>
+    <mat-card-content>
+        <div>
+            <b>{{ 'sys_log.mc_task' | translate }}:</b>&nbsp;
+            <ng-container [ngSwitch]="!!log.task">
+                <span *ngSwitchCase="true">{{ log?.task }}</span>
+                <span *ngSwitchCase="false">none</span>
+            </ng-container>
+        </div>
+
+        <div>
+            <b>{{ 'sys_log.mc_file' | translate }}:</b>&nbsp;
+            <ng-container [ngSwitch]="log.source !== 'webServer'">
+                <span *ngSwitchCase="true">
+                    <span *ngIf="login.isAdmin && log?.file?.indexOf('.') > 0"
+                        matRipple [matRippleRadius]="16"
+                        class="link" (mousedown)="goToError(log.file)" mat-dialog-close>
+                        {{ log.file }}
+                    </span>
+                    <span *ngIf="!login.isAdmin || log?.file?.indexOf('.') === -1">{{ log.file }}</span>
+                </span>
+                <span *ngSwitchCase="false">none</span>
+            </ng-container>
+        </div>
+
+        <div>
+            <b>{{ 'sys_log.mc_line' | translate }}:</b>&nbsp;
+            <ng-container [ngSwitch]="!!log.line">
+                <span *ngSwitchCase="true">{{ log?.line }}</span>
+                <span *ngSwitchCase="false">none</span>
+            </ng-container>
+        </div>
+
+        <ng-container *ngIf="!!log && log.module">
+            <b>{{ 'sys_log.mc_module' | translate }}:</b>&nbsp;{{ log.module }}
+        </ng-container>
+    </mat-card-content>
+</mat-card>

@@ -13,6 +13,7 @@ import { CommonService } from '../../../core/services/common.service';
 import { environment } from '../../../../../environments/environment';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'main-menu',
@@ -43,7 +44,8 @@ export class MainMenuComponent implements OnInit {
     private router: Router,
     public stat: TpStatService,
     private trn: TranslateService,
-    public cmn: CommonService
+    public cmn: CommonService,
+    private utils: UtilsService
   ) {}
 
   onClick(s: ControlStudioScreen) {
@@ -99,7 +101,10 @@ export class MainMenuComponent implements OnInit {
           if (ret) {
             this.api.refreshProfilePic();
             this.trn.get('files.success_upload').subscribe(word => {
-              this.snack.open(word, '', { duration: 2000 });
+              if(!this.utils.IsKuka)
+              {
+                this.snack.open(word, '', { duration: 2000 });
+              }
             });
             this.profileSrc = this.api.getProfilePic(
               this.login.getCurrentUser().user.username
@@ -108,7 +113,9 @@ export class MainMenuComponent implements OnInit {
             this.trn
               .get('files.err_upload', { name: file.name })
               .subscribe(word => {
-                this.snack.open(word, '', { duration: 2000 });
+                if (!this.utils.IsKuka) {
+                  this.snack.open(word, '', { duration: 2000 });
+                }
               });
           }
           this._busy = false;

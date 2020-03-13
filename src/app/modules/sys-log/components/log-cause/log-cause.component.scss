@@ -1,0 +1,32 @@
+mat-panel-title {
+    width: 100%;
+ }
+
+.title-container {
+    width: 100%;
+}
+
+.cause-title {
+    font-size: 16px;
+}
+.title-span {
+    font-size: small;
+    color: gray;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+}
+.cause-item-container {
+    max-height: 13vh;
+    overflow-y: auto;
+    span:nth-child(n+3) {
+        margin: 5px 0;
+        display: block;
+    }
+}
+.cause-item {
+    color: black;
+    font-size: 14px;
+}

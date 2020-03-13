@@ -128,11 +128,15 @@ export class UtilsService {
           this.trn
             .get('utils.err_reset', { result: ret.err.errMsg })
             .subscribe(err => {
-              this.snack.open(err, this.words['acknowledge']);
+              if (this.IsNotKuka) {
+                this.snack.open(err, this.words['acknowledge']);
+              }
             });
           return Promise.reject(false);
         }
-        this.snack.open(this.words['utils.success'], null, { duration: 1500 });
+        if (this.IsNotKuka) {
+          this.snack.open(this.words['utils.success'], null, { duration: 1500 });
+        }
         this.stat.startTpLibChecker();
         if (loadautoexec) {
           if (!env.production) console.log('loading autoexec.prg...');
@@ -157,6 +161,10 @@ export class UtilsService {
 
   get IsKuka(): boolean {
     return env.platform.name === env.platforms.Kuka.name;
+  }
+
+  get IsNotKuka(): boolean {
+    return env.platform.name !== env.platforms.Kuka.name;
   }
 
   get isDebug(): boolean {

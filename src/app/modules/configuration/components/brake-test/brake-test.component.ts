@@ -6,6 +6,7 @@ import { DataService } from './../../../core/services/data.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import {UtilsService} from '../../../../modules/core/services/utils.service';
 
 @Component({
   selector: 'brake-test',
@@ -27,7 +28,8 @@ export class BrakeTestComponent implements OnInit {
     private dialog: MatDialog,
     private cd: ChangeDetectorRef,
     private trn: TranslateService,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private utils: UtilsService
   ) { }
 
   private checkBit = (target: number, position: number) => {
@@ -92,7 +94,9 @@ export class BrakeTestComponent implements OnInit {
       this.busy = false;
       this.cd.detectChanges();
       if (result === '0') {
-        this.snack.open(this.words['success'],'',{duration: 1500});
+        if (!this.utils.IsKuka) {
+          this.snack.open(this.words['success'],'',{duration: 1500});
+        }
       }
     });
   }

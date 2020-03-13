@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'message-log',
@@ -46,6 +47,7 @@ export class MessageLogComponent implements OnInit {
     private mgr: ScreenManagerService,
     private prg: ProgramEditorService,
     private cd: ChangeDetectorRef,
+    private trn: TranslateService,
     private router: Router) { }
 
     ngOnInit() {
@@ -109,4 +111,29 @@ export class MessageLogComponent implements OnInit {
       this.notification.toggleWindow();
     }
 
+    public firstPortion: string;
+    public secondPortion: string;
+    public thirdPortioin: string;
+    public libLogcode: number;
+
+    public isLibLog(msg: string): boolean {
+      if (typeof msg !== 'string' || msg.trim() === '') {
+        return false;
+      }
+      const strIdx = msg.indexOf(':') + 1;
+      const endIdx = msg.indexOf(',');
+      const logCode = parseInt(msg.slice(strIdx, endIdx).trim());
+      const isLibLog = errCode => errCode >= 20000 && errCode <= 20999;
+      this.libLogcode = logCode;
+      this.recombinateLibMsg(msg);
+      return isLibLog(logCode);
+    }
+
+    private recombinateLibMsg(oriMsg: string): void {
+      const strIdx = oriMsg.indexOf('"') + 1;
+      this.firstPortion = oriMsg.slice(0, strIdx);
+      const endIdx = oriMsg.slice(strIdx).indexOf('"');
+      this.thirdPortioin = oriMsg.slice(strIdx + endIdx);
+      this.secondPortion = oriMsg.slice(strIdx, strIdx + endIdx);
+    }
 }

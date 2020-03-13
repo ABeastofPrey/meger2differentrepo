@@ -17,6 +17,7 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs';
 import { SimulatorService } from '../../core/services/simulator.service';
 import { ExternalGraphDialogComponent } from '../../dashboard/components/external-graph-dialog/external-graph-dialog.component';
+import { UtilsService } from '../../core/services/utils.service';
 
 @Component({
   selector: 'simulator-v2',
@@ -48,7 +49,8 @@ export class SimulatorV2Component implements OnInit {
     private scene: SceneService,
     private grp: GroupManagerService,
     private dataService: DataService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService
   ) {}
 
   ngOnInit() {
@@ -112,7 +114,10 @@ export class SimulatorV2Component implements OnInit {
           const name2 = 'A' + i + '.PCMD';
           if (legends[i-1] !== name1 && legends[i-1] !== name2) {
             this.loaded = true;
-            this.snack.open(this.words['error.invalid_rec_motion'],this.words['dismiss']);
+            if(!this.utils.IsKuka)
+            {
+              this.snack.open(this.words['error.invalid_rec_motion'],this.words['dismiss']);
+            }
             return;
           }
         }
@@ -162,7 +167,10 @@ export class SimulatorV2Component implements OnInit {
         const f = new File([new Blob([str])], name);
         this.api.upload(f, true).then(ret => {
           const msg = ret ? this.words['success'] : this.words['error.err'];
-          this.snack.open(msg, null, { duration: 1500 });
+          if(!this.utils.IsKuka)
+          {
+            this.snack.open(msg, null, { duration: 1500 });
+          }
         });
       });
   }

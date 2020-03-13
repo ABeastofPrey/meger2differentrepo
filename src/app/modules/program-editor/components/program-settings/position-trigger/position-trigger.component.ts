@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { NewPositionTriggerComponent } from '../new-position-trigger/new-position-trigger.component';
 import { PositionTriggerService, IResPLS } from '../../../services/position-trigger.service';
 import {
@@ -137,7 +137,7 @@ export class PositionTriggerComponent implements OnInit {
   }
 
   constructor(
-    public snackBar: MatSnackBar,
+    // public snackBar: MatSnackBar,
     public dialog: MatDialog,
     private service: PositionTriggerService,
     private trn: TranslateService
@@ -206,11 +206,13 @@ export class PositionTriggerComponent implements OnInit {
   onBlur(element: IPositionTrigger): void {
     if (isNotPositiveNumber(element.distance)) {
       element.distance = Number(this.preDistance);
-      this.snackBar.open(this.positiveNumTip, '', { duration: 2000 });
+      // this.snackBar.open(this.positiveNumTip, '', { duration: 2000 });
+      console.log('Replace snack: ' + this.positiveNumTip);
     } else if (isChanged(this.preDistance, element.distance)) {
       if (element.selectedSourceType === 'Percentage' && element.distance > 100) {
         element.distance = Number(this.preDistance);
-        this.snackBar.open(this.positiveNumTip, '', { duration: 2000 });
+        // this.snackBar.open(this.positiveNumTip, '', { duration: 2000 });
+        console.log('Replace snack: ' + this.positiveNumTip);
         return;
       }
       this.updatePls(element);

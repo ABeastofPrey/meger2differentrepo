@@ -5,11 +5,31 @@ import { TourService } from 'ngx-tour-md-menu';
 import { PreloadSelectedModulesList } from './modules/core/strategies/preload.strategy';
 import { AuthGuard } from './modules/core';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
+import { from, Observable, combineLatest } from 'rxjs';
+import { map as rxjsMap } from 'rxjs/operators';
 
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/');
+export class CsTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<any> {
+    const fromI18n = from(import(`../assets/i18n/${lang}.json`));
+    const fromECodeI18n = from(import(`../assets/i18n-error-code/error-code-${lang}.json`));
+    const fromLibI18n = from(import(`../assets/i18n-lib/lib-${lang}.json`));
+    const combinedI18n = combineLatest([fromI18n, fromECodeI18n, fromLibI18n])
+      .pipe(rxjsMap(([resI18n, resECI18n, resLibI18n]) => {
+        resI18n['err_code'] = resECI18n['err_code'];
+        resI18n['lib_code'] = resLibI18n['lib_code'];
+        return resI18n;
+      }));
+    return combinedI18n;
+  }
+}
+
+// export function HttpLoaderFactory(http: HttpClient) {
+//   return new TranslateHttpLoader(http, './assets/i18n/');
+// }
+
+export function csLoaderFactory() {
+  return new CsTranslateLoader();
 }
 
 const routes: Routes = [
@@ -40,7 +60,7 @@ const routes: Routes = [
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
+        useFactory: csLoaderFactory,
         deps: [HttpClient],
       },
     }),

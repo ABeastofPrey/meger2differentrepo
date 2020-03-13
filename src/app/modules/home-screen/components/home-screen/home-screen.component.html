@@ -2,7 +2,8 @@
 	<div class="header">
 		<div class="header-box primary-bg-dark center-vertical">
 			<mat-icon>access_time</mat-icon>
-			<span>{{ date }}&nbsp;&nbsp;{{ time }}</span>
+			<!-- <span>{{ date }}&nbsp;&nbsp;{{ time }}</span> -->
+			<span>{{dateTime | date:'yyyy/MM/dd h:mm:ss a'}}</span>
 		</div>
 		<div class="header-box primary-bg-dark center-vertical">
 			<mat-icon>devices</mat-icon>

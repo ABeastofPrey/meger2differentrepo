@@ -15,7 +15,7 @@ import {
 } from 'ramda';
 import { isNotValidNumber } from 'ramda-adjunct';
 import { Either } from 'ramda-fantasy';
-import { MatSnackBar } from '@angular/material';
+// import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
@@ -42,7 +42,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
   constructor(
     private service: HomeSettingService,
     private terminalService: TerminalService,
-    public snackBar: MatSnackBar,
+    // public snackBar: MatSnackBar,
     private trn: TranslateService
   ) {
     this.terminalService.sentCommandEmitter
@@ -100,14 +100,15 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
       } else {
         Either.either(
           err => console.warn('Update Home Position failed: ' + err),
-          () =>
-            this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
+          () => console.log('Replace snack: ' + this.words['savedTip'])
+            // this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
         )(await this.service.clearHomePosition(index));
       }
     } else {
       if (isNotValidNumber(value)) {
         target.value = this.preValue as string;
-        this.snackBar.open(this.words['validNumTip'], '', { duration: 1000 });
+        // this.snackBar.open(this.words['validNumTip'], '', { duration: 1000 });
+        console.log('Replace snack: ' + this.words['validNumTip']);
         return;
       } else if (isEqualsToPrevious(value)) {
         return;
@@ -125,17 +126,19 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
           isOverLimit = complement(positionRange);
         if (isOverLimit(value)) {
           target.value = this.preValue as string;
-          this.snackBar.open(
-            `${this.words['numRange']} [${this.min},${this.max}].`,
-            '',
-            { duration: 3000 }
-          );
+          // this.snackBar.open(
+          //   `${this.words['numRange']} [${this.min},${this.max}].`,
+          //   '',
+          //   { duration: 3000 }
+          // );
+          console.log('Replace snack: ' + `${this.words['numRange']} [${this.min},${this.max}].`);
           return;
         }
       }
       Either.either(
         err => console.warn('Update Home Position failed: ' + err),
-        () => this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
+        // () => this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
+        () => console.log('Replace snack: ' + this.words['savedTip'])
       )(await this.service.updateHomePostion(index, value));
     }
   }
@@ -143,7 +146,8 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
   async updateOrder(index: number, value: number): Promise<void> {
     Either.either(
       err => console.warn('Update Home Order failed: ' + err),
-      () => this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
+      // () => this.snackBar.open(this.words['savedTip'], '', { duration: 1000 })
+      () => console.log('Replace snack: ' + this.words['savedTip'])
     )(await this.service.updateHomeOrder(index, value));
   }
 

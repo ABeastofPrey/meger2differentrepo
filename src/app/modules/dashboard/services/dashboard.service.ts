@@ -8,6 +8,7 @@ import { NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {GroupManagerService} from '../../core/services/group-manager.service';
 import {RecordParams} from '../../../components/record-dialog/record-dialog.component';
+import {UtilsService} from '../../../modules/core/services/utils.service';
 
 @Injectable()
 export class DashboardService {
@@ -58,7 +59,8 @@ export class DashboardService {
     private snack: MatSnackBar,
     private zone: NgZone,
     private trn: TranslateService,
-    private grp: GroupManagerService
+    private grp: GroupManagerService,
+    private utils: UtilsService,
   ) {
     this.trn
       .get([
@@ -142,10 +144,12 @@ export class DashboardService {
     this._busy = true;
     return this.api.getRecordingCSV(recName).then((csv: string) => {
       if (csv === null) {
-        this.snack.open(
-          this.words['dashboard.err_file'],
-          this.words['dismiss']
-        );
+        if (this.utils.IsNotKuka) {
+          this.snack.open(
+            this.words['dashboard.err_file'],
+            this.words['dismiss']
+          );
+        }
         return false;
       }
       this.lastChartData = this.csvToGraphs(csv);

@@ -8,6 +8,7 @@ import { RecordService } from '../../../core/services/record.service';
 import { Router } from '@angular/router';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { of } from 'rxjs';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'watch-window',
@@ -28,7 +29,8 @@ export class WatchWindowComponent implements OnInit {
     private api: ApiService,
     private rec: RecordService,
     private router: Router,
-    private grp: GroupManagerService
+    private grp: GroupManagerService,
+    private utils: UtilsService
   ) { }
 
   ngOnInit() {
@@ -67,9 +69,22 @@ export class WatchWindowComponent implements OnInit {
       ' Gap=' + recParams.gap + ' RecData=' +
       params.join();
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
+      if (ret.err) 
+      {
+        if(!this.utils.IsKuka)
+        {
+          return this.snack.open(ret.err.errMsg, 'DISMISS');
+        }
+        return;
+      }
       this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
-        if (ret.err) return this.snack.open(ret.err.errMsg, 'DISMISS');
+        if (ret.err) 
+        {
+          if (!this.utils.IsKuka) {
+            return this.snack.open(ret.err.errMsg, 'DISMISS');
+          }
+          return;
+        }
         this.isRecording = true;
         let time = 0;
         const interval = setInterval(async() => {

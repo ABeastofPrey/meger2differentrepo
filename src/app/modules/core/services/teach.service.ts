@@ -5,6 +5,7 @@ import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { TPVariableType } from '../../core/models/tp/tp-variable-type.model';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from './data.service';
+import {UtilsService} from '../../../modules/core/services/utils.service';
 
 @Injectable()
 export class TeachService {
@@ -140,7 +141,8 @@ export class TeachService {
     private ws: WebsocketService,
     private snackBar: MatSnackBar,
     private trn: TranslateService,
-    private data: DataService
+    private data: DataService,
+    private utils: UtilsService
   ) {
     this.trn.get(['changeOK']).subscribe(words => {
       this.words = words;
@@ -179,7 +181,9 @@ export class TeachService {
         console.log(cmd);
         this.selectedTeachVariable = this.selectedTeachVariable;
         if (ret.result === '0') {
-          this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
+          if(this.utils.IsNotKuka) {
+            this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
+          }
         }
         else console.log(ret.cmd + '>>>' + ret.result);
       });

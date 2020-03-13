@@ -10,6 +10,7 @@ import { ComponentType } from '@angular/cdk/portal';
 import { ToolCalibrationDialogComponent } from '../tool-calibration-dialog/tool-calibration-dialog.component';
 import { FrameCalibrationDialogComponent } from '../frame-calibration-dialog/frame-calibration-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'frames',
@@ -36,7 +37,8 @@ export class FramesComponent implements OnInit {
     private dialog: MatDialog,
     private ws: WebsocketService,
     private snack: MatSnackBar,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private utils: UtilsService
   ) {
     this.trn
       .get([
@@ -123,7 +125,10 @@ export class FramesComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       this.rowClick(this.selectedVar, true); // REFRESH DATA
       if (ret.result === '0') {
-        this.snack.open(this.words['changeOK'], null, { duration: 2000 });
+        if(!this.utils.IsKuka)
+        {
+          this.snack.open(this.words['changeOK'], null, { duration: 2000 });
+        }
       }
       else console.log(ret.cmd + '>>>' + ret.result);
     });

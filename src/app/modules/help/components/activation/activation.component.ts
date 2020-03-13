@@ -65,8 +65,8 @@ export class ActivationComponent implements OnInit {
     const lowerPCode = toLower(this.pinCode);
     const isVerified: boolean = equals(lowerVCode);
     const closeDialog = () => this.dialogRef.close(this.machineId);
-    const promptSnack = () =>
-      this.snackBar.open(this.words, '', { duration: 2000 });
+    const promptSnack = () => console.log('Replace snack: ' + this.words);
+      // this.snackBar.open(this.words, '', { duration: 2000 });
     const doVerify = ifElse(isVerified, closeDialog, promptSnack);
     doVerify(lowerPCode);
   }
