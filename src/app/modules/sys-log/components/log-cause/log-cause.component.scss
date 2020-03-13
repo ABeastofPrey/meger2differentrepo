@@ -3,6 +3,9 @@ mat-panel-title {
  }
 
 .title-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     width: 100%;
 }
 
@@ -10,17 +13,25 @@ mat-panel-title {
     font-size: 16px;
 }
 .title-span {
-    font-size: small;
     color: gray;
     display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
     overflow: hidden;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
 }
 .cause-item-container {
     max-height: 13vh;
     overflow-y: auto;
+    span {
+        color: gray;
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+    }
     span:nth-child(n+3) {
         margin: 5px 0;
         display: block;
@@ -28,5 +39,5 @@ mat-panel-title {
 }
 .cause-item {
     color: black;
-    font-size: 14px;
+    font-size: 15px;
 }

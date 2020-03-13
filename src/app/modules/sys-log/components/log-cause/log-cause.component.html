@@ -8,14 +8,13 @@
         <mat-accordion *ngIf="canExpand else placeholderTemplate">
             <ng-container *ngFor="let pCause of possiableCauses; let i=index">
                 <mat-expansion-panel>
-                    <mat-expansion-panel-header>
+                    <mat-expansion-panel-header [collapsedHeight]="'50px'">
                         <mat-panel-title>
                             <div class="title-container">
                                 <span class="title-span" [matTooltip]="pCause.cause">
                                     <b class="cause-item">{{ 'sys_log.cause' | translate }}: </b>
                                     {{ pCause.cause }}
                                 </span>
-                                <br />
                                 <span class="title-span" [matTooltip]="pCause.solution">
                                     <b class="cause-item">{{ 'sys_log.solution' | translate }}: </b>
                                     {{ pCause.solution }}
