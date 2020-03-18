@@ -33,6 +33,7 @@ export class SysLogBarService {
     }
 
     public startListenSysLog(): void {
+        this.pausePrompt = false;
         if (this.fetchLogInterval === undefined) {
             this.autoRetrieveLog();
             this.subscribeEvents();
@@ -40,6 +41,7 @@ export class SysLogBarService {
     }
 
     public stopListenSysLog(): void {
+        this.pausePrompt = true;
         this.fetchLogInterval = clearInterval(this.fetchLogInterval);
         this.popupLOgInterval = clearInterval(this.popupLOgInterval);
         this.clickQuestionSubscription.unsubscribe();
@@ -50,6 +52,7 @@ export class SysLogBarService {
     }
 
     private pauseListenSysLog(): void {
+        this.pausePrompt = true;
         this.fetchLogInterval = clearInterval(this.fetchLogInterval);
         this.popupLOgInterval = clearInterval(this.popupLOgInterval);
         this.clickQuestionSubscription.unsubscribe();
@@ -114,14 +117,12 @@ export class SysLogBarService {
 
     private subscribeEvents(): void {
         this.clickContentSubcription = this.overlaySerivce.clickContent.subscribe(id => {
-            this.pausePrompt = true;
             this.pauseListenSysLog();
             this.dialog.open(LogUnconfirmDialogComponent, {
                 width: '800px',
                 disableClose: true,
                 data: { unconfirmLog: [...this.unconfirmedLog] }
             }).afterClosed().subscribe((allConfirmed) => {
-                this.pausePrompt = false;
                 if (isUndefined(allConfirmed)) return;
                 this.startListenSysLog();
                 if (allConfirmed) {
@@ -130,14 +131,12 @@ export class SysLogBarService {
             });
         });
         this.clickQuestionSubscription = this.overlaySerivce.clickQuestion.subscribe(log => {
-            this.pausePrompt = true;
             this.pauseListenSysLog();
             this.dialog.open(LogInfoComponent, {
                 width: '600px',
                 disableClose: true,
                 data: { log }
             }).afterClosed().subscribe(() => {
-                this.pausePrompt = false;
                 this.startListenSysLog();
             });
         });

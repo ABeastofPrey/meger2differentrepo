@@ -356,28 +356,19 @@ export class ProgramEditorService {
               default:
                 break;
               case -2:
-                if(!this.utils.IsKuka)
-                {
                   this.snack.open(
                     words['files.err_upload'],
                     this.words['dismiss']
-                  );
-                }
+                  );               
                 break;
               case -3:
-                if(!this.utils.IsKuka)
-                {
-                  this.snack.open(words['files.err_ext'], this.words['dismiss']);
-                }
+                  this.snack.open(words['files.err_ext'], this.words['dismiss']);             
                 break;
               case -4:
-                if (!this.utils.IsKuka) 
-                {
                   this.snack.open(
                     words['files.err_permission'],
                     this.words['dismiss']
                   );
-                }
                 break;
             }
           });
@@ -433,26 +424,19 @@ export class ProgramEditorService {
               default:
                 break;
               case -2:
-                if(!this.utils.IsKuka)
-                {
                   this.snack.open(
                     words['files.err_upload'],
                     this.words['dismiss']
-                  );
-                }
+                  );       
                 break;
               case -3:
-                if (!this.utils.IsKuka) {
-                  this.snack.open(words['files.err_ext'], this.words['dismiss']);
-                }
+                  this.snack.open(words['files.err_ext'], this.words['dismiss']);               
                 break;
               case -4:
-                if (!this.utils.IsKuka) {
                   this.snack.open(
                     words['files.err_permission'],
                     this.words['dismiss']
                   );
-                }
                 break;
             }
             this.busy = false;

@@ -29,7 +29,7 @@ const getKukaParameter = url => {
     : context;
 };
 
-describe('ProgramSettingsComponent', () => {
+describe('ActivationComponent', () => {
   let component: ActivationComponent;
   let fixture: ComponentFixture<ActivationComponent>;
   const fakeId = 'AE-86';
@@ -118,7 +118,7 @@ describe('ProgramSettingsComponent', () => {
       const info = Kuka.kukaInfo(kukaPara); // Decrypt kuka route parameter to get verification code.
       component.pinCode = info.verificationCode += 'a';
       component.verify();
-      expect(openSpy.calls.any()).toBe(true);
+      expect(openSpy.calls.any()).toBe(false);
       getMachineIdSpy.calls.reset();
     });
   }));

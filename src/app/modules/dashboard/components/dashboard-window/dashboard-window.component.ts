@@ -116,9 +116,7 @@ export class DashboardWindowComponent implements OnInit {
             msg: ret.err.errMsg,
           })
           .subscribe(word => {
-            if (this.utils.IsNotKuka) {
-              this.snack.open(word, this.words['dismiss']);
-            }
+              this.snack.open(word, this.words['dismiss']);           
           });
       }
     });
@@ -184,17 +182,11 @@ export class DashboardWindowComponent implements OnInit {
           varList.join();
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
           if (ret.err) {
-            if (this.utils.IsNotKuka) {
               return this.snack.open(ret.err.errMsg, 'DISMISS');
-            }
-            return;
           }
           this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
             if (ret.err) {
-              if (this.utils.IsNotKuka) {
                 return this.snack.open(ret.err.errMsg, 'DISMISS');
-              }
-              return;
             }
             this.params.isRecording = true;
             this.params.recordingParams = params;

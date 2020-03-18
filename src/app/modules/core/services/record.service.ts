@@ -99,17 +99,11 @@ export class RecordService {
       const cmd = `Record CSRECORD.rec ${samples} Gap=1 RecData=${axes}`;
       this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if (ret.err) {
-          if (this.utils.IsNotKuka) {
-            return this.snack.open(ret.err.errMsg, 'DISMISS');
-          }
-          return;
+          return this.snack.open(ret.err.errMsg, 'DISMISS');
         }
         this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
           if (ret.err) {
-            if (this.utils.IsNotKuka) {
               return this.snack.open(ret.err.errMsg, 'DISMISS');
-            }
-            return;
           }
           this._isRecording = true;
           clearInterval(this.timeout);

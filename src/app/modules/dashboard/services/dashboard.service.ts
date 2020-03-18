@@ -144,12 +144,10 @@ export class DashboardService {
     this._busy = true;
     return this.api.getRecordingCSV(recName).then((csv: string) => {
       if (csv === null) {
-        if (this.utils.IsNotKuka) {
           this.snack.open(
             this.words['dashboard.err_file'],
             this.words['dismiss']
-          );
-        }
+          );    
         return false;
       }
       this.lastChartData = this.csvToGraphs(csv);

@@ -267,12 +267,9 @@ export class ProgramToolbarComponent implements OnInit {
               }
             })
             .then(() => {
-              if(!this.utils.IsKuka)
-              {
                 this.snack.open(this.words['success'], this.words['dismiss'], {
                   duration: 1500,
-                });
-              }
+                });             
             });
         }
       });
@@ -286,11 +283,9 @@ export class ProgramToolbarComponent implements OnInit {
           const f = new File([new Blob([''])], ret);
           this.api.upload(f, false).then((result: UploadResult) => {
             if (result.success) {
-              if (!this.utils.IsKuka) {
                 this.snack.open(this.words['success'], this.words['dismiss'], {
                   duration: 1500,
-                });
-              }
+                });           
               this.prj.fileRefreshNeeded.emit();
               this.prgService.setFile(ret, null, null, -1);
             } else if (result.err === -1) {
@@ -315,34 +310,28 @@ export class ProgramToolbarComponent implements OnInit {
                           .upload(f, true)
                           .then((result: UploadResult) => {
                             if (result.success) {
-                              if (!this.utils.IsKuka) {
                                 this.snack.open(
                                   this.words['success'],
                                   this.words['dismiss'],
                                   { duration: 1500 }
-                                );
-                              }
+                                );                             
                               this.prj.fileRefreshNeeded.emit();
                               this.prgService.setFile(ret, null, null, -1);
                             } else {
-                              if (!this.utils.IsKuka) {
                                 this.snack.open(
                                   this.words['error.err'],
                                   this.words['dismiss'],
                                   { duration: 2000 }
-                                );
-                              }
+                                );                              
                             }
                           });
                       }
                     });
                 });
             } else {
-              if (!this.utils.IsKuka) {
                 this.snack.open(this.words['error.err'], this.words['dismiss'], {
                   duration: 2000,
-                });
-              }
+                });              
             }
           });
         }
@@ -364,19 +353,14 @@ export class ProgramToolbarComponent implements OnInit {
         if (name) {
           this.api.createFolder(name).then(result => {
             if (result) {
-              if(!this.utils.IsKuka)
-              {
                 this.snack.open(this.words['success'], this.words['dismiss'], {
                   duration: 1500,
-                });
-              }
+                });             
               this.prj.fileRefreshNeeded.emit();
             } else {
-              if (!this.utils.IsKuka) {
                 this.snack.open(this.words['error.err'], this.words['dismiss'], {
                   duration: 2000,
-                });
-              }
+                });             
             }
           });
         }
@@ -396,13 +380,10 @@ export class ProgramToolbarComponent implements OnInit {
           return this.prj.getCurrentProject();
         }
       } else {
-        if(!this.utils.IsKuka)
-        {
           this.snack.open(
             this.words['projects.toolbar']['err_import'],
             this.words['dismiss']
-          );
-        }
+          );        
       }
     });
   }
@@ -460,30 +441,22 @@ export class ProgramToolbarComponent implements OnInit {
                   default:
                     break;
                   case -2:
-                    if(!this.utils.IsKuka)
-                    {
                       this.snack.open(
                         words['files.err_upload'],
                         this.words['dismiss']
-                      );
-                    }
+                      );                   
                     break;
                   case -3:
-                    if(!this.utils.IsKuka)
-                    {
                       this.snack.open(
                         words['files.err_ext'],
                         this.words['dismiss']
-                      );
-                    }
+                      );                   
                     break;
                   case -4:
-                    if (!this.utils.IsKuka) {
                       this.snack.open(
                         words['files.err_permission'],
                         this.words['dismiss']
                       );
-                    }
                     break;
                 }
               });
@@ -540,13 +513,10 @@ export class ProgramToolbarComponent implements OnInit {
                             } else {
                               // SOMETHING WENT WRONG, TELL SERVER TO DELETE THE FILE
                               this.api.deleteProjectZip(verification.file);
-                              if(!this.utils.IsKuka)
-                              {
-                                this.snack.open(
+                              this.snack.open(
                                   this.words['projects.toolbar']['err_import'],
                                   this.words['dismiss']
-                                );
-                              }
+                                );                             
                             }
                             this.prj.isLoading = false;
                           });
@@ -562,13 +532,10 @@ export class ProgramToolbarComponent implements OnInit {
           } else {
             // ZIP FILE IS INVALID
             this.prj.isLoading = false;
-            if(!this.utils.IsKuka)
-            {
-              this.snack.open(
+            this.snack.open(
                 this.words['projects.toolbar']['err_import_file'],
                 this.words['dismiss']
-              );
-            }
+              );            
           }
         },
         (ret: HttpErrorResponse) => {
@@ -584,26 +551,19 @@ export class ProgramToolbarComponent implements OnInit {
               default:
                 break;
               case -2:
-                if(!this.utils.IsKuka)
-                {
                   this.snack.open(
                     words['files.err_upload'],
                     this.words['dismiss']
-                  );
-                }
+                  );               
                 break;
               case -3:
-                if (!this.utils.IsKuka) {
-                  this.snack.open(words['files.err_ext'], this.words['dismiss']);
-                }
+                this.snack.open(words['files.err_ext'], this.words['dismiss']);              
                 break;
               case -4:
-                if (!this.utils.IsKuka) {
                   this.snack.open(
                     words['files.err_permission'],
                     this.words['dismiss']
                   );
-                }
                 break;
             }
           });
@@ -656,28 +616,22 @@ export class ProgramToolbarComponent implements OnInit {
                 default:
                   break;
                 case -2:
-                  if (!this.utils.IsKuka) {
                     this.snack.open(
                       words['files.err_upload'],
                       this.words['dismiss']
-                    );
-                  }
+                    );                
                   break;
                 case -3:
-                  if (!this.utils.IsKuka) {
                     this.snack.open(
                       words['files.err_ext'],
                       this.words['dismiss']
                     );
-                  }
                   break;
                 case -4:
-                  if (!this.utils.IsKuka) {
                     this.snack.open(
                       words['files.err_permission'],
                       this.words['dismiss']
-                    );
-                  }
+                    );                  
                   break;
               }
             });
@@ -843,20 +797,16 @@ export class ProgramToolbarComponent implements OnInit {
         },
         err => {
           this.prj.isLoading = false;
-          if (!this.utils.IsKuka) {
-            this.snack.open(this.words['error.err'], this.words['dismiss'], {
+          this.snack.open(this.words['error.err'], this.words['dismiss'], {
               duration: 2000,
-            });
-          }
+            });         
         }
       )
       .catch(err => {
         this.prj.isLoading = false;
-        if (!this.utils.IsKuka) {
-          this.snack.open(this.words['error.err'], this.words['dismiss'], {
+        this.snack.open(this.words['error.err'], this.words['dismiss'], {
             duration: 2000,
-          });
-        }
+          });      
       });
   }
 

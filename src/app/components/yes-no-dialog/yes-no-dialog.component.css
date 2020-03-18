@@ -16,7 +16,7 @@
 .actions {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
 }
 .big-warning {

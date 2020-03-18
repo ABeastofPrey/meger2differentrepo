@@ -114,10 +114,7 @@ export class SimulatorV2Component implements OnInit {
           const name2 = 'A' + i + '.PCMD';
           if (legends[i-1] !== name1 && legends[i-1] !== name2) {
             this.loaded = true;
-            if(!this.utils.IsKuka)
-            {
-              this.snack.open(this.words['error.invalid_rec_motion'],this.words['dismiss']);
-            }
+            this.snack.open(this.words['error.invalid_rec_motion'],this.words['dismiss']);
             return;
           }
         }

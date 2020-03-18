@@ -18,7 +18,7 @@ export class SysLogOverlayService {
     constructor(
         private overlay: Overlay, private injector: Injector,
     ) {
-        const positionStrategy = this.overlay.position().global().centerHorizontally().bottom(`30px`);
+        const positionStrategy = this.overlay.position().global().centerHorizontally().bottom(`25px`);
         const config = new OverlayConfig({ positionStrategy, hasBackdrop: false });
         this._overlayRef = this.overlay.create(config);
     }

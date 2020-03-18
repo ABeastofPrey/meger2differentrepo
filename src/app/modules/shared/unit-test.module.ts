@@ -24,7 +24,7 @@ import { isUndefined } from 'ramda-adjunct';
 declare const require: any;
 
 const TRANSLATIONS_EN = require('../../../assets/i18n/en.json');
-const TRANSLATIONS_ERR_EN = require('../../../assets/i18n-error-code/error-code-en.json');
+const TRANSLATIONS_ERR_EN = require('../../../assets/i18n-causes-effects/causes-effects-en.json');
 const TRANSLATIONS = { ...TRANSLATIONS_EN, ...TRANSLATIONS_ERR_EN };
 const props = split('.');
 const value = path(__, TRANSLATIONS);

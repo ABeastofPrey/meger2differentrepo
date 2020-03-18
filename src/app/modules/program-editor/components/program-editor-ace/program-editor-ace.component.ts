@@ -31,7 +31,6 @@ import { MatSnackBar, MatInput } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../core/services/common.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { UtilsService } from '../../../core/services/utils.service';
 
 declare var ace;
 
@@ -79,7 +78,6 @@ export class ProgramEditorAceComponent implements OnInit {
     private keywords: KeywordService,
     public login: LoginService,
     public cmn: CommonService,
-    private utils: UtilsService,
     private cd: ChangeDetectorRef
   ) {
     this.trn.get(['projects.ace', 'dismiss']).subscribe(words => {
@@ -478,12 +476,10 @@ export class ProgramEditorAceComponent implements OnInit {
         if (isFoldWidget || isAnnotation || this.service.modeToggle !== 'prj') return;
         if (this.service.activeFile.endsWith('B')) {
           this.zone.run(() => {
-            if (!this.utils.IsKuka) {
               this.snack.open(
                 this.words['projects.ace']['bp_lib'],
                 this.words['dismiss']
               );
-            }
           });
           return;
         }
@@ -493,12 +489,10 @@ export class ProgramEditorAceComponent implements OnInit {
         ) {
           // PROGRAM NOT LOADED OR IS LIBRARY
           this.zone.run(() => {
-            if (!this.utils.IsKuka) {
               this.snack.open(
                 this.words['projects.ace']['bp_err'],
                 this.words['dismiss']
-              );
-            }
+              );           
           });
           return;
         }

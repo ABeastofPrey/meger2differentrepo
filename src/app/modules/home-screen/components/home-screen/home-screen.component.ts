@@ -328,12 +328,10 @@ export class HomeScreenComponent implements OnInit {
                   }, 2000);
                 }, 10000);
               } else {
-                if (!this.utils.IsKuka) {
                   this.snack.open(
                     this.words['error.invalid_feature'],
                     this.words['dismiss']
-                  );
-                }
+                  );               
               }
             });
           });

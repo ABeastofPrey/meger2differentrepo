@@ -315,6 +315,8 @@ export class LoginScreenComponent implements OnInit {
       if (params['serverDisconnected']) {
         this.router.navigate(this.route.snapshot.url, { queryParams: {} });
         setTimeout(() => {
+          // Stop listen sys message change after disconnected.
+          this.sysLogbar.stopListenSysLog();
           // TO FINISH THE ANIMATION TRANSITION
           this.dialog.open(ServerDisconnectComponent);
         }, 500);

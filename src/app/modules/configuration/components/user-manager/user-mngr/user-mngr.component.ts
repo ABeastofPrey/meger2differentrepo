@@ -161,11 +161,9 @@ export class UserMngrComponent implements OnInit {
       .subscribe(ret => {
         if (ret) {
           this.refreshUsers();
-          if (!this.utils.IsKuka){
-            this.snack.open(this.words['success'], this.words['dismiss'], {
+          this.snack.open(this.words['success'], this.words['dismiss'], {
               duration: 1500,
             });
-          }
         }
       });
   }

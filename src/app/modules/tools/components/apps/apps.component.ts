@@ -239,37 +239,27 @@ export class AppsComponent implements OnInit {
                 this.trn
                   .get(['files.err_upload', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                    if(!this.utils.IsKuka)
-                    {
-                      this.snack.open(
+                  this.snack.open(
                         words['files.err_upload'],
                         words['dismiss']
-                      );
-                    }
+                      );    
                   });
                 break;
               case -3:
                 this.trn
                   .get(['files.err_ext', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                    if(!this.utils.IsKuka)
-                    {
-                      this.snack.open(words['files.err_ext'], words['dismiss']);
-                    }
+                  this.snack.open(words['files.err_ext'], words['dismiss']);                   
                   });
                 break;
               case -3:
                 this.trn
                   .get(['files.err_permission', 'dismiss'])
                   .subscribe(words => {
-                    if(!this.utils.IsKuka)
-                    {
-                      this.snack.open(
+                  this.snack.open(
                         words['files.err_upload'],
                         words['dismiss']
                       );
-                    }
-   
                   });
                 break;
             }

@@ -12,7 +12,7 @@ import { map as rxjsMap } from 'rxjs/operators';
 export class CsTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<any> {
     const fromI18n = from(import(`../assets/i18n/${lang}.json`));
-    const fromECodeI18n = from(import(`../assets/i18n-error-code/error-code-${lang}.json`));
+    const fromECodeI18n = from(import(`../assets/i18n-causes-effects/causes-effects-${lang}.json`));
     const fromLibI18n = from(import(`../assets/i18n-lib/lib-${lang}.json`));
     const combinedI18n = combineLatest([fromI18n, fromECodeI18n, fromLibI18n])
       .pipe(rxjsMap(([resI18n, resECI18n, resLibI18n]) => {
