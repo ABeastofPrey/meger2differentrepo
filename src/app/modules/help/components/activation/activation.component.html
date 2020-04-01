@@ -5,16 +5,16 @@
 		<mat-form-field class="activation-form">
 			<input
 				matInput
+				maxlength="6"
 				placeholder="{{ 'help.activation.captchaPlaceholder' | translate }}"
 				[formControl]="control"
 				[(ngModel)]="pinCode"
-				virtualKeyboard
-				ktype="numeric"
-			/>
-			<mat-error
-				*ngIf="(control.hasError('minlength') || control.hasError('maxlength')) && !control.hasError('required')"
-			>
+				virtualKeyboard/>
+			<mat-error *ngIf="(control.hasError('minlength') || control.hasError('maxlength')) && !control.hasError('required')">
 				{{ 'help.activation.lengthErr' | translate }}
+			</mat-error>
+			<mat-error *ngIf="!control.hasError('minlength') && !control.hasError('maxlength') && !control.hasError('required') && control.hasError('incorrectPinCode')">
+				{{ 'help.activation.incorrectCaptchaTip' | translate }}
 			</mat-error>
 			<mat-error *ngIf="control.hasError('required')">
 				{{ 'help.activation.requireErr' | translate }}

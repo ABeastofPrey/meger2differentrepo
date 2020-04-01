@@ -48,12 +48,12 @@ export class HelpComponent implements OnInit {
   ngOnInit() {
     this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
       this.online = stat;
-    });
 
-    // Check activation status for kuka platform.
-    if (this.utils.IsKuka) {
-      this.checkActivationStatus();
-    }
+      // Check activation status for kuka platform.
+      if (this.utils.IsKuka) {
+        this.checkActivationStatus();
+      }
+    });
   }
 
   ngOnDestroy() {

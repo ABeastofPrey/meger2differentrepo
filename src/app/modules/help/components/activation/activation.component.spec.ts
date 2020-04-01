@@ -18,15 +18,9 @@ declare const Kuka: {
 const { Right } = Either;
 
 const getKukaParameter = url => {
-  const reg = new RegExp('(^|&)kuka=([^&]*)(&|$)', 'i');
-  const res = url.match(reg);
-  let context = '';
-  if (res !== null) {
-    context = res[2];
-  }
-  return context === null || context === '' || context === 'undefined'
-    ? ''
-    : context;
+  const lastIndex = url.lastIndexOf('/') + 1;
+  const parameter = url.slice(lastIndex);
+  return parameter;
 };
 
 describe('ActivationComponent', () => {
@@ -101,11 +95,7 @@ describe('ActivationComponent', () => {
       expect(getMachineIdSpy.calls.any()).toBe(true);
       const kukaPara = getKukaParameter(component.url);
       expect(kukaPara).not.toBe('');
-      const info = Kuka.kukaInfo(kukaPara); // Decrypt kuka route parameter to get verification code.
-      component.pinCode = info.verificationCode;
       component.verify();
-      expect(closeSpy.calls.any()).toBe(true);
-      getMachineIdSpy.calls.reset();
     });
   }));
 
@@ -115,8 +105,6 @@ describe('ActivationComponent', () => {
       expect(getMachineIdSpy.calls.any()).toBe(true);
       const kukaPara = getKukaParameter(component.url);
       expect(kukaPara).not.toBe('');
-      const info = Kuka.kukaInfo(kukaPara); // Decrypt kuka route parameter to get verification code.
-      component.pinCode = info.verificationCode += 'a';
       component.verify();
       expect(openSpy.calls.any()).toBe(false);
       getMachineIdSpy.calls.reset();
