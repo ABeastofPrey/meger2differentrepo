@@ -17,6 +17,8 @@
         }
     }
     ::ng-deep .mat-card-content {
+        max-height: 60vh;
+        overflow-y: auto!important;
         padding: 24px;
         overflow: hidden;
         // .mat-form-field {

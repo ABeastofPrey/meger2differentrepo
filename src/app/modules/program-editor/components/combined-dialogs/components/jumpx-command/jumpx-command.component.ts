@@ -226,17 +226,17 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
 
     private updateFormControl(auth: CommandOptionAuth, model: JumpxCommand): void {
         const { hasArchNo, hasAcc, hasLimZ, hasVcruise, hasVtran, hasBlendingPercentage } = auth;
-        const addControl = (key: CommandOptions, [min, max]: number[], canBeDecimal = true) => {
+        const addControl = (key: CommandOptions, [min, max]: number[], canBeDecimal = true, leftClosedInterval = true) => {
             if (isNotNil(max) && isNotNil(min)) {
-                this.form.controls[key].setValidators(this.util.limitValidator(min, max, canBeDecimal));
+                this.form.controls[key].setValidators(this.util.limitValidator(min, max, canBeDecimal, leftClosedInterval));
             };
         };
         const addArchNoControl = () => addControl(CommandOptions.ArchNo, model[CommandOptions.ArchNoLimit], false);
-        const addAccControl = () => addControl(CommandOptions.Acc, model[CommandOptions.AccLimit]);
+        const addAccControl = () => addControl(CommandOptions.Acc, model[CommandOptions.AccLimit], true, false);
         const addLimZControl = () => addControl(CommandOptions.LimZ, model[CommandOptions.LimZLimit]);
         const addBlendingPercentageControl = () => addControl(CommandOptions.BlendingPercentage, model[CommandOptions.BlendingPercentageLimit]);
-        const addVcruiseControl = () => addControl(CommandOptions.Vcruise, model[CommandOptions.VcruiseLimit]);
-        const addVtransControl = () => addControl(CommandOptions.Vtran, model[CommandOptions.VtranLimit]);
+        const addVcruiseControl = () => addControl(CommandOptions.Vcruise, model[CommandOptions.VcruiseLimit], true, false);
+        const addVtransControl = () => addControl(CommandOptions.Vtran, model[CommandOptions.VtranLimit], true, false);
         when(identity, addArchNoControl)(hasArchNo);
         when(identity, addLimZControl)(hasLimZ);
         when(identity, addBlendingPercentageControl)(hasBlendingPercentage);

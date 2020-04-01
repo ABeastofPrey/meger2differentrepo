@@ -472,7 +472,6 @@
     "label": "Label",
     "type": "Type",
     "port": "Port",
-    "customView": "Custom View",
     "dialogTitle": "Are you sure?",
     "dialogMsg": "The selected custom view will be deleted permanently.",
     "dialogYes": "DELETE",

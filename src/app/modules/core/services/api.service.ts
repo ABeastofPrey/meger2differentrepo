@@ -1,6 +1,7 @@
+import { Router } from '@angular/router';
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -17,10 +18,31 @@ export class ApiService {
   private picReq = 0;
 
   profilePicChanged: EventEmitter<void> = new EventEmitter();
+  ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  private _cloudToken: string = null;
+  get cloudToken() {
+    return this._cloudToken;
+  }
+  
   constructor(
-    private http: HttpClient
-  ) { }
+    private http: HttpClient,
+    private router: Router
+  ) { 
+    this.router.events.subscribe(e=>{
+      if (this.ready.value) return;
+      const fullURL = e['url'] as string;
+      const url = this.router.parseUrl(fullURL);
+      this._cloudToken = url.queryParamMap.get('t');
+      this.ready.next(true);
+      const i = fullURL.indexOf('?');
+      if (i>0) {
+        const from = url.queryParamMap.get('from');
+        const redirect = fullURL.substring(0,i) + (from ? '?from=' + from : '');
+        this.router.navigateByUrl(redirect);
+      }
+    });  
+  }
 
   private formatErrors(error: { error: Error }) {
     return throwError(error.error);

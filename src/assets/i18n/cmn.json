@@ -27,34 +27,29 @@
   "about": {
     "title": "关于",
     "subtitle": "该softMC控制柜的版本信息",
+    "cabinet": "控制柜固件",
     "grippers": "抓手库",
     "io": "I/O 映射库",
     "lbn": "手动示教库",
     "mcu": "MCU 版本",
     "mcuDev": "MCU S/N",
     "pallet": "码垛",
-    "payloads": "Payloads 库",
+    "payloads": "负载库",
+    "safetyVer": "安全认证",
     "server": "Web 服务器",
     "system": "系统",
     "tp": "TP 库"
-  },
-  "version": {
-    "releaseNote": "发行说明",
-    "userLicense": "用户许可证",
-    "softMCDes": "这是 soft mc",
-    "GUIDes": "这是 GUI",
-    "webServerDes": "这是 web server",
-    "successDialogTitle": "成功!",
-    "successDialogMsg": "OS升级成功，新版本是: ",
-    "errorDialogTitle": "失败!",
-    "errorDialogMsg": "OS升级失败，请重装旧版本: ",
-    "releaseNoteTitle": "ControlStudio+ 发布 Note"
   },
   "acknowledge": "确认",
   "actions": "动作",
   "add": "添加",
   "Administrator": "管理员",
   "advanced": "高级",
+  "app_bar": {
+    "menu_toggle": "打开/关闭菜单",
+    "toolbar_contract": "关闭工具栏",
+    "toolbar_expand": "打开工具栏"
+  },
   "apps": {
     "err_mcu": "错误：无法更新MCU固件",
     "firmware": "更新固件",
@@ -72,18 +67,18 @@
       "yes": "重启",
       "no": "取消"
     },
-    "rebooting": "重启softMC中...",
+    "rebooting": "softMC正在重启...",
     "title": "softMC工具",
     "updating": "正在更新固件",
     "restore": {
       "default": "默认",
-      "desc": "还原softMC成出厂设定",
-      "msg": "这也将重置校准参数。系统恢复完成后，机器人DH参数和母版参数需要手动重新配置。",
+      "desc": "将softMC恢复为出厂设置",
+      "msg": "校准参数将重置。系统恢复完成后，机器人DH参数和零点参数需要重新手动配置。",
       "robot": "还原到指定的机器人",
-      "title": "恢复出厂设定"
+      "title": "恢复出厂设置"
     }
   },
-  "are_you_sure": "你确定吗？",
+  "are_you_sure": "是否确定？",
   "arr": "数组",
   "arr_size": "数组大小",
   "one_dimension_size": "一维大小",
@@ -92,17 +87,18 @@
   "enter_integer": "请输入一个正整数",
   "back": "返回",
   "base": "基坐标",
-  "bases": "基坐标",
+  "bases": "基坐标组",
   "binary": "二进制",
   "blending": {
     "continous": "连续路径",
     "method": "Blending 方法",
     "none": "空",
-    "overlap": "运动重叠",
+    "overlap": "重复路径",
     "superPosition": "叠加"
   },
   "button": {
     "add": "添加",
+    "back": "返回",
     "calibrate": "校准",
     "cancel": "取消",
     "change": "改变",
@@ -120,9 +116,11 @@
     "logout": "退出",
     "move": "MOVE",
     "moves": "MOVES",
+    "next": "下一步",
     "ok": "好",
     "open": "打开",
     "overwrite": "覆盖",
+    "previous": "上一步",
     "record": "记录",
     "refresh": "刷新",
     "rename": "重命名",
@@ -138,8 +136,6 @@
     "apply": "应用",
     "no": "不",
     "yes": "是",
-    "previous": "上一步",
-    "next": "下一步",
     "excute": "执行"
   },
   "options": {
@@ -147,12 +143,16 @@
   },
   "calibrate": "校准",
   "cartesian": "笛卡尔坐标系",
-  "changeError": "发生一个错误，修改未保存",
+  "changeError": "检测出报错，未保存当前修改",
   "changeOK": "修改已保存",
   "checkbox_enable": "允许选择",
+  "circleCenter": "圆心",
   "circlePoint": "原点",
   "clear_msgs": "清除消息",
   "close": "关闭",
+  "cloud": {
+    "na": "该特征仅在softMC中有效，在云盘中不可用。"
+  },
   "connected": "已连接",
   "connecting": "连接中",
   "copy": "复制",
@@ -163,7 +163,7 @@
       "3d": "3D图形"
     },
     "err_file": "文件未找到",
-    "err_move": "错误 {{code}}: {{msg}}",
+    "err_move": "{{code}}: {{msg}}报错",
     "err_target": "无效目标",
     "external": {
       "3d": "3D图形",
@@ -174,28 +174,32 @@
     "move_sent": "运动命令已发送",
     "new": {
       "err": "控制板已打开",
-      "select": "选择一个轴或者一个组",
-      "subtitle": "监控，记录，和移动组和轴。",
-      "title": "添加一个轴/组控制板"
+      "select": "选择轴或组",
+      "subtitle": "监控，记录及移动轴和组。",
+      "title": "添加轴/组控制板"
     },
     "new-param": {
       "title": "监控一个新的参数"
     },
     "record": {
-      "btnStart": "开始录制",
-      "recorded": "已录制数据",
-      "title": "开始一个新的录制",
+      "btnStart": "开始记录",
+      "buttons": {
+        "compare": "比对...",
+        "derivative": "模拟...",
+        "downloadCSV": "下载CSV文件",
+        "downloadRec": "下载REC文件"
+      },
+      "empty": "没有已打开的记录",
+      "recorded": "已记录数据",
+      "title": "重新记录",
       "type": {
-        "2d": "控制板2D",
-        "2d-a": "高级2D",
-        "3d": "3D"
+        "2d": "2D控制板",
+        "2d-a": "高级2D控制板",
+        "3d": "3D控制板"
       }
     },
-    "tooltip": {
-      "chart": "显示/隐藏图表窗口",
-      "csv": "下载图表数据为CSV格式",
-      "external": "显示外部图形"
-    }
+    "tab1": "运动控制",
+    "tab2": "记录"
   },
   "dataScreen": {
     "del": "删除{{name}}",
@@ -206,6 +210,8 @@
     },
     "no-var": "未选中变量"
   },
+  "date": "日期",
+  "date_format": "[MM/DD/YYYY]",
   "decimal": "十进制",
   "delete": "删除",
   "derivative": "导数",
@@ -213,7 +219,8 @@
   "diagnostics": {
     "devices": "设备状态",
     "master": "主站状态",
-    "no-data": "数据不存在。加载TP库，然后重试。",
+    "mcu": "MCU",
+    "no-data": "数据无效，请重新加载TP库",
     "title": "诊断"
   },
   "dialogs": {
@@ -222,12 +229,12 @@
   "disable": "禁用",
   "disabled": "已禁用",
   "disconnect": {
-    "title": "无法连接到控制柜",
-    "msg": "检查你的网络连接。"
+    "title": "控制柜连接已丢失",
+    "msg": "请检查网络连接。"
   },
   "disconnected": "已断开",
   "dismiss": "取消",
-  "domain": "域",
+  "domain": "应用",
   "done": "完成",
   "double": "浮点型",
   "doubles": "浮点型",
@@ -240,20 +247,25 @@
     "conn_mc": "无法连接到softMC",
     "conn_ws": "无法建立一个websocket连接",
     "err": "错误",
-    "estop": "按住E-STOP",
-    "field_too_short": "输入太短",
+    "estop": "紧急制动已触发",
+    "field_too_short": "输入字段过短",
     "firmware_update": {
       "title": "固件更新失败",
-      "msg": "未安装库到控制器"
+      "msg": "无法在控制柜安装软件包"
     },
-    "invalid_etag": "似乎您最近更新了controlstudio+和/或softmc web服务器。按ctrl+shift+r重新加载此页。",
-    "invalid_etag_tablet": "似乎您最近更新了controlstudio+和/或softmc web服务器。请清除浏览器缓存，然后重新加载此页。",
-    "invalid_feature": "无效的特征",
+    "invalid_etag": "检测到controlstudio+和/或softmc web服务器最近有更新，ctrl+shift+r重新加载此页。",
+    "invalid_etag_tablet": "检测到controlstudio+和/或softmc web服务器最近有更新，请清除浏览器缓存，再重新加载此页。",
+    "invalid_feature": "特征无效",
     "invalid_full_name": "完整名字应包括姓和名",
+    "invalid_regex": "输入无效",
+    "invalid_username": "用户名必须包括字母，数字或下划线",
+    "invalid_username2": "该用户名已保存",
+    "invalid_rec_motion": "该运动记录文件无效",
     "invalid_webserver": "使用web服务器v{{ver}} (当前是{{current}})",
-    "orientation": "ControlStudio+ 仅仅在Landscape模式下工作",
+    "mismatch_pass": "密码不匹配先前字段",
+    "orientation": "ControlStudio+ 仅在Landscape模式下工作",
     "tp": "无法加载TP库，详细信息请查看打印日志...",
-    "tp_tablet": "找不到tp库。重新启动控制器并重试。"
+    "tp_tablet": "无法找到tp库，请重新启动控制器再次尝试。"
   },
   "errorHistory": {
     "button": {
@@ -268,25 +280,29 @@
     "delete": "删除文件",
     "dir_name": "文件夹名称",
     "download": "下载文件",
-    "err_delete": "错误：不是所有的文件被删除。",
-    "err_ext": "无效后缀名在 {{name}}",
+    "err_delete": "错误：未删除所有文件。",
+    "err_ext": "{{name}}检测出无效后缀",
     "err_permission": "无效权限",
-    "err_upload": "错误上传{{name}}",
+    "err_upload": "{{name}}上传错误",
     "ext": "后缀名",
     "modified": "上次修改",
     "name": "文件名称",
-    "no_file": "没有文件被选中",
+    "no_file": "文件未选中",
     "open": "打开文件",
-    "success_delete": "成功。所有文件被删除。",
-    "success_upload": "成功。所有文件被上传。",
+    "success_delete": "成功删除所有文件。",
+    "success_upload": "成功上传所有文件。",
     "tree": "控制柜文件",
     "upload": "上传到MC..."
   },
   "filter": "过滤器",
-  "frame": "运动Frame",
-  "frame_jog": "点动 Frame",
+  "form_validation": {
+    "percent": "数值必须在0到100之间",
+    "range": "数据超限"
+  },
+  "frame": "运动坐标系",
+  "frame_jog": "点动坐标系",
   "frames": {
-    "BASE": "基",
+    "BASE": "基坐标系",
     "calibration": {
       "origin": "原点",
       "posX": "位置X",
@@ -296,10 +312,10 @@
       "title": "校准"
     },
     "create": [
-      "创建工具",
-      "创建基坐标",
-      "创建工作台",
-      "创建工件"
+      "创建工具坐标系",
+      "创建基坐标系",
+      "创建工作台坐标系",
+      "创建工件坐标系"
     ],
     "delete": {
       "msg": "该操作不能被撤销。",
@@ -319,9 +335,12 @@
       "添加工作台",
       "添加工件"
     ],
-    "TOOL": "工具",
-    "WORLD": "世界"
+    "none": "未选中坐标系类型",
+    "TOOL": "工具坐标系",
+    "WORLD": "世界坐标系"
   },
+  "gap": "间距",
+  "gap_units": "采样点",
   "grippers": {
     "btnCycle": "循环",
     "btnTest": "测试",
@@ -338,7 +357,7 @@
     "new_grp": "新建抓手",
     "open": "打开抓手",
     "pay_ef": "终端执行器有效载荷",
-    "pay_item": "项有效载荷",
+    "pay_item": "有效负载值",
     "set": "设置抓手",
     "sleep": "睡眠时间",
     "test": "测试抓手",
@@ -348,23 +367,24 @@
   "help": {
     "bug": "报告问题",
     "bug_body": "将下载的ZIP文件和其他相关文件附加到此电子邮件中",
-    "bug_desc": "在这里描述您的bug/问题，包括复制的步骤...",
+    "bug_desc": "请描述您的bug/问题，包括使问题重复出现的步骤...",
     "code": "代码示例",
     "contact": "联系技术支持",
     "downloads": "下载",
-    "education": "softMC教育中心",
     "keys": "键盘快捷键",
     "shortcuts": {
       "desc_autocomplete": "显示自动完成选项",
       "desc_delete": "删除已选中对象",
       "desc_duplicate": "复制已选中对象",
       "desc_find": "查找",
+      "desc_gotoLine": "前往行",
       "desc_replace": "替代",
       "desc_terminal_down": "前往下一个命令",
       "desc_terminal_up": "返回上一个命令",
       "editor": "程序编辑器",
       "terminal": "终端",
-      "toggle_comment": "评论/取消注释行"
+      "fold_unfold": "折叠/展开当前指令块",
+      "toggle_comment": "打开/取消注释行"
     },
     "soon": "即将推出",
     "title": "softMC帮助中心",
@@ -418,12 +438,12 @@
     "slider_max": "滑块最大值",
     "slider_min": "滑块最小值",
     "text": "文本框",
-    "toggle": "开/关",
+    "toggle": "打开/关闭",
     "type": "输入类型"
   },
   "topology": {
     "title": "设备管理器",
-    "errTip": "Ethercat不在operation模式下，请确保所有的物理设备都能正常工作然后再在设备管理器中重置CS的全部操作。",
+    "errTip": "Ethercat不在操作模式下，请确保所有的物理设备都能正常工作并在设备管理器中重置CS的全部操作。",
     "exTip": "全部展开",
     "colTip": "全部折叠",
     "controller": "控制器",
@@ -452,7 +472,6 @@
     "label": "标签",
     "type": "类型",
     "port": "端口",
-    "customView": "自定义视图",
     "dialogTitle": "你确定吗？",
     "dialogMsg": "已选中自定义视图将被永久删除。",
     "dialogYes": "删除",
@@ -472,7 +491,7 @@
     "inputs": "输入",
     "mapping": "I/O映射",
     "outputs": "输出",
-    "sim_tooltip": "系统IO是模拟的",
+    "sim_tooltip": "系统输入/输出模拟信号",
     "table": {
       "0": "Id",
       "1": "值",
@@ -508,12 +527,11 @@
     "var_none": "无变量"
   },
   "handGuiding": {
-    "joint": "J",
-    "free": "全部释放",
-    "lock": "全部锁定"
+    "toggleMode": "模式使能",
+    "toggleJ3J4": "三四轴使能"
   },
-  "joint": "关节",
-  "joints": "关节",
+  "joint": "轴坐标",
+  "joints": "轴坐标",
   "lang": {
     "cmn": "简体中文",
     "en": "English",
@@ -535,8 +553,8 @@
     "title": "ControlStudio+ 许可协议"
   },
   "loading": "加载中...",
-  "location": "位置",
-  "locations": "位置",
+  "location": "位置坐标",
+  "locations": "位置坐标",
   "log": {
     "file_del": "删除一个文件",
     "firmware": "更新固件",
@@ -558,17 +576,27 @@
     "jogControlsToggle": "切换点动控制",
     "no_robot": "未选中机器人",
     "tour": {
-      "title": "欢迎!",
-      "msg": "这是你首次使用ControlStudio+, 你是否需要快速指南？",
-      "yes": "是, 开始吧!",
-      "no": "否, 谢谢"
+      "btnFinish": "终端演示",
+      "err": {
+        "0": "按照该步指引进行",
+        "1": "未加载工程",
+        "2": "需要加载工程演示",
+        "3": "未检测应用CIRCLE"
+      },
+      "msg": "请问是否需要演示指南？",
+      "msg2": "你也可以稍后在HELP界面中体验演示指南",
+      "no": "不用, 谢谢",
+      "title": "欢迎使用ControlStudio+!",
+      "yes": "是, 开始吧!"
     }
   },
   "message_log": "消息日志",
+  "mode_debug": "调试模式",
+  "mode_remote": "远程模式",
   "mode_selector": "模式",
   "motion_element": "运动元素",
   "motion_elements": "运动元素",
-  "motion_elements_empty": "无运动元素",
+  "motion_elements_empty": "未检测到运动元素",
   "mt": "工作台",
   "mts": "工作台",
   "na": "不适用",
@@ -580,19 +608,19 @@
   "other": "其他",
   "pallet": "托盘",
   "pallets": {
-    "create": "创建一个新的托盘",
+    "create": "创建一个新托盘",
     "delete": {
       "title": "删除托盘{{name}}?",
       "msg": "该操作不能被撤销。"
     },
-    "err_item_count": "无效条目数量",
+    "err_item_count": "无效数量项",
     "name": "托盘名称",
     "selected": "已选中托盘",
     "type": "托盘类型",
     "type_CUSTOM": "自定义",
     "type_GRID": "栅格",
     "wizard": {
-      "3d_disable": "太多条目 - 3D预览被禁用",
+      "3d_disable": "项目打开过多，3D预览被禁用",
       "app": "靠近",
       "app_dir": "靠近方向",
       "button": {
@@ -604,27 +632,27 @@
       },
       "calibrated": "已校准",
       "calibrated_not": "未校准",
-      "calibrated_origin": "校准Origin",
+      "calibrated_origin": "原点校准",
       "conf": "配置标记",
-      "curr_index": "当前条目索引",
+      "curr_index": "当前项目索引",
       "curr_pos": "当前位置",
-      "dimensions_item": "条目尺寸",
-      "dimensions_pallet": "托盘尺寸",
+      "dimensions_item": "项目尺寸 [mm]",
+      "dimensions_pallet": "托盘尺寸 [mm]",
       "dir": "方向",
       "done_title": "托盘设置已完成!",
       "entry": "入口",
       "entry_pos": "入口位置",
-      "err_incomp_robot": "无法兼容的机器人",
-      "exceed": "能超过托盘范围",
+      "err_incomp_robot": "该机器人无法兼容",
+      "exceed": "超过托盘范围",
       "index_custom": "自定义",
       "index_empty": "空",
       "index_full": "满",
-      "invalid_val": "无效值",
+      "invalid_val": "选择托盘当前索引",
       "level": "层数",
       "levels": "层数",
       "levels_in_pallet": "托盘层数",
-      "num_of_items": "条目数量",
-      "odd_even": "不同奇/偶层数",
+      "num_of_items": "项目数量",
+      "odd_even": "奇/偶层数",
       "offH": "水平偏移",
       "offV": "垂直偏移",
       "order": "顺序",
@@ -638,7 +666,7 @@
       "step1": "通用",
       "step4": "靠近&远离",
       "sum_of": "总结",
-      "title": "托盘向导程序"
+      "title": "托盘向导"
     },
     "wizard_open": "打开托盘向导程序"
   },
@@ -652,22 +680,23 @@
   "payloads": {
     "advanced": "高级模式",
     "btn_create": "创建负载",
-    "current": "当前值",
+    "current": "当前负载",
     "delete_title": "删除负载{{name}}?",
     "delete_msg": "该操作不能被撤销",
+    "done": "负载识别成功",
     "freq": "频率",
     "ident": {
       "dialog": {
         "title": "警告",
-        "msg": "载荷识别即将开始。在这个过程中，机器人会在工作空间中移动到不同的位置。确保机器人环境中没有人、物等障碍物。",
+        "msg": "载荷识别即将开始，在这个过程中，机器人会在工作区域内任意移动，请确保工作区域内没有任何人、物等障碍物。",
         "yes": "开始识别",
         "no": "取消"
       },
-      "finish": "移动机器人到起始点...",
-      "moving": "移动机器人到起始位置...",
+      "finish": "移动机器人到初始位置...",
+      "moving": "移动机器人到初始位置...",
       "title": "机器人正在执行载荷识别",
       "start": "开始识别...",
-      "subtitle": "在这个过程中，机器人会在工作空间中移动到不同的位置。确保机器人环境中没有人、物等障碍物."
+      "subtitle": "在这个过程中，机器人会在工作区域内任意移动，请确保工作区域内没有任何人、物等障碍物。"
     },
     "inertia": "惯量",
     "mass": "质量",
@@ -676,7 +705,7 @@
     "offX": "X偏移",
     "payload": "负载",
     "relative_pos": "振幅",
-    "start_pos": "起始位置",
+    "start_pos": "初始位置",
     "time": "持续时间"
   },
   "projectCommands": {
@@ -696,7 +725,7 @@
     },
     "if": {
       "condition": "条件",
-      "else": "也添加一个 \"Else\" 语句",
+      "else": "请再添加一个 \"Else\" 语句",
       "title": "插入If命令"
     },
     "menu": {
@@ -728,7 +757,8 @@
       "title_outRef": "插入Output参考",
       "title_pick": "插入Pick命令",
       "title_place": "插入Place命令",
-      "title_plt_index": "插入Get Pallet Index命令",
+      "title_plt_entry": "插入移至入口位置命令",
+      "title_plt_index": "插入获取托盘索引命令",
       "title_plt_status": "插入获取托盘状态指令",
       "title_waitForMotion": "插入WaitForMotion命令"
     },
@@ -760,7 +790,7 @@
       "motionPh": "运动元素",
       "departPh": "远离点",
       "approachPh": "靠近点",
-      "destPh": "终点Frame",
+      "destPh": "目标坐标系",
       "archPh": "拱形编号",
       "limitZPh": "Z极限",
       "blendingPh": "圆滑百分比",
@@ -798,46 +828,48 @@
       "advanced": "高级"
     },
     "visionCommand": {
-      "jobNamePlaceHolder": "Job 名字",
-      "jobNameRequiredErr": "Job 名字是必需的",
-      "stationNamePlaceHolder": "Station 名字",
-      "stationNameRequiredErr": "Station 名字是必需的",
+      "jobNamePlaceHolder": "工作项名称",
+      "jobNameRequiredErr": "需要输入工作项名称",
+      "stationNamePlaceHolder": "视觉站名称",
+      "stationNameRequiredErr": "需要输入视觉站名称",
       "timeoutPlaceHolder": "超时",
-      "timeoutPositiveErr": "超时项必须是大于0的正数",
-      "dimensionPlaceHolder": "维度",
-      "dimensionRequiredErr": "维度是必须的.",
-      "dataNumPlaceHolder": "数据 Num",
-      "dataNumRequiredErr": "DataNum是必须的.",
-      "asDataPlaceHolder": "As 数据",
-      "asDataRequiredErr": "AsData是必须的.",
-      "statusPlaceHolder": "状态",
-      "statusRequiredErr": "状态项是必须的.",
-      "errorPlaceHolder": "Error",
-      "errorRequiredErr": "Error是必须的.",
+      "timeoutPositiveErr": "超时项必须是非负正数",
+      "dimensionPlaceHolder": "返回的维度变量",
+      "dimensionRequiredErr": "需要输入维度变量",
+      "dataNumPlaceHolder": "返回的数据量变量",
+      "dataNumRequiredErr": "需要输入数据量变量",
+      "asDataPlaceHolder": "返回的数据变量",
+      "asDataRequiredErr": "需要输入数据变量",
+      "statusPlaceHolder": "返回的状态变量",
+      "statusRequiredErr": "需要输入状态变量",
+      "errorPlaceHolder": "返回的错误变量",
+      "errorRequiredErr": "需要输入错误变量",
       "variablePlaceHolder": "赋值给",
       "configFilePathPlaceHolder": "配置文件路径",
-      "configFilePathRequiredErr": "配置文件路径是必须的.",
+      "configFilePathRequiredErr": "需要配置文件路径",
       "loadConfigFilePathError": "加载配置文件失败。"
     },
     "createVar": "添加变量"
   },
   "projects": {
     "ace": {
-      "bp_err": "断点仅能被插入在一个已加载文件。",
-      "bp_lib": "库文件中尚不支持断点。"
+      "bp_err": "只能再已加载文件中插入断点",
+      "bp_lib": "库文件中不支持断点"
     },
     "btnCreate": "创建项目",
     "delete-dialog": {
       "btn-delete": "删除选中项目",
-      "input": "选择想要删除的项目",
-      "message": "以下项目将从系统中删除。此操作无法撤消.",
+      "input": "选择项目",
+      "message": "以下项目将从系统中删除，此操作无法撤消",
       "title": "删除项目"
     },
+    "loaded": "已加载",
     "name": "项目名称",
     "new": "新建项目",
     "notification": {
-      "errMsg": "下列几行中出现错误：",
-      "none": "无编译错误。"
+      "errMsg": "下列几行中出现错误",
+      "none": "无编译错误",
+      "title": "错误"
     },
     "open": "打开项目",
     "saved": "文件已保存",
@@ -852,8 +884,10 @@
       "7": "就绪",
       "9": "停止启动",
       "10": "已中断",
-      "11": "库加载完成"
+      "11": "库加载中断",
+      "99": "库加载已完成"
     },
+    "time": "时间",
     "toolbar": {
       "app": "应用",
       "app_create": "创建应用",
@@ -876,7 +910,7 @@
       "dep_unload": "卸载依赖",
       "dialog_conflict": {
         "title": "检测到设置冲突",
-        "msg": "项目设置不同于当前运行的设置。你想用哪一个设置？",
+        "msg": "项目设置不同于当前的运行设置，选择设置为？",
         "yes": "当前设置",
         "no": "项目设置"
       },
@@ -890,9 +924,9 @@
       "file": "文件",
       "file_name": "文件名称",
       "find": "查找",
-      "idle": "空闲",
+      "idle": "暂停",
       "import": "导入",
-      "jtl": "转跳到行",
+      "jtl": "跳转到行",
       "kill": "终止&卸载",
       "lib": "库",
       "lib_create": "创建库",
@@ -901,7 +935,7 @@
       "menu_download_files": "下载已选",
       "new": "新建",
       "new_app": "新建应用",
-      "new_dep": "新的依赖",
+      "new_dep": "新建依赖",
       "new_file": "新建文件",
       "new_folder": "新建文件夹",
       "new_lib": "新建库",
@@ -936,7 +970,7 @@
       "stop_all_bg_tasks": "停止所有后台任务",
       "stp_into": "进入",
       "stp_out": "跳出",
-      "stp_over": "单步",
+      "stp_over": "继续",
       "undo": "撤销",
       "unload": "卸载",
       "upload": "上传到softMC",
@@ -949,9 +983,9 @@
   "projectSettings": {
     "apps": {
       "app_desc": "应用描述",
-      "app_desc_none": "没有应用描述",
-      "cyclic": "循环",
-      "desc": "选择项目启动时要运行的应用程序",
+      "app_desc_none": "未找到应用描述",
+      "cyclic": "循环运行",
+      "desc": "选择项目的自启动应用程序",
       "en": "激活应用",
       "id": "远程ID",
       "id_tooltip": "该ID可用于通过远程I/O启动/暂停/停止应用",
@@ -964,42 +998,42 @@
       "departZCol": "DepartZ",
       "approachZCol": "ApproachZ",
       "positiveNumTip": "输入一个正值！",
-      "valChangedTip": "值已更新!"
+      "valChangedTip": "已更新数值!"
     },
     "base": {
-      "desc": "定义基坐标系极限位置",
-      "title": "基坐标系极限位置"
+      "desc": "定义基坐标系边界",
+      "title": "基坐标系边界"
     },
     "motion_frames": {
-      "desc": "选择该项目的运动frames",
-      "title": "运动Frames"
+      "desc": "选择该项目的运动坐标系",
+      "title": "运动坐标系"
     },
     "motion_params": {
-      "desc": "选择运动命令的参数",
+      "desc": "选择运动命令参数",
       "title": "运动参数"
     },
     "mt": {
-      "desc": "定义工作台的极限",
-      "title": "工作台极限"
+      "desc": "定义工作台坐标系边界",
+      "title": "工作台坐标系边界"
     },
     "pos": {
-      "desc": "定义机器人的位置极限",
-      "title": "位置极限"
+      "desc": "定义机器人工作区域边界",
+      "title": "工作区域边界"
     },
     "tool": {
-      "desc": "定义工具极限",
-      "title": "工具极限"
+      "desc": "定义工具坐标系边界",
+      "title": "工具坐标系边界"
     },
     "world": {
-      "desc": "定义世界坐标系极限位置",
-      "title": "世界坐标系极限位置"
+      "desc": "定义世界坐标系边界",
+      "title": "世界坐标系边界"
     },
     "wp": {
-      "desc": "定义工件极限",
-      "title": "工件极限"
+      "desc": "定义工件坐标系边界",
+      "title": "工件坐标系边界"
     },
     "position_trigger": {
-      "desc": "定义位置触发器的参数",
+      "desc": "定义位置触发器参数",
       "title": "位置触发器",
       "nameCol": "名称",
       "outputCol": "输出",
@@ -1014,20 +1048,20 @@
       "positiveNumTip": "输入一个非负数，并且Percentage的值不能大于100",
       "newPositionTrigger": {
         "namePlaceholder": "名称",
-        "requireErr": "输入名称。"
+        "requireErr": "需要输入名称。"
       }
     },
     "home_config": {
-      "desc": "定义Home配置的参数",
+      "desc": "配置Home参数",
       "title": "Home配置",
       "homePosition": "Home位置",
       "homeOrder": "Home顺序",
-      "degree": "值以度/毫米为单位",
+      "degree": "数值单位度/毫米",
       "curPositionBtn": "读取当前位置",
       "stepOption": "步骤",
       "savedTip": "修改已保存！",
       "validNumTip": "输入一个有效值。",
-      "numRange": "输入一个有效值介于"
+      "numRange": "输入值有效范围"
     }
   },
   "projectTree": {
@@ -1039,16 +1073,16 @@
     "del_bg_msg": "该操作不能被撤销, 并且将移除该任务及其数据。你确定要删除它？",
     "del_bg_title": "确定删除任务 {{name}}?",
     "del_dep_msg": "此操作无法撤消。您确定要删除此依赖项吗?",
-    "del_dep_title": "删除依赖 {{name}}?",
+    "del_dep_title": "删除依赖{{name}}?",
     "del_lib_msg": "该操作不能被撤销。你确定要删除该库？",
     "del_lib_title": "删除库{{name}}?",
     "dirty": "文件已修改",
-    "dirty_msg": "你是否想要保存你的修改到{{name}}?",
+    "dirty_msg": "是否想要保存修改到{{name}}?",
     "Data": "数据",
     "Dependencies": "依赖",
     "Errors": "错误",
     "File": "程序",
-    "Frames": "运动Frames",
+    "Frames": "运动坐标系",
     "Grippers": "抓手",
     "IO": "I/O映射",
     "Libraries": "库",
@@ -1058,12 +1092,13 @@
     "prj": "项目",
     "Settings": "项目设置",
     "pPoints": "项目点",
-    "Vision": "版本"
+    "Vision": "视觉"
   },
   "record": "记录",
+  "record_done": "运动记录已完成",
   "restore": {
-    "restoring": "从文件恢复系统中",
-    "success": "系统恢复成功！",
+    "restoring": "备份还原系统中",
+    "success": "系统还原成功！",
     "home": "Home",
     "insert_chart": "运动控制板",
     "insert_comment": "程序编辑器",
@@ -1079,6 +1114,20 @@
   "robot": "机器人",
   "robots": {
     "axes": "机器人轴",
+    "battery": {
+      "masteringAck": "确认校零已完成",
+      "status": "电源状态"
+    },
+    "brakes": {
+      "btnStart": "开始刹车测试",
+      "dialog": {
+        "title": "刹车测试",
+        "msg": "机器人将移动以测试刹车，确保机器人工作区域内没有任何人员",
+        "yes": "开始测试",
+        "no": "取消测试"
+      },
+      "title": "刹车测试"
+    },
     "btnChange": "更换机器人",
     "btnSetCurrent": "设为当前",
     "bus": "总线类型",
@@ -1103,15 +1152,19 @@
     "type": "机器人类型",
     "updating": "更新机器人配置",
     "reference": {
-      "title": "通过参考点校准"
+      "title": "通过参考点标定"
+    },
+    "vord": {
+      "title": "速度超控",
+      "vmax": "超过Vmax"
     },
     "mastering": {
-      "cancelTitle": "要取消校准进程吗？",
-      "cancelMsg": "确定要取消校准吗，所有校准过的数据将会丢失？",
+      "cancelTitle": "是否取消校零？",
+      "cancelMsg": "确定是否取消校零，所有已校准数据将会丢失？",
       "cancelWarm": "重置源发生错误无法返回。",
       "previousWarm": "重置源发生错误无法后退。",
-      "leaveMsg": "确定要离开此页面吗，所有已校准数据将会丢失?",
-      "masterZeroWarm": "教零失败！",
+      "leaveMsg": "确定是否离开此页面，所有已校准数据将会丢失?",
+      "masterZeroWarm": "校零失败！",
       "masterFinalWarm": "精校准失败！",
       "recordPointWarm": "记录点失败！",
       "masterLeftRightWarm": "左右手校准失败！",
@@ -1120,46 +1173,49 @@
       "axis": "轴",
       "position": "位置",
       "offset": "偏移",
-      "j": "关节",
+      "j": "轴",
       "converse": "反转",
       "refPoint": "参考点",
-      "refError": "参考点不是必须的.",
+      "refError": "参考点不存在",
       "basicMaster": "基本校准",
       "enhancedMaster": "高级校准 (轴2 可用)",
-      "selectJoint": "选择关节",
+      "selectJoint": "选择轴",
       "selectJointH": "此主控形状将返回到以前保存的偏移。",
-      "pickJoints": "选择你想要校准的关节.",
+      "pickJoints": "选择你想要校准的轴.",
       "all": "所有",
       "basicConfirm": "基本校验确认",
-      "emjh": "高级校准: 关节",
+      "emjh": "高级校准: 轴",
       "emjsh1": "此主控形状会将J2的偏移设置为实际的机械偏移。",
-      "emjsh2": "请确保所有的关节都已进行基本校准.",
-      "j20": "推进到零点",
-      "bmj": "基本校准: 关节",
-      "bmjsh": "请确保关节经过粗略校准到零点.",
+      "emjsh2": "请确保所有轴都已完成基本校准.",
+      "j20": "手动移动到零点",
+      "bmj": "基本校准: 轴",
+      "bmjsh": "请粗略校准该轴至零点.",
       "bmjsh2": "请移动机器人靠近标记点.",
       "bmjsh3": "请通过指令移动机器人到标记点.",
-      "pulsePosition": "关节脉冲位置",
-      "pulsePositionContent1": "机器人坐标系统中沿x轴的位置",
-      "pulsePositionContent2": "Arms #1 and #2 的位置是一条直线 (不管关节 #1 的方向)",
-      "pulsePositionContent3": "运动范围的上线位置",
+      "pulsePosition": "轴脉冲位置",
+      "pulsePositionContent1": "机器人坐标系统中沿x轴方向",
+      "pulsePositionContent2": "Arms #1 and #2 的位置是一条直线 (不管 #1 轴的方向)",
+      "pulsePositionContent3": "运动范围的上限位置",
       "pulsePositionContent4": "轴上的平面（或上/下机械止动块中的凹槽）朝向臂尖的位置 #2",
-      "j2t": "移动到目标位置",
-      "emj2h": "高级校准: 关节 2",
+      "j2t": "手动移动至目标位置",
+      "emj2h": "高级校准: 轴 2",
       "emj2sh": "请移动机器人到参考点.",
       "emj2sh2": "请通过指令以反转姿势移动机器人到参考点.",
       "emj2sh3": "请准确的移动机器人到参考点.",
-      "j2r": "移动到参考点",
+      "j2r": "手动移动到参考点",
       "ipbc": "命令反转",
-      "complexJogTip": "如果你有更加复杂的情况，请到右上角的命令窗口移动机器人。",
+      "complexJogTip": "如果你有更加复杂的情况，请通过右上角的命令窗口移动机器人。",
       "mbc": "命令校准",
       "aj": "精准移动",
-      "ajsh": "请精确的移动机器人到参考点.",
+      "ajsh": "请精确的手动移动机器人至参考点.",
       "confirm": "确认",
       "congratulations": "恭喜!",
-      "congratulationsContent1": "关节",
-      "congratulationsContent2": "校准已经完成，请移动机器人到已存在的点进行检验。"
+      "congratulationsContent1": "轴",
+      "congratulationsContent2": "校准已经完成，请移动机器人到已知点进行检验。"
     }
+  },
+  "safety": {
+    "ack_tooltip": "安全确认"
   },
   "select": "选择",
   "simulative": "模拟",
@@ -1169,8 +1225,9 @@
     "custom": "用户对象",
     "cylinder": "圆柱体",
     "disabled": "当前机器人没有可用的3D模型- 3D预览被禁用。",
-    "load_rec": "记载记录...",
+    "load_rec": "加载记录...",
     "loading": "加载模拟器中...",
+    "mode_live": "在线模式",
     "prop": "属性",
     "rec_close": "关闭记录",
     "record": "记录运动",
@@ -1193,7 +1250,7 @@
     },
     "err_init": {
       "title": "系统初始化错误",
-      "msg": "初始化错误({{result}}) - 联系技术支持."
+      "msg": "初始化错误({{result}}) - 请联系相关技术支持."
     }
   },
   "status": "状态",
@@ -1206,6 +1263,7 @@
     "state": "系统状态"
   },
   "tabs": {
+    "blockly": "块状图形编程",
     "configuration": "系统配置",
     "dashboard": "运动控制板",
     "editor": "项目编辑器",
@@ -1219,7 +1277,7 @@
     "teach": "示教",
     "tools": "softMC工具"
   },
-  "targetPoint": "靶点",
+  "targetPoint": "目标点",
   "tasks": {
     "display": "显示",
     "idle": "空闲任务",
@@ -1263,85 +1321,90 @@
   "tools": "工具",
   "tour": [
     {
-      "title": "导航菜单",
-      "content": "该按钮显示/隐藏导航菜单。"
-    },
-    {
-      "title": "点动控制",
-      "content": "该按钮显示/隐藏点动控制。TP.LIB未加载时，该功能被禁用。"
-    },
-    {
-      "title": "监控窗口",
-      "content": "该按钮显示/隐藏监控窗口。该窗口可被用于监控系统和程序变量。"
-    },
-    {
-      "title": "消息日志",
-      "content": "该按钮显示/隐藏消息日志窗口. 该窗口显示从控制柜发来的消息。"
-    },
-    {
-      "title": "消息日志",
-      "content": "当你在主界面时，消息将同样在这里显示。"
-    },
-    {
-      "title": "终端",
-      "content": "使用该终端把MC-Basic命令发送到控制柜。"
-    },
-    {
-      "title": "系统信息",
-      "content": "系统信息显示在主界面下方。"
-    },
-    {
-      "title": "运动控制板",
-      "content": "现在，让我们看一下运动控制板。"
-    },
-    {
-      "title": "添加一个新的控制板",
-      "content": "使用该按钮创建一个新的运动控制板窗口。"
-    },
-    {
-      "title": "控制板窗口",
-      "content": "这是一个运动控制板窗口。你可以在系统中为每个运动元素创建一个窗口，并在该屏幕中进行拖动。"
-    },
-    {
-      "title": "激活/禁用机器人",
-      "content": "使用该切换按钮激活和禁用机器人。"
-    },
-    {
-      "title": "移动机器人",
-      "content": "使用该面板执行简单运动指令。"
-    },
-    {
-      "title": "移动机器人",
-      "content": "使用该面板执行简单运动指令。"
-    },
-    {
-      "title": "记录器",
-      "content": "使用该按钮以2D和3D的格式记录数据。"
+      "title": "开始",
+      "content": "在该演示中，我们会运行你的第一个程序，点击<b>NEXT</b> 按钮继续"
     },
     {
       "title": "项目编辑器",
-      "content": "现在, 让我们看一下项目编辑器。"
+      "content": "点击在 <b>main menu</b> 中的 闪亮按钮<b>Project Editor</b> 进入项目编辑器视图"
+    },
+    {
+      "title": "关闭菜单",
+      "content": "在应用的工具栏中点击<b>MENU EXPAND/COLLAPSE button</b>"
+    },
+    {
+      "title": "项目编辑器",
+      "content": "现在, 让我们看一看项目编辑器的基础工具。"
     },
     {
       "title": "这是项目树",
       "content": "该项目树含有你的项目中的所有程序，库和配置文件。"
     },
     {
-      "title": "工具栏",
-      "content": "使用该工具栏打开，编辑和执行你的项目。"
+      "title": "应用",
+      "content": "一个项目中可能包含多个应用，可以在下方应用文件夹找到。"
+    },
+    {
+      "title": "应用结构",
+      "content": "所有应用都由一个程序文件，一个数据文件和一个库文件组成"
+    },
+    {
+      "title": "程序编辑器",
+      "content": "这里是你写代码的地方，softMC的应用都是用MC-basic语言编写"
+    },
+    {
+      "title": "加载一个应用",
+      "content": "当你完成代码编写，可以使用保存 & 加载按钮保存代码并加载到控制器中"
+    },
+    {
+      "title": "应用状态",
+      "content": "点击运行按钮，程序即会开始运行"
+    },
+    {
+      "title": "运行应用",
+      "content": "点击运行按钮即可开始运行应用"
+    },
+    {
+      "title": "注意 #1",
+      "content": "加载应用时，你无法编辑应用（编辑器变灰）"
+    },
+    {
+      "title": "注意 #2",
+      "content": "你可以通过查看编辑器中的<span style=\"color:green;\"><b>green lines</b></span>，监控应用进程"
+    },
+    {
+      "title": "3D预览",
+      "content": "你可以使用鼠标左右键旋转3D视图，使用 <b>WHEEL</b> 按钮可以放大/缩小"
+    },
+    {
+      "title": "切换3D预览",
+      "content": "你可以使用切换按钮，展开或隐藏3D模拟窗口"
+    },
+    {
+      "title": "演示结束",
+      "content": "恭喜你的第一个基础程序刚运行完成！<p>需要知道更多有关信息请打开<b>HELP screen</b>（主菜单下方）。</p>"
     }
   ],
+  "trivia": [
+    "你可以点击主应用工具栏中的记录按钮记录机器人的动作",
+    "你可以右击应用文件夹以在项目中添加新的应用",
+    "你可以点击应用工具栏中的箭头按钮以打开或关闭应用工具栏",
+    "你可以使用Clear命令清空所有终端上的命令",
+    "你可以打开应用的侧边菜单，点击主页图片并选择照片，以上传新的主页图片"
+  ],
+  "trivia_title": "是否已经知道？",
   "type": "类型",
   "userManager": {
     "btnCreate": "创建用户",
     "btnEdit": "编辑用户",
     "delete": {
-      "title": "你确定吗？",
+      "title": "是否删除用户吗？",
       "msg": "已选中用户将被永久删除。",
       "yes": "删除",
       "no": "取消",
       "success": "选中用户已被删除",
-      "fail": "错误：一个或多个用户不能被删除",
+      "fail": "错误：一个或多个用户无法被删除",
+      "fail2": "错误：管理员账号无法被删除",
       "err": "无效请求"
     },
     "err": "错误：用户已经存在或者发送了无效参数",
@@ -1363,9 +1426,22 @@
     "btn_create": "创建变量",
     "name": "变量名称",
     "new": "添加变量",
+    "none_exist": "无法找到变量",
     "type": "变量类型",
     "get_current": "获取当前值",
     "cannot_use_jog_tip": "点动面板不可用！"
+  },
+  "version": {
+    "releaseNote": "发行说明",
+    "userLicense": "用户许可证",
+    "softMCDes": "这是 soft mc",
+    "GUIDes": "这是 GUI",
+    "webServerDes": "这是 web server",
+    "successDialogTitle": "成功!",
+    "successDialogMsg": "OS升级成功，新版本是: ",
+    "errorDialogTitle": "失败!",
+    "errorDialogMsg": "OS升级失败，请重装旧版本: ",
+    "releaseNoteTitle": "ControlStudio+ 发布 Note"
   },
   "watch": {
     "context": "上下文",

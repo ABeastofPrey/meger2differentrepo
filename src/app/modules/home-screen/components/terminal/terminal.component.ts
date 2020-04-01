@@ -112,14 +112,14 @@ export class TerminalComponent implements OnInit {
       editor.getSession().setMode('ace/mode/mcbasic');
     });
     editor.$blockScrolling = Infinity;
-    editor.setValue(this.terminal.cmdsAsString, 1);
+    this.terminal.cmdsAsString().then(val => editor.setValue(val, 1));
     setTimeout(() => {
       const height = this.wrapper.nativeElement.scrollHeight;
       this.wrapper.nativeElement.scrollTop = height;
     }, 50);
     this.terminal.onNewCommand.subscribe(() => {
       this.zone.run(()=>{
-        editor.setValue(this.terminal.cmdsAsString, 1);
+        this.terminal.cmdsAsString().then(val => editor.setValue(val, 1));
         setTimeout(() => {
           if (!this.wrapper) return;
           const height = this.wrapper.nativeElement.scrollHeight;

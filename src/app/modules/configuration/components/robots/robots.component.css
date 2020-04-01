@@ -5,6 +5,7 @@
 }
 .robots {
   flex: 1;
+  width: 100%;
 }
 .system {
   flex: 1;

@@ -197,6 +197,7 @@
 				</mat-error>
 			</ng-template>
 			<app-custom-io *ngIf="customIOTab.isActive" [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
+			<app-custom-io *ngIf="!customIOTab.isActive" [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
 		</mat-tab>
 	</mat-tab-group>
 

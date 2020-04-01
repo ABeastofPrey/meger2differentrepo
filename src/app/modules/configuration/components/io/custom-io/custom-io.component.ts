@@ -225,14 +225,8 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
    * Delete one row in the custom IO table.
    */
   deleteRowInCustomTable() {
-    let isSelectBottomLine = true;
-    if (
-      this.selectedIndexInCustomTable !==
-      this.customDataSource.data.length - 1
-    ) {
-      isSelectBottomLine = false;
-    }
-
+    if (this.selectedIndexInCustomTable === -1 ) return;
+    const isSelectBottomLine = (this.selectedIndexInCustomTable !== this.customDataSource.data.length - 1) ? false : true;
     this.ioService
       .removeCustomIo(this.tableIndex, this.selectedIndexInCustomTable + 1)
       .then(() => {
@@ -465,7 +459,7 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
             });
           }
 
-          this.enableButtonsInCustomTab(true, false);
+          this.enableButtonsInCustomTab(true, true);
         });
     }
   }

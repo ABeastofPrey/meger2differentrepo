@@ -251,15 +251,67 @@ export class ScreenManagerService {
   }
 
   async closeControls() {
-    if (!this.openedControls) return;
+    if (!this.openedControls.value) return;
     // this.controlsAnimating.next(true);
     this.openedControls.next(false);
     if (!this.cmn.isTablet) {
+      console.log('closed controls');
       await this.stat.setMode('A');
     }
     // setTimeout(() => {
     //   this.controlsAnimating.next(false);
     // }, 300);
+  }
+
+  handleFromPath() {
+    const fromPath = this.router.parseUrl(this.router.url).queryParamMap.get('from');
+    if (fromPath) {
+      let msg = '';
+      switch (fromPath) {
+        case 'firmware':
+          msg = 'Firmware update was done succesfully!';
+          break;
+        case 'io':
+          msg = this.words['ios.updating_succuss'];
+          break;
+        case 'robot':
+          msg = 'Robot configuration was changed succesfully!';
+          break;
+        case 'restore':
+          msg = this.words['restore.success'];
+          break;
+        case 'feature':
+          msg = this.words['home.addFeature.success'];
+          break;
+        default:
+          msg = '';
+          break;
+      }
+      if (fromPath !== 'firmware') {
+        this.showFromDialog(msg);
+      } else {
+        this.api.getPkgdResult().then(result => {
+          if (result) {
+            if (this.utils.IsKuka) {
+              this.showOSUpgradeSuccessDialog();
+            } else {
+              this.showFromDialog(msg);
+            }
+          } else {
+            if (this.utils.IsKuka) {
+              this.showOSUpgradeErrorDialog();
+            } else {
+              this.dialog.open(ErrorDialogComponent, {
+                data: {
+                  title: this.words['error.firmware_update']['title'],
+                  message: this.words['error.firmware_update']['msg'],
+                },
+              });
+            }
+          }
+        });
+      }
+    }
   }
 
   constructor(
@@ -331,56 +383,7 @@ export class ScreenManagerService {
       .subscribe(words => {
         this.words = words;
       });
-    const fromPath = this.router
-      .parseUrl(this.router.url)
-      .queryParamMap.get('from');
-    if (fromPath) {
-      let msg = '';
-      switch (fromPath) {
-        case 'firmware':
-          msg = 'Firmware update was done succesfully!';
-          break;
-        case 'io':
-          msg = this.words['ios.updating_succuss'];
-          break;
-        case 'robot':
-          msg = 'Robot configuration was changed succesfully!';
-          break;
-        case 'restore':
-          msg = this.words['restore.success'];
-          break;
-        case 'feature':
-          msg = this.words['home.addFeature.success'];
-          break;
-        default:
-          msg = '';
-          break;
-      }
-      if (fromPath !== 'firmware') {
-        this.showFromDialog(msg);
-      } else {
-        this.api.getPkgdResult().then(result => {
-          if (result) {
-            if (this.utils.IsKuka) {
-              this.showOSUpgradeSuccessDialog();
-            } else {
-              this.showFromDialog(msg);
-            }
-          } else {
-            if (this.utils.IsKuka) {
-              this.showOSUpgradeErrorDialog();
-            } else {
-              this.dialog.open(ErrorDialogComponent, {
-                data: {
-                  title: this.words['error.firmware_update']['title'],
-                  message: this.words['error.firmware_update']['msg'],
-                },
-              });
-            }
-          }
-        });
-      }
-    }
+
     this.stat.modeChanged.subscribe((mode: string) => {
       if (mode === null) return;
       if (mode !== 'T1' && mode !== 'T2') {
@@ -426,6 +429,7 @@ export class ScreenManagerService {
     });
     this.router.events.subscribe((e: RouterEvent) => {
       if (!(e instanceof NavigationEnd)) return;
+      this.handleFromPath();
       let navUrl: string = e.urlAfterRedirects;
       if (!navUrl) return;
       if (navUrl === '/') navUrl = '';
@@ -479,6 +483,7 @@ export class ScreenManagerService {
         this.api.getFile(this.VERSIONDAT),
       ];
       Promise.all(promises).then((results: MCQueryResponse[]) => {
+        if (isGetRes === true) return;
         isGetRes = true;
         for (let i = 0; i < 4; i++) {
           if (!results[3]) {
@@ -492,7 +497,7 @@ export class ScreenManagerService {
           }
         }
 
-        this.dialog.open(OSUpgradeSuccessDialogComponent, {
+        const ref = this.dialog.open(OSUpgradeSuccessDialogComponent, {
           data: {
             title: this.words[this.VERSION][this.SUCCESS_DIALOG_TITLE],
             msg: this.words[this.VERSION][this.SUCCESS_DIALOG_MSG] + results[3],
@@ -502,12 +507,16 @@ export class ScreenManagerService {
             libraryVersion: results[2].result,
           },
         });
-        this.router.navigate(['.'], {
-          relativeTo: this.route,
-          queryParams: {},
+        ref.afterClosed().subscribe(ret => {
+          this.router.navigate(['.'], {
+            relativeTo: this.route,
+            queryParams: {},
+          });
+
         });
       });
     };
+
 
     const checkIsGetRes = setInterval(() => {
       if (count === 0 || isGetRes) {

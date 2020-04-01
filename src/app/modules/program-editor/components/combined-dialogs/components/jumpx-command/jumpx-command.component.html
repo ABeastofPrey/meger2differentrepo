@@ -121,7 +121,7 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasArchNo">
-                    <input matInput type="number"
+                    <input matInput type="text"
                         placeholder="{{'projectCommands.jumpx.arch' | translate}}" 
                         [formControlName]="CommandOptions.ArchNo"
                         (blur)="updateStore(CommandOptions.ArchNo, $event.target.value)">
@@ -130,7 +130,7 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasLimZ">
-                    <input matInput type="number"
+                    <input matInput type="text"
                         placeholder="{{'projectCommands.jumpx.limZ' | translate}} [mm]"
                         [formControlName]="CommandOptions.LimZ"
                         (blur)="updateStore(CommandOptions.LimZ, $event.target.value)">
@@ -139,7 +139,7 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasBlendingPercentage">
-                    <input matInput type="number"
+                    <input matInput type="text"
                         placeholder="{{'projectCommands.jumpx.blending' | translate}}"
                         [formControlName]="CommandOptions.BlendingPercentage"
                         (blur)="updateStore(CommandOptions.ArchNo, $event.target.value)">
@@ -149,30 +149,30 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasVcruise">
-                    <input matInput type="number"
+                    <input matInput type="text"
                         placeholder="{{'projectCommands.jumpx.vcruise' | translate}} [deg/s]"
                         [formControlName]="CommandOptions.Vcruise"
                         (blur)="updateStore(CommandOptions.Vcruise, $event.target.value)">
                     <mat-error *ngIf="model">
-                        {{'projectCommands.jumpx.numRange' | translate: {range: '['+model[CommandOptions.VcruiseLimit]+']'} }}
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '('+model[CommandOptions.VcruiseLimit]+']'} }}
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasVtran">
-                    <input matInput type="number"
+                    <input matInput type="text"
                         placeholder="{{'projectCommands.jumpx.vtran' | translate}} [mm/s]"
                         [formControlName]="CommandOptions.Vtran"
                         (blur)="updateStore(CommandOptions.Vtran, $event.target.value)">
                     <mat-error *ngIf="model">
-                        {{'projectCommands.jumpx.numRange' | translate: {range: '['+model[CommandOptions.VtranLimit]+']'} }}
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '('+model[CommandOptions.VtranLimit]+']'} }}
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasAcc">
-                    <input matInput type="number"
+                    <input matInput type="text"
                         placeholder="{{'projectCommands.jumpx.acc' | translate}} [deg/s^2]"
                         [formControlName]="CommandOptions.Acc"
                         (blur)="updateStore(CommandOptions.Acc, $event.target.value)">
                     <mat-error *ngIf="model">
-                        {{'projectCommands.jumpx.numRange' | translate: {range: '['+model[CommandOptions.AccLimit]+']'} }}
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '('+model[CommandOptions.AccLimit]+']'} }}
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasWithPls">

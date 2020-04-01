@@ -235,7 +235,7 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.customTabAddIndex = this.customEmptyIndex.indexOf(0) + 1;
-    const tabName = this.words['customView'] + ' ' + this.customTabAddIndex;
+    const tabName = 'Custom View' + ' ' + this.customTabAddIndex;
     const newCustomViewFormControl = new FormControl(tabName, [
       Validators.required,
     ]);

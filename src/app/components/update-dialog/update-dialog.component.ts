@@ -2,7 +2,8 @@ import { CommonService } from './../../modules/core/services/common.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { SysLogBarService } from '../../modules/sys-log/services/sys-log-bar.service';
 
 @Component({
   selector: 'app-update-dialog',
@@ -17,7 +18,9 @@ export class UpdateDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public title: string,
     private trn: TranslateService,
-    public cmn: CommonService
+    public cmn: CommonService,
+    private sysLogger: SysLogBarService,
+    private dialogRef: MatDialogRef<UpdateDialogComponent>
   ) {}
 
   get background() {
@@ -45,6 +48,11 @@ export class UpdateDialogComponent implements OnInit {
           this.selectedIndex = 0;
         }
       },10000);
+    });
+    this.sysLogger.stopListenSysLog();
+    const sub = this.dialogRef.afterClosed().subscribe(() => {
+      this.sysLogger.startListenSysLog();
+      sub.unsubscribe();
     });
   }
 

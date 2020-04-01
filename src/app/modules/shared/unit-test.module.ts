@@ -5,6 +5,7 @@ import {
   PipeTransform,
   Injectable,
 } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 import {
   TranslateModule,
   TranslateLoader,
@@ -60,6 +61,7 @@ export class TranslatePipeMock implements PipeTransform {
         deps: [HttpClient],
       },
     }),
+    RouterTestingModule.withRoutes([])
   ],
   exports: [TranslateModule, TranslatePipeMock],
   providers: [

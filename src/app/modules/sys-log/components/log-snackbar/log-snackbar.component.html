@@ -19,7 +19,7 @@
             </span>
             <span *ngSwitchCase="'lib'">
                 {{data?.code}}&nbsp;&nbsp;{{'lib_code.' + data?.code | translate}} 
-                {{!!data?.message ? ': ' + data.message : ''}}
+                {{!!data?.message ? ' ' + data.message : ''}}
             </span>
             <span *ngSwitchDefault>
                 {{data?.code}}&nbsp;&nbsp;{{data?.message}}

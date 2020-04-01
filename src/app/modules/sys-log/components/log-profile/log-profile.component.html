@@ -19,7 +19,7 @@
                     {{('log.' + log?.message) | translate:{ name: log?.userName.toUpperCase() } }} {{log?.paras[0]?.toUpperCase()}}
                 </span>
                 <span *ngSwitchCase="'lib'">
-                    <span>{{log?.code}}</span>&nbsp;&nbsp;&nbsp;{{'lib_code.' + log?.code | translate}} {{!!log?.message ? ': ' + log.message : ''}}
+                    <span>{{log?.code}}</span>&nbsp;&nbsp;&nbsp;{{'lib_code.' + log?.code | translate}} {{!!log?.message ? ' ' + log.message : ''}}
                 </span>
                 <span *ngSwitchDefault>
                     <span>{{log?.code}}</span>&nbsp;&nbsp;&nbsp;{{log?.message}}

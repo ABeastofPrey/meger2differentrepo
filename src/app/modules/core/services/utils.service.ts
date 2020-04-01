@@ -219,16 +219,24 @@ export class UtilsService {
     this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-shrink');
   }
 
-  public limitValidator(min: number, max: number, canBeDecimal = true): ValidatorFn {
+  public limitValidator(min: number, max: number, canBeDecimal = true, leftClosedInterval = true, rightClosedInterval = true): ValidatorFn {
       return ({ value }: AbstractControl): { [key: string]: any } | null => {
           if (value !== 0 && !!value === false) {
               return null;
           }
           let forbidden =
-              Number(value).toString() === 'NaN' ||
               Number(value) > max ||
               Number(value) < min ||
               (canBeDecimal ? false : (Number(value) % 1 !== 0)); // Check decimal number.
+          if (!leftClosedInterval) {
+            forbidden = Number(value) === min ? true : forbidden;
+          }
+          if (!rightClosedInterval) {
+            forbidden = Number(value) === max ? true : forbidden;
+          }
+          if (Number(value).toString() === 'NaN') {
+            forbidden = true;
+          }
           return forbidden ? { limit: { min, max, value } } : null;
       };
   }

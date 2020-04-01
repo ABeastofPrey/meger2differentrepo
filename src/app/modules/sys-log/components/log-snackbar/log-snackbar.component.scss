@@ -34,8 +34,11 @@
             // -webkit-line-clamp: 3;
             // overflow: hidden;
             margin: 5px 0 0 0;
-            line-height: 15px;
+            line-height: 16px;
+            max-height: 48px;
             font-size: 0.9em;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
     }
     .right-portion {

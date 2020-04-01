@@ -115,7 +115,7 @@
 					'custom-del-button-disable': !isDeleteEnable
 				}"
 				(click)="deleteRowInCustomTable()"
-				[disabled]="!isDeleteEnable"
+				[disabled]="!isDeleteEnable || (selectedIndexInCustomTable === -1)"
 				disableRipple="true"
 			>
 				<mat-icon>delete</mat-icon>{{ 'io.delRow' | translate }}
