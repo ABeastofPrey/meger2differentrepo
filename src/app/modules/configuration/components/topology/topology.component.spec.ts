@@ -6,6 +6,7 @@ import { UnitTestModule } from '../../../shared/unit-test.module';
 import { Either } from 'ramda-fantasy';
 import { levelOrder } from './topology.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { WebsocketService } from '../../../core/services/websocket.service';
 
 const { Right } = Either;
 
@@ -34,12 +35,24 @@ describe('TopologyComponent', () => {
     Promise.resolve(Right('2'))
   );
 
+  /**
+   * The WebSocketService spy instance.
+   */
+  const ws = jasmine.createSpyObj('WebsocketService', ['']);
+  ws.isConnected = {
+    subscribe: cb => {
+      cb(true);
+    }
+  };
+
   beforeEach(async(() => {
+    const spyObj = jasmine.createSpyObj('WebSocketService', ['isConnected']);
     TestBed.configureTestingModule({
       imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
       declarations: [TopologyComponent],
-      providers: [{ provide: TopologyService, useValue: fakeService }],
+      providers: [{ provide: TopologyService, useValue: fakeService }, { provide: WebsocketService, useValue: ws }],
     }).compileComponents();
+
   }));
 
   beforeEach(() => {

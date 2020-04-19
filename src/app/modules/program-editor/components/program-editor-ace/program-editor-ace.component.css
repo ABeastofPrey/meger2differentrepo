@@ -20,6 +20,9 @@
 .disabled .ace_editor {
   background: #eee !important;
 }
+:host-context(.cs-dark) .disabled .ace_editor {
+  background: #444 !important;
+}
 ::ng-deep .disabled .ace_active-line {
   background: transparent !important;
 }
@@ -33,4 +36,11 @@
   right: 0;
   top: 3px;
   z-index: 2;
+}
+.spinner {
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }

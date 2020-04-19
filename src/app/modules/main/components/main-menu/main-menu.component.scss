@@ -5,6 +5,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  color: #888;
 }
 .header {
   padding: 24px;
@@ -58,6 +59,11 @@ li.selected {
 .list {
   overflow: auto;
   flex: 1;
+}
+:host-context(.cs-dark) {
+  .wrapper {
+    color: #ccc;
+  }
 }
 
 ::ng-deep .tablet-ui {

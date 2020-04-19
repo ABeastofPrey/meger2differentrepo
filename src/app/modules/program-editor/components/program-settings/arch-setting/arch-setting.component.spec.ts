@@ -83,6 +83,7 @@ describe('ArchSettingComponent', () => {
         (input: DebugElement) => input.nativeElement,
         fixture.debugElement.queryAll(By.css('input'))
       );
+      console.log(inputs);
       expect(inputs.length).toEqual(fakeData.length * 2);
       expect(inputs[0].value).toEqual(fakeData[0].depart.toString());
       expect(inputs[1].value).toEqual(fakeData[0].approach.toString());

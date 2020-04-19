@@ -174,9 +174,9 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
                 changeModel.jumpxCommand.changes[CommandOptions.LimZ] = value;
                 this.store.dispatch(fromActions.inputLimZ(changeModel));
                 break;
-            case CommandOptions.Vcruise:
-                changeModel.jumpxCommand.changes[CommandOptions.Vcruise] = value;
-                this.store.dispatch(fromActions.inputVcruise(changeModel));
+            case CommandOptions.VScale:
+                changeModel.jumpxCommand.changes[CommandOptions.VScale] = value;
+                this.store.dispatch(fromActions.InputVscale(changeModel));
                 break;
             case CommandOptions.Vtran:
                 changeModel.jumpxCommand.changes[CommandOptions.Vtran] = value;
@@ -201,7 +201,7 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
         const addAccControl = () => addControl(CommandOptions.Acc);
         const addArchNoControl = () => addControl(CommandOptions.ArchNo);
         const addLimZControl = () => addControl(CommandOptions.LimZ);
-        const addVcruiseControl = () => addControl(CommandOptions.Vcruise);
+        const addVcruiseControl = () => addControl(CommandOptions.VScale);
         const addVtransControl = () => addControl(CommandOptions.Vtran);
         const addBlendingPercentageControl = () => addControl(CommandOptions.BlendingPercentage);
         const addTargetPointControl = () => addRequiredControl(CommandOptions.TargetPoint, null);
@@ -235,8 +235,8 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
         const addAccControl = () => addControl(CommandOptions.Acc, model[CommandOptions.AccLimit], true, false);
         const addLimZControl = () => addControl(CommandOptions.LimZ, model[CommandOptions.LimZLimit]);
         const addBlendingPercentageControl = () => addControl(CommandOptions.BlendingPercentage, model[CommandOptions.BlendingPercentageLimit]);
-        const addVcruiseControl = () => addControl(CommandOptions.Vcruise, model[CommandOptions.VcruiseLimit], true, false);
-        const addVtransControl = () => addControl(CommandOptions.Vtran, model[CommandOptions.VtranLimit], true, false);
+        const addVcruiseControl = () => addControl(CommandOptions.VScale, model[CommandOptions.VcruiseLimit]);
+        const addVtransControl = () => addControl(CommandOptions.Vtran, model[CommandOptions.VtranLimit]);
         when(identity, addArchNoControl)(hasArchNo);
         when(identity, addLimZControl)(hasLimZ);
         when(identity, addBlendingPercentageControl)(hasBlendingPercentage);
@@ -311,7 +311,7 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
             [CommandOptions.BlendingPercentage]: value[CommandOptions.BlendingPercentage],
             [CommandOptions.ArchNo]: value[CommandOptions.ArchNo],
             [CommandOptions.LimZ]: value[CommandOptions.LimZ],
-            [CommandOptions.Vcruise]: value[CommandOptions.Vcruise],
+            [CommandOptions.VScale]: value[CommandOptions.VScale],
             [CommandOptions.Vtran]: value[CommandOptions.Vtran],
             [CommandOptions.Acc]: value[CommandOptions.Acc],
             [CommandOptions.WithPls]: value[CommandOptions.WithPls],
@@ -353,7 +353,7 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
             command += !option[CommandOptions.BlendingPercentage] ? '' : `${CommandOptions.BlendingPercentage}=${option[CommandOptions.BlendingPercentage]} `;
         }
         if (auth.hasVcruise) {
-            command += !option[CommandOptions.Vcruise] ? '' : `${CommandOptions.Vcruise}=${option[CommandOptions.Vcruise]} `;
+            command += !option[CommandOptions.VScale] ? '' : `${CommandOptions.VScale}=${option[CommandOptions.VScale]} `;
         }
         if (auth.hasVtran) {
             command += !option[CommandOptions.Vtran] ? '' : `${CommandOptions.Vtran}=${option[CommandOptions.Vtran]} `;

@@ -1,6 +1,6 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
-import { WebsocketService, MCQueryResponse } from './websocket.service';
+import { WebsocketService, MCQueryResponse, errorString } from './websocket.service';
 import { MatSnackBar } from '@angular/material';
 import {GroupManagerService} from './group-manager.service';
 import {ApiService} from './api.service';
@@ -99,11 +99,12 @@ export class RecordService {
       const cmd = `Record CSRECORD.rec ${samples} Gap=1 RecData=${axes}`;
       this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if (ret.err) {
-          return this.snack.open(ret.err.errMsg, 'DISMISS');
+          return this.snack.open(errorString(ret.err), 'DISMISS');
         }
         this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
+          if (ret.err) return this.snack.open(errorString(ret.err), 'DISMISS');
           if (ret.err) {
-              return this.snack.open(ret.err.errMsg, 'DISMISS');
+              return this.snack.open(errorString(ret.err), 'DISMISS');
           }
           this._isRecording = true;
           clearInterval(this.timeout);
@@ -121,8 +122,8 @@ export class RecordTab {
   
   file: string = null;
   data: Array<Partial<PlotData>> = null;
-  csv: string = null;
-  
+
+  private _csv: string = null;
   private _err = false;
   private _serviceRef: RecordService = null;
   private _legends: string[] = [];
@@ -137,6 +138,20 @@ export class RecordTab {
   constructor(fileName: string, ref: RecordService) {
     this.file = fileName;
     this._serviceRef = ref;
+  }
+
+  get csv() {
+    if (this._csv === null) return null;
+    let csv = this._csv.split('\n');
+    if (this._derData && this._derData.length > 0) {
+      csv[1] += ',' + this._derData.map(d=>d.name).join(',');
+      const yData = this._derData.map(d=>d.y);
+      for (let i=2; i<csv.length; i++) {
+        csv[i] += yData.map(y=>y[i-2]).join(',');
+      }
+    }
+    const ret = csv.join('\n');
+    return ret;
   }
   
   get err() {
@@ -157,13 +172,12 @@ export class RecordTab {
   
   set derData(data: Array<Partial<Plotly.PlotData>>) {
     this._derData = data;
-    this.init(this.csv);
+    this.init(this._csv);
   }
   
   set chartType(val: ChartType) {
     this._chartType = val;
     this.derData = [];
-    //this.init(this.csv);
   }
   
   get legendX() {
@@ -177,15 +191,15 @@ export class RecordTab {
   };
   set legendX(val: number) {
     this._legendX = val;
-    this.init(this.csv);
+    this.init(this._csv);
   }
   set legendY(val: number) {
     this._legendY = val;
-    this.init(this.csv);
+    this.init(this._csv);
   }
   set legendZ(val: number) {
     this._legendZ = val;
-    this.init(this.csv);
+    this.init(this._csv);
   }
   
   get compareTo() {
@@ -197,7 +211,7 @@ export class RecordTab {
   }
   
   init(csv: string) {
-    this.csv = csv;
+    this._csv = csv;
     try {
       let newData = [];
       if (this._legendX === null) { // FIRST INIT

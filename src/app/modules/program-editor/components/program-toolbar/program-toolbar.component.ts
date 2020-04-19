@@ -108,6 +108,7 @@ export class ProgramToolbarComponent implements OnInit {
     ref.afterClosed().subscribe(projectName => {
       if (projectName) {
         this.prgService.close();
+        this.prj.stopStatusRefresh();
         this.ws
           .query('?prj_new_project("' + projectName + '")')
           .then((ret: MCQueryResponse) => {
@@ -143,7 +144,7 @@ export class ProgramToolbarComponent implements OnInit {
                 this.snack.open(
                   this.words['error.err'] +
                     ' ' +
-                    ret +
+                    ret.result +
                     ':' +
                     this.words['projects.toolbar']['err_change'],
                   '',
@@ -213,10 +214,12 @@ export class ProgramToolbarComponent implements OnInit {
   rename() {
     this.dialog.open(RenameDialogComponent);
   }
-  delete() {
-    const project = this.prj.currProject.value.name;
+  async delete() {
+    this.prj.stopStatusRefresh();
+    await new Promise(resolve=>{setTimeout(resolve,300)});
+    const project = this.prj.currProject.value;
     this.trn
-      .get('projects.toolbar.del_prj_title', { name: project })
+      .get('projects.toolbar.del_prj_title', { name: project.name })
       .subscribe(word => {
         this.dialog
           .open(YesNoDialogComponent, {
@@ -230,11 +233,11 @@ export class ProgramToolbarComponent implements OnInit {
           .afterClosed()
           .subscribe(ret => {
             if (ret) {
+              this.prgService.close();
               this.ws
-                .query('?prj_delete_project("' + project + '")')
+                .query('?prj_delete_project("' + project.name + '")')
                 .then((ret: MCQueryResponse) => {
                   if (ret.result === '0') {
-                    this.prgService.close();
                     this.prgService.mode = 'editor';
                     this.prj.getCurrentProject();
                   }
@@ -243,12 +246,15 @@ export class ProgramToolbarComponent implements OnInit {
           });
       });
   }
-  deleteOthers() {
+  async deleteOthers() {
+    this.prj.stopStatusRefresh();
+    await new Promise(resolve=>{setTimeout(resolve,300)});
     this.dialog
       .open(ProjectDeleteDialogComponent)
       .afterClosed()
       .subscribe((ret: string[]) => {
         if (ret && ret.length > 0) {
+          this.prgService.close();
           const promises = [];
           let isCurrent = false;
           this.prj.isLoading = true;
@@ -259,7 +265,6 @@ export class ProgramToolbarComponent implements OnInit {
           Promise.all(promises)
             .then((ret: MCQueryResponse[]) => {
               if (isCurrent) {
-                this.prgService.close();
                 this.prgService.mode = 'editor';
                 this.prj.getCurrentProject();
               } else {
@@ -346,6 +351,8 @@ export class ProgramToolbarComponent implements OnInit {
           title: this.words['projects.toolbar.new_folder'],
           placeholder: this.words['files.dir_name'],
           accept: this.words['button.create'],
+          regex: '[a-zA-Z]+(\\w*)$',
+          maxLength: 32
         },
       })
       .afterClosed()

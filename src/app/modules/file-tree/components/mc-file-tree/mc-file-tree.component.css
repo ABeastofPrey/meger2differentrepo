@@ -88,3 +88,32 @@ mat-icon {
 .checkbox_en {
   margin-left: 8px;
 }
+.search-line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-left: 24px;
+}
+.search-file {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.search-path {
+  font-size: 11px;
+  font-weight: bold;
+  color: #444;
+}
+
+:host-context(.cs-dark) li > div:hover, :host-context(.cs-dark) .file-list > div:hover {
+  background: #666;
+}
+
+:host-context(.cs-dark) .menu {
+  background: #333;
+  color: #fff;
+}
+
+:host-context(.cs-dark) .selected:not(.disabled) {
+  background: #666 !important;
+}

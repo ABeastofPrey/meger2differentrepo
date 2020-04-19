@@ -47,7 +47,7 @@ export class TpComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    if (!this.cmn.isTablet && this.prj.activeProject) {
+    if (!this.stat.mode || (!this.cmn.isTablet && this.prj.activeProject)) {
       this.router.navigateByUrl('/');
     } else if (
       !this.cmn.isTablet &&

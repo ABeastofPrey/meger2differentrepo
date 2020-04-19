@@ -1,6 +1,6 @@
 <div class="wrapper">
 	<div class="header">
-		<div class="header-box primary-bg-dark center-vertical">
+		<div class="header-box primary-bg-dark center-vertical" *ngIf="dateTime">
 			<mat-icon>access_time</mat-icon>
 			<!-- <span>{{ date }}&nbsp;&nbsp;{{ time }}</span> -->
 			<span>{{dateTime | date:'yyyy/MM/dd h:mm:ss a'}}</span>
@@ -36,19 +36,11 @@
 	</div>
 	<mat-grid-list cols="12" rowHeight="fit">
 		<mat-grid-tile colspan="3" rowspan="1">
-			<mat-card>
-				<mat-card-header style="margin-bottom: 8px;" class="center-vertical">
-					<div
-						mat-card-avatar
-						style="background-size: cover;"
-						[style.background-image]="'url(' + profileSrc + ')'"
-					></div>
-          <div style="height: 48px;">
-            <mat-card-title
-              ><b>{{ 'home.welcome' | translate }}, {{ login.fName }}!</b></mat-card-title
-            >
-            <mat-card-subtitle>{{ login.permission | translate }}</mat-card-subtitle>
-          </div>
+			<mat-card id="welcome-card">
+				<mat-card-header>
+					<div mat-card-avatar style="background-size: cover;" [style.background-image]="'url(' + profileSrc + ')'"></div>
+					<mat-card-title><b>{{ 'home.welcome' | translate }}, {{ login.fName }}!</b></mat-card-title>
+            		<mat-card-subtitle>{{ login.permission | translate }}</mat-card-subtitle>
 				</mat-card-header>
 				<div
 					mat-card-image

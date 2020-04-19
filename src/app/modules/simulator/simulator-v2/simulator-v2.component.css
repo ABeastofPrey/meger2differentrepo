@@ -95,3 +95,12 @@ lib-player {
   padding: 16px;
   z-index: 3;
 }
+.file-input {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+:host-context(.cs-dark) lib-player {
+  background: #333;
+}

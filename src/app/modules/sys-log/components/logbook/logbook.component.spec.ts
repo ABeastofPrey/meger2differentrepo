@@ -9,7 +9,7 @@ import { LogCauseComponent } from '../log-cause/log-cause.component';
 import { LogEffectComponent } from '../log-effect/log-effect.component';
 import { LogBookComponent } from './logbook.component';
 import { SysLogBookService } from '../../services/sys-log-book.service';
-import { LoginService, ScreenManagerService } from '../../../core';
+import { LoginService, ScreenManagerService, WebsocketService } from '../../../core';
 import { ProgramEditorService } from '../../../program-editor/services/program-editor.service';
 import { SystemLog } from '../../enums/sys-log.model';
 import { Router } from '@angular/router';
@@ -54,6 +54,16 @@ describe('LogBookComponent', () => {
     }),
     clearAllDriveFault: () => {}
   };
+  const ws = jasmine.createSpyObj('WebsocketService', ['']);
+  ws.isConnected = {
+    pipe: () => { 
+      return {
+        subscribe: cb => {
+          cb(true);
+        }
+      };
+    }
+  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -66,6 +76,7 @@ describe('LogBookComponent', () => {
         { provide: ProgramEditorService, useValue: {} },
         { provide: ScreenManagerService, useValue: {} },
         { provide: Router, useValue: {} },
+        { provide: WebsocketService, useValue: ws },
       ],
       imports: [SharedModule, BrowserAnimationsModule, UnitTestModule],
     }).compileComponents();

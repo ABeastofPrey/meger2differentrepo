@@ -232,7 +232,7 @@ export class DashboardWindow {
   isExpanded = false;
   cartesian = false;
   target: number[];
-  vel: number;
+  vscale: number;
   acc: number;
   dec: number;
   jerk: number;

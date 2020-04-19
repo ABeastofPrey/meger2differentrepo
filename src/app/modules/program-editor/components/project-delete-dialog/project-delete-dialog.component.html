@@ -18,7 +18,7 @@
 					[matChipInputFor]="chipList"
 					[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
 					matChipInputAddOnBlur="true"
-					(matChipInputTokenEnd)="add($event)"
+					[disabled]="projects.length === 0"
 				/>
 			</mat-chip-list>
 			<mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelected($event)">
@@ -32,7 +32,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="warn" (click)="delete()">
+		<button mat-button color="warn" (click)="delete()" [disabled]="selected.length === 0">
 			{{ 'projects.delete-dialog.btn-delete' | translate }}
 		</button>
 	</div>

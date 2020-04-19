@@ -6,6 +6,7 @@ import {
   DataService,
   MCQueryResponse,
 } from '../../../core';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-frame',
@@ -13,10 +14,10 @@ import {
   styleUrls: ['./add-frame.component.css'],
 })
 export class AddFrameComponent implements OnInit {
-  name: string;
+  name: FormControl = new FormControl('', [Validators.required, Validators.maxLength(32), Validators.pattern('[a-zA-Z]+(\\w*)$')]);
   values: Array<string | number>;
   isArray = false;
-  arrSize = 0;
+  arrSize = 1;
 
   constructor(
     public dialogRef: MatDialogRef<AddFrameComponent>,
@@ -34,10 +35,15 @@ export class AddFrameComponent implements OnInit {
     this.dialogRef.close(result);
   }
 
+  get validateValues() : boolean {
+    if (this.isArray) return true;
+    return !this.values.some(v=>v.toString().trim() === '');
+  }
+
   add() {
     const name = this.isArray
-      ? this.name + '[' + this.arrSize + ']'
-      : this.name;
+      ? this.name.value + '[' + this.arrSize + ']'
+      : this.name.value;
     let value = '';
     if (!this.isArray) {
       value = this.values.slice(0, this.coos.joints.length).join(',');

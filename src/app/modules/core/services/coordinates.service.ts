@@ -138,7 +138,7 @@ export class CoordinatesService {
         //LOADED and INTERVAL ISN'T SET
         this._zone.runOutsideAngular(() => {
           this.interval = 
-              this.ws.send('cyc2',false,(result: string, cmd: string, err: ErrorFrame) => {
+              this.ws.send('cyc2',false,(result: string, cmd: string, err: ErrorFrame[]) => {
             if (err || result.length === 0) {
               this.ws.clearInterval(this.interval);
               console.error('cyc2 returned wrong value:');

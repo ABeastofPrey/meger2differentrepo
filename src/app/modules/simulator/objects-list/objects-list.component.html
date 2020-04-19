@@ -1,5 +1,5 @@
 <div class="wrapper" (dragover)="onDragOverObject($event, null)" (drop)="onObjectDrop($event, null)">
-	<h2>{{ 'simulator_screen.scene' | translate }}</h2>
+	<h2>{{ 'simulator_screen.scene' | translate }} <span *ngIf="sim.scene.name && sim.scene.name.endsWith('.SIM')">{{sim.scene.name}}</span></h2>
 	<mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
 		<mat-tree-node *matTreeNodeDef="let node">
 			<li class="leaf">

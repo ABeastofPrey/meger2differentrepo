@@ -14,3 +14,6 @@
   justify-content: flex-end;
   margin: 0 -24px -24px 0;
 }
+mat-form-field {
+  width: 100%;
+}

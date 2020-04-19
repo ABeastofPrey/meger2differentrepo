@@ -59,21 +59,38 @@
 				<mat-panel-description>{{ 'projectSettings.motion_params.desc' | translate }}</mat-panel-description>
 			</mat-expansion-panel-header>
 			<div class="content" *ngIf="motionParametersPanel.expanded">
-				<mat-form-field (change)="prj.onProgramSettingChanged('vcruise')">
-					<input
-						matInput
-						placeholder="VCruise"
-						[(ngModel)]="prj.currProject.value.settings.vcruise"
-						type="number"
-						virtualKeyboard
-						ktype="numeric"
-					/>
-					<span matSuffix>deg/sec</span>
-				</mat-form-field>
+				<div class="center-vertical">
+					<span>{{ 'projectSettings.vscale' | translate }} (VScale):</span>
+					<mat-slider
+						class="vscale"
+						thumbLabel="true"
+						tickInterval="1"
+						[min]="1"
+						[max]="100"
+						[(ngModel)]="prj.currProject.value.settings.vscale"
+						color="primary"
+						[displayWith]="percentageLabel"
+						(change)="prj.onProgramSettingChanged('vscale')"
+					></mat-slider>
+				</div>
+				<div class="center-vertical">
+					<span>{{ 'projectSettings.ascale' | translate }} (AScale):</span>
+					<mat-slider
+						class="vscale"
+						thumbLabel="true"
+						tickInterval="1"
+						[min]="1"
+						[max]="100"
+						[(ngModel)]="prj.currProject.value.settings.ascale"
+						color="primary"
+						[displayWith]="percentageLabel"
+						(change)="prj.onProgramSettingChanged('ascale')"
+					></mat-slider>
+				</div>
 				<mat-form-field (change)="prj.onProgramSettingChanged('vtran')">
 					<input
 						matInput
-						placeholder="VTran"
+						placeholder="{{ 'projectSettings.vtran' | translate }} (VTran)"
 						[(ngModel)]="prj.currProject.value.settings.vtran"
 						type="number"
 						virtualKeyboard

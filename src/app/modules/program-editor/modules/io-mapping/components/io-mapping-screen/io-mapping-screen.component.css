@@ -42,7 +42,7 @@ li {
   flex: 1;
 }
 .io-table {
-  background: #fff;
+  background: inherit;
   padding: 8px;
   width: fit-content;
 }
@@ -58,4 +58,9 @@ h1 {
 }
 .invalid {
   background: #ffcdd2;
+}
+
+:host-context(.cs-dark) .invalid { background: #880000; }
+:host-context(.cs-dark) mat-tree-node:hover, :host-context(.cs-dark) .module-node:hover {
+  background: #666;
 }

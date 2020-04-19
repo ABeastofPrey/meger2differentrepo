@@ -1,9 +1,9 @@
-import { DataService } from '..';
 import { TPVariable } from './tp/tp-variable.model';
 import { JumpxCommand } from '../../program-editor/components/combined-dialogs/models/jumpx-command.model';
 import { CommandType as JumpxCommandType, CommandOptions } from '../../program-editor/components/combined-dialogs/enums/jumpx-command.enums';
 import { split, filter, toLower, map, compose, prop, equals, ifElse, trim, replace } from 'ramda';
 import { isNotEmpty } from 'ramda-adjunct';
+import { DataService } from '../services/data.service';
 
 enum LineType {
   MOVE,
@@ -138,7 +138,7 @@ export class LineParser {
         if (lineVars.length > 0) params['target'] = lineVars[0];
         if (element) params['element'] = element;
         params['moves'] = line.indexOf('MOVES') === 0;
-        searchWord = params['moves'] ? 'VTRAN' : 'VCRUISE';
+        searchWord = params['moves'] ? 'VTRAN' : 'VSCALE';
         index = line.indexOf(searchWord);
         if (index > 0) {
           let tmpLine = line.substring(index + searchWord.length);
@@ -148,7 +148,7 @@ export class LineParser {
             index = tmpLine.indexOf(' ');
             if (index > 0) tmpLine = tmpLine.substring(0, index);
             const val = Number(tmpLine);
-            if (!isNaN(val)) params['vcruise'] = val;
+            if (!isNaN(val)) params['vscale'] = val;
           }
         }
         searchWord = 'BLENDINGPERCENTAGE';
@@ -301,8 +301,8 @@ export class LineParser {
       if (_key === toLower(CommandOptions.BlendingPercentage)) {
         cmdObj.payload[CommandOptions.BlendingPercentage] = val;
       }
-      if (_key === toLower(CommandOptions.Vcruise)) {
-        cmdObj.payload[CommandOptions.Vcruise] = val;
+      if (_key === toLower(CommandOptions.VScale)) {
+        cmdObj.payload[CommandOptions.VScale] = val;
       }
       if (_key === toLower(CommandOptions.Vtran)) {
         cmdObj.payload[CommandOptions.Vtran] = val;

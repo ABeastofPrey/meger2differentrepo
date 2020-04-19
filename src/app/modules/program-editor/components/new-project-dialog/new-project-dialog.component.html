@@ -8,12 +8,13 @@
 				matInput
 				placeholder="{{ 'projects.name' | translate }}"
 				formControlName="val"
-				maxlength="32"
+				maxlength="8"
 				virtualKeyboard
 				ktype="text"
 			/>
+			<mat-error *ngIf="dialogForm.invalid">{{ 'error.invalid_file_name' | translate }}</mat-error>
 		</mat-form-field>
-		<div class="center-vertical" style="color:red;">
+		<div class="center-vertical" style="color:red;" [style.marginTop]="dialogForm.touched && dialogForm.invalid ? '24px' : '0'">
 			<mat-icon>warning</mat-icon>
 			{{ 'projects.warning' | translate }}
 		</div>

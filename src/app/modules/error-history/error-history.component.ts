@@ -122,9 +122,9 @@ export class MCError {
   private file: string;
   private _line: string;
   private module: string;
-  private message: string;
-  private uuid: string;
-  private sernum: number;
+  private _message: string;
+  private _uuid: string;
+  private _sernum: number;
   private _parent: MCError = null;
   
   children: MCError[] = [];
@@ -136,6 +136,18 @@ export class MCError {
   
   get code() {
     return this._code;
+  }
+
+  get message() {
+    return this._message;
+  }
+
+  get uuid() {
+    return this._uuid;
+  }
+
+  get sernum() {
+    return this._sernum;
   }
   
   set parent(err: MCError) {
@@ -188,11 +200,11 @@ export class MCError {
         this.file = ' ';
       }
       count++;
-      this.message = str.substring(index + 1, str.lastIndexOf('"'));
+      this._message = str.substring(index + 1, str.lastIndexOf('"'));
       str = str.substring(str.lastIndexOf('"')+3);
       parts = str.trim().split(',');
-      this.uuid = parts[0].substring(6);
-      this.sernum = Number(parts[1].trim().substring(8));
+      this._uuid = parts[0].substring(6);
+      this._sernum = Number(parts[1].trim().substring(8));
     } catch (err) {
       this.date = '';
       this.time = '';
@@ -202,7 +214,7 @@ export class MCError {
       this.file = '';
       this._line = '';
       this.module = '';
-      this.message = '';
+      this._message = '';
       console.log(err);
     }
   }

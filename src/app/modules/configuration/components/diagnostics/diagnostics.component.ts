@@ -114,6 +114,11 @@ export class DiagnosticsComponent implements OnInit {
         text = text.substring(0, index) + text.substring(index2 + 8);
         index = text.indexOf('<GRAPH');
       }
+      if (this.env.useDarkTheme) {
+        console.log(text);
+        text = text.replace(/<table/g,'<table bgcolor="#424242" ');
+        text = text.replace(/#eee/g,'#333');
+      }
       this.content = text;
       const factory = this.resolver.resolveComponentFactory(GraphComponent);
       let ref: ComponentRef<GraphComponent>;
@@ -157,6 +162,8 @@ export class DiagnosticsComponent implements OnInit {
   }
 
   private generateMcuChart(val: number) {
+    const el = document.getElementById('mcu');
+    if (el === null) return;
     const color = val <= this.mcuThreshold ? '#ff0000' : '#00ff00';
     const mcuStatus = 
         this.mcuConnected ? this.words['connected'] : this.words['disconnected'];
@@ -205,6 +212,7 @@ export class DiagnosticsComponent implements OnInit {
     if (this.interval) clearInterval(this.interval);
     if (this.mcuInterval) clearInterval(this.mcuInterval);
     if (this.ref) this.ref.clear();
+    if (this.state === '4') return;
     this.isRefreshing = true;
     this.content = null;
     if (this.state === '3') {

@@ -5,18 +5,18 @@ import {
   ViewChild,
   NgZone,
   ChangeDetectorRef,
-  HostListener,
+  HostListener
 } from '@angular/core';
-import { TerminalService } from '../../services/terminal.service';
-import { Input } from '@angular/core';
+import { TerminalService, SEP } from '../../services/terminal.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { KeywordService } from '../../../core/services/keywords.service';
 import { CommonService } from '../../../core/services/common.service';
 import { LoginService } from '../../../core';
 import { MatInput } from '@angular/material';
-import { trim, equals, complement, compose } from 'ramda';
+import { trim, equals, complement, compose, indexOf } from 'ramda';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { UtilsService } from '../../../core/services/utils.service';
 
 const isNotEmptyStr = complement(
   compose(
@@ -48,28 +48,13 @@ export class TerminalComponent implements OnInit {
   
   @ViewChild('wrapper', { static: false }) wrapper!: ElementRef;
   @ViewChild('upload', { static: false }) uploadInput!: ElementRef;
-  @ViewChild('editorLine', { static: false }) editorLine!: ElementRef;
   @ViewChild('editorDiv', { static: false }) editorDiv!: ElementRef;
 
-  private _cmd = '';
   private notifier: Subject<boolean> = new Subject();
   private lastCmdIndex = -1;
+  private Range = ace.require('ace/range').Range;
   // tslint:disable-next-line: no-any
   private editor: any;
-  // tslint:disable-next-line: no-any
-  private historyEditor: any; // the ace editor of the history commands
-  private Range = ace.require('ace/range').Range;
-
-  get cmd() {
-    return this._cmd;
-  }
-
-  set cmd(val: string) {
-    this._cmd = val;
-    if (this.editor) {
-      this.editor.setValue(val, 1);
-    }
-  }
 
   constructor(
     public terminal: TerminalService,
@@ -77,7 +62,8 @@ export class TerminalComponent implements OnInit {
     private zone: NgZone,
     private ref: ChangeDetectorRef,
     public cmn: CommonService,
-    public login: LoginService
+    public login: LoginService,
+    private utils: UtilsService
   ) {}
 
   ngAfterViewInit() {
@@ -87,81 +73,118 @@ export class TerminalComponent implements OnInit {
       this.wrapper.nativeElement.scrollTop = height;
     }, 0);
     this.zone.runOutsideAngular(() => {
-      this.initMainAce(); // Init the command history editor
-      this.initAce(); // Init line editor
+      this.initMainAce(); // Init the editor
+      //this.initAce(); // Init line editor
     });
+  }
+
+  private adjustEditorLines() {
+    if (!this.wrapper) return;
+    const h = this.wrapper.nativeElement.offsetHeight;
+    const lineHeight = this.editor.renderer.lineHeight;
+    const lines = Math.floor(h / lineHeight);
+    this.editor.setOptions({
+      minLines: lines-2,
+      maxLines: lines-1
+    });
+    this.scrollToBottom();
   }
 
   private initMainAce() {
     const editor = ace.edit(this.editorDiv.nativeElement);
+    this.editor = editor;
     editor.setOptions({
       autoScrollEditorIntoView: true,
       highlightActiveLine: false,
       printMargin: false,
       showGutter: false,
-      theme: 'ace/theme/cs',
+      theme: 'ace/theme/' + (this.utils.isDarkMode ? 'cs-dark' : 'cs'),
       fontSize: '14px',
-      maxLines: Infinity,
-      readOnly: true,
-      fontFamily: 'cs-monospace'
-    });
-    editor.getSession().setUseWrapMode(true);
-    editor.renderer.$cursorLayer.element.style.display = 'none';
-    this.keywords.initDone.subscribe(done => {
-      if (!done) return;
-      editor.getSession().setMode('ace/mode/mcbasic');
-    });
-    editor.$blockScrolling = Infinity;
-    this.terminal.cmdsAsString().then(val => editor.setValue(val, 1));
-    setTimeout(() => {
-      const height = this.wrapper.nativeElement.scrollHeight;
-      this.wrapper.nativeElement.scrollTop = height;
-    }, 50);
-    this.terminal.onNewCommand.subscribe(() => {
-      this.zone.run(()=>{
-        this.terminal.cmdsAsString().then(val => editor.setValue(val, 1));
-        setTimeout(() => {
-          if (!this.wrapper) return;
-          const height = this.wrapper.nativeElement.scrollHeight;
-          this.wrapper.nativeElement.scrollTop = height;
-        }, 50);
-      });
-    });
-    this.historyEditor = editor;
-    this.terminal.resizeRequired.pipe(takeUntil(this.notifier)).subscribe(()=>{
-      editor.resize();
-    });
-  }
-
-  private initAce() {
-    this.editor = ace.edit(this.editorLine.nativeElement);
-    const editor = this.editor;
-    editor.setOptions({
-      maxLines: 1, // make it 1 line
-      autoScrollEditorIntoView: true,
-      highlightActiveLine: false,
-      printMargin: false,
-      showGutter: false,
-      theme: 'ace/theme/cs',
-      fontSize: '14px',
-      readOnly: this.cmn.isTablet,
       fontFamily: 'cs-monospace',
+      readOnly: this.cmn.isTablet,
       enableBasicAutocompletion: true,
       enableLiveAutocompletion: true,
       enableSnippets: true,
-      mode: 'ace/mode/mcbasic'
+      mode: 'ace/mode/mcbasic',
+      dragEnabled: false
     });
+    this.adjustEditorLines();
     this.keywords.initDone.subscribe(done => {
       if (!done) return;
-      editor.completers = [this.keywords.getNewWordCompleter(true)];
-      //editor.getSession().setMode('ace/mode/mcbasic');
+      editor.completers = [this.keywords.getNewWordCompleter(true,SEP)];
+    });
+    const val = this.terminal.cmdsAsString;
+    editor.setValue((val.length === 0 ? '' : val + '\n') + SEP + '\t', 1);
+    editor.commands.on('exec', e=> {
+      if (e.command.readOnly) {
+        return;
+      }
+      const editableRow = editor.session.getLength() - 1;
+      const isHandled = editor.selection.getAllRanges().some(r=>{
+        if (e.command.name === 'Shift-Home') {
+          if (editableRow === r.start.row) return true;
+          const newStart = {row: r.start.row, column: 0};
+          const newRange = {start: newStart, end: r.end};
+          this.editor.selection.setSelectionRange(newRange, true);
+          return true;
+        }
+        if (e.command.name === 'Home') {
+          if (editableRow === r.start.row) {
+            this.editor.selection.moveTo(r.start.row, SEP.length + 1);
+            this.editor.renderer.scrollCursorIntoView({
+              row: r.start.row,
+              column: SEP.length + 1
+            }, 0.5);
+            return true;
+          }
+          this.editor.selection.moveTo(r.start.row, r === editableRow ? SEP.length + 1 : 0);
+          this.editor.renderer.scrollCursorIntoView({row: r.start.row, column: 0}, 0.5);
+          return true;
+        } 
+        if (e.command.name === 'End') {
+          this.editor.selection.moveTo(r.end.row, Infinity);
+          this.editor.renderer.scrollCursorIntoView({row: r.end.row, column: Infinity}, 0.5);
+          return true;
+        }
+        if (e.command.name === 'up' || e.command.name === 'down') {
+          if (editableRow === r.start.row) return false;
+          const row = (e.command.name === 'up' ? -1 : 1) + r.start.row;
+          this.editor.selection.moveTo(row, Infinity);
+          this.editor.renderer.scrollCursorIntoView({row, column: Infinity}, 0.5);
+          return true;
+        }
+        return false;
+      });
+      if (isHandled) return;
+      const deletesLeft = 
+        e.command.name === 'backspace' ||
+        e.command.name === 'del' ||
+        e.command.name === 'removewordleft';
+      const notEditable = editor.selection.getAllRanges().some(r=>{
+        const isEditableRow = r.start.row === editableRow || r.end.row === editableRow;
+        const addition = e.command.name === 'backspace' ? 1 : 0;
+        const isFirstCol = e.command.name !== 'del' && (r.start.column === r.end.column) && r.start.column < (SEP.length+1+addition);
+        const isBeforeSep = isFirstCol || r.start.column < (SEP.length+1) || r.end.column < (SEP.length+1);
+        if (!isEditableRow || ((deletesLeft || e.command.name === 'insertstring') && isBeforeSep)) {
+          return true;
+        }
+        return r.start.row !== editableRow || r.end.row !== editableRow;
+      });
+      if (notEditable) {
+        e.preventDefault();
+        if (e.command.name === 'Enter') {
+          this.send();
+        }
+      }
+      if (e.command.name === 'paste') {
+        e.preventDefault();
+        const text = e.args.text.split('\n').join('\t').split('\r').join('\t');
+        this.editor.insert(text,1);
+      }
     });
     editor.$blockScrolling = Infinity;
-    editor.on('paste', (e: {text: string}) => {
-      e.text = e.text.replace(/[\r\n]+/g, ' ');
-    });
     editor.getSession().on('change', e=>{
-      if (e.action !== 'remove' && e.lines[0] && (e.lines[0] === '.' || e.lines[0] === ' ') || e.lines[0] === '=') {
+      if (e.action !== 'remove' && e.lines[0] && (e.lines[0] === '.' || e.lines[0] === ' ' || e.lines[0] === '=')) {
         setTimeout(() => {
           this.editor.commands.byName.startAutocomplete.exec(this.editor);
         }, 50);
@@ -178,23 +201,62 @@ export class TerminalComponent implements OnInit {
     // handle Enter key press
     editor.commands.bindKey('Shift-Enter', 'null');
     editor.commands.bindKey('Enter', () => {
-      this.cmd = editor.getValue();
       this.send();
     });
     editor.commands.bindKey('up', () => {
+      const r = editor.getSelectionRange().start.row;
+      const editableRow = editor.session.getLength() - 1;
+      if (r !== editableRow) return;
       this.onKeyUp();
     });
     editor.commands.bindKey('down', () => {
-      this.onKeyUp();
+      const r = editor.getSelectionRange().start.row;
+      const editableRow = editor.session.getLength() - 1;
+      if (r !== editableRow) return;
+      this.onKeyDown();
     });
-    if (!this.cmn.isTablet) editor.focus();
+    editor.commands.bindKey('Shift-Home', () => {
+      const r = editor.getSelectionRange();
+      const editableRow = r.start.row === editor.session.getLength() - 1;
+      const newStart = {row: r.start.row, column: editableRow ? SEP.length+1 : 0};
+      const newRange = {start: newStart, end: r.end};
+      this.editor.selection.setSelectionRange(newRange, true);
+    });
+    editor.commands.bindKey('Home', () => {
+      const r = editor.getSelectionRange().start.row;
+      const editableRow = editor.session.getLength() - 1;
+      this.editor.selection.moveTo(r, r === editableRow ? SEP.length + 1 : 0);
+      return;
+    });
+    editor.commands.bindKey('End', () => {
+      const r = editor.getSelectionRange().end.row;
+      this.editor.selection.moveTo(r, Infinity);
+      return;
+    });
     this.terminal.resizeRequired.pipe(takeUntil(this.notifier)).subscribe(()=>{
+      this.adjustEditorLines();
       editor.resize();
     });
+    this.scrollToBottom();
+    if (!this.cmn.isTablet) {
+      this.editor.focus();
+    }
+  }
+
+  private scrollToBottom() {
+    const lines = this.editor.getSession().getLength();
+    this.editor.scrollToLine(lines-1);
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    setTimeout(()=>{
+      this.adjustEditorLines();
+    },0);
   }
 
   onClick(e: MouseEvent) {
-    const shouldFocus = this.historyEditor.getSelectedText().trim().length === 0;
+    const shouldFocus = this.editor.getSelectedText().trim().length === 0;
     if (!this.cmn.isTablet && shouldFocus) { // PC
       this.editor.focus();
     } else if (shouldFocus) { // TABLET
@@ -204,41 +266,60 @@ export class TerminalComponent implements OnInit {
       }
     }
     const mouseY = e.clientY;
-    const editorLineY = this.editorLine.nativeElement.getBoundingClientRect().y;
-    if (mouseY > editorLineY) {
-      this.historyEditor.clearSelection();
+    const aceLines = document.querySelectorAll('.terminal .ace_line:not(.ace_selected)');
+    const last = aceLines[aceLines.length - 1];
+    const editorLineY = last.getBoundingClientRect()['y'];
+    if (mouseY > editorLineY + 16) {
+      this.editor.clearSelection();
       if (!this.cmn.isTablet) { // PC
-        this.editor.focus();
+        this.goToEnd();
       }
     }
   }
 
-  clear() {
-    this.terminal.clear();
-    this.cmd = '';
-    if (!this.cmn.isTablet) this.editor.focus();
+  private goToEnd() {
+    const row = this.editor.session.getLength() - 1
+    const column = this.editor.session.getLine(row).length;
+    this.editor.gotoLine(row + 1, column);
   }
 
-  private send() {
+  clear() {
+    this.terminal.clear();
+    this.editor.setValue(SEP + '\t',1);
+    this.goToEnd();
+    this.editor.getSession().setUndoManager(new ace.UndoManager());
+  }
+
+  private get cmd() : string {
+    const session = this.editor.getSession();
+    const line = session.getLine(session.getLength()-1) as string;
+    return line.substring(SEP.length+1);
+  }
+
+  private send(forceCommand?: string) {
+    const cmd = forceCommand || this.cmd;
     try {
-      if (
-        this.cmd.substring(0,5).toLowerCase() === 'clear' &&
-        this.cmd.length === 5
-      ) {
+      if (cmd.substring(0,5).toLowerCase() === 'clear' && cmd.length === 5) {
         this.terminal.history.push(this.cmd);
         this.clear();
         return;
       }
-    } catch (err) {}
-    this.terminal.send(this.cmd).then(() => {
+    } catch (err) {
+
+    }
+    this.terminal.send(cmd).then(ret => {
+      const result = ret.result.length === 0 ? '\n' : '\n' + ret.result + '\n';
+      const row = this.editor.session.getLength() - 1;
+      const newLine = SEP + '\t' + cmd + result + SEP + '\t';
+      this.editor.session.replace(new this.Range(row, 0, row, Number.MAX_VALUE), newLine);
+      this.adjustEditorLines();
+      this.scrollToBottom();
+      this.goToEnd();
+      this.editor.getSession().setUndoManager(new ace.UndoManager());
       // tslint:disable-next-line
-      isNotEmptyStr(this.cmd) &&
-        this.terminal.sentCommandEmitter.emit(this.cmd);
-      this.cmd = '';
+      isNotEmptyStr(this.cmd) && this.terminal.sentCommandEmitter.emit(this.cmd);
       this.lastCmdIndex = -1;
-      setTimeout(() => {
-        if (this.ref) this.ref.detectChanges();
-      }, 0);
+      if (this.ref) this.ref.detectChanges();
     });
   }
 
@@ -264,7 +345,10 @@ export class TerminalComponent implements OnInit {
         }
       }
       if (this.lastCmdIndex < this.terminal.history.length) cmd = cmdTmp;
-      this.cmd = cmd;
+      const session = this.editor.getSession();
+      const row = session.getLength() - 1;
+      const final = SEP + '\t' + cmd;
+      session.replace(new this.Range(row, 0, row, Number.MAX_VALUE), final);
     }
     this.ref.detectChanges();
   }
@@ -287,7 +371,10 @@ export class TerminalComponent implements OnInit {
         }
       }
       if (this.lastCmdIndex > -1) cmd = cmdTmp;
-      this.cmd = cmd;
+      const session = this.editor.getSession();
+      const row = session.getLength() - 1;
+      const final = SEP + '\t' + cmd;
+      session.replace(new this.Range(row, 0, row, Number.MAX_VALUE), final);
     }
     this.ref.detectChanges();
   }
@@ -295,6 +382,7 @@ export class TerminalComponent implements OnInit {
   ngOnInit() {}
 
   ngOnDestroy() {
+    this.ref.detach();
     this.notifier.next(true);
     this.notifier.unsubscribe();
   }
@@ -306,15 +394,13 @@ export class TerminalComponent implements OnInit {
     const editor = this.editor;
     const position = editor.getCursorPosition();
     const row = position.row; // current row
-    this.dummyText = editor.session.getLine(row).trim();
+    const editableRow = editor.session.getLength() - 1;
+    if (row !== editableRow) return;
+    this.dummyText = editor.session.getLine(row).substring(3).trim();
     this.dummyInput.focus();
   }
   onDummyKeyboardClose() {
-    const editor = this.editor;
-    const position = editor.getCursorPosition();
-    const row = position.row; // current row
-    this.cmd = this.dummyText;
-    this.send();
+    this.send(this.dummyText);
     this.dummyText = '';
   }
   private replaceLine(index: number, newLine: string) {

@@ -1,5 +1,6 @@
 import { ScreenManagerService } from './../../../core/services/screen-manager.service';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { UtilsService } from './../../../core/services/utils.service';
 
 declare var Plotly;
 
@@ -13,7 +14,7 @@ const MAX_GRAPHS = 20;
 export class GraphComponent implements OnInit {
   @ViewChild('graph', { static: true }) graph: ElementRef;
 
-  constructor(private mgr: ScreenManagerService) {}
+  constructor(private mgr: ScreenManagerService, private utils: UtilsService) {}
 
   ngOnInit() {
     this.mgr.openedControls.subscribe(()=>{
@@ -50,6 +51,12 @@ export class GraphComponent implements OnInit {
           xaxis: { title: graphData.XLegend },
           yaxis: { title: graphData.YLegend },
           title: graphData.title,
+          plot_bgcolor: this.utils.isDarkMode ? '#333' : null,
+          paper_bgcolor: this.utils.isDarkMode ? '#424242' : null,
+          font: {
+            family: 'roboto',
+            color: this.utils.isDarkMode ? '#fff' : '#000',
+          }
         };
       } else if (graphData.graphType === 'LINE') {
         for (const y of graphData.Y) {
@@ -63,6 +70,12 @@ export class GraphComponent implements OnInit {
           xaxis: { title: graphData.XLegend },
           yaxis: { title: graphData.YLegend },
           title: graphData.title,
+          plot_bgcolor: this.utils.isDarkMode ? '#333' : null,
+          paper_bgcolor: this.utils.isDarkMode ? '#424242' : null,
+          font: {
+            family: 'roboto',
+            color: this.utils.isDarkMode ? '#fff' : '#000',
+          }
         };
       }
       Plotly.newPlot(this.graph.nativeElement, data, layout, {

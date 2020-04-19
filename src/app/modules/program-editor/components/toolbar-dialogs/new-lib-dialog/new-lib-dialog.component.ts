@@ -6,6 +6,7 @@ import {
   MCQueryResponse,
 } from '../../../../core';
 import { App } from '../../../../core/models/project/mc-project.model';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-lib-dialog',
@@ -13,10 +14,11 @@ import { App } from '../../../../core/models/project/mc-project.model';
   styleUrls: ['./new-lib-dialog.component.css'],
 })
 export class NewLibDialogComponent implements OnInit {
-  name: string;
+
   appName: string;
   apps: App[];
   submitting = false;
+  libName: FormControl;
 
   constructor(
     public dialogRef: MatDialogRef<NewLibDialogComponent, void>,
@@ -28,7 +30,7 @@ export class NewLibDialogComponent implements OnInit {
   }
 
   create() {
-    const name = this.name.toUpperCase();
+    const name = this.libName.value.toUpperCase();
     const proj = this.prj.currProject.value;
     const cmd =
       '?prj_add_app_library("' +
@@ -51,7 +53,11 @@ export class NewLibDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.name = '';
+    this.libName = new FormControl('',[
+      Validators.maxLength(32),
+      Validators.required,
+      Validators.pattern('[a-zA-Z]+(\\w*)$')
+    ]);
     this.apps = this.prj.currProject.value.apps;
   }
 }

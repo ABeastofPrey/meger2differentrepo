@@ -1,3 +1,4 @@
+import { ApiService } from './../services/api.service';
 import { Injectable } from '@angular/core';
 import {
   HttpInterceptor,
@@ -39,8 +40,14 @@ export class HttpTokenInterceptor implements HttpInterceptor {
     if (token) {
       headersConfig['Authorization'] = `Token ${token}`;
     }
+    if (this.api.cloudToken) {
+      headersConfig['cloudJWT'] = this.api.cloudToken;
+    }
     const request = req.clone({ setHeaders: headersConfig });
     return next.handle(request);
   }
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private api: ApiService
+  ) {}
 }

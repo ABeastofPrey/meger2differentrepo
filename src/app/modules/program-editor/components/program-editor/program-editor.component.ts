@@ -1,3 +1,4 @@
+import { TerminalService } from './../../../home-screen/services/terminal.service';
 import { UtilsService } from './../../../core/services/utils.service';
 import { NotificationService } from './../../../core/services/notification.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -9,7 +10,8 @@ import {
   TASKSTATE_ERROR,
   TASKSTATE_READY,
   TASKSTATE_KILLED,
-  TASKSTATE_INTERRUPTED
+  TASKSTATE_INTERRUPTED,
+  ProgramStatus
 } from '../../services/program-editor.service';
 import {
   DataService,
@@ -32,6 +34,8 @@ import { SplitAreaDirective } from 'angular-split';
 })
 export class ProgramEditorComponent implements OnInit {
 
+  status: ProgramStatus = null;
+
   // GUTTER VISIBLITY
   showGutterLeft = true;
   showGutterRight = true;
@@ -51,13 +55,18 @@ export class ProgramEditorComponent implements OnInit {
     public cmn: CommonService,
     private ws: WebsocketService,
     public notification: NotificationService,
-    public utils: UtilsService
+    public utils: UtilsService,
+    private terminal: TerminalService
   ) {}
 
   ngOnInit() {
     // when errors happen jump to first tab
     this.service.errLinesChange.pipe(takeUntil(this.notifier)).subscribe(lines => {
       this.selectedTab = 0;
+    });
+
+    this.service.statusChange.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+      setTimeout(()=>{this.status = stat;},0);
     });
   }
 
@@ -78,6 +87,7 @@ export class ProgramEditorComponent implements OnInit {
 
   onDragEnd() {
     this.service.onDragEnd();
+    this.terminal.resizeRequired.emit();
   }
 
   onAppDescSave() {
@@ -95,7 +105,8 @@ export class ProgramEditorComponent implements OnInit {
   }
 
   get isStepDisabled() {
-    const code = this.service.status.statusCode;
+    if (this.status === null) return true;
+    const code = this.status.statusCode;
     return (
       code !== TASKSTATE_STOPPED &&
       code !== TASKSTATE_ERROR &&
@@ -106,6 +117,11 @@ export class ProgramEditorComponent implements OnInit {
 
   onTabChange(i: number) {
     this.selectedTab = i;
+    if (i === 2) {
+      setTimeout(()=>{
+        this.terminal.resizeRequired.emit();
+      },50);
+    }
     if (i === 1 && this.notification.windowOpen) {
       this.notification.toggleWindow();
     }

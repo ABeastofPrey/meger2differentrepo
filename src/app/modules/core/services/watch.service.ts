@@ -124,9 +124,12 @@ export class WatchService {
           .then((ret: MCQueryResponse) => {
             if (!v.active) return;
             if (ret.err) {
-              v.value = ret.err.errCode === '7195' ? '-' : ret.err.errMsg;
-              v.active = false;
-              if (!this.env.production) console.log(ret);
+              for (const err of ret.err) {
+                if (err.errType !== 'error') continue;
+                v.value = err.errCode === '7195' ? '-' : err.errMsg;
+                v.active = false;
+                if (!this.env.production) console.log(ret);
+              }
             } else {
               v.value = ret.result;
             }
@@ -191,8 +194,8 @@ export class WatchService {
       }
       const api = `?getContextVariableList("${context}")`;
       const parser = (res: MCQueryResponse) => JSON.parse(res.result);
-      const handler = err => {
-        console.warn(`Get variables with ${context} context failed: ${err.msg}`);
+      const handler = errs => {
+        console.warn(`Get variables with ${context} context failed: ${errs[0].msg}`);
         return of([]);
       };
       this.ws.observableQuery(api).pipe(

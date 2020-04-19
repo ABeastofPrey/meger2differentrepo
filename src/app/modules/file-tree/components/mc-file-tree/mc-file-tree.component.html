@@ -13,13 +13,42 @@
 		/>
 		<mat-icon matPrefix>search</mat-icon>
 	</mat-form-field>
+	<mat-form-field class="search">
+	<mat-label>{{ 'files.search_in' | translate }}</mat-label>
+	<mat-select [(ngModel)]="searchIn" (selectionChange)="onSearchChange(true)">
+		<mat-option value="names">{{ 'files.names' | translate }}</mat-option>
+		<mat-option value="content">{{ 'files.content' | translate }}</mat-option>
+	</mat-select>
+	</mat-form-field>
 	<mat-slide-toggle class="checkbox_en" color="primary" [(ngModel)]="enableSelect">{{
 		'checkbox_enable' | translate
 	}}</mat-slide-toggle>
 	<div class="center-vertical-horizontal">
 		<img src="assets/pics/{{ env.platform.spinner }}" *ngIf="isRefreshing" />
 	</div>
-	<mat-tree class="mobile-scrollbar" [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
+	<mat-tree [dataSource]="nestedDataSourceContent" [treeControl]="nestedTreeControlContent" *ngIf="searchIn === 'content'">
+		<mat-tree-node *matTreeNodeDef="let node">
+			<li class="leaf">
+				<div (click)="openContentFile(node)" class="search-line">{{ node.line }}</div>
+			</li>
+		</mat-tree-node>
+		<mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChildContent">
+			<li class="mat-typography">
+				<div (click)="toggleContentNode(node)">
+					<mat-icon>
+						{{ nestedTreeControlContent.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+					</mat-icon>
+					<mat-icon class="primary-light">insert_drive_file</mat-icon>
+					<span class="search-file">{{ node.file }} </span>
+					<span class="search-path">{{ node.path }} </span>
+				</div>
+				<ul [class.invisible]="!nestedTreeControlContent.isExpanded(node)">
+					<ng-container matTreeNodeOutlet></ng-container>
+				</ul>
+			</li>
+		</mat-nested-tree-node>
+	</mat-tree>
+	<mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" *ngIf="searchIn === 'names'">
 		<mat-tree-node *matTreeNodeDef="let node">
 			<li (contextmenu)="openContextMenu($event, node)" class="leaf">
 				<div (click)="openFile(node)" [class.selected]="lastSelectedNode === node">

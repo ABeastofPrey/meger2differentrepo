@@ -10,9 +10,8 @@ import {
   WebsocketService,
   MCQueryResponse,
 } from '../../../modules/core/services/websocket.service';
-import { ProjectManagerService, DataService, TpStatService } from '../../core';
 import { Backtrace } from '../../core/models/backtrace.model';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { TPVariable } from '../../core/models/tp/tp-variable.model';
 import { LineParser } from '../../core/models/line-parser.model';
 import { Pallet } from '../../core/models/pallet.model';
@@ -21,6 +20,10 @@ import { ErrorFrame } from '../../core/models/error-frame.model';
 import { TranslateService } from '@ngx-translate/core';
 import { App } from '../../core/models/project/mc-project.model';
 import { UtilsService } from '../../core/services/utils.service';
+import { TpStatService } from '../../core/services/tp-stat.service';
+import { ProjectManagerService } from '../../core/services/project-manager.service';
+import { DataService } from '../../core/services/data.service';
+import { FwTranslatorService } from '../../core/services/fw-translator.service';
 
 export const TASKSTATE_NOTLOADED = -1;
 export const TASKSTATE_RUNNING = 1;
@@ -40,6 +43,7 @@ export class ProgramEditorService {
 
   files: MCFile[] = [];
   activeFile: string = null; // The currently opened context in the editor
+  activeFilePath: string = null;
   displayedFile: string = null; // The file that's actually displayed in the editor
   editorText: string = null;
   status: ProgramStatus = null;
@@ -56,12 +60,15 @@ export class ProgramEditorService {
   tabs: FileTab[] = [];
   selectedTabIndex = 0;
 
+  // LINE REMEMBER (FOR PRJ MODE)
+  lineHistory: Array<number> = [];
+
   // EVENTS
   skipLineRequest: EventEmitter<number> = new EventEmitter();
   dragEnd: EventEmitter<void> = new EventEmitter();
   onReplaceRange: EventEmitter<string> = new EventEmitter();
   editorTextChange: EventEmitter<string> = new EventEmitter<string>();
-  statusChange: EventEmitter<ProgramStatus> = new EventEmitter<ProgramStatus>();
+  statusChange: BehaviorSubject<ProgramStatus> = new BehaviorSubject(null);
   errLinesChange: EventEmitter<TRNERRLine[]> = new EventEmitter<TRNERRLine[]>();
   onInsertAndJump: EventEmitter<{ cmd: string, lines: number }> = new EventEmitter();
   onReplaceLine: EventEmitter<{ index: number, cmd: string }> = new EventEmitter();
@@ -73,7 +80,6 @@ export class ProgramEditorService {
 
   private statusInterval: number = null;
   private oldStatString: string;
-  private activeFilePath: string = null;
   private _modeToggle = 'prj';
   private stepMode = false; // True when user clicks on STEP button
 
@@ -106,7 +112,8 @@ export class ProgramEditorService {
     private trn: TranslateService,
     private api: ApiService,
     private tour: TourService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private fw: FwTranslatorService
   ) {
     this.tour.stepShow$.subscribe(step=>{
       if ((
@@ -120,7 +127,11 @@ export class ProgramEditorService {
         this.kill();
       }
     });
-    this.refreshFiles();
+    this.api.ready.subscribe(stat=>{
+      if (stat) {
+        this.refreshFiles();
+      }
+    });
     this.ws.isConnected.subscribe(stat => {
       if (!stat) {
         this.mode = null;
@@ -131,9 +142,12 @@ export class ProgramEditorService {
         this._modeToggle = 'prj';
         this.errors = [];
         this.status = null;
-        this.statusChange.emit(null);
+        this.statusChange.next(null);
         this.backtrace = null;
         this.busy = false;
+        this.lineHistory = [];
+        this.tabs = [];
+        this.selectedTabIndex = 0;
       }
     });
     const words = [
@@ -153,13 +167,13 @@ export class ProgramEditorService {
     this.mode = 'fwconfig';
   }
   
-  getStatusString(stat: number) : string {
-    const str = stat.toString();
-    if (this.words) {
-      return this.words['projects']['status'][str] || this.words['projects']['status']['999'];
-    }
-    return '';
-  }
+  // getStatusString(stat: number) : string {
+  //   const str = stat.toString();
+  //   if (this.words) {
+  //     return this.words['projects']['status'][str] || this.words['projects']['status']['999'];
+  //   }
+  //   return '';
+  // }
 
   get isSelectedBKG(): boolean {
     return endsWithBKG(this.activeFile) ? true : false;
@@ -171,8 +185,13 @@ export class ProgramEditorService {
   set modeToggle(val: string) {
     this._modeToggle = val;
     this.close();
-    if (val === 'mc') this.mode = 'editor';
-    else this.tabs = [];
+    if (val === 'mc') {
+      this.mode = 'editor';
+      // open selected tab
+      const tab = this.tabs[this.selectedTabIndex];
+      if (!tab) return;
+      this.setFile(tab.file,tab.path,null,tab.line);
+    }
   }
   
   setDebugMode(on: boolean) {
@@ -193,14 +212,27 @@ export class ProgramEditorService {
   }
 
   onTabChange(i: number) {
+    this.selectedTabIndex = i;
     const tab = this.tabs[i];
-    if (tab) this.setFile(tab.file, tab.path, null, -1);
+    if (tab) {
+      this.setFile(tab.file, tab.path, null, tab.line);
+    }
   }
 
   setFile(f: string, path: string, ref: App, line: number, bt?: Backtrace) {
     // OPEN A FILE
     this.fileRef = ref;
-    if (f === this.activeFile) return;
+    if (f === this.activeFile && path === this.activeFilePath) return;
+    const tab = this.tabs[this.selectedTabIndex];
+    if (this._modeToggle === 'mc' && tab && tab.file === f && tab.path === this.activeFilePath && f === this.activeFile) return;
+    this.busy = true;
+    if (line === -1 && this._modeToggle === 'prj') {
+      const l = this.lineHistory[f];
+      if (!isNaN(l)) {
+        line = l;
+      }
+    }
+
     this.backtrace = bt;
     this.close(bt);
     this.activeFile = f;
@@ -213,7 +245,7 @@ export class ProgramEditorService {
       let i;
       let tabExists = false;
       for (i = 0; i < this.tabs.length; i++) {
-        if (this.tabs[i].file === f) {
+        if (this.tabs[i].file === f && this.tabs[i].path === finalPath) {
           tabExists = true;
           break;
         }
@@ -222,6 +254,7 @@ export class ProgramEditorService {
         this.tabs.push({
           file: f,
           path: finalPath,
+          line: -1
         });
         this.selectedTabIndex = this.tabs.length - 1;
       } else {
@@ -239,11 +272,12 @@ export class ProgramEditorService {
           sourceLine: -1,
           programLine: -1,
         };
-        this.statusChange.emit(status);
+        this.statusChange.next(status);
         this.status = status;
         this.isDirty = false;
         this.fileChange.next(this.activeFile);
         this.dragEnd.emit();
+        this.busy = false;
       });
       return;
     }
@@ -254,9 +288,8 @@ export class ProgramEditorService {
       this.isDirty = false;
       this.fileChange.next(this.activeFile);
       this.dragEnd.emit();
-      if (line > 0) {
-        this.skipLineRequest.next(line);
-      }
+      this.skipLineRequest.next(line);
+      this.busy = false;
     });
   }
 
@@ -292,6 +325,11 @@ export class ProgramEditorService {
     }
     if (lineType === this.parser.LineType.PROGRAM) this.disableStepOver = true;
     else this.disableStepOver = false;
+    if (this._modeToggle === 'mc' && this.tabs[this.selectedTabIndex]) {
+      this.tabs[this.selectedTabIndex].line = rowIndex + 1;
+    } else if (this._modeToggle === 'prj') {
+      this.lineHistory[this.activeFile] = rowIndex + 1;
+    }
   }
 
   onAceEditorRangeChange(start: number, end: number, text: string) {
@@ -317,10 +355,12 @@ export class ProgramEditorService {
   close(bt?: Backtrace) {
     this.refreshStatus(false);
     this.activeFile = null;
+    this.activeFilePath = null;
     this.displayedFile = null;
     this.editorText = null;
-    this.editorTextChange.emit('');
+    // this.editorTextChange.emit('');
     this.status = null;
+    this.statusChange.next(null);
     if (!bt) this.errors = [];
     this.editorLine = -1;
     this.isDirty = false;
@@ -338,12 +378,6 @@ export class ProgramEditorService {
       )
       .then((ret: UploadResult) => {
         if (ret.success) {
-          if(!this.utils.IsKuka)
-          {
-            this.snack.open(this.words['projects']['saved'], '', {
-              duration: 1500,
-            });
-          }
           this.isDirty = false;
         } else {
           const words = [
@@ -390,6 +424,7 @@ export class ProgramEditorService {
       )
       .then((ret: UploadResult) => {
         if (ret.success) {
+          this.isDirty = false;
           if (this.fileRef) {
             const prj = this.prj.currProject.value.name;
             const file = this.activeFile.substring(
@@ -406,13 +441,18 @@ export class ProgramEditorService {
               });
             return;
           }
-          this.ws
-            .query('Load$ "/FFS0/SSMC/' + path + this.activeFile + '"')
-            .then((ret: MCQueryResponse) => {
-              if (ret.err) this.getTRNERR(ret.err.errMsg);
-              else this.errors = [];
-              this.busy = false;
-            });
+          const isUserTask = this.activeFile.endsWith('UPG');
+          const priorityStr = isUserTask ? ' priority=15' : '';
+          const cmd = `Load$ "/FFS0/SSMC/${path}${this.activeFile}"` + priorityStr;
+          this.ws.query(cmd).then((ret: MCQueryResponse) => {
+            const err = ret.err ? ret.err.find(e=>e.errType === 'ERROR') : null;
+            if (err) {
+              this.getTRNERR(err.errMsg);
+            } else {
+              this.errors = [];
+            }
+            this.busy = false;
+          });
         } else {
           const words = [
             'files.err_upload',
@@ -613,12 +653,13 @@ export class ProgramEditorService {
     ) {
       return;
     }
+    this.status = null;
     const file = this.activeFile;
     if (!this.isLib && !file.endsWith('.UPG') && !file.endsWith('.PRG') && !file.endsWith('.BKG')) {
       const tmpStatus = new ProgramStatus(null);
       tmpStatus.statusCode = TASKSTATE_NOTLOADED;
       this.status = tmpStatus;
-      this.statusChange.emit(this.status);
+      this.statusChange.next(this.status);
       return;
     }
     let cmd: string;
@@ -634,11 +675,16 @@ export class ProgramEditorService {
     this.statusInterval = this.ws.send(
       cmd,
       false,
-      (ret: string, command: string, err: ErrorFrame) => {
+      (ret: string, command: string, err: ErrorFrame[]) => {
         if (ret.length === 0) {
-          console.log('CYC4 RETURNED BLANK RESULT');
+          console.log(cmd + ' RETURNED BLANK RESULT');
           this.refreshStatus(false);
           return;
+        }
+        const original = ret;
+        const i = ret.indexOf('uuid');
+        if (i>0) {
+          ret = ret.substring(0,i).trim();
         }
         if (ret !== this.oldStatString) {
           this.oldStatString = ret;
@@ -646,17 +692,18 @@ export class ProgramEditorService {
             if (this.isLib) {
               const tmpStatus = new ProgramStatus(null);
               tmpStatus.statusCode =
-                err && err.errCode === '8020'
+                err && err[0].errCode === '8020'
                   ? TASKSTATE_LIB_LOADED
                   : TASKSTATE_NOTLOADED;
               this.status = tmpStatus;
-              this.statusChange.emit(this.status);
+              this.statusChange.next(this.status);
             } else {
-              this.status = new ProgramStatus(err ? null : ret);
+              const newStatus = new ProgramStatus(err ? null : original);
+              this.status = newStatus;
               if (this.status.statusCode === TASKSTATE_NOTLOADED) {
                 this.backtrace = null;
                 this.errors = [];
-                this.statusChange.emit(this.status);
+                this.statusChange.next(this.status);
                 return;
               }
               if (this.stepMode && this.status.statusCode !== TASKSTATE_ERROR) {
@@ -667,7 +714,7 @@ export class ProgramEditorService {
                       }*/
                   if (this.backtrace && this.status) {
                     this.status.programLine = this.status.sourceLine;
-                    this.statusChange.emit(this.status);
+                    this.statusChange.next(this.status);
                   }
                   this.stepMode = false;
                 });
@@ -680,10 +727,10 @@ export class ProgramEditorService {
                   if (bt.files[0].name === file) {
                     this.backtrace = null;
                     this.status.programLine = bt.files[0].line;
-                    this.statusChange.emit(this.status);
+                    this.statusChange.next(this.status);
                   } else if (this.status.statusCode !== TASKSTATE_ERROR) {
                     this.backtrace = bt;
-                    this.statusChange.emit(this.status);
+                    this.statusChange.next(this.status);
                     //this.setFile(bt.files[0].name, null, null, bt);
                   }
                   if (this.status.statusCode === TASKSTATE_ERROR) {
@@ -691,6 +738,9 @@ export class ProgramEditorService {
                       .query('?' + file + '.error')
                       .then((ret: MCQueryResponse) => {
                         const err = new ErrorFrame(ret.result);
+                        if (this.trn.currentLang !== 'en') {
+                          err.errMsg = this.fw.getTranslation(Number(err.errCode),err.errMsg);
+                        }
                         this.errors = [
                           {
                             number:
@@ -702,7 +752,7 @@ export class ProgramEditorService {
                           },
                         ];
                         this.backtrace = bt;
-                        this.statusChange.emit(this.status);
+                        this.statusChange.next(this.status);
                         this.errLinesChange.emit([
                           {
                             number: this.status.programLine,
@@ -716,7 +766,7 @@ export class ProgramEditorService {
               } else {
                 this.backtrace = null;
                 this.errors = [];
-                this.statusChange.emit(this.status);
+                this.statusChange.next(this.status);
               }
             }
           });
@@ -834,7 +884,7 @@ export class TRNERR {
         })) {
           continue;
         }
-        this._errorLines.push(new TRNERRLine(lines[i]));
+        this._errorLines.push(err);
       }
     }
     this._errorLines.sort((e1,e2)=>{
@@ -864,4 +914,5 @@ export class TRNERRLine {
 interface FileTab {
   file: string;
   path: string;
+  line: number;
 }

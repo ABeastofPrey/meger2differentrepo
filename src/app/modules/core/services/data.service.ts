@@ -505,8 +505,13 @@ export class DataService {
       this.ws.query('?TP_GET_FRAME_NAME("TOOL")'),
     ];
     return Promise.all(queries).then((result: MCQueryResponse[]) => {
+      if (result[0].err || result[1].err) {
+        this._tools = [];
+        console.error(result);
+        return;
+      }
       this._tools =
-        result[0].result.length > 0 ? result[0].result.split(',') : [];
+        result[0].result.length > 0 ? result[0].result.split(',').sort() : [];
       if (this._selectedTool !== result[1].result) {
         this._selectedTool = result[1].result;
       }
@@ -608,8 +613,13 @@ export class DataService {
       this.ws.query('?TP_GET_FRAME_NAME("BASE")'),
     ];
     return Promise.all(queries).then((result: MCQueryResponse[]) => {
+      if (result[0].err || result[1].err) {
+        this._bases = [];
+        console.error(result);
+        return;
+      }
       this._bases =
-        result[0].result.length > 0 ? result[0].result.split(',') : [];
+        result[0].result.length > 0 ? result[0].result.split(',').sort() : [];
       if (this._selectedBase !== result[1].result) {
         this._selectedBase = result[1].result;
       }
@@ -623,6 +633,11 @@ export class DataService {
     ];
     return Promise.all(queries)
       .then((result: MCQueryResponse[]) => {
+        if (result[0].err || result[1].err) {
+          this._domains = [];
+          console.error(result);
+          return;
+        }
         const apps =
           result[0].result.length > 0 ? result[0].result.split(';') : [];
         for (let i = 0; i < apps.length; i++) apps[i] = apps[i].split(',')[0];
@@ -645,8 +660,13 @@ export class DataService {
       this.ws.query('?TP_GET_FRAME_NAME("MACHINETABLE")'),
     ];
     return Promise.all(queries).then((result: MCQueryResponse[]) => {
+      if (result[0].err || result[1].err) {
+        this._machineTables = [];
+        console.error(result);
+        return;
+      }
       this._machineTables =
-        result[0].result.length > 0 ? result[0].result.split(',') : [];
+        result[0].result.length > 0 ? result[0].result.split(',').sort() : [];
       if (this._selectedMachineTable !== result[1].result) {
         this._selectedMachineTable = result[1].result;
       }
@@ -662,8 +682,13 @@ export class DataService {
       this.ws.query('?TP_GET_FRAME_NAME("WORKPIECE")'),
     ];
     return Promise.all(queries).then((result: MCQueryResponse[]) => {
+      if (result[0].err || result[1].err) {
+        this._workPieces = [];
+        console.error(result);
+        return;
+      }
       this._workPieces =
-        result[0].result.length > 0 ? result[0].result.split(',') : [];
+        result[0].result.length > 0 ? result[0].result.split(',').sort() : [];
       if (this._selectedWorkPiece !== result[1].result) {
         this._selectedWorkPiece = result[1].result;
       }
@@ -674,7 +699,7 @@ export class DataService {
     return this.ws
       .query('?tp_get_motion_elements')
       .then((ret: MCQueryResponse) => {
-        this._robots = ret.result.length > 0 ? ret.result.split(',') : [];
+        this._robots = !ret.err && ret.result.length > 0 ? ret.result.split(',') : [];
         if (this.robots.length === 0 || this._selectedRobot !== null) {
           return null;
         }
@@ -867,6 +892,8 @@ export class DataService {
       .then(async (ret: MCQueryResponse) => {
         if (ret.result !== 'A' && !this.cmn.isTablet) {
           await this.stat.setMode('A');
+        } else if (this.stat.mode === null) {
+          this.stat._switch = ret.result;
         }
         return this.refreshData();
       })
@@ -971,59 +998,83 @@ export class DataService {
       this.ws.query('?tp_get_project_joints("ALL")'),
     ];
     return Promise.all(promises).then((result: MCQueryResponse[]) => {
+      let data;
       // ADD JOINTS
       this._joints.length = 0;
-      let data = result[0].result.split(',').sort();
-      data.forEach((name: string) => {
-        if (name.length > 0) {
-          this.addJoint(new TPVariable(TPVariableType.JOINT, name));
-        }
-      });
-
+      if (result[0].err) {
+        console.error(result[0]);
+      } else {
+        data = result[0].result.split(',').sort();
+        data.forEach((name: string) => {
+          if (name.length > 0) {
+            this.addJoint(new TPVariable(TPVariableType.JOINT, name));
+          }
+        });
+      }
       // ADD LOCATIONS
       this._locations.length = 0;
-      data = result[1].result.split(',').sort();
-      data.forEach((name: string) => {
-        if (name.length > 0) {
-          this.addLocation(new TPVariable(TPVariableType.LOCATION, name));
-        }
-      });
+      if (result[1].err) {
+        console.error(result[1]);
+      } else {
+        data = result[1].result.split(',').sort();
+        data.forEach((name: string) => {
+          if (name.length > 0) {
+            this.addLocation(new TPVariable(TPVariableType.LOCATION, name));
+          }
+        });
+      }
 
       // ADD LONGS
       this._longs.length = 0;
-      data = result[2].result.split(',').sort();
-      data.forEach((name: string) => {
-        if (name.length > 0) {
-          this.addLong(new TPVariable(TPVariableType.LONG, name));
-        }
-      });
+      if (result[2].err) {
+        console.error(result[2]);
+      } else {
+        data = result[2].result.split(',').sort();
+        data.forEach((name: string) => {
+          if (name.length > 0) {
+            this.addLong(new TPVariable(TPVariableType.LONG, name));
+          }
+        });
+      }
 
       // ADD DOUBLES
       this._doubles.length = 0;
-      data = result[3].result.split(',').sort();
-      data.forEach((name: string) => {
-        if (name.length > 0) {
-          this.addDouble(new TPVariable(TPVariableType.DOUBLE, name));
-        }
-      });
+      if (result[3].err) {
+        console.error(result[3]);
+      } else {
+        data = result[3].result.split(',').sort();
+        data.forEach((name: string) => {
+          if (name.length > 0) {
+            this.addDouble(new TPVariable(TPVariableType.DOUBLE, name));
+          }
+        });
+      }
 
       // ADD STRINGS
       this._strings.length = 0;
-      data = result[4].result.split(',').sort();
-      data.forEach((name: string) => {
-        if (name.length > 0) {
-          this.addString(new TPVariable(TPVariableType.STRING, name));
-        }
-      });
+      if (result[4].err) {
+        console.error(result[4]);
+      } else {
+        data = result[4].result.split(',').sort();
+        data.forEach((name: string) => {
+          if (name.length > 0) {
+            this.addString(new TPVariable(TPVariableType.STRING, name));
+          }
+        });
+      }
 
       // ADD Project joits
       this._pJoints.length = 0;
-      data = result[5].result.split(',');
-      data.forEach((name: string) => {
-        if (name.length > 0) {
-          this.addPJoint(new TPVariable(TPVariableType.JOINT, name));
-        }
-      });
+      if (result[5].err) {
+        console.error(result[5]);
+      } else {
+        data = result[5].result.split(',');
+        data.forEach((name: string) => {
+          if (name.length > 0) {
+            this.addPJoint(new TPVariable(TPVariableType.JOINT, name));
+          }
+        });
+      }
       this.teachServiceNeedsReset.next();
       this._varRefreshInProgress = false;
       this.dataRefreshed.next(true);

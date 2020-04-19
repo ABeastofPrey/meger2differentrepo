@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-file-dialog',
@@ -7,22 +8,16 @@ import { MatDialogRef } from '@angular/material';
   styleUrls: ['./new-file-dialog.component.css'],
 })
 export class NewFileDialogComponent implements OnInit {
-  newFile: NewFile = {
-    name: '',
-    ext: 'PRG',
-  };
+
+  ext = 'PRG';
+  name = new FormControl('',[Validators.required, Validators.maxLength(32), Validators.pattern('[a-zA-Z]+(\\w*)$')]);
 
   constructor(private ref: MatDialogRef<string>) {}
 
   ngOnInit() {}
 
   create() {
-    const finalName = this.newFile.name + '.' + this.newFile.ext;
+    const finalName = this.name.value + '.' + this.ext;
     this.ref.close(finalName.toUpperCase());
   }
-}
-
-interface NewFile {
-  name: string;
-  ext: string;
 }

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
 import { TPVariable } from '../../../core/models/tp/tp-variable.model';
-import { MatTableDataSource, MatDialog, MatSnackBar } from '@angular/material';
+import { MatTableDataSource, MatDialog, MatSnackBar, MatSort } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TPVariableType } from '../../../core/models/tp/tp-variable-type.model';
 import { AddFrameComponent } from '../add-frame/add-frame.component';
@@ -25,6 +25,9 @@ export class FramesComponent implements OnInit {
     true,
     []
   );
+
+  // To sort the table
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   private _legend: string[] = [];
   private _value: Array<{ value: number | string }> = [];
@@ -59,6 +62,10 @@ export class FramesComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.data = this.getData();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
   }
 
   get frameTypeTranslated() {
@@ -344,6 +351,8 @@ export class FramesComponent implements OnInit {
                 const dataQueries = [
                   this.data.refreshBases(),
                   this.data.refreshTools(),
+                  this.data.refreshMachineTables(),
+                  this.data.refreshWorkPieces()
                 ];
                 Promise.all(dataQueries).then(() => {
                   this.data.refreshVariables().then(()=>{

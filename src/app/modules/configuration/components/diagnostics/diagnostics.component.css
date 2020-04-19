@@ -8,7 +8,6 @@
 .diagnostics {
   height: 100%;
   width: 100%;
-  background-color: #fff;
   overflow: auto;
   box-sizing: border-box;
   display: flex;
@@ -53,4 +52,13 @@
   font-weight: bold;
   color: rgba(0, 0, 0, 0.52);
   border-bottom: 1px solid black;
+}
+
+::ng-deep .cs-dark .diagnostics-container table tr:first-child td {
+  color: #fff;
+  border-color: #666;
+}
+
+::ng-deep .cs-dark .diagnostics-container table {
+  border-color: #666;
 }

@@ -71,7 +71,7 @@ export class MoveDialogComponent implements OnInit {
     locationIndex: new FormControl(-1),
     motionElement: new FormControl(null),
     rangeMode: new FormControl(false),
-    vcruise: new FormControl(null)
+    vscale: new FormControl(null)
   }, {
     validators: [
       rangeValidator,
@@ -164,7 +164,7 @@ export class MoveDialogComponent implements OnInit {
   ngAfterContentInit() {
     const params = this.data.params;
     if (params) {
-      if (params['element'] || params['vcruise'] || params['blending']) {
+      if (params['element'] || params['vscale'] || params['blending']) {
         this.ctrl.controls['advancedMode'].setValue(true);
       }
       // PARSE MOTION ELEMENT
@@ -183,8 +183,8 @@ export class MoveDialogComponent implements OnInit {
         }
       }
       // PARSE OTHER PARAMS
-      if (params['vcruise']) {
-        this.ctrl.controls['vcruise'].setValue(params['vcruise']);
+      if (params['vscale']) {
+        this.ctrl.controls['vscale'].setValue(params['vscale']);
       }
       if (params['blending']) {
         this.ctrl.controls['blendingPh'].setValue(params['blending']);
@@ -234,18 +234,17 @@ export class MoveDialogComponent implements OnInit {
     } else {
       names.push(name);
     }
-    let vcruiseString = '';
-    const vcruise = this.ctrl.controls['vcruise'].value;
-    if (vcruise && Number(vcruise) > 0) {
-      vcruiseString =
-        (this.data.moveS ? ' Vtran=' : ' Vcruise=') + vcruise;
+    let vscaleString = '';
+    const vscale = this.ctrl.controls['vscale'].value;
+    if (vscale && Number(vscale) > 0) {
+      vscaleString = (this.data.moveS ? ' Vtran=' : ' VScale=') + vscale;
     }
     let blendingString = '';
     if (this.ctrl.controls['blendingPh'].value) {
       blendingString = ' BlendingPercentage=' + this.ctrl.controls['blendingPh'].value;
     }
     for (let i = 0; i < names.length; i++) {
-      cmds += cmd + robot + names[i] + vcruiseString + blendingString;
+      cmds += cmd + robot + names[i] + vscaleString + blendingString;
       if (i < names.length - 1) cmds += '\n';
     }
     // add pls to cmds.

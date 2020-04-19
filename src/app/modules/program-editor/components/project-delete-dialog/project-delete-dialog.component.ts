@@ -1,3 +1,4 @@
+import { ProjectManagerService } from './../../../core/services/project-manager.service';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {
   MatDialogRef,
@@ -15,7 +16,7 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
   styleUrls: ['./project-delete-dialog.component.css'],
 })
 export class ProjectDeleteDialogComponent implements OnInit {
-  projects: string[];
+  projects: string[] = [];
   selected: string[] = [];
   prjCtrl = new FormControl();
   separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
@@ -27,29 +28,18 @@ export class ProjectDeleteDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ProjectDeleteDialogComponent>,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    private prj: ProjectManagerService
   ) {}
 
   ngOnInit() {
     this.ws.query('?prj_get_list_of_projects').then((ret: MCQueryResponse) => {
-      if (ret.result.length > 0) this.projects = ret.result.split(',');
+      if (ret.result.length > 0) {
+        this.projects = ret.result.split(',').filter(p=>{
+          return p !== this.prj.currProject.value.name;
+        });
+      }
     });
-  }
-
-  add(event: MatChipInputEvent): void {
-    if (!this.matAutocomplete.isOpen) {
-      const input = event.input;
-      const value = event.value;
-      // Add our project
-      if ((value || '').trim()) {
-        this.selected.push(value.trim());
-      }
-      // Reset the input value
-      if (input) {
-        input.value = '';
-      }
-      this.prjCtrl.setValue(null);
-    }
   }
 
   remove(prj: string): void {

@@ -22,6 +22,10 @@ export class ProgramSettingsComponent implements OnInit {
 
   ngOnInit() {}
 
+  percentageLabel(num: number) {
+    return num + '%';
+  }
+
   toggleActiveApp(app: App, changeType: string) {
     const proj = this.prj.currProject.value.name;
     const newStatus =

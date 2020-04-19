@@ -17,7 +17,6 @@
   height: 30px;
 }
 .login-card {
-  background-color: #fff;
   max-width: 500px;
   border-radius: 3px;
   position: absolute;
@@ -75,6 +74,19 @@ header {
   font-size: 18px;
   font-weight: 300;
 }
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.spinner-container h2 {
+    line-height: 3;
+}
+.info {
+  padding: 0 24px;
+  text-align: center;
+  font-family: 'cs-monospace';
+}
 .stx-ver {
   position: absolute;
   top: 16px;
@@ -84,7 +96,6 @@ header {
   font-size: 14px;
 }
 .main {
-  margin-top: 36px;
   font-size: 16px;
   display: flex;
   flex-direction: column;

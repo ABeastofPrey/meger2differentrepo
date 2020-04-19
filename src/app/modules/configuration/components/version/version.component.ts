@@ -82,7 +82,7 @@ export class VersionComponent implements OnInit {
     this.ws.observableQuery(que)
       .pipe(
           rxjsMap((res: MCQueryResponse) => JSON.parse(res.result)),
-          catchError((err: ErrorFrame) => throwError(err.errMsg))
+          catchError((err: ErrorFrame[]) => throwError(err[0] ? err[0].errMsg : ''))
       ).subscribe(res => console.log(res), err => console.warn(err));
   }
 

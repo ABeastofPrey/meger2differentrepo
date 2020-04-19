@@ -5,7 +5,7 @@ import {
     getJumpxCommand, getJumpxCommandSuccess, selectJumpxCommand, createVarSuccess,
     selectMotionElement, selectAscendingPoint, selectDescendingPoint,
     selectTargetPoint, selectWithPls, inputArchNo, selectMotionElementSuccess,
-    inputLimZ, inputBlendingPercentage, inputVcruise, inputAcc, inputVtrans, updateJumpxCommand,
+    inputLimZ, inputBlendingPercentage, InputVscale, inputAcc, inputVtrans, updateJumpxCommand,
 } from '../actions/jumpx-command.actions';
 
 export const jumpxCommandFeatureKey = 'jumpxCommand';
@@ -26,7 +26,7 @@ export const jumpxCommandReducer = createReducer(
     on(inputArchNo, updateOne),
     on(inputLimZ, updateOne),
     on(inputBlendingPercentage, updateOne),
-    on(inputVcruise, updateOne),
+    on(InputVscale, updateOne),
     on(inputVtrans, updateOne),
     on(inputAcc, updateOne),
     on(createVarSuccess, updateOne),

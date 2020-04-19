@@ -124,4 +124,7 @@ export interface SysInfo {
   maxAxes: number;
   freeRamSpace: number;
   hash: string;
+  ip: string;
+  name: string;
+  sn: string;
 }

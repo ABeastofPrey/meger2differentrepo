@@ -265,15 +265,22 @@ export class ProjectManagerService {
         prj.settings.autoStart = !prj.settings.autoStart;
       }
     });
+    
   }
 
   private loadProgramSetting(setting: string, proj: MCProject): Promise<void> {
     switch (setting) {
-      case 'vcruise':
-        return this.ws.query('?TP_GET_PROJECT_PARAMETER("vcruise","")').then(ret=>{
+      case 'ascale':
+        return this.ws.query('?TP_GET_PROJECT_PARAMETER("ascale","")').then(ret=>{
           if (ret.err || ret.result.length === 0) return;
           const n = Number(ret.result);
-          if (!isNaN(n)) proj.settings.vcruise = n;
+          if (!isNaN(n)) proj.settings.ascale = n;
+        });
+      case 'vscale':
+        return this.ws.query('?TP_GET_PROJECT_PARAMETER("vscale","")').then(ret=>{
+          if (ret.err || ret.result.length === 0) return;
+          const n = Number(ret.result);
+          if (!isNaN(n)) proj.settings.vscale = n;
         });
       case 'vtran':
         return this.ws.query('?TP_GET_PROJECT_PARAMETER("vtran","")').then(ret=>{
@@ -295,7 +302,8 @@ export class ProjectManagerService {
 
   private async loadProgramSettings(proj: MCProject): Promise<void> {
     let promises: Array<Promise<void | MCQueryResponse>> = [
-      this.loadProgramSetting('vcruise',proj),
+      this.loadProgramSetting('vscale',proj),
+      this.loadProgramSetting('ascale',proj),
       this.loadProgramSetting('vtran',proj),
       this.loadProgramSetting('blendingmethod',proj)
     ];
@@ -429,6 +437,10 @@ export class ProjectManagerService {
     limit: Limit
   ) {
     const target = e.target as HTMLInputElement;
+    if (target.value.trim().length === 0) {
+      target.value = prevValue.toString();
+      return;
+    }
     const cmd =
       '?TP_SET_PROJECT_PARAMETER("' +
       name +
@@ -464,8 +476,11 @@ export class ProjectManagerService {
       case 'tool':
         cmd += '"tool","","' + settings.tool + '")';
         break;
-      case 'vcruise':
-        cmd += '"vcruise","","' + settings.vcruise + '")';
+      case 'ascale':
+        cmd += '"ascale","","' + settings.ascale + '")';
+        break;
+      case 'vscale':
+        cmd += '"vscale","","' + settings.vscale + '")';
         break;
       case 'vtran':
         cmd += '"vtran","","' + settings.vtran + '")';
@@ -510,7 +525,8 @@ export class ProjectManagerService {
         case 'wpiece':
           this.data.refreshWorkPieces();
           break;
-        case 'vcruise':
+        case 'ascale':
+        case 'vscale':
         case 'vtran':
           if (!ok) {
             this.loadProgramSetting(setting, this.currProject.value);

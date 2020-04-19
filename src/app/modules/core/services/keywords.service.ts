@@ -1,3 +1,4 @@
+import { ProgramEditorService } from './../../program-editor/services/program-editor.service';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject } from 'rxjs';
@@ -22,6 +23,10 @@ export class KeywordService {
   // AUTOCOMPLETE
   private ovrldIndx = 0;
   private lastContext: string;
+  private varList: Array<{
+    name: string,
+    type: string
+  }>;
 
   get wordList() {
     return this._wordList;
@@ -37,6 +42,7 @@ export class KeywordService {
   constructor(
     private api: ApiService,
     private data: DataService,
+    private prg: ProgramEditorService,
     private groups: GroupManagerService) {
 
     this.defineFolding();
@@ -64,10 +70,9 @@ export class KeywordService {
     IF disableNewLines IS TRUE, PRESSING "ENTER" WILL ADD A SPACE INSTEAD OF AN ENTER.
     THIS IS USED FOR TERMINAL.
   */
-  getNewWordCompleter(disableNewLines?: boolean) {
+  getNewWordCompleter(disableNewLines: boolean, sep?: string) {
     return {
-      getCompletions: (editor,session,pos,prefix: string,callback: Function) => {
-        //console.log('get completions');
+      getCompletions: async (editor,session,pos,prefix: string,callback: Function) => {
         if (!editor.initMcCompleter) {
           editor.initMcCompleter = true;
           // INIT TAB HANDLER
@@ -121,16 +126,22 @@ export class KeywordService {
               return;
             }
             editor.completer.insertMatch();
-            editor.completer.showPopup(editor);
+            const currLine = editor.session.getLine(editor.getSelectionRange().start.row);
+            if (currLine.endsWith(' ') || currLine.endsWith('.')) {
+              editor.completer.showPopup(editor);
+            }
           };
           editor.completer.keyboardHandler = new this.HashHandler();
           editor.completer.keyboardHandler.bindKeys(editor.completer.commands);
         }
+        // await new Promise(resolve=>{setTimeout(resolve,500)}); // to delay the results
+        // AUTOCOMPLETE LOGIC STARTS HERE
         const stream = new this.TokenIterator(session, pos.row, pos.column);
         let token = stream.getCurrentToken();
         let context: string = null;
         const cursorPosition = editor.getCursorPosition();
-        const line: string = session.getLine(pos.row).substring(0,cursorPosition.column);
+        const line: string = 
+          session.getLine(pos.row).substring(sep ? sep.length : 0,cursorPosition.column);
         const trimmed = line.trim();
         const isComment = /^(?:'|REM).*/i.test(trimmed);
         if (!token || trimmed.length === 0 || isComment) {
@@ -158,16 +169,64 @@ export class KeywordService {
         }
         context = context.toLowerCase();
 
+        // FIND RELEVANT BLOCK
+        const blocks = session.blocks;
+        let varList = [];
+        if (blocks &&
+            blocks.program &&
+            blocks.program.start < pos.row &&
+            blocks.program.end > pos.row) {
+          varList = blocks.program.vars;
+        } else if (blocks && blocks.subs) {
+          const sub = blocks.subs.find(s=>{
+            return s.start < pos.row && s.endLine > pos.row;
+          });
+          if (sub) {
+            varList = sub.vars;
+          }
+        } 
+        if (varList.length === 0 && blocks && blocks.functions) {
+          const func = blocks.functions.find(f=>{
+            return f.start < pos.row && f.endLine > pos.row;
+          });
+          if (func) {
+            varList = func.vars.concat([{
+              name: func.name,
+              type: func.retType
+            }]);
+          }
+        }
+        // Now let's add variables from DATA screen
+        const dataVars = this.prg.fileRef && !disableNewLines ? this.data.joints
+          .concat(this.data.locations)
+          .concat(this.data.longs)
+          .concat(this.data.strings)
+          .concat(this.data.doubles)
+          .filter(v=>{
+            if (varList.find(blockVar=>{
+              return v.name.toLowerCase() === blockVar.name
+            })) {
+              return false;
+            }
+            return true;
+          }) : [];
+          varList = varList.concat(dataVars.map(v=>{
+            return {
+              name: v.name.toLowerCase(),
+              type: v.typeStr.toLowerCase()
+            }
+          }));
+          this.varList = varList;
         // FIND POSITION IN SYNTAX
         let linePos = 0;
-        const match = line.match(/\S+/g);
+        const match = line.match(/"(?:.*?)"|{(?:.*?)}|\S+/g);
         if (match) {
           linePos = match.length;
-          if (!line.endsWith(' ') && !line.endsWith('\n')) {
+          if (!line.endsWith(' ') && !line.endsWith('\n') && !line.endsWith('}') && !line.endsWith('"')) {
             linePos--;
           }
         }
-
+        //console.log(context,trimmed,line,linePos,prefix);
         // STEP 0 - COMPARE CONTEXT TO GROUPS AND AXES
         const isGroup = this.groups.groups.find(g=>{
           return g.name.toLowerCase() === context;
@@ -178,7 +237,7 @@ export class KeywordService {
         const isAxis = axes.find(a=>{
           return a.toLowerCase() === context;
         });
-        if (isGroup && line.endsWith('.')) {
+        if (isGroup && trimmed.includes('.')) {
           // GROUP FOUND
           this.resetOvrldIndex(context);
           return callback(null, DOCS.element.concat(DOCS.group).map(param=>{
@@ -194,7 +253,7 @@ export class KeywordService {
             };
           }));
         }
-        if (isAxis && line.endsWith('.')) {
+        if (isAxis && trimmed.includes('.')) {
           // AXIS FOUND
           this.resetOvrldIndex(context);
           return callback(null, DOCS.axis.concat(DOCS.element).map(param=>{
@@ -211,7 +270,7 @@ export class KeywordService {
           }));
         }
         // STEP 1 - COMPARE CONTEXT TO OBJECTS
-        if (DOCS.ac_objects.includes(context) && line.endsWith('.')) {
+        if (DOCS.ac_objects.includes(context) && trimmed.includes('.')) {
           // OBJECT FOUND
           this.resetOvrldIndex(context);
           return callback(null, DOCS.objects[context].map(param=>{
@@ -233,7 +292,7 @@ export class KeywordService {
         }).find(o=>{
           return o.name.toLowerCase() === context;
         });
-        if (obj && line.endsWith('.')) {
+        if (obj && trimmed.includes('.')) {
           return callback(null, obj['children'].map(param=>{
             const name = param.short || param.name;
             return {
@@ -247,8 +306,17 @@ export class KeywordService {
             };
           }));
         }
-        if (line.endsWith('.')) {
-          return callback();
+        if (trimmed.endsWith('.')) {
+          return callback(null, DOCS.keywords.filter(k=>{
+            return k.afterDot;
+          }).map(k=>{
+            return {
+              caption: k.name,
+              value: k.name,
+              meta: k.meta,
+              docHTML: k.desc
+            };
+          }));
         }
         // STEP 2 - COMPARE CONTEXT TO COMMANDS
         if (DOCS.commands[context]) {
@@ -262,6 +330,7 @@ export class KeywordService {
           // CHECK CURRENT OVERLOAD PARTS
           const parts = currOverload['syntax'].split(' ');
           let optionsArr: string[] = [];
+          const format = currOverload['format'] ? currOverload['format'][linePos] : null;
           if (linePos > 0 && linePos < parts.length) {
             const part: string = parts[linePos];
             const c = part.charAt(0);
@@ -269,13 +338,13 @@ export class KeywordService {
               const i = part.indexOf('=');
               if (token.value === '=') {
                 const type = part.substring(i+1);
-                optionsArr = this.getOptionsByType(type);
-              } else if (token.value !== '}') {
-                optionsArr = [part.substring(0,i)];
+                optionsArr = this.getOptionsByType(type,format);
+              } else if (token.value !== '}' || line.endsWith(' ')) {
+                optionsArr = [ i === -1 ? part : part.substring(0,i) ];
                 return callback(null, optionsArr.map(o=>{
                   return {
                     caption: o,
-                    value: o + '=',
+                    value: o + (i === -1 ? ' ' : '='),
                     docHTML: doc,
                     cmd
                   };
@@ -284,7 +353,7 @@ export class KeywordService {
                 return callback();
               }
             } else {
-              optionsArr = this.getOptionsByType(part);
+              optionsArr = this.getOptionsByType(part,format);
             }
           } else if (linePos >= parts.length && currOverload['optionalType'] > -1) {
             // OPTIONAL PARAM
@@ -307,7 +376,7 @@ export class KeywordService {
               } else {
                 const paramType: number = options[token.value]['type'];
                 const type = '[' + DOCS.types[paramType] + ']';
-                optionsArr = this.getOptionsByType(type);
+                optionsArr = this.getOptionsByType(type, format);
               }
             } else if (line.endsWith(' ')) {
               const keys = Object.keys(options);
@@ -315,7 +384,7 @@ export class KeywordService {
                 const doc = this.getOverloadDoc(cmd, this.ovrldIndx, linePos, o);
                 return {
                   caption: o,
-                  value: o + '=',
+                  value: o + (options[o].hideEqSign ?  ' ' : '='),
                   docHTML: doc,
                   cmd
                 };
@@ -329,7 +398,7 @@ export class KeywordService {
             return callback(null, optionsArr.map(o=>{
               return {
                 caption: o,
-                value: o + ' ',
+                value: o + (linePos < parts.length - 1 ? ' ' : ''),
                 docHTML: doc,
                 cmd
               };
@@ -343,7 +412,7 @@ export class KeywordService {
         if (context.length === 0 || prefix.length === 0) return;
         const scopes = this.snippetManager.getActiveScopes(editor);
         const snippetMap = this.snippetManager.snippetMap;
-        const snippetCompletions = [];
+        let snippetCompletions = [];
         scopes.forEach(scope => {
           const snippets = snippetMap[scope] || [];
           for (let i = snippets.length; i--;) {
@@ -356,23 +425,49 @@ export class KeywordService {
             snippetCompletions.push({
               caption: s.name,
               snippet: s.content,
-              meta: s.tabTrigger && !s.name ? s.tabTrigger + "\u21E5 " : "snippet",
+              meta: snippetDoc ? snippetDoc.meta || 'snippet' : 'snippet',
               type: "snippet",
-              docHTML: doc
+              docHTML: doc,
+              availableMidSentence: snippetDoc ? snippetDoc.availableMidSentence : false,
+              terminalOnly: snippetDoc ? snippetDoc.terminalOnly : false
             });
           }
         }, this);
-        let optionsArr = DOCS.ac_objects.map(o=>{
+        if (!disableNewLines) { // not terminal
+          snippetCompletions = snippetCompletions.filter(s=>{
+            return !s.terminalOnly;
+          });
+        }
+        let optionsArr = DOCS.keywords.filter(k=>!k.afterDot).map(t=>{
+          return {
+            caption: t.name,
+            value: t.name + ' ',
+            meta: t.meta,
+            docHTML: t.desc
+          };
+        }).concat(DOCS.ac_objects.map(o=>{
           return {
             caption: o,
-            value: o + '.'
+            value: o + '.',
+            meta: 'Object',
+            docHTML: null
           };
         }).concat(this.groups.groups.map(g=>{
           return {
             caption: g.name,
-            value: g.name
+            value: g.name,
+            meta: 'Group',
+            docHTML: null
           };
-        }));
+        })));
+        const variableCompletions = varList.map(v=>{
+          return {
+            caption: v.name,
+            value: v.name,
+            meta: 'variable (' + v.type + ')',
+            docHTML: null
+          };
+        });
         if (linePos === 0) {
           optionsArr = snippetCompletions.concat(optionsArr).concat(Object.keys(DOCS.commands).map(o=>{
             const cmd = DOCS.commands[o];
@@ -384,20 +479,24 @@ export class KeywordService {
               caption: o,
               value: o + (isOneWordCommand && !cmdHasOptionalParams && !disableNewLines ? '\n' : ' '),
               docHTML: doc,
-              cmd
+              cmd,
+              meta: 'Command'
             };
           })).concat(DOCS.element.concat(DOCS.group).map(el=>{
             const name =  el.short || el.name;
             return {
               caption: name,
               value: name + ' ',
-              docHTML: this.getParamDoc(el,name)
+              docHTML: this.getParamDoc(el,name),
+              meta: 'Element Property'
             };
           }));
         }
-        optionsArr = optionsArr.sort((a,b)=>{
+        optionsArr = optionsArr.concat(variableCompletions).sort((a,b)=>{
           return a.caption > b.caption ? 1 : -1;
-        });
+        }).concat(snippetCompletions.filter(s=>{
+          return s.availableMidSentence === true;
+        }));
         return callback(null, optionsArr);
       }
     };
@@ -453,13 +552,22 @@ export class KeywordService {
     }
   }
 
-  private getOptionsByType(type: string) {
+  private getOptionsByType(type: string, format?: string) {
     let optionsArr = [];
+    let option = [];
+    if (format && format !== null && format.length > 0) {
+      option = [`${format}`];
+    } else if (format === null) {
+      option = type === 'string' ? ['"string"'] : [];
+    }
     switch (type) {
       default:
         if (type.charAt(0) === '{') {
           optionsArr = [type];
         }
+        break;
+      case '[' + DOCS.types[2] + ']': // strings
+        optionsArr = this.varList.filter(v=>v.type === 'string').map(v=>v.name);
         break;
       case '[' + DOCS.types[3] + ']':
         optionsArr = this.groups.groups.map(g=>{
@@ -467,7 +575,8 @@ export class KeywordService {
         });
         break;
       case '[' + DOCS.types[4] + ']':
-        const axes = this.data.robotCoordinateType.legends.length;
+        const axes = 
+            this.data.robotCoordinateType ? this.data.robotCoordinateType.legends.length : 0;
         const pnt = '{' + new Array(axes).fill('0').join(',') + '}';
         optionsArr = this.data.joints.map(j=>{
           return j.name;
@@ -475,8 +584,18 @@ export class KeywordService {
           return l.name;
         })).concat([pnt, '#'+pnt]).sort();
         break;
+      case '[' + DOCS.types[7] + ']': // location
+        optionsArr = this.data.locations.map(l=>{
+          return l.name;
+        });
+        break;
+      case '[' + DOCS.types[8] + ']': // number
+        optionsArr = ['0'].concat(this.data.longs.concat(this.data.doubles).map(l=>{
+          return l.name;
+        }));
+        break;
     }
-    return optionsArr;
+    return option.concat(optionsArr);
   }
 
   defineFolding() {
@@ -495,8 +614,8 @@ export class KeywordService {
       (function() {
       
         // regular expressions that identify starting and stopping points
-        this.foldingStartMarker = /\b(then|while|function|sub|try|select|program|OnSystemError|onerror)\b|{\s*$|(\[=*\[)/i;
-        this.foldingStopMarker = /\bend\b (if|while|function|sub|try|select|program|OnSystemError|onerror)/i;
+        this.foldingStartMarker = /\b(then|while|function|sub|try|select|program|onsystemerror|onerror|onevent)\b|{\s*$|(\[=*\[)/i;
+        this.foldingStopMarker = /\bend\b (if|while|function|sub|try|select|program|onsystemerror|onerror|onevent)/i;
 
         // tslint:disable-next-line: only-arrow-functions
         this.mcBasicBlock = function(session, row, column, tokenRange) {
@@ -512,7 +631,8 @@ export class KeywordService {
             "select": 1,
             "program": 1,
             "onsystemerror": 1,
-            "onerror": 1
+            "onerror": 1,
+            "onevent": 1
           };
           let token = stream.getCurrentToken();
           if (

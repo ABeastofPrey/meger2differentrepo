@@ -383,7 +383,6 @@ export class ScreenManagerService {
       .subscribe(words => {
         this.words = words;
       });
-
     this.stat.modeChanged.subscribe((mode: string) => {
       if (mode === null) return;
       if (mode !== 'T1' && mode !== 'T2') {

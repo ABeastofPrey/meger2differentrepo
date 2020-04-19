@@ -24,9 +24,15 @@ import { VersionComponent } from './components/version/version.component';
 import { ReleaseNoteComponent } from './components/version/release-note/release-note.component';
 import { AxisVordComponent } from './components/axis-vord/axis-vord.component';
 import { BrakeTestComponent } from './components/brake-test/brake-test.component';
+import { SafetyConfiguratorModule } from '../safety-configurator/safety-configurator.module';
 
 @NgModule({
-  imports: [CommonModule, SharedModule, ConfigurationRoutingModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    ConfigurationRoutingModule,
+    SafetyConfiguratorModule
+  ],
   declarations: [
     ConfigurationComponent,
     DiagnosticsComponent,

@@ -53,7 +53,8 @@ export class App {
 }
 
 export class ProjectSettings {
-  vcruise: number;
+  ascale: number;
+  vscale: number;
   vtran: number;
   vrate: number;
   blendingMethod: number;

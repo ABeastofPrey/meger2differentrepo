@@ -54,6 +54,7 @@ export class TranslatePipeMock implements PipeTransform {
   declarations: [TranslatePipeMock],
   imports: [
     NgrxRootModule,
+    RouterTestingModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

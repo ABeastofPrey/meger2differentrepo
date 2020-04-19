@@ -52,8 +52,8 @@ export class VisionCommandService {
         const parser = compose(map(getStation), prop('stations'), JSON.parse);
         return this.ws.observableQuery(api).pipe(
             rxjsMap((res: MCQueryResponse) => parser(res.result)),
-            catchError(err => {
-                console.warn(`Get Station Tree failed: ${err.msg}`);
+            catchError(errs => {
+                console.warn(`Get Station Tree failed: ${errs[0].msg}`);
                 return of([])
             })
         );

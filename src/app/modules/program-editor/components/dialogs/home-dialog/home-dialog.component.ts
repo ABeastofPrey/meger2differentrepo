@@ -94,7 +94,7 @@ export class HomeDialogComponent implements OnInit {
       err => console.warn('Retrieve maxmum of velocity failed: ' + err),
       max => {
         const ctrl = this.control.controls['velocity'];
-        ctrl.setValidators(limitValidator(0, max, this.words['numRange']));
+        ctrl.setValidators(limitValidator(0, 100, this.words['numRange']));
         ctrl.markAsTouched();
       }
     )(await this.service.retrieveVelocityMax());

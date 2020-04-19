@@ -1,4 +1,4 @@
-<mat-card class="log-snakbar">
+<mat-card class="log-snakbar mat-elevation-z3 mat-typography">
     <div class="left-portion">
         <ng-container [ngSwitch]="data?.type">
             <mat-icon *ngSwitchCase="'error'" aria-hidden="false" class="warn" aria-label="Example home icon">cancel</mat-icon>
@@ -22,7 +22,7 @@
                 {{!!data?.message ? ' ' + data.message : ''}}
             </span>
             <span *ngSwitchDefault>
-                {{data?.code}}&nbsp;&nbsp;{{data?.message}}
+                <span *ngIf="data">{{data.code}}&nbsp;&nbsp;{{trn.getTranslation(data.code,data.message)}}</span>
             </span>
         </ng-container>
     </div>

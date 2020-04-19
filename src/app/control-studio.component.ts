@@ -1,3 +1,4 @@
+import { WebsocketService } from './modules/core/services/websocket.service';
 import { ProgramEditorService, TASKSTATE_NOTLOADED, TASKSTATE_RUNNING } from './modules/program-editor/services/program-editor.service';
 import { ScreenManagerService } from './modules/core/services/screen-manager.service';
 import { TourService } from 'ngx-tour-md-menu';
@@ -38,7 +39,8 @@ export class ControlStudioComponent {
     private trn: TranslateService,
     public tour: TourService,
     private mgr: ScreenManagerService,
-    private prg: ProgramEditorService
+    private prg: ProgramEditorService,
+    private ws: WebsocketService
   ) {
     this.overlayContainer
       .getContainerElement()

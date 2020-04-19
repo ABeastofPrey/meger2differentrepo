@@ -31,13 +31,13 @@ export class ConfigurationComponent implements OnInit {
         icon: 'group_work',
         permission: 0,
       },
-      { path: 'io', label: 'I/O', icon: 'compare_arrows', permission: 99 },
       {
-        path: 'topology',
-        label: 'topology.title',
-        icon: 'device_hub',
-        permission: 99,
+        path: 'safety',
+        label: 'safety.title',
+        icon: 'security',
+        permission: 0,
       },
+      { path: 'io', label: 'I/O', icon: 'compare_arrows', permission: 99 },
       {
         path: 'gui-settings',
         label: 'interface.title',
@@ -47,7 +47,7 @@ export class ConfigurationComponent implements OnInit {
       {
         path: 'users',
         label: 'userManager.title',
-        icon: 'security',
+        icon: 'supervised_user_circle',
         permission: 99,
       },
       {

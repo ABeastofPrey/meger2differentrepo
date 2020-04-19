@@ -4,3 +4,7 @@
 h4 {
   color: #888;
 }
+mat-list *:not(mat-icon) {
+  user-select: text;
+  -moz-user-select: text;
+}

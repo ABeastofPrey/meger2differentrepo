@@ -2,7 +2,7 @@ import { GroupManagerService } from './../../../core/services/group-manager.serv
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { WatchService, WatchVar } from '../../../../modules/core/services/watch.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { WebsocketService, MCQueryResponse, ApiService } from '../../../core';
+import { WebsocketService, MCQueryResponse, ApiService, errorString } from '../../../core';
 import { RecordDialogComponent, RecordParams } from '../../../../components/record-dialog/record-dialog.component';
 import { RecordService } from '../../../core/services/record.service';
 import { Router } from '@angular/router';
@@ -69,12 +69,12 @@ export class WatchWindowComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err) 
       {
-        return this.snack.open(ret.err.errMsg, 'DISMISS');
+        return this.snack.open(errorString(ret.err), 'DISMISS');
       }
       this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
         if (ret.err) 
         {
-          return this.snack.open(ret.err.errMsg, 'DISMISS');
+          return this.snack.open(errorString(ret.err), 'DISMISS');
         }
         this.isRecording = true;
         let time = 0;

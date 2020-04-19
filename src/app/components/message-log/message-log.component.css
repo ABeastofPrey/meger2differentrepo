@@ -3,6 +3,9 @@
   overflow: auto;
   display: flex;
 }
+:host-context(.cs-dark) .content {
+  color: #fff;
+}
 .content {
   white-space: pre;
   flex: 1;
@@ -41,4 +44,8 @@
   text-decoration: underline;
   font-weight: 500;
   cursor: pointer;
+}
+:host-context(.cs-dark) .context-menu {
+  background: #333;
+  color: #fff;
 }

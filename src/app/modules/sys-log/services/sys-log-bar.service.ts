@@ -75,7 +75,7 @@ export class SysLogBarService {
                 .subscribe(([allLog, _confirmedLog]) => {
                     this.unconfirmedLog = getUnconfirmed(allLog, _confirmedLog);
                 });
-        }, 500);
+        }, 5000); // TODO: REMOVE THIS INTERVAL, I SET IT TO 5000 BECAUSE IT STUCK MC WHEN IT WAS 500
         setTimeout(() => {
             this.promptLatestUnconfirmedLog();
             this.autoPromptLatestUnconfirmedLog();

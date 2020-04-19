@@ -3,6 +3,7 @@
 	<div class="tooltip mat-elevation-z1" *ngIf="tooltipVisible" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
 		{{ lastWord }}: {{ tooltipValue }}
 	</div>
+	<img src="assets/pics/{{ env.platform.spinner }}" *ngIf="service.busy" class="spinner">
 </div>
 <mat-form-field class="hidden">
 	<input

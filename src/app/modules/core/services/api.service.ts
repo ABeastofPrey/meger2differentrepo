@@ -24,11 +24,11 @@ export class ApiService {
   get cloudToken() {
     return this._cloudToken;
   }
-  
+
   constructor(
     private http: HttpClient,
     private router: Router
-  ) { 
+  ) {
     this.router.events.subscribe(e=>{
       if (this.ready.value) return;
       const fullURL = e['url'] as string;
@@ -41,7 +41,7 @@ export class ApiService {
         const redirect = fullURL.substring(0,i) + (from ? '?from=' + from : '');
         this.router.navigateByUrl(redirect);
       }
-    });  
+    });
   }
 
   private formatErrors(error: { error: Error }) {
@@ -217,6 +217,13 @@ export class ApiService {
       .toPromise();
   }
 
+  getFileTextSearch(search: string, path: string) {
+    let body = new HttpParams();
+    body = body.set('search', search);
+    body = body.set('path', path);
+    return this.http.get<MCFileSearchResult[]>(this.api_url + '/cs/api/search', { params: body }).toPromise();
+  }
+
   getKukaReleaseNotes() {
     return this.http.get(this.api_url + '/cs/file/RELEASENOTE.DAT',{
       responseType: 'text'
@@ -299,6 +306,10 @@ export class ApiService {
     return this.http
       .get(this.api_url + '/cs/api/sysinfo', { params: body })
       .toPromise();
+  }
+
+  getSysBasicInfo() {
+    return this.http.get(this.api_url + '/cs/api/sysBasicInfo').toPromise();
   }
 
   getTRNERR() {
@@ -455,6 +466,10 @@ export class ApiService {
       });
   }
 
+  iniToJson(fileName: string) {
+    return this.get('/cs/api/ini/toJson?fileName='+fileName).toPromise();
+  }
+
   createPalletFile(data: string, fileName: string) {
     let body = new HttpParams();
     body = body.set('palletData', data);
@@ -539,3 +554,8 @@ export interface ProjectVerificationResult {
   project: string;
   file: string;
 }
+ export interface MCFileSearchResult {
+   name: string;
+   path: string;
+   lines: Array<{index: number, line: string}>;
+ }

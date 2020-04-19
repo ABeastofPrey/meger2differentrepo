@@ -10,7 +10,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class NewProjectDialogComponent implements OnInit {
   
   dialogForm = new FormGroup({
-    val: new FormControl('',[Validators.required, Validators.pattern('(\\w+)$')])
+    val: new FormControl('',[Validators.required, Validators.pattern('[a-zA-Z]+(\\w*)$'),Validators.maxLength(32)])
   });
 
   constructor(public dialogRef: MatDialogRef<NewProjectDialogComponent, string>) {}

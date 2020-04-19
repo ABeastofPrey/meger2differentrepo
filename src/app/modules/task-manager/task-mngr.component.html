@@ -1,5 +1,5 @@
 <div class="wrapper">
-	<div class="toolbar mat-elevation-z3">
+	<div class="toolbar card-bg mat-elevation-z3">
 		<div class="center-vertical">
 			<button mat-raised-button color="primary" (click)="kill()" matTooltip="{{ 'tasks.kill' | translate }}">
 				<mat-icon>stop</mat-icon>
@@ -26,7 +26,7 @@
 			<mat-checkbox color="primary" [(ngModel)]="filterBackground">{{'tasks.background' | translate}}</mat-checkbox>
 		</div>
 	</div>
-	<table class="mat-elevation-z3">
+	<table class="card-bg mat-elevation-z3">
 		<tr class="mat-subtitle-color">
 			<td>{{ 'tasks.name' | translate }}</td>
 			<td>{{ 'tasks.state' | translate }}</td>

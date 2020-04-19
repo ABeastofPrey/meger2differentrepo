@@ -59,3 +59,8 @@
         width: 95%;
     }
 }
+:host-context(.cs-dark) .log-book-warpper {
+    .main-card {
+        background-color: #222;
+    }
+}

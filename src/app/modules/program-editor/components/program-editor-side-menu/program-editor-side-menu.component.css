@@ -1,13 +1,14 @@
 .wrapper {
   height: 100%;
-  background: #fff;
   overflow: hidden;
 }
-.busy,
-.busy * {
+.busy, .busy * {
   cursor: progress;
   background-color: #eee;
   user-select: none;
+}
+:host-context(.cs-dark) .busy, :host-context(.cs-dark) .busy * {
+  background-color: rgba(0,0,0,0.3);
 }
 .project-tree {
   overflow: auto;
@@ -48,6 +49,10 @@ mat-tree-node.disabled * {
 .selected:not(.disabled) {
   background: #e0f2f1 !important;
 }
+:host-context(.cs-dark) .selected:not(.disabled),
+:host-context(.cs-dark) .menu {
+  background: #222 !important;
+}
 .invisible {
   display: none;
 }
@@ -82,6 +87,10 @@ li > div {
 li > div:hover,
 .file-list > div:hover {
   background: #eee;
+}
+:host-context(.cs-dark) li > div:hover,
+:host-context(.cs-dark) .file-list > div:hover {
+  background: #444;
 }
 .allow-add {
   flex: 1;

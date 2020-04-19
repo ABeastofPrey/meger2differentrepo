@@ -6,7 +6,8 @@ thead td {
   font-weight: 500;
 }
 td {
-  border: 1px solid #ccc;
+  border: 1px solid;
+  border-color: #ccc;
 }
 tbody td {
   padding: 4px;
@@ -23,4 +24,10 @@ select {
 }
 .disable-record {
   color: #ccc !important;
+}
+:host-context(.cs-dark) table {
+  color: #fff;
+}
+:host-context(.cs-dark) td {
+  border-color: #333;
 }

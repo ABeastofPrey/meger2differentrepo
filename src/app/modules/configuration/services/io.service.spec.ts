@@ -95,7 +95,7 @@ describe('IoService', () => {
 
     const spyValue = createMockCustomIoPorts();
     const errFrame = createMockErrorFrame() as ErrorFrame;
-    const mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
+    const mcQueryResponse = { result: spyValue, cmd: '', err: [errFrame] };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
@@ -160,7 +160,7 @@ describe('IoService', () => {
 
     let spyValue = createMockCustomIos();
     const errFrame = createMockErrorFrame() as ErrorFrame;
-    const mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
+    const mcQueryResponse = { result: spyValue, cmd: '', err: [errFrame] };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);
@@ -288,7 +288,7 @@ describe('IoService', () => {
 
     const spyValue = createMockIos();
     const errFrame = createMockErrorFrame() as ErrorFrame;
-    const mcQueryResponse = { result: spyValue, cmd: '', err: errFrame };
+    const mcQueryResponse = { result: spyValue, cmd: '', err: [errFrame] };
 
     webSocketServiceSpy.query.and.callFake(() => {
       return Promise.resolve(mcQueryResponse);

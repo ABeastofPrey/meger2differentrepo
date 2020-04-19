@@ -867,9 +867,11 @@
     "name": "项目名称",
     "new": "新建项目",
     "notification": {
-      "errMsg": "下列几行中出现错误",
-      "none": "无编译错误",
-      "title": "错误"
+      "at": "在",
+      "errMsg": "下列几行中出现错误：",
+      "exception": "{{task}} 中的异常",
+      "none": "无编译错误。",
+      "title": "问题"
     },
     "open": "打开项目",
     "saved": "文件已保存",

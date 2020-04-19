@@ -12,14 +12,15 @@
     <div>{{ax.name}}</div>
     <div class="original" [class.disabled]="enabled">{{ax.original}}</div>
     <mat-form-field appearance="outline" class="vord">
-        <input 
-          matInput
-          type="number"
-          virtualKeyboard
-          ktype="numeric_pos"
-          [disabled]="!enabled"
-          [value]="ax.vord"
-          (change)="onVordChange(i,$event.target.value)"/>
+      <input 
+        matInput
+        type="number"
+        virtualKeyboard
+        ktype="numeric_pos"
+        [disabled]="!enabled"
+        [value]="ax.vord"
+        (change)="onVordChange(i,$event.target.value)"/>
+        <span matSuffix>[RPM]</span>
     </mat-form-field>
   </div>
 </div>

@@ -14,15 +14,6 @@
       />
       <span matSuffix>ms.</span>
     </mat-form-field>
-    <mat-radio-group *ngIf="data && data.isGroup" [(ngModel)]="recMode">
-      <mat-radio-button value="1">{{ 'dashboard.record.type.2d' | translate }}</mat-radio-button>
-      <mat-radio-button value="2" style="margin-left: 16px;">{{
-        'dashboard.record.type.2d-a' | translate
-      }}</mat-radio-button>
-      <mat-radio-button value="3" style="margin-left: 16px;">{{
-        'dashboard.record.type.3d' | translate
-      }}</mat-radio-button>
-    </mat-radio-group>
     <div style="margin-top: 16px;" *ngIf="data && recMode === '3'">
       <mat-form-field><input placeholder="X" matInput [(ngModel)]="x" virtualKeyboard ktype="text"/></mat-form-field>
       <mat-form-field><input placeholder="Y" matInput [(ngModel)]="y" virtualKeyboard ktype="text"/></mat-form-field>
@@ -56,8 +47,8 @@
       placeholder="{{ 'gap' | translate }}"
       matInput
       [(ngModel)]="gap"
-        virtualKeyboard
-        ktype="numeric_int_pos"
+      virtualKeyboard
+      ktype="numeric_int_pos"
       />
       <span matSuffix>{{ 'gap_units' | translate }}</span>
     </mat-form-field>
@@ -74,6 +65,7 @@
     [disabled]="
       (data && data.params.length === 0 && recMode === '1') ||
       duration === null ||
+      gap < 1 ||
       duration < 10 ||
       (data && recMode === '3' &&
         (x === null || y === null || z === null || x.length === 0 || y.length === 0 || z.length === 0)) ||

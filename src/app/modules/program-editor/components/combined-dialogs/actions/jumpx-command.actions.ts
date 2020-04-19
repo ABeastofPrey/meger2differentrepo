@@ -18,7 +18,7 @@ export enum JumpxCommandTypes {
     InputArchNo = '[JumpxCommand] Input Arch No',
     InputLimZ = '[JumpxCommand] Input LimZ',
     InputBlendingPercentage = '[JumpxCommand] Input Blending Percentage',
-    InputVcruise = '[JumpxCommand] Input Vcruise',
+    InputVscale = '[JumpxCommand] Input Vscale',
     InputVtrans = '[JumpxCommand] Input Vtrans',
     InputAcc = '[JumpxCommand] Input Acc',
     CreateVar = '[JumpxCommand] Create Variable',
@@ -54,7 +54,7 @@ export const inputLimZ = createAction(JumpxCommandTypes.InputLimZ, props<{ jumpx
 
 export const inputBlendingPercentage = createAction(JumpxCommandTypes.InputBlendingPercentage, props<{ jumpxCommand: Update<JumpxCommand> }>());
 
-export const inputVcruise = createAction(JumpxCommandTypes.InputVcruise, props<{ jumpxCommand: Update<JumpxCommand> }>());
+export const InputVscale = createAction(JumpxCommandTypes.InputVscale, props<{ jumpxCommand: Update<JumpxCommand> }>());
 
 export const inputVtrans = createAction(JumpxCommandTypes.InputVtrans, props<{ jumpxCommand: Update<JumpxCommand> }>());
 

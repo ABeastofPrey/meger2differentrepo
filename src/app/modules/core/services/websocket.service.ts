@@ -19,7 +19,11 @@ interface MCResponse {
 export interface MCQueryResponse {
   result: string;
   cmd: string;
-  err: ErrorFrame;
+  err: ErrorFrame[];
+}
+
+export function errorString(err: ErrorFrame[]) {
+  return err ? err.map(e=>e.msg).join('') : null;
 }
 
 @Injectable()
@@ -192,9 +196,9 @@ export class WebsocketService {
     });
   }
 
-  observableQuery(api: string): Observable<MCQueryResponse | ErrorFrame> {
+  observableQuery(api: string): Observable<MCQueryResponse | ErrorFrame[]> {
     return new Observable(observer => {
-      this.send(api, false, (result: string, cmd: string, err: ErrorFrame) => {
+      this.send(api, false, (result: string, cmd: string, err: ErrorFrame[]) => {
         if (!!err) {
           observer.error(err);
         } else {
@@ -206,20 +210,18 @@ export class WebsocketService {
   }
 
   handleMessage(data: MCResponse) {
-    let errFrame = null;
+    let errFrames: ErrorFrame[] | null = null;
     //console.log('receive',data['cmd']);
     const isErrorFrame = data['msg'].indexOf('$ERRORFRAME$') === 0;
     if (isErrorFrame) {
-      data['msg'] = data['msg'].substr(12);
-      errFrame = new ErrorFrame(data['msg']);
-      console.log(data['cmd'] + ' >> ' + data['msg']);
-      if (
-        errFrame.errType !== 'NOTE' &&
-        errFrame.errType !== 'INFO' &&
-        typeof this.socketQueue['i_' + data['cmd_id']] !== 'function'
-      ) {
-        //console.log(errFrame.errMsg);
+      errFrames = [];
+      const messages = data['msg'].split('$ERRORFRAME$');
+      for (let i=1; i<messages.length; i++) {
+        const err = new ErrorFrame(messages[i]);
+        errFrames.push(err);
+        console.log(data['cmd'] + ' >> ' + err.msg);
       }
+      data['msg'] = errorString(errFrames);
     } else if (typeof data['cmd_id'] !== 'undefined' && data['cmd_id'] === -1) {
       // Server Announcment
       if (data['msg'].indexOf('>>>') === 0) {
@@ -253,11 +255,19 @@ export class WebsocketService {
               }
             });
         });
-      } else if (data['msg'].indexOf('%%%') === 0) {
+      } else if (data['msg'].startsWith('%%%')) {
         // CLIENT UPDATE NOTIFICATION
         this._zone.run(() => {
           this._otherClients = Number(data['msg'].substring(3)) - 1;
         });
+      } else if (data['msg'].startsWith('***')) {
+        // WEBSERVER LOG
+          try {
+            const msg = JSON.parse(data['msg'].substring(3));
+            this.notification.onWebserverMessage(msg);
+          } catch (err) {
+            console.log('Couldnt parse webserver message:' + data['msg'] + '...');
+          }
       } else {
         // Other Server announcements
         //this._zone.run(() => {
@@ -270,7 +280,7 @@ export class WebsocketService {
       typeof this.socketQueue['i_' + data['cmd_id']] === 'function'
     ) {
       let execFunc = this.socketQueue['i_' + data['cmd_id']];
-      execFunc(data['msg'], data['cmd'], errFrame);
+      execFunc(data['msg'], data['cmd'], errFrames);
       execFunc = null;
       if (!this.socketQueueIntervals['i_' + data['cmd_id']]) {
         delete this.socketQueue['i_' + data['cmd_id']]; // to free up memory..
@@ -281,21 +291,5 @@ export class WebsocketService {
 
   clearInterval(id: number) {
     this.worker.postMessage({ msg: 2, serverMsg: true, id }); // CLEAR INTERVAL REQUEST
-  }
-
-  private getCookie(cname) {
-    const name = cname + '=';
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const ca = decodedCookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return '';
   }
 }

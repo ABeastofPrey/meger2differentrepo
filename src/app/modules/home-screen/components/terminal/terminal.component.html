@@ -1,10 +1,6 @@
 <div class="wrapper mat-typography" (click)="onClick($event)" *ngIf="login.isAdmin">
 	<div class="terminal" #wrapper>
-		<div class="editor" #editorDiv [style.display]="terminal.cmds.length === 0 ? 'none' : 'block'"></div>
-		<div class="center-vertical">
-			<div style="margin: 0 8px 0 4px;">--></div>
-			<div class="editor" #editorLine></div>
-		</div>
+		<div class="editor" #editorDiv></div>
 	</div>
 </div>
 <div class="wrapper disabled" *ngIf="!login.isAdmin"></div>
@@ -20,6 +16,9 @@
 		(onKeyboardClose)="onDummyKeyboardClose()"
 	/>
 </mat-form-field>
-<button mat-fab *ngIf="cmn.isTablet" class="fab" (click)="showKeyboard()">
+<button mat-fab *ngIf="cmn.isTablet && login.isAdmin" class="fab" (click)="showKeyboard()">
 	<mat-icon>keyboard</mat-icon>
 </button>
+<div class="restricted" *ngIf="cmn.isTablet && !login.isAdmin">
+	{{ 'terminal_restricted' | translate:{user: login.permission} }}
+</div>

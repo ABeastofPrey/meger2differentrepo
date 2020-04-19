@@ -53,10 +53,10 @@
 						</span>
 						<span class="status" *ngIf="node.ref && node.ref.status !== -1"
 							[class.status-running]="node.ref && node.ref.status === 1">
-							({{ service.getStatusString(node.ref.status) }})
+							({{ ('projects.status.' + node.ref.status) | translate }})
 						</span>
 						<span class="status" *ngIf="node.type === 'Dependencies'">
-						({{ ('projects.status.' + (currProject.dependenciesLoaded ? '7' : '-1')) | translate }})
+						({{ (!currProject.dependenciesLoaded ? 'projects.status.-1' : 'projects.loaded' ) | translate }})
 						</span>
 						<span class="status" *ngIf="node.type === 'Apps' && prj.activeProject">
 							({{ 'projects.loaded' | translate }})
@@ -98,8 +98,8 @@
 					</mat-icon>
 					{{ (prj.currProject.value.dependenciesLoaded ? 'projects.toolbar.dep_unload' : 'projects.toolbar.dep_load') | translate }}
 				</button>
-				<mat-divider></mat-divider>
-				<button mat-button (click)="newDep()">
+				<mat-divider *ngIf="!currProject.dependenciesLoaded"></mat-divider>
+				<button mat-button (click)="newDep()" *ngIf="!currProject.dependenciesLoaded">
 					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_dep' | translate }}...
 				</button>
 			</div>

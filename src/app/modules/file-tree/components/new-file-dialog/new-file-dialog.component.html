@@ -7,13 +7,14 @@
 			<input
 				matInput
 				placeholder="{{ 'files.name' | translate }}"
-				[(ngModel)]="newFile.name"
+				[formControl]="name"
 				virtualKeyboard
 				ktype="text"
 			/>
+			<mat-error *ngIf="name.invalid">{{ 'error.invalid_var_name' | translate }}</mat-error>
 		</mat-form-field>
 		<mat-form-field>
-			<mat-select placeholder="{{ 'files.ext' | translate }}" [(ngModel)]="newFile.ext">
+			<mat-select placeholder="{{ 'files.ext' | translate }}" [(ngModel)]="ext">
 				<mat-optgroup label="{{ 'projects.toolbar.prg' | translate }}">
 					<mat-option value="PRG">PRG</mat-option>
 					<mat-option value="UPG">UPG</mat-option>
@@ -34,7 +35,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="create()" [disabled]="newFile.name.length === 0">
+		<button mat-button color="primary" (click)="create()" [disabled]="name.invalid">
 			{{ 'button.create' | translate }}
 		</button>
 	</div>

@@ -1677,9 +1677,11 @@ export class PalletWizardComponent implements OnInit {
             msg: '',
             yes: this.words['button.save'],
             no: this.words['button.discard'],
+            allowClose: true
           },
         });
         ref.afterClosed().subscribe(ret => {
+          if (ret === null) return;
           if (ret) {
             this.ws.query('?PLT_STORE_PALLET_DATA("' + name + '")');
           } else {

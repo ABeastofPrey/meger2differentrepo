@@ -31,7 +31,7 @@ export interface JumpxCommand {
     [CommandOptions.BlendingPercentage]: number; // optional
     [CommandOptions.BlendingPercentageLimit]: number[];
 
-    [CommandOptions.Vcruise]: number; // optional
+    [CommandOptions.VScale]: number; // optional
     [CommandOptions.VcruiseLimit]: number[];
 
     [CommandOptions.Vtran]: number; // optional

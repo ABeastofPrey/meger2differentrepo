@@ -120,10 +120,17 @@ export class FactoryRestoreComponent implements OnInit {
         if (ok) return;
         this.api
           .getFile('isWebServerAlive.HTML')
-          .then(ret => {
+          .then(() => {
+            if (ok) return;
             ok = true;
             clearInterval(interval);
-            location.href = location.href + '?from=restore';
+            this.login.logout().then(ret=>{
+              console.log('logout result:',ret);
+              setTimeout(()=>{
+                const newURL = window.location.href + '?from=restore';
+                window.location.href = newURL;
+              },0);
+            });
           })
           .catch(err => {});
       }, 2000);

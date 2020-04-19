@@ -2,8 +2,8 @@
 	<div class="title mat-elevation-z1"><mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'variables.new' | translate }}</div>
 	<div class="name-wrapper">
 		<mat-form-field>
-			<input matInput placeholder="{{ 'variables.name' | translate }}" [(ngModel)]="name" maxlength="32"
-				virtualKeyboard ktype="text" />
+			<input matInput placeholder="{{ 'variables.name' | translate }}" [formControl]="name" maxlength="32" virtualKeyboard ktype="text" />
+			<mat-error *ngIf="name.invalid">{{ 'error.invalid_var_name' | translate }}</mat-error>
 		</mat-form-field>
 		<mat-form-field *ngIf="!data.domainIsFrame">
 			<mat-select
@@ -111,7 +111,15 @@
 					<mat-form-field floatLabel="never" style="width: inherit;">
 						<span matPrefix style="font-weight: bold;">{{ 'value' | translate }}:&nbsp;&nbsp;</span>
 						<input
-							*ngIf="varType !== 'STRING'"
+							*ngIf="varType === 'LONG'"
+							matInput
+							[placeholder]="Value"
+							[(ngModel)]="this.values[0]"
+							virtualKeyboard
+							ktype="numeric_int"
+						/>
+						<input
+							*ngIf="varType === 'DOUBLE'"
 							matInput
 							[placeholder]="Value"
 							[(ngModel)]="this.values[0]"
@@ -147,7 +155,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" [disabled]="!name || !varType" [clickOnce]="add" [clickOnceContext]="this">
+		<button mat-button color="primary" [disabled]="name.invalid || !varType" [clickOnce]="add" [clickOnceContext]="this">
 			{{ 'variables.btn_create' | translate }}
 		</button>
 	</div>

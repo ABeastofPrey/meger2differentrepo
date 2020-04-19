@@ -1,7 +1,6 @@
 .log-profile {
     display: flex;
     flex-direction: row;
-    // background: #3d6f9a;
     &-icon {
         padding: 5px 5px 5px 5px;
         display: flex;
@@ -40,5 +39,14 @@
             margin-left: 5px;
             // line-height: 17px;
         }
+    }
+}
+
+:host-context(.cs-dark) .log-profile {
+    &-date {
+        color: #ccc;
+    }
+    &-desc {
+        color: #fff!important;
     }
 }

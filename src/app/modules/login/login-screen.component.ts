@@ -1,3 +1,4 @@
+import { SysInfo } from './../core/services/group-manager.service';
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../../modules/core/services/login.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -12,10 +13,7 @@ import {
   state,
   style,
   transition,
-  animate,
-  animateChild,
-  group,
-  query,
+  animate
 } from '@angular/animations';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -129,14 +127,21 @@ export class LoginScreenComponent implements OnInit {
   compInit = false;
   env = environment;
   pageLoaded = 'none';
+  info: SysInfo = null;
+  isMcAvailable = false;
 
   private notifier: Subject<boolean> = new Subject();
   private wsTimeout: number;
+  private interval: number; // isMcAvailable interval
 
   get loginBgImgUrl(): string {
-    const imgName = this.utils.IsKuka ? 'kuka_robot_bg.jpg' : 'stx1.jpg';
-    const imgUrl = `/rs/assets/pics/${imgName}`;
-    return imgUrl;
+    if (this.utils.IsKuka) {
+      return '/rs/assets/pics/kuka_robot_bg.jpg';
+    }
+    if (this.utils.isDarkMode) {
+      return '/rs/assets/pics/stx1-dark.jpg';
+    }
+    return '/rs/assets/pics/stx1.jpg';
   }
 
   constructor(
@@ -150,7 +155,7 @@ export class LoginScreenComponent implements OnInit {
     private trn: TranslateService,
     public utils: UtilsService,
     public cmn: CommonService,
-    private sysLogbar: SysLogBarService,
+    private sysLogbar: SysLogBarService
   ) {
     this.appName = utils.IsKuka
       ? environment.appName_Kuka
@@ -216,30 +221,55 @@ export class LoginScreenComponent implements OnInit {
     return etag ? etag.trim() : '';
   }
 
+  private startConnectionCheck() {
+    this.checkConnection();
+    this.interval = window.setInterval(() => {
+      this.checkConnection();
+    }, 2000);
+  }
+
+  private checkConnection() {
+    this.api.getFile('isWebServerAlive.HTML').then(() => {
+      this.isMcAvailable = true;
+    }, err=> {
+      this.isMcAvailable = false;
+    }).catch(err=>{
+      this.isMcAvailable = false;
+    });
+  }
+
   ngOnInit() {
     this.platform = navigator.platform;
     const etag = this.getEtag();
     const compWs = environment.compatible_webserver_ver;
-    this.api.get('/cs/api/java-version').subscribe((ret: { ver: string }) => {
-      if (etag.length > 0 && ret.ver !== etag) { // can only happen if page is cached
-        // ask user to do hard reload
-        this.isVersionOK = false;
-        const err = this.cmn.isTablet ? 'error.invalid_etag_tablet' : 'error.invalid_etag';
-        this.trn.get(err).subscribe(str => {
-          this.errors.error = str;
-        });
-        return;
-      }
-      this.isVersionOK = ret.ver.includes(compWs);
-      if (!this.isVersionOK) {
-        const params = {
-          ver: compWs,
-          current: ret.ver.split(' ')[0],
-        };
-        this.trn.get('error.invalid_webserver', params).subscribe(str => {
-          this.errors.error = str;
-        });
-      }
+    this.api.ready.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+      if (!stat) return;
+      this.startConnectionCheck();
+      this.api.getSysBasicInfo().then((ret: SysInfo) => {
+        this.info = ret;
+        this.info.ip = this.info.ip.substring(0,this.info.ip.indexOf(':'));
+      });
+      this.api.get('/cs/api/java-version').subscribe((ret: { ver: string }) => {
+        if (etag.length > 0 && ret.ver !== etag) { // can only happen if page is cached
+          // ask user to do hard reload
+          this.isVersionOK = false;
+          const err = this.cmn.isTablet ? 'error.invalid_etag_tablet' : 'error.invalid_etag';
+          this.trn.get(err).subscribe(str => {
+            this.errors.error = str;
+          });
+          return;
+        }
+        this.isVersionOK = ret.ver.includes(compWs);
+        if (!this.isVersionOK) {
+          const params = {
+            ver: compWs,
+            current: ret.ver.split(' ')[0],
+          };
+          this.trn.get('error.invalid_webserver', params).subscribe(str => {
+            this.errors.error = str;
+          });
+        }
+      });
     });
     this.ver = environment.gui_ver.split(' ')[0];
     this.authForm = this.fb.group({
@@ -304,6 +334,7 @@ export class LoginScreenComponent implements OnInit {
     this.notifier.next(true);
     this.notifier.unsubscribe();
     this.compInit = false;
+    window.clearInterval(this.interval);
   }
 
   ngAfterViewInit() {

@@ -5,11 +5,12 @@
 			<input
 				matInput
 				placeholder="{{ 'frames.name.' + data | translate }}"
-				[(ngModel)]="name"
+				[formControl]="name"
 				maxlength="32"
 				virtualKeyboard
 				ktype="text"
 			/>
+			<mat-error *ngIf="name.invalid">{{ 'error.invalid_var_name' | translate }}</mat-error>
 		</mat-form-field>
 		<mat-checkbox color="primary" [(ngModel)]="isArray">{{ 'arr' | translate }}</mat-checkbox>
 		<mat-form-field *ngIf="isArray" style="margin-top: 8px;">
@@ -17,6 +18,7 @@
 				matInput
 				placeholder="{{ 'arr_size' | translate }}"
 				[(ngModel)]="arrSize"
+				type="number"
 				virtualKeyboard
 				ktype="numeric_int_pos"
 			/>
@@ -46,7 +48,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="add()" [disabled]="!name" style="text-transform: uppercase;">
+		<button mat-button color="primary" (click)="add()" [disabled]="name.invalid || (isArray && arrSize < 1) || !validateValues" style="text-transform: uppercase;">
 			{{ 'frames.create.' + data | translate }}
 		</button>
 	</div>

@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { WebsocketService, MCQueryResponse } from './websocket.service';
+import { WebsocketService, MCQueryResponse, errorString } from './websocket.service';
 import { ErrorFrame } from '../models/error-frame.model';
 import { TpStatService } from './tp-stat.service';
 import { TaskFilterPipe } from '../../task-manager/task-filter.pipe';
@@ -66,7 +66,7 @@ export class TaskService {
         state = parts[1].substring(6).trim();
         priority = Number(parts[2].substring(9));
         if (parts[3]) {
-          path = parts[3].substring(9);
+          path = parts[3].substring(9).replace('/FFS0/SSMC/','');
         }
       } else if (line.indexOf('Global') === 0) {
         name = parts[0].substring(18).trim();
@@ -100,7 +100,7 @@ export class TaskService {
     this.interval = this.ws.send(
       this.tasklistCommand,
       false,
-      (ret: string, cmd: string, err: ErrorFrame) => {
+      (ret: string, cmd: string, err: ErrorFrame[]) => {
         if (err || ret === this.lastTaskList) return;
         this.zone.run(()=>{
           this.lastTaskList = ret;
@@ -132,9 +132,11 @@ export class TaskService {
       const task = filtered[i];
       if (task.priority === null) continue;
       this.ws.query('KillTask ' + task.name).then(() => {
-        this.ws.query('StartTask ' + task.name).then(ret=>{
+        const isUserTask = task.name.endsWith('UPG');
+        const priorityStr = isUserTask ? ' priority=15' : '';
+        this.ws.query('StartTask ' + task.name + priorityStr).then(ret=>{
           if (!showErrors || !ret.err) return;
-            this.snack.open(ret.err.errMsg,this.words['dismiss']);        
+            this.snack.open(errorString(ret.err),this.words['dismiss']);        
         });
       });
     }
@@ -147,7 +149,7 @@ export class TaskService {
       if (task.priority == null) continue;
       this.ws.query('KillTask ' + task.name).then(ret=>{
         if (!showErrors || !ret.err) return;
-          this.snack.open(ret.err.errMsg,this.words['dismiss']);       
+          this.snack.open(errorString(ret.err),this.words['dismiss']);       
       });
     }
   }
@@ -159,7 +161,7 @@ export class TaskService {
       if (task.priority == null) continue;
       this.ws.query('IdleTask ' + task.name).then(ret=>{
         if (!showErrors || !ret.err) return;
-          this.snack.open(ret.err.errMsg,this.words['dismiss']);       
+          this.snack.open(errorString(ret.err),this.words['dismiss']);       
       });
     }
   }
@@ -176,7 +178,7 @@ export class TaskService {
         if (task.priority || task.state.indexOf('Global') === -1) {
           this.ws.query('Unload ' + task.name).then(ret=>{
             if (!showErrors || !ret.err) return;
-            this.snack.open(ret.err.errMsg,this.words['dismiss']);           
+            this.snack.open(errorString(ret.err),this.words['dismiss']);           
           });
         }
       });

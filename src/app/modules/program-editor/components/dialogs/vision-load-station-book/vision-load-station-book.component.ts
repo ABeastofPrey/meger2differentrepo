@@ -43,6 +43,7 @@ export class VisionLoadStationBookComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('get files');
     this.api.getFiles(this.defaultConfigExtension).then(result => {
       this.files = result.map(f => {
         return { fileName: f.fileName, displayPath: this.defaultRootFolder + "/" + f.fileName };
@@ -94,8 +95,8 @@ export class VisionLoadStationBookComponent implements OnInit {
   private loadAndCheck(filePath: string): Observable<boolean> {
     const cmd = `?VLoadStationBook("${filePath}")`;
     const parser = (res: MCQueryResponse) => !Number(JSON.parse(res.result));
-    const handler = err => {
-      console.warn(`Automatically execute command "${cmd}" failed, ${err.msg}`);
+    const handler = errs => {
+      console.warn(`Automatically execute command "${cmd}" failed, ${errs[0].msg}`);
       return of(false);
     };
     return this.ws.observableQuery(cmd).pipe(map(parser), catchError(handler));

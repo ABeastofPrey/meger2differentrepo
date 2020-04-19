@@ -7,9 +7,8 @@
 				placeholder="{{ 'projectCommands.goHome.vCruisePh' | translate }}"
 				formControlName="velocity"
 				virtualKeyboard
-				ktype="numeric"
+				ktype="numeric_int_pos"
 			/>
-			<span matSuffix>deg/s</span>
 			<mat-error *ngIf="control.invalid"> {{ errorMessage }} </mat-error>
 		</mat-form-field>
 	</div>

@@ -39,3 +39,6 @@ li > div {
 mat-icon {
   margin-right: 4px;
 }
+:host-context(.cs-dark) .selected {
+  background: #00838F;
+}

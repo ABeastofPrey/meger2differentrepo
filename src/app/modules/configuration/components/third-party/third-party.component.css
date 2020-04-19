@@ -1,7 +1,6 @@
 .wrapper {
   padding: 16px;
   flex: 1;
-  background: #eee;
   overflow: auto;
 }
 .license {

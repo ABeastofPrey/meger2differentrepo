@@ -55,3 +55,14 @@ a.disabled {
   right: 0;
   bottom: 0;
 }
+
+:host-context(.cs-dark) .title {
+  background-color: #222;
+}
+:host-context(.cs-dark) a {
+  color: rgba(255, 255, 255, 0.66) !important;
+}
+:host-context(.cs-dark) a:not(.disabled):hover {
+  box-shadow: 0 4px 16px #ccc;
+  color: rgba(255, 255, 255, 0.87) !important;
+}

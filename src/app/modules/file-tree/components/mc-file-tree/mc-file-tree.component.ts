@@ -10,6 +10,7 @@ import {
   ProjectManagerService,
   UploadResult,
   LoginService,
+  MCFileSearchResult,
 } from '../../../core';
 import { of, Subject } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
@@ -28,16 +29,23 @@ import { UtilsService } from '../../../core/services/utils.service';
   styleUrls: ['./mc-file-tree.component.css'],
 })
 export class McFileTreeComponent implements OnInit {
+
   @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
   @ViewChild('menuDiv', { static: false }) menuDiv: ElementRef;
+
   nestedTreeControl: NestedTreeControl<TreeNode>;
   nestedDataSource: MatTreeNestedDataSource<TreeNode>;
+
+  nestedTreeControlContent: NestedTreeControl<TreeNodeContent>;
+  nestedDataSourceContent: MatTreeNestedDataSource<TreeNodeContent>;
+
   unfilteredDataSource: TreeNode[];
   lastSelectedNode: TreeNode = null;
   filterByString = '';
   env = environment;
   isRefreshing = false;
   enableSelect = false;
+  searchIn = 'names';
 
   /*
    * CONTEXT MENU
@@ -112,6 +120,8 @@ export class McFileTreeComponent implements OnInit {
       this.refreshFiles();
     });
     this.refreshFiles();
+    this.nestedTreeControlContent = new NestedTreeControl<TreeNodeContent>(this._getChildrenContent);
+    this.nestedDataSourceContent = new MatTreeNestedDataSource();
   }
 
   ngOnDestroy() {
@@ -189,19 +199,60 @@ export class McFileTreeComponent implements OnInit {
     return of(node.children);
   };
 
+  private _getChildrenContent = (node: TreeNodeContent) => {
+    return of(node.children);
+  };
+
   hasNestedChild = (_: number, nodeData: TreeNode) => {
     return nodeData && nodeData.isFolder;
   };
 
+  hasNestedChildContent = (_: number, nodeData: TreeNodeContent) => {
+    return nodeData && nodeData.children;
+  };
+
   filterData() {
     if (this.filterByString.length <= 1) this.isRefreshing = true;
+    const contentSearch = this.searchIn === 'content';
     if (this.filterByString.length === 0) {
+      if (contentSearch) {
+        this.nestedDataSourceContent.data = [];
+        this.nestedTreeControlContent.dataNodes = [];
+        this.isRefreshing = false;
+        return;
+      }
       this.nestedDataSource.data = this.unfilteredDataSource;
       this.nestedTreeControl.dataNodes = this.unfilteredDataSource;
       this.nestedTreeControl.collapseAll();
       // expand SSMC
       this.nestedTreeControl.expand(this.nestedDataSource.data[1]);
       this.isRefreshing = false;
+      return;
+    }
+    if (contentSearch) {
+      this.isRefreshing = true;
+      this.api.getFileTextSearch(this.filterByString, '').then(ret=>{
+        let data: TreeNodeContent[] = [];
+        for (const result of ret) {
+          data.push({
+            file: result.name,
+            path: result.path,
+            children: result.lines.map(l=>{
+              return {
+                file: result.name,
+                path: result.path,
+                children: null,
+                line: l.line,
+                index: l.index
+              };
+            })
+          });
+        }
+        this.nestedDataSourceContent.data = data;
+        this.nestedTreeControlContent.dataNodes = data;
+        this.nestedTreeControlContent.expandAll();
+        this.isRefreshing = false;
+      });
       return;
     }
     this.filterService.filter(this.unfilteredDataSource, this.filterByString);
@@ -211,6 +262,13 @@ export class McFileTreeComponent implements OnInit {
     this.nestedTreeControl.toggle(node);
     if (!this.nestedTreeControl.isExpanded(node)) {
       this.nestedTreeControl.collapseDescendants(node);
+    }
+  }
+
+  toggleContentNode(node: TreeNodeContent) {
+    this.nestedTreeControlContent.toggle(node);
+    if (!this.nestedTreeControlContent.isExpanded(node)) {
+      this.nestedTreeControlContent.collapseDescendants(node);
     }
   }
 
@@ -294,7 +352,8 @@ export class McFileTreeComponent implements OnInit {
   }
 
   openFile(n: TreeNode) {
-    if (this.service.activeFile === n.name) return;
+    const path = n.parent ? n.parent.decodedPath : '';
+    if (this.service.activeFile === n.name && this.service.activeFilePath === path) return;
     if (this.service.isDirty && this.service.activeFile) {
       this.trn
         .get('projectTree.dirty_msg', { name: this.service.activeFile })
@@ -338,6 +397,54 @@ export class McFileTreeComponent implements OnInit {
       null,
       -1
     );
+  }
+
+  openContentFile(n: TreeNodeContent) {
+    const prefix = '/FFS0/SSMC';
+    const i = n.path.lastIndexOf('/');
+    const path = n.path.substring(prefix.length,i+1);
+    if (this.service.activeFile === n.file && this.service.activeFilePath === path) {
+      this.service.skipLineRequest.next(n.index+1);
+      return;
+    };
+    if (this.service.isDirty && this.service.activeFile) {
+      this.trn
+        .get('projectTree.dirty_msg', { name: this.service.activeFile })
+        .subscribe(word => {
+          this.dialog
+            .open(YesNoDialogComponent, {
+              data: {
+                title: this.words['projectTree.dirty'],
+                msg: word,
+                yes: this.words['button.save'],
+                no: this.words['button.discard'],
+              },
+              width: '500px',
+            })
+            .afterClosed()
+            .subscribe(ret => {
+              if (ret) {
+                this.service.save().then(() => {
+                  this.openContentFile(n);
+                });
+              } else {
+                this.service.isDirty = false;
+                this.openContentFile(n);
+              }
+            });
+          return;
+        });
+    }
+    this.service.close();
+    this.service.mode = 'editor';
+    setTimeout(() => {
+      this.service.dragEnd.emit();
+    }, 200);
+    if (n.file === 'FWCONFIG' && !this.login.isSuper) {
+      this.service.showFwconfigEditor();
+      return;
+    }
+    this.service.setFile(n.file,path,null,n.index+1);
   }
 
   newFile(node: TreeNode) {
@@ -485,7 +592,7 @@ export class McFileTreeComponent implements OnInit {
         if (!name || name.indexOf('/') !== -1) return;
         name = name.toUpperCase();
         const j = name.lastIndexOf('.');
-        if (j !== i) return;
+        if ((j === -1 && i !== -1) || (j !== -1 && i === -1)) return;
         if (j !== -1) {
           const ext = name.substring(j + 1).trim();
           if (ext.length === 0 || !node.name.endsWith(ext)) return;
@@ -556,6 +663,14 @@ export class McFileTreeComponent implements OnInit {
       }
     });
   }
+}
+
+interface TreeNodeContent {
+  file: string,
+  path: string,
+  children: TreeNodeContent[];
+  index?: number;
+  line?: string;
 }
 
 export class TreeNode {

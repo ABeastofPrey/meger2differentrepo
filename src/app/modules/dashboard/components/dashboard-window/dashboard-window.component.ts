@@ -9,6 +9,7 @@ import {
 import {
   WebsocketService,
   MCQueryResponse,
+  errorString,
 } from '../../../../modules/core/services/websocket.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LoginService, GroupManagerService } from '../../../core';
@@ -104,16 +105,18 @@ export class DashboardWindowComponent implements OnInit {
       : this.params.target[0];
     if (this.params.cartesian) target = '#' + target;
     cmd += ' ' + target;
-    if (this.params.vel) cmd += ' VCruise=' + this.params.vel;
+    if (this.params.vscale) cmd += ' VScale=' + this.params.vscale;
     if (this.params.acc) cmd += ' Acc=' + this.params.acc;
     if (this.params.dec) cmd += ' Dec=' + this.params.dec;
     if (this.params.jerk) cmd += ' Jerk=' + this.params.jerk;
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err) {
+        const err = ret.err.find(e=>e.errType === 'ERROR');
+        if (!err) return;
         this.trn
           .get('dashboard.err_move', {
-            code: ret.err.errCode,
-            msg: ret.err.errMsg,
+            code: err.errCode,
+            msg: err.errMsg,
           })
           .subscribe(word => {
               this.snack.open(word, this.words['dismiss']);           
@@ -182,11 +185,11 @@ export class DashboardWindowComponent implements OnInit {
           varList.join();
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
           if (ret.err) {
-              return this.snack.open(ret.err.errMsg, 'DISMISS');
+              return this.snack.open(errorString(ret.err), 'DISMISS');
           }
           this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
             if (ret.err) {
-                return this.snack.open(ret.err.errMsg, 'DISMISS');
+                return this.snack.open(errorString(ret.err), 'DISMISS');
             }
             this.params.isRecording = true;
             this.params.recordingParams = params;

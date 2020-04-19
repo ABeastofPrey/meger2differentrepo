@@ -9,7 +9,9 @@ import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { TranslateService } from '@ngx-translate/core';
+import { FwTranslatorService } from './../../modules/core/services/fw-translator.service';
+
+const MIN_REFRESH_RATE = 200;
 
 @Component({
   selector: 'message-log',
@@ -40,6 +42,7 @@ export class MessageLogComponent implements OnInit {
   contextSelection: string = null;
 
   private notifier: Subject<boolean> = new Subject();
+  private last = 0;
 
   constructor(
     public notification: NotificationService,
@@ -47,13 +50,17 @@ export class MessageLogComponent implements OnInit {
     private mgr: ScreenManagerService,
     private prg: ProgramEditorService,
     private cd: ChangeDetectorRef,
-    private trn: TranslateService,
+    public trn: FwTranslatorService,
     private router: Router) { }
 
     ngOnInit() {
       this.notification.newMessage
         .pipe(takeUntil(this.notifier))
         .subscribe(() => {
+          const now = new Date().getTime();
+          const diff = now - this.last;
+          if (diff < MIN_REFRESH_RATE) return;
+          this.last = now;
           this.cd.detectChanges();
           this.msgContainer.scrollToIndex(this.msgContainer.getDataLength());
         });
@@ -105,10 +112,10 @@ export class MessageLogComponent implements OnInit {
       path = path.substring(0, path.lastIndexOf('/')) + '/';
       const fileName = err.errTask.substring(err.errTask.lastIndexOf('/') + 1);
       this.mgr.screen = this.mgr.screens[2];
+      this.prg.modeToggle = 'mc';
+      this.prg.mode = 'editor';
       this.router.navigateByUrl('/projects');
       this.prg.setFile(fileName, path, null, -1);
-      this.prg.mode = 'editor';
-      this.notification.toggleWindow();
     }
 
     public firstPortion: string;

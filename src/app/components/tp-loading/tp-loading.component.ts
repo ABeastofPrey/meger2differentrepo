@@ -5,6 +5,7 @@ import {
   ProjectManagerService,
   TpStatService,
   LoginService,
+  WebsocketService,
 } from '../../modules/core';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
@@ -14,7 +15,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {CommonService} from '../../modules/core/services/common.service';
 import {UtilsService} from '../../modules/core/services/utils.service';
 
-const TIMEOUT = 10000; // 10 SECONDS
+const TIMEOUT = 30000; // 30 SECONDS
 
 @Component({
   selector: 'app-tp-loading',
@@ -44,6 +45,7 @@ export class TpLoadingComponent implements OnInit {
 
   private notifier: Subject<boolean> = new Subject();
   private words: {};
+  private timeout: number;
 
   constructor(
     private ref: MatDialogRef<boolean>,
@@ -55,7 +57,8 @@ export class TpLoadingComponent implements OnInit {
     public cmn: CommonService,
     private login: LoginService,
     private _zone: NgZone,
-    public utils: UtilsService
+    public utils: UtilsService,
+    private ws: WebsocketService
   ) {}
 
   ngOnInit() {
@@ -76,7 +79,13 @@ export class TpLoadingComponent implements OnInit {
         this.checkStatus();
       }
     });
-    setTimeout(()=>{
+    this.ws.isConnected.subscribe(stat=>{
+      if (!stat) {
+        window.clearTimeout(this.timeout);
+      }
+    });
+    window.clearTimeout(this.timeout);
+    this.timeout = window.setTimeout(()=>{
       this._zone.run(()=>{
         const notDone = this.steps.some(s=>!s.done);
         if (notDone) {

@@ -19,7 +19,7 @@
 					>
 						<mat-tab *ngFor="let tab of service.tabs; let i = index">
 							<ng-template mat-tab-label>
-								{{ tab.file }}
+								<span [matTooltip]="tab.path + tab.file" [matTooltipDisabled]="!tab.path || tab.path.length === 0">{{ tab.file }}</span>
 								<mat-icon *ngIf="service.selectedTabIndex === i" (click)="service.closeTab(i)">close</mat-icon>
 								<div class="icon-placeholder" *ngIf="service.selectedTabIndex !== i"></div>
 							</ng-template>
@@ -29,7 +29,7 @@
 						<h1>
 							{{ service.activeFile ? service.activeFile : ('files.no_file' | translate) }}
 						</h1>
-						<span *ngIf="!appDescEditMode && service.fileRef" class="mat-subtitle-color">
+						<span *ngIf="!appDescEditMode && service.fileRef" class="mat-subtitle-color app-desc">
 							{{
 								service.fileRef.desc && service.fileRef.desc.length > 0
 									? service.fileRef.desc
@@ -49,102 +49,101 @@
 					</div>
 					<div class="editor-wrapper" *ngIf="service.mode === 'editor'">
 						<div
-							class="toolbar center-vertical"
+							class="toolbar center-vertical mat-elevation-z2"
 							tourAnchor="project-toolbar-2"
-							*ngIf="service.status"
+							*ngIf="status !== null"
 							[class.busy]="service.busy"
 						>
 							<mat-icon
 								*ngIf="!login.isOperator && !login.isViewer"
-								(click)="service.save()"
-								matRipple
+								(click)="status.statusCode > -1 && !service.isLib ? null : service.save()"
 								matTooltip="{{ 'projects.toolbar.save' | translate }}"
-								[class.disabled]="service.status.statusCode > -1 && !service.isLib"
+								[class.disabled]="status.statusCode > -1 && !service.isLib"
 								>save</mat-icon
 							>
 							<mat-icon (click)="service.download()" matTooltip="{{ 'projects.toolbar.download' | translate }}"
 								>file_download</mat-icon
 							>
-							<div class="center-vertical" *ngIf="service.status.statusCode !== -2">
+							<div class="center-vertical" *ngIf="status.statusCode !== -2">
 								<!--NOT A SYSTEM FILE -->
 								<div class="separator"></div>
 								<img
 									src="assets/pics/icons/load.png"
 									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
-									(click)="service.load()"
+									(click)="status.statusCode !== taskStates[0] ? null : service.load()"
 									tourAnchor="saveAndLoad"
 									matTooltip="{{ 'projects.toolbar.save_load' | translate }}"
-									[class.disabled]="service.status.statusCode !== taskStates[0]"
+									[class.disabled]="status.statusCode !== taskStates[0]"
 								/>
 								<img
 									src="assets/pics/icons/unload.png"
 									*ngIf="!service.isSelectedBKG && !service.fileRef && !login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
-									(click)="service.unload()"
+									(click)="status.statusCode === taskStates[0] ? null : service.unload()"
 									matTooltip="{{ 'projects.toolbar.unload' | translate }}"
-									[class.disabled]="service.status.statusCode === taskStates[0]"
+									[class.disabled]="status.statusCode === taskStates[0]"
 								/>
 								<mat-icon
-									(click)="service.kill()"
+									(click)="status.statusCode === taskStates[0] ? null : service.kill()"
 									*ngIf="!login.isViewer && !service.isLib"
-									matTooltip="{{ 'projects.toolbar.kill' | translate }}"
-									[class.disabled]="service.status.statusCode === taskStates[0]"
+									matTooltip="{{ (service.fileRef ? 'projects.toolbar.kill' : 'projects.toolbar.kill_only') | translate }}"
+									[class.disabled]="status.statusCode === taskStates[0]"
 									>stop</mat-icon
 								>
 								<mat-icon
-									(click)="service.run()"
+									(click)="status.statusCode === taskStates[0] ? null : service.run()"
 									tourAnchor="programRun"
 									*ngIf="!login.isViewer && !service.isLib"
 									matTooltip="{{ 'projects.toolbar.run' | translate }}"
-									[class.disabled]="service.status.statusCode === taskStates[0]"
+									[class.disabled]="status.statusCode === taskStates[0]"
 									>play_arrow</mat-icon
 								>
 								<mat-icon
-									(click)="service.jump()"
+									(click)="status.statusCode === taskStates[0] ? null : service.jump()"
 									*ngIf="!login.isViewer && !service.isLib"
 									matTooltip="{{ 'projects.toolbar.jtl' | translate }}"
-									[class.disabled]="service.status.statusCode === taskStates[0]"
+									[class.disabled]="status.statusCode === taskStates[0]"
 									>skip_next</mat-icon
 								>
 								<mat-icon
-									(click)="service.idle()"
+									(click)="status.statusCode !== taskStates[1] ? null : service.idle()"
 									*ngIf="!service.fromProject && !login.isViewer && !service.isLib"
 									matTooltip="{{ 'projects.toolbar.idle' | translate }}"
-									[class.disabled]="service.status.statusCode !== taskStates[1]"
+									[class.disabled]="status.statusCode !== taskStates[1]"
 									>pause</mat-icon
 								>
 								<div class="separator" *ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"></div>
 								<img
 									src="assets/pics/icons/step_over.png"
 									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
-									(click)="service.stepOver()"
+									(click)="isStepDisabled ? null : service.stepOver()"
 									matTooltip="{{ 'projects.toolbar.stp_over' | translate }}"
 									[class.disabled]="isStepDisabled"
 								/>
 								<img
 									src="assets/pics/icons/step_into.png"
 									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
-									(click)="service.stepInto()"
+									(click)="isStepDisabled ? null : service.stepInto()"
 									matTooltip="{{ 'projects.toolbar.stp_into' | translate }}"
 									[class.disabled]="isStepDisabled"
 								/>
 								<img
 									src="assets/pics/icons/step_out.png"
 									*ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"
-									(click)="service.stepOut()"
+									(click)="isStepDisabled ? null : service.stepOut()"
 									matTooltip="{{ 'projects.toolbar.stp_out' | translate }}"
 									[class.disabled]="isStepDisabled"
 								/>
 								<div class="separator" *ngIf="!login.isViewer && (service.activeFilePath === null || !service.activeFilePath.includes('/DEPENDENCIES/'))"></div>
-								<div class="status" *ngIf="service.status">
+								<div class="status" *ngIf="status">
 									{{ 'status' | translate }}:
 									<span
 										tourAnchor="programStatus"
-										[class.primary]="service.status.statusCode === taskStates[1]"
+										[class.primary]="status.statusCode === taskStates[1]"
 										[class.warn]="
-											service.status.statusCode === taskStates[0] || service.status.statusCode === taskStates[3]
+											status.statusCode === taskStates[0] || status.statusCode === taskStates[3]
 										"
 									>
-										{{ service.getStatusString(service.status.statusCode) }}
+										{{ ('projects.status.' + status.statusCode) | translate }}
 									</span>
 								</div>
 							</div>
@@ -175,7 +174,12 @@
 						<as-split-area>
 							<div class="err-container compact-tabs">
 								<mat-tab-group	[selectedIndex]="selectedTab" (selectedIndexChange)="onTabChange($event)" *ngIf="!cmn.isTablet" animationDuration="0ms">
-									<mat-tab label="{{'projects.notification.title' | translate}}"></mat-tab>
+									<mat-tab>
+										<ng-template mat-tab-label>
+											<div>{{'projects.notification.title' | translate}}</div>
+											<div class="badge primary-bg">{{ service.errors.length }}</div>
+										</ng-template>
+									</mat-tab>
 									<mat-tab [disabled]="notification.windowOpen">
 										<ng-template mat-tab-label>
 											<div>{{'message_log' | translate}}</div>
@@ -196,6 +200,7 @@
 											[class.warning-line] = "e.type === 'warning'"
 										>
 											<mat-icon style="margin-right: 8px;">{{ e.type !== 'warning' ? 'bug_report' : 'warning' }}</mat-icon>
+											<span *ngIf="e.file && service.activeFilePath + service.activeFile !== e.file">{{e.file}} |&nbsp;</span>
 											<span *ngIf="e.number !== -1">Line {{ e.number + ':' }}&nbsp;&nbsp;</span>
 											<span *ngIf="e.number === -1">Task {{ e.file + ':' }}&nbsp;&nbsp;</span>
 											<span>{{ e.error }}</span>
@@ -214,16 +219,12 @@
 										</div>
 									</div>
 									<div *ngIf="service.backtrace && service.errors.length > 0" class="backtrace err">
-										Exception at task "{{ service.backtrace.files[service.backtrace.files.length - 1].name }}": &nbsp;<b
-											>{{ service.errors[0].error }}</b
-										>
+										{{ 'projects.notification.exception' | translate:{task: '"' + service.backtrace.files[service.backtrace.files.length - 1].name + '"'} }}: <b>{{ service.errors[0].error }}</b>
 										<div *ngFor="let file of service.backtrace.files" class="bt-line">
-											at {{ file.name }}(<a
+											{{ 'projects.notification.at' | translate }} {{ file.name }}(<a
 												matRipple
 												matRippleUnbounded="false"
-												(click)="
-													login.isAdmin && service.setFile(file.name, file.path, null, file.line, service.backtrace)
-												"
+												(click)="login.isAdmin && service.setFile(file.name, file.path, null, file.line, service.backtrace)"
 												[class.disabled]="!login.isAdmin"
 												>{{ file.path }}{{ file.name }}:{{ file.line }}</a
 											>)

@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="DLE_Gantry">
+
+  <xacro:property name="DEG2RAD" value="0.017453292519943295" />
+
+  <!-- DEFINE PATTERNS -->
+  <xacro:macro name="def_link" params="link_name mesh_name">
+    <link name="${link_name}">
+      <visual>
+        <geometry>
+          <mesh filename="./meshes/${mesh_name}"/>
+	    </geometry>
+        <material name="">
+          <color rgba="0 0 1 1"/>
+        </material>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="./meshes/${mesh_name}"/>
+        </geometry>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+    </link>
+  </xacro:macro>
+  <xacro:macro name="def_empty_link" params="link_name">
+    <link name="${link_name}" />
+  </xacro:macro>
+  <xacro:macro name="def_joint" params="joint_name type axis effort lower upper velocity origin parent child">
+    <joint name="${joint_name}" type="${type}">
+      <axis xyz="${axis}"/>
+      <limit effort="${effort}" lower="${lower*DEG2RAD}" upper="${upper*DEG2RAD}" velocity="${velocity}"/>
+      <origin rpy="0 0 0" xyz="${origin}"/>
+      <parent link="${parent}"/>
+      <child link="${child}"/>
+    </joint>
+  </xacro:macro>
+  <xacro:macro name="def_fixed_joint" params="joint_name origin parent child">
+    <joint name="${joint_name}" type="fixed">
+      <origin rpy="0 0 0" xyz="${origin}"/>
+      <parent link="${parent}"/>
+      <child link="${child}"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- DEFINE ROBOT -->
+  <xacro:def_link link_name="base_link" mesh_name="base.dae" />
+  <xacro:def_link link_name="link1" mesh_name="J1.dae" />
+  <xacro:def_joint joint_name="joint1" type="prismaic" axis="0 1 0" effort="1000.0" lower="0" upper="30" velocity="1.0" origin="0.33 0.08 0.048" parent="base_link" child="link1" />
+  <xacro:def_link link_name="link2" mesh_name="J2.dae" />
+  <xacro:def_joint joint_name="joint2" type="prismaic" axis="1 0 0" effort="1000.0" lower="-15" upper="15" velocity="1.0" origin="0 0.03 0.032" parent="link1" child="link2" />
+  <xacro:def_link link_name="link3" mesh_name="J3.dae" />
+  <xacro:def_joint joint_name="joint3" type="prismatic" axis="0 0 1" effort="1000.0" lower="-2" upper="2" velocity="1.0" origin="0 0.01 0" parent="link2" child="link3" />
+  <!--xacro:def_empty_link link_name="link4"/>
+  <!-- mesh_name="link4.dae"-->
+  <!--xacro:def_joint joint_name="joint4" type="revolute" axis="0 0 1" effort="1000.0" lower="-180" upper="180" velocity="1.0" origin="-0.045 0 -0.155" parent="link3" child="link4" /-->
+ 
+
+  <xacro:def_empty_link link_name="tool0" />
+  <xacro:def_fixed_joint joint_name="joint4-tool0" type="fixed" origin="0.045 0 0" parent="link4" child="tool0" />
+
+
+</robot>

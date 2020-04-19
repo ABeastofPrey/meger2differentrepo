@@ -18,7 +18,7 @@ export class ObjectsListComponent implements OnInit {
 
   private notifier: Subject<boolean> = new Subject();
 
-  constructor(private sim: SimulatorService) {}
+  constructor(public sim: SimulatorService) {}
 
   @HostListener('document:keydown', ['$event'])
   onKeyPress(event: KeyboardEvent) {

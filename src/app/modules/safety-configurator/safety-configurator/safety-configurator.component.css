@@ -1,0 +1,35 @@
+.wrapper {
+  padding: 24px;
+  white-space: pre;
+  overflow: hidden;
+  height: 100%;
+  box-sizing: border-box;
+}
+.wrapper > *:not(:last-child) {
+  margin-right: 16px;
+  flex: 1;
+  overflow: auto;
+}
+.content, .wrapper {
+  display: flex;
+  flex-direction: row;
+}
+.content > div {
+  margin-right: 32px;
+}
+mat-form-field {
+  display: block;
+  width: 100px;
+}
+.buttons {
+  flex: 0;
+}
+.ini {
+  font-family: 'cs-monospace';
+  margin-top: 16px;
+  font-size: 12px;
+  background: #eee;
+  padding: 16px;
+  color: #777;
+  border: 1px solid #ccc;
+}

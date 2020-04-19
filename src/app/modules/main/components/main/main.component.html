@@ -20,7 +20,7 @@
       >
         <mat-icon>{{ rec.recording ? 'stop' : 'fiber_manual_record' }}</mat-icon>
       </button>
-      <button id="btnToggleWatch" mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow()" tourAnchor="watch">
+      <button id="btnToggleWatch" mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow(); onWatchToggle();" tourAnchor="watch">
         <mat-icon>update</mat-icon>
       </button>
 			<button
@@ -101,7 +101,7 @@
           <mat-icon>touch_app</mat-icon>
         </button>
       </div>
-      <button mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow()" tourAnchor="watch" *ngIf="!allowHiddenMenu && !screenManager.debugMode">
+      <button mat-mini-fab matTooltip="{{ 'watch.title' | translate }}" (click)="watch.toggleWindow(); onWatchToggle();" tourAnchor="watch" *ngIf="!allowHiddenMenu && !screenManager.debugMode">
         <mat-icon>update</mat-icon>
       </button>
 			<button
@@ -115,7 +115,7 @@
       >
         <mat-icon>3d_rotation</mat-icon>
       </button>
-			<button mat-mini-fab matTooltip="{{ 'message_log' | translate }}" (click)="notification.toggleWindow()"
+			<button mat-mini-fab matTooltip="{{ 'message_log' | translate }}" (click)="notification.toggleWindow(); onNotificationToggle();"
 				[matBadge]="notification.count | async" matBadgePosition="below after" matBadgeColor="warn"
 				tourAnchor="message-log-button" [disabled]="!notification.windowOpen && notification.messagesShowing">
 					<mat-icon>notifications</mat-icon>
@@ -126,7 +126,7 @@
       <button *ngIf="allowHiddenMenu && !screenManager.debugMode" mat-mini-fab (click)="toggleHiddenMenu()" [class.button-dark]="hiddenMenuVisible">
         <mat-icon>{{ hiddenMenuVisible ? 'close' : 'more_vert' }}</mat-icon>
       </button>
-      <button mat-mini-fab color="warn" (click)="login.logout()" matTooltip="{{ 'button.logout' | translate }}">
+      <button mat-mini-fab color="warn" (click)="login.logout()" matTooltip="{{ 'button.logout' | translate }}" id="btnLogout">
         <mat-icon>exit_to_app</mat-icon>
       </button>
     </div>
@@ -167,6 +167,7 @@
 							(click)="stat.toggleEnabled()"
 							matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}"
 							style="margin-right: 16px;"
+							[disabled]="login.isViewer || !stat.onlineStatus.value"
 						>
 							<mat-icon>power_settings_new</mat-icon>
 						</button>
@@ -261,10 +262,12 @@
 		inBounds="true"
 		[handle]="handleNotifications"
 		(started)="onWindowMoving(notificationWindow)"
+		(stopped)="saveFloatingWindowsConfiguration()"
+		(rzStop)="saveFloatingWindowsConfiguration()"
 	>
 		<div class="title primary-bg" #handleNotifications>
 			<span>{{ 'message_log' | translate }}</span>
-			<button mat-icon-button color="accent" (click)="notification.toggleWindow()">
+			<button mat-icon-button color="accent" (click)="notification.toggleWindow(); onNotificationToggle();">
 				<mat-icon>close</mat-icon>
 			</button>
 		</div>
@@ -273,6 +276,8 @@
 	<div 
 			#watchWindow
 			(started)="onWindowMoving(watchWindow)"
+			(stopped)="saveFloatingWindowsConfiguration()"
+			(rzStop)="saveFloatingWindowsConfiguration()"
 			*ngIf="watch.windowOpen"
 			class="window mat-elevation-z6"
 			ngDraggable
@@ -284,7 +289,7 @@
 			[handle]="handleWatch">
 		<div class="title primary-bg" #handleWatch>
 			<span>{{ 'watch.title' | translate }}</span>
-			<button mat-icon-button style="color: #fff;" (click)="watch.toggleWindow()">
+			<button mat-icon-button style="color: #fff;" (click)="watch.toggleWindow(); onWatchToggle();">
 				<mat-icon>close</mat-icon>
 			</button>
 		</div>
@@ -293,6 +298,7 @@
 	<div 
 			#terminalWindow
 			(started)="onWindowMoving(terminalWindow)"
+			(stopped)="saveFloatingWindowsConfiguration()"
 			*ngIf="terminalOpen"
 			class="window window-large mat-elevation-z6"
 			style="left: 20%; top: 20%"
@@ -303,7 +309,7 @@
 			rzMinHeight="160"
 			[bounds]="container"
 			inBounds="true"
-			(rzStop)="terminal.resizeRequired.emit()"
+			(rzStop)="terminal.resizeRequired.emit(); saveFloatingWindowsConfiguration();"
 			[handle]="handleTerminal">
 		<div class="title primary-bg" #handleTerminal>
 			<span>{{ 'terminal' | translate }}</span>
@@ -317,6 +323,7 @@
 		#simWindow
 		tourAnchor="simWindow"
 		(started)="onWindowMoving(simWindow)"
+		(stopped)="saveFloatingWindowsConfiguration()"
 		*ngIf="simOpen && screenManager.screen.url !== 'simulator'"
 		class="window window-sim mat-elevation-z6"
 		style="left: 20%; top: 20%"
@@ -329,7 +336,7 @@
 		inBounds="true"
 		[handle]="handleSim"
 		(rzStart)="resizing=true"
-		(rzStop)="resizing=false"
+		(rzStop)="resizing=false; saveFloatingWindowsConfiguration()"
 		[class.demoSim]="tour.getStatus() !== 0"
 		[style.background] = "resizing ? sim.bgColor : auto"
 	>

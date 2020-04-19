@@ -63,6 +63,7 @@ import { VisionCommandService } from './components/combined-dialogs/services/vis
 import { HomeScreenModule } from '../home-screen/home-screen.module';
 import { FwconfigEditorComponent } from './components/fwconfig-editor/fwconfig-editor.component';
 import { TourMatMenuModule } from 'ngx-tour-md-menu';
+import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proceed-dialog.component';
 
 @NgModule({
   imports: [
@@ -117,6 +118,7 @@ import { TourMatMenuModule } from 'ngx-tour-md-menu';
     PositionTriggerComponent,
     NewPositionTriggerComponent,
     StopDialogComponent,
+    ProceedDialogComponent,
     PayloadSelectorComponent,
     HomeSettingComponent,
     ProjectDeleteDialogComponent,
@@ -155,6 +157,7 @@ import { TourMatMenuModule } from 'ngx-tour-md-menu';
     PositionTriggerComponent,
     NewPositionTriggerComponent,
     StopDialogComponent,
+    ProceedDialogComponent,
     PayloadSelectorComponent,
     ProjectDeleteDialogComponent,
     JumpxCommandComponent,

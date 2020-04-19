@@ -21,7 +21,9 @@ export class SaveAsDialogComponent implements OnInit {
     private prj: ProjectManagerService
   ) {}
 
-  create() {
+  async create() {
+    this.prj.stopStatusRefresh();
+    await new Promise(resolve=>{setTimeout(resolve,300)});
     const name = this.name.toUpperCase();
     const proj = this.prj.currProject.value.name;
     this.submitting = true;

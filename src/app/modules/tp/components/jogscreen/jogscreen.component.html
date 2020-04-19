@@ -64,8 +64,8 @@
 						</button>
 					</mat-menu>
 				</mat-card-title>
-				<div class="menu-content" [@menuContent]="menuTypes[selectedMenuTypeIndex].i18">
-					<div class="inner-content content-teach">
+				<div class="menu-content">
+					<div class="inner-content content-teach" *ngIf="menuTypes[selectedMenuTypeIndex].name === 'Teach'">
 						<mat-form-field
 							[style.maxWidth]="teach.selectedTeachVariable && teach.selectedTeachVariable.isArr ? '50%' : '100%'"
 						>
@@ -161,24 +161,6 @@
 								{{ 'button.moves' | translate }}
 							</button>
 						</mat-menu>
-					</div>
-					<div class="inner-content content-align">
-						<p style="text-align: left;">
-							{{ 'jogScreen.tool_align' | translate }}
-						</p>
-						<div>
-							<button
-								mat-raised-button
-								color="primary"
-								(click)="$event.stopPropagation()"
-								(mousedown)="align()"
-								(mouseup)="stop()"
-								(touchstart)="align()"
-								(touchend)="stop()"
-							>
-								{{ 'jogScreen.tool_align' | translate }}
-							</button>
-						</div>
 					</div>
 				</div>
 			</mat-card>

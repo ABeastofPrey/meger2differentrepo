@@ -28,9 +28,19 @@ color: black;\
 .ace-cs .ace_invisible {\
 color: rgb(191, 191, 191);\
 }\
+.ace-cs .ace_prompt {\
+color: #777;\
+}\
 .ace-cs .ace_funcs {\
   color: rgb(50,114,130);\
   font-weight: 500;\
+}\
+.ace-cs .ace_gutter-cell { \
+  cursor: pointer;\
+}\
+.ace-cs .ace_gutter-cell:hover {\
+  background-color: #bdbdbd;\
+  color: white;\
 }\
 .ace-cs .ace_storage,\
 .ace-cs .ace_keyword {\
@@ -41,7 +51,8 @@ font-weight: 500;\
 color: rgb(88, 72, 246);\
 }\
 .ace-cs .ace_constant.ace_language {\
-color: rgb(88, 92, 246);\
+color: blue;\
+font-weight: 500;\
 }\
 .ace-cs .ace_constant.ace_library {\
 color: rgb(6, 150, 14);\
@@ -51,7 +62,8 @@ background-color: rgb(153, 0, 0);\
 color: white;\
 }\
 .ace-cs .ace_support.ace_function {\
-color: rgb(60, 76, 114);\
+color: rgb(150,50,150);\
+font-weight: 500;\
 }\
 .ace-cs .ace_support.ace_constant {\
 color: rgb(6, 150, 14);\

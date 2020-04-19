@@ -6,6 +6,7 @@ import {
   ViewChild,
   HostListener,
   ChangeDetectorRef,
+  ElementRef,
 } from '@angular/core';
 import {
   NotificationService,
@@ -23,9 +24,10 @@ import {
   Router,
   RouteConfigLoadStart,
   RouteConfigLoadEnd,
+  NavigationEnd,
 } from '@angular/router';
 import { JogSettingsDialogComponent } from '../../../../components/jog-settings-dialog/jog-settings-dialog.component';
-import { MatDialog, MatSidenav, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSidenav } from '@angular/material';
 import { TourService } from 'ngx-tour-md-menu';
 import { environment } from '../../../../../environments/environment';
 import {
@@ -45,8 +47,6 @@ import { TpLoadingComponent } from '../../../../components/tp-loading/tp-loading
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { SimulatorService } from '../../../core/services/simulator.service';
-import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
-import { TourState } from 'ngx-tour-core';
 
 @Component({
   selector: 'app-main',
@@ -106,6 +106,12 @@ export class MainComponent implements OnInit {
   toolbarShown = true;
 
   @ViewChild('drawer', { static: true }) drawer: MatSidenav;
+
+  // FLOATING WINDOWS
+  @ViewChild('terminalWindow', { static: false }) terminalWindow: ElementRef;
+  @ViewChild('notificationWindow', { static: false }) notificationWindow: ElementRef;
+  @ViewChild('simWindow', { static: false }) simWindow: ElementRef;
+  @ViewChild('watchWindow', { static: false }) watchWindow: ElementRef;
 
   private jogButtonPressed = false;
   private lastKeyDownTime = -1;
@@ -213,6 +219,18 @@ export class MainComponent implements OnInit {
         this.isRouterLoading = true;
       } else if (event instanceof RouteConfigLoadEnd) {
         this.isRouterLoading = false;
+      } else if (event instanceof NavigationEnd) {
+        const conf = localStorage.getItem('floatingSim');
+        if (conf) {
+          const json: WindowConfiguration = JSON.parse(conf);
+          setTimeout(()=>{
+            try {
+              const el = this.simWindow.nativeElement as HTMLElement;
+              this.restoreFloatingWindow(el, json);
+            } catch (err) {
+            }
+          },0);
+        }
       }
     });
     this.stat.wackChange.pipe(takeUntil(this.notifier)).subscribe(stat => {
@@ -283,7 +301,7 @@ export class MainComponent implements OnInit {
       this.ws.send('?tp_jog(' + i + ')', true);
       //console.log('jog');
       this.jogInterval = window.setInterval(() => {
-        if (this.motionFlag) {
+        if (this.motionFlag && this.stat.enabled) {
           this.ws.send('?tp_jog(' + i + ')', true);
           navigator.vibrate(200);
           //console.log('jog');
@@ -320,6 +338,39 @@ export class MainComponent implements OnInit {
 
   toggleTerminal() {
     this.terminalOpen = !this.terminalOpen;
+    if (!this.terminalOpen) return;
+    const conf = localStorage.getItem('floatingTerminal');
+    if (conf) {
+      const json: WindowConfiguration = JSON.parse(conf);
+      setTimeout(()=>{
+        const el = this.terminalWindow.nativeElement as HTMLElement;
+        this.restoreFloatingWindow(el, json);
+      },0);
+    }
+  }
+
+  onNotificationToggle() {
+    if (!this.notification.windowOpen) return;
+    const conf = localStorage.getItem('floatingNotifications');
+    if (conf) {
+      const json: WindowConfiguration = JSON.parse(conf);
+      setTimeout(()=>{
+        const el = this.notificationWindow.nativeElement as HTMLElement;
+        this.restoreFloatingWindow(el, json);
+      },0);
+    }
+  }
+
+  onWatchToggle() {
+    if (!this.watch.windowOpen) return;
+    const conf = localStorage.getItem('floatingWatch');
+    if (conf) {
+      const json: WindowConfiguration = JSON.parse(conf);
+      setTimeout(()=>{
+        const el = this.watchWindow.nativeElement as HTMLElement;
+        this.restoreFloatingWindow(el, json);
+      },0);
+    }
   }
 
   closeJog(): void {
@@ -332,6 +383,15 @@ export class MainComponent implements OnInit {
     if (!this.simOpen) {
       // closed
       this.simLoaded = false;
+    } else {
+      const conf = localStorage.getItem('floatingSim');
+      if (conf) {
+        const json: WindowConfiguration = JSON.parse(conf);
+        setTimeout(()=>{
+          const el = this.simWindow.nativeElement as HTMLElement;
+          this.restoreFloatingWindow(el, json);
+        },0);
+      }
     }
   }
 
@@ -354,4 +414,46 @@ export class MainComponent implements OnInit {
     //    this.task.setDebugMode(false);
     //    this.prg.setDebugMode(false);
   }
+
+  saveFloatingWindowsConfiguration() {
+    if (this.terminalWindow) {
+      const el = (this.terminalWindow.nativeElement as HTMLElement).getBoundingClientRect();
+      localStorage.setItem('floatingTerminal',JSON.stringify(this.getConfiguration(el)));
+    }
+    if (this.notificationWindow) {
+      const el = (this.notificationWindow.nativeElement as HTMLElement).getBoundingClientRect();
+      localStorage.setItem('floatingNotifications',JSON.stringify(this.getConfiguration(el)));
+    }
+    if (this.simWindow) {
+      const el = (this.simWindow.nativeElement as HTMLElement).getBoundingClientRect();
+      localStorage.setItem('floatingSim',JSON.stringify(this.getConfiguration(el)));
+    }
+    if (this.watchWindow) {
+      const el = (this.watchWindow.nativeElement as HTMLElement).getBoundingClientRect();
+      localStorage.setItem('floatingWatch',JSON.stringify(this.getConfiguration(el)));
+    }
+  }
+
+  private getConfiguration(el: ClientRect): WindowConfiguration {
+    return {
+      x: el.left,
+      y: el.top,
+      w: el.width,
+      h: el.height
+    };
+  }
+
+  private restoreFloatingWindow(el: HTMLElement, json: WindowConfiguration) {
+    el.style.left = json.x + 'px';
+    el.style.top = json.y + 'px';
+    el.style.width = json.w + 'px';
+    el.style.height = json.h + 'px';
+  }
+}
+
+export interface WindowConfiguration {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }

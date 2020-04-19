@@ -56,3 +56,14 @@ a mat-icon {
 .disabled:hover {
   box-shadow: none !important;
 }
+
+:host-context(.cs-dark) .title {
+  background-color: #222;
+}
+:host-context(.cs-dark) a {
+  color: rgba(255, 255, 255, 0.66) !important;
+}
+:host-context(.cs-dark) a:hover {
+  box-shadow: 0 4px 16px #ccc;
+  color: rgba(255, 255, 255, 0.87) !important;
+}

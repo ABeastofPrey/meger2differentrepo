@@ -4,7 +4,6 @@
 }
 .menu {
   display: flex;
-  background: #fff;
   align-items: center;
   padding-left: 16px;
   flex: 1;
@@ -183,5 +182,18 @@ mat-button-toggle {
 
   .mat-slider-thumb-label-text {
     opacity: 1 !important;
+  }
+}
+
+:host-context(.cs-dark) {
+  .menu li:not(.disabled):hover,
+  .dropdown-menu li:hover {
+    background: rgba(0,0,0,0.2);
+  }
+  .menu li.selected:not(.disabled), .dropdown-menu {
+    background: #222!important;
+  }
+  .seperator {
+    border-bottom: 1px solid #666;
   }
 }

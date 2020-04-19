@@ -41,7 +41,9 @@ export class ArraySizeErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['./add-var.component.css'],
 })
 export class AddVarComponent implements OnInit {
-  name: string;
+  
+  name: FormControl = new FormControl('', [Validators.required, Validators.maxLength(32), Validators.pattern('[a-zA-Z]+(\\w*)$')]);
+
   varType: string;
   values: Array<string | number>;
   isArray = false;
@@ -170,20 +172,20 @@ export class AddVarComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close(this.name && this.name.toUpperCase());
+    this.dialogRef.close(this.name.value && this.name.value.toUpperCase());
   }
 
   add(): Promise<void> {
     let name = "";
     if (this.varType === 'STRING') {
-      name = this.name;
+      name = this.name.value;
       if (this.isArray) {
         name = this.dimension > 1 ? 
-          this.name + '[' + this.arrSize + ']' + '[' + this.arrSecondSize + ']' :
-          this.name + '[' + this.arrSize + ']';
+          this.name.value + '[' + this.arrSize + ']' + '[' + this.arrSecondSize + ']' :
+          this.name.value + '[' + this.arrSize + ']';
       }
     } else {
-      name = this.isArray ? this.name + '[' + this.arrSize + ']' : this.name;
+      name = this.isArray ? this.name.value + '[' + this.arrSize + ']' : this.name.value;
     }
 
     let value = '';

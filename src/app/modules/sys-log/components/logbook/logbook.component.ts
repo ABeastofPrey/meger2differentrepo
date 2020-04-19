@@ -3,6 +3,9 @@ import { SystemLog } from '../../enums/sys-log.model';
 import { SysLogBookService } from '../../services/sys-log-book.service';
 import { PageEvent } from '@angular/material';
 import { slice, filter } from 'ramda';
+import { WebsocketService } from '../../../core/services/websocket.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-logbook',
@@ -25,12 +28,23 @@ export class LogBookComponent implements OnInit {
     public pageSize = 10;
     public pageIndex = 0;
 
-    constructor(private service: SysLogBookService) { }
+    private notifier: Subject<boolean> = new Subject();
+
+    constructor(
+        private service: SysLogBookService,
+        private ws: WebsocketService
+    ) { }
 
     ngOnInit(): void {
-        setTimeout(() => {
+        this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+            if (!stat) return;
             this.fetchLog();
-        }, 200);
+        });
+    }
+
+    ngOnDestroy() {
+        this.notifier.next(true);
+        this.notifier.unsubscribe();
     }
 
     private fetchLog(): void {

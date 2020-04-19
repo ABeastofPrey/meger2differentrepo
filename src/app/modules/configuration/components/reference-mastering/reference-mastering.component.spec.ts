@@ -73,7 +73,7 @@ describe('ReferenceMasteringComponent', () => {
     Promise.resolve(Right(false))
   );
   let getCommand = fakeService.getCommand.and.returnValue(
-    Promise.resolve(Right('move SCARA DEMO::AAA vcruise = 10'))
+    Promise.resolve(Right('move SCARA DEMO::AAA vscale = 50'))
   );
   const fakeTpState = { mode: 'T1' };
   const terminalService = jasmine.createSpyObj('TerminalService', ['']);

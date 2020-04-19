@@ -128,8 +128,8 @@ export class LoginService {
   }
 
   async logout(serverDisconnected?: boolean) {
-    if (!this.jwtService.getToken()) return;
-    if (!serverDisconnected) {
+    if (!this.jwtService.getToken()) return true;
+    if (!serverDisconnected && this.ws.connected) {
       await this.ws.query('?tp_exit');
       this.ws.reset();
     }
@@ -139,6 +139,7 @@ export class LoginService {
     const ref = this.snack._openedSnackBarRef;
     if (ref) ref.dismiss();
     this.sysLogbar.stopListenSysLog();
+    return true;
   }
 
   constructor(

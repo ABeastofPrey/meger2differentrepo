@@ -71,7 +71,7 @@ const fakeCommand: JumpxCommand =  {
     [CommandOptions.BlendingPercentage]: 1, // optional
     [CommandOptions.BlendingPercentageLimit]: [],
 
-    [CommandOptions.Vcruise]: 2, // optional
+    [CommandOptions.VScale]: 2, // optional
     [CommandOptions.VcruiseLimit]: [],
 
     [CommandOptions.Vtran]: 5, // optional
@@ -103,7 +103,7 @@ describe('JumpxCommandComponent', () => {
             [CommandOptions.ArchNo]: 2,
             [CommandOptions.BlendingPercentage]: 11,
             [CommandOptions.Vtran]: 22,
-            [CommandOptions.Vcruise]: 33,
+            [CommandOptions.VScale]: 33,
             [CommandOptions.Acc]: 44,
             [CommandOptions.WithPls]: ['WithPls'],
         }, valid: true, touched: true
@@ -176,7 +176,7 @@ describe('JumpxCommandComponent', () => {
         component.updateStore(CommandOptions.Acc, 2);
         component.updateStore(CommandOptions.ArchNo, 1);
         component.updateStore(CommandOptions.LimZ, 1);
-        component.updateStore(CommandOptions.Vcruise, 22);
+        component.updateStore(CommandOptions.VScale, 22);
         component.updateStore(CommandOptions.Vtran, 33);
         component.updateStore(CommandOptions.BlendingPercentage, 12);
         const changeModel = { jumpxCommand: { id: 0, changes: {[CommandOptions.MotionElement]: 'MotionElement'} } };
@@ -206,7 +206,7 @@ describe('JumpxCommandComponent', () => {
         component.commandOptionAuth = new CommandOptionAuth(CommandType.Jump);
         component.isAdvanced = true;
         component.submitForm(form);
-        const cmd = 'Jump MotionElement targetA ArchNo=2 BlendingPercentage=11 Vcruise=33 Acc=44 WithPls=WithPls ';
+        const cmd = 'Jump MotionElement targetA ArchNo=2 BlendingPercentage=11 Vscale=33 Acc=44 WithPls=WithPls ';
         expect(closeSpy).toHaveBeenCalledWith(cmd);
         closeSpy.calls.reset();
         component.commandType = CommandType.Jump3cp;

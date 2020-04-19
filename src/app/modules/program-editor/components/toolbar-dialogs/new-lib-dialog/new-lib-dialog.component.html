@@ -14,10 +14,11 @@
 			<input
 				matInput
 				placeholder="{{ 'projects.toolbar.lib_name' | translate }}"
-				[(ngModel)]="name"
+				[formControl]="libName"
 				virtualKeyboard
 				ktype="text"
 			/>
+			<mat-error *ngIf="libName.invalid">{{ 'error.invalid_file_name' | translate }}</mat-error>
 		</mat-form-field>
 	</div>
 	<div class="actions">
@@ -28,7 +29,7 @@
 			mat-button
 			color="primary"
 			(click)="create()"
-			[disabled]="!name || name.length === 0 || !appName || submitting"
+			[disabled]="libName.invalid || !appName || submitting"
 		>
 			{{ 'projects.toolbar.lib_create' | translate }}
 		</button>

@@ -50,6 +50,7 @@
 									[(ngModel)]="disp[i]"
 									(change)="onSettingsKeyboardClose()"
 									virtualKeyboard
+									type="number"
 									ktype="numeric"
 									(onKeyboardClose)="onSettingsKeyboardClose()"
 								/>
@@ -124,49 +125,48 @@
 		<h2>
 			{{ 'robots.title' | translate }}
 		</h2>
-    <mat-slide-toggle *ngIf="login.isSuper" color="warn" style="margin-bottom: 8px;" (change)="toggleDebug($event.checked)">DEBUG MODE</mat-slide-toggle>
-		<div *ngIf="sysName">
-			<mat-form-field appearance="outline">
-				<mat-label>{{ 'robots.name' | translate }}</mat-label>
-				<input
-					matInput
-					[(ngModel)]="sysName"
-					(change)="onNameChange()"
-					virtualKeyboard
-					ktype="text"
-					(onKeyboardClose)="onNameChange()"
-				/>
-			</mat-form-field>
-			<mat-form-field appearance="outline">
-				<input 
-					matInput
-					[matDatepicker]="datePicker"
-					[formControl]="sysDate"
-					(dateChange)="onDateChange($event)"
-					placeholder="{{ 'date' | translate }} {{'date_format' | translate}}">
-				<mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-				<mat-datepicker #datePicker></mat-datepicker>
-			</mat-form-field>
-			<mat-form-field appearance="outline">
-				<mat-label>{{ 'time' | translate }}</mat-label>
-				<input
-					matInput
-					[formControl]="sysTime"
-					(change)="onTimeChange()"
-				/>
-			</mat-form-field>
-			<mat-form-field appearance="outline">
-				<mat-label>{{ 'robots.mcu.fan-threshold' | translate }}</mat-label>
-				<input
-					matInput
-					[(ngModel)]="mcuThreshold"
-					(change)="onThresholdUpdate()"
-					virtualKeyboard
-					ktype="numeric_pos"
-					(onKeyboardClose)="onThresholdUpdate()"
-          [disabled]="!mcuConnected"
-				/>
-			</mat-form-field>
-		</div>
+    	<mat-slide-toggle *ngIf="login.isSuper" color="warn" style="margin-bottom: 8px;" (change)="toggleDebug($event.checked)">DEBUG MODE</mat-slide-toggle>
+		<mat-form-field appearance="outline">
+			<mat-label>{{ 'robots.name' | translate }}</mat-label>
+			<input
+				matInput
+				[formControl]="sysName"
+				(change)="onNameChange()"
+				virtualKeyboard
+				ktype="text"
+				(onKeyboardClose)="onNameChange()"
+			/>
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+			<input 
+				matInput
+				[matDatepicker]="datePicker"
+				[formControl]="sysDate"
+				(dateChange)="onDateChange($event)"
+				placeholder="{{ 'date' | translate }} {{'date_format' | translate}}">
+			<mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+			<mat-datepicker #datePicker></mat-datepicker>
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+			<mat-label>{{ 'time' | translate }}</mat-label>
+			<input
+				matInput
+				[formControl]="sysTime"
+				(change)="onTimeChange()"
+			/>
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+			<mat-label>{{ 'robots.mcu.fan-threshold' | translate }}</mat-label>
+			<input
+				matInput
+				[(ngModel)]="mcuThreshold"
+				(change)="onThresholdUpdate()"
+				virtualKeyboard
+				ktype="numeric_pos"
+				(onKeyboardClose)="onThresholdUpdate()"
+		[disabled]="!mcuConnected"
+			/>
+			<span matSuffix>[RPM]</span>
+		</mat-form-field>
 	</mat-card>
 </div>

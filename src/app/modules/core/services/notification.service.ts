@@ -14,6 +14,7 @@ export class NotificationService {
   private _messagesShowing = false;
 
   newMessage: EventEmitter<void> = new EventEmitter();
+  newWebserverMessage: EventEmitter<void> = new EventEmitter();
   count: BehaviorSubject<number> = new BehaviorSubject(0); // counts unread messages
 
   get windowOpen() {
@@ -22,7 +23,9 @@ export class NotificationService {
 
   get notifications() {
     let str = '';
-    for (const n of this._notifications) str += n.err ? n.err.msg + '\n' : n.msg;
+    for (const n of this._notifications) {
+      str += n.err ? n.err.msg + '\n' : n.msg;
+    }
     return str;
   }
 
@@ -47,15 +50,29 @@ export class NotificationService {
     }
   }
 
+  /*
+  Called whenever there is a new webserver async message from webserver
+  */
+  onWebserverMessage(msg: {user: string, msg: string, time: number, uuid: string}) {
+    console.log(msg);
+    this.newWebserverMessage.emit();
+  }
+
   onAsyncMessage(msg: string) {
-    const not = new CSNotification(msg);
+    const messages = msg.replace(/[\r]+/g, '').split('\n');
+    const nots: CSNotification[] = [];
+    for (let m of messages) {
+      m = m.trim();
+      if (m.length === 0) continue;
+      nots.push(new CSNotification(m));
+    }
     if (this._count === this.notificationsLimit) {
       this._notifications.splice(0,this.notificationsLimit/2);
       this._count = this.notificationsLimit / 2;
     } else {
       this._count++;
     }
-    this._notifications = this._notifications.concat([not]);
+    this._notifications = this._notifications.concat(nots);
     if (!this.messagesShowing) this.count.next(Math.min(this.count.value + 1,this.notificationsLimit));
     setTimeout(()=>{ // TO AVOID PERFORMANCE ISSUES
       this.newMessage.next();

@@ -25,3 +25,7 @@
   width: calc(100% - 48px);
   margin: 0 8px -16px 0;
 }
+:host-context(.cs-dark) .full input {
+  background-color: #424242;
+  color: #fff;
+}

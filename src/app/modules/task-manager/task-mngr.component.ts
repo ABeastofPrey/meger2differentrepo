@@ -39,13 +39,16 @@ export class TaskMngrComponent implements OnInit {
   }
 
   openFile(task: MCTask) {
-    if (this.login.getCurrentUser().user.permission > 0) return;
+    if (!this.login.isAdmin && !this.login.isSuper) return;
     let path = task.filePath;
     if (path) path = path.substring(0, path.lastIndexOf('/')) + '/';
+    this.prg.mode = 'editor';
+    this.prg.modeToggle = 'mc';
     this.mgr.screen = this.mgr.screens[2];
     this.router.navigateByUrl('/projects');
-    this.prg.setFile(task.name, path, null, -1);
-    this.prg.mode = 'editor';
+    setTimeout(()=>{
+      this.prg.setFile(task.name, path, null, -1);
+    },200);
   }
 
   onSelectionStart(index) {

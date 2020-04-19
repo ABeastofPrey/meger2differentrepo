@@ -54,6 +54,7 @@ export class CommonService {
     if (this.isTablet && !isWin) {
       this._fontWidth = this._fontWidth * 1.5; // because of screen scaling
     }
+    console.log(this._fontWidth);
     e.remove();
   }
 
@@ -70,6 +71,7 @@ export class CommonService {
           break;
         default:
           this.env.platform = this.env.platforms.Kuka;
+          this.env.useDarkTheme = false;
       }
       const { classList } = this.overlayContainer.getContainerElement();
       for (const platform of Object.keys(this.env.platforms)) {

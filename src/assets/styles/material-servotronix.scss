@@ -38,22 +38,46 @@ $material-semi-black: rgba(0,0,0,0.54);
 .stx-dark {
   @include angular-material-theme($servotronix-dark-theme);
   $background: map-get($servotronix-dark-theme, background);
-  .main-menu {
+  .main-menu, .card-bg {
     background: mat-color($background, card);
   }
+
+  .primary, .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    color: mat-color($material-servotronix-primary, 500);
+  }
+
+  main-menu li:hover:not(.disabled), main-menu li.selected:not(.disabled) {
+    color: #fff;
+  }
+
+  .primary-bg-dark {
+    background-color: mat-color($material-servotronix-primary, 500);
+    color: #fff;
+  }
+  .primary-light {
+    color: mat-color($material-servotronix-primary, 800);
+  }
+  .mat-title-color {
+    color: #fff;
+  }
+  .mat-subtitle-color {
+    color: #ccc;
+  }
+  mat-tree {
+    background: inherit!important;
+  }
+
+  .selected:not(.disabled) { background: mat-color($material-servotronix-primary, 500); }
+
+  
+  .highlighted { background-color: #666!important; }
+
+  .data-table mat-row:hover { background-color: #555; }
 
 }
 
 .stx {
   @include angular-material-theme($servotronix-theme);
-}
-
-.stx, .stx-dark {
-  .primary, main-menu li:hover:not(.disabled),
-    main-menu li.selected:not(.disabled),
-    .mat-form-field-appearance-outline .mat-form-field-outline-thick {
-    color: mat-color($material-servotronix-primary, 500);
-  }
   .primary-light {
     color: mat-color($material-servotronix-primary, 100);
   }
@@ -61,6 +85,30 @@ $material-semi-black: rgba(0,0,0,0.54);
     background-color: mat-color($material-servotronix-primary, 800);
     color: #fff;
   }
+  .primary, main-menu li:hover:not(.disabled),
+    main-menu li.selected:not(.disabled),
+    .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    color: mat-color($material-servotronix-primary, 500);
+  }
+
+  .selected:not(.disabled) { background: #E0F2F1!important; }
+  
+  .mat-title-color {
+    color: $material-black;
+  }
+  .mat-subtitle-color {
+    color: $material-semi-black;
+  }
+
+  
+  .highlighted { background-color: #B2DFDB!important; }
+
+  .data-table mat-row:hover { background-color: #E0F2F1; }
+
+}
+
+.stx, .stx-dark {
+
   .primary-bg, .mat-button-toggle-checked, .virtual-keyboard .key-down,
   .virtual-keyboard .key:focus,
   .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label {
@@ -73,12 +121,6 @@ $material-semi-black: rgba(0,0,0,0.54);
   }
   .warn {
     color: mat-color($material-servotronix-warn);
-  }
-  .mat-title-color {
-    color: $material-black;
-  }
-  .mat-subtitle-color {
-    color: $material-semi-black;
   }
 
   .mode-selector .mat-button-toggle-checked {
@@ -96,12 +138,6 @@ $material-semi-black: rgba(0,0,0,0.54);
   .custom-button:hover {
     color: mat-color($material-servotronix-primary, 100);
   }
-
-  .highlighted { background-color: #B2DFDB!important; }
-
-  .data-table mat-row:hover { background-color: #E0F2F1; }
-
-  .selected:not(.disabled) { background: #E0F2F1!important; }
 
   .item { background: #004D40; }
   

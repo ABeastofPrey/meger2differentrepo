@@ -1,6 +1,6 @@
 <div class="mat-typography">
 	<div class="title mat-elevation-z1">
-		<mat-icon>security</mat-icon>&nbsp;&nbsp;{{ 'password_confirm' | translate }} ({{ username }})
+		<mat-icon>security</mat-icon>&nbsp;&nbsp;{{ (hasSafety ? 'password_confirm' : 'mode_selector') | translate }} <span *ngIf="hasSafety">({{ username }})</span>
 	</div>
 	<div class="name-wrapper">
     <div class="center-vertical" *ngIf="data.withModeSelector">
@@ -21,6 +21,7 @@
 				[(ngModel)]="val"
 				virtualKeyboard
 				ktype="password"
+				(keydown)="isError = false"
 			/>
 		</mat-form-field>
 		<div class="warn" *ngIf="isError">{{ (hasSafety ? 'password_err' : 'error.err') | translate }}</div>

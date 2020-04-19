@@ -41,3 +41,12 @@
     padding: 35px 10px 50px 10px;
   }
 }
+
+:host-context(.cs-dark) .home-config {
+  > div {
+    border-color: #333;
+    .group-head {
+      background: #333;
+    }
+  }
+}

@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import {Graph, RecordTab, ChartType} from '../../modules/core/services/record.service';
 import {ScreenManagerService} from '../../modules/core';
+import { UtilsService } from '../../modules/core/services/utils.service';
 
 declare var Plotly;
 
@@ -27,7 +28,8 @@ export class RecordGraphComponent implements OnInit {
   private _lastType: ChartType = null;
 
   constructor(
-    private mgr: ScreenManagerService
+    private mgr: ScreenManagerService,
+    private utils: UtilsService
   ) {}
 
   ngOnInit() {
@@ -47,7 +49,6 @@ export class RecordGraphComponent implements OnInit {
   
   @HostListener('window:resize')
   onResize() {
-    console.log('resize');
     if (this.graph.nativeElement) {
       Plotly.relayout(this.graph.nativeElement, {});
     }
@@ -64,7 +65,13 @@ export class RecordGraphComponent implements OnInit {
     const layout = {
       title: this.chartData.file + '.REC',
       autosize: true,
-      showlegend: true
+      showlegend: true,
+      plot_bgcolor: this.utils.isDarkMode ? '#111' : null,
+      paper_bgcolor: this.utils.isDarkMode ? '#111' : null,
+      font: {
+        family: 'roboto',
+        color: this.utils.isDarkMode ? '#fff' : '#000',
+      }
     };
     if (this.chartData.chartType === ChartType.Time) {
       layout['xaxis'] = {
@@ -72,7 +79,7 @@ export class RecordGraphComponent implements OnInit {
       };
     } else {
       layout['xaxis'] = {
-        title: this.chartData.legends[this.chartData.legendX]
+        title: this.chartData.legends[this.chartData.legendX],
       };
       layout['yaxis'] = {
         title: this.chartData.legends[this.chartData.legendY]

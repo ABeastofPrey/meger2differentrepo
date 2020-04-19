@@ -55,11 +55,7 @@ export class ShortcutsComponent implements OnInit {
         {
           keys: 'DEL',
           desc: 'help.shortcuts.desc_delete',
-        },
-        {
-          keys: 'CTRL + D',
-          desc: 'help.shortcuts.desc_duplicate',
-        },
+        }
       ],
     },
   ];

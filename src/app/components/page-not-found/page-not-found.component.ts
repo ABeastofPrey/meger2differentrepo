@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { Location } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { ElementRef } from '@angular/core';
+import { CdkTextColumn } from '@angular/cdk/table';
 
 const BOXES_OFFSET = 10;
-const SPEED = 3;
+const SPEED = 5;
 
 @Component({
   selector: 'app-page-not-found',
@@ -40,32 +41,23 @@ export class PageNotFoundComponent implements OnInit {
       const ctx = this.game.nativeElement.getContext('2d');
       ctx.save();
       ctx.clearRect(0, 0, 600, 300); // clear canvas
-      ctx.font = '24px serif';
+      ctx.font = '24px Arial';
       // WRITE SCORE
-      ctx.fillText('Score:' + this.score, 20, 36);
+      ctx.fillText('Score:' + this.score, 20, 24);
       // WRITE INSTRUCTIONS
-      ctx.font = '16px serif';
+      ctx.font = '16px Arial';
       ctx.fillText(
         'Use UP/DOWN arrows to pick all boxes on the conveyor.',
         20,
-        56
+        40
       );
       // ADD CONVEYOR
-      ctx.fillStyle = 'rgb(10, 78, 78)';
+      ctx.fillStyle = '#e2e2e2';
       ctx.fillRect(0, 280, 600, 20);
       // ADD ROBOT
+      const img = new Image();
+      img.src = "assets/pics/robot_g.svg";
       ctx.translate(20, -20);
-      ctx.fillStyle = 'rgb(40, 148, 148)';
-      ctx.fillRect(0, 260, 60, 40); // J1
-      ctx.fillRect(40, 220, 80, 40); // J2
-      // ADD J3
-      ctx.beginPath();
-      ctx.moveTo(80, 220);
-      ctx.lineTo(220, 220);
-      ctx.lineTo(220, 200);
-      ctx.lineTo(200, 180);
-      ctx.lineTo(80, 180);
-      ctx.fill();
       // UPDATE J4
       ctx.fillRect(
         this.grp.xPos,
@@ -73,9 +65,10 @@ export class PageNotFoundComponent implements OnInit {
         this.grp.width,
         this.grp.height
       );
+      ctx.drawImage(img, 0, 0, 300, 300);
       // DRAW BOXES AND CHECK FOR COLLISION
       ctx.translate(0, BOXES_OFFSET);
-      ctx.fillStyle = '#C0C0C0';
+      ctx.fillStyle = '#ffaa56';
       const filteredBoxes = this.boxes.filter(box => {
         return !box.remove;
       });
@@ -85,7 +78,7 @@ export class PageNotFoundComponent implements OnInit {
           b.remove = true;
         }
         b.xPos--;
-        ctx.fillStyle = b.success ? 'lime' : '#C0C0C0';
+        ctx.fillStyle = b.success ? 'lime' : '#ffaa56';
         ctx.fillRect(b.xPos, b.yPos, b.width, b.height);
         // Check for collision
         if (b.cleared) continue;
@@ -162,7 +155,7 @@ class Box {
 }
 class Gripper {
   yPos = 140;
-  xPos = 180;
+  xPos = 255;
   height = 100;
-  width = 10;
+  width = 5;
 }

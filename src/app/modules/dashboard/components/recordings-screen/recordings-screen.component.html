@@ -1,6 +1,6 @@
 <div class="wrapper">
   <button mat-fab color="accent" class="fab" @scaleIn (click)="add()"><mat-icon>add</mat-icon></button>
-  <div class="container mat-elevation-z3">
+  <div class="container card-bg mat-elevation-z3">
     <div class="menu mat-elevation-z1" *ngIf="service.tabs[service.selectedTabIndex]">
       <mat-radio-group color="primary" [(ngModel)]="service.tabs[service.selectedTabIndex].chartType" [disabled]="!service.tabs[service.selectedTabIndex].data">
         <mat-radio-button [value]="0">X/T</mat-radio-button>
@@ -73,7 +73,7 @@
           <div>{{ 'dashboard.record.empty' | translate }}</div>
         </div>
       </div>
-      <img *ngIf="!service.tabs[service.selectedTabIndex]" src="assets/pics/Curved_Arrow.svg" class="arrow">
+      <img *ngIf="!service.tabs[service.selectedTabIndex]" src="assets/pics/Curved_Arrow.svg" class="arrow invert">
     </div>
   </div>
 </div>

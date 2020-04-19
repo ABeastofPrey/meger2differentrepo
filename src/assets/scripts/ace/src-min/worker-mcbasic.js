@@ -1418,11 +1418,13 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
     let errors;
     let line, idx;
     let isProgramBlockStarted;
+    let isNonDimLineFound = false;
     let varList;
     let functions = [];
     let subs = [];
     let currFunction;
     let currSub;
+    let blocks;
 
     exports.parse = parse;
 
@@ -1440,6 +1442,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         const result = startParsing();
         exports.functions = functions;
         exports.subs = subs;
+        exports.blocks = blocks;
         return result;
     }
 
@@ -1454,13 +1457,13 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
     }
 
     function parseFunction() {
-        const re = /(public )?\s*function\s+(\w+)(\(((byval )?\s*(\w+)\s+as\s+(\w+),?)+\))?\s+as\s+(.+)/i;
+        const re = /(public )?\s*function\s+(\w+)(\(((byval )?\s*(\w+)\s+as\s+(\w+)(:?,\s+)?)+\))?\s+as\s+(.+)/i;
         const parts = re.exec(line);
         if (parts === null) return null;
         const func = {
             name: parts[2],
             isPublic: parts[1] ? parts[1].length > 0 : false,
-            retType: parts[8],
+            retType: parts[8] ? parts[8].trim() : null,
             line: idx
         };
         functions.push(func);
@@ -1511,6 +1514,15 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
 }
 
     function startParsing() {
+        blocks = {
+            program: {
+                start: -1,
+                end: -1,
+                vars: []
+            },
+            subs: [],
+            functions: []
+        };
         const time = new Date().getTime();
         const lines = input.split('\n');
         let token;
@@ -1537,6 +1549,12 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
             } else if (currSub) {
                 isCurrSubVar(); // checks if line uses a declared variable
             }
+            if (isDim()) {
+                parseDim();
+                continue;
+            } else if (isProgramBlockStarted) {
+                isNonDimLineFound = true;
+            }
             if (token = isBlockStart()) {
                 var err;
                 token = token.toLowerCase();
@@ -1548,6 +1566,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
                         err = validateForCommand(line);
                     case 'program':
                         isProgramBlockStarted = true;
+                        blocks.program.start = i;
                         break;
                     case 'function':
                         const func = parseFunction();
@@ -1555,7 +1574,9 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
                             currFunction = {
                                 name: func.name.toLowerCase(),
                                 returned: false,
-                                vars: []
+                                vars: [],
+                                start: i,
+                                retType: func.retType
                             };
                         }
                         break;
@@ -1564,7 +1585,8 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
                         if (sub) {
                             currSub = {
                                 name: sub.name.toLowerCase(),
-                                vars: []
+                                vars: [],
+                                start: i
                             };
                         }
                         break;
@@ -1596,33 +1618,37 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
                         error('Function did not return a value',idx,'warning');
                     }
                     if (currFunction) {
+                        currFunction.endLine = i;
                         currFunction.vars.filter(v=>{
                             return !v.used;
                         }).forEach(v=>{
                             error('Unused variable ' + v.name + ' in function',v.line,'warning');
                         });
+                        blocks.functions.push(currFunction);
                     }
                     currFunction = null;
                 } else if (token.blockType === 'sub') {
                     if (currSub) {
+                        currSub.endLine = i;
                         currSub.vars.filter(v=>{
                             return !v.used;
                         }).forEach(v=>{
                             error('Unused variable ' + v.name + ' in subroutine',v.line,'warning');
                         });
+                        blocks.subs.push(currSub);
                     }
                     currSub = null;
                 }
                 const currBlock = stack[0];
                 if (currBlock.token === token.blockType) {
                     stack.shift();
+                    if (token.blockType === 'program') {
+                        blocks.program.end = i;
+                        blocks.program.vars = varList;
+                    }
                 } else {
-                    error('No closing tag found',currBlock.line,'error');
+                    error('Unexpected closing tag for "' + currBlock.token + '"',i,'error');
                 }
-                continue;
-            }
-            if (isDim()) {
-                parseDim();
                 continue;
             }
         }
@@ -1640,12 +1666,12 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
     }
 
     function isBlockStart() {
-        const match = /^\s*(public)?\s*\b(program|if|while|for|type|function|sub|with|try|select|OnSystemError)\b/i.exec(line);
+        const match = /^\s*(public)?\s*\b(program|if|while|for|type|function|sub|with|try|select|OnSystemError|onerror|onevent)\b/i.exec(line);
         return match !== null ? match[2] : null;
     }
 
     function isCurrFuncReturnValue() {
-        const reg = new RegExp(`^\\s*${currFunction.name}\\s+=\\s+.+`,'i');
+        const reg = new RegExp(`^\\s*${currFunction.name}\\s*=\\s*.+`,'i');
         return reg.test(line);
     }
 
@@ -1653,7 +1679,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         returns null or {blockType: string|null, err: string|null}
     */
     function isBlockEnd() {
-        const match = /^\s*(?:\b(next|end|terminate)\b)\s*(program|if|type|while|function|sub|with|try|select|OnSystemError|onerror)?(\S+)?/i.exec(line.toLowerCase());
+        const match = /^\s*(?:\b(next|end|terminate)\b)\s*(program|if|type|while|function|sub|with|try|select|OnSystemError|onerror|onevent)?(\S+)?/i.exec(line.toLowerCase());
         if (match === null) return null;
         if (match[1] === 'next') {
             return {
@@ -1715,6 +1741,10 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         let isShared = false;
         if (parts === null) return;
         if (!parts[6]) { // just dim
+            if (isNonDimLineFound && isProgramBlockStarted) {
+                error(new SyntaxError('Structure Error: Variables should be declared at the TOP of the PROGRAM block',parts,1),idx,'error');
+                return;
+            }
             let msg = 'Syntax Error: expected variable name';
             if (!isProgramBlockStarted) msg+= ' or the "shared" keyword';
             error(new SyntaxError(msg,parts,2),idx,'error');
@@ -1835,6 +1865,7 @@ oop.inherits(MCBasicWorker, Mirror);
         this.sender.emit("annotate", errors);
         this.sender.emit("functions", parser.functions);
         this.sender.emit("subs", parser.subs);
+        this.sender.emit("blocks",parser.blocks);
     };
 
 }).call(MCBasicWorker.prototype);

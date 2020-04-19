@@ -90,9 +90,6 @@ mat-sidenav-content {
   display: flex;
   flex-direction: row;
 }
-mat-sidenav {
-  background-color: #eee;
-}
 mat-sidenav.contracted {
   padding-top: 48px;
 }
@@ -276,9 +273,9 @@ main-menu {
   position: relative;
   display: block;
   overflow: hidden;
-  background-color: #fafafa;
   transition: width 200ms ease-out, background-color 0.5s ease-out;
 }
+
 main-menu.menu-small {
   width: 60px;
 }
@@ -329,4 +326,9 @@ main-menu.menu-small {
   font-weight: bold;
   width: 150px;
   min-width: auto;
+}
+:host-context(.cs-dark) {
+  .window {
+    background: #424242;
+  }
 }

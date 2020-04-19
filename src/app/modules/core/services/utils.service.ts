@@ -1,6 +1,6 @@
 import { AuthPassDialogComponent } from '../../../components/auth-pass-dialog/auth-pass-dialog.component';
 import { Injectable } from '@angular/core';
-import { WebsocketService } from './websocket.service';
+import { WebsocketService, errorString } from './websocket.service';
 import { TpStatService } from './tp-stat.service';
 import { TaskService } from './task.service';
 import { MatSnackBar, MatDialog } from '@angular/material';
@@ -35,6 +35,10 @@ export class UtilsService {
     public dataService: DataService,
     private overlayContainer: OverlayContainer
   ) {
+    const darkMode = localStorage.getItem('darkMode');
+    if (darkMode !== null) {
+      env.useDarkTheme = darkMode === '1';
+    }
     this.trn.get(['utils.success', 'acknowledge']).subscribe(words => {
       this.words = words;
     });
@@ -126,7 +130,7 @@ export class UtilsService {
         if (!env.production) console.log('reset all returned:', ret);
         if (ret.err) {
           this.trn
-            .get('utils.err_reset', { result: ret.err.errMsg })
+            .get('utils.err_reset', { result: errorString(ret.err) })
             .subscribe(err => {
               if (this.IsNotKuka) {
                 this.snack.open(err, this.words['acknowledge']);
@@ -161,6 +165,15 @@ export class UtilsService {
 
   get IsKuka(): boolean {
     return env.platform.name === env.platforms.Kuka.name;
+  }
+
+  get isDarkMode(): boolean {
+    return env.useDarkTheme;
+  }
+
+  set isDarkMode(val: boolean) {
+    env.useDarkTheme = val;
+    localStorage.setItem('darkMode',val?'1':'0');
   }
 
   get IsNotKuka(): boolean {

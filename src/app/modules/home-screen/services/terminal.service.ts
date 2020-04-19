@@ -5,6 +5,9 @@ import {
 } from '../../../modules/core/services/websocket.service';
 import { TranslateService } from '@ngx-translate/core';
 
+export const SEP = '-->';
+const LIMIT = 20000;
+
 export const splitLibMsg = (oriMsg: string): string[] => {
   const strIdx = oriMsg.indexOf('"') + 1;
   const endIdx = oriMsg.slice(strIdx).indexOf('"');
@@ -39,25 +42,25 @@ export class TerminalService {
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
       const errCode = getLogCode(ret.result);
       const [firstPortion, secondPortion, thirdPortion] = isLibLog(errCode) ? splitLibMsg(ret.result) : ['', '', ''];
-      const terminalCommand = { cmd, result: ret.result, para: secondPortion, firstPortion, thirdPortion };
+      const terminalCommand = { cmd, result: ret.result.replace(/[\r]+/g, ''), para: secondPortion, firstPortion, thirdPortion };
       this.cmds.push(terminalCommand);
       this.history.push(cmd);
       this.onNewCommand.emit(terminalCommand);
+      return terminalCommand;
     });
   }
 
   async cmdsAsString(): Promise<string> {
-    const sep = '--> ';
     if (this.cmds.length === 0) return '';
     await this.recombinateLibLog(this.cmds);
-    return (
-      sep +
-      this.cmds
-        .map(cmd => {
-          return cmd.cmd + (cmd.result.length > 0 ? '\n' + cmd.result : '');
-        })
-        .join('\n' + sep)
-    );
+    const ret = (SEP + this.cmds.map(cmd => {
+      return cmd.cmd + (cmd.result.length > 0 ? '\n' + cmd.result : '');
+    }).join('\n' + SEP));
+    // const len = ret.length;
+    // if (len > LIMIT) {
+    //   return ret.substring(len-LIMIT);
+    // }
+    return ret;
   }
 
   private async recombinateLibLog(cmds: TerminalCommand[]): Promise<any> {

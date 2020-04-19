@@ -70,3 +70,8 @@ mat-tree,
 .helper {
   right: 0;
 }
+
+:host-context(.cs-dark) .gripper-data,
+:host-context(.cs-dark) .new-node {
+  background-color: #424242;
+}

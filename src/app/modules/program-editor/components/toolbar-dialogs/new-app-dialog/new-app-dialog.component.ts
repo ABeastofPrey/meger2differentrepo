@@ -6,6 +6,7 @@ import {
   MCQueryResponse,
   DataService,
 } from '../../../../core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-app-dialog',
@@ -13,8 +14,12 @@ import {
   styleUrls: ['./new-app-dialog.component.css'],
 })
 export class NewAppDialogComponent implements OnInit {
-  name: string;
+
   submitting = false;
+
+  dialogForm = new FormGroup({
+    val: new FormControl('',[Validators.required, Validators.pattern('[a-zA-Z]+(\\w*)$'),Validators.maxLength(32)])
+  });
 
   constructor(
     public dialogRef: MatDialogRef<NewAppDialogComponent, void>,
@@ -29,8 +34,8 @@ export class NewAppDialogComponent implements OnInit {
   ) {}
 
   create() {
-    if (this.isValueInvalid()) return;
-    const name = this.name.toUpperCase();
+    if (this.submitting || this.dialogForm.invalid) return;
+    const name = (this.dialogForm.controls['val'].value as string).toUpperCase();
     const proj = this.prj.currProject.value;
     this.submitting = true;
     const cmd = 
@@ -55,11 +60,5 @@ export class NewAppDialogComponent implements OnInit {
       });
   }
 
-  ngOnInit() {
-    this.name = '';
-  }
-
-  isValueInvalid() {
-    return !this.name || this.name.length === 0 || this.submitting;
-  }
+  ngOnInit() {  }
 }

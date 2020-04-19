@@ -1,7 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from './../../core/services/data.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CoordinatesService, ApiService, GroupManagerService } from '../../core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { CoordinatesService, ApiService, GroupManagerService, UploadResult } from '../../core';
 import {
   SimulatorComponent,
   PlayerService,
@@ -18,6 +18,7 @@ import { Subject } from 'rxjs';
 import { SimulatorService } from '../../core/services/simulator.service';
 import { ExternalGraphDialogComponent } from '../../dashboard/components/external-graph-dialog/external-graph-dialog.component';
 import { UtilsService } from '../../core/services/utils.service';
+import { YesNoDialogComponent } from '../../../components/yes-no-dialog/yes-no-dialog.component';
 
 @Component({
   selector: 'simulator-v2',
@@ -33,6 +34,7 @@ export class SimulatorV2Component implements OnInit {
   resizing = false;
 
   @ViewChild('simulator', { static: false }) simulator: SimulatorComponent;
+  @ViewChild('upload', { static: false }) uploadInput: ElementRef;
 
   private notifier: Subject<boolean> = new Subject();
 
@@ -54,7 +56,8 @@ export class SimulatorV2Component implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.trn.get(['error.invalid_rec_motion','dismiss','error.err','success']).subscribe(words=>{
+    const words = ['error.invalid_rec_motion','dismiss','error.err','success','projects.toolbar','button.overwrite','button.cancel'];
+    this.trn.get(words).subscribe(words=>{
       this.words = words;
     });
     this.jointsAsArr = this.coos.jointsAsArr;
@@ -142,7 +145,31 @@ export class SimulatorV2Component implements OnInit {
     });
   }
 
+  export() {
+    this.utils.downloadFromText('MYSIM.SIM',this.scene.exportToJson());
+  }
+
+  import() {
+    this.uploadInput.nativeElement.click();
+  }
+
+  onImportFile(e: {target: {files: File[], value: File }}) {
+    const f = e.target.files[0];
+    this.api.uploadToPath(f,true,'').then((ret: UploadResult) => {
+      e.target.value = null;
+      if (ret.success) {
+        this.api.getFile(f.name).then(content => {
+          this.scene.importFromJson(content);
+          this.sim.data.next(this.scene.simulatorScene.children);
+          this.sim.scene.name = name;
+          this.sim.selected = null;
+        });
+      }
+    });
+  }
+
   save() {
+    const sceneName = this.sim.scene.name.endsWith('.SIM') ? this.sim.scene.name.slice(0,-4) : null;
     this.dialog
       .open(SingleInputDialogComponent, {
         data: {
@@ -151,22 +178,49 @@ export class SimulatorV2Component implements OnInit {
           suffix: '.SIM',
           placeholder: 'File Name',
           accept: 'SAVE',
-          regex: '(\\w+)$'
+          regex: '[a-zA-Z]+(\\w*)$',
+          maxLength: 32,
+          initialValue: sceneName
         },
       })
       .afterClosed()
       .subscribe((name: string) => {
-        if (!name || name.indexOf('.') !== -1 || name.indexOf('/') !== -1) {
+        if (!name) {
           return;
         }
         name = name.toUpperCase() + '.SIM';
         const str = this.scene.exportToJson();
         const f = new File([new Blob([str])], name);
-        this.api.upload(f, true).then(ret => {
-          const msg = ret ? this.words['success'] : this.words['error.err'];
-          if(!this.utils.IsKuka)
-          {
-            this.snack.open(msg, null, { duration: 1500 });
+        this.api.upload(f, false).then(async (ret: UploadResult) => {
+          if (ret.success) {
+            this.sim.scene.name = name;
+            if (!this.utils.IsKuka) {
+              this.snack.open(this.words['success'], null, { duration: 1500 });
+            }
+          } else if (ret.err === -1) {
+            const word = await this.trn.get('projects.toolbar.overwrite_file.msg', { name: name }).toPromise();
+            this.dialog.open(YesNoDialogComponent, {
+              data: {
+                title: this.words['projects.toolbar']['overwrite_file']['title'],
+                msg: word,
+                yes: this.words['button.overwrite'],
+                no: this.words['button.cancel'],
+              },
+            })
+            .afterClosed()
+            .subscribe(overwrite => {
+              if (overwrite) {
+                this.api.upload(f, true).then(async (ret: UploadResult) => {
+                  if (ret.success) {
+                    this.sim.scene.name = name;
+                  }
+                  const msg = ret.success ? this.words['success'] : this.words['error.err'];
+                  if(!this.utils.IsKuka || ret.err) {
+                    this.snack.open(msg, null, { duration: 1500 });
+                  }
+                });
+              }
+            });
           }
         });
       });
@@ -185,6 +239,8 @@ export class SimulatorV2Component implements OnInit {
         this.api.getFile(name).then(content => {
           this.scene.importFromJson(content);
           this.sim.data.next(this.scene.simulatorScene.children);
+          this.sim.scene.name = name;
+          this.sim.selected = null;
         });
       });
   }

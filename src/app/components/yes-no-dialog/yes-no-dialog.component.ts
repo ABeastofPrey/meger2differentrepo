@@ -15,11 +15,16 @@ export class YesNoDialogComponent implements OnInit {
       msg: string,
       yes: string,
       no: string,
-      warnBtn: boolean
+      warnBtn: boolean,
+      allowClose: boolean
     }
   ) {}
 
   ngOnInit() {}
+
+  close() {
+    this.dialogRef.close(null);
+  }
 
   yes() {
     this.dialogRef.close(true);

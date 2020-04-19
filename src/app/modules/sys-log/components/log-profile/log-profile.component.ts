@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SystemLog } from '../../enums/sys-log.model';
+import { FwTranslatorService } from '../../../core/services/fw-translator.service';
 
 @Component({
     selector: 'app-log-profile',
@@ -9,7 +10,7 @@ import { SystemLog } from '../../enums/sys-log.model';
 export class LogProfileComponent implements OnInit {
     @Input()log: SystemLog;
 
-    constructor() { }
+    constructor(public trn: FwTranslatorService) { }
 
     ngOnInit(): void { }
 }

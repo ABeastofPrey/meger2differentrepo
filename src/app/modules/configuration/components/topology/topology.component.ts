@@ -6,17 +6,20 @@ import { Observable, of as observableOf } from 'rxjs';
 import { Either } from 'ramda-fantasy';
 import { isFalsy, isNotNil, isNotEmpty } from 'ramda-adjunct';
 import { compose, bind, then, unless, split, last, equals, isNil, isEmpty, concat } from 'ramda';
+import { WebsocketService } from '../../../core/services/websocket.service';
 
 export interface DeviceNode {
   name: string;
   type: string;
   children?: DeviceNode[];
+  status: number;
 }
 
 /** Flat node with expandable and level information */
 export class FileFlatNode {
   name: string;
   type: string;
+  status: number;
   level: number;
   expandable: boolean;
 }
@@ -48,6 +51,7 @@ const transformer = (node: DeviceNode, level: number) => {
   const flatNode = new FileFlatNode();
   flatNode.name = node.name;
   flatNode.type = node.type;
+  flatNode.status = node.status;
   flatNode.level = level;
   flatNode.expandable = !!node.children && node.children.length > 0;
   return flatNode;
@@ -73,14 +77,17 @@ export class TopologyComponent implements OnInit, OnDestroy {
   hasErr = false;
   hasChild = (_: number, nodeData: FileFlatNode) => nodeData.expandable;
 
-  constructor(private service: TopologyService) {
+  constructor(private service: TopologyService, private ws: WebsocketService) {
     this.treeControl = new FlatTreeControl<FileFlatNode>(getLevel, isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, treeFlattener);
   }
 
   ngOnInit(): void {
-    this.retriveSystemBusType();
-    this.refresh();
+    this.ws.isConnected.subscribe(conn=>{
+      if (!conn) return;
+      this.retriveSystemBusType();
+      this.refresh();
+    });
   }
 
   ngOnDestroy(): void {
@@ -138,7 +145,7 @@ export class TopologyComponent implements OnInit, OnDestroy {
     };
     const logOrAssemble = Either.either(logError, assemble);
     const doIt = compose(then(logOrAssemble), retrieveTopology);
-    doIt();
+    return doIt();
   }
 
   private async retriveSystemBusType() {

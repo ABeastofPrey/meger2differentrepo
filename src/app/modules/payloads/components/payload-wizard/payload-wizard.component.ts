@@ -141,6 +141,7 @@ export class PayloadWizardComponent implements OnInit {
     if (this.stat.mode !== 'T2') return;
     const cmd = '?PAY_START("' + this.selectedPayload.name + '")';
     const ret = await this.ws.query(cmd);
+    console.log(ret);
     if (ret.result === '0') {
       const dialog = this.dialog.open(IdentDialogComponent, {
         disableClose: true,

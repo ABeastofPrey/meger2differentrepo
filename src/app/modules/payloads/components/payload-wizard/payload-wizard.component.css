@@ -154,3 +154,7 @@ h3 {
 .payload-image img {
   width: 200px;
 }
+
+:host-context(.cs-dark) .menu {
+  background-color: #424242;
+}

@@ -31,7 +31,8 @@ import { MatSnackBar, MatInput } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../core/services/common.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-
+import { environment } from '../../../../../environments/environment';
+import { UtilsService } from '../../../core/services/utils.service';
 declare var ace;
 
 @Component({
@@ -52,7 +53,6 @@ export class ProgramEditorAceComponent implements OnInit {
   // tslint:disable-next-line: no-any
   private markers: any[] = [];
   private commands: Command[];
-  private files: MCFile[];
   private words: {};
   private notifier: Subject<boolean> = new Subject();
 
@@ -63,6 +63,8 @@ export class ProgramEditorAceComponent implements OnInit {
   tooltipVisible = false;
   tooltipX: number;
   tooltipY: number;
+
+  env = environment;
 
   constructor(
     public service: ProgramEditorService,
@@ -78,6 +80,7 @@ export class ProgramEditorAceComponent implements OnInit {
     private keywords: KeywordService,
     public login: LoginService,
     public cmn: CommonService,
+    private utils: UtilsService,
     private cd: ChangeDetectorRef
   ) {
     this.trn.get(['projects.ace', 'dismiss']).subscribe(words => {
@@ -111,12 +114,13 @@ export class ProgramEditorAceComponent implements OnInit {
     this.service.statusChange
       .pipe(takeUntil(this.notifier))
       .subscribe((stat: ProgramStatus) => {
+        if (!this.editor) return;
         if (this.service.errors.length === 0 || this.service.backtrace === null) {
           this.removeAllMarkers();
         }
         this.editor.setReadOnly(
           stat === null ||
-            (stat.statusCode > -1 && !this.service.activeFile.endsWith('B')) ||
+            (stat.statusCode > -1 && !this.service.activeFile.endsWith('LIB')) ||
             this.login.isOperator ||
             this.login.isViewer ||
             this.cmn.isTablet
@@ -135,7 +139,7 @@ export class ProgramEditorAceComponent implements OnInit {
         if (stat && stat.statusCode === TASKSTATE_NOTLOADED) {
           this.setBreakpoints('');
         } else if (stat && stat.statusCode === TASKSTATE_READY) {
-          if (this.service.mode === 'mc') return;
+          if (this.service.modeToggle === 'mc') return;
           const fileName = this.service.activeFile;
           const app = fileName.substring(0, fileName.indexOf('.'));
           const prjAndApp =
@@ -170,6 +174,10 @@ export class ProgramEditorAceComponent implements OnInit {
       .subscribe((line: number) => {
         if (line) {
           this.editor.scrollToLine(line, true, true, null);
+          this.editor.focus();
+          const lineText = this.editor.session.getLine(line-1);
+          const col = lineText.length;
+          this.editor.gotoLine(line, col, false);
           if (this.service.errors.length > 0 && this.service.backtrace) {
             this.highlightErrors([{ number: line }]);
           }
@@ -328,7 +336,7 @@ export class ProgramEditorAceComponent implements OnInit {
     this.editor.setOptions({
       fontSize: this.cmn.isTablet ? '18px' : '13px',
       showPrintMargin: false,
-      theme: 'ace/theme/cs',
+      theme: 'ace/theme/' + (this.utils.isDarkMode ? 'cs-dark' : 'cs'),
       mode: 'ace/mode/mcbasic',
       enableBasicAutocompletion: true,
       enableLiveAutocompletion: true,
@@ -344,13 +352,9 @@ export class ProgramEditorAceComponent implements OnInit {
         this.commands = result;
       })
       .then(() => {
-        return this.api.getFiles();
-      })
-      .then(files => {
-        this.files = files;
         this.keywords.initDone.subscribe(done => {
           if (!done) return;
-          this.editor.completers = [this.keywords.getNewWordCompleter()];
+          this.editor.completers = [this.keywords.getNewWordCompleter(false)];
         });
       });
     this.editor.$blockScrolling = Infinity;
@@ -398,6 +402,9 @@ export class ProgramEditorAceComponent implements OnInit {
       });
     });
     this.editor.getSession().on('change', e => {
+      if (e.action === 'remove') {
+        this.service.rangeText = null;
+      }
       this.service.isDirty = true;
       const breakpointsArray = Object.keys(this.editor.session.getBreakpoints());
       let breakpoint;
@@ -551,12 +558,12 @@ export class ProgramEditorAceComponent implements OnInit {
       if (data.token.type === 'identifier') {
         const session = this.editor.getSession();
         const funcName = data.token.value.toLowerCase();
-        const funcFound = session.functions.find(f=>{
+        const funcFound = session.functions ? session.functions.find(f=>{
           return f.name.toLowerCase() === funcName;
-        });
-        const subFound = session.subs.find(s=>{
+        }) : false;
+        const subFound = session.subs ? session.subs.find(s=>{
           return s.name.toLowerCase() === funcName;
-        });
+        }) : false;
         if (funcFound) {
           this.currFuncRow = funcFound.line + 1;
           const row = data.position.row;
@@ -653,7 +660,7 @@ export class ProgramEditorAceComponent implements OnInit {
         });
       },
     });
-    if (this.service.activeFile && this.service.modeToggle === 'prj') {
+    if (this.service.activeFile && this.service.modeToggle === 'prj' && this.service.activeFile.endsWith('UPG')) {
       const app = this.service.activeFile.substring(
         0,
         this.service.activeFile.indexOf('.')

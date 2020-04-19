@@ -256,11 +256,13 @@
     "invalid_etag": "It seems you recently updated ControlStudio+ and/or the softMC web server. Press CTRL + SHIFT + R to reload this page.",
     "invalid_etag_tablet": "It seems you recently updated ControlStudio+ and/or the softMC web server. Please clear the browser cache, then reload this page.",
     "invalid_feature": "Invalid feature",
+    "invalid_file_name": "Input must begin with a letter, include only letters, numbers or '_', and be 32 characters or less",
     "invalid_full_name": "A Full name is made of a First AND Last name",
     "invalid_regex": "Invalid input",
     "invalid_username": "Username must include letter, numbers or '_'",
     "invalid_username2": "This username is reserved",
     "invalid_rec_motion": "Invalid motion recording file",
+    "invalid_var_name": "Input must begin with a letter, include only letters and numbers or '_', and be 32 characters or less",
     "invalid_webserver": "Use web server {{ver}} (current is {{current}})",
     "mismatch_pass": "Password doesn't match the previous field",
     "orientation": "ControlStudio+ works in Landscape mode only.",
@@ -277,6 +279,7 @@
     "backup": "CREATE BACKUP",
     "confirm_delete": "The selected files will be deleted permanently.",
     "confirm_upload": "Notice: The selected files will OVERWRITE existing files.",
+    "content": "File Contents",
     "delete": "DELETE FILE(S)",
     "dir_name": "Folder Name",
     "download": "DOWNLOAD FILE(S)",
@@ -287,8 +290,10 @@
     "ext": "Extension",
     "modified": "Last Modified",
     "name": "File Name",
+    "names": "File Names",
     "no_file": "No File Selected",
     "open": "Open File",
+    "search_in": "Search In",
     "success_delete": "Success. All files were deleted.",
     "success_upload": "Success. All files were uploaded.",
     "tree": "Controller Files",
@@ -362,6 +367,13 @@
     "sleep": "Timing",
     "test": "Test Gripper",
     "use_tool": "Use Tool"
+  },
+  "gui": {
+    "dark": "Use Dark Mode",
+    "theme": {
+      "title": "Theme",
+      "subtitle": "Change the appereance of ControlStudio+"
+    }
   },
   "hello": "Hello",
   "help": {
@@ -444,8 +456,8 @@
   "topology": {
     "title": "Device Manager",
     "errTip": "Ethercat is not in operation mode, please make sure that physical devices work well and then try to do reset all operation of CS in Task Manager.",
-    "exTip": "Expand all",
-    "colTip": "Collapse all",
+    "exTip": "EXPAND",
+    "colTip": "COLLAPSE",
     "controller": "Controller",
     "driveBus": "Drive Bus",
     "extensionBus": "Extension Bus"
@@ -505,8 +517,8 @@
   },
   "jogScreen": {
     "menu": [
-      "Teach",
-      "Tool Align"
+      "Tool Align",
+      "Teach"
     ],
     "percision": "Percision",
     "settings": "Jog Settings",
@@ -528,7 +540,7 @@
   },
   "handGuiding": {
     "toggleMode": "Enable S-FREE Mode",
-    "toggleJ3J4": "Enable S-FREE J3 + J4"
+    "toggleJ3J4": "Release brakes J1 + J2"
   },
   "joint": "Joint",
   "joints": "Joints",
@@ -563,6 +575,9 @@
     "user_del": "Deleted user",
     "user_edit": "Edited user",
     "user_new": "created a new user"
+  },
+  "login": {
+    "mc_offline": "Waiting for softMC to connect"
   },
   "long": "Long",
   "longs": "Longs",
@@ -765,6 +780,10 @@
     "pallet_index": {
       "title": "Set Pallet Index"
     },
+    "proceed": {
+      "title": "Insert Proceed Command",
+      "type": "Proceed Type"
+    },
     "sleep": {
       "time": "Sleep Time",
       "title": "Insert Sleep Command"
@@ -779,7 +798,7 @@
     },
     "goHome": {
       "title": "Insert GoHome Command",
-      "vCruisePh": "VCruise (Optional)",
+      "vCruisePh": "VScale (Optional)",
       "numRange": "Enter a number in"
     },
     "jump": {
@@ -818,7 +837,7 @@
       "arch": "Arch Number",
       "limZ": "LimZ",
       "blending": "Blending Percentage",
-      "vcruise": "Vcruise",
+      "vscale": "VScale",
       "vtran": "Vtran",
       "acc": "Acc",
       "withPls": "Position Trigger",
@@ -867,7 +886,9 @@
     "name": "Project Name",
     "new": "New Project",
     "notification": {
+      "at": "at",
       "errMsg": "problems were found in the following lines:",
+      "exception": "Exception at task {{task}}",
       "none": "No compilation errors.",
       "title": "Problems"
     },
@@ -928,6 +949,7 @@
       "import": "Import",
       "jtl": "Jump to Line",
       "kill": "Kill & Unload",
+      "kill_only": "Kill",
       "lib": "Library",
       "lib_create": "CREATE LIBRARY",
       "lib_name": "Library Name",
@@ -981,6 +1003,7 @@
     "warning": "This will kill all tasks and libraries currently running."
   },
   "projectSettings": {
+    "ascale": "Joint Acceleration",
     "apps": {
       "app_desc": "Application description",
       "app_desc_none": "No application description",
@@ -1062,7 +1085,9 @@
       "savedTip": "Changes saved!",
       "validNumTip": "Enter a valid number.",
       "numRange": "Enter a valid number between"
-    }
+    },
+    "vscale": "Joint Velocity",
+    "vtran": "Cartesian Velocity"
   },
   "projectTree": {
     "Apps": "Apps",
@@ -1215,7 +1240,8 @@
     }
   },
   "safety": {
-    "ack_tooltip": "Safety Acknowledge"
+    "ack_tooltip": "Safety Acknowledge",
+    "title": "Safety Card"
   },
   "select": "Select",
   "simulative": "Simulated",
@@ -1297,6 +1323,7 @@
   "teach": "Teach",
   "teach_var": "Teach {{name}}?",
   "terminal": "Terminal",
+  "terminal_restricted": "Terminal is not available for privilege level \"{{user}}\"",
   "time_update": "softMC Date and Time is synced",
   "tool": "Tool",
   "tool_calib": {

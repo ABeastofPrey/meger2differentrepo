@@ -28,8 +28,6 @@ class TPStatResponse {
 
 const refreshRate = 200;
 
-const IsNotKuka = environment.platform.name !== environment.platforms.Kuka.name;
-
 @Injectable()
 export class TpStatService {
   modeChanged: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -94,7 +92,7 @@ export class TpStatService {
   }
   // SET MODE SYNC 
   async setMode(mode: string, pass?: string): Promise<boolean> {
-    if (!environment.production) console.log(this.mode + ' --> ' + mode);
+    console.log(this.mode + ' --> ' + mode);
     const oldStat = this.mode;
     if (oldStat === mode) return true;
     pass = pass || '';
@@ -225,19 +223,19 @@ export class TpStatService {
               time: new Date().getTime(),
               err,
             });
-            this.zone.run(() => {
-              setTimeout(() => {
-                if (IsNotKuka) {
-                  this.snack
-                  .open(err, this.words['acknowledge'])
-                  .afterDismissed()
-                  .subscribe(() => {
-                    if (!this.onlineStatus.value) return;
-                    this.ws.send('?TP_CONFIRM_ERROR', true);
-                  });
-                }
-              }, 0);
-            });
+            // this.zone.run(() => {
+            //   setTimeout(() => {
+            //     if (environment.platform.name !== environment.platforms.Kuka.name) {
+            //       this.snack
+            //       .open(err, this.words['acknowledge'])
+            //       .afterDismissed()
+            //       .subscribe(() => {
+            //         if (!this.onlineStatus.value) return;
+            //         this.ws.send('?TP_CONFIRM_ERROR', true);
+            //       });
+            //     }
+            //   }, 0);
+            // });
           }
         }
       } catch (err) {
@@ -308,6 +306,7 @@ export class TpStatService {
     this._estop = false;
     this._deadman = false;
     this._switch = null;
+    this.modeChanged.next(null);
   }
 
   resetAll() {

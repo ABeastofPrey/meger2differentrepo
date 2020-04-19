@@ -1,3 +1,4 @@
+import { SafetyConfiguratorComponent } from './../safety-configurator/safety-configurator/safety-configurator.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ConfigurationComponent } from './components/configuration/configuration.component';
@@ -7,7 +8,6 @@ import { IoComponent } from './components/io/io.component';
 import { GuiComponent } from './components/gui/gui.component';
 import { UserMngrComponent } from './components/user-manager/user-mngr/user-mngr.component';
 import { AboutComponent } from './components/about/about.component';
-import { TopologyComponent } from './components/topology/topology.component';
 import { PermissionGuardService as PermissionGuard } from './permission-guard.service';
 import { ThirdPartyComponent } from './components/third-party/third-party.component';
 
@@ -53,13 +53,6 @@ const routes: Routes = [
         },
       },
       {
-        path: 'topology',
-        component: TopologyComponent,
-        data: {
-          permission: 99,
-        },
-      },
-      {
         path: 'gui-settings',
         component: GuiComponent,
         canActivate: [PermissionGuard],
@@ -82,6 +75,14 @@ const routes: Routes = [
         data: {
           permission: 99,
         },
+      },
+      {
+        path: 'safety',
+        component: SafetyConfiguratorComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 0,
+        }
       },
       {
         path: '**',

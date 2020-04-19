@@ -35,7 +35,7 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 declare var Plotly;
 
-const colors = ['#ffa726', 'rgb(0, 150, 150)'];
+const colors = ['#ffc332', '#11826c'];
 
 @Component({
   selector: 'home-screen',
@@ -103,6 +103,9 @@ export class HomeScreenComponent implements OnInit {
   ) {}
   
   get dateTime(): number {
+    if (!this.date || !this.time) {
+      return null;
+    }
     const [date, month, year] = this.date.split('/');
     const [hours, minutes] = this.time.split(':');
     return Date.UTC(

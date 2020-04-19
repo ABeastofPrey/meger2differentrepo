@@ -5,6 +5,7 @@ import { LangService } from '../../../core/services/lang.service';
 import { WebsocketService, LoginService, ApiService } from '../../../core';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../core/services/common.service';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'app-gui',
@@ -20,7 +21,8 @@ export class GuiComponent implements OnInit {
     private ws: WebsocketService,
     public login: LoginService,
     private cmn: CommonService,
-    private api: ApiService
+    private api: ApiService,
+    public utils: UtilsService
   ) {}
 
   ngOnInit() {}

@@ -428,6 +428,9 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         .afterClosed()
         .subscribe(ret => {
           if (ret) {
+            if (this.service.fileRef && this.service.fileRef.name === app) {
+              this.service.close();
+            }
             const prj = this.prj.currProject.value;
             const cmd = isBG ? `BKG_removeBgTask("${prj.name}", "${app}")` : '?prj_remove_app("' + prj.name + '","' + app + '")';
             this.ws
@@ -455,6 +458,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           title: this.words['projects.toolbar.rename'] + ' ' + app,
           placeholder: this.words[ph],
           accept: this.words['button.rename'],
+          regex: '[a-zA-Z]+(\\w*)$',
+          maxLength: 32
         },
       }).afterClosed().subscribe((name: string) => {
         if (name) {
@@ -483,6 +488,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           title: app + ' - ' + this.words['projects.toolbar.save_as'] + '...',
           placeholder: this.words[ph],
           accept: this.words['button.save'],
+          regex: '[a-zA-Z]+(\\w*)$',
+          maxLength: 32
         },
       })
       .afterClosed()
@@ -667,7 +674,6 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     switch (node.type) {
       case 'Dependencies':
       case 'Dependency':
-        if (this.prj.currProject.value.dependenciesLoaded) return;
       case 'Apps':
       case 'App':
       case 'Libraries':

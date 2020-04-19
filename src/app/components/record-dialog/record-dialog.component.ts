@@ -27,7 +27,7 @@ export class RecordDialogComponent implements OnInit {
 
   ngOnInit() {
     const storedDuration = Number(localStorage.getItem('recDuration'));
-    if (!isNaN(storedDuration)) {
+    if (!isNaN(storedDuration) && storedDuration > 0) {
       this.duration = storedDuration;
     }
     else {

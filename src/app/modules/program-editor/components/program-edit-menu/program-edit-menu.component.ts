@@ -27,6 +27,7 @@ import { CommandType as JumpxCommandType } from '../combined-dialogs/enums/jumpx
 import { VisionCommandComponent } from '../combined-dialogs/components/vision-command/vision-command.component';
 import { VisionLoadStationBookComponent } from '../dialogs/vision-load-station-book/vision-load-station-book.component';
 import { JumpxCommandComponent } from '../combined-dialogs/components/jumpx-command/jumpx-command.component';
+import { ProceedDialogComponent } from '../dialogs/proceed-dialog/proceed-dialog.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -322,6 +323,12 @@ export class ProgramEditMenuComponent implements OnInit {
           this.prg.insertAndJump(cmd, 0);
         }
       });
+  }
+  menu_proceed() {
+    const ref = this.dialog.open(ProceedDialogComponent, { width: '400px' });
+    ref.afterClosed().subscribe(cmd => {
+      if (cmd) this.prg.insertAndJump(cmd, 0);
+    });
   }
   menu_stop() {
     const ref = this.dialog.open(StopDialogComponent, { width: '400px' });

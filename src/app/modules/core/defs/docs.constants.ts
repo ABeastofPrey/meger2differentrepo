@@ -1,6 +1,48 @@
 export const DOCS = {
-  types: ['long','double','string','element','position','object','other'],
+  types: ['long','double','string','element','position','object','other','location','number'],
   ac_objects: ['sys'],
+  keywords: [
+    {name: 'long', meta: 'Variable Type'},
+    {name: 'double', meta: 'Variable Type'},
+    {name: 'string', meta: 'Variable Type'},
+    {name: 'joint', meta: 'Variable Type'},
+    {name: 'location', meta: 'Variable Type'},
+    {name: 'error', meta:'Variable Type'},
+    {
+      name: 'recordClose',
+      meta: 'MC-Basic',
+      desc: 'This command closes the record data file and enables it to be retrieved. You must issue this command before the next RECORD command is issued.'
+    },
+    {
+      name: 'recording',
+      meta: 'Function',
+      desc: `This query returns the state of the data recorder. The following values are returned:<ul>
+              <li>0 - recorder undefined and inactive.</li>
+              <li>1 - Recorder is defined, but inactive. (The RECORDON command is needed to activate it.)</li>
+              <li>2 - Recording is in progress (Data acquisition process after RECORDON was given.)</li>
+              <li>3 - Recording suspended. (RECORDOFF command issued.)</li>
+              <li>4 - Data acquisition completed automatically. Recorder is still defined. (RECORDCLOSE command needed to flush the data to the disk.)</li></ul>`
+    },
+    {
+      name: 'recordOff',
+      meta: 'MC-Basic',
+      desc: 'The recording action is stopped using this command or if the specified number of points have been recorded.'
+    },
+    {
+      name: 'recordOn',
+      meta: 'MC-Basic',
+      desc: 'This command starts the recording process.'
+    },
+    {name: 'SHL', meta: 'MC-Basic', desc:`SHL (shift left) shifts each bit in <Number> N places to the left. N zeros are shifted into the N rightmost positions.`},
+    {name: 'SHR', meta: 'MC-Basic', desc:`SHR (shift right) shifts each bit in <Number> N places to the right. The N rightmost bits are lost.`},
+    {
+      name: 'filechecksum',
+      meta: 'Task Function',
+      afterDot: true,
+      desc: 'Calculates a checksum of  the file, used by the GUI to quickly discover difference between files in the controller and copies on the PC hard disk.'
+    },
+    {name: 'varlist', meta:'MC-Basic', desc:'Returns a list of the variable and constant names defined in the system.'},
+  ],
   group: [
     {
       name: 'ACCELERATIONMAXROT',
@@ -1037,13 +1079,6 @@ export const DOCS = {
       readOnly: true
     },
     {
-      name: 'VELOCITYCRUISE',
-      short: 'VCruise',
-      desc: `This property specifies the desired cruise velocity. The motion generator attempts to reach this velocity during motion commands. The ability of the motion generator to reach this value is constrained by the value of ACCELERATION, DECELERATION, SMOOTHFACTOR and the final position. This propertyis used inside a motion command to override the permanent value.`,
-      type: 1,
-      range: `>0`
-    },
-    {
       name: 'VELOCITYFEEDBACK',
       short: 'VFb',
       desc: `This property returns the actual spatial velocity of the element.`,
@@ -1072,6 +1107,12 @@ export const DOCS = {
               Changing VelocityRate factors of a group automatically changes the relevant factor of each axis to the new value.`,
       type: 1,
       range: `0.1 - 100`
+    },
+    {
+      name: 'VSCALE',
+      desc: `VSCALE.`,
+      type: 0,
+      range: `1 - 100`
     },
   ],
 	objects: {
@@ -1103,6 +1144,11 @@ export const DOCS = {
         desc: `Returns information found during system power-up. Measures the average cycle time of the motion bus. The result is the average cycle time found in the test. The test duration is 500 ms.`,
       },
       {
+        name: 'IPAddressMask',
+        type: 2,
+        desc: `Returns the IP of the softMC controller, as specified in FWCONFIG`,
+      },
+      {
         name: 'NAME',
         type: 2,
         desc: `This property sets the name of the controller. The query returns the name of the controller. If the no name was set (or an empty string), the reply is, "no name."`,
@@ -1110,6 +1156,16 @@ export const DOCS = {
     ],
 	},
 	commands: {
+    attach: [ 
+			{
+				syntax: 'Attach',
+				desc: 'Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.'
+			},
+			{
+				syntax: 'Attach [element]',
+				desc: 'Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.'
+			},
+    ],
     circle: [
 			{
 				syntax: 'Circle [element] Angle=[double] CircleCenter=[position]',
@@ -1131,7 +1187,35 @@ export const DOCS = {
 				optionalType: 2, // will use optionals[2] 
 				desc: 'Issues a circular (arc) path trajectory, with a circle point and the final point of the arc.'
 			}
-		],
+    ],
+    detach: [ 
+			{
+				syntax: 'Detach',
+				desc: 'This command is used to detach the calling task from a motion element, freeing it for use by another task. Motion element may be axis or group.'
+			},
+			{
+				syntax: 'Detach [element]',
+				desc: 'This command is used to detach the calling task from a motion element, freeing it for use by another task. Motion element may be axis or group.'
+			},
+    ],
+    load: [ 
+			{
+				syntax: 'Load [filename]',
+        desc: 'Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.',
+        optionalType: 4, // will use optionals[4]
+			}
+    ],
+    load$: [ 
+			{
+				syntax: 'Load$ [filename]',
+        desc: `@param [filename] is a <b>string</b> (i.e: "file1.upg")
+        
+              This command loads programs and libraries from the Flash Disk into RAM, from where it may be executed. In the process, the program or library is checked for syntax errors. Syntax errors are written to the TRN.ERR file, which may be retrieved to see which errors occurred. Only programs without syntax errors may be executed. Programs are executed using the STARTTASK command. The Priority sets the <priority level> at which the task is run within the system. The highest priority is 1, which causes the task to be run after all realtime tasks have run. The lowest priority is 16. Tasks with the same priority level run using a round-robin procedure, which gives equal time to each task. A low priority task cannot interrupt a high priority task.
+              The StackSize optional parameter sets the size of local (Dim) variables’ stack. It’s value is a actually a floating point multiplier of an internal basic stack size.  This basic stack size is the lowest size allowed for local data stack (when size multiplier is 1), whereas the highest value depends on the amount of freememory available.
+              The <task name> defines the new task name, what the loaded task gets. This option lets user load the same task several times with different names.`,
+        optionalType: 5, // will use optionals[5]
+			}
+    ],
 		move: [ // array of overloads
 			{
 				syntax: 'Move [element] [position]',
@@ -1156,6 +1240,36 @@ export const DOCS = {
 				desc: 'Move along a straight line in world-space.'
 			},
     ],
+    moveskd: [ // array of overloads
+			{
+				syntax: 'MoveSKD [element] [position]',
+				optionalType: 0, // will use optionals[0] 
+				desc: 'Kino-Dynamic Straight Line move command. Straight line moment that uses maximum available joint capabilities (VNAX,AMAX,JMAX).The path is a straight line from current position to the given target position.'
+			},
+			{
+				syntax: 'MoveSKD [position]',
+				optionalType: 0, // will use optionals[0] 
+				desc: 'Kino-Dynamic Straight Line move command. Straight line moment that uses maximum available joint capabilities (VNAX,AMAX,JMAX).The path is a straight line from current position to the given target position.'
+			},
+    ],
+    nextitem: [ 
+			{
+				syntax: 'nextItem',
+				desc: `Command that moves the robot focus to the limits of the next-item in the trigger queue. Each tracked item defines a moving window that is relative to its trigger position. It is defined by UpMaster, DownMaster and trigger position values For the current master position value of master axis -  Pmaster( pcmd, pfb or pext) - the up & down limits of the current moving frame window will be:
+              <b>Lower Limit:</b> Pmaster > UpMaster+TriggerPosition
+              <b>Upper Limit:</b> Pmaster < DownMaster+TriggerPosition
+              When the master position exit the current window an error is generated. When issuing this command while tracking an object, the current window’s boundaries will be updated to the boundaries defined by the next item in the trigger queue.
+              Number of items in the queue will be reduced by one in one of the next events - exiting the tracking process (slave=0) , item exits the window limits, or issued NextItem commands.`
+			},
+			{
+				syntax: 'nextItem [element]',
+				desc: `Command that moves the robot focus to the limits of the next-item in the trigger queue. Each tracked item defines a moving window that is relative to its trigger position. It is defined by UpMaster, DownMaster and trigger position values For the current master position value of master axis -  Pmaster( pcmd, pfb or pext) - the up & down limits of the current moving frame window will be:
+              <b>Lower Limit:</b> Pmaster > UpMaster+TriggerPosition
+              <b>Upper Limit:</b> Pmaster < DownMaster+TriggerPosition
+              When the master position exit the current window an error is generated. When issuing this command while tracking an object, the current window’s boundaries will be updated to the boundaries defined by the next item in the trigger queue.
+              Number of items in the queue will be reduced by one in one of the next events - exiting the tracking process (slave=0) , item exits the window limits, or issued NextItem commands.`
+			},
+    ],
     "power_off()": [
       {
         syntax: 'power_off()',
@@ -1167,6 +1281,80 @@ export const DOCS = {
         syntax: 'power_on()',
         desc: 'Enables the robot'
       }
+    ],
+    printpoint: [
+      {
+        syntax: 'printPoint [location]',
+        desc: 'PrintPoint prints only variables that were declared as a cartesian location.'
+      }
+    ],
+    printpointusing: [
+      {
+        syntax: 'printPointUsing [string] ; [location]',
+        desc: `Prints formatted numeric variables of type point, using the specified format string. The format string contains literal text to be printed, as well as characters for formatting numeric expressions. The following characters can be used formatting numeric expressions:<ul>
+        <li><b>#</b>  - digital position</li>
+        <li><b>.</b>  - decimal position</li>
+        <li><b>+</b>  - prints the sign of the expression</li></ul>`,
+        format: {
+          1: '"#.###"'
+        }
+      }
+    ],
+    printu$: [
+      {
+        syntax: 'printU$ [string] , [string] ; [number]',
+        desc: `Prints formatted numeric variables of type point, using the specified format string. The format string contains literal text to be printed, as well as characters for formatting numeric expressions. The following characters can be used formatting numeric expressions:<ul>
+        <li><b>#</b>  - digital position</li>
+        <li><b>.</b>  - decimal position</li>
+        <li><b>+</b>  - prints the sign of the expression</li></ul>`,
+        format: {
+          1: '',
+          3: '"Value is #.###"'
+        }
+      }
+    ],
+    proceed: [ 
+			{
+				syntax: 'Proceed',
+        desc: 'This command is required to continue executing motion after that motion had been stopped by a STOP command from a different context. Thus PROCEED is not required when the STOP command appears in the same task as the move commands, but it is required when the STOP command is issued by a task other than the one moving the axis or group.',
+        optionalType: 6,
+			},
+			{
+				syntax: 'Proceed [element]',
+        desc: 'This command is required to continue executing motion after that motion had been stopped by a STOP command from a different context. Thus PROCEED is not required when the STOP command appears in the same task as the move commands, but it is required when the STOP command is issued by a task other than the one moving the axis or group.',
+        optionalType: 6,
+			},
+    ],
+    sinewave: [ 
+			{
+				syntax: 'SineWave [double] SineWaveFreq=[double]',
+        desc: 'Performs endless sine-wave motion on the given axis or group.',
+        format: {
+          1: '{0 , 0}',
+          2: '{0.1 , 0.1}',
+        }
+			},
+			{
+				syntax: 'SineWave [element] [location]',
+				desc: 'Performs endless sine-wave motion on the given axis or group.'
+			},
+    ],
+    starttask: [ 
+			{
+				syntax: 'startTask [filename]',
+        desc: 'Starts task execution from the beginning of the task. Priority sets the priority level for task execution. The highest priority is 1, which causes the task to run after all realtime tasks have run. The lowest priority is 16. Tasks with the same priority level run via a round-robin procedure, which gives equal time to each task. A low priority task cannot interrupt a high priority task. If a task is killed, it can be restarted with this command. A task can be started and specified to run for a number of execution loops, then stop.',
+        optionalType: 7
+			}
+    ],
+    starttask$: [ 
+			{
+				syntax: 'startTask$ [string]',
+        desc: 'Starts task execution from the beginning of the task. Priority sets the priority level for task execution. The highest priority is 1, which causes the task to run after all realtime tasks have run. The lowest priority is 16. Tasks with the same priority level run via a round-robin procedure, which gives equal time to each task. A low priority task cannot interrupt a high priority task. If a task is killed, it can be restarted with this command. A task can be started and specified to run for a number of execution loops, then stop.',
+        optionalType: 7,
+        format: {
+          1: '"MYTASK.PRG"'
+        }
+			}
     ],
     stop: [ // array of overloads
 			{
@@ -1192,89 +1380,559 @@ export const DOCS = {
 		]
   },
   snippets: {
-    "attach": { 
-      syntax: "Attach [element (optional)]\n&nbsp;&nbsp;...\nDetach [element (optional)]",
-      desc: `Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.
-              A motion element may be moved from the terminal. In this case, an implicit attachment is performed.`
+    "abs": { 
+      syntax: 'ABS([number])',
+      desc: `Returns the absolute value of the argument.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "accept": { 
+      syntax: 'Accept(#[listening_device_number](optional),#[accepting device number], [port])',
+      desc: `Binds a TCP socket to specific port and accepts a connection. Listens to a TCP socket. The <port number> defines TCP port.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "acos": { 
+      syntax: 'acos([number])',
+      desc: `Returns the inverse cosine of the expression in radians.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "arraysize": { 
+      syntax: 'ArraySize([array],[dimension])',
+      desc: `Returns the size of an array’s dimension according to the dimension number (1 for the first dimension, 2 for the second dimension, etc...).
+            Returns zero if the dimension number is larger than the number of dimensions defined for the array. Also returns zero if the dimension number is zero or negative.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "asc": { 
+      syntax: 'ASC([string])',
+      desc: `Returns an ASCII character value from within an ASCII-8 string, and the Unicode value from within a UTF-8 string.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "asin": { 
+      syntax: 'ASIN([number])',
+      desc: `Returns the inverse sine of the expression in radians.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "atan2": { 
+      syntax: 'ATAN2([y_value],[x_value])',
+      desc: `ATAN2 is used when it is necessary to know both the absolute value of the angle and the quadrant. The first expression is the value on the y axis and the second is the value on the x axis. The result gives the real angle in the range ±π radians.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "atn": { 
+      syntax: 'ATN([number])',
+      desc: `Returns the inverse tangent of the expression in radians. The expression is the ratio of the length on the y-axis to the length on the x-axis, and the result is in the range ±π/2 radians.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "attachto": { 
+      syntax: 'AttachTo [element](optional) File=[task]',
+      desc: `Attach the given element to the given task. Same functionality as ATTACH but from external context.`,
+      meta: 'MC-Basic'
+    },
+    "attachto$": { 
+      syntax: 'AttachTo$ [element](optional) File="[task]"',
+      desc: `Attach the given element to the given task (STRING). Same functionality as ATTACH but from external context.`,
+      meta: 'MC-Basic'
+    },
+    "bin$": { 
+      syntax: 'BIN$([number])',
+      desc: `Returns the string representation of a number in a binary format.`,
+      availableMidSentence: true,
+      meta: 'Function'
     },
     "call": { 
       syntax: "Call [subroutine name]",
-      desc: `The CALL command transfers execution of the task to the subprogram being referenced. When the subprogram has completed, execution returns to the point in the task at which the subprogram was called.`
+      desc: `The CALL command transfers execution of the task to the subprogram being referenced. When the subprogram has completed, execution returns to the point in the task at which the subprogram was called.`,
+      meta: 'MC-Basic'
+    },
+    "chr$": {
+      syntax: 'CHR$([number])',
+      desc: `Returns a one-character string corresponding to a given ASCII value.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "close": { 
+      syntax: "Close #[device_handle]",
+      desc: `Ends I/O to a serial communication device.`,
+      meta: 'MC-Basic'
+    },
+    "connect": { 
+      syntax: "Connect(#[device_number],[ip],[port],[timeout](optional) )",
+      desc: `Requests a TCP connection from the remote host.`,
+      meta: 'MC-Basic'
+    },
+    "cos": {
+      syntax: 'COS([number])',
+      desc: `Returns the cosine of the expression in radians.`,
+      availableMidSentence: true,
+      meta: 'Function'
     },
     "delay": { 
       syntax: "Delay [element (optional)] [time in ms.]",
-      desc: `This command causes the motion to be delayed on the specified axis, for the specified period of time given in milliseconds.`
+      desc: `This command causes the motion to be delayed on the specified axis, for the specified period of time given in milliseconds.`,
+      meta: 'MC-Basic'
+    },
+    "delete": { 
+      syntax: "Delete [filename]",
+      desc: `This command is used to delete a file from the Flash Disk.`,
+      meta: 'MC-Basic'
+    },
+    "delete$": { 
+      syntax: 'Delete$ "[filename]"',
+      desc: `Deletes a file from the Flash Disk.`,
+      meta: 'MC-Basic'
+    },
+    "deletePLS": { 
+      syntax: "DeletePLS [pls_name]",
+      desc: `Deletes a defined PLS and all actions associated with that PLS.`,
+      meta: 'MC-Basic'
+    },
+    "detachFrom": { 
+      syntax: 'detachFrom [element](optional) File=[task]',
+      desc: `Detach given element from the given task. Same functionality as DETACH but from external context.`,
+      meta: 'MC-Basic'
+    },
+    "detachFrom$": { 
+      syntax: 'detachFrom$ [element](optional) File="[task]"',
+      desc: `Detach given element from the given task. Same functionality as DETACH but from external context.`,
+      meta: 'MC-Basic'
+    },
+    "dir": { 
+      syntax: 'dir [file](optional)',
+      desc: `This command lists files that exist on the RAM disk and on the Flash disk. <file> may contain the * and ? wildcard characters to refine the list. The character * signifies any combination of letters, and the ? character signifies any letter. When invoked without a wildcard, all the files are listed.
+            The RAM disk is for used to store internal files (to which you do not have access), and stores the record data files (*.rec). The Flash disk stores the user programs (*.prg) and CAM files (*.cam). The contents of the Flash disk are preserved at power off, but the contents of the RAM disk are lost.`,
+      meta: 'MC-Basic',
+      terminalOnly: true
+    },
+    "dir$": { 
+      syntax: 'dir$("[file]")',
+      desc: `This command lists files that exist on the RAM disk and on the Flash disk. <file> may contain the * and ? wildcard characters to refine the list. The character * signifies any combination of letters, and the ? character signifies any letter. When invoked without a wildcard, all the files are listed.
+            The RAM disk is for used to store internal files (to which you do not have access), and stores the record data files (*.rec). The Flash disk stores the user programs (*.prg) and CAM files (*.cam). The contents of the Flash disk are preserved at power off, but the contents of the RAM disk are lost.`,
+      meta: 'MC-Basic'
+    },
+    "distl": {
+      syntax: 'DISTL([loc1],[loc2])',
+      desc: `Returns the distance (in LENGTH units) between two points`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "distr": {
+      syntax: 'DISTR([loc1],[loc2])',
+      desc: `Returns the distance (in ANGLE units) between two points`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "exp": {
+      syntax: 'EXP([number])',
+      desc: `The exponent math function that calculates the exponential function.(e raised to the power of a numeric expression).`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "error": {
+      syntax: 'error',
+      desc: `Queries the last system error message. If the keyword is prefixed with a task name, the error message corresponding to the last error in that task is returned.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "filesize": {
+      syntax: 'fileSize [file_name]',
+      desc: `Returns the size of a file in bytes.`,
+      availableMidSentence: true,
+      meta: 'MC-Basic'
     },
     "for": {
       syntax: `for [var_name] = [startIndex] to [endIndex]\n&nbsp;&nbsp;...\nnext`,
-      desc: `The FOR...NEXT loop repeats the statements enclosed in the loop a number of times, counting from a starting value to an ending value by incrementing or decrementing a loop counter. The loop continues to execute as long as the loop counter has not reached the ending value.`
+      desc: `The FOR...NEXT loop repeats the statements enclosed in the loop a number of times, counting from a starting value to an ending value by incrementing or decrementing a loop counter. The loop continues to execute as long as the loop counter has not reached the ending value.`,
+      meta: 'MC-Basic'
     },
     "gohome": {
-      syntax: `goHome([velocity])`,
+      syntax: `goHome([VScale])`,
       desc: `Move the robot to the home position.
-              If velocity is <b>-1</b> then current VCruise will be used.`
+              If VScale is <b>-1</b> then current VScale will be used.`,
+      meta: 'Subroutine'
+    },
+    "goto": {
+      syntax: `GoTo [label]`,
+      desc: `The GOTO statement is used to perform an unconditional branch to another section of code. It references a label that must appear in the code.
+            Labels are written as a name followed by a colon. Labels must appear on their own lines and they may be commented.`,
+      meta: 'MC-Basic'
+    },
+    "hex$": {
+      syntax: 'HEX$([number])',
+      desc: `Returns the string representation of a number in a hexadecimal format, in UPPER-CASE.`,
+      availableMidSentence: true,
+      meta: 'Function'
     },
     "if": {
       syntax: `if [condition] then\n&nbsp;&nbsp;...\nend if`,
-      desc: `This decision construct enables one section of code or another to be executed, depending on the state of a specified condition. A condition is an expression that, when evaluated, is TRUE if the result is not zero, and FALSE if the result is zero. IF statements may be nested within each other.`
+      desc: `This decision construct enables one section of code or another to be executed, depending on the state of a specified condition. A condition is an expression that, when evaluated, is TRUE if the result is not zero, and FALSE if the result is zero. IF statements may be nested within each other.`,
+      meta: 'MC-Basic'
     },
     "if...else...": {
       syntax: `if [condition] then\n&nbsp;&nbsp;...\nelse\n&nbsp;&nbsp;...\nend if`,
-      desc: `This decision construct enables one section of code or another to be executed, depending on the state of a specified condition. A condition is an expression that, when evaluated, is TRUE if the result is not zero, and FALSE if the result is zero. The ELSE section is optional, but must be followed by at least one statement. IF statements may be nested within each other. There is no ELSE IF command. If you use an IF after ELSE, you must place IF on a new line.`
+      desc: `This decision construct enables one section of code or another to be executed, depending on the state of a specified condition. A condition is an expression that, when evaluated, is TRUE if the result is not zero, and FALSE if the result is zero. The ELSE section is optional, but must be followed by at least one statement. IF statements may be nested within each other. There is no ELSE IF command. If you use an IF after ELSE, you must place IF on a new line.`,
+      meta: 'MC-Basic'
+    },
+    "import": {
+      syntax: `import [lib_name]`,
+      desc: `Imports a library file into a task. To use a subroutine defined in a library file, the lib file must first be imported at the top of the program and then called by one of its defined subroutines.`,
+      meta: 'MC-Basic'
+    },
+    "instr": {
+      syntax: 'INSTR([expression],<i>[search_string](optional),[sub_string](optional)</i>)',
+      desc: `Returns the position of the starting character of a substring in a string.
+            <b>expression</b>: optional expression indicating the position of the character within <search_string> where searching is to begin. If omitted, the searching starts at the first character.
+            <b>search_string</b>: string expression to be searched for the occurrence of sub_string.
+            <b>sub_string</b>: string expression containing the sub_string to be searched for within the search_string.
+            If one of the input strings is of UTF-8 type and the other is not, the code of the non-UTF-8 input string will be implicitly converted to the UTF-8 codingmethod.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "isopen": {
+      syntax: 'isOpen([device_handle])',
+      desc: `Returns the status of port, defined by [DeviceHandle] .`,
+      availableMidSentence: true,
+      meta: 'Function'
     },
     "grp_close": {
       syntax: `GRP_CLOSE_GRIPPER("[end effector]","[gripper]")`,
-      desc: `Close the currently active gripper`
+      desc: `Close the currently active gripper`,
+      meta: 'Subroutine'
     },
     "grp_open": {
       syntax: `GRP_OPEN_GRIPPER("[end effector]","[gripper]")`,
-      desc: `Open the currently active gripper`
+      desc: `Open the currently active gripper`,
+      meta: 'Subroutine'
     },
     "grp_set": {
       syntax: `GRP_SET_ACTIVE_GRIPPER("[end effector]","[gripper]")`,
-      desc: `Select the specified gripper as the current gripper`
+      desc: `Select the specified gripper as the current gripper`,
+      meta: 'Subroutine'
+    },
+    "lcase$": { 
+      syntax: 'LCASE$([string])',
+      desc: `Returns a copy of the string passed to it with all the uppercase letters converted to lowercase.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "left$": { 
+      syntax: 'LEFT$([string],[number])',
+      desc: `Returns the specified number of characters from the left-hand side of the string.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "len": { 
+      syntax: 'LEN([string])',
+      desc: `Returns the length of the given string.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "loc": {
+      syntax: 'LOC([device_handle])',
+      desc: `Returns the number of characters waiting in the input buffer.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "log": {
+      syntax: 'LOG([number])',
+      desc: `Returns the natural logarithm of the expression.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "logger": {
+      syntax: 'logger [error_name]',
+      desc: `Logs an application exception. Only the actions of printing and logging the exception are performed. [error name] is the exception name defined by the user.`,
+      meta: 'MC-Basic'
+    },
+    "ltrim$": { 
+      syntax: 'LTRIM$([string])',
+      desc: `Returns the right-hand part of a string after removing any blank spaces at the beginning.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "mid$": { 
+      syntax: 'MID$([string],[start_index],[number_of_chars])',
+      desc: `Returns the specified number of characters from the string, starting at the character at position [start]. If [start] is greater than the length of [string], an empty string will return.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "open": { 
+      syntax: 'Open [comport] BaudRate=[number] Parity=[number] DataBits=[number] StopBit=[number] XOnOff=[number] as #[device_handle]',
+      desc: `Opens the serial port for asynchronous ASCII protocol connection.`,
+      meta: 'MC-Basic'
+    },
+    "openSocket": { 
+      syntax: 'openSocket Options=[number] as #[device_handle]',
+      desc: `Creates a TCP socket and put socked descriptor to the specified device handle.`,
+      meta: 'MC-Basic'
+    },
+    "pauseTask": {
+      syntax: `pauseTask [task_name]`,
+      desc: `Stops the task at the closest PAUSE.`,
+      meta: 'MC-Basic'
+    },
+    "pauseTask$": {
+      syntax: `pauseTask$ [task_name]`,
+      desc: `Stops the task at the closest PAUSE. @param task_name is a <b>string</b>.`,
+      meta: 'MC-Basic'
     },
     "pay_set": {
       syntax: `PAY_SET_PAYLOAD("[payload]")`,
-      desc: `Select the specified payload as the current payload`
+      desc: `Select the specified payload as the current payload`,
+      meta: 'Subroutine'
+    },
+    "plslist": { 
+      syntax: 'PlsList [pls_name](optional)',
+      desc: `This query returns a list of the PLS names defined in the system`,
+      meta: 'MC-Basic',
+      terminalOnly: true
     },
     "plt_entry": {
       syntax: `PLT_MOVE_TO_ENTRY_POSITION([robot],"[pallet_name]")`,
-      desc: `Move the specified robot to the pallet's entry position`
+      desc: `Move the specified robot to the pallet's entry position`,
+      meta: 'Subroutine'
     },
     "plt_pick": {
       syntax: `PLT_PICK_FROM_PALLET([robot],"[pallet_name]")`,
-      desc: `Use the specified robot to pick an item for the given pallet`
+      desc: `Use the specified robot to pick an item for the given pallet`,
+      meta: 'Subroutine'
     },
     "plt_place": {
       syntax: `PLT_PLACE_ON_PALLET([robot],"[pallet_name]")`,
-      desc: `Use the specified robot to place an item for the given pallet`
+      desc: `Use the specified robot to place an item for the given pallet`,
+      meta: 'Subroutine'
     },
     "plt_set_index": {
       syntax: `PLT_SET_INDEX_STATUS("[pallet_name]",index)`,
-      desc: `Set the specified pallet's index`
+      desc: `Set the specified pallet's index`,
+      meta: 'Subroutine'
+    },
+    "print": { 
+      syntax: 'print [string]',
+      desc: `Multiple strings and expressions are printed, separated by either a comma or a semicolon. The semicolon puts the two expressions next to each other while the comma puts a tab between them.`,
+      meta: 'MC-Basic'
+    },
+    "printu": { 
+      syntax: 'printU [format_string] ; [expression]',
+      desc: `Prints formatted numeric variables, using the specified format string. The format string contains literal text to be printed, as well as characters for formatting numeric expressions. The following characters can be used formatting numeric expressions:<ul>
+        <li><b>#</b>  - digital position</li>
+        <li><b>.</b>  - decimal position</li>
+        <li><b>+</b>  - prints the sign of the expression</li></ul>`,
+      meta: 'MC-Basic'
+    },
+    "printutobuff": { 
+      syntax: 'printUToBuff #1 [format_string] ; [expression]',
+      desc: `Prints formatted numeric variables to the serial port using the specified format <string> to buffer.The format string contains literal text to be printed and characters for formatting numeric expressions. Only a single formatting string (containing text and formatting characters) followed by the expressions to print is allowed.`,
+      meta: 'MC-Basic'
     },
     "program": {
       syntax: `program\n&nbsp;&nbsp;...\nend program`,
-      desc: `The PROGRAM…END PROGRAM keywords are used to delimit the main section of code in a task. Task variables, defined using DIM SHARED, must appear before the Program keyword. Local variables (defined using DIM alone), appear after the Program keyword, but before the code. Subprograms must appear after the End Program keywords.`
+      desc: `The PROGRAM…END PROGRAM keywords are used to delimit the main section of code in a task. Task variables, defined using DIM SHARED, must appear before the Program keyword. Local variables (defined using DIM alone), appear after the Program keyword, but before the code. Subprograms must appear after the End Program keywords.`,
+      meta: 'MC-Basic'
+    },
+    "record": {
+      syntax: `RECORD [file_name] [number of points] [Gap = record_gap](optional) RecData = [param1, param2, ...]`,
+      desc: `This command is used to arm (not trigger) data recording. Data are recorded into the specified file, which is then retrieved for viewing. The record file must always have the extension REC. The recorded data file is stored on RAM drive, so the file is lost after power off.
+              You must specify the <number of points> to be recorded, where one point is a set of data recorded at a given instant in time. The recorder may be stopped before the specified number of points have been recorded (using RECORDOFF).`,
+      meta: 'MC-Basic'
+    },
+    "record$": {
+      syntax: `RECORD [file_name] [number of points] [Gap = record_gap](optional) RecData = [param1, param2, ...]`,
+      desc: `<b>@param file_name is a string</b>
+              This command is used to arm (not trigger) data recording. Data are recorded into the specified file, which is then retrieved for viewing. The record file must always have the extension REC. The recorded data file is stored on RAM drive, so the file is lost after power off.
+              You must specify the <number of points> to be recorded, where one point is a set of data recorded at a given instant in time. The recorder may be stopped before the specified number of points have been recorded (using RECORDOFF).`,
+      meta: 'MC-Basic'
+    },
+    "right$": { 
+      syntax: 'RIGHT$([string],[number])',
+      desc: `Returns the specified number of characters from the right-hand side of the string.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "round": { 
+      syntax: 'ROUND([number])',
+      desc: `Rounds the argument to the nearest even whole number so the cumulative error in a random sample is never more than 0.5.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "rtrim$": { 
+      syntax: 'RTRIM$([string])',
+      desc: `Returns the left-hand part of a string after removing any blank spaces at the beginning.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "seek": { 
+      syntax: 'seek([device_handle],[IPointer])',
+      desc: `Moves file pointer to specified location.`,
+      meta: 'MC-Basic'
     },
     "select": {
       syntax: `select case [var_name]\n&nbsp;&nbsp;case [val1]\n&nbsp;&nbsp;&nbsp;&nbsp;...\n&nbsp;&nbsp;case [val2]\n&nbsp;&nbsp;&nbsp;&nbsp;...\nend select`,
-      desc: `This decision construct enables one of a number of code sections to be executed, depending on the value of a <var_name>. On the first line of a CASE block of commands, you specify the variable or expression you want tested.After you have specified the variable or expression, list one or more values or value ranges that the variable can take. There are four ways you can specify cases: Exact Value, Logical Condition, Range, Else.`
+      desc: `This decision construct enables one of a number of code sections to be executed, depending on the value of a <var_name>. On the first line of a CASE block of commands, you specify the variable or expression you want tested.After you have specified the variable or expression, list one or more values or value ranges that the variable can take. There are four ways you can specify cases: Exact Value, Logical Condition, Range, Else.`,
+      meta: 'MC-Basic'
+    },
+    "sgn": { 
+      syntax: 'SGN([number])',
+      desc: `Returns the sign of the expression: 1 for positive, -1 for negative and 0 otherwise.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "sin": {
+      syntax: 'SIN([number])',
+      desc: `Returns the sine of an angle in radians.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "size": { 
+      syntax: 'SIZE([string])',
+      desc: `Returns the number of bytes taken up by the input string. In ASCII-8 strings SIZE()’s value is equal to LEN()’s value, whereas in UTF-8 string SIZE()’s value might be remarkably bigger than LEN()’s value.`,
+      availableMidSentence: true,
+      meta: 'Function'
     },
     "sleep": {
       syntax: `sleep [time]`,
-      desc: `This command delays the task for a specified period of time (in milliseconds). The delay starts when the preceding command ends.`
+      desc: `This command delays the task for a specified period of time (in milliseconds). The delay starts when the preceding command ends.`,
+      meta: 'MC-Basic'
+    },
+    "space$": { 
+      syntax: 'SPACE$([num_of_spaces])',
+      desc: `Returns a string consisting of the specified number of blank spaces.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "sqrt": {
+      syntax: 'SQRT([number])',
+      desc: `Returns the square root of the numeric expression.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "str$": { 
+      syntax: 'STR$([number])',
+      desc: `Returns the string representation of a number.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "strd$": { 
+      syntax: 'STRD$([number],[format_string])',
+      desc: `Returns the string representation of a double-type number.
+            <b>format_string</b>: a valid sprintf() floating point format:
+            %f - a non-exponential display 
+            %e, %E - an exponential display
+            %g, %G - type of display depends on the value of the input `,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "string$": { 
+      syntax: 'STRING$([number],[string | ascii_code])',
+      desc: `Returns a new string with the specified number of characters. Each character is the first character of the specified string argument or the specified ASCII code.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "strl$": { 
+      syntax: 'STRL$([number],[format_string])',
+      desc: `Returns the string representation of a long-type number.
+            <b>format_string</b>: a valid sprintf() integer format:<ul>
+            <li>%d, %i - signed decimal</li>
+            <li>%u - unsigned decimal</li>
+            <li>%o - octal</li>
+            <li>%x, %X - hexadecimal</li>
+            <li>%c - unsigned char</li></ul>`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "tan": {
+      syntax: 'TAN([number])',
+      desc: `Returns the tangent of an angle in radians.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "tell": {
+      syntax: 'tell(#[device_handle])',
+      desc: `Returns current file pointer, offset from the beginning of the file. Value has meaning only for Seek command to move file pointer within a file.`,
+      meta: 'Function'
+    },
+    "toascii8$": { 
+      syntax: 'ToAscii8$([string])',
+      desc: `Converts the UTF-8 coding format of the input string into the ASCII-8 coding format. Symbols located outside ASCII-8 range (Unicode value higher than 0xFF) are replaced by question marks.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "tocart": {
+      syntax: 'toCart([robot],[joint])',
+      desc: `Converts a joint point to a location point  The Direct Kinematics function implementation.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "tojoint": {
+      syntax: 'toJoint([robot],[joint],[config])',
+      desc: `Converts a location point to a joint point the inverse kinematics function implementation.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "toutf8$": { 
+      syntax: 'ToUTF8$([string])',
+      desc: `Converts the ASCII-8 coding format of the input string into the UTF-8 coding format.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "typeof": { 
+      syntax: 'typeof([string])',
+      desc: `Returns a number representing the type of the string:<ul>
+            <li>0 - no-type</li>
+            <li>1 - ASCII-8</li>
+            <li>2 - UTF-8</li></ul>`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "ucase$": { 
+      syntax: 'UCASE$([string])',
+      desc: `Returns a copy of the string passed to it with all the lowercase letters converted to uppercase.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "unload": { 
+      syntax: "Unload [task_name]",
+      desc: `Remove loaded program from the RAM.`,
+      meta: 'MC-Basic'
+    },
+    "unload$": { 
+      syntax: "Unload$ [task_name]",
+      desc: `Remove loaded program from the RAM. <b>@param task_name is a string.</b>`,
+      meta: 'MC-Basic'
+    },
+    "utf$": { 
+      syntax: 'UTF$([unicode_val])',
+      desc: `Returns a UTF-8 string corresponding to a given Unicode value.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "utfstring$": { 
+      syntax: 'UTFSTRING$([number],[string | unicode_value])',
+      desc: `Returns a new UTF-8 string with the specified number of symbols. Each symbol is the first symbol of the specified string argument or the specified Unicode value.`,
+      availableMidSentence: true,
+      meta: 'Function'
+    },
+    "val": { 
+      syntax: 'val([string])',
+      desc: `Returns the real value represented by the characters in the input string. The input string can be a number in decimal mode, scientific mode, scientific notation, or hexadecimal mode (but not binary mode).`,
+      availableMidSentence: true,
+      meta: 'Function'
     },
     "while": {
       syntax: `while [condition]\n&nbsp;&nbsp;...\nend while`,
       desc: `While and End While keywords delimit a WHILE loop. While loops are used to execute a section of code for as long as a specified condition remains true. The condition is evaluated before any statements in the construct are executed and consequently, the body statements may never be executed. Statements are optional. If none are included, the WHILE….End WHILE acts as a delay. You can have any number of statements to be executed.
-              All looping constructs (FOR, WHILE, DO) use the CPU as long as a task of higher priority is not interrupting them. The condition is evaluated as frequently as allowed by the speed of the CPU. Sometimes a WHILE loop may be waiting on a condition that does not require frequent checking. In such instances, it is advisable to insert a SLEEP command into the loop to enable other tasks (perhaps lower priority tasks) to use the CPU.`
+              All looping constructs (FOR, WHILE, DO) use the CPU as long as a task of higher priority is not interrupting them. The condition is evaluated as frequently as allowed by the speed of the CPU. Sometimes a WHILE loop may be waiting on a condition that does not require frequent checking. In such instances, it is advisable to insert a SLEEP command into the loop to enable other tasks (perhaps lower priority tasks) to use the CPU.`,
+      meta: 'MC-Basic'
     }
   },
 	optionals: [ 
 		{ // used in move
-			VCruise: { type: 1, desc: 'Cruise velocity'}
+			VScale: { type: 0, desc: 'VScale (1-100)'}
     },
     { // used in circle type 1
       VTran: { type: 1, desc: 'Defines the translation velocity of the robot.'},
@@ -1298,6 +1956,31 @@ export const DOCS = {
           {val:'ABORT', desc: 'Stop the current motion immediate but do not wait for proceed to start next motion'}
         ]
       },
+    },
+    { // used in LOAD
+      priority: { type: 0, desc: `Priority level`},
+      stackSize: { type: 1, desc: `StackSize multiplier`},
+      with: { type: 6, desc: `LibraryName`, hideEqSign: true},
+    },
+    { // used in LOAD$
+      as: { type: 2, desc: `Task Name`, hideEqSign: true},
+      priority: { type: 0, desc: `Priority level`},
+      stackSize: { type: 1, desc: `StackSize multiplier`},
+    },
+    { // used in PROCEED
+      ProceedType: { 
+        type: 0,
+        desc: `This property defines the action to be taken by the PROCEED command.`,
+        options: [
+          {val:'CONTINUE', desc: 'Continue with stopped motion. In case there are two motions in the buffer it executes both (one that was executed and one that was pending while the STOP command was issued).'},
+          {val:'NEXTMOTION', desc: 'Abort current motion and execute the next motion command in the motion buffer. One that was executing during STOP is forgotten and the one that was pending is executed).'},
+          {val:'CLEARMOTION', desc: 'Abort all motion commands in the motion buffer. Actually clears the motion buffers from complete history'}
+        ]
+      },
+    },
+    { // used in STARTTASK and STARTTASK$
+      priority: { type: 0, desc: `Priority level`},
+      numberOfLoops: { type: 0, desc: `A task can be started and specified to run for a number of execution loops, then stop.`}
     }
 	]
 };

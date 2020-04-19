@@ -2,7 +2,7 @@
 .terminal {
   height: 100%;
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 .disabled {
   cursor: not-allowed;
@@ -66,4 +66,12 @@ input {
   flex: 1;
   cursor: text;
   height: 16px;
+}
+.restricted {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 23px;
+  text-align: center;
 }

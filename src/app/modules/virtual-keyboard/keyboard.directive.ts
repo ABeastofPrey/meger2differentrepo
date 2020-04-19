@@ -85,7 +85,8 @@ export class KeyboardDirective {
 
   @HostListener('keydown',['$event'])
   onkeydown(e: KeyboardEvent) {
-    if (!e.key) return;
+    const copyPaste = e.ctrlKey && (e.key === 'v' || e.key === 'c');
+    if (!e.key || copyPaste) return;
     if (!this.cmn.isTablet && this.ktype && e.key.length === 1) {
       const isNumeric = this.ktype && this.ktype.includes('numeric');
       if (isNumeric) {
@@ -111,6 +112,7 @@ export class KeyboardDirective {
   ) {
     const element = el.nativeElement as HTMLElement;
     element.setAttribute('autocomplete','off');
+    element.setAttribute('step','any');
   }
 }
 
@@ -137,6 +139,7 @@ export class KeyboardDialog implements OnInit {
   private backKeyDown = false;
   private _cursorPos = 0; // index of the letter the cursor is at
   private panLeft = 0;
+  private deleteTimeout: number;
 
   @ViewChild('displayInput', { static: true }) displayInput?: ElementRef;
 
@@ -337,11 +340,11 @@ export class KeyboardDialog implements OnInit {
           value = value.slice(0, -1);
           if (value === '') value = '0';
         } else if (this._cursorPos > 0) {
-          value =
-            value.slice(0, this._cursorPos - 1) + value.slice(this._cursorPos);
+          value = value.slice(0, this._cursorPos - 1) + value.slice(this._cursorPos);
           this._cursorPos--;
           this.scrollToCursor();
-          setTimeout(() => {
+          window.clearTimeout(this.deleteTimeout);
+          this.deleteTimeout = window.setTimeout(() => {
             if (!this.backKeyDown) return;
             const interval = setInterval(() => {
               if (this.backKeyDown && this._cursorPos > 0) {

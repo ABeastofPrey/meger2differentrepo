@@ -9,9 +9,9 @@ import { DataService, MCQueryResponse } from '../../../../core/services';
 import { PositionTriggerService } from '../../../services/position-trigger.service';
 import { TPVariable } from '../../../../core/models/tp/tp-variable.model';
 
-const leftHandler = (msg: string) => catchError(err => {
-    console.warn(`${msg}: ${err.msg}`);
-    return throwError(err.msg)
+const leftHandler = (msg: string) => catchError(errs => {
+    console.warn(`${msg}: ${errs[0].msg}`);
+    return throwError(errs[0].msg)
 }) as any;
 
 const rightHandler = handler => rxjsMap((res: MCQueryResponse) => handler(res.result));
@@ -72,7 +72,7 @@ export class JumpxCommandService {
         const changeModel = ([vcMax, vtMax, acMax, lzRange]) => Object.assign({
             id: 0,
             changes: {
-                [CommandOptions.VcruiseLimit]: [0, vcMax],
+                [CommandOptions.VcruiseLimit]: [1, vcMax],
                 [CommandOptions.VtranLimit]: [0, vtMax],
                 [CommandOptions.AccLimit]: [0, acMax],
                 [CommandOptions.LimZLimit]: [lzRange[0], lzRange[1]],
@@ -151,7 +151,7 @@ export class JumpxCommandService {
     }
 
     private retrieveVcruiseMax(motionElement: string): Observable<number> {
-        return this.queryLimit(`?${motionElement}.VELOCITYMAX`);
+        return of(100);
     }
 
     private retrieveVtranMax(motionElement: string): Observable<number> {
@@ -203,8 +203,8 @@ export class JumpxCommandService {
             [CommandOptions.BlendingPercentage]: null,
             [CommandOptions.BlendingPercentageLimit]: [0, 100],
 
-            [CommandOptions.Vcruise]: null,
-            [CommandOptions.VcruiseLimit]: [0, vm],
+            [CommandOptions.VScale]: null,
+            [CommandOptions.VcruiseLimit]: [1, vm],
 
             [CommandOptions.Vtran]: null,
             [CommandOptions.VtranLimit]: [0, vtm],
@@ -239,7 +239,7 @@ export class JumpxCommandService {
 
             [CommandOptions.BlendingPercentageLimit]: [0, 100],
 
-            [CommandOptions.VcruiseLimit]: [0, vm],
+            [CommandOptions.VcruiseLimit]: [1, vm],
 
             [CommandOptions.VtranLimit]: [0, vtm],
 

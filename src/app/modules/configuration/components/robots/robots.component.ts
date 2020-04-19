@@ -94,7 +94,7 @@ export class RobotsComponent implements OnInit {
   }
 
   // SYSTEM
-  sysName: string = null;
+  sysName: FormControl = new FormControl('',[Validators.required, Validators.maxLength(11)]);
   
   // MCU
   mcuThreshold = 0;
@@ -131,6 +131,24 @@ export class RobotsComponent implements OnInit {
       this.wordUpdating = words['robots.updating'];
       this.words = words;
     });
+    this.ws.isConnected.subscribe(stat=>{
+      if (!stat) return;
+      this.ws.query('?sys.name').then((ret: MCQueryResponse) => {
+        this.sysName.setValue(ret.result);
+      });
+      this.ws.query('?sys.date').then(ret=>{
+        const s = ret.result.split('/');
+        const d = new Date();
+        d.setFullYear(Number('20' + s[2]));
+        d.setMonth(Number(s[1])-1);
+        d.setDate(Number(s[0]));
+        this.sysDate.setValue(d);
+      });
+      this.ws.query('?sys.time').then(ret=>{
+        const t = ret.result;
+        this.sysTime.setValue(t.substring(0,t.lastIndexOf(':')));
+      });
+    });
     this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) {
         this.grp.groupsLoaded.pipe(takeUntil(this.notifier)).subscribe(loaded => {
@@ -155,21 +173,6 @@ export class RobotsComponent implements OnInit {
           }
         });
         this.initMCU();
-        this.ws.query('?sys.name').then((ret: MCQueryResponse) => {
-          this.sysName = ret.result;
-        });
-        this.ws.query('?sys.date').then(ret=>{
-          const s = ret.result.split('/');
-          const d = new Date();
-          d.setFullYear(Number('20' + s[2]));
-          d.setMonth(Number(s[1])-1);
-          d.setDate(Number(s[0]));
-          this.sysDate.setValue(d);
-        });
-        this.ws.query('?sys.time').then(ret=>{
-          const t = ret.result;
-          this.sysTime.setValue(t.substring(0,t.lastIndexOf(':')));
-        });
       }
     });
   }
@@ -238,10 +241,8 @@ export class RobotsComponent implements OnInit {
   }
 
   onNameChange() {
-    if (this.sysName !== null && this.sysName.length === 0) {
-      this.sysName = DEFAULT_MC_NAME;
-    }
-    this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName + '")');
+    if (this.sysName.invalid) return;
+    this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName.value + '")');
     if (!this.utils.IsKuka) {
       this.snack.open(this.wordOk, '', { duration: 1500 });
     }
@@ -315,12 +316,20 @@ export class RobotsComponent implements OnInit {
   }
 
   onSettingsKeyboardClose(index = -1) {
+    if (this.disp.some(v=>v === null)) {
+      this.refreshDisp();
+      return;
+    }
     const values = this.disp.join(',');
     const robot = this.data.selectedRobot;
     const cmd = `?TP_SET_ROBOT_DISPLACEMENTS(${robot},"${values}")`;
-    this.ws.query(cmd).then(() => {
+    this.ws.query(cmd).then(ret => {
       if (index === -1) {
-        if(!this.utils.IsKuka) {
+        if (ret.result !== '0') {
+          this.refreshDisp();
+          return;
+        }
+        if(!this.utils.IsKuka && ret.result === '0') {
           this.snack.open(this.wordOk, '', { duration: 1500 });
         }
       } else {

@@ -19,13 +19,13 @@ import { UtilsService } from '../../../core/services/utils.service';
       state(
         'Teach',
         style({
-          backgroundColor: '#3F51B5',
+          backgroundColor: '#558B2F',
         })
       ),
       state(
         'Tool Align',
         style({
-          backgroundColor: '#558B2F',
+          backgroundColor: '#3F51B5',
         })
       ),
       state(
@@ -35,27 +35,12 @@ import { UtilsService } from '../../../core/services/utils.service';
         })
       ),
       transition('* => *', animate('500ms ease-in')),
-    ]),
-    trigger('menuContent', [
-      state(
-        'Teach',
-        style({
-          transform: 'translateX(0)',
-        })
-      ),
-      state(
-        'Tool Align',
-        style({
-          transform: 'translateX(-33%)',
-        })
-      ),
-      transition('* => *', animate('400ms ease-in')),
-    ]),
+    ])
   ],
 })
 export class JogScreenComponent implements OnInit {
   menuTypes: MenuType[];
-  selectedMenuTypeIndex = 0;
+  selectedMenuTypeIndex: number;
   isTeachMenuOpen = false;
 
   constructor(
@@ -65,24 +50,25 @@ export class JogScreenComponent implements OnInit {
     private utils: UtilsService,
     public login: LoginService
   ) {
+  }
+
+  ngOnInit() {
     this.trn.get('jogScreen.menu').subscribe(words => {
       this.menuTypes = [];
       if (this.utils.IsKuka) {
         this.menuTypes.push(
           new MenuType('Tool Align KUKA', 'touch_app', words[0])
         );
-      }
-
-      if (!this.utils.IsKuka) {
+      } else {
         this.menuTypes.push(new MenuType('Tool Align', 'touch_app', words[0]));
       }
+
       this.menuTypes.push(
         new MenuType('Teach', 'vertical_align_bottom', words[1])
       );
+      this.selectedMenuTypeIndex = 1;
     });
   }
-
-  ngOnInit(): void {}
 
   onChange(index: number) {
     this.selectedMenuTypeIndex = index;
@@ -91,10 +77,6 @@ export class JogScreenComponent implements OnInit {
   onTeachMenuOpen(isOpen: boolean) {
     this.isTeachMenuOpen = isOpen;
   }
-
-  align() {}
-
-  stop() {}
 }
 
 class MenuType {

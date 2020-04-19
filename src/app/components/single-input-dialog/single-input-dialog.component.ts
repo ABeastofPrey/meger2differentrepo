@@ -25,7 +25,8 @@ export class SingleInputDialogComponent implements OnInit {
       type?: string,
       suffix?: string,
       accept: string,
-      regex?: string
+      regex?: string,
+      maxLength?: number
     }
   ) {}
 
@@ -36,6 +37,9 @@ export class SingleInputDialogComponent implements OnInit {
     const validators = [Validators.required];
     if (this.data.regex) {
       validators.push(Validators.pattern(this.data.regex));
+    }
+    if (this.data.maxLength) {
+      validators.push(Validators.maxLength(this.data.maxLength));
     }
     this.dialogForm.controls['val'].setValidators(validators);
   }

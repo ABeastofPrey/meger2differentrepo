@@ -53,3 +53,10 @@
 mat-slider {
   width: 100%;
 }
+
+:host-context(.cs-dark) .move-content, :host-context(.cs-dark) .params-container {
+  border-color: #333;
+}
+:host-context(.cs-dark) .content {
+  background-color: #424242;
+}

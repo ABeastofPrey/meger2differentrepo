@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, Inject, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { SYS_LOG_SNAKBAR_DATA, SYS_LOG_SNAKBAR_COUNT } from '../../enums/sys-log.tokens';
 import { SystemLog } from '../../enums/sys-log.model';
+import { FwTranslatorService } from '../../../core/services/fw-translator.service';
 
 @Component({
     selector: 'sys-log-snackbar',
@@ -21,6 +22,7 @@ export class LogSnackbarComponent implements OnInit {
     constructor(
         @Inject(SYS_LOG_SNAKBAR_DATA) public data: SystemLog,
         @Inject(SYS_LOG_SNAKBAR_COUNT) public count: number,
+        public trn: FwTranslatorService
     ) { }
 
     ngOnInit(): void { }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from '../../core/services/websocket.service';
+import { WebsocketService, errorString } from '../../core/services/websocket.service';
 import { DataService, MCQueryResponse } from '../../core/services';
 import { map, filter } from 'ramda';
 
@@ -10,7 +10,7 @@ export class Jump3DialogService {
   async retriveMotionElements(): Promise<string[]> {
     const res = (await this.ws.query('?TP_GET_ROBOT_LIST')) as MCQueryResponse;
     if (res.err) {
-      console.error(res.err.errMsg);
+      console.error(errorString(res.err));
       return;
     }
     return res.result.length !== 0 ? res.result.split(',') : [];
@@ -31,7 +31,7 @@ export class Jump3DialogService {
   private async queryMax(cmd: string): Promise<number> {
     const res: MCQueryResponse = (await this.ws.query(cmd)) as MCQueryResponse;
     if (res.err) {
-      console.error(res.err.errMsg);
+      console.error(errorString(res.err));
       return;
     }
     return Math.floor(Number(res.result));
