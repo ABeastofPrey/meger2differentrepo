@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-
+import { DashboardRoutes } from '../../dashboard-routes';
 
 @Component({
   selector: 'dashboard-screen',
@@ -21,8 +21,9 @@ export class DashboardComponent implements OnInit {
     private trn: TranslateService
   ) {
     this.tabs = [
-      { path: 'recordings', label: 'dashboard.tab2', icon: 'show_chart' },
-      { path: 'dashboards', label: 'dashboard.tab1', icon: 'assessment' }
+      { path: DashboardRoutes.Recording, label: 'dashboard.tab2', icon: 'show_chart' },
+      { path: DashboardRoutes.Dashboard, label: 'dashboard.tab1', icon: 'assessment' },
+      { path: DashboardRoutes.Trace, label: 'dashboard.tab3', icon: 'gps_fixed' }
     ];
   }
 

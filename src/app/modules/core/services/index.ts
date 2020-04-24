@@ -15,3 +15,4 @@ export * from './tp-stat.service';
 export * from './teach.service';
 export * from './project-manager.service';
 export * from './keywords.service';
+export * from './service-adjunct';

@@ -35,6 +35,7 @@ import { ClickOnceDirective } from '../../directives/click-once.directive';
 import { PassPipe } from '../core/pipes/space-to-nbsp.pipe';
 import { RichSelectComponent } from '../../components/rich-select/rich-select.component';
 import { ColorfulSpanComponent } from '../../components/rich-select/colorful-span/colorful-span.component';
+import { NumberInputComponent } from '../../components/number-input/number-input.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { CoordinatesComponent } from '../main/components/coordinates/coordinates.component';
@@ -67,6 +68,7 @@ import { ExternalGraphDialogComponent } from '../dashboard/components/external-g
     ReactiveFormsModule,
     HttpClientModule,
     ResizableModule,
+    ScrollingModule,
     AngularSplitModule,
     YesNoDialogComponent,
     JogSettingsDialogComponent,
@@ -89,6 +91,7 @@ import { ExternalGraphDialogComponent } from '../dashboard/components/external-g
     IoSelectorDialogComponent,
     ClickOnceDirective,
     RichSelectComponent,
+    NumberInputComponent,
     ColorfulSpanComponent,
     CoordinatesComponent,
     RecordGraphComponent,
@@ -116,6 +119,7 @@ import { ExternalGraphDialogComponent } from '../dashboard/components/external-g
     ClickOnceDirective,
     PassPipe,
     RichSelectComponent,
+    NumberInputComponent,
     ColorfulSpanComponent,
     CoordinatesComponent,
     RecordDialogComponent,
@@ -131,6 +135,7 @@ import { ExternalGraphDialogComponent } from '../dashboard/components/external-g
     IoSelectorDialogComponent,
     KeyboardDialog,
     RichSelectComponent,
+    NumberInputComponent,
     ColorfulSpanComponent,
     RecordDialogComponent,
     RecordGraphComponent,

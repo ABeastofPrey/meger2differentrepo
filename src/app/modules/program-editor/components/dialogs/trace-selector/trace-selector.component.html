@@ -1,0 +1,21 @@
+<div class="main mat-typography">
+	<div class="wrapper">
+		<div class="title">{{ 'projectCommands.traceOn.title' | translate }}</div>
+		<div class="content">
+			<mat-form-field>
+				<mat-select placeholder="{{ 'projectCommands.traceOn.trace_holder' | translate }}" [(ngModel)]="selectedTrace">
+					<mat-option disabled *ngIf="traceNum === 0">{{ 'empty_list' | translate }}</mat-option>
+					<mat-option *ngFor="let trace of traceList | async" [value]="trace.name">{{ trace.name }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+	</div>
+	<div class="actions">
+		<button mat-button mat-dialog-close>
+			{{ 'button.cancel' | translate }}
+		</button>
+		<button mat-button color="primary" (click)="insert()" [disabled]="selectedTrace === null">
+			{{ 'button.insert' | translate }}
+		</button>
+	</div>
+</div>

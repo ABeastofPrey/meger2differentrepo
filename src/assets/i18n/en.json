@@ -1,5 +1,7 @@
 {
   "404": "Page Not Found",
+  "number_input_range": "Typing number in ",
+  "number_input_required": "Required filed",
   "sys_log": {
     "confirm": "CONFIRM",
     "confirm_all": "CONFIRM ALL",
@@ -198,8 +200,47 @@
         "3d": "XYZ"
       }
     },
+    "trace": {
+      "remove_all": "Remove All",
+      "module_label": "Module",
+      "available_trigger": "Available Triggers",
+      "selected_trigger": "Selected Triggers",
+      "available_channel": "Available Channels",
+      "selected_channel": "Selected Channels",
+      "no_trace_choosed_tip": "No module available, please choose a trace in COMMON TAB first.",
+      "common": {
+        "tab_name": "Common",
+        "trace_name": "Trace Name",
+        "duration": "Duration",
+        "rate": "Recording Rate",
+        "state": "State",
+        "state_not_ready": "Trace ended",
+        "state_ready": "Wait",
+        "state_traceing": "Triggered",
+        "state_done": "Done",
+        "start_trace": "Start Trace",
+        "stop_trace": "Stop Trace",
+        "trigger": "Trigger",
+        "trace_limit": "At most add {{max}} traces",
+        "trace_add": "Add",
+        "trace_cancel": "Cancel",
+        "new_trace": "New Trace",
+        "name_exist": "Name already exists.",
+        "delete_trace": "Delete trace {{titlePara}}?",
+        "delete_trace_msg": "All the configration of current trace will be lost.",
+        "trace_name_tip": "Typing a trace name at most 32 letters with number, charactor or lodash."
+      },
+      "trigger": {
+        "tab_name": "Trigger"
+      },
+      "channel": {
+        "tab_name": "Channel Configuration",
+        "instance": "Instance"
+      }
+    },
     "tab1": "Motion Dashboards",
-    "tab2": "Recordings"
+    "tab2": "Recordings",
+    "tab3": "Trace"
   },
   "dataScreen": {
     "del": "DELETE {{name}}",
@@ -868,7 +909,11 @@
       "configFilePathRequiredErr": "Config file path is required.",
       "loadConfigFilePathError": "Load file failed."
     },
-    "createVar": "Add Variable"
+    "createVar": "Add Variable",
+    "traceOn": {
+      "title": "Insert TraceOn Command",
+      "trace_holder": "Trace"
+    }
   },
   "projects": {
     "ace": {

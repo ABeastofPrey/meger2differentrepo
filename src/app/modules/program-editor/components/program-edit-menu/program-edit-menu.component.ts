@@ -27,6 +27,7 @@ import { CommandType as JumpxCommandType } from '../combined-dialogs/enums/jumpx
 import { VisionCommandComponent } from '../combined-dialogs/components/vision-command/vision-command.component';
 import { VisionLoadStationBookComponent } from '../dialogs/vision-load-station-book/vision-load-station-book.component';
 import { JumpxCommandComponent } from '../combined-dialogs/components/jumpx-command/jumpx-command.component';
+import { TraceSelectorComponent } from '../dialogs/trace-selector/trace-selector.component';
 import { ProceedDialogComponent } from '../dialogs/proceed-dialog/proceed-dialog.component';
 
 @Component({
@@ -364,6 +365,25 @@ export class ProgramEditMenuComponent implements OnInit {
   }
   menu_disable() {
     this.prg.insertAndJump('power_off()', 0);
+  }
+
+  menu_traceOn() {
+    this.dialog
+      .open(TraceSelectorComponent, {
+        disableClose: true,
+      })
+      .afterClosed()
+      .subscribe((traceName: string) => {
+        if(traceName)
+        {
+          const cmd = 'TraceOn("' + traceName + '")';
+          this.prg.insertAndJump(cmd, 0);
+        }
+      });
+  }
+
+  menu_traceOff() {
+    this.prg.insertAndJump('TraceOff()', 0);
   }
 
   menu_pls_source() {

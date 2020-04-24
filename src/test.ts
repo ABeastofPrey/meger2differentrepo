@@ -72,3 +72,6 @@ const jumpxCommandContext = require.context('./app/modules/program-editor/compon
 
 const syslogContext = require.context('./app/modules/sys-log/components/logbook/', true, /\.spec\.ts$/);
 syslogContext.keys().map(syslogContext);
+
+const traceContext = require.context('./app/modules/dashboard/components/trace/', true, /\.spec\.ts$/);
+traceContext.keys().map(traceContext);

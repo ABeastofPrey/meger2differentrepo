@@ -1,5 +1,7 @@
 {
   "404": "页面未找到",
+  "number_input_range": "输入值的范围为 ",
+  "number_input_required": "必需项",
   "sys_log": {
     "confirm": "确认",
     "confirm_all": "确认所有",
@@ -198,8 +200,47 @@
         "3d": "3D控制板"
       }
     },
+    "trace": {
+      "remove_all": "全部移除",
+      "module_label": "模块",
+      "available_trigger": "可用触发器",
+      "selected_trigger": "已选触发器",
+      "available_channel": "可用信道",
+      "selected_channel": "已选信道",
+      "no_trace_choosed_tip": "没有可用的模块，请先在通用页面选择一个追踪",
+      "common": {
+        "tab_name": "通用",
+        "trace_name": "追踪名称",
+        "duration": "持续时间",
+        "rate": "记录速率",
+        "state": "状态",
+        "state_not_ready": "追踪已结束",
+        "state_ready": "等待",
+        "state_traceing": "已触发",
+        "state_done": "完成",
+        "start_trace": "开始追踪",
+        "stop_trace": "停止追踪",
+        "trigger": "触发",
+        "trace_limit": "至多添加{{max}}个追踪",
+        "trace_add": "添加",
+        "trace_cancel": "取消",
+        "new_trace": "新建追踪",
+        "name_exist": "名字已存在",
+        "delete_trace": "删除追踪{{titlePara}}?",
+        "delete_trace_msg": "当前追踪的配置信息将会全部删除。",
+        "trace_name_tip": "追踪名包括不超过32个数字，字符或者下划线。"
+      },
+      "trigger": {
+        "tab_name": "触发"
+      },
+      "channel": {
+        "tab_name": "信道配置",
+        "instance": "轴"
+      }
+    },
     "tab1": "运动控制",
-    "tab2": "记录"
+    "tab2": "记录",
+    "tab3": "追踪"
   },
   "dataScreen": {
     "del": "删除{{name}}",
@@ -849,7 +890,11 @@
       "configFilePathRequiredErr": "需要配置文件路径",
       "loadConfigFilePathError": "加载配置文件失败。"
     },
-    "createVar": "添加变量"
+    "createVar": "添加变量",
+    "traceOn": {
+      "title": "插入TraceOn命令",
+      "trace_holder": "追踪"
+    }
   },
   "projects": {
     "ace": {

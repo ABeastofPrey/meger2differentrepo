@@ -12,6 +12,7 @@ export class YesNoDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {
       caution: boolean,
       title: string,
+      titlePara: string,
       msg: string,
       yes: string,
       no: string,

@@ -73,7 +73,15 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
       color: mat-color($material-kuka-primary);
     }
   }
-  
+
+  .cdk-overlay-connected-position-bounding-box {
+    .cdk-overlay-pane {
+      .mat-select-panel-wrap {
+        transform: translateX(15px) translateY(25px) !important;
+      }
+    }
+  }
+
   .warn-bg {
     background-color: mat-color($material-kuka-warn)!important;
     color: #fff;
@@ -158,6 +166,7 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   }
 
   .create-point-option {
+    text-align: center;
     background: mat-color($material-kuka-primary, 900) !important;
   }
   .create-point-option:hover {

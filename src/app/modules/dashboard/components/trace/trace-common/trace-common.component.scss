@@ -1,0 +1,84 @@
+::ng-deep mat-card {
+    .configuration {
+        display: flex;
+        flex-direction: column;
+        .name {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            mat-form-field {
+                flex-grow: 1;
+            }
+        }
+        .duration {
+            width: 100%;
+        }
+        .rate {
+            width: 100%;
+        }
+    }
+}
+.create-new-trace {    
+    height: 55px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    border-top: 1px solid #8080801f;
+    border-bottom: 1px solid #8080801f;
+    padding: 2px 0 1px 15px;
+    margin: 0 6px;
+    border-radius: 5px;
+    app-trace-new {
+        width: 100%;
+    }
+}
+.create-point-option {
+    margin: 5px;
+    border-radius: 5px;
+}
+.create-trace-option {
+    display: inline-block;
+    width: 100%;
+}
+.option-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    mat-option {
+        flex-grow: 1;
+        background: white;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+    button {
+        min-width: 24px;
+        width: 24px;
+    }
+    button:hover {
+        background: rgba(0, 0, 0, 0.04);
+    }
+}
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    .status {
+        flex-grow: 1;
+        .state-span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 4px;
+            margin: 0 3px 0 5px;
+        }
+    }
+    button {
+        margin: 0 0 0 5px;
+    }
+}

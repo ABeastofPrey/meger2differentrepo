@@ -1,19 +1,25 @@
 <div class="mat-typography">
 	<h1 class="title {{ data.caution ? 'warn-bg' : 'primary-bg' }}">
 		<mat-icon *ngIf="data.caution" style="margin-right: 16px; ">warning</mat-icon>
+		<span *ngIf="data.titlePara !== undefined else noParaTitle">
+			{{ data.title  | translate : { titlePara: data.titlePara } }}
+		</span>
+		<ng-template #noParaTitle>
+			<span>{{ data.title  | translate }}</span>
+		</ng-template>
 		<span>{{ data.title }}</span>
 		<button mat-icon-button (click)="close()" *ngIf="data.allowClose"><mat-icon>close</mat-icon></button>
 	</h1>
 	<div mat-dialog-content class="msg">
 		<mat-icon *ngIf="data.caution" color="warn" class="big-warning">warning</mat-icon>
-		<div>{{ data.msg }}</div>
+		<div>{{ data.msg  | translate }}</div>
 	</div>
 	<div mat-dialog-actions class="actions">
 		<button mat-button color="primary" mat-dialog-close cdkFocusInitial>
-			{{ data.no }}
+			{{ data.no  | translate }}
 		</button>
 		<button mat-raised-button [color]="data.warnBtn ? 'warn' : 'primary'" (click)="yes()">
-			{{ data.yes }}
+			{{ data.yes  | translate }}
 		</button>
 	</div>
 </div>

@@ -142,6 +142,7 @@ $material-semi-black: rgba(0,0,0,0.54);
   .item { background: #004D40; }
   
   .create-point-option {
+    text-align: center;
     background: mat-color($material-servotronix-primary, 100) !important;
   }
   .create-point-option:hover {

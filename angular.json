@@ -89,7 +89,6 @@
               "src/app/components/**/*.ts",
               "src/app/modules/core/**/*.ts",
               "src/app/modules/blockly/**/*.ts",
-              "src/app/modules/dashboard/**/*.ts",
               "src/app/modules/error-history/**/*.ts",
               "src/app/modules/file-tree/**/*.ts",
               "src/app/modules/gripper-screen/**/*.ts",

@@ -1,0 +1,73 @@
+<mat-card>
+    <mat-form-field class="module-container">
+        <mat-label>{{'dashboard.trace.module_label' | translate}}</mat-label>
+        <mat-select (selectionChange)="changeModule()" 
+            [disableOptionCentering]="true"
+            [disabled]="!selectedTrace"
+            [(ngModel)]="selectedModule">
+            <mat-option *ngFor="let m of moduleList" [value]="m">{{m}}</mat-option>
+        </mat-select>
+        <mat-hint *ngIf="!selectedTrace">
+            {{'dashboard.trace.no_trace_choosed_tip' | translate}}
+        </mat-hint>
+    </mat-form-field>
+
+    <div class="drag-drop-container-boundary">
+        <!-- Available item list -->
+        <div class="drag-drop-container">
+            <div class="label">
+                <span>{{'dashboard.trace.available_trigger' | translate}}</span>
+            </div>
+            <div class="content">
+                <cdk-virtual-scroll-viewport itemSize="40" [style.height]="'360px'">
+                    <div *cdkVirtualFor="let item of todoItems" 
+                        class="drag-drop-item"
+                        [ngStyle]="{'color': item.disabled ? 'rgba(0, 0, 0, 0.26)' : 'inherit'}">
+                        <span>{{item.module}}</span>
+                        <span [matTooltip]="item.variable">{{item.variable}}</span>
+                        <mat-select *ngIf="item.isIO"
+                            [disabled]="item.disabled" 
+                            [disableOptionCentering]="true"
+                            [(ngModel)]="item.turnOn">
+                            <mat-option [value]="1">TRUE</mat-option>
+                            <mat-option [value]="0">FALSE</mat-option>
+                        </mat-select>
+                        <button [disabled]="item.disabled" 
+                            (click)="selectOne(item)"
+                            mat-icon-button color="primary">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                </cdk-virtual-scroll-viewport>
+            </div>
+        </div>
+        <!-- Selected item list -->
+        <div class="drag-drop-container">
+            <div class="label">
+                <span>{{'dashboard.trace.selected_trigger' | translate}}</span>
+                <button [disabled]="selectedTrace === '' || doneItems.length === 0"
+                    (click)="unselectAll()"
+                    mat-stroked-button color="primary">
+                    {{'dashboard.trace.remove_all' | translate}}
+                </button>
+            </div>
+            <div class="content">
+                <div *ngFor="let item of doneItems"
+                    class="drag-drop-item">
+                    <span>{{item.module}}</span>
+                    <span [matTooltip]="item.variable">{{item.variable}}</span>
+                    <span>
+                        <ng-container *ngIf="item.isIO">
+                            {{item.turnOn === 1 ? 'TRUE' : 'FALSE'}}
+                        </ng-container>
+                    </span>
+                    <button mat-icon-button
+                        (click)="unselectOne(item)"
+                        color="primary">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-card>

@@ -63,6 +63,8 @@ import { VisionCommandService } from './components/combined-dialogs/services/vis
 import { HomeScreenModule } from '../home-screen/home-screen.module';
 import { FwconfigEditorComponent } from './components/fwconfig-editor/fwconfig-editor.component';
 import { TourMatMenuModule } from 'ngx-tour-md-menu';
+import { TraceSelectorComponent } from './components/dialogs/trace-selector/trace-selector.component';
+import { TraceService } from '../dashboard/services/trace.service';
 import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proceed-dialog.component';
 
 @NgModule({
@@ -126,6 +128,7 @@ import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proc
     JumpxCommandComponent,
     VisionLoadStationBookComponent,
     VisionCommandComponent,
+    TraceSelectorComponent,
   ],
   entryComponents: [
     NewProjectDialogComponent,
@@ -163,6 +166,7 @@ import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proc
     JumpxCommandComponent,
     VisionLoadStationBookComponent,
     VisionCommandComponent,
+    TraceSelectorComponent,
   ],
   exports: [
     ProgramEditorComponent,
@@ -179,6 +183,7 @@ import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proc
     HomeSettingService,
     JumpxCommandService,
     VisionCommandService,
+    TraceService,
   ],
 })
 export class ProgramEditorModule {}
