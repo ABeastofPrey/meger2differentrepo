@@ -100,12 +100,13 @@ export class TraceCommonComponent implements OnInit {
         })
     }
 
-    public createTrace(name): void {
-        const trace: Trace = { name, duration: 30, rate: this.firstRate };
+    public createTrace(name: string): void {
+        const newName = name.toUpperCase();
+        const trace: Trace = { name: newName, duration: 30, rate: this.firstRate };
         this.service.createTrace(trace).subscribe((success: boolean) => {
             this.traceList = this.service.getTraceList();
             this.addingNewTrace = false;
-            this.changeSelectedTrace({ value: name });
+            this.changeSelectedTrace({ value: newName });
         });
     }
 
@@ -121,7 +122,7 @@ export class TraceCommonComponent implements OnInit {
     public changeSelectedTrace({ value }): void {
         this.service.getSelectedConfig(value).subscribe(success => {
             from(this.traceList).pipe(rxjsMap(
-                traces => traces.find(x => x.name === value)
+                traces => traces.find(x => x.name.toUpperCase() === value.toUpperCase())
             )).subscribe(res => {
                 this.selectedTrace = res;
             });

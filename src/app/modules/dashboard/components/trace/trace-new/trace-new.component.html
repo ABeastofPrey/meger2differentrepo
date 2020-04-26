@@ -3,6 +3,7 @@
         <mat-label>{{'dashboard.trace.common.new_trace' | translate}}</mat-label>
         <input #newTraceInput
             type="text" matInput 
+            autoComplete="off"
             [formControl]="control"
             [placeholder]="'dashboard.trace.common.trace_name_tip' | translate"
             [value]="control.value" />
