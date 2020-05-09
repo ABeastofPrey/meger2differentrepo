@@ -1,5 +1,5 @@
 <div class="log-info-container">
-    <button class="close-button" mat-button [mat-dialog-close]="null" cdkFocusInitial>X</button>
+    <button class="close-button" mat-button (click)="close()" cdkFocusInitial>X</button>
     <div class="profile-container">
         <app-log-profile [log]="log"></app-log-profile>
     </div>

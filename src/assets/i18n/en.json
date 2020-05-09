@@ -1,7 +1,7 @@
 {
   "404": "Page Not Found",
   "number_input_range": "Typing number in ",
-  "number_input_required": "Required filed",
+  "number_input_required": "Required field",
   "sys_log": {
     "confirm": "CONFIRM",
     "confirm_all": "CONFIRM ALL",
@@ -263,6 +263,48 @@
     "mcu": "MCU",
     "no-data": "Data not available. Load TP libraries and try again.",
     "title": "Diagnostics"
+  },
+  "Belt": "Belt",
+  "Spline grease": "Spline grease",
+  "Encoder battery": "Encoder battery",
+  "hours": "hours",
+  "km": "km",
+  "Ah": "Ah",
+  "maintenance": {
+    "Belt": "皮带",
+    "input": {
+      "tab_name": "Maintenance Input",
+      "maintenance_type": "Maintenance Module",
+      "used_life": "Used Life",
+      "apply_to_type": "Apply to type",
+      "person_company": "Person/Company",
+      "order_number": "Order Number",
+      "comment": "Comments",
+      "save": "Save",
+      "saveInput": "Maintenance Handbook",
+      "saveMsg": "Do you want to save the changes?",
+      "nameRequire": "Person/Company is required",
+      "ordernum": "OrderNum is required",
+      "commentRequire": "Comment is required",
+      "used_life_req_error": "Used Life is required",
+      "used_life_req_max":"Maximum input limit {{max}}"
+    },
+    "history": {
+      "tab_name": "Maintenance History",
+      "maintenance_type": "Maintenance Module",
+      "date": "Date",
+      "person_company": "Person/Company",
+      "surplus_life": "Surplus Life",
+      "order_no": "Order Number",
+      "comment": "Comments"
+    },
+    "information": {
+      "tab_name": "Maintenance Information",
+      "maintenance_type": "Maintenance Module",
+      "performed_on": "Performed Time",
+      "surplus_life": "Surplus Life"
+    },
+    "title": "Maintenance Handbook"
   },
   "dialogs": {
     "jogSettings": "Jog Settings"

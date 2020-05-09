@@ -10,3 +10,14 @@ export class CSNotification {
     else this.msg = msg;
   }
 }
+
+export enum LibAsyncMessageCode {
+  MaitenanceLog = 1001,
+}
+
+export interface LibAsyncMessage {
+  code: LibAsyncMessageCode,
+  hasErr: boolean,
+  result: string,
+  error: string,
+}

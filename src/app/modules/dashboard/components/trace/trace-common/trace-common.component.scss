@@ -1,4 +1,8 @@
-::ng-deep mat-card {
+mat-card {
+    margin: 24px;
+    border-radius: 0;
+    width: 35%;
+    min-width: 355px;
     .configuration {
         display: flex;
         flex-direction: column;

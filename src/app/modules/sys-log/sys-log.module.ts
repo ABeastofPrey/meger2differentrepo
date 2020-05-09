@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { SysLogBookService } from './services/sys-log-book.service';
-import { SysLogBarService } from './services/sys-log-bar.service';
+// import { SysLogBarService } from './services/sys-log-bar.service';
 import { SysLogOverlayService } from './services/sys-log-overlay.service';
 import { SysLogFetchService } from './services/sys-log-fetch.service';
 import { LogSnackbarComponent } from './components/log-snackbar/log-snackbar.component';
@@ -35,7 +35,7 @@ export class LogBookRoutingModule { }
         LogMCInfoComponent,
     ],
     providers: [
-        SysLogBarService, SysLogOverlayService, SysLogBookService, SysLogFetchService,
+        SysLogOverlayService, SysLogBookService, SysLogFetchService,
     ],
     imports: [
         CommonModule,

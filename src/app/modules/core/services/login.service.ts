@@ -8,7 +8,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { LicenseDialogComponent } from '../../../components/license-dialog/license-dialog.component';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { SysLogBarService } from '../../sys-log/services/sys-log-bar.service';
+import { SysLogWatcherService } from '../../sys-log/services/sys-log-watcher.service';
 
 @Injectable()
 export class LoginService {
@@ -138,7 +138,7 @@ export class LoginService {
     this.router.navigate(['/login'], { queryParams: params });
     const ref = this.snack._openedSnackBarRef;
     if (ref) ref.dismiss();
-    this.sysLogbar.stopListenSysLog();
+    this.sysLogWatcher.stopListenSysLog();
     return true;
   }
 
@@ -149,7 +149,7 @@ export class LoginService {
     private jwtService: JwtService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
-    private sysLogbar: SysLogBarService,
+    private sysLogWatcher: SysLogWatcherService,
   ) {
     this.ws.isConnected.subscribe(stat => {
       if (!stat && this.ws.port && !this.ws.updateFirmwareMode) {

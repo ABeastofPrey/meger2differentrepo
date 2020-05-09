@@ -264,6 +264,48 @@
     "no-data": "数据无效，请重新加载TP库",
     "title": "诊断"
   },
+  "Belt": "皮带",
+  "Spline grease": "润滑脂",
+  "Encoder battery": "编码器电池",
+  "hours": "小时",
+  "km": "千米",
+  "Ah": "安培小时",
+  "maintenance": {
+    "Belt": "皮带",
+    "input": {
+      "tab_name": "维护输入",
+      "maintenance_type": "维护项",
+      "used_life": "使用寿命",
+      "apply_to_type": "应用类型",
+      "person_company": "个人/公司",
+      "order_number": "订单号",
+      "comment": "评论",
+      "save": "保存",
+      "saveInput": "维护确认",
+      "saveMsg": "是否保存更改？",
+      "nameRequire": "个人/公司必填",
+      "ordernum": "订单号必填",
+      "commentRequire": "评论必填",
+      "used_life_req_error":"使用寿命必填",
+      "used_life_req_max":"最大输入限制 {{max}}"
+    },
+    "history": {
+      "tab_name": "维护历史",
+      "maintenance_type": "维护项",
+      "date": "日期",
+      "person_company": "个人/公司",
+      "surplus_life": "剩余寿命",
+      "order_no": "订单号",
+      "comment": "评论"
+    },
+    "information": {
+      "tab_name": "维护信息",
+      "maintenance_type": "维护项",
+      "performed_on": "使用时间",
+      "surplus_life": "剩余寿命"
+    },
+    "title": "维护项"
+  },
   "dialogs": {
     "jogSettings": "点动设置"
   },

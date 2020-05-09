@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { SysLogBarService } from '../../modules/sys-log/services/sys-log-bar.service';
+import { SysLogWatcherService } from '../../modules/sys-log/services/sys-log-watcher.service';
 
 @Component({
   selector: 'app-update-dialog',
@@ -19,7 +19,7 @@ export class UpdateDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public title: string,
     private trn: TranslateService,
     public cmn: CommonService,
-    private sysLogger: SysLogBarService,
+    private sysLogWatcher: SysLogWatcherService,
     private dialogRef: MatDialogRef<UpdateDialogComponent>
   ) {}
 
@@ -49,9 +49,9 @@ export class UpdateDialogComponent implements OnInit {
         }
       },10000);
     });
-    this.sysLogger.stopListenSysLog();
+    this.sysLogWatcher.stopListenSysLog();
     const sub = this.dialogRef.afterClosed().subscribe(() => {
-      this.sysLogger.startListenSysLog();
+      this.sysLogWatcher.startListenSysLog();
       sub.unsubscribe();
     });
   }

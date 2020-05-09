@@ -16,6 +16,10 @@
     &-content {
         flex-grow: 1;
         padding: 5px 5px 5px 5px;
+        span {
+            font-size: 14px;
+            font-family: Roboto, "Helvetica Neue", sans-serif;
+        }
     }
     &-date {
         color: gray;

@@ -26,6 +26,12 @@ export class ConfigurationComponent implements OnInit {
         permission: 99,
       },
       {
+        path: 'maintenance',
+        label: 'maintenance.title',
+        icon: 'build',
+        permission: 99,
+      },
+      {
         path: 'robots',
         label: 'robots.title',
         icon: 'group_work',

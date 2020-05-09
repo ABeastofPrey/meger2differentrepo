@@ -197,16 +197,16 @@ export class WebsocketService {
   }
 
   observableQuery(api: string): Observable<MCQueryResponse | ErrorFrame[]> {
-    return new Observable(observer => {
+    return Observable.create(observer => {
       this.send(api, false, (result: string, cmd: string, err: ErrorFrame[]) => {
         if (!!err) {
           observer.error(err);
         } else {
           observer.next({ result, cmd, err });
+          observer.complete();
         }
       });
     });
-      
   }
 
   handleMessage(data: MCResponse) {
@@ -268,6 +268,9 @@ export class WebsocketService {
           } catch (err) {
             console.log('Couldnt parse webserver message:' + data['msg'] + '...');
           }
+      } else if (data['msg'].startsWith('#libAsyncMessge#')) {
+        const message = data['msg'].substring(16);
+        this.notification.onLibAsyncMessage(message);
       } else {
         // Other Server announcements
         //this._zone.run(() => {

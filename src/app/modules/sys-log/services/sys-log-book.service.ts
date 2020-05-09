@@ -15,7 +15,7 @@ export class SysLogBookService {
         return this.fetchLog.clearSysLog();
     }
 
-    public clearAllDriveFault(): void {
-        this.fetchLog.clearDriveFault();
+    public clearAllDriveFault(): Promise<any> {
+        return this.fetchLog.clearDriveFault();
     }
 }

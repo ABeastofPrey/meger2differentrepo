@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '../../../shared/shared.module';
 import { UnitTestModule } from '../../../shared/unit-test.module';
@@ -11,6 +11,7 @@ import { LogBookComponent } from './logbook.component';
 import { SysLogBookService } from '../../services/sys-log-book.service';
 import { LoginService, ScreenManagerService, WebsocketService } from '../../../core';
 import { ProgramEditorService } from '../../../program-editor/services/program-editor.service';
+import { SysLogWatcherService } from '../../services/sys-log-watcher.service';
 import { SystemLog } from '../../enums/sys-log.model';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material';
@@ -28,6 +29,36 @@ export class LogDetailsComponent {
     @Input() log: SystemLog;
 }
 
+const fakeWatcher = { refreshLog: new EventEmitter() };
+
+const fakeService = {
+  getSysLogs: () => ({
+    pipe: () => ({
+      subscribe: cb => {
+        cb(fakeLogs);
+      }
+    })
+  }),
+  clearAllLogHistory: () => ({
+    pipe: () => ({
+      subscribe: cb => {
+        cb();
+      }
+    })
+  }),
+  clearAllDriveFault: () => Promise.resolve()
+};
+const ws = jasmine.createSpyObj('WebsocketService', ['']);
+ws.isConnected = {
+  pipe: () => { 
+    return {
+      subscribe: cb => {
+        cb(true);
+      }
+    };
+  }
+};
+
 const fakeLogs = [
   { source: 'drive' },
   { source: 'firmware' },
@@ -41,29 +72,6 @@ const fakeLogs = [
 describe('LogBookComponent', () => {
   let component: LogBookComponent;
   let fixture: ComponentFixture<LogBookComponent>;
-  const fakeService = {
-    getSysLogs: () => ({
-      subscribe: cb => {
-        cb(fakeLogs);
-      }
-    }),
-    clearAllLogHistory: () => ({
-      subscribe: cb => {
-        cb();
-      }
-    }),
-    clearAllDriveFault: () => {}
-  };
-  const ws = jasmine.createSpyObj('WebsocketService', ['']);
-  ws.isConnected = {
-    pipe: () => { 
-      return {
-        subscribe: cb => {
-          cb(true);
-        }
-      };
-    }
-  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -77,6 +85,8 @@ describe('LogBookComponent', () => {
         { provide: ScreenManagerService, useValue: {} },
         { provide: Router, useValue: {} },
         { provide: WebsocketService, useValue: ws },
+        { provide: SysLogWatcherService, useValue: fakeWatcher },
+        ChangeDetectorRef
       ],
       imports: [SharedModule, BrowserAnimationsModule, UnitTestModule],
     }).compileComponents();

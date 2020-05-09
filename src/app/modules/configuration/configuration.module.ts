@@ -25,6 +25,11 @@ import { ReleaseNoteComponent } from './components/version/release-note/release-
 import { AxisVordComponent } from './components/axis-vord/axis-vord.component';
 import { BrakeTestComponent } from './components/brake-test/brake-test.component';
 import { SafetyConfiguratorModule } from '../safety-configurator/safety-configurator.module';
+import { MaintenanceComponent } from './components/maintenance/maintenance.component';
+import { MaintenanceInputComponent } from './components/maintenance-input/maintenance-input.component';
+import { MaintenanceHistoryComponent } from './components/maintenance-history/maintenance-history.component';
+import { MaintenanceInformationComponent } from './components/maintenance-information/maintenance-information.component';
+import { MaintenanceService } from './services/maintenance.service';
 
 @NgModule({
   imports: [
@@ -52,12 +57,17 @@ import { SafetyConfiguratorModule } from '../safety-configurator/safety-configur
     ReleaseNoteComponent,
     AxisVordComponent,
     BrakeTestComponent,
+    MaintenanceComponent,
+    MaintenanceInputComponent,
+    MaintenanceHistoryComponent,
+    MaintenanceInformationComponent,
   ],
   providers: [
     IoService,
     TopologyService,
     ReferenceMasteringService,
     PermissionGuardService,
+    MaintenanceService,
   ],
   entryComponents: [
     NewUserDialogComponent,

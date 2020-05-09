@@ -10,6 +10,7 @@ import { UserMngrComponent } from './components/user-manager/user-mngr/user-mngr
 import { AboutComponent } from './components/about/about.component';
 import { PermissionGuardService as PermissionGuard } from './permission-guard.service';
 import { ThirdPartyComponent } from './components/third-party/third-party.component';
+import { MaintenanceComponent } from './components/maintenance/maintenance.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,14 @@ const routes: Routes = [
       {
         path: 'diagnostics',
         component: DiagnosticsComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 99,
+        },
+      },
+      {
+        path: 'maintenance',
+        component: MaintenanceComponent,
         canActivate: [PermissionGuard],
         data: {
           permission: 99,

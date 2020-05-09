@@ -39,10 +39,10 @@ describe('LogSnackbarComponent', () => {
   }));
 
   it('should emit clickConform', () => {
-    component.confirmEvent.subscribe(id => {
-      expect(id).toEqual(fakeLog.id);
+    component.confirmEvent.subscribe(log => {
+      expect(log.id).toEqual(fakeLog.id);
     })
-    component.clickConform();
+    component.clickConform({ stopPropagation: () => { } } as any);
   });
 
   it('should emit clickConformAll', () => {
@@ -57,5 +57,6 @@ describe('LogSnackbarComponent', () => {
       expect(id).toEqual(fakeLog.id);
     });
     component.clickContent();
+    component.refresh();
   });
 });

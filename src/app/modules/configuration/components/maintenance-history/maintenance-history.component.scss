@@ -1,0 +1,37 @@
+mat-card {
+    background: bottom !important;
+    .table-contain {
+        width: 100%;
+        max-height: 56vh;
+        overflow: auto;
+        .matTable {
+            width: 100%;
+            table-layout: fixed;
+            .hide {
+                display: none;
+            }
+            .minWidth {
+                min-width: 100px;
+            }
+            th.header {
+                position: relative;
+                div.headerBottom {
+                    position: absolute;
+                    width: 100%;
+                    bottom: 0;
+                    left: 0;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+                }
+            }
+            .unit {
+                float: right;
+                margin-right: 20%;
+            }
+            td {
+                word-break: break-all;
+                word-wrap: break-word;
+                padding-right: 20px;
+            }
+        }
+    }
+}

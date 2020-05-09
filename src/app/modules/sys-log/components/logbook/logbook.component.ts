@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SystemLog } from '../../enums/sys-log.model';
 import { SysLogBookService } from '../../services/sys-log-book.service';
+import { SysLogWatcherService } from '../../services/sys-log-watcher.service';
 import { PageEvent } from '@angular/material';
 import { slice, filter } from 'ramda';
 import { WebsocketService } from '../../../core/services/websocket.service';
@@ -32,7 +33,9 @@ export class LogBookComponent implements OnInit {
 
     constructor(
         private service: SysLogBookService,
-        private ws: WebsocketService
+        private sysLogWatcher: SysLogWatcherService,
+        private ws: WebsocketService,
+        private cdRef: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -48,12 +51,13 @@ export class LogBookComponent implements OnInit {
     }
 
     private fetchLog(): void {
-        this.service.getSysLogs().subscribe(_logs => {
+        this.service.getSysLogs().pipe(takeUntil(this.notifier)).subscribe(_logs => {
             this.allLogs = _logs;
             this.filteredLogs = _logs;
             this.dirveLogs = filter((x: SystemLog) => x.source === 'drive')(_logs);
             this.visiableLogs = slice(0, this.pageSize)(_logs);
             this.onFilter();
+            this.cdRef.detectChanges();
         });
     }
 
@@ -95,12 +99,16 @@ export class LogBookComponent implements OnInit {
     }
 
     public clearAllLogHistory(): void {
-        this.service.clearAllLogHistory().subscribe(() => {
+        this.service.clearAllLogHistory().pipe(takeUntil(this.notifier)).subscribe(() => {
             this.fetchLog();
+            this.sysLogWatcher.refreshLog.next(null);
         });
     }
 
     public clearAllDriveFault(): void {
-        this.service.clearAllDriveFault();
+        this.service.clearAllDriveFault().then(() => {
+            this.fetchLog();
+            this.sysLogWatcher.refreshLog.next(null);
+        });
     }
 }

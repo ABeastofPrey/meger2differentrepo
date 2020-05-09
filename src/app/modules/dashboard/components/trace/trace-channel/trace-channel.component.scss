@@ -1,8 +1,9 @@
 mat-card {
-    min-height: 65vh !important;
-    width: 98% !important;
+    width: calc(100% - 72px) !important;
     min-width: 500px!important;
     background: bottom!important;
+    margin: 24px;
+    border-radius: 0;
     .module-container {
         width: calc(50% - 35px);
     }

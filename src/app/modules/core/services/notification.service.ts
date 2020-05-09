@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { Injectable, ApplicationRef } from '@angular/core';
 import { EventEmitter } from '@angular/core';
-import { CSNotification } from '../notification.model';
+import { CSNotification, LibAsyncMessage } from '../notification.model';
 
 @Injectable()
 export class NotificationService {
@@ -15,6 +15,7 @@ export class NotificationService {
 
   newMessage: EventEmitter<void> = new EventEmitter();
   newWebserverMessage: EventEmitter<void> = new EventEmitter();
+  newLibAsyncMessage: EventEmitter<LibAsyncMessage> = new EventEmitter<LibAsyncMessage>();
   count: BehaviorSubject<number> = new BehaviorSubject(0); // counts unread messages
 
   get windowOpen() {
@@ -77,6 +78,21 @@ export class NotificationService {
     setTimeout(()=>{ // TO AVOID PERFORMANCE ISSUES
       this.newMessage.next();
     },0);
+  }
+
+  onLibAsyncMessage(msg: string): void {
+    msg = JSON.stringify({
+      code: 1001,
+      hasErr: true,
+      result: 'This is from lib',
+      error: 'Woo, something wrong'
+    });
+    try {
+      const libMessage: LibAsyncMessage = JSON.parse(msg);
+      this.newLibAsyncMessage.next(libMessage);
+    } catch (error) {
+      console.warn('Parse lib async message failed: ' + msg);
+    }
   }
 
   clear() {

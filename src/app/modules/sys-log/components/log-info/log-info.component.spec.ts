@@ -8,10 +8,13 @@ import { LogProfileComponent } from '../log-profile/log-profile.component';
 import { LogMCInfoComponent } from '../log-mc-info/log-mc-info.component';
 import { LogCauseComponent } from '../log-cause/log-cause.component';
 import { LogEffectComponent } from '../log-effect/log-effect.component';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { LoginService, ScreenManagerService } from '../../../core';
 import { ProgramEditorService } from '../../../program-editor/services/program-editor.service';
 import { Router } from '@angular/router';
+
+const fakeDialog = jasmine.createSpyObj('MatDialogRef', ['close']);
+const closeSyp = fakeDialog.close;
 
 describe('LogInfoComponent', () => {
   let component: LogInfoComponent;
@@ -30,6 +33,7 @@ describe('LogInfoComponent', () => {
         { provide: ScreenManagerService, useValue: {} },
         { provide: ProgramEditorService, useValue: {} },
         { provide: Router, useValue: {} },
+        { provide: MatDialogRef, useValue: fakeDialog }
       ]
     }).compileComponents();
   }));
@@ -42,5 +46,7 @@ describe('LogInfoComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    component.close();
+    expect(closeSyp).toHaveBeenCalled();
   });
 });

@@ -118,7 +118,7 @@ describe('ArchSettingComponent', () => {
       input.value = 'aaa';
       input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      expect(input.value).toBe('aaa');
+      expect(input.value).toBe('');
       eve.target.value = input.value;
       comp.onBlur(eve, '0', input.value, '1');
       expect(setArchSpy.calls.any()).toBe(

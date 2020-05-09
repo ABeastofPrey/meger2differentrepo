@@ -4,7 +4,6 @@ import { UnitTestModule } from '../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { fakeLog, SystemLog } from '../../enums/sys-log.model';
 import { LogInfoComponent } from '../log-info/log-info.component';
-import { LogDetailsComponent, LogProfileComponent } from '../logbook/logbook.component.spec';
 import { LogMCInfoComponent } from '../log-mc-info/log-mc-info.component';
 import { LogCauseComponent } from '../log-cause/log-cause.component';
 import { LogEffectComponent } from '../log-effect/log-effect.component';
@@ -12,6 +11,25 @@ import { LogUnconfirmDialogComponent } from './log-unconfirm-dialog.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { SysLogFetchService } from '../../services/sys-log-fetch.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Component, Input } from '@angular/core';
+import { of } from 'rxjs';
+
+@Component({selector: 'app-log-profile', template: ''})
+export class LogProfileComponent {
+  @Input() log: SystemLog;
+}
+
+@Component({
+    selector: 'app-log-details',
+    template: ''
+})
+export class LogDetailsComponent {
+    @Input() log: SystemLog;
+}
+
+const service = jasmine.createSpyObj('SysLogFetchService', ['setConfirmId', 'setConfirmIdList']);
+service.setConfirmId.and.returnValue(of(true));
+service.setConfirmIdList.and.returnValue(of(true));
 
 describe('LogUnconfirmDialogComponent', () => {
   let component: LogUnconfirmDialogComponent;
@@ -27,9 +45,11 @@ describe('LogUnconfirmDialogComponent', () => {
       ],
       imports: [SharedModule, BrowserAnimationsModule, UnitTestModule, ScrollingModule],
       providers: [
-        { provide: SysLogFetchService, useValue: { setConfirmId: id => { } } },
+        { provide: SysLogFetchService, useValue: service},
         { provide: MatDialogRef, useValue: fakeDialog },
-        { provide: MAT_DIALOG_DATA, useValue: { unconfirmLog: [fakeLog] } }
+        { provide: MAT_DIALOG_DATA, useValue: {
+          unconfirmLog: [fakeLog, { type: 'warning' }, { type: 'information' }, { type: 'unknow' }]}
+        }
       ]
     }).compileComponents();
   }));
@@ -41,23 +61,26 @@ describe('LogUnconfirmDialogComponent', () => {
   });
 
   it('should create', () => {
+    component.unconfirmLog = [fakeLog, { type: 'warning' }, { type: 'information' }, { type: 'unknow' }] as SystemLog[];
     expect(component).toBeTruthy();
   });
 
   it('should confirm', () => {
-    component.unconfirmLog = [fakeLog, { type: 'warning' }, { type: 'information' }, { type: 'unknow' }] as SystemLog[];
-    const event = { stopImmediatePropagation: () => { } } as MouseEvent;
+    fixture.detectChanges();
+    const event = { stopPropagation: () => { } } as MouseEvent;
     component.confirm(event, fakeLog);
     component.unconfirmLog = [];
     component.confirm(event, fakeLog);
-    expect(closeSpy).toHaveBeenCalledTimes(1);
+    expect(closeSpy).toHaveBeenCalledTimes(0);
     component.unconfirmLog = [fakeLog];
     closeSpy.calls.reset();
   });
 
   it('should confirm all', () => {
     expect(component).toBeTruthy();
-    component.confirmAll(undefined);
+    component.confirmAll();
+    component.unconfirmLog.length = 0;
+    component.confirmAll();
     expect(closeSpy).toHaveBeenCalledTimes(1);
     closeSpy.calls.reset();
   });
@@ -71,3 +94,4 @@ describe('LogUnconfirmDialogComponent', () => {
     expect(height1).toEqual('512px');
   });
 });
+

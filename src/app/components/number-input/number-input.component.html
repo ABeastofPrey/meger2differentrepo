@@ -1,11 +1,14 @@
 <mat-form-field [appearance]="appearance" class="cs-number-input">
     <mat-label>{{label}}</mat-label>
-    <input #numInput type="text" matInput
+    <input #numInput
+        matInput
+        type="text" 
+        autocomplete="off"
         [placeholder]="placeHolder"
         [value]="control.value"
         [formControl]="control">
     <span matPrefix>{{prefix}}</span>
-    <span matSuffix>{{suffix}}</span>
+    <span matSuffix>{{suffix | translate}}</span>
     <mat-hint>{{hint}}</mat-hint>
     <mat-error *ngIf="control.hasError('required')">
         {{'number_input_required' | translate}}

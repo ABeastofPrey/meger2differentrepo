@@ -16,7 +16,7 @@
                     <span>{{infoCount}}</span>
                 </div>
             </div>
-            <button class="confirm-all-btn" mat-raised-button color="primary" (click)="confirmAll($event)">{{ 'sys_log.confirm_all' | translate }}</button>
+            <button class="confirm-all-btn" mat-raised-button color="primary" (click)="confirmAll()">{{ 'sys_log.confirm_all' | translate }}</button>
         </div>
         <div class="accordion-container">
             <mat-accordion>
@@ -27,7 +27,9 @@
                             <mat-expansion-panel-header>
                                 <div class="panel-container">
                                     <app-log-profile [log]="item"></app-log-profile>
-                                    <button class="confirm-btn" mat-raised-button color="primary" (click)="confirm($event, item)">
+                                    <button class="confirm-btn" mat-raised-button color="primary"
+                                        [disabled]="!item.canConfirm"
+                                        (click)="confirm($event, item)">
                                         {{ 'sys_log.confirm' | translate }}
                                     </button>
                                 </div>

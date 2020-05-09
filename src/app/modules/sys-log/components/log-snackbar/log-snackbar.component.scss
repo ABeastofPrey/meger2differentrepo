@@ -24,11 +24,11 @@
         padding: 0 2px;
         flex-grow: 1;
         min-width: 110px;
-        span:nth-child(1) {
+        .first-span {
             color: #9e9e9e;
-            font-size: 0.9em;
+            font-size: 14px;
         }
-        span:nth-child(2) {
+        .second-span {
             // display: -webkit-box;
             // -webkit-box-orient: vertical;
             // -webkit-line-clamp: 3;
@@ -36,7 +36,7 @@
             margin: 5px 0 0 0;
             line-height: 16px;
             max-height: 48px;
-            font-size: 0.9em;
+            font-size: 14px;
             overflow-y: auto;
             overflow-x: hidden;
         }

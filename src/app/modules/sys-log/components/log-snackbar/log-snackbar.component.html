@@ -11,17 +11,17 @@
     <mat-divider [vertical]="true"></mat-divider>
     <div class="center-portion" (click)="clickContent()">
         <!-- <span>{{data?.date}} &nbsp; {{data?.time}}</span> -->
-        <span>{{data?.timestamp | date:'yyyy/MM/dd h:mm:ss a'}}</span>
+        <span class="first-span">{{data?.timestamp | date:'yyyy/MM/dd h:mm:ss a'}}</span>
         <ng-container [ngSwitch]="data.source">
-            <span *ngSwitchCase="'webServer'">
+            <span class="second-span" *ngSwitchCase="'webServer'">
                 {{('log.' + data?.message) | translate:{ name: data.userName.toUpperCase() } }} 
                 {{data?.paras[0]?.toUpperCase()}}
             </span>
-            <span *ngSwitchCase="'lib'">
+            <span class="second-span" *ngSwitchCase="'lib'">
                 {{data?.code}}&nbsp;&nbsp;{{'lib_code.' + data?.code | translate}} 
                 {{!!data?.message ? ' ' + data.message : ''}}
             </span>
-            <span *ngSwitchDefault>
+            <span class="second-span" *ngSwitchDefault>
                 <span *ngIf="data">{{data.code}}&nbsp;&nbsp;{{trn.getTranslation(data.code,data.message)}}</span>
             </span>
         </ng-container>
@@ -29,7 +29,11 @@
     <mat-divider [vertical]="true"></mat-divider>
     <div class="right-portion">
         <button mat-flat-button color="primary" (click)="clickQuestionMark()" [disabled]="(data && data.type === 'information')">?</button>
-        <button mat-flat-button color="primary" (click)="clickConform()">{{ 'sys_log.confirm' | translate }}</button>
+        <button mat-flat-button color="primary" 
+            [disabled]="!data?.canConfirm"
+            (click)="clickConform($event)">
+            {{ 'sys_log.confirm' | translate }}
+        </button>
         <button mat-flat-button color="primary" (click)="clickConformAll()">{{ 'sys_log.confirm_all' | translate }}</button>
     </div>
 </mat-card>

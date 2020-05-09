@@ -1,0 +1,17 @@
+<mat-tab-group>
+    <mat-tab label="{{'maintenance.input.tab_name' | translate}}">
+        <ng-template matTabContent>
+            <app-maintenance-input></app-maintenance-input>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="{{'maintenance.history.tab_name' | translate}}">
+        <ng-template matTabContent>
+            <app-maintenance-history></app-maintenance-history>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="{{'maintenance.information.tab_name' | translate}}">
+        <ng-template matTabContent>
+            <app-maintenance-information></app-maintenance-information>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

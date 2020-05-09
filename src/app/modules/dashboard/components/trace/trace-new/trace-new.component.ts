@@ -32,7 +32,7 @@ export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit {
                 const [validName] = input.target.value.match(/[a-zA-Z0-9_]*/g);
                 const name = validName.slice(0, 32);
                 this.control.patchValue(name);
-                if (this.traceList.findIndex(x => x.name === name) !== -1) {
+                if (this.traceList.findIndex(x => x.name.toUpperCase() === name.toUpperCase()) !== -1) {
                     this.control.setErrors({ exist: {} });
                     this.control.markAsTouched();
                 }
