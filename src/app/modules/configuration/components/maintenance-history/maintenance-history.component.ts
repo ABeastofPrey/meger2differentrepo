@@ -25,6 +25,7 @@ export class MaintenanceHistoryComponent implements OnInit {
     getHistoryData() {
         this.service.getData("?mntn_get_history_page").then((res: MCQueryResponse) => {
             this.dataSource = [];
+            res.result = res.result.replace(/\\/g,'\\\\');
             let tableData: MainTable2Data = JSON.parse(res.result);
             tableData.historyPage.forEach((value) => {
                 let moduleName = value.moduleName;
