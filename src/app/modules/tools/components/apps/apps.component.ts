@@ -16,7 +16,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
 import { MCQueryResponse, DataService, TpStatService } from '../../../core';
 import { FactoryRestoreComponent } from '../factory-restore/factory-restore.component';
-import { SysLogWatcherService } from '../../../sys-log/services/sys-log-watcher.service';
 
 @Component({
   selector: 'apps',
@@ -67,7 +66,6 @@ export class AppsComponent implements OnInit {
     public data: DataService,
     private task: TaskService,
     public cmn: CommonService,
-    private sysLogWatcher: SysLogWatcherService,
   ) {
     this.trn.get('apps').subscribe(words => {
       this.words = words;
@@ -196,7 +194,6 @@ export class AppsComponent implements OnInit {
         e.target.value = null;
         return;
       }
-      this.sysLogWatcher.stopListenSysLog();
       const dialog = this.dialog.open(UpdateDialogComponent, {
         disableClose: true,
         width: '100%',
@@ -225,13 +222,11 @@ export class AppsComponent implements OnInit {
               }, 10000);
             } else {
               dialog.close();
-              this.sysLogWatcher.startListenSysLog();
             }
           },
           (ret: HttpErrorResponse) => {
             // ON ERROR
             dialog.close();
-            this.sysLogWatcher.startListenSysLog();
             switch (ret.error.err) {
               default:
                 break;

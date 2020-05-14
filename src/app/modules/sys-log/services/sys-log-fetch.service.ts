@@ -178,7 +178,6 @@ export class SysLogFetchService {
     }
 
     private fetchFromWebserver(): Observable<SystemLog[]> {
-        console.log('fetchFromWebserver.');
         const api = '/cs/api/log';
         const lt10 = lt(__, 10);
         const convertDate = timestamp => {
@@ -221,8 +220,6 @@ export class SysLogFetchService {
     }
 
     private fetchFromErrHistory(): Observable<SystemLog[]> {
-        console.log('fetchFromErrHistory.')
-
         const api = '?errorhistory$(1)';
         const getErr = res => {
             if (res === 'No error history') {
@@ -239,8 +236,6 @@ export class SysLogFetchService {
     }
 
     private fetchFromLibMaintenance(): Observable<SystemLog[]> {
-        console.log('fetchFromLibMaintenance.');
-        console.log('--------------------------');
         const api = '?mntn_log';
         const parser = compose(prop('error'), JSON.parse);
         const disableConfirm = (x: SystemLog) => ({ ...x, canConfirm: false });

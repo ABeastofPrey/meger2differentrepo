@@ -15,7 +15,6 @@ import { NotificationService } from '../../core/services/notification.service';
     providedIn: 'root'
 })
 export class SysLogWatcherService {
-    private onListening = false;
     private fisrtPrompt = true;
     private subscribeClicks = true;
     private unconfirmedLog: SystemLog[] = [];
@@ -32,28 +31,9 @@ export class SysLogWatcherService {
         private dialog: MatDialog,
         private notify: NotificationService,
         private ngZone: NgZone
-    ) {
-        const listenOnRefresh = setInterval(() => {
-            const isLoginPage = window.location.href.slice(-6) === '/login';
-            (this.onListening || isLoginPage) ? clearInterval(listenOnRefresh) : this.startListenSysLog();
-        }, 1000);
-    }
+    ) { }
 
     public startListenSysLog(): void {
-        console.log('Start Listening');
-        this.onListening = true;
-        
-        // Just for test, should remove in production env.
-        this.notify.newMessage.subscribe(() => {
-            console.log('new Message');
-        });
-        this.notify.newWebserverMessage.subscribe(() => {
-            console.log('new Webserver Message');
-        });
-        this.notify.newLibAsyncMessage.subscribe(() => {
-            console.log('new Lib Async Message');
-        });
-
         this.subscribeClicks && this.subscribeEvents();
         const notifier = merge(
             this.notify.newMessage.pipe(debounceTime<any>(500)),
@@ -61,7 +41,7 @@ export class SysLogWatcherService {
             this.notify.newLibAsyncMessage.pipe(debounceTime<any>(500)),
             this.refreshLog.pipe(debounceTime<any>(200))
         ).pipe(takeUntil(this.stopListen));
-        const getUnconfimredLogs = flatMap(() => this.getUnconfimredLogs())
+        const getUnconfimredLogs = flatMap(() => this.getUnconfimredLogs());
         const runInsideAngular: any = logs => this.promptLatestUnconfirmedLog.bind(this, [...logs]);
         const listener = logs => this.ngZone.run(runInsideAngular(logs));
         const listenOnNotifier = () => notifier.pipe(getUnconfimredLogs).subscribe(listener);
@@ -70,7 +50,6 @@ export class SysLogWatcherService {
     }
 
     public stopListenSysLog(): void {
-        console.log('Stop Listening');
         this.unsubscribeEvents();
         this.stopListen.next();
         this.overlaySerivce.closeLogSnakbar();
@@ -79,7 +58,6 @@ export class SysLogWatcherService {
     }
 
     private pauseListenSysLog(): void {
-        console.log('Pause Listening');
         this.stopListen.next();
     }
 

@@ -20,7 +20,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../core/services/utils.service';
 import { CommonService } from '../core/services/common.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { SysLogWatcherService } from '../sys-log/services/sys-log-watcher.service';
 
 @Component({
   selector: 'login-screen',
@@ -155,7 +154,6 @@ export class LoginScreenComponent implements OnInit {
     private trn: TranslateService,
     public utils: UtilsService,
     public cmn: CommonService,
-    private sysLogWatcher: SysLogWatcherService
   ) {
     this.appName = utils.IsKuka
       ? environment.appName_Kuka
@@ -312,7 +310,6 @@ export class LoginScreenComponent implements OnInit {
    */
   private redirectToMain() {
     if (!this.cmn.isTablet) {
-      this.sysLogWatcher.startListenSysLog();
       return this.router.navigateByUrl('/');
     }
     this.ws.query('?tp_ver').then((ret:MCQueryResponse)=>{
@@ -325,7 +322,6 @@ export class LoginScreenComponent implements OnInit {
         });
         return;
       }
-      this.sysLogWatcher.startListenSysLog();
       this.router.navigateByUrl('/');
     });
   }
@@ -346,8 +342,6 @@ export class LoginScreenComponent implements OnInit {
       if (params['serverDisconnected']) {
         this.router.navigate(this.route.snapshot.url, { queryParams: {} });
         setTimeout(() => {
-          // Stop listen sys message change after disconnected.
-          this.sysLogWatcher.stopListenSysLog();
           // TO FINISH THE ANIMATION TRANSITION
           this.dialog.open(ServerDisconnectComponent);
         }, 500);

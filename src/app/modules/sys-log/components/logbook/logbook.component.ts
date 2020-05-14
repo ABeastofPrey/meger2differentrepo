@@ -101,14 +101,14 @@ export class LogBookComponent implements OnInit {
     public clearAllLogHistory(): void {
         this.service.clearAllLogHistory().pipe(takeUntil(this.notifier)).subscribe(() => {
             this.fetchLog();
-            this.sysLogWatcher.refreshLog.next(null);
+            this.sysLogWatcher.refreshLog.next();
         });
     }
 
     public clearAllDriveFault(): void {
         this.service.clearAllDriveFault().then(() => {
             this.fetchLog();
-            this.sysLogWatcher.refreshLog.next(null);
+            this.sysLogWatcher.refreshLog.next();
         });
     }
 }
