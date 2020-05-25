@@ -52,7 +52,7 @@ export class LogBookRoutingModule { }
 export class SystemLogModule {
     constructor(private ws: WebsocketService, private sysLogWatcher: SysLogWatcherService) {
         const observer = connected => connected ? this.sysLogWatcher.startListenSysLog() : this.sysLogWatcher.stopListenSysLog();
-        const subscribePolicy = pipe(distinctUntilChanged(), debounceTime(200));
+        const subscribePolicy = pipe(debounceTime(200), distinctUntilChanged());
         subscribePolicy(this.ws.isConnected).subscribe(observer);
     }
 }

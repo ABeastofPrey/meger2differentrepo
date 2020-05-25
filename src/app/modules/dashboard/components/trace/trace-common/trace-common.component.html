@@ -50,7 +50,7 @@
             [max]="180"
             [required]="true"
             [leftClosedInterval]="false"
-            (blur)="changeDuration()"
+            (blurEvent)="changeDuration()"
             (isValidEvent)="checkIsValid($event)"
             [disabled]="(curTraceStatus !== TraceStatus.NOTREADY) || !selectedTrace || unknowTracing"
             [(value)]="selectedTrace && selectedTrace.duration">

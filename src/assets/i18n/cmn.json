@@ -228,7 +228,7 @@
         "name_exist": "名字已存在",
         "delete_trace": "删除追踪{{titlePara}}?",
         "delete_trace_msg": "当前追踪的配置信息将会全部删除。",
-        "trace_name_tip": "追踪名包括不超过32个数字，字符或者下划线。"
+        "trace_name_tip": "跟踪名称只允许字母、下划线、数字和最多32个字符。"
       },
       "trigger": {
         "tab_name": "触发"
@@ -1136,8 +1136,8 @@
       "deleteBtn": "删除已选",
       "positiveNumTip": "输入一个非负数，并且Percentage的值不能大于100",
       "newPositionTrigger": {
-        "namePlaceholder": "名称",
-        "requireErr": "需要输入名称。"
+        "namePlaceholder": "PT名字只允许字母，数字或者下划线以及至多32个字符。",
+        "requireErr": "PT名是必须的，且只允许字母，数字或者下划线以及至多32个字符。"
       }
     },
     "home_config": {

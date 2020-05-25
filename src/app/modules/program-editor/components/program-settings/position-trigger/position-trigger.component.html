@@ -4,8 +4,7 @@
 		color="primary"
 		class="mat-elevation-z5 add-new-btn"
 		(click)="createPls()"
-		[disabled]="data.length >= 20"
-	>
+		[disabled]="data.length >= 20">
 		<mat-icon>add</mat-icon>
 	</button>
 	<mat-table [dataSource]="data" class="mat-elevation-z8 position-trigger-table">
@@ -14,7 +13,7 @@
 			<mat-header-cell *matHeaderCellDef>
 				<mat-checkbox
 					color="primary"
-					[(ngModel)]="isAllChecked"
+					[checked]="isAllChecked"
 					[indeterminate]="partialChecked"
 					(change)="toggleAll($event)"
 				></mat-checkbox>

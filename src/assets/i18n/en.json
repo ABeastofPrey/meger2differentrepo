@@ -1,6 +1,6 @@
 {
   "404": "Page Not Found",
-  "number_input_range": "Typing number in ",
+  "number_input_range": "Type number in ",
   "number_input_required": "Required field",
   "sys_log": {
     "confirm": "CONFIRM",
@@ -228,7 +228,7 @@
         "name_exist": "Name already exists.",
         "delete_trace": "Delete trace {{titlePara}}?",
         "delete_trace_msg": "All the configration of current trace will be lost.",
-        "trace_name_tip": "Typing a trace name at most 32 letters with number, charactor or lodash."
+        "trace_name_tip": "Trace name allow only letters, numbers or '_' and at most 32 characters."
       },
       "trigger": {
         "tab_name": "Trigger"
@@ -1157,8 +1157,8 @@
       "deleteBtn": "DELETE SELECTED",
       "positiveNumTip": "Please input a non-negative number, and shouldn't greater than 100 for percentage",
       "newPositionTrigger": {
-        "namePlaceholder": "Name",
-        "requireErr": "Name is required."
+        "namePlaceholder": "PT name allow only letters, numbers or '_' and at most 32 charaters.",
+        "requireErr": "PT name is required, and allow only letters, numbers or '_' and at most 32 charaters."
       }
     },
     "home_config": {

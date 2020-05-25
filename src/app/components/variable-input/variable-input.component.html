@@ -1,9 +1,10 @@
 <mat-form-field [appearance]="appearance" class="cs-number-input">
     <mat-label>{{label}}</mat-label>
-    <input #numInput
+    <input #varInput
         matInput
         type="text" 
         autocomplete="off"
+        [maxlength]="maxLength"
         [placeholder]="placeHolder"
         [value]="control.value"
         [formControl]="control"
@@ -18,8 +19,5 @@
         <ng-template #elseTemplate>
             {{'number_input_required' | translate}}
         </ng-template>
-    </mat-error>
-    <mat-error *ngIf="!control.hasError('required') && control.hasError('limit')">
-        {{'number_input_range' | translate}} {{leftClosedInterval ? '[' : '('}}{{min !== undefined ? min : '-&infin;'}}, {{max !== undefined ? max : '+&infin;'}}{{rightClosedInterval ? ']' : ')'}}
     </mat-error>
 </mat-form-field>

@@ -36,6 +36,7 @@ import { PassPipe } from '../core/pipes/space-to-nbsp.pipe';
 import { RichSelectComponent } from '../../components/rich-select/rich-select.component';
 import { ColorfulSpanComponent } from '../../components/rich-select/colorful-span/colorful-span.component';
 import { NumberInputComponent } from '../../components/number-input/number-input.component';
+import { VariableInputComponent } from '../../components/variable-input/variable-input.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { CoordinatesComponent } from '../main/components/coordinates/coordinates.component';
@@ -43,6 +44,7 @@ import { RecordDialogComponent } from '../../components/record-dialog/record-dia
 import { RecordGraphComponent } from '../../components/record-graph/record-graph.component';
 import { NotificationWindowComponent } from '../main/components/notification-window/notification-window.component';
 import { ExternalGraphDialogComponent } from '../dashboard/components/external-graph-dialog/external-graph-dialog.component';
+import { from } from 'rxjs';
 
 @NgModule({
   imports: [
@@ -92,6 +94,7 @@ import { ExternalGraphDialogComponent } from '../dashboard/components/external-g
     ClickOnceDirective,
     RichSelectComponent,
     NumberInputComponent,
+    VariableInputComponent,
     ColorfulSpanComponent,
     CoordinatesComponent,
     RecordGraphComponent,
@@ -120,6 +123,7 @@ import { ExternalGraphDialogComponent } from '../dashboard/components/external-g
     PassPipe,
     RichSelectComponent,
     NumberInputComponent,
+    VariableInputComponent,
     ColorfulSpanComponent,
     CoordinatesComponent,
     RecordDialogComponent,
@@ -136,6 +140,7 @@ import { ExternalGraphDialogComponent } from '../dashboard/components/external-g
     KeyboardDialog,
     RichSelectComponent,
     NumberInputComponent,
+    VariableInputComponent,
     ColorfulSpanComponent,
     RecordDialogComponent,
     RecordGraphComponent,

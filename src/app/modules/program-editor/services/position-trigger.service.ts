@@ -39,13 +39,13 @@ export class PositionTriggerService {
     this.cud = compose(then(resHandler), this.query);
   }
 
-  async createPls(name: string) {
+  public async createPls(name: string) {
     const api = `?PLS_create("${name}")`;
     const res = <MCQueryResponse>await this.ws.query(api);
     return this.bindIO(res);
   }
 
-  async updatePls({
+  public async updatePls({
     name,
     distance,
     selectedOutput,
@@ -58,13 +58,14 @@ export class PositionTriggerService {
     return this.bindIO(res);
   }
 
-  async deletePls(name: string) {
-    const api = `?Deleterow("${name}")`;
+  public async deletePls(names: string[]) {
+    const namesPara = names.map(x => `"${x},"`).reduce((acc, x) => `${acc}${x}+`, '').slice(0, -3) + '"';
+    const api = `?Deleterow(${namesPara})`;
     const res = <MCQueryResponse>await this.ws.query(api);
     return this.bindIO(res);
   }
 
-  async retrievePls() {
+  public async retrievePls() {
     const api = '?PLS_getTable';
     const res = <MCQueryResponse>await this.ws.query(api);
     return this.bindIO(res);
@@ -95,7 +96,7 @@ export class PositionTriggerService {
    * @returns {Promise<any>}
    * @memberof MotionTriggerService
    */
-  async retrieveIos(io = 0) {
+  private async retrieveIos(io = 0) {
     const api = `?IOMAP_GET_IOS_NUMBERS_STRING(${io})`;
     const parseIos = compose(
       map(Number),
@@ -108,7 +109,7 @@ export class PositionTriggerService {
     return retrieve(api);
   }
 
-  async plsNameList(): Promise<string[]> {
+  public async plsNameList(): Promise<string[]> {
     return Either.either(always([]), map(prop('PLSname')))(
       await this.retrievePls()
     );
