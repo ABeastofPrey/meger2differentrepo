@@ -18,6 +18,9 @@ export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('createTraceBtn', { static: false }) createTraceBtn: MatButton;
     @Output() createTraceEvent: EventEmitter<string> = new EventEmitter<string>();
     @Input() traceList: Trace[] = [];
+    @Input() label: string;
+    @Input() placeholder: string;
+    @Input() beginWithLetter: boolean = false;
 
     private endSubscribe: Subject<boolean> = new Subject<boolean>();
     public control: FormControl = new FormControl('');
@@ -32,8 +35,13 @@ export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit {
                 const [validName] = input.target.value.match(/[a-zA-Z0-9_]*/g);
                 const name = validName.slice(0, 32);
                 this.control.patchValue(name);
-                if (this.traceList.findIndex(x => x.name.toUpperCase() === name.toUpperCase()) !== -1) {
+                if (this.traceList.findIndex(x => (x.name === name || x === name.toUpperCase())) !== -1) {
                     this.control.setErrors({ exist: {} });
+                    this.control.markAsTouched();
+                }
+                let reg = /^[a-zA-Z]/;
+                if(this.beginWithLetter && !reg.test(name) && name !== ""){
+                    this.control.setErrors({ beginWithLetter: {} });
                     this.control.markAsTouched();
                 }
             });

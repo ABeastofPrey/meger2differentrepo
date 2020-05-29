@@ -1,0 +1,31 @@
+<mat-form-field>
+    <mat-label>{{ label | translate }}</mat-label>
+    <mat-select #traceSelect [placeholder]="placeholder" [(value)]="selected" [disableOptionCentering]="true"
+        (selectionChange)="selectedTemplate()">
+        <div *ngFor="let list of lists;let i=index" class="option-container">
+            <mat-option [value]="list">
+                {{list}}
+            </mat-option>
+            <button mat-icon-button color="primary" (click)="delete($event,list)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+        <div class="create-new-trace" *ngIf="addStatus">
+            <app-trace-new [traceList]="lists" [beginWithLetter]=true [label]="'vision.templateConfig.newTemplate'"
+                [placeholder]="'error.invalid_file_name'" (createTraceEvent)="traceSelect.close()"
+                (createTraceEvent)="createList($event)">
+            </app-trace-new>
+        </div>
+        <mat-option [value]="null" class="btn" *ngIf="!addStatus" class="create-point-option">
+            <span *ngIf="lists.length<maxLimit" class="create-trace-option"
+                (click)="add($event)">{{ 'button.dropAdd' | translate }}</span>
+            <span *ngIf="lists.length>=maxLimit" class="create-trace-option"
+                (click)="addLimit($event)">{{ 'vision.templateConfig.list_max' | translate: {'max':maxLimit} }}</span>
+        </mat-option>
+        <mat-option [value]="null" class="btn" *ngIf="addStatus" class="create-point-option">
+            <span (click)="cancel($event)" class="create-trace-option">
+                {{ 'button.dropCancel' | translate }}
+            </span>
+        </mat-option>
+    </mat-select>
+</mat-form-field>

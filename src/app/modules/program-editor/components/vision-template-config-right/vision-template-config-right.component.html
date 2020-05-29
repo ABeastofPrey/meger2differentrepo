@@ -1,0 +1,150 @@
+<div class="template">
+    <div class="list">
+        <app-drop-down-add [lists]="templateList" [selected]="templateName"
+            [label]="'vision.templateConfig.jobTemplate'" [title]="'vision.templateConfig.dialogTitle'" [maxLimit]=10
+            [msg]="'vision.templateConfig.dialogMsg'" (deleteEmit)="deleteJob($event)" (addEmit)="addJob($event)"
+            (selectEmit)="selectedTemplate($event)">
+        </app-drop-down-add>
+    </div>
+    <div class="data">
+        <header>{{'vision.calibration.ResponseData' | translate}}</header>
+        <mat-card
+            style="padding:0;box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12)">
+            <div class="table-container">
+                <table mat-table [dataSource]="respondData" class="mat-elevation-z8" #respondDataTable>
+
+                    <ng-container matColumnDef="dataName">
+                        <th mat-header-cell *matHeaderCellDef class="dataHeader bottomLine">
+                            <div class="headerBottom"></div>
+                            {{'vision.calibration.elementName' | translate}}
+                        </th>
+                        <td mat-cell *matCellDef="let element;let i=index">
+                            <mat-form-field class="nameShowAll">
+                                <input matInput autocomplete="off" class="inputElementName"
+                                    (input)="changeInput($event,i,'respondData')" (blur)="blurReapondData(i)"
+                                    [formControl]="element.dataName">
+                                <mat-error *ngIf="element.dataName.hasError('required')">
+                                    {{ 'vision.templateConfig.createRequired' | translate }}</mat-error>
+                                <mat-error
+                                    *ngIf="element.dataName.hasError('letter') && !element.dataName.hasError('required') && !element.dataName.hasError('exist')">
+                                    {{ 'vision.templateConfig.createLetter' | translate }}</mat-error>
+                                <mat-error
+                                    *ngIf="element.dataName.hasError('exist') && !element.dataName.hasError('required') && !element.dataName.hasError('letter')">
+                                    {{ 'vision.templateConfig.nameExist' | translate }}</mat-error>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="dataType">
+                        <th mat-header-cell *matHeaderCellDef class="dataType bottomLine">
+                            <div class="headerBottom"></div>
+                            {{'vision.calibration.type' | translate}}
+                        </th>
+                        <td mat-cell *matCellDef="let element;let i=index">
+                            <mat-form-field>
+                                <mat-select [(value)]="element.dataType" (selectionChange)="selectedDataType(i)">
+                                    <mat-option *ngFor="let dataType of typeList" [value]="dataType">
+                                        {{dataType}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="operation">
+                        <th mat-header-cell *matHeaderCellDef class="bottomLine">
+                            <div class="headerBottom"></div>
+                            <button mat-icon-button color="primary" (click)="addRespondDataList()"
+                                [disabled]="respondData.length >= 10 || !templateName">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </th>
+                        <td mat-cell *matCellDef="let element;let i=index">
+                            <button mat-icon-button color="primary" (click)="deleteRespondData(i)">
+                                <mat-icon>remove</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsData; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsData;"></tr>
+                </table>
+            </div>
+        </mat-card>
+    </div>
+    <div class="error">
+        <header>{{'vision.calibration.ResponseError' | translate}}</header>
+        <table mat-table [dataSource]="respondError" class="mat-elevation-z8"
+            style="box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12)">
+
+            <ng-container matColumnDef="dataName">
+                <th mat-header-cell *matHeaderCellDef class="dataHeader">
+                    {{'vision.calibration.elementName' | translate}}</th>
+                <td mat-cell *matCellDef="let element;let i=index">
+                    <mat-form-field class="nameShowAll">
+                        <input matInput autocomplete="off" (input)="changeInput($event,i,'respondError')"
+                            [formControl]="element.dataName" (blur)="setResErrorName(i)">
+                        <mat-error *ngIf="element.dataName.hasError('required')">
+                            {{ 'vision.templateConfig.createRequired' | translate }}</mat-error>
+                        <mat-error
+                            *ngIf="element.dataName.hasError('letter') && !element.dataName.hasError('required')">
+                            {{ 'vision.templateConfig.createLetter' | translate }}</mat-error>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dataType">
+                <th mat-header-cell *matHeaderCellDef>{{'vision.calibration.type' | translate}}</th>
+                <td mat-cell *matCellDef="let element;let i=index">
+                    <mat-form-field>
+                        <mat-select [(value)]="element.dataType" (selectionChange)="selectedError(i)">
+                            <mat-option *ngFor="let dataType of typeList" [value]="dataType">
+                                {{dataType}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsError"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsError;"></tr>
+        </table>
+    </div>
+    <div class="status">
+        <header>{{'vision.calibration.ResponseStatus' | translate}}</header>
+        <table mat-table [dataSource]="respondStatus" class="mat-elevation-z8"
+            style="box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12)">
+
+            <ng-container matColumnDef="dataName">
+                <th mat-header-cell *matHeaderCellDef class="dataHeader">
+                    {{'vision.calibration.elementName' | translate}}</th>
+                <td mat-cell *matCellDef="let element;let i=index">
+                    <mat-form-field class="nameShowAll">
+                        <input matInput autocomplete="off" (input)="changeInput($event,i,'respondStatus')"
+                            [formControl]="element.dataName" (blur)="setResStatusName(i)">
+                        <mat-error *ngIf="element.dataName.hasError('required')">
+                            {{ 'vision.templateConfig.createRequired' | translate }}</mat-error>
+                        <mat-error
+                            *ngIf="element.dataName.hasError('letter') && !element.dataName.hasError('required')">
+                            {{ 'vision.templateConfig.createLetter' | translate }}</mat-error>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dataType">
+                <th mat-header-cell *matHeaderCellDef>{{'vision.calibration.type' | translate}}</th>
+                <td mat-cell *matCellDef="let element;let i=index">
+                    <mat-form-field>
+                        <mat-select [(value)]="element.dataType" (selectionChange)="selectedStatus(i)">
+                            <mat-option *ngFor="let dataType of typeList" [value]="dataType">
+                                {{dataType}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsStatus"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsStatus;"></tr>
+        </table>
+    </div>
+</div>

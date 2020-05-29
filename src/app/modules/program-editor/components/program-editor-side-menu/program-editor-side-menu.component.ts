@@ -747,6 +747,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
       data.push(pPoints);
       data.push(frames);
       data.push(pallets);
+      data.push(vision);
     }
     if (!this.login.isViewer) {
       data.push(grippers);

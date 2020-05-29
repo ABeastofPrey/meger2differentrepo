@@ -1,0 +1,18 @@
+<div class="example-tel-input-container" [formGroup]="ipForm">
+    <input class="example-tel-input-element" formControlName="ip1" autocomplete="off" id="ip1" maxlength="3"
+        (input)="_handleInput($event,'ip1',1)" (blur)="setStationIp()">
+    <span class="example-tel-input-spacer">&sdot;</span>
+    <input class="example-tel-input-element" formControlName="ip2" autocomplete="off" id="ip2" maxlength="3"
+        (input)="_handleInput($event,'ip2',2)" (blur)="setStationIp()">
+    <span class="example-tel-input-spacer">&sdot;</span>
+    <input class="example-tel-input-element" formControlName="ip3" autocomplete="off" id="ip3" maxlength="3"
+        (input)="_handleInput($event,'ip3',3)" (blur)="setStationIp()">
+    <span class="example-tel-input-spacer">&sdot;</span>
+    <input class="example-tel-input-element" formControlName="ip4" autocomplete="off" id="ip4" maxlength="3"
+        (input)="_handleInput($event,'ip4',4)" (blur)="setStationIp()">
+    <br>
+
+</div>
+<div class="matError" *ngIf="ipValid">
+    <mat-error>{{ 'vision.templateConfig.ipValid' | translate }}</mat-error>
+</div>

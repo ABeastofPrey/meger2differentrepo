@@ -164,6 +164,7 @@
 					<app-payload-wizard *ngIf="service.mode === 'payloads'" style="flex: 1; display: flex;"></app-payload-wizard>
 					<io-mapping *ngIf="service.mode === 'io'" style="flex: 1; display: flex;"></io-mapping>
 					<fwconfig-editor *ngIf="service.mode === 'fwconfig'"></fwconfig-editor>
+					<program-vision *ngIf="service.mode === 'vision'" style="overflow: auto; flex: 1;"></program-vision>
 				</as-split-area>
 				<as-split-area
 					size="30"

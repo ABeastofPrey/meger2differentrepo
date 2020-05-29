@@ -20,21 +20,29 @@ export class VisionCommandService {
             this.getAsDatas(),
             this.getStatus(),
             this.getErrors(),
+            this.getPixel_x(),
+            this.getPixel_y(),
+            this.getPos_x(),
+            this.getPos_y(),
         ];
         return combineLatest(queries).pipe(
-            rxjsMap(([stationJob, variables, dimensions, dataNums, asDatas, statusList, errors]) => {
+            rxjsMap(([stationJob, variables, dimensions, dataNums, asDatas, statusList, errors, pixels_x, pixels_y, poss_x, poss_y]) => {
                 const mapIndexed = addIndex(map);
                 const assembleModel = (stationJob, id) => Object.assign({
                     id,
                     ...stationJob,
                     dimensions, dataNums, asDatas,
-                    statusList, errors, variables,
+                    statusList, errors, pixels_x, pixels_y, poss_x, poss_y, variables,
                     [CommandOptions.Job]: null,
                     [CommandOptions.Dimension]: null,
                     [CommandOptions.DataNum]: null,
                     [CommandOptions.AsData]: null,
                     [CommandOptions.Status]: null,
                     [CommandOptions.Error]: null,
+                    [CommandOptions.Pixel_x]: null,
+                    [CommandOptions.Pixel_y]: null,
+                    [CommandOptions.Pos_x]: null,
+                    [CommandOptions.Pos_y]: null,
                     [CommandOptions.Variable]: null,
                     [CommandOptions.Timeout]: null,
                 });
@@ -93,5 +101,29 @@ export class VisionCommandService {
         const notArrLongs = this.ds.longs.filter(x => !x.isArr);
         const dimNamelist = map(prop('name'), notArrLongs);
         return of(dimNamelist);
+    }
+
+    getPixel_x(): Observable<string[]> {
+        const notArrLongs = this.ds.doubles.filter(x => !x.isArr);
+        const namelist = map(prop('name'), notArrLongs);
+        return of(namelist);
+    }
+
+    getPixel_y(): Observable<string[]> {
+        const notArrLongs = this.ds.doubles.filter(x => !x.isArr);
+        const namelist = map(prop('name'), notArrLongs);
+        return of(namelist);
+    }
+
+    getPos_x(): Observable<string[]> {
+        const notArrLongs = this.ds.doubles.filter(x => !x.isArr);
+        const namelist = map(prop('name'), notArrLongs);
+        return of(namelist);
+    }
+
+    getPos_y(): Observable<string[]> {
+        const notArrLongs = this.ds.doubles.filter(x => !x.isArr);
+        const namelist = map(prop('name'), notArrLongs);
+        return of(namelist);
     }
 }

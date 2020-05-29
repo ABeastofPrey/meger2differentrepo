@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, Observable, Observer } from 'rxjs';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { TPVariable } from '../../core/models/tp/tp-variable.model';
 import { TPVariableType } from '../../core/models/tp/tp-variable-type.model';
@@ -406,6 +406,7 @@ export class DataService {
   private _safetyCardRunning = false;
   private _cabinetFwVer: string = null;
   private _FPGAVer: string = null;
+  private refreshVisionObser: Observer<string>;
 
   get safetyCardVer() {
     return this._safetyCardVer;
@@ -562,6 +563,13 @@ export class DataService {
         ]);
       });
   }
+
+  refreshVision() {
+      return new Observable((obser)=>{
+        this.refreshVisionObser = obser;
+      })
+  }
+
   private refreshPayloadStart() {
     return this.ws
       .query('?PAY_GET_START_POSITION')
@@ -819,6 +827,9 @@ export class DataService {
       })
       .then(() => {
         if (this._payloadLibVer) {
+            if(this.refreshVisionObser){
+                this.refreshVisionObser.next("refreshVision");
+            }
           return this.refreshPayloads();
         }
       })

@@ -19,6 +19,8 @@
                     <div *ngIf="addingNewTrace" class="create-new-trace">
                         <app-trace-new 
                             [traceList]="traceList | async" 
+                            [label]="'dashboard.trace.common.new_trace'"
+                            [placeholder]="'dashboard.trace.common.trace_name_tip'"
                             (createTraceEvent)="traceSelect.close()"
                             (createTraceEvent)="createTrace($event)">
                         </app-trace-new>

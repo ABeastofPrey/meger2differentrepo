@@ -66,6 +66,12 @@ import { TourMatMenuModule } from 'ngx-tour-md-menu';
 import { TraceSelectorComponent } from './components/dialogs/trace-selector/trace-selector.component';
 import { TraceService } from '../dashboard/services/trace.service';
 import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proceed-dialog.component';
+import { VisionComponent } from './components/vision/vision.component';
+import { VisionTemplateConfigComponent } from './components/vision-template-config/vision-template-config.component';
+import { VisionCalibrationComponent } from './components/vision-calibration/vision-calibration.component';
+import { VisionTemplateConfigRightComponent } from './components/vision-template-config-right/vision-template-config-right.component';
+import { NewDialogTemplateComponent } from './components/new-dialog-template/new-dialog-template.component';
+import { VisionService } from './services/vision.service';
 
 @NgModule({
   imports: [
@@ -129,6 +135,11 @@ import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proc
     VisionLoadStationBookComponent,
     VisionCommandComponent,
     TraceSelectorComponent,
+    VisionComponent,
+    VisionTemplateConfigComponent,
+    VisionCalibrationComponent,
+    VisionTemplateConfigRightComponent,
+    NewDialogTemplateComponent,
   ],
   entryComponents: [
     NewProjectDialogComponent,
@@ -167,6 +178,12 @@ import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proc
     VisionLoadStationBookComponent,
     VisionCommandComponent,
     TraceSelectorComponent,
+    VisionComponent,
+    VisionTemplateConfigComponent,
+    VisionCalibrationComponent,
+    VisionTemplateConfigRightComponent,
+    NewDialogTemplateComponent,
+
   ],
   exports: [
     ProgramEditorComponent,
@@ -184,6 +201,7 @@ import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proc
     JumpxCommandService,
     VisionCommandService,
     TraceService,
+    VisionService,
   ],
 })
 export class ProgramEditorModule {}

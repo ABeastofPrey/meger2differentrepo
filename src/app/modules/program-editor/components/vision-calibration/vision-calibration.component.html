@@ -1,0 +1,63 @@
+<div class="mat-typography vision">
+    <div class="mat-elevation-z3 create">
+        <mat-form-field>
+            <mat-select placeholder="{{ 'vision.calibration.station' | translate }}" [(value)]="stationName"
+                (selectionChange)="changeStation()">
+                <mat-option *ngFor="let station of stationList" [value]="station">
+                    {{station}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="edit" *ngIf="stationName">
+        <div class="box">
+            <h2>{{ 'vision.calibration.title' | translate }}</h2>
+            <header>
+                <div class="left">
+                    <div class="box_pix">
+                        <div>
+                            <section>{{ 'vision.calibration.Pixel_x' | translate }} : </section>
+                            <section>{{ 'vision.calibration.Pixel_y' | translate }} : </section>
+                        </div>
+                        <div>
+                            <section>{{Pixel_x}}</section>
+                            <section>{{Pixel_y}}</section>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <section>{{ 'vision.calibration.posX' | translate }} : <span>{{Robot_x}}</span></section>
+                    <section>{{ 'vision.calibration.posY' | translate }} : <span>{{Robot_y}}</span></section>
+                </div>
+                <div class="error">{{ 'vision.calibration.calibrationError' | translate }} : {{errorResult}}</div>
+            </header>
+            <div class="point">
+                <div class="btn">
+                    <div *ngFor="let point of points;let i=index" (click)="savePointStatus(i)">
+                        <button mat-fab [color]="point.color">
+                            <span>{{point.value}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <div class="btn btnSave">
+                    <button mat-raised-button color="primary" (click)="savePointValue()" [disabled]="!isSaved">
+                        <span>{{ 'vision.calibration.Save' | translate }}</span>
+                    </button>
+                </div>
+                <div class="btn btnCalibration">
+                    <button mat-raised-button color="primary" (click)="calibrationPoint()"
+                        [disabled]="isSavedEle.length < 9">
+                        <span>{{ 'vision.calibration.Calibrate' | translate }}</span>
+                    </button>
+                </div>
+                <div class="btn btnReset">
+                    <button mat-raised-button color="primary" (click)="resetStationPoint()" [disabled]="!isReset">
+                        <span>{{ 'vision.calibration.Reset' | translate }}</span>
+                    </button>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>

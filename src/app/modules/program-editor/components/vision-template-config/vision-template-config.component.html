@@ -1,0 +1,66 @@
+<div class="mat-typography vision">
+    <div class="mat-elevation-z3 create">
+        <div>
+            <button mat-raised-button color="primary" class="btn-create" (click)="create()"
+                [disabled]="stationList.length >= 10">
+                <mat-icon>add</mat-icon>
+                <span>{{ 'button.create' | translate }}</span>
+            </button>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-select placeholder="{{ 'vision.calibration.station' | translate }}" [(value)]="stationName"
+                    (selectionChange)="selectedStation()">
+                    <mat-option *ngFor="let station of stationList" [value]="station">
+                        {{station}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div><button mat-raised-button color="warn" *ngIf="stationName"
+                (click)="confirmDelete()">{{'vision.templateConfig.delete' | translate}}</button></div>
+    </div>
+    <div class="edit" *ngIf="stationName">
+        <div class="box">
+            <header>
+                <div class="config">
+                    <span class="half">
+                        <app-ip-address [ip]="ip" (changeIpEmit)="changeIp($event)"></app-ip-address>
+                    </span>
+                    <span class="right">
+                        <cs-number-input type="int" [label]="'vision.templateConfig.port' | translate"
+                            [rightClosedInterval]="true" [(value)]="port.value" [min]="0" [max]="65535"
+                            (blur)="portBlur()" (isValidEvent)="changePort($event)" [required]="true"></cs-number-input>
+                    </span>
+                </div>
+                <div class="config">
+                    <span class="right half">
+                        <mat-form-field>
+                            <mat-label>{{'vision.templateConfig.terminator' | translate}}</mat-label>
+                            <mat-select [(value)]="terminatorName" (selectionChange)="selectedTerminator()">
+                                <mat-option *ngFor="let termin of terminatorList" [value]="termin">
+                                    {{termin}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
+                    <span class="right">
+                        <mat-form-field>
+                            <mat-label>{{'vision.templateConfig.encoding' | translate}}</mat-label>
+                            <mat-select [(value)]="encodingName" (selectionChange)="selectEncode()">
+                                <mat-option *ngFor="let encode of encodingList" [value]="encode">
+                                    {{encode}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
+                </div>
+            </header>
+            <div class="dividing"></div>
+            <footer>
+                <app-vision-template-config-right [stationName]="stationName" [typeList]="typeList" #visionRight>
+                </app-vision-template-config-right>
+            </footer>
+        </div>
+    </div>
+</div>

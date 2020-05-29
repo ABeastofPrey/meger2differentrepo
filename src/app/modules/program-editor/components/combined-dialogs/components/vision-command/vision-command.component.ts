@@ -10,6 +10,7 @@ import { getVisionCommand, selectStationName, updateVisionCommand } from '../../
 import { selectAllVisionCommand, selectCurrentVisionCommand } from '../../selectors/vision-command.selectors';
 import { VisionCommand } from '../../models/vision-command.model';
 import { AddVarComponent } from '../../../add-var/add-var.component';
+import { DataService } from '../../../../../core';
 
 @Component({
 	selector: 'app-vision-command',
@@ -22,11 +23,11 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 	CommandOptions = CommandOptions;
 	commandOptionAuth: CommandOptionAuth;
 	modelList: Observable<VisionCommand[]>;
-	selectedModel: Observable<VisionCommand>;
+    selectedModel: Observable<VisionCommand>;
 	form: FormGroup = this.fb.group({
 		id: [],
 		[CommandOptions.Station]: [null, Validators.required],
-		[CommandOptions.Job]: [null, Validators.required],
+		// [CommandOptions.Job]: [null, Validators.required],
 		[CommandOptions.Variable]: [null],
 	});
 	constructor(
@@ -35,7 +36,8 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 		public dialogRef: MatDialogRef<VisionCommandComponent, string>,
 		private store: Store<VisionCommand>,
 		private dialog: MatDialog,
-		private fb: FormBuilder,
+        private fb: FormBuilder,
+        private dataService: DataService
 	) {
 		this.commandType = data.type;
 		this.commandOptionAuth = new CommandOptionAuth(this.commandType);
@@ -45,7 +47,8 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
-		this.store.dispatch(getVisionCommand());
+        this.store.dispatch(getVisionCommand());
+        this.commandOptionAuth.hasPixelToPos ? "" : this.form.addControl(CommandOptions.Job, new FormControl(null, Validators.required));
 	}
 
 	ngOnDestroy(): void {
@@ -65,6 +68,7 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 	}
 
 	updateStore(changedModel: VisionCommand): void {
+        console.log(changedModel)
 		if (isNull(changedModel.id)) return;
 		const option = {
 			visionCommand: {
@@ -77,7 +81,11 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 					[CommandOptions.Status]: changedModel[CommandOptions.Status],
 					[CommandOptions.Error]: changedModel[CommandOptions.Error],
 					[CommandOptions.Variable]: changedModel[CommandOptions.Variable],
-					[CommandOptions.Timeout]: changedModel[CommandOptions.Timeout]
+					[CommandOptions.Timeout]: changedModel[CommandOptions.Timeout],
+					[CommandOptions.Pixel_x]: changedModel[CommandOptions.Pixel_x],
+					[CommandOptions.Pixel_y]: changedModel[CommandOptions.Pixel_y],
+					[CommandOptions.Pos_x]: changedModel[CommandOptions.Pos_x],
+					[CommandOptions.Pos_y]: changedModel[CommandOptions.Pos_y],
 				}
 			}
 		};
@@ -95,20 +103,28 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 			[CommandOptions.Status]: value[CommandOptions.Status],
 			[CommandOptions.Error]: value[CommandOptions.Error],
 			[CommandOptions.Variable]: value[CommandOptions.Variable],
-			[CommandOptions.Timeout]: value[CommandOptions.Timeout] ? value[CommandOptions.Timeout] : -1
+            [CommandOptions.Timeout]: value[CommandOptions.Timeout] ? value[CommandOptions.Timeout] : -1,
+            [CommandOptions.Pixel_x]: value[CommandOptions.Pixel_x],
+            [CommandOptions.Pixel_y]: value[CommandOptions.Pixel_y],
+            [CommandOptions.Pos_x]: value[CommandOptions.Pos_x],
+            [CommandOptions.Pos_y]: value[CommandOptions.Pos_y],
 		};
-		const command = this.getCommand(this.commandType, commandOption);
+        const command = this.getCommand(this.commandType, commandOption);
 		const emitCommand = cmd => this.dialogRef.close(cmd);
 		when(touchedAndValid, emitCommand)(command);
 	}
 
-	createVar(type: CommandOptions, varType = 'LONG'): void {
-		const option = {
+	createVar(type: CommandOptions, varType = 'LONG', List?:number[]): void {
+		const option: any = {
 			hasBackdrop: false,
 			data: {
-				varType
+                varType
 			}
-		};
+        };
+        if(List){
+            option.data.hotVariableOption = List;
+            option.data.canUseArray = false;
+        }
 		this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
 			let patchOption;
 			switch (type) {
@@ -131,8 +147,20 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 					break;
 				case CommandOptions.Variable:
 					patchOption = { [CommandOptions.Variable]: addedVar };
-					break;
-			};
+                    break;
+                case CommandOptions.Pixel_x:
+                    patchOption = { [CommandOptions.Pixel_x]: addedVar };
+                    break;
+                case CommandOptions.Pixel_y:
+                    patchOption = { [CommandOptions.Pixel_y]: addedVar };
+                    break;
+                case CommandOptions.Pos_x:
+                    patchOption = { [CommandOptions.Pos_x]: addedVar };
+                    break;
+                case CommandOptions.Pos_y:
+                    patchOption = { [CommandOptions.Pos_y]: addedVar };
+                    break;
+            };
 			this.store.dispatch(getVisionCommand());
 			this.form.patchValue(patchOption);
 			this.updateStore(this.form.value);
@@ -169,12 +197,16 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 			case CommandType.StopJob:
 				command = `${CommandType.StopJob}("${option[CommandOptions.Station]}", "` +
 									`${option[CommandOptions.Job]}")`;
-				break;
+                break;
+            case CommandType.PixelToPos:
+                command = `${CommandType.PixelToPos}("${option[CommandOptions.Station]}",` + `${option[CommandOptions.Pixel_x]},` +
+                                    `${option[CommandOptions.Pixel_y]},` + `${option[CommandOptions.Pos_x]},` + `${option[CommandOptions.Pos_y]})`;
+                break;
 			default: command = '';
-		}
+        }
 		command = 
 			!option[CommandOptions.Variable] ?
-				(type === CommandType.StopJob) ? command : `?${command}` :
+				(type === CommandType.StopJob || type === CommandType.PixelToPos) ? command : `?${command}` :
 				`${option[CommandOptions.Variable]} = ${command}`;
 		return command;
 	}
@@ -185,7 +217,8 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 			hasDimension,
 			hasError,
 			hasStatus,
-			hasTimeout
+            hasTimeout,
+            hasPixelToPos
 		}: CommandOptionAuth
 	): void {
 		const addControl = 
@@ -196,6 +229,10 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 		const addAsDataControl = () => addControl(CommandOptions.AsData);
 		const addStatusControl = () => addControl(CommandOptions.Status);
 		const addErrorControl = () => addControl(CommandOptions.Error);
+		const addPixel_x = () => addControl(CommandOptions.Pixel_x);
+		const addPixel_y = () => addControl(CommandOptions.Pixel_y);
+		const addPos_x = () => addControl(CommandOptions.Pos_x);
+		const addPos_y = () => addControl(CommandOptions.Pos_y);
 		const fc = new FormControl(null, Validators.pattern(/^\+?[0-9]\d*$/));
 		const addTimeoutControl = () => addControl(CommandOptions.Timeout, fc);
 		when(identity, addDimensionControl)(hasDimension);
@@ -204,5 +241,9 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 		when(identity, addStatusControl)(hasStatus);
 		when(identity, addErrorControl)(hasError);
 		when(identity, addTimeoutControl)(hasTimeout);
+		when(identity, addPixel_x)(hasPixelToPos);
+		when(identity, addPixel_y)(hasPixelToPos);
+		when(identity, addPos_x)(hasPixelToPos);
+		when(identity, addPos_y)(hasPixelToPos);
 	}
 }

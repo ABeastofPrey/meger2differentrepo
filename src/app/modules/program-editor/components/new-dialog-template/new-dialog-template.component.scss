@@ -1,0 +1,28 @@
+.main {
+    height: 100%;
+}
+.wrapper {
+    height: calc(100% - 36px);
+    display: flex;
+    flex-direction: column;
+}
+.title {
+    display: flex;
+    align-items: center;
+    margin: -24px -24px 24px -24px;
+    padding: 16px;
+    background-color: #00897b;
+    color: #fff;
+    font-size: 18px;
+}
+.actions {
+    text-align: right;
+    margin-top: 8px;
+}
+.openDialog {
+    margin: -5px 10px;
+}
+.content {
+    overflow: auto;
+    padding: 10px;
+}

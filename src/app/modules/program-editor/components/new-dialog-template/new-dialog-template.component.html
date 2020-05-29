@@ -1,0 +1,30 @@
+<div class="main mat-typography">
+    <div class="wrapper">
+        <div class="title">{{ data.title | translate }}</div>
+        <div class="content">
+            <mat-form-field>
+                <mat-label>{{ data.label | translate}}</mat-label>
+                <input autocomplete="off" maxlength="32" matInput placeholder="{{ data.placeholder | translate }}"
+                    [formControl]="name" (input)="changeInput($event)" />
+                <mat-error *ngIf="name.hasError('required')">{{ 'vision.templateConfig.createRequired' | translate }}
+                </mat-error>
+                <mat-error *ngIf="name.hasError('letter') && !name.hasError('exist') && !name.hasError('required')">
+                    {{ 'vision.templateConfig.createLetter' | translate }}</mat-error>
+                <mat-error *ngIf="name.hasError('exist') && !name.hasError('letter') && !name.hasError('required')">
+                    {{ 'vision.templateConfig.nameExist' | translate }}</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="openDialog" *ngIf="data.checkbox">
+            <mat-checkbox color="primary" [(ngModel)]="dialog">
+                {{ 'vision.templateConfig.createTemplateDialog' | translate }}</mat-checkbox>
+        </div>
+    </div>
+    <div class="actions">
+        <button mat-button color="primary" matDialogClose>
+            {{ 'button.cancel' | translate }}
+        </button>
+        <button mat-button color="primary" (click)="insert()" [disabled]="!name.valid">
+            {{ 'button.create' | translate }}
+        </button>
+    </div>
+</div>

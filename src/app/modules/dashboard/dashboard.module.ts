@@ -13,7 +13,7 @@ import { TraceTabComponent } from './components/trace/trace-tab/trace-tab.compon
 import { TraceChannelComponent } from './components/trace/trace-channel/trace-channel.component';
 import { TraceCommonComponent } from './components/trace/trace-common/trace-common.component';
 import { TraceTriggerComponent } from './components/trace/trace-trigger/trace-trigger.component';
-import { TraceNewComponent } from './components/trace/trace-new/trace-new.component';
+// import { TraceNewComponent } from './components/trace/trace-new/trace-new.component';
 import { TraceService } from './services/trace.service';
 
 @NgModule({
@@ -29,7 +29,7 @@ import { TraceService } from './services/trace.service';
     TraceChannelComponent,
     TraceCommonComponent,
     TraceTriggerComponent,
-    TraceNewComponent,
+    // TraceNewComponent,
   ],
   exports: [DashboardComponent],
   entryComponents: [

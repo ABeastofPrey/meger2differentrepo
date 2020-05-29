@@ -171,12 +171,13 @@
 		<button mat-menu-item (click)="menu_pay_use()">Set Payload...</button>
 	</mat-menu>
 	<mat-menu #vision="matMenu">
-		<button mat-menu-item (click)="vLoadStationBook()">VLoadStationBook...</button>
+		<!-- <button mat-menu-item (click)="vLoadStationBook()">VLoadStationBook...</button> -->
 		<button mat-menu-item (click)="vCommand(visionCommandType.RunJobFull)">VRunJobFull...</button>
 		<button mat-menu-item (click)="vCommand(visionCommandType.RunJob)">VRunJob...</button>
 		<button mat-menu-item (click)="vCommand(visionCommandType.GetJobStatus)">VGetJobStatus...</button>
 		<button mat-menu-item (click)="vCommand(visionCommandType.GetJobData)">VGetJobData...</button>
 		<button mat-menu-item (click)="vCommand(visionCommandType.GetJobError)">VGetJobError...</button>
 		<button mat-menu-item (click)="vCommand(visionCommandType.StopJob)">VStopJob...</button>
+		<button mat-menu-item (click)="vCommand(visionCommandType.PixelToPos)">VPixelToPos...</button>
 	</mat-menu>
 </div>

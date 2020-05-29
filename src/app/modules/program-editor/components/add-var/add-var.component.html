@@ -1,7 +1,7 @@
 <div class="mat-typography">
 	<div class="title mat-elevation-z1"><mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'variables.new' | translate }}</div>
 	<div class="name-wrapper">
-		<mat-form-field>
+		<mat-form-field class="variableName">
 			<input matInput placeholder="{{ 'variables.name' | translate }}" [formControl]="name" maxlength="32" virtualKeyboard ktype="text" />
 			<mat-error *ngIf="name.invalid">{{ 'error.invalid_var_name' | translate }}</mat-error>
 		</mat-form-field>

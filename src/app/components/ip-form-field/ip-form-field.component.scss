@@ -1,0 +1,30 @@
+.example-tel-input-container {
+    display: flex;
+}
+
+.example-tel-input-element {
+    border: none;
+    background: none;
+    padding: 0;
+    outline: none;
+    font: inherit;
+    text-align: center;
+    width: 24%;
+}
+
+.example-tel-input-spacer {
+    opacity: 0;
+    transition: opacity 200ms;
+}
+
+:host.example-floating .example-tel-input-spacer {
+    opacity: 1;
+}
+
+.matError {
+    position: absolute;
+    top: 35px;
+    mat-error {
+        font-size: 10px;
+    }
+}

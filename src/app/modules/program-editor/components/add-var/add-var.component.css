@@ -25,6 +25,9 @@
 .name-wrapper mat-form-field {
   width: 100%;
 }
+.name-wrapper .variableName{
+    margin-bottom: 10px;
+}
 .value-container {
   position: relative;
   display: flex;

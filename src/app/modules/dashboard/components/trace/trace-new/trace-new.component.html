@@ -1,11 +1,11 @@
 <div class="trace-new-container">
     <mat-form-field>
-        <mat-label>{{'dashboard.trace.common.new_trace' | translate}}</mat-label>
+        <mat-label>{{label | translate}}</mat-label>
         <input #newTraceInput
             type="text" matInput 
             autoComplete="off"
             [formControl]="control"
-            [placeholder]="'dashboard.trace.common.trace_name_tip' | translate"
+            [placeholder]="placeholder | translate"
             [value]="control.value" />
         <button mat-button *ngIf="control.value"
             matSuffix mat-icon-button 
@@ -16,10 +16,13 @@
         <mat-error *ngIf="control.hasError('exist')">
             {{'dashboard.trace.common.name_exist' | translate}}
         </mat-error>
+        <mat-error *ngIf="control.hasError('beginWithLetter')">
+            {{'vision.templateConfig.createLetter' | translate}}
+        </mat-error>
     </mat-form-field>
     <button #createTraceBtn mat-icon-button 
         color="primary" 
-        [disabled]="control.value.length === 0 || control.hasError('exist')">
+        [disabled]="control.value.length === 0 || control.hasError('exist') || control.hasError('beginWithLetter')">
         <mat-icon>done</mat-icon>
     </button>
 </div>

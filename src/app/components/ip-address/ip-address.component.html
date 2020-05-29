@@ -1,0 +1,4 @@
+<mat-form-field style="width: 180px;" id="matFormField">
+    <mat-label>{{'vision.templateConfig.ip' | translate}}</mat-label>
+    <app-ip-form-field [ipInput]="ip" (changeIp)="changeIp($event)"></app-ip-form-field>
+</mat-form-field>

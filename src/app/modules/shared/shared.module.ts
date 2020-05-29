@@ -44,7 +44,11 @@ import { RecordDialogComponent } from '../../components/record-dialog/record-dia
 import { RecordGraphComponent } from '../../components/record-graph/record-graph.component';
 import { NotificationWindowComponent } from '../main/components/notification-window/notification-window.component';
 import { ExternalGraphDialogComponent } from '../dashboard/components/external-graph-dialog/external-graph-dialog.component';
-import { from } from 'rxjs';
+import { DropDownAddComponent } from '../../components/drop-down-add/drop-down-add.component';
+import { TraceNewComponent } from '../dashboard/components/trace/trace-new/trace-new.component';
+import { IpAddressComponent } from '../../components/ip-address/ip-address.component';
+import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-field.component';
+
 
 @NgModule({
   imports: [
@@ -100,7 +104,11 @@ import { from } from 'rxjs';
     RecordGraphComponent,
     NotificationWindowComponent,
     ExternalGraphDialogComponent,
-    MessageLogComponent
+    MessageLogComponent,
+    DropDownAddComponent,
+    TraceNewComponent,
+    IpAddressComponent,
+    IpFormFieldComponent
   ],
   declarations: [
     YesNoDialogComponent,
@@ -131,6 +139,10 @@ import { from } from 'rxjs';
     NotificationWindowComponent,
     ExternalGraphDialogComponent,
     MessageLogComponent,
+    DropDownAddComponent,
+    TraceNewComponent,
+    IpAddressComponent,
+    IpFormFieldComponent
   ],
   entryComponents: [
     YesNoDialogComponent,
@@ -145,6 +157,10 @@ import { from } from 'rxjs';
     RecordDialogComponent,
     RecordGraphComponent,
     ExternalGraphDialogComponent,
+    DropDownAddComponent,
+    TraceNewComponent,
+    IpAddressComponent,
+    IpFormFieldComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [
