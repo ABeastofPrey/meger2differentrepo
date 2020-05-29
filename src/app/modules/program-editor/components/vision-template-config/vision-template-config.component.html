@@ -30,7 +30,7 @@
                     <span class="right">
                         <cs-number-input type="int" [label]="'vision.templateConfig.port' | translate"
                             [rightClosedInterval]="true" [(value)]="port.value" [min]="0" [max]="65535"
-                            (blur)="portBlur()" (isValidEvent)="changePort($event)" [required]="true"></cs-number-input>
+                            (blurEvent)="portBlur()" (isValidEvent)="changePort($event)" [required]="true"></cs-number-input>
                     </span>
                 </div>
                 <div class="config">
