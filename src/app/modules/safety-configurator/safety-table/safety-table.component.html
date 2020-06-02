@@ -1,0 +1,67 @@
+<table *ngIf="conf">
+    <thead>
+        <tr>
+            <td>Line</td>
+            <td>Description</td>
+            <td>Used / Not Used</td>
+            <td>Power Feeding Selection</td>
+            <td>Connector</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr disabled>
+            <td>EX-ESTOP1-IN</td>
+            <td>External E-stop device</td>
+            <td>
+                <mat-checkbox disabled [checked]="conf.ex_estop1_in"></mat-checkbox>
+            </td>
+            <td>EX-ESTOP1-TP</td>
+            <td>Emergency</td>
+        </tr>
+        <tr disabled>
+            <td>SAFE-ACK-BUTT-IN</td>
+            <td>E-stop Acknowledge button</td>
+            <td>
+                <mat-checkbox disabled [checked]="conf.safe_ack_butt_in"></mat-checkbox>
+            </td>
+            <td>SAFE_ACK-BUTT-TP</td>
+            <td>Emergency</td>
+        </tr>
+        <tr disabled>
+            <td>SAFETY-SENSE1-IN</td>
+            <td>Safety door open sensor</td>
+            <td>
+                <mat-checkbox disabled [checked]="conf.safety_sense1_in"></mat-checkbox>
+            </td>
+            <td>SAFETY-SENSE1-TP</td>
+            <td>Emergency</td>
+        </tr>
+        <tr>
+            <td>SAFETY-SENSE2</td>
+            <td>Additional safety sensor</td>
+            <td>
+                <mat-checkbox color="primary" [(ngModel)]="conf.safety_sense2" [disabled]="disabled" (change)="change.emit()"></mat-checkbox>
+            </td>
+            <td>SAFETY-SENSE2-TP</td>
+            <td>Emergency</td>
+        </tr>
+        <tr disabled>
+            <td>TEACHP-ENABLE-IN</td>
+            <td>Teach Pendant Enable button</td>
+            <td>
+                <mat-checkbox disabled [checked]="conf.teachp_enable_in"></mat-checkbox>
+            </td>
+            <td>TEACHP-TP</td>
+            <td>Teach Pendant</td>
+        </tr>
+        <tr disabled>
+            <td>TEACHP-ESTOP1-IN</td>
+            <td>Teach Pendant E-Stop button</td>
+            <td>
+                <mat-checkbox disabled [checked]="conf.teachp_estop1_in"></mat-checkbox>
+            </td>
+            <td>TEACHP-TP</td>
+            <td>Teach Pendant</td>
+        </tr>
+    </tbody>
+</table>

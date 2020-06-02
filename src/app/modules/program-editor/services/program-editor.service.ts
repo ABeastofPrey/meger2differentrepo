@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { TourService } from 'ngx-tour-md-menu';
 import { Injectable, EventEmitter, NgZone } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
@@ -50,11 +51,20 @@ export class ProgramEditorService {
   errors: TRNERRLine[] = [];
   editorLine = -1;
   isDirty = false;
-  mode: string = null;
   fileRef: App = null; // A reference to the project file which is active
   backtrace: Backtrace = null; // The last backtrace
   isLib = false; // True if the active file is a library
   busy = false; // TRUE WHEN THE SERVICE IS BUSY (I.E: LOADING APP)
+
+  private _mode: string = null;
+
+  get mode() {
+    return this._mode;
+  }
+
+  set mode(m: string) {
+    this._mode = m;
+  }
 
   // TABS
   tabs: FileTab[] = [];
@@ -113,7 +123,8 @@ export class ProgramEditorService {
     private api: ApiService,
     private tour: TourService,
     private utils: UtilsService,
-    private fw: FwTranslatorService
+    private fw: FwTranslatorService,
+    private router: Router
   ) {
     this.tour.stepShow$.subscribe(step=>{
       if ((
@@ -157,6 +168,9 @@ export class ProgramEditorService {
       'dismiss',
       'error.err',
       'success',
+      'button.save',
+      'button.discard',
+      'projectTree.dirty'
     ];
     this.trn.get(words).subscribe(words => {
       this.words = words;
@@ -165,15 +179,8 @@ export class ProgramEditorService {
 
   showFwconfigEditor() {
     this.mode = 'fwconfig';
+    this.router.navigateByUrl('/projects/' + this.mode);
   }
-  
-  // getStatusString(stat: number) : string {
-  //   const str = stat.toString();
-  //   if (this.words) {
-  //     return this.words['projects']['status'][str] || this.words['projects']['status']['999'];
-  //   }
-  //   return '';
-  // }
 
   get isSelectedBKG(): boolean {
     return endsWithBKG(this.activeFile) ? true : false;
@@ -187,10 +194,13 @@ export class ProgramEditorService {
     this.close();
     if (val === 'mc') {
       this.mode = 'editor';
+      this.router.navigateByUrl('/projects');
       // open selected tab
       const tab = this.tabs[this.selectedTabIndex];
       if (!tab) return;
       this.setFile(tab.file,tab.path,null,tab.line);
+    } else {
+      this.router.navigateByUrl('/projects');
     }
   }
   
@@ -213,6 +223,29 @@ export class ProgramEditorService {
 
   onTabChange(i: number) {
     this.selectedTabIndex = i;
+    if (this.isDirty && this.activeFile) {
+      this.trn.get('projectTree.dirty_msg', { name: this.activeFile }).subscribe(word => {
+        this.dialog.open(YesNoDialogComponent, {
+          data: {
+            title: this.words['projectTree.dirty'],
+            msg: word,
+            yes: this.words['button.save'],
+            no: this.words['button.discard'],
+          },
+          width: '500px',
+        }).afterClosed().subscribe(ret => {
+          if (ret) {
+            this.save().then(() => {
+              this.onTabChange(i);
+            });
+          } else {
+            this.isDirty = false;
+            this.onTabChange(i);
+          }
+        });
+      });
+      return;
+    }
     const tab = this.tabs[i];
     if (tab) {
       this.setFile(tab.file, tab.path, null, tab.line);

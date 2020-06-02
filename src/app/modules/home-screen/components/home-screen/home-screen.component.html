@@ -2,8 +2,7 @@
 	<div class="header">
 		<div class="header-box primary-bg-dark center-vertical" *ngIf="dateTime">
 			<mat-icon>access_time</mat-icon>
-			<!-- <span>{{ date }}&nbsp;&nbsp;{{ time }}</span> -->
-			<span>{{dateTime | date:'yyyy/MM/dd h:mm:ss a'}}</span>
+			<span>{{dateTime | date:'yyyy/MM/dd h:mm a':'UTC'}}</span>
 		</div>
 		<div class="header-box primary-bg-dark center-vertical">
 			<mat-icon>devices</mat-icon>
@@ -15,7 +14,7 @@
       </span>
 		</div>
 		<div class="header-box primary-bg-dark center-vertical" *ngIf="utils.isDebug">
-			{{ stat.mode }}  
+			{{ stat.modeCorrected }}  
 		</div>
 		<div class="header-box primary-bg-dark center-vertical">
 			<mat-icon>comment</mat-icon>

@@ -1,10 +1,19 @@
 .wrapper {
   margin: -24px;
   background: #eee;
+  height: calc(100% + 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 .content {
   padding: 16px;
   position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 .license-spinner {
   position: absolute;
@@ -12,7 +21,7 @@
   top: calc(50% - 50px);
 }
 .license {
-  max-height: 500px;
+  flex: 1;
   overflow: auto;
   margin-bottom: 16px;
   font-family: monospace;

@@ -3,6 +3,7 @@
 	<img src="assets/pics/robot2_{{utils.theme}}.svg" class="robot robot1" [@robot1]="!ws.connected && compInit ? 'shown' : 'none'" />
 	<img src="assets/pics/cabinet_{{utils.theme}}.svg" class="cabinet" [@cabinet]="!ws.connected && compInit ? 'shown' : 'none'" />
 	<div class="floor" [@floor]="!ws.connected && compInit ? 'shown' : 'none'"></div>
+	<button mat-fab color="primary" (click)="reload()" class="reload" *ngIf="incompatibility"><mat-icon>refresh</mat-icon></button>
 	<mat-card
 		class="login-card mat-elevation-z24"
 		[@cardIsToolbar]="ws.connected ? 'toolbar' : 'card'"
@@ -14,7 +15,7 @@
 				<h2>{{ isMcAvailable ? 'connecting' : 'login.mc_offline' | translate }}...</h2>
 			</div>
 		</div>
-		<header mat-card-image [style.background-image]="'url(' + loginBgImgUrl + ')'">
+		<header [style.background-image]="'url(' + loginBgImgUrl + ')'">
 			<div class="black-overlay" *ngIf="utils.IsKuka"></div>
 			<div class="center-vertical" [class.kuka-center-vertical]="utils.IsKuka" [class.stx-ver]="!utils.IsKuka" style="z-index: 2;">
 				<div style="flex:1;">

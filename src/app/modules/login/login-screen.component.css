@@ -48,6 +48,7 @@ header {
   position: relative;
   box-sizing: border-box;
   background-position: center;
+  margin: -16px -16px 16px -16px!important;
 }
 .black-overlay {
   height: 100px;
@@ -201,4 +202,13 @@ header {
   left: 0;
   top: 0;
   transition: opacity 1s ease-out;
+}
+.reload {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  height: 72px;
+  width: 72px;
 }

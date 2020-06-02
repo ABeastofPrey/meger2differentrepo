@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar, MatSliderChange } from '@angular/material';
 import { NewProjectDialogComponent } from '../new-project-dialog/new-project-dialog.component';
@@ -73,7 +74,8 @@ export class ProgramToolbarComponent implements OnInit {
     public stat: TpStatService,
     public login: LoginService,
     public cmn: CommonService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private router: Router
   ) {
     this.trn
       .get([
@@ -239,6 +241,7 @@ export class ProgramToolbarComponent implements OnInit {
                 .then((ret: MCQueryResponse) => {
                   if (ret.result === '0') {
                     this.prgService.mode = 'editor';
+                    this.router.navigateByUrl('/projects');
                     this.prj.getCurrentProject();
                   }
                 });
@@ -266,6 +269,7 @@ export class ProgramToolbarComponent implements OnInit {
             .then((ret: MCQueryResponse[]) => {
               if (isCurrent) {
                 this.prgService.mode = 'editor';
+                this.router.navigateByUrl('/projects');
                 this.prj.getCurrentProject();
               } else {
                 this.prj.isLoading = false;
@@ -379,6 +383,7 @@ export class ProgramToolbarComponent implements OnInit {
       if (ret.success) {
         this.prgService.close();
         this.prgService.mode = 'editor';
+        this.router.navigateByUrl('/projects');
         if(!this.utils.IsKuka)
         {
           this.snack.open(this.words['success'], '', { duration: 1500 });

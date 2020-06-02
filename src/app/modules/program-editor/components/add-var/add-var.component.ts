@@ -43,7 +43,6 @@ export class ArraySizeErrorStateMatcher implements ErrorStateMatcher {
 export class AddVarComponent implements OnInit {
   
   name: FormControl = new FormControl('', [Validators.required, Validators.maxLength(32), Validators.pattern('[a-zA-Z]+(\\w*)$')]);
-
   varType: string;
   values: Array<string | number>;
   isArray = false;
@@ -51,16 +50,19 @@ export class AddVarComponent implements OnInit {
   arrSecondSize = 1;
   @Input() hotVariableOption: Array<0 | 1> = [1, 1, 1, 1, 1];
   @Input() canUseArray = true;
-
   validationControls = {};
   errorMatcher = new ArraySizeErrorStateMatcher();
   dataParameterReference = DataParameter;
-
   dimension = 1;
 
   private words: {};
   private errorMessages: {};
   private notifier: Subject<boolean> = new Subject();
+  private _busy = false;
+
+  get busy() {
+    return this._busy;
+  }
 
   constructor(
     public dialogRef: MatDialogRef<AddVarComponent>,
@@ -154,6 +156,7 @@ export class AddVarComponent implements OnInit {
   ngOnDestroy() {
     this.notifier.next(true);
     this.notifier.unsubscribe();
+    this.utils.removeShrinkStretchOverlay();
   }
 
   getErrors(formControl: FormControl) {
@@ -176,6 +179,7 @@ export class AddVarComponent implements OnInit {
   }
 
   add(): Promise<void> {
+    this._busy = true;
     let name = "";
     if (this.varType === 'STRING') {
       name = this.name.value;
@@ -224,6 +228,7 @@ export class AddVarComponent implements OnInit {
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err || ret.result !== '0') {
         console.log(ret);
+        this._busy = false;
       } else {
         const queries = [
           this.data.refreshBases(),
@@ -232,10 +237,9 @@ export class AddVarComponent implements OnInit {
           this.data.refreshWorkPieces(),
         ];
         return Promise.all(queries).then(() => {
-          this.data.refreshVariables().then(() => {
+          return this.data.refreshVariables().then(() => {
+            this._busy = false;
             this.closeDialog();
-            // this.snackbar.open(this.words['success'], '', { duration: 2000 });
-            console.log('Replace snack: ' + this.words['success']);
           });
         });
       }

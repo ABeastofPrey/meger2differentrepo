@@ -33,6 +33,9 @@ export class SimulatorV2Component implements OnInit {
   env = environment;
   resizing = false;
 
+  private _recName = null;
+  get recName() { return this._recName; }
+
   @ViewChild('simulator', { static: false }) simulator: SimulatorComponent;
   @ViewChild('upload', { static: false }) uploadInput: ElementRef;
 
@@ -109,13 +112,14 @@ export class SimulatorV2Component implements OnInit {
             legends.push(currLegend);
           }
         }
-        console.log(legends);
+        this._recName = name + '.REC';
         // VERIFY LEGENDS MATCH MOTION RECORDING
         const axesCount = this.dataService.robotCoordinateType.flags.length;
         for (let i=1; i<=axesCount; i++) {
           const name1 = 'A' + i + '.PFB';
           const name2 = 'A' + i + '.PCMD';
-          if (legends[i-1] !== name1 && legends[i-1] !== name2) {
+          const len = legends.length;
+          if (i-1 === len || (legends[i-1] !== name1 && legends[i-1] !== name2)) {
             this.loaded = true;
             this.snack.open(this.words['error.invalid_rec_motion'],this.words['dismiss']);
             return;

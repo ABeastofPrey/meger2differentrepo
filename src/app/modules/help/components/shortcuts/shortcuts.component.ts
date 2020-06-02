@@ -36,7 +36,7 @@ export class ShortcutsComponent implements OnInit {
           desc: 'help.shortcuts.desc_gotoLine',
         },
         {
-          keys: 'CTRL + SPACE',
+          keys: 'CTRL + SPACE / CTRL + SHIFT + SPACE',
           desc: 'help.shortcuts.desc_autocomplete',
         },
         {

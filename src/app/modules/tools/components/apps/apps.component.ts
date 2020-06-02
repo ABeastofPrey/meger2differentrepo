@@ -1,3 +1,4 @@
+import { CabinetUpdateDialogComponent } from './../cabinet-update-dialog/cabinet-update-dialog.component';
 import { CommonService } from './../../../core/services/common.service';
 import { TaskService } from './../../../core/services/task.service';
 import { environment } from './../../../../../environments/environment';
@@ -92,6 +93,14 @@ export class AppsComponent implements OnInit {
 
   ngOnDestroy() {
     clearInterval(this._interval);
+  }
+
+  cabinetUpdate() {
+    this.dialog.open(CabinetUpdateDialogComponent).afterClosed().subscribe(ret=>{
+      if (ret) {
+        window.location.href = '/cabinet-update';
+      }
+    });
   }
 
   uploadIPK() {

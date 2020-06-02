@@ -1,4 +1,8 @@
 <div class="tree-wrapper">
+	<button mat-raised-button color="warn" *ngIf="isRefreshing && searchIn === 'content'" (click)="abortSearch()" style="display: block;">
+		<mat-icon>cancel</mat-icon>
+		{{ 'button.abort' | translate }}
+	</button>
 	<mat-form-field class="search">
 		<input
 			matInput
@@ -14,11 +18,11 @@
 		<mat-icon matPrefix>search</mat-icon>
 	</mat-form-field>
 	<mat-form-field class="search">
-	<mat-label>{{ 'files.search_in' | translate }}</mat-label>
-	<mat-select [(ngModel)]="searchIn" (selectionChange)="onSearchChange(true)">
-		<mat-option value="names">{{ 'files.names' | translate }}</mat-option>
-		<mat-option value="content">{{ 'files.content' | translate }}</mat-option>
-	</mat-select>
+		<mat-label>{{ 'files.search_in' | translate }}</mat-label>
+		<mat-select [(ngModel)]="searchIn" (selectionChange)="onSearchChange(true)">
+			<mat-option value="names">{{ 'files.names' | translate }}</mat-option>
+			<mat-option value="content">{{ 'files.content' | translate }}</mat-option>
+		</mat-select>
 	</mat-form-field>
 	<mat-slide-toggle class="checkbox_en" color="primary" [(ngModel)]="enableSelect">{{
 		'checkbox_enable' | translate

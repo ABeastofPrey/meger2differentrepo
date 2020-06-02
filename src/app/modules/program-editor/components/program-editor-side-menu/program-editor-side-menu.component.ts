@@ -1,3 +1,4 @@
+import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { TourService } from 'ngx-tour-md-menu';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
@@ -25,6 +26,7 @@ import { SingleInputDialogComponent } from '../../../../components/single-input-
 import { CdkDragDrop, moveItemInArray, DragDrop } from '@angular/cdk/drag-drop';
 import { CommonService } from '../../../core/services/common.service';
 import {NewDependencyDialogComponent} from '../toolbar-dialogs/new-dependency-dialog/new-dependency-dialog.component';
+import { take } from 'rxjs/operators';
 
 export const projectPoints = 'pPoints';
 
@@ -116,7 +118,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     private dd: DragDrop,
     private login: LoginService,
     private cmn: CommonService,
-    private tour: TourService
+    private tour: TourService,
+    private router: Router
   ) {
     this.trn
       .get([
@@ -180,7 +183,15 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           (this.prj.activeProject && 
             disableWhenProjectActive.includes(this.service.mode.toUpperCase()))
         ) {
-          this.service.mode = 'editor';
+          let mode = this.router.url.substring('/projects'.length + 1);
+          if (mode === '') {
+            mode = 'editor';
+            this.service.mode = mode;
+            this.router.navigateByUrl('/projects');
+          } else {
+            this.service.mode = mode;
+            this.router.navigateByUrl('/projects/' + mode);
+          }
         }
       })
     );
@@ -290,6 +301,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     if (n.type === 'Data') {
       if (this.data.selectedDomain === n.parent.name) {
         this.service.mode = 'data';
+        this.router.navigateByUrl('/projects/' + this.service.mode);
         return;
       }
       this.service.busy = true;
@@ -306,49 +318,61 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     }
     if (n.type === 'Settings') {
       this.service.mode = 'settings';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === projectPoints) {
       this.service.mode = projectPoints;
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'Frames') {
       this.service.mode = 'frames';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'Pallets') {
       this.service.mode = 'pallets';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'Grippers') {
       this.service.mode = 'grippers';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'Vision') {
       this.service.mode = 'vision';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'Conveyor') {
       this.service.mode = 'conveyor';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'Errors') {
       this.service.mode = 'errors';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'Macros') {
       this.service.mode = 'macros';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'IO') {
       this.service.mode = 'io';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     if (n.type === 'Payloads') {
       this.service.mode = 'payloads';
+      this.router.navigateByUrl('/projects/' + this.service.mode);
       return;
     }
     this.service.mode = 'editor';
+    this.router.navigateByUrl('/projects');
     setTimeout(() => {
       this.service.dragEnd.emit();
     }, 200);

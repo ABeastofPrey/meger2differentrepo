@@ -66,6 +66,7 @@ import { TourMatMenuModule } from 'ngx-tour-md-menu';
 import { TraceSelectorComponent } from './components/dialogs/trace-selector/trace-selector.component';
 import { TraceService } from '../dashboard/services/trace.service';
 import { ProceedDialogComponent } from './components/dialogs/proceed-dialog/proceed-dialog.component';
+import { ProgramEditorMainComponent } from './components/program-editor-main/program-editor-main.component';
 import { VisionComponent } from './components/vision/vision.component';
 import { VisionTemplateConfigComponent } from './components/vision-template-config/vision-template-config.component';
 import { VisionCalibrationComponent } from './components/vision-calibration/vision-calibration.component';
@@ -135,6 +136,7 @@ import { VisionService } from './services/vision.service';
     VisionLoadStationBookComponent,
     VisionCommandComponent,
     TraceSelectorComponent,
+    ProgramEditorMainComponent,
     VisionComponent,
     VisionTemplateConfigComponent,
     VisionCalibrationComponent,

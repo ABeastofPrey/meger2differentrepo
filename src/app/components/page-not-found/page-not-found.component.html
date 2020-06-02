@@ -4,6 +4,9 @@
 		<h2>{{ '404' | translate }}</h2>
 		<a href="javascript:void" (click)="back()">{{ 'back' | translate }}</a>
 	</div>
-	<canvas #game width="600" height="300" class="game" (click)="onCanvasClick()"></canvas>
-	<div class="game-background" (click)="onCanvasClick()"></div>
+	<!-- <canvas #game width="600" height="300" class="game" (click)="onCanvasClick()"></canvas>
+	<div class="game-background" (click)="onCanvasClick()"></div> -->
+	<video class="credits" loop="true" *ngIf="utils.IsNotKuka || easter" id="credits">
+		<source src="/rs/assets/stx/credits.mp4" type="video/mp4">
+	</video>
 </div>

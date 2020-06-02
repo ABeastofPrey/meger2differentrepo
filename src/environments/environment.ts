@@ -30,11 +30,11 @@ export const environment = {
   production: false,
   appName: 'ControlStudio+',
   appName_Kuka: 'KUKA.ControlStudio',
-  api_url: 'http://localhost:32033',
-  ip: 'localhost',
-  gui_ver: 'v1.3.3-dev 2020-04-19',
-  compatible_webserver_ver: 'v3.3.3',
-  platform: PLATFORMS.Kuka,
+  api_url: 'http://10.4.20.45:1207',
+  ip: '10.4.20.45',
+  gui_ver: 'v1.4.1-dev 2020-06-01',
+  compatible_webserver_ver: 'v3.3.6',
+  platform: PLATFORMS.Servotronix,
   platforms: PLATFORMS,
   useDarkTheme: false
 };

@@ -1,7 +1,6 @@
 .side-menu-content {
   display: flex;
   flex-direction: column;
-  height: 100%;
   overflow: auto;
 }
 .side-menu-content button {

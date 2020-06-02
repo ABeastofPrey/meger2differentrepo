@@ -185,7 +185,7 @@ describe('JumpxCommandComponent', () => {
 
     it('should submit form with jump3cp', () => {
         component.submitForm(form);
-        const cmd = 'Jump3cp MotionElement AscendingPoint=ascendA DescendingPoint=descenA TargetPoint=targetA ArchNo=2 BlendingPercentage=11 Vtran=22 Acc=44 WithPls=WithPls ';
+        const cmd = 'Jump3cp MotionElement AscendingPoint=ascendA DescendingPoint=descenA TargetPoint=targetA ArchNo=2 BlendingPercentage=11 Vtran=22 AScale=44 WithPls=WithPls ';
         expect(closeSpy).toHaveBeenCalledWith(cmd);
         closeSpy.calls.reset();
     })
@@ -194,7 +194,7 @@ describe('JumpxCommandComponent', () => {
         component.commandType = CommandType.Jump3;
         component.commandOptionAuth = new CommandOptionAuth(CommandType.Jump3);
         component.submitForm(form);
-        const cmd = 'Jump3 MotionElement AscendingPoint=ascendA DescendingPoint=descenA TargetPoint=targetA ArchNo=2 BlendingPercentage=11 Vtran=22 Acc=44 WithPls=WithPls ';
+        const cmd = 'Jump3 MotionElement AscendingPoint=ascendA DescendingPoint=descenA TargetPoint=targetA ArchNo=2 BlendingPercentage=11 Vtran=22 AScale=44 WithPls=WithPls ';
         expect(closeSpy).toHaveBeenCalledWith(cmd);
         closeSpy.calls.reset();
         component.commandType = CommandType.Jump3cp;
@@ -206,7 +206,7 @@ describe('JumpxCommandComponent', () => {
         component.commandOptionAuth = new CommandOptionAuth(CommandType.Jump);
         component.isAdvanced = true;
         component.submitForm(form);
-        const cmd = 'Jump MotionElement targetA ArchNo=2 BlendingPercentage=11 Vscale=33 Acc=44 WithPls=WithPls ';
+        const cmd = 'Jump MotionElement targetA ArchNo=2 BlendingPercentage=11 Vscale=33 AScale=44 WithPls=WithPls ';
         expect(closeSpy).toHaveBeenCalledWith(cmd);
         closeSpy.calls.reset();
         component.commandType = CommandType.Jump3cp;

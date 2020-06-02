@@ -6,8 +6,8 @@
     <div class="center-vertical" *ngIf="data.withModeSelector">
       <span>{{ 'mode_selector' | translate }}</span>
       <mat-button-toggle-group [(ngModel)]="mode">
-        <mat-button-toggle color="primary" value="T1" [disabled]="data.currentMode === 'T1'">T1</mat-button-toggle>
-        <mat-button-toggle color="primary" value="T2" [disabled]="data.currentMode === 'T2'">T2</mat-button-toggle>
+        <mat-button-toggle color="primary" value="T1" [disabled]="data.currentMode === 'T1'">M1</mat-button-toggle>
+        <mat-button-toggle color="primary" value="T2" [disabled]="data.currentMode === 'T2'">M2</mat-button-toggle>
         <mat-button-toggle color="primary" value="A" [disabled]="data.currentMode === 'A'">A</mat-button-toggle>
         <mat-button-toggle color="primary" value="R" [disabled]="data.currentMode === 'R'">R</mat-button-toggle>
       </mat-button-toggle-group>

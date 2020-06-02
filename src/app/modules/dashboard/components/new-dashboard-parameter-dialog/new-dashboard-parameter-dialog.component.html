@@ -44,7 +44,7 @@
 			</mat-form-field>
 			<mat-form-field *ngIf="newParam.inputType === 'SLIDER'">
 				<input
-					type="number"
+					
 					placeholder="{{ 'inputs.slider_min' | translate }}"
 					matInput
 					[(ngModel)]="newParam.sliderMin"
@@ -54,7 +54,7 @@
 			</mat-form-field>
 			<mat-form-field *ngIf="newParam.inputType === 'SLIDER'">
 				<input
-					type="number"
+					
 					placeholder="{{ 'inputs.slider_max' | translate }}"
 					matInput
 					[(ngModel)]="newParam.sliderMax"

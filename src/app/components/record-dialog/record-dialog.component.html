@@ -5,7 +5,6 @@
   <div class="content">
     <mat-form-field>
       <input
-        type="number"
         placeholder="{{ 'duration' | translate }}"
         matInput
         [(ngModel)]="duration"
@@ -14,19 +13,6 @@
       />
       <span matSuffix>ms.</span>
     </mat-form-field>
-    <div style="margin-top: 16px;" *ngIf="data && recMode === '3'">
-      <mat-form-field><input placeholder="X" matInput [(ngModel)]="x" virtualKeyboard ktype="text"/></mat-form-field>
-      <mat-form-field><input placeholder="Y" matInput [(ngModel)]="y" virtualKeyboard ktype="text"/></mat-form-field>
-      <mat-form-field><input placeholder="Z" matInput [(ngModel)]="z" virtualKeyboard ktype="text"/></mat-form-field>
-    </div>
-    <div style="margin-top: 16px;" *ngIf="data && recMode === '2'">
-      <mat-form-field
-        ><input placeholder="X" matInput [(ngModel)]="x2D" virtualKeyboard ktype="text"
-      /></mat-form-field>
-      <mat-form-field
-        ><input placeholder="Y" matInput [(ngModel)]="y2D" virtualKeyboard ktype="text"
-      /></mat-form-field>
-    </div>
     <mat-slide-toggle color="primary" #advanced style="margin: 16px 0;">
       {{ 'advanced' | translate }}
     </mat-slide-toggle>
@@ -35,7 +21,7 @@
         type="text"
         placeholder="{{ 'files.name' | translate }}"
         matInput
-        [(ngModel)]="fileName"
+        [formControl]="fileName"
         virtualKeyboard
         ktype="text"
       />
@@ -43,7 +29,6 @@
     </mat-form-field>
     <mat-form-field *ngIf="advanced.checked">
       <input
-      type="number"
       placeholder="{{ 'gap' | translate }}"
       matInput
       [(ngModel)]="gap"
@@ -67,9 +52,7 @@
       duration === null ||
       gap < 1 ||
       duration < 10 ||
-      (data && recMode === '3' &&
-        (x === null || y === null || z === null || x.length === 0 || y.length === 0 || z.length === 0)) ||
-      (recMode === '2' && (x2D === null || y2D === null || x2D.length === 0 || y2D.length === 0))
+      fileName.invalid
     "
   >
     {{ 'dashboard.record.btnStart' | translate }}

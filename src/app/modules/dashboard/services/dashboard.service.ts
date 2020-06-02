@@ -1,3 +1,4 @@
+import { Router, NavigationEnd } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { IPosition } from 'angular2-draggable';
 import { MatDialog, MatSnackBar } from '@angular/material';
@@ -9,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import {GroupManagerService} from '../../core/services/group-manager.service';
 import {RecordParams} from '../../../components/record-dialog/record-dialog.component';
 import {UtilsService} from '../../../modules/core/services/utils.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable()
 export class DashboardService {
@@ -61,6 +63,7 @@ export class DashboardService {
     private trn: TranslateService,
     private grp: GroupManagerService,
     private utils: UtilsService,
+    private router: Router
   ) {
     this.trn
       .get([
@@ -84,35 +87,46 @@ export class DashboardService {
       this._windows = windows;
       this.resetWindows();
     }
-    this.zone.runOutsideAngular(() => {
-      this._interval = window.setInterval(() => {
-        if (this.mgr.screen.name !== 'dashboard') {
-          return clearInterval(this._interval);
-        };
-        for (const w of this.windows) {
-          if (w.name === 'SCARA (Tour)') continue;
-          this.zone.run(()=>{
-            const promises = [];
-            promises.push(this.ws.query('?' + w.name + '.en'));
-            for (const p of w.params) {
-              promises.push(this.ws.query('?' + w.name + '.' + p.name));
-            }
-            Promise.all(promises).then(ret => {
-              if (ret[0].err) {
-                this.close(w.name);
-                return;
-              }
-              w.enable = !(ret[0].result === '0' || ret[0].err);
-              for (let i = 0; i < w.params.length; i++) {
-                if (ret[i + 1] && w.params[i]) {
-                  w.params[i].value = ret[i + 1].result;
-                }
-              }
-            });
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        if (event.url === '/dashboard/dashboards') {
+          this.zone.runOutsideAngular(() => {
+            this.startInterval();
           });
+        } else {
+          window.clearInterval(this._interval);
         }
-      }, 200);
+      }
     });
+  }
+
+  private startInterval() {
+    window.clearInterval(this._interval);
+    this._interval = window.setInterval(() => {
+      for (const w of this.windows) {
+        if (w.name === 'SCARA (Tour)') continue;
+        this.zone.run(()=>{
+          const promises = [];
+          promises.push(this.ws.query('?' + w.name + '.en'));
+          for (const p of w.params) {
+            promises.push(this.ws.query('?' + w.name + '.' + p.name));
+          }
+          Promise.all(promises).then(ret => {
+            console.log(ret);
+            if (ret[0].err) {
+              this.close(w.name);
+              return;
+            }
+            w.enable = !(ret[0].result === '0' || ret[0].err);
+            for (let i = 0; i < w.params.length; i++) {
+              if (ret[i + 1] && w.params[i]) {
+                w.params[i].value = ret[i + 1].result;
+              }
+            }
+          });
+        });
+      }
+    }, 200);
   }
 
   resetWindows() {

@@ -660,7 +660,7 @@ export class ProgramEditorAceComponent implements OnInit {
         });
       },
     });
-    if (this.service.activeFile && this.service.modeToggle === 'prj' && this.service.activeFile.endsWith('UPG')) {
+    if (this.service.activeFile && this.service.modeToggle === 'prj' && this.service.activeFile.endsWith('UPG') && this.prj.currProject.value) {
       const app = this.service.activeFile.substring(
         0,
         this.service.activeFile.indexOf('.')

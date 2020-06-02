@@ -44,9 +44,8 @@ export class GroupManagerService {
   }
   
   setDebugMode(on: boolean) {
-    if (on) {
-      clearInterval(this.groupInterval);
-    } else {
+    clearInterval(this.groupInterval);
+    if (!on) {
       this.zone.runOutsideAngular(() => {
         this.groupInterval = window.setInterval(() => {
           this.refreshGroupsAndInfo();

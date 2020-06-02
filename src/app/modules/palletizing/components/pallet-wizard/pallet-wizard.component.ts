@@ -31,6 +31,7 @@ import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-n
 import { EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 // tslint:disable-next-line: no-any
 declare let Isomer: any;
@@ -142,44 +143,48 @@ export class PalletWizardComponent implements OnInit {
     });
   }
 
-  private resetPallet() {
+  private async resetPallet() {
     const plt = this.dataService.selectedPallet;
+    const name = plt.name;
     plt.reset();
     const promises = [
       this.ws.query('?PLT_GET_PALLETIZING_ORDERS_LIST("' + name + '")')
     ];
-    return Promise.all(promises).then(ret=>{
-      plt.orderList = ret[0].result.length === 0 ? [] : ret[0].result.split(',');
-      this.toggleRetEnable(
-        new MatSlideToggleChange(
-          null,
-          this.dataService.selectedPallet.retEnabled
-        ),
-        true
-      );
-      this.toggleAppEnable(
-        new MatSlideToggleChange(
-          null,
-          this.dataService.selectedPallet.appEnabled
-        ),
-        true
-      );
-      this.toggleEntryEnable(
-        new MatSlideToggleChange(
-          null,
-          this.dataService.selectedPallet.entryEnabled
-        ),
-        true
-      );
-      this.toggleAppExceed(
-        { source: null, checked: this.dataService.selectedPallet.appExceed },
-        true
-      );
-      this.toggleRetExceed(
-        { source: null, checked: this.dataService.selectedPallet.retExceed },
-        true
-      );
-    });
+    const ret = await Promise.all(promises);
+    plt.orderList = ret[0].result.length === 0 ? [] : ret[0].result.split(',');
+    this.toggleRetEnable(
+      new MatSlideToggleChange(
+        null,
+        this.dataService.selectedPallet.retEnabled
+      ),
+      true
+    );
+    this.toggleAppEnable(
+      new MatSlideToggleChange(
+        null,
+        this.dataService.selectedPallet.appEnabled
+      ),
+      true
+    );
+    this.toggleEntryEnable(
+      new MatSlideToggleChange(
+        null,
+        this.dataService.selectedPallet.entryEnabled
+      ),
+      true
+    );
+    this.toggleAppExceed(
+      { source: null, checked: this.dataService.selectedPallet.appExceed },
+      true
+    );
+    this.toggleRetExceed(
+      { source: null, checked: this.dataService.selectedPallet.retExceed },
+      true
+    );
+    if (plt.type === 'CUSTOM') {
+      const ret = await this.ws.query('?PLT_GET_CUSTOM_PALLET_DATA_FILE("' + name + '")');
+      plt.dataFile = ret.err ? null : ret.result;
+    }
   }
 
   private async getPalletInfo() {
@@ -232,6 +237,8 @@ export class PalletWizardComponent implements OnInit {
       this.ws.query('?PLT_GET_CUSTOM_PALLET_DATA_FILE("' + name + '")'),
       this.ws.query('?PLT_GET_NUMBER_OF_LEVELS("' + name + '")'),
       this.ws.query('?PLT_GET_CONFIGURATION_FLAGS("' + name + '")'),
+      this.ws.query('?plt_get_status("' + name + '")'),
+      this.ws.query('?PLT_GET_LEVELS_LAYOUT_PARITY("' + name + '")')
     ];
     return Promise.all(queries).then((ret: MCQueryResponse[]) => {
       this.dataService.selectedPallet.orderList =
@@ -267,8 +274,19 @@ export class PalletWizardComponent implements OnInit {
       this.dataService.selectedPallet.retEnabled = ret[20].result === '1';
       const n = Number(ret[21].result);
       this.dataService.selectedPallet.index = n || 0;
-      if (n) {
-        this.step1.controls['index'].setValue('custom');
+      if (n || ret[28].result === 'EMPTY') { 
+        let indexType: string = null;
+        switch(ret[28].result) {
+          case 'EMPTY':
+            indexType = 'empty';
+            break;
+          case 'FULL':
+            indexType = 'full';
+            break;
+          default:
+            indexType = 'custom';
+        }
+        this.step1.controls['index'].setValue(indexType);
         this.step1.controls['index'].markAsDirty();
         this.onWindowResize();
       }
@@ -315,6 +333,10 @@ export class PalletWizardComponent implements OnInit {
         : ret[25].result;
       this.dataService.selectedPallet.levels = Number(ret[26].result) || 0;
       const flags = ret[27].result.split(',');
+
+      // SET ODD EVEN
+      this.dataService.selectedPallet.diffOddEven = ret[29].result === '1';
+
       this.dataService.selectedPallet.flags = flags.map(val => {
         return Number(val);
       });
@@ -820,21 +842,7 @@ export class PalletWizardComponent implements OnInit {
       }
       data = data + '---\n' + data2;
       const file = this.dataService.selectedPallet.dataFile;
-      return this.api.createPalletFile(data, file).then(
-        fileName => {
-          if (fileName) {
-            const cmd =
-              '?PLT_SET_CUSTOM_PALLET_DATA_FILE("' +
-              this.dataService.selectedPallet.name +
-              '","' +
-              fileName +
-              '")';
-            this.ws.query(cmd).then((ret: MCQueryResponse) => {
-              if (ret.result === '0') {
-                this.dataService.selectedPallet.dataFile = fileName;
-              }
-            });
-          }
+      return this.api.createPalletFile(data, file).then(fileName => {
           return fileName.length > 0 ? null : { invalidDataFile: true };
         },
         () => {
@@ -854,6 +862,17 @@ export class PalletWizardComponent implements OnInit {
       '?PLT_SET_NUMBER_OF_LEVELS("' + pallet + '",' + control.value + ')';
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
       return ret.err || ret.result !== '0' ? { invalidLevelCount: true } : null;
+    });
+  }
+
+  private validateDiffOdd(control: AbstractControl) {
+    if (this.dataService.selectedPallet.type === 'GRID' || (!control.touched && !control.dirty)) {
+      return Promise.resolve(null);
+    }
+    const pallet = this.dataService.selectedPallet.name;
+    const cmd = '?PLT_SET_LEVELS_LAYOUT_PARITY("' + pallet + '",' + (control.value ? 1 : 0) + ')';
+    return this.ws.query(cmd).then((ret: MCQueryResponse) => {
+      return ret.err || ret.result !== '0' ? { invalidOddDiff: true } : null;
     });
   }
 
@@ -1347,7 +1366,7 @@ export class PalletWizardComponent implements OnInit {
               [Validators.required, Validators.min(1)],
               this.validateLevels.bind(this),
             ],
-      diffOddEven: [''],
+      diffOddEven: pallet.type === 'GRID' ? [''] : ['',[],this.validateDiffOdd.bind(this)],
     });
     this.step2 = this._formBuilder.group({
       originX: ['', [Validators.required], this.validateOrigin.bind(this, 'x')],
@@ -1594,14 +1613,26 @@ export class PalletWizardComponent implements OnInit {
       });
   }
 
-  ngAfterViewInit() {
-    this.getPalletInfo().then(() => {
-      if (this.designer) {
-        this.designer.onPalletInfoLoaded();
-      }
-      if (this.designer2) {
-        this.designer2.onPalletInfoLoaded();
-      }
+  async ngAfterViewInit() {
+    await this.getPalletInfo();
+    // TODO: SET SOME FLAG FOR INIT DONE, AND ONLY VALIDATE STUFF AFTER INIT IS DONE
+    await this.refreshDesigners();
+  }
+
+  refreshDesigners() : Promise<any> {
+    return new Promise(resolve=>{
+      setTimeout(async()=>{
+        let count = 0;
+        if (this.designer) {
+          this.designer.refresh();
+          count += await this.designer.onPalletInfoLoaded();
+        }
+        if (this.designer2) {
+          this.designer2.refresh();
+          count += await this.designer2.onPalletInfoLoaded();
+        }
+        resolve();
+      },0);
     });
   }
 
@@ -1694,6 +1725,18 @@ export class PalletWizardComponent implements OnInit {
       });
     } else {
       this.closed.emit();
+    }
+  }
+
+  onStepChange(e: StepperSelectionEvent) {
+    const i = e.selectedIndex;
+    const type = this.dataService.selectedPallet.type;
+    if (type === 'CUSTOM') {
+      if (i === 1) {
+        this.designer.setPositions();
+      } else if (i === 2  && this.dataService.selectedPallet.diffOddEven) {
+        this.designer2.setPositions();
+      }
     }
   }
 }

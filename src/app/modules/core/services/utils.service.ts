@@ -42,6 +42,11 @@ export class UtilsService {
     this.trn.get(['utils.success', 'acknowledge']).subscribe(words => {
       this.words = words;
     });
+    this.stat.onlineStatus.subscribe(stat=>{
+      if (!stat) {
+        this.removeShrinkStretchOverlay();
+      }
+    });
   }
 
   /* Download a text file */
@@ -109,6 +114,12 @@ export class UtilsService {
       data: {
         withModeSelector: true
       }
+    });
+  }
+
+  sleep(time) {
+    return new Promise(resolve=>{
+      setTimeout(resolve, time);
     });
   }
 
@@ -233,24 +244,55 @@ export class UtilsService {
   }
 
   public limitValidator(min: number, max: number, canBeDecimal = true, leftClosedInterval = true, rightClosedInterval = true): ValidatorFn {
-      return ({ value }: AbstractControl): { [key: string]: any } | null => {
-          if (value !== 0 && !!value === false) {
-              return null;
-          }
-          let forbidden =
-              Number(value) > max ||
-              Number(value) < min ||
-              (canBeDecimal ? false : (Number(value) % 1 !== 0)); // Check decimal number.
-          if (!leftClosedInterval) {
-            forbidden = Number(value) === min ? true : forbidden;
-          }
-          if (!rightClosedInterval) {
-            forbidden = Number(value) === max ? true : forbidden;
-          }
-          if (Number(value).toString() === 'NaN') {
-            forbidden = true;
-          }
-          return forbidden ? { limit: { min, max, value } } : null;
-      };
+    return ({ value }: AbstractControl): { [key: string]: any } | null => {
+      if (value !== 0 && !!value === false) {
+        return null;
+      }
+      let forbidden =
+        Number(value) > max ||
+        Number(value) < min ||
+        (canBeDecimal ? false : (Number(value) % 1 !== 0)); // Check decimal number.
+      if (!leftClosedInterval) {
+        forbidden = Number(value) === min ? true : forbidden;
+      }
+      if (!rightClosedInterval) {
+        forbidden = Number(value) === max ? true : forbidden;
+      }
+      if (Number(value).toString() === 'NaN') {
+        forbidden = true;
+      }
+      return forbidden ? { limit: { min, max, value } } : null;
+    };
   }
+
+  parseINIString(data){
+    var regex = {
+      section: /^\s*\[\s*([^\]]*)\s*\]\s*$/,
+      param: /^\s*([^=]+?)\s*=\s*(.*?)\s*$/,
+      comment: /^\s*;.*$/
+    };
+    var value = {};
+    var lines = data.split(/[\r\n]+/);
+    var section = null;
+    lines.forEach(function(line){
+      if (regex.comment.test(line)) {
+        return;
+      } else if (regex.param.test(line)) {
+        var match = line.match(regex.param);
+        if (section) {
+          value[section][match[1]] = match[2];
+        } else {
+          value[match[1]] = match[2];
+        }
+      } else if (regex.section.test(line)) {
+          var match = line.match(regex.section);
+          value[match[1]] = {};
+          section = match[1];
+      } else if (line.length == 0 && section) {
+          section = null;
+      };
+    });
+    return value;
+  }
+  
 }

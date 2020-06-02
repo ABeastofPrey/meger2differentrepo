@@ -222,3 +222,7 @@ program-edit-menu {
     color: #ccc;
   }
 }
+
+router-outlet ~ * {
+  background: red;
+}

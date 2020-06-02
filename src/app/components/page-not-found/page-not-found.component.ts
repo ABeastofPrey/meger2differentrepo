@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { ElementRef } from '@angular/core';
 import { CdkTextColumn } from '@angular/cdk/table';
+import { UtilsService } from '../../modules/core/services/utils.service';
 
 const BOXES_OFFSET = 10;
 const SPEED = 5;
@@ -13,9 +14,12 @@ const SPEED = 5;
   styleUrls: ['./page-not-found.component.css'],
 })
 export class PageNotFoundComponent implements OnInit {
-  constructor(private _location: Location) {}
+  constructor(private _location: Location, public utils: UtilsService) {}
 
   env = environment;
+
+  // EASTER
+  easter = false;
 
   // GAME
   private isDrawCalled = false;
@@ -30,7 +34,9 @@ export class PageNotFoundComponent implements OnInit {
     this._location.back();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.easter = window.location.hostname.includes('10.4.20');
+  }
 
   draw() {
     if (this.game.nativeElement.getContext) {
@@ -130,6 +136,9 @@ export class PageNotFoundComponent implements OnInit {
       this.grp.yPos += this.grp.yPos >= 180 ? 0 : SPEED;
     } else if (e.key === 'ArrowUp') {
       this.grp.yPos -= this.grp.yPos <= 115 ? 0 : SPEED;
+    } else if (e.key === 'Enter' && (this.utils.IsNotKuka || this.easter)) {
+      const el = document.getElementById('credits') as HTMLVideoElement;
+      el.play();
     }
   }
 

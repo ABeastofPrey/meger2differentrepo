@@ -10,7 +10,16 @@
 					<table>
 						<thead class="mat-subtitle-color">
 							<tr>
-								<td>{{ 'projectSettings.apps.en' | translate }}</td>
+								<td>
+									<mat-checkbox
+										color="primary"
+										(change)="$event ? toggleAllApps() : null"
+										[checked]="isAllAppsSelected"
+										[disabled]="busy"
+										[indeterminate]="isSomeAppsSelected && !isAllAppsSelected"
+										style="margin-right: 16px;"></mat-checkbox>
+									{{ 'projectSettings.apps.en' | translate }}
+								</td>
 								<td class="center-vertical">
 									{{ 'projectSettings.apps.id' | translate }}
 									<mat-icon matTooltip="{{ 'projectSettings.apps.id_tooltip' | translate }}">help</mat-icon>
@@ -21,7 +30,7 @@
 						<tbody>
 							<tr *ngFor="let app of prj.currProject.value.apps">
 								<td>
-									<mat-checkbox color="primary" [checked]="app.active" (change)="toggleActiveApp(app, 'active')"
+									<mat-checkbox [disabled]="busy" color="primary" [checked]="app.active" (change)="toggleActiveApp(app, 'active')"
 										>{{ app.name }}
 									</mat-checkbox>
 								</td>
@@ -92,7 +101,7 @@
 						matInput
 						placeholder="{{ 'projectSettings.vtran' | translate }} (VTran)"
 						[(ngModel)]="prj.currProject.value.settings.vtran"
-						type="number"
+						
 						virtualKeyboard
 						ktype="numeric"
 					/>
@@ -172,7 +181,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}min"
 									[value]="p.min"
@@ -187,7 +196,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}max"
 									[value]="p.max"
@@ -214,7 +223,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}min"
 									[value]="p.min"
@@ -229,7 +238,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}max"
 									[value]="p.max"
@@ -256,7 +265,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}min"
 									[value]="p.min"
@@ -271,7 +280,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}max"
 									[value]="p.max"
@@ -298,7 +307,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}min"
 									[value]="p.min"
@@ -313,7 +322,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}max"
 									[value]="p.max"
@@ -340,7 +349,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}min"
 									[value]="p.min"
@@ -355,7 +364,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}max"
 									[value]="p.max"
@@ -382,7 +391,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}min"
 									[value]="p.min"
@@ -397,7 +406,7 @@
 						<td>
 							<mat-form-field>
 								<input
-									type="number"
+									
 									matInput
 									placeholder="{{ p.name }}max"
 									[value]="p.max"

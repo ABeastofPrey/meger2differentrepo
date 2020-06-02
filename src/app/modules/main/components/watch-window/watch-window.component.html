@@ -17,7 +17,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr *cdkVirtualFor="let v of watch.vars; let i = index">
+			<tr *cdkVirtualFor="let v of watch.vars; let i = index" [class.disabled]="i === watch.MAX_VARS">
 				<td>
 					<button mat-icon-button color="warn" (click)="watch.delete(i)"
 						[disabled]="i === watch.vars.length - 1">
@@ -41,16 +41,6 @@
 					</button>
 				</td>
 				<td>
-					<!-- <input
-						type="text"
-						[(ngModel)]="v.name"
-						(focusout)="onBlur(v)"
-						(keyup.enter)="onBlur(v, $event)"
-						virtualKeyboard
-						ktype="text"
-						(onKeyboardClose)="onBlur(v)"
-						[id]="'var-' + i"
-					/> -->
 					<rich-select [options]="v.variableList | async" [(current)]="v.name" (blurEvent)="onBlur(v)"
 						(focusEvent)="getVariablesWithContext(v)" (openSelectEvent)="getVariablesWithContext(v)">
 					</rich-select>

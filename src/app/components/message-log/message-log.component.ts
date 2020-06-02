@@ -105,6 +105,7 @@ export class MessageLogComponent implements OnInit {
     clear() {
       this.notification.clear();
       this.contextMenuShown = false;
+      this.cd.detectChanges();
     }
   
     goToError(err: ErrorFrame) {

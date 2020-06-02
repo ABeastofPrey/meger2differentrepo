@@ -85,8 +85,8 @@
 					<mat-form-field>
 						<mat-select
 							placeholder="{{ 'grippers.dout1' | translate }}"
-							[(ngModel)]="selectedNode.cmd1"
-							(selectionChange)="updateGripperCmd(1)"
+							[value]="selectedNode.cmd1"
+							(selectionChange)="updateGripperCmd(1,'cmd1',$event)"
 							[disabled]="login.isOperator"
 						>
 							<mat-option *ngIf="database.outputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
@@ -96,8 +96,8 @@
 					<mat-checkbox
 						color="primary"
 						[disabled]="login.isOperator"
-						[(ngModel)]="selectedNode.cmd1_invert"
-						(change)="updateGripperCmd(1)"
+						[value]="selectedNode.cmd1_invert"
+						(change)="updateGripperCmd(1,'cmd1_invert',$event)"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
 				</div>
@@ -109,7 +109,7 @@
 							[disabled]="login.isOperator"
 							placeholder="{{ 'open' | translate }}"
 							[(ngModel)]="selectedNode.sleep_open"
-							type="number"
+							
 							(change)="updateGripperSleep('OPEN')"
 							(onKeyboardClose)="updateGripperSleep('OPEN')"
 							virtualKeyboard
@@ -123,7 +123,7 @@
 							matInput
 							placeholder="{{ 'close' | translate }}"
 							[(ngModel)]="selectedNode.sleep_close"
-							type="number"
+							
 							(change)="updateGripperSleep('CLOSE')"
 							virtualKeyboard
 							ktype="numeric_int_pos"
@@ -137,8 +137,8 @@
 					<mat-form-field>
 						<mat-select
 							placeholder="{{ 'grippers.dout2' | translate }}"
-							[(ngModel)]="selectedNode.cmd2"
-							(selectionChange)="updateGripperCmd(2)"
+							[value]="selectedNode.cmd2"
+							(selectionChange)="updateGripperCmd(2,'cmd2',$event)"
 							[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
 						>
 							<mat-option *ngIf="database.outputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
@@ -147,8 +147,8 @@
 					</mat-form-field>
 					<mat-checkbox
 						color="primary"
-						[(ngModel)]="selectedNode.cmd2_invert"
-						(change)="updateGripperCmd(2)"
+						[value]="selectedNode.cmd2_invert"
+						(change)="updateGripperCmd(2,'cmd2_invert',$event)"
 						[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>

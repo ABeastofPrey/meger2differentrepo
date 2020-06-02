@@ -35,6 +35,8 @@ export class FramesComponent implements OnInit {
   private _calibrationDialogShowing = false;
   private words: {};
 
+  busy = false;
+
   constructor(
     private data: DataService,
     private dialog: MatDialog,
@@ -177,7 +179,7 @@ export class FramesComponent implements OnInit {
     this.isAllSelected()
       ? this.selection.clear()
       : this.dataSource.data.forEach((row: TPVariable, i: number) => {
-        if (i > 0) {
+        if (row.name !== 'VOID') {
           this.selection.select(row);
         }
       });
@@ -256,6 +258,8 @@ export class FramesComponent implements OnInit {
   }
 
   setAsCurrent() {
+    if (this.busy) return;
+    this.busy = true;
     let fullname = this.selectedVar.name;
     if (this.selectedVar.isArr) {
       fullname += '[' + this.selectedVar.selectedIndex + ']';
@@ -276,6 +280,9 @@ export class FramesComponent implements OnInit {
         this.data.selectedWorkPiece = fullname;
         break;
     }
+    setTimeout(()=>{
+      this.busy = false;
+    },400);
   }
 
   deleteSelected() {

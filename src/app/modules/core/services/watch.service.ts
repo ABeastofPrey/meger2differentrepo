@@ -22,6 +22,8 @@ export class WatchService {
   private env = environment;
   private variableListMap = new Map<string, string[]>();
 
+  readonly MAX_VARS = 16;
+
   get windowOpen() {
     return this._windowOpen;
   }
@@ -61,16 +63,14 @@ export class WatchService {
   }
 
   delete(i: number) {
-    // this.vars[i].active = false;
-    // this.vars.splice(i, 1);
-    // this.vars[this.vars.length - 1].value = '';
-    // this.storeVars();
-
     localStorage.removeItem('watch');
     const _remove = remove(i, 1);
     this.vars = _remove(this.vars);
     this.vars[this.vars.length - 1].value = '';
     this.vars[this.vars.length - 1].name = '';
+    this.vars.forEach(v=>{
+      v.active = true;
+    });
     this.storeVars();
   }
 
@@ -99,43 +99,50 @@ export class WatchService {
       this.contexts.unshift(GLOBAL);
       }
     });
-    this.interval = window.setInterval(() => {
+    this.interval = window.setInterval(async() => {
       for (const v of this.vars) {
         if (v.name.trim().length === 0) v.record = false;
-        if (!v.active) continue;
+        if (!v.active) {
+          continue;
+        }
         if (v.name.length === 0) {
           v.active = false;
           continue;
         }
+      }
+      const queryAll = this.vars.filter(v=>v.active).map(v=>{
         let context: string;
         let separator = ' ';
         if (v.context === GLOBAL) {
           context = '';
-        }
-        else if (v.context.endsWith('_DATA')) {
+        } else if (v.context.endsWith('_DATA')) {
           context = v.context.slice(0,-5) + '::';
           separator = '';
+        } else {
+          context = v.context;
         }
-        else {
-        context = v.context;
- }
-        this.ws
-          .query('watch ' + context + separator + v.name)
-          .then((ret: MCQueryResponse) => {
-            if (!v.active) return;
-            if (ret.err) {
-              for (const err of ret.err) {
-                if (err.errType !== 'error') continue;
-                v.value = err.errCode === '7195' ? '-' : err.errMsg;
-                v.active = false;
-                if (!this.env.production) console.log(ret);
-              }
-            } else {
-              v.value = ret.result;
-            }
-          });
+        return 'watch ' + context + separator + v.name;
+      }).join('\n?"$end$"\n');
+      if (queryAll.length === 0) return;
+      const ret = await this.ws.query(queryAll);
+      if (!ret.err) {
+        const results = ret.result.split('\n$end$\n');
+        let j = 0;
+        for (let i=0; i<this.vars.length; i++) {
+          if (!this.vars[i].active) {
+            j++;
+            continue;
+          }
+          this.vars[i].value = results[i-j];
+        }
+      } else {
+        this.vars.forEach((v,i)=>{
+          if (!v.active || i === this.vars.length - 1) return;
+          v.active = false;
+          v.value = ret.err[0].errMsg;
+        });
       }
-    }, 200);
+    }, 400);
   }
 
   stop() {
@@ -144,6 +151,9 @@ export class WatchService {
 
   toggleActive(v: WatchVar) {
     v.active = !v.active;
+    if (!v.active) {
+      v.value = '';
+    }
   }
 
   /*
@@ -153,7 +163,6 @@ export class WatchService {
     let result = false;
     if (v.name.length > 0 && !v.active) v.active = true;
     if (this.vars[this.vars.length - 1].name.length > 0) {
-      // this.vars.push(new WatchVar('', GLOBAL));
       this.vars = [...this.vars, (new WatchVar('', GLOBAL))];
       result = true;
     }

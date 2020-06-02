@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import {
@@ -12,7 +13,7 @@ import {
   LoginService,
   MCFileSearchResult,
 } from '../../../core';
-import { of, Subject } from 'rxjs';
+import { of, Subject, Subscription } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { FileFilterService } from '../../file-filter.service';
 import { ProgramEditorService } from '../../../program-editor/services/program-editor.service';
@@ -22,6 +23,7 @@ import { NewFileDialogComponent } from '../new-file-dialog/new-file-dialog.compo
 import { SingleInputDialogComponent } from '../../../../components/single-input-dialog/single-input-dialog.component';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { UtilsService } from '../../../core/services/utils.service';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'mc-file-tree',
@@ -47,6 +49,9 @@ export class McFileTreeComponent implements OnInit {
   enableSelect = false;
   searchIn = 'names';
 
+  private _aborting = false;
+  private _sub: Subscription = null;
+
   /*
    * CONTEXT MENU
    */
@@ -68,7 +73,8 @@ export class McFileTreeComponent implements OnInit {
     private dialog: MatDialog,
     private snack: MatSnackBar,
     private login: LoginService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private router: Router
   ) {
     
   }
@@ -165,6 +171,7 @@ export class McFileTreeComponent implements OnInit {
     if (force) {
       return this.filterData();
     }
+    if (this.searchIn === 'content') return;
     this.lastSearchTimeout = window.setTimeout(() => {
       if (curr === this.filterByString) {
         // not changed for 500 ms
@@ -211,6 +218,13 @@ export class McFileTreeComponent implements OnInit {
     return nodeData && nodeData.children;
   };
 
+  getFileTextSearch(search: string, path: string) {
+    let body = new HttpParams();
+    body = body.set('search', search);
+    body = body.set('path', path);
+    return this.api.get('/cs/api/search', body);
+  }
+
   filterData() {
     if (this.filterByString.length <= 1) this.isRefreshing = true;
     const contentSearch = this.searchIn === 'content';
@@ -219,6 +233,7 @@ export class McFileTreeComponent implements OnInit {
         this.nestedDataSourceContent.data = [];
         this.nestedTreeControlContent.dataNodes = [];
         this.isRefreshing = false;
+        this._aborting = false;
         return;
       }
       this.nestedDataSource.data = this.unfilteredDataSource;
@@ -231,7 +246,12 @@ export class McFileTreeComponent implements OnInit {
     }
     if (contentSearch) {
       this.isRefreshing = true;
-      this.api.getFileTextSearch(this.filterByString, '').then(ret=>{
+      this._sub = this.getFileTextSearch(this.filterByString, '').subscribe((ret:MCFileSearchResult[])=>{
+        if (this._aborting) {
+          this._aborting = false;
+          this.isRefreshing = false;
+          return;
+        }
         let data: TreeNodeContent[] = [];
         for (const result of ret) {
           data.push({
@@ -248,14 +268,21 @@ export class McFileTreeComponent implements OnInit {
             })
           });
         }
+        if (this._aborting) {
+          this._aborting = false;
+          this.isRefreshing = false;
+          return;
+        }
         this.nestedDataSourceContent.data = data;
         this.nestedTreeControlContent.dataNodes = data;
         this.nestedTreeControlContent.expandAll();
         this.isRefreshing = false;
+        this._aborting = false;
       });
       return;
+    } else {
+      this.filterService.filter(this.unfilteredDataSource, this.filterByString);
     }
-    this.filterService.filter(this.unfilteredDataSource, this.filterByString);
   }
 
   toggleNode(node: TreeNode) {
@@ -355,35 +382,31 @@ export class McFileTreeComponent implements OnInit {
     const path = n.parent ? n.parent.decodedPath : '';
     if (this.service.activeFile === n.name && this.service.activeFilePath === path) return;
     if (this.service.isDirty && this.service.activeFile) {
-      this.trn
-        .get('projectTree.dirty_msg', { name: this.service.activeFile })
-        .subscribe(word => {
-          this.dialog
-            .open(YesNoDialogComponent, {
-              data: {
-                title: this.words['projectTree.dirty'],
-                msg: word,
-                yes: this.words['button.save'],
-                no: this.words['button.discard'],
-              },
-              width: '500px',
-            })
-            .afterClosed()
-            .subscribe(ret => {
-              if (ret) {
-                this.service.save().then(() => {
-                  this.openFile(n);
-                });
-              } else {
-                this.service.isDirty = false;
-                this.openFile(n);
-              }
+      this.trn.get('projectTree.dirty_msg', { name: this.service.activeFile }).subscribe(word => {
+        this.dialog.open(YesNoDialogComponent, {
+          data: {
+            title: this.words['projectTree.dirty'],
+            msg: word,
+            yes: this.words['button.save'],
+            no: this.words['button.discard'],
+          },
+          width: '500px',
+        }).afterClosed().subscribe(ret => {
+          if (ret) {
+            this.service.save().then(() => {
+              this.openFile(n);
             });
-          return;
+          } else {
+            this.service.isDirty = false;
+            this.openFile(n);
+          }
         });
+      });
+      return;
     }
     this.service.close();
     this.service.mode = 'editor';
+    this.router.navigateByUrl('/projects');
     setTimeout(() => {
       this.service.dragEnd.emit();
     }, 200);
@@ -437,6 +460,7 @@ export class McFileTreeComponent implements OnInit {
     }
     this.service.close();
     this.service.mode = 'editor';
+    this.router.navigateByUrl('/projects');
     setTimeout(() => {
       this.service.dragEnd.emit();
     }, 200);
@@ -445,6 +469,16 @@ export class McFileTreeComponent implements OnInit {
       return;
     }
     this.service.setFile(n.file,path,null,n.index+1);
+  }
+
+  abortSearch() {
+    this.api.abortFileTextSearch();
+    this._aborting = true;
+    if (this._sub) {
+      this._sub.unsubscribe();
+    }
+    this.filterByString = '';
+    this.filterData();
   }
 
   newFile(node: TreeNode) {
@@ -525,6 +559,8 @@ export class McFileTreeComponent implements OnInit {
           title: this.words['projects.toolbar.new_folder'],
           placeholder: this.words['files.dir_name'],
           accept: this.words['button.create'],
+          regex: '[a-zA-Z]+(\\w*)$',
+          maxLength: 32
         },
       })
       .afterClosed()

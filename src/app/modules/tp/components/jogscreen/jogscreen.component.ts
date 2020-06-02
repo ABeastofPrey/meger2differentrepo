@@ -23,6 +23,12 @@ import { UtilsService } from '../../../core/services/utils.service';
         })
       ),
       state(
+        'Teach KUKA',
+        style({
+          backgroundColor: '#ff7300',
+        })
+      ),
+      state(
         'Tool Align',
         style({
           backgroundColor: '#3F51B5',
@@ -56,16 +62,12 @@ export class JogScreenComponent implements OnInit {
     this.trn.get('jogScreen.menu').subscribe(words => {
       this.menuTypes = [];
       if (this.utils.IsKuka) {
-        this.menuTypes.push(
-          new MenuType('Tool Align KUKA', 'touch_app', words[0])
-        );
+        this.menuTypes.push(new MenuType('Tool Align KUKA', 'touch_app', words[0]));
+        this.menuTypes.push(new MenuType('Teach KUKA', 'vertical_align_bottom', words[1]));
       } else {
         this.menuTypes.push(new MenuType('Tool Align', 'touch_app', words[0]));
+        this.menuTypes.push(new MenuType('Teach', 'vertical_align_bottom', words[1]));
       }
-
-      this.menuTypes.push(
-        new MenuType('Teach', 'vertical_align_bottom', words[1])
-      );
       this.selectedMenuTypeIndex = 1;
     });
   }

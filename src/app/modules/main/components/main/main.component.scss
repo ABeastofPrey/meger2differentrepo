@@ -297,6 +297,25 @@ main-menu.menu-small {
   animation: blink 1s infinite;
   -webkit-animation: blink 1s infinite;
 }
+
+.wack {
+  animation: wack 1s infinite;
+  -webkit-animation: wack 1s infinite;
+  cursor: not-allowed;
+}
+
+@keyframes wack {
+  from {
+    background-color: #880000;
+    color: #FF0000;
+  }
+
+  to {
+    background-color: #440000;
+    color: #880000;
+  }
+}
+
 @keyframes blink {
   from {
     box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),

@@ -170,7 +170,7 @@
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasAcc">
                     <input matInput type="text"
-                        placeholder="{{'projectCommands.jumpx.acc' | translate}} [deg/s^2]"
+                        placeholder="{{'projectCommands.jumpx.acc' | translate}} [%]"
                         [formControlName]="CommandOptions.Acc"
                         (blur)="updateStore(CommandOptions.Acc, $event.target.value)">
                     <mat-error *ngIf="model">

@@ -11,11 +11,11 @@
   font-size: 18px;
 }
 .actions {
-  height: 52px;
   display: flex;
   padding: 8px 8px 8px 24px;
   justify-content: flex-end;
   margin: 0 -24px -24px 0;
+  border-top: 1px solid #ccc;
 }
 .name-wrapper {
   display: flex;
@@ -51,4 +51,10 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+.btnCreate {
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -10,6 +10,7 @@
 				placeholder="{{ 'variables.type' | translate }}"
 				[(ngModel)]="varType"
 				(selectionChange)="onTypeChange()"
+				[disabled]="busy"
 			>
 				<mat-option *ngIf="isHotOption(0) && data.isRobotType" value="JOINT">{{ 'joint' | translate }}</mat-option>
 				<mat-option *ngIf="isHotOption(1) && data.isRobotType" value="LOCATION">{{
@@ -20,9 +21,9 @@
 				<mat-option *ngIf="isHotOption(4)" value="STRING">{{ 'string' | translate }}</mat-option>
 			</mat-select>
 		</mat-form-field>
-		<mat-checkbox *ngIf="canUseArray" color="primary" [(ngModel)]="isArray">{{ 'arr' | translate }}</mat-checkbox>
+		<mat-checkbox *ngIf="canUseArray" color="primary" [(ngModel)]="isArray" [disabled]="busy">{{ 'arr' | translate }}</mat-checkbox>
 		<mat-form-field *ngIf="isArray && varType === 'STRING'" style="margin-top: 8px;">
-			<mat-select placeholder="{{ 'dimension' | translate }}" [(ngModel)]="dimension">
+			<mat-select placeholder="{{ 'dimension' | translate }}" [(ngModel)]="dimension"  [disabled]="busy">
 					<mat-option [value]=1>1</mat-option>
 					<mat-option [value]=2>2</mat-option>
 			</mat-select>
@@ -62,6 +63,7 @@
 				[(ngModel)]="arrSecondSize" virtualKeyboard
 				ktype="numeric_int_pos" 				
 				[formControl]="validationControls[dataParameterReference.TwoArraySize]"
+				[disabled]="busy"
 				[errorStateMatcher]="errorMatcher"/>
 			<mat-error>
 				{{ getErrors(validationControls[dataParameterReference.TwoArraySize]) }}
@@ -74,7 +76,7 @@
 				<div *ngIf="varType === 'JOINT'" class="values">
 					<mat-form-field *ngFor="let joint of data.robotCoordinateType.legends; let i = index" floatLabel="never">
 						<span matPrefix style="font-weight: bold;">J{{ i + 1 }}:&nbsp;&nbsp;</span>
-						<input matInput [placeholder]="'J' + (i + 1)" [(ngModel)]="this.values[i]" virtualKeyboard ktype="numeric" />
+						<input matInput [placeholder]="'J' + (i + 1)" [(ngModel)]="this.values[i]" virtualKeyboard ktype="numeric"  [disabled]="busy" />
 					</mat-form-field>
 				</div>
 				<div *ngIf="varType === 'LOCATION'" class="values">
@@ -86,9 +88,10 @@
 							[placeholder]="legend"
 							[(ngModel)]="this.values[i]"
 							virtualKeyboard
+							[disabled]="busy"
 							ktype="numeric"
 						/>
-						<mat-select *ngIf="i >= data.robotCoordinateType.legends.length" [(ngModel)]="this.values[i]">
+						<mat-select *ngIf="i >= data.robotCoordinateType.legends.length" [(ngModel)]="this.values[i]"  [disabled]="busy">
 							<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Arm'">
 								<mat-option value="0">AUTO</mat-option>
 								<mat-option value="1">LEFTY</mat-option>
@@ -116,6 +119,7 @@
 							[placeholder]="Value"
 							[(ngModel)]="this.values[0]"
 							virtualKeyboard
+							[disabled]="busy"
 							ktype="numeric_int"
 						/>
 						<input
@@ -124,6 +128,7 @@
 							[placeholder]="Value"
 							[(ngModel)]="this.values[0]"
 							virtualKeyboard
+							[disabled]="busy"
 							ktype="numeric"
 						/>
 						<textarea
@@ -136,6 +141,7 @@
 							cdkTextareaAutosize
 							#autosize="cdkTextareaAutosize"
 							maxlength="80"
+							[disabled]="busy"
 							cdkAutosizeMinRows="1"
 						></textarea>
 					</mat-form-field>
@@ -144,7 +150,8 @@
         *ngIf="varType === 'JOINT' || varType === 'LOCATION'"
         mat-raised-button
         color="primary"
-        (click)="getCurrent()"
+				(click)="getCurrent()"
+				[disabled]="busy"
         style="align-self: flex-start;">
 					{{'variables.get_current'|translate}}
 				</button>
@@ -152,11 +159,12 @@
 		</div>
 	</div>
 	<div class="actions">
-		<button mat-button mat-dialog-close>
+		<button mat-button mat-dialog-close [disabled]="busy">
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" [disabled]="name.invalid || !varType" [clickOnce]="add" [clickOnceContext]="this">
-			{{ 'variables.btn_create' | translate }}
+		<button mat-raised-button color="primary" [disabled]="name.invalid || !varType || busy" [clickOnce]="add" [clickOnceContext]="this" class="btnCreate">
+			<div *ngIf="!busy">{{ 'variables.btn_create' | translate }}</div>
+			<div *ngIf="busy"><mat-spinner color="primary" diameter="24" style="margin: 8px;"></mat-spinner></div>
 		</button>
 	</div>
 </div>

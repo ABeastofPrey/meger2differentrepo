@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Component, HostListener } from '@angular/core';
 import { fadeAnimation } from './fade.animation';
 import { LoginService } from './modules/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd, Route } from '@angular/router';
 import { LangService } from './modules/core/services/lang.service';
 import { environment } from '../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -222,6 +222,9 @@ export class ControlStudioComponent {
   
   
   ngOnInit() {
+    // if (!this.env.production) {
+    //   this.printpath('', this.router.config);
+    // }
     this.initTour();
     this.getOrientation();
     this.login.populate();
@@ -238,6 +241,17 @@ export class ControlStudioComponent {
   
   ngOnDestroy() {
     this.landscape = true;
+  }
+
+  private printpath(parent: string, config: Route[]) {
+    for (let i = 0; i < config.length; i++) {
+      const route = config[i];
+      console.log(parent + '/' + route.path);
+      if (route.children) {
+        const currentPath = route.path ? parent + '/' + route.path : parent;
+        this.printpath(currentPath, route.children);
+      }
+    }
   }
 }
 

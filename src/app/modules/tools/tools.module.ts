@@ -4,11 +4,12 @@ import { AppsComponent } from './components/apps/apps.component';
 import { SharedModule } from '../shared/shared.module';
 import { ToolsRoutingModule } from './tools-routing.module';
 import { FactoryRestoreComponent } from './components/factory-restore/factory-restore.component';
+import { CabinetUpdateDialogComponent } from './components/cabinet-update-dialog/cabinet-update-dialog.component';
 
 @NgModule({
   imports: [CommonModule, SharedModule, ToolsRoutingModule],
-  declarations: [AppsComponent, FactoryRestoreComponent],
+  declarations: [AppsComponent, FactoryRestoreComponent, CabinetUpdateDialogComponent],
   exports: [AppsComponent],
-  entryComponents: [FactoryRestoreComponent],
+  entryComponents: [FactoryRestoreComponent, CabinetUpdateDialogComponent],
 })
 export class ToolsModule {}

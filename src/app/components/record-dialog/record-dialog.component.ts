@@ -1,3 +1,4 @@
+import { FormControl, Validators } from '@angular/forms';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {DashboardWindow} from '../../modules/dashboard/services/dashboard.service';
@@ -17,7 +18,7 @@ export class RecordDialogComponent implements OnInit {
   x2D: string = null;
   y2D: string = null;
   recMode = '1';
-  fileName = 'CSRECORD';
+  fileName = new FormControl('CSRECORD',[Validators.required, Validators.pattern('[a-zA-Z]+(\\w*)$')]);
   gap = 1;
 
   constructor(
@@ -59,7 +60,7 @@ export class RecordDialogComponent implements OnInit {
       y: this.recMode === '2' ? this.y2D : this.y,
       z: this.z,
       gap: this.gap,
-      name: this.fileName
+      name: this.fileName.value
     });
   }
 }

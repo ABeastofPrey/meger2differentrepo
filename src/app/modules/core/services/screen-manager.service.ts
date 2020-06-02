@@ -329,6 +329,11 @@ export class ScreenManagerService {
     private coos: CoordinatesService,
     private tour: TourService
   ) {
+    this.webSocketService.isConnected.subscribe(conn=>{
+      if (!conn) {
+        this.debugMode = false;
+      }
+    });
     this.tour.start$.subscribe(()=>{
         if (!this._menuExpanded) {
           this.tour.end();

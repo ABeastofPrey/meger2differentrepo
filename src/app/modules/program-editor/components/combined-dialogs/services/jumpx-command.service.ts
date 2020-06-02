@@ -74,7 +74,7 @@ export class JumpxCommandService {
             changes: {
                 [CommandOptions.VcruiseLimit]: [1, vcMax],
                 [CommandOptions.VtranLimit]: [0, vtMax],
-                [CommandOptions.AccLimit]: [0, acMax],
+                [CommandOptions.AccLimit]: [0, 100],
                 [CommandOptions.LimZLimit]: [lzRange[0], lzRange[1]],
             }
         });
@@ -210,7 +210,7 @@ export class JumpxCommandService {
             [CommandOptions.VtranLimit]: [0, vtm],
 
             [CommandOptions.Acc]: null,
-            [CommandOptions.AccLimit]: [0, am],
+            [CommandOptions.AccLimit]: [0, 100],
 
             [CommandOptions.LimZ]: null,
             [CommandOptions.LimZLimit]: [lz[0], lz[1]],
@@ -243,7 +243,7 @@ export class JumpxCommandService {
 
             [CommandOptions.VtranLimit]: [0, vtm],
 
-            [CommandOptions.AccLimit]: [0, am],
+            [CommandOptions.AccLimit]: [0, 100],
 
             [CommandOptions.LimZLimit]: [lz[0], lz[1]],
 

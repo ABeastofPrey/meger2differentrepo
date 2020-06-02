@@ -22,6 +22,7 @@ export class ApiService {
 
   private _cloudToken: string = null;
   get cloudToken() {
+    //return this._cloudToken || '1622a6c4fc618b45f4f2529c64e331f0fe768f7c991902f84faaa4ed31898926000ef996ca886d2fd06e993deb314f4b8835fc15e61d92e0b5c6eb6169a1e808';
     return this._cloudToken;
   }
 
@@ -118,7 +119,17 @@ export class ApiService {
     return this.http.post(url, formData).toPromise();
   }
 
-  uploadToPath(file: File, overwrite: boolean, path: string) {
+  sendToDrive(path: string, ip: string) {
+    const url = this.api_url + '/drive/api/send';
+    return this.http.post(url, { path, ip }).toPromise() as Promise<boolean>;
+  }
+
+  getFromDrive(ip: string, driveFile: string, path: string): Promise<boolean> {
+    const url = this.api_url + '/drive/api/copyToMC';
+    return this.http.post(url, { path, ip, driveFile }).toPromise() as Promise<boolean>;
+  }
+
+  uploadToPath(file: File, overwrite: boolean, path: string): Promise<UploadResult> {
     const url = this.api_url + '/cs/api/upload';
     const formData = new FormData();
     formData.append('file', file);
@@ -126,7 +137,7 @@ export class ApiService {
     body = body.set('token', this.token);
     body = body.set('path', path);
     if (overwrite) body = body.set('overwrite', 'true');
-    return this.http.post(url, formData, { params: body }).toPromise();
+    return this.http.post(url, formData, { params: body }).toPromise() as Promise<UploadResult>;
   }
 
   uploadRec(file: File) {
@@ -217,11 +228,8 @@ export class ApiService {
       .toPromise();
   }
 
-  getFileTextSearch(search: string, path: string) {
-    let body = new HttpParams();
-    body = body.set('search', search);
-    body = body.set('path', path);
-    return this.http.get<MCFileSearchResult[]>(this.api_url + '/cs/api/search', { params: body }).toPromise();
+  abortFileTextSearch() {
+    return this.http.get<boolean>(this.api_url + '/cs/api/search/abort').toPromise();
   }
 
   getKukaReleaseNotes() {
@@ -240,6 +248,10 @@ export class ApiService {
         params: body,
       })
       .toPromise();
+  }
+
+  getRawFile(path: string) {
+    window.location.href = this.api_url + '/cs/api/rawFile?path=' + encodeURI(path);
   }
 
   getPkgdResult() {
@@ -466,8 +478,12 @@ export class ApiService {
       });
   }
 
-  iniToJson(fileName: string) {
-    return this.get('/cs/api/ini/toJson?fileName='+fileName).toPromise();
+  iniToCDC(fileName: string) : Promise<boolean>{
+    return this.get('/cs/api/ini/ini2cdc?fileName='+fileName).toPromise() as Promise<boolean>;
+  }
+
+  cdcToIni(fileName: string) : Promise<boolean>{
+    return this.get('/cs/api/ini/cdc2ini?fileName='+fileName).toPromise() as Promise<boolean>;
   }
 
   createPalletFile(data: string, fileName: string) {

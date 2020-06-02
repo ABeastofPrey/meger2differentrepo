@@ -29,7 +29,7 @@ export enum CommandOptions {
     VcruiseLimit = 'VcruiseLimit',
     Vtran = 'Vtran', // Speed = 'speed',
     VtranLimit = 'VtranLimit',
-    Acc = 'Acc', // Acceleration = 'acceleration'
+    Acc = 'AScale', // Acceleration = 'acceleration'
     AccLimit = 'AccLimit',
     WithPls = 'WithPls',
     WithPlsList = 'WithPlsList',

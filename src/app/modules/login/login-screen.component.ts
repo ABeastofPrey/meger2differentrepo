@@ -132,6 +132,7 @@ export class LoginScreenComponent implements OnInit {
   private notifier: Subject<boolean> = new Subject();
   private wsTimeout: number;
   private interval: number; // isMcAvailable interval
+  private _incompatibility = false;
 
   get loginBgImgUrl(): string {
     if (this.utils.IsKuka) {
@@ -141,6 +142,10 @@ export class LoginScreenComponent implements OnInit {
       return '/rs/assets/pics/stx1-dark.jpg';
     }
     return '/rs/assets/pics/stx1.jpg';
+  }
+
+  get incompatibility() {
+    return this._incompatibility;
   }
 
   constructor(
@@ -192,7 +197,9 @@ export class LoginScreenComponent implements OnInit {
               if (this.ws.connected) {
                 this.redirectToMain();
               } else {
+                this.ws.reset();
                 this.showWebsocketError();
+                this.isSubmitting = false;
               }
               this.isSubmitting = false;
             }, 1200);
@@ -228,6 +235,9 @@ export class LoginScreenComponent implements OnInit {
 
   private checkConnection() {
     this.api.getFile('isWebServerAlive.HTML').then(() => {
+      if (!this.isMcAvailable) { // was offline
+        this.refreshInfo();
+      }
       this.isMcAvailable = true;
     }, err=> {
       this.isMcAvailable = false;
@@ -236,38 +246,49 @@ export class LoginScreenComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.platform = navigator.platform;
+  reload() {
+    window.location.reload(true);
+  }
+
+  private refreshInfo() {
     const etag = this.getEtag();
     const compWs = environment.compatible_webserver_ver;
+    this.api.getSysBasicInfo().then((ret: SysInfo) => {
+      this.info = ret;
+      this.info.ip = this.info.ip.substring(0,this.info.ip.indexOf(':'));
+    });
+    this.api.get('/cs/api/java-version').subscribe((ret: { ver: string }) => {
+      if (etag.length > 0 && ret.ver !== etag) { // can only happen if page is cached
+        // ask user to do hard reload
+        this.isVersionOK = false;
+        const err = this.cmn.isTablet ? 'error.invalid_etag_tablet' : 'error.invalid_etag';
+        this.trn.get(err).subscribe(str => {
+          this.errors.error = str;
+          this._incompatibility = true;
+          this.authForm.disable();
+        });
+        return;
+      }
+      this.isVersionOK = ret.ver.includes(compWs);
+      if (!this.isVersionOK) {
+        const params = {
+          ver: compWs,
+          current: ret.ver.split(' ')[0],
+        };
+        this.trn.get('error.invalid_webserver', params).subscribe(str => {
+          this.errors.error = str;
+        });
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.login.purgeAuth();
+    this.platform = navigator.platform;
     this.api.ready.pipe(takeUntil(this.notifier)).subscribe(stat=>{
       if (!stat) return;
       this.startConnectionCheck();
-      this.api.getSysBasicInfo().then((ret: SysInfo) => {
-        this.info = ret;
-        this.info.ip = this.info.ip.substring(0,this.info.ip.indexOf(':'));
-      });
-      this.api.get('/cs/api/java-version').subscribe((ret: { ver: string }) => {
-        if (etag.length > 0 && ret.ver !== etag) { // can only happen if page is cached
-          // ask user to do hard reload
-          this.isVersionOK = false;
-          const err = this.cmn.isTablet ? 'error.invalid_etag_tablet' : 'error.invalid_etag';
-          this.trn.get(err).subscribe(str => {
-            this.errors.error = str;
-          });
-          return;
-        }
-        this.isVersionOK = ret.ver.includes(compWs);
-        if (!this.isVersionOK) {
-          const params = {
-            ver: compWs,
-            current: ret.ver.split(' ')[0],
-          };
-          this.trn.get('error.invalid_webserver', params).subscribe(str => {
-            this.errors.error = str;
-          });
-        }
-      });
+      this.refreshInfo();
     });
     this.ver = environment.gui_ver.split(' ')[0];
     this.authForm = this.fb.group({
@@ -336,7 +357,9 @@ export class LoginScreenComponent implements OnInit {
   ngAfterViewInit() {
     (document.activeElement as HTMLElement).blur();
     setTimeout(()=>{
-      this.authForm.enable();
+      if (!this._incompatibility) {
+        this.authForm.enable();
+      }
     },1000);
     this.route.queryParams.pipe(takeUntil(this.notifier)).subscribe(params => {
       if (params['serverDisconnected']) {

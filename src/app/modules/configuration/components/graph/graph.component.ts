@@ -24,7 +24,7 @@ export class GraphComponent implements OnInit {
 
   @HostListener('window:resize')
   onResize() {
-    if (this.graph) {
+    if (this.graph && this.graph.nativeElement) {
       Plotly.Plots.resize(this.graph.nativeElement);
     }
   }

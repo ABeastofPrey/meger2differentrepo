@@ -1,56 +1,93 @@
-<div class="wrapper">
-  <mat-card>
-    <div class="content" *ngIf="conf">
-      <div>
-        <div class="mat-title">{{ 'projects.time' | translate }}</div>
-        <mat-form-field>
-          <mat-label>SBC_T1</mat-label>
-          <input matInput [(ngModel)]="conf.sbc_t1" virtualKeyboard ktype="numeric_int_pos">
-          <span matSuffix>mm.</span>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>SBC_T2</mat-label>
-          <input matInput [(ngModel)]="conf.sbc_t2" virtualKeyboard ktype="numeric_int_pos">
-          <span matSuffix>mm.</span>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>SS1_T1</mat-label>
-          <input matInput [(ngModel)]="conf.ss1_t1" virtualKeyboard ktype="numeric_int_pos">
-          <span matSuffix>mm.</span>
-        </mat-form-field>
-      </div>
-      <div>
-        <div class="mat-title">SDI</div>
-        <mat-form-field
-            *ngFor="let inp of conf.inputs; let i=index;">
-          <mat-label>{{inp.name}}</mat-label>
-          <mat-select [(ngModel)]="inp.value" (selectionChange)="conf.onInputChange(i)">
-            <mat-option value="STO">STO</mat-option>
-            <mat-option value="SS1">SS1</mat-option>
-            <mat-option value="IDLE">IDLE</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div>
-        <div class="mat-title">SDO</div>
-        <mat-form-field
-            *ngFor="let out of conf.outputs; let i=index;">
-          <mat-label>{{out.name}}</mat-label>
-          <mat-select [(ngModel)]="out.value" (selectionChange)="conf.onOutputChange(i)">
-            <mat-option value="STO">STO</mat-option>
-            <mat-option value="SBC">SBC</mat-option>
-            <mat-option value="IDLE">IDLE</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+<mat-toolbar>
+  <button mat-raised-button color="primary" (click)="upload.click()">{{'safety.buttons.import' | translate}}</button>
+  <input type="file" accept=".cdc, .CDC" #upload (change)="import($event)" class="file-input" />
+  <button mat-raised-button color="primary" (click)="export()">{{'safety.buttons.export' | translate}}</button>
+</mat-toolbar>
+<h1 *ngIf="loading">{{'loading' | translate}}...</h1>
+<mat-horizontal-stepper [@.disabled]="true" #stepper linear="true" (selectionChange)="onStepChange($event)">
+  <mat-step>
+    <form>
+      <ng-template matStepLabel>{{'safety.steps.step1.title' | translate}}</ng-template>
+      <safety-table [conf]="conf" (change)="reset()"></safety-table>
+      <h3 style="margin-top: 16px;">{{'safety.steps.step1.ini' | translate}}</h3>
+      <div class="ini" *ngIf="conf">{{ conf.ini }}</div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="step2">
+    <ng-template matStepLabel>{{'safety.steps.step2.title' | translate}}</ng-template>
+    <mat-form-field appearance="outline">
+      <mat-label>{{'safety.steps.step2.title' | translate}}</mat-label>
+      <span matPrefix>
+        <mat-icon style="margin-right: 16px;">security</mat-icon>
+      </span>
+      <input [(ngModel)]="password" matInput type="password" virtualKeyboard ktype="text" [disabled]="step2.valid">
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="btn-pass" [disabled]="step2.valid" (click)="confirmPassword()">
+      <mat-icon *ngIf="step2.valid">done</mat-icon>
+      {{ (step2.invalid ? 'safety.steps.step2.confirm' : 'safety.steps.step2.confirmed') | translate }}
+    </button>
+    <div *ngIf="step2.invalid" class="warn">
+      {{'safety.steps.step2.invalid' | translate}}
     </div>
-    <mat-divider></mat-divider>
-    <div class="ini" [innerHTML]="conf?.toString()"></div>
-  </mat-card>
-  <mat-card>
-    Safety card answer will appear here...
-  </mat-card>
-  <mat-card class="buttons">
-    <button mat-raised-button color="primary">CONFIRM</button>
-  </mat-card>
-</div>
+  </mat-step>
+  <mat-step [stepControl]="step3">
+    <form>
+      <ng-template matStepLabel>{{'safety.steps.step3.title' | translate}}</ng-template>
+      <div class="wait-for-drive" *ngIf="isVerifying">
+        <img src="assets/pics/{{ env.platform.spinner }}" />
+        <div>{{'safety.steps.step3.verifying' | translate}}</div>
+      </div>
+      <div *ngIf="verifiedConf" class="verification">
+        <button mat-raised-button color="primary" (click)="seal()" [disabled]="step3.valid || isSealing">
+          <div *ngIf="isSealing">
+            <mat-spinner color="primary" diameter="24" style="margin: 8px;"></mat-spinner>
+          </div>
+          <div *ngIf="!isSealing" class="center-vertical">
+            <mat-icon>lock</mat-icon>
+            {{ (step3.valid ? 'CONFIGURATION SEALED' : 'SEAL CONFIGURATION FILE') | translate }}
+          </div>
+        </button>
+        <table>
+          <thead>
+            <tr>
+              <td><h2>{{'safety.steps.step3.ini_user' | translate}}</h2></td>
+              <td><h2>{{'safety.steps.step3.ini_drive' | translate}}</h2></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><safety-table [conf]="conf" disabled></safety-table></td>
+              <td><safety-table [conf]="verifiedConf" disabled></safety-table></td>
+            </tr>
+            <tr>
+              <td><div class="ini" *ngIf="conf">{{ conf.ini }}</div></td>
+              <td><div class="ini" *ngIf="verifiedConf">{{ verifiedConf.ini }}</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="step4">
+    <form class="confirmation">
+      <ng-template matStepLabel>Confirmation</ng-template>
+      Please confirm that the system is operational, including:
+      <ul>
+        <li>E-Stop Button</li>
+        <li>Jogging</li>
+        <li>Deadman</li>
+      </ul>
+      <button mat-raised-button color="primary" (click)="confirmConf()">CONFIRM</button>
+    </form>
+  </mat-step>
+  <mat-step>
+      <ng-template matStepLabel>Finish</ng-template>
+      <div class="finish center-vertical">
+        <mat-icon color="primary">assignment_turned_in</mat-icon>
+        <div>
+          <h2>Success!</h2>
+          Your safety configurator is all set and ready to use.
+        </div>
+      </div>
+  </mat-step>
+</mat-horizontal-stepper>

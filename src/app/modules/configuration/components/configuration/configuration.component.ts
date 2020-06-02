@@ -1,3 +1,4 @@
+import { DataService } from './../../../core/services/data.service';
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../../../core';
 
@@ -12,9 +13,13 @@ export class ConfigurationComponent implements OnInit {
     label: string;
     icon: string;
     permission: number;
+    safetyCard?: boolean;
   }> = [];
 
-  constructor(public login: LoginService) {}
+  constructor(
+    public login: LoginService,
+    public data: DataService
+  ) {}
 
   ngOnInit() {
     this.tabs = [
@@ -42,13 +47,14 @@ export class ConfigurationComponent implements OnInit {
         label: 'safety.title',
         icon: 'security',
         permission: 0,
+        safetyCard: true
       },
       { path: 'io', label: 'I/O', icon: 'compare_arrows', permission: 99 },
       {
         path: 'gui-settings',
         label: 'interface.title',
         icon: 'settings_applications',
-        permission: 99,
+        permission: 0,
       },
       {
         path: 'users',

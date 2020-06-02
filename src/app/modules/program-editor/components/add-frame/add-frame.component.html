@@ -12,13 +12,13 @@
 			/>
 			<mat-error *ngIf="name.invalid">{{ 'error.invalid_var_name' | translate }}</mat-error>
 		</mat-form-field>
-		<mat-checkbox color="primary" [(ngModel)]="isArray">{{ 'arr' | translate }}</mat-checkbox>
+		<!-- <mat-checkbox color="primary" [(ngModel)]="isArray">{{ 'arr' | translate }}</mat-checkbox> -->
 		<mat-form-field *ngIf="isArray" style="margin-top: 8px;">
 			<input
 				matInput
 				placeholder="{{ 'arr_size' | translate }}"
 				[(ngModel)]="arrSize"
-				type="number"
+				
 				virtualKeyboard
 				ktype="numeric_int_pos"
 			/>

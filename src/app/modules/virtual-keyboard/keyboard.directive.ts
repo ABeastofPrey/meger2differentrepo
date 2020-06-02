@@ -71,7 +71,7 @@ export class KeyboardDirective {
       ctrl: this.ctrl,
       showArrows: this.showArrows,
       enableLineDelete: this.enableLineDelete,
-      onLineDelete: this.onLineDelete,
+      onLineDelete: this.onLineDelete
     };
     this.ref = this.dialog.open(KeyboardDialog, {
       autoFocus: false,
@@ -86,9 +86,20 @@ export class KeyboardDirective {
   @HostListener('keydown',['$event'])
   onkeydown(e: KeyboardEvent) {
     const copyPaste = e.ctrlKey && (e.key === 'v' || e.key === 'c');
+    const isNumeric = this.ktype && this.ktype.includes('numeric');
+    const oldVal = this.el.nativeElement.value;
+    setTimeout(()=>{
+      const val = this.el.nativeElement.value;
+      const toNum = Number(val);
+      if (isNumeric && isNaN(toNum) && this.ctrl && this.ctrl.control) {
+        this.ctrl.control.setErrors({'invalid': true});
+        if (copyPaste) {
+          this.ctrl.control.setValue(oldVal);
+        }
+      }
+    },0);
     if (!e.key || copyPaste) return;
     if (!this.cmn.isTablet && this.ktype && e.key.length === 1) {
-      const isNumeric = this.ktype && this.ktype.includes('numeric');
       if (isNumeric) {
         const isPos = this.ktype.includes('pos');
         const isInt = this.ktype.includes('int');
@@ -97,6 +108,19 @@ export class KeyboardDirective {
         }
         if (isPos && e.key === '-') e.preventDefault();
         if (isInt && e.key === '.') e.preventDefault();
+      }
+    }
+  }
+
+  @HostListener('input',['$event'])
+  onInput(e: Event) {
+    if (this.ktype && this.ktype.includes('numeric')) {
+      const el = e.target as HTMLInputElement;
+      const val = Number(el.value);
+      const data = e['data'];
+      if (isNaN(val) && !data) {
+        e.preventDefault();
+        el.value = '';
       }
     }
   }
@@ -134,7 +158,7 @@ export class KeyboardDialog implements OnInit {
   private onKeyboardClose?: Array<EventEmitter<{ target: { value: string | number} }>>;
   private _shiftMode = false;
   private _moreMode = false;
-  private val: number | string;
+  private val: string;
   private lastCmdIndex = -1;
   private backKeyDown = false;
   private _cursorPos = 0; // index of the letter the cursor is at
@@ -166,13 +190,23 @@ export class KeyboardDialog implements OnInit {
   ngOnInit() {
     this.ngModel = this.data.name || this.data.ngModel;
     this.placeholder = this.data.el.getAttribute('placeholder');
-    this.inputType = this.data.el.getAttribute('type');
+    this.inputType = this.data.keyboardType;
     this.layout = this.data.layout;
     this.onKeyboardClose = this.data.accept;
     this.ctrl = this.data.name;
     this.control = this.data.ctrl ? this.data.ctrl.control : null;    
+    if (this.control) {
+      this.control.valueChanges.subscribe((val: string)=>{
+        const isNumeric = this.inputType && this.inputType.startsWith('numeric');
+        const toNum = Number(val);
+        if (isNumeric && isNaN(toNum)) {
+          this.control.setErrors({'invalid': true});
+        }
+      });
+    }
     if (this.ctrl && this.ctrl.name) {
       this.currValue = this.ctrl.value || '';
+      this.val = this.currValue;
       this._cursorPos = this.currValue.length;
       if (this.ctrl.valueChanges) {
         this.ctrl.valueChanges.subscribe(val => {
@@ -188,6 +222,7 @@ export class KeyboardDialog implements OnInit {
       }
     } else if (this.control) {
       this.currValue = this.control.value || '';
+      this.val = this.currValue;
       this._cursorPos = this.currValue.length;
       if (this.control.valueChanges) {
         this.control.valueChanges.subscribe(val => {
@@ -203,6 +238,7 @@ export class KeyboardDialog implements OnInit {
       }
     } else if (this.ngModel) {
       this.currValue = this.ngModel.value || this.data.el.value || '';
+      this.val = this.currValue;
       this._cursorPos = this.currValue.length;
       if (this.ngModel && this.ngModel.valueChanges) {
         this.ngModel.valueChanges.subscribe(val => {
@@ -217,6 +253,12 @@ export class KeyboardDialog implements OnInit {
         });
       }
     }
+    setTimeout(()=>{
+      this._cursorPos = this.currValue.length;
+      this.scrollToCursor();
+      this.cursorInitDone = true;
+    },0);
+    
   }
   
   private scrollToCursor() {
@@ -224,7 +266,8 @@ export class KeyboardDialog implements OnInit {
     const start = new Date().getTime();
     const TIMEOUT = 200; // 200 ms
     let diff = 0;
-    if (this.data.keyboardType === 'numeric' || !this.displayInput) return;
+    console.log(this.data.keyboardType, this.displayInput);
+    if (this.data.keyboardType.startsWith('numeric') || !this.displayInput) return;
     // scroll to cursor position, if needed
     const el = this.displayInput.nativeElement as HTMLElement;
     if (el.parentElement === null) return;
@@ -336,7 +379,7 @@ export class KeyboardDialog implements OnInit {
           return;
         }
         this.backKeyDown = true;
-        if (this.data.keyboardType === 'numeric') {
+        if (this.data.keyboardType.startsWith('numeric')) {
           value = value.slice(0, -1);
           if (value === '') value = '0';
         } else if (this._cursorPos > 0) {
@@ -377,10 +420,10 @@ export class KeyboardDialog implements OnInit {
         break;
       default:
         if (
-            value === '0' && this.data.keyboardType === 'numeric' && key !== '.'
+            value === '0' && this.data.keyboardType.startsWith('numeric') && key !== '.'
         ) {
           value = key;
-        } else if (this.data.keyboardType === 'numeric') {
+        } else if (this.data.keyboardType.startsWith('numeric')) {
           value += key;
         } else {
           value =
@@ -442,6 +485,12 @@ export class KeyboardDialog implements OnInit {
   }
 
   setValue(value: string) {
+    if (value !== '-' && this.data.keyboardType.startsWith('numeric')) {
+      const toNum = Number(value);
+      if (isNaN(toNum)) {
+        return;
+      }
+    }
     this.val = value;
     if (this.control) {
       this.control.setValue(value);
@@ -452,8 +501,9 @@ export class KeyboardDialog implements OnInit {
       else {
         this.currValue = value;
         if (
-          (this.inputType === 'number' && !isNaN(Number(value))) ||
-          this.inputType !== 'number'
+          this.inputType &&
+          (this.inputType.startsWith('numeric') && !isNaN(Number(value))) ||
+          !this.inputType.startsWith('numeric')
         ) {
           this.data.el.value = value;
         }
@@ -468,6 +518,18 @@ export class KeyboardDialog implements OnInit {
   }
 
   accept(fromLineDelete?: boolean) {
+    // VALIDATE NUMERIC VALUE IF NEEDED
+    if (this.inputType && this.inputType.startsWith('numeric')) {
+      const val = Number(this.val);
+      if (isNaN(val)) {
+        this.val = '';
+      } else if (val.toString().length !== this.val.length) {
+        this.val = val.toString();
+      }
+      if (this.control) {
+        this.control.setValue(this.val);
+      }
+    }
     this.dialogRef.close();
     if (fromLineDelete || !this.onKeyboardClose) return;
     for (const e of this.onKeyboardClose) {
@@ -550,5 +612,5 @@ interface KeyboardData {
   ctrl: NgControl,
   showArrows: boolean,
   enableLineDelete: boolean,
-  onLineDelete: EventEmitter<void>,
+  onLineDelete: EventEmitter<void>
 }

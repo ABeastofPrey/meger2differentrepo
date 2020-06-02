@@ -64,10 +64,10 @@ export class FrameCalibrationDialogComponent implements OnInit {
             case 'BASE':
               this.dataService._selectedBase = this.varName;
               break;
-            case 'MACHINETABLE':
+            case 'MT':
               this.dataService._selectedMachineTable = this.varName;
               break;
-            case 'WORKPIECE':
+            case 'WP':
               this.dataService._selectedWorkPiece = this.varName;
               break;
           }

@@ -27,14 +27,14 @@
 		</div>
 		<div *ngIf="selectedPayload" class="temp-scara-wizard">
 			<div class="wizard-header" *ngIf="!login.isOperator || data.robotType !== 'SCARA'">
-				<mat-slide-toggle color="primary" [(ngModel)]="advanced">{{
+				<mat-slide-toggle color="primary" [(ngModel)]="advanced" [disabled]="selectedPayload.name === 'NONE'">{{
 					'payloads.advanced' | translate
 				}}</mat-slide-toggle>
 			</div>
 			<mat-form-field>
 				<input
 					matInput
-					type="number"
+					
 					min="0"
 					placeholder="{{ 'payloads.mass' | translate }}"
 					(change)="onMassChange($event)"
@@ -48,7 +48,7 @@
 			<mat-form-field>
 				<input
 					matInput
-					type="number"
+					
 					min="0"
 					placeholder="{{ 'payloads.inertia' | translate }}"
 					(change)="onInertiaChange($event)"
@@ -62,7 +62,7 @@
 			<mat-form-field>
 				<input
 					matInput
-					type="number"
+					
 					min="0"
 					placeholder="{{ 'payloads.offX' | translate }}"
 					(change)="onXOffsetChange($event)"
@@ -91,7 +91,7 @@
 								<input
 									matInput
 									[(ngModel)]="data.payloadStart[i]"
-									type="number"
+									
 									(change)="data.onPayloadStartChange()"
 									virtualKeyboard
 									ktype="numeric"
@@ -108,7 +108,7 @@
 								<input
 									matInput
 									[(ngModel)]="data.payloadRelative[i]"
-									type="number"
+									
 									(change)="data.onPayloadRelativeChange()"
 									virtualKeyboard
 									ktype="numeric"
@@ -125,7 +125,7 @@
 								<input
 									matInput
 									[(ngModel)]="data.payloadFreq[i]"
-									type="number"
+									
 									(change)="data.onPayloadFreqChange()"
 									virtualKeyboard
 									ktype="numeric"
@@ -142,7 +142,7 @@
 								<input
 									matInput
 									[(ngModel)]="data.payloadDuration"
-									type="number"
+									
 									(change)="data.onPayloadDurationChange()"
 									virtualKeyboard
 									ktype="numeric_int_pos"

@@ -19,7 +19,8 @@
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
-      <input *ngIf="mode==='pc'" type="file" accept=".REC" #upload (change)="onUploadFilesChange($event)" class="file-input" />
+			<button *ngIf="mode==='pc'" mat-raised-button (click)="fileUpload()" color="accent">{{ 'button.select_file' | translate }}</button>
+      <input type="file" accept=".REC" #upload (change)="onUploadFilesChange($event)" class="file-input" />
 		</div>
 	</div>
 	<div class="actions">

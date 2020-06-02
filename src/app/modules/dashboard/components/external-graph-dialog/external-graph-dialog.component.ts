@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { DashboardService } from '../../services/dashboard.service';
 import { ApiService, UploadResult } from '../../../core';
@@ -10,6 +10,8 @@ import {HttpErrorResponse} from '@angular/common/http';
   styleUrls: ['./external-graph-dialog.component.css'],
 })
 export class ExternalGraphDialogComponent implements OnInit {
+
+  @ViewChild('upload', { static: false }) uploadInput: ElementRef;
   
   files: string[] = [];
   selectedFile: string = null;
@@ -38,6 +40,10 @@ export class ExternalGraphDialogComponent implements OnInit {
 
   show() {
     this.ref.close(this.selectedFile);
+  }
+
+  fileUpload() {
+    this.uploadInput.nativeElement.click();
   }
   
   onUploadFilesChange(e: { target: { files: FileList } } ) {

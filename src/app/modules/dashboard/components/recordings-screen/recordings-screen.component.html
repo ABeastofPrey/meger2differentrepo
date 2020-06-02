@@ -29,7 +29,8 @@
         </mat-form-field>
       </div>
       <div class="separator"></div>
-      <button mat-raised-button color="primary" (click)="compare()" [disabled]="service.tabs[service.selectedTabIndex].compareTo">{{ 'dashboard.record.buttons.compare' | translate }}</button>
+      <button mat-raised-button color="primary" (click)="compare(false)" [disabled]="service.tabs[service.selectedTabIndex].compareTo" *ngIf="service.tabs[service.selectedTabIndex].chartType === 0">{{ 'dashboard.record.buttons.compare' | translate }}</button>
+      <button mat-raised-button color="primary" (click)="compare(true)" *ngIf="service.tabs[service.selectedTabIndex].chartType === 0">{{ 'dashboard.record.buttons.compare_same' | translate }}</button>
       <button mat-raised-button color="primary" *ngIf="service.tabs[service.selectedTabIndex].chartType === 0" [disabled]="!service.tabs[service.selectedTabIndex].data" (click)="derivative()">{{ 'dashboard.record.buttons.derivative' | translate }}</button>
       <button mat-raised-button color="primary" [disabled]="!service.tabs[service.selectedTabIndex].data" (click)="downloadRec(service.tabs[service.selectedTabIndex])">{{ 'dashboard.record.buttons.downloadRec' | translate }}</button>
       <button mat-raised-button color="primary" [disabled]="!service.tabs[service.selectedTabIndex].data" (click)="downloadCSV(service.tabs[service.selectedTabIndex])">{{ 'dashboard.record.buttons.downloadCSV' | translate }}</button>

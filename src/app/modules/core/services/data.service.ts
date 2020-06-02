@@ -901,7 +901,7 @@ export class DataService {
         return this.ws.query('?tp_get_switch_mode');
       })
       .then(async (ret: MCQueryResponse) => {
-        if (ret.result !== 'A' && !this.cmn.isTablet) {
+        if (ret.result !== 'A' && !this.cmn.isTablet && !this.login.isViewer) {
           await this.stat.setMode('A');
         } else if (this.stat.mode === null) {
           this.stat._switch = ret.result;

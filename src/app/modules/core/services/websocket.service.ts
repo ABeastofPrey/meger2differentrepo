@@ -133,14 +133,12 @@ export class WebsocketService {
                   if (ref.id !== 'update' && ref.id !== 'system') ref.close();
                 }
                 if (e.data.code === 4003) {
-                  this._zone.run(() => {
-                    this.dialog
-                      .open(ErrorDialogComponent, {
-                        data: this.words,
+                  this._zone.run(async () => {
+                    const words = await this.trn.get('websocket.err_es_busy').toPromise();
+                    this.dialog.open(ErrorDialogComponent, {
+                        data: words || {title: 'Connection Failed', message: 'All available entry stations are busy.'},
                         id: 'system',
-                      })
-                      .afterClosed()
-                      .subscribe(() => {
+                      }).afterClosed().subscribe(() => {
                         this.router.navigateByUrl('/login');
                       });
                   });
@@ -211,7 +209,7 @@ export class WebsocketService {
 
   handleMessage(data: MCResponse) {
     let errFrames: ErrorFrame[] | null = null;
-    //console.log('receive',data['cmd']);
+    data['msg'] = data['msg'].replace(/[\r]+/g, '');
     const isErrorFrame = data['msg'].indexOf('$ERRORFRAME$') === 0;
     if (isErrorFrame) {
       errFrames = [];
@@ -223,7 +221,7 @@ export class WebsocketService {
       }
       data['msg'] = errorString(errFrames);
     } else if (typeof data['cmd_id'] !== 'undefined' && data['cmd_id'] === -1) {
-      // Server Announcment
+      // Server Announcment - msg is array of bytes
       if (data['msg'].indexOf('>>>') === 0) {
         // TP DIALOG MSG
         const strings: string[] = data['msg'].slice(3, -5).split(',');
@@ -295,4 +293,5 @@ export class WebsocketService {
   clearInterval(id: number) {
     this.worker.postMessage({ msg: 2, serverMsg: true, id }); // CLEAR INTERVAL REQUEST
   }
+  
 }

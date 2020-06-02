@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import {
   MatTableDataSource,
@@ -33,9 +34,6 @@ export class DataScreenComponent implements OnInit {
   // To sort the table
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  // To display GUI for project points
-  @Input() useAsProjectPoints = false;
-
   displayVarType: string;
 
   selectedVar: TPVariable = null;
@@ -52,6 +50,7 @@ export class DataScreenComponent implements OnInit {
   private _varRefreshing = false;
   private words: {};
   private notifier: Subject<boolean> = new Subject();
+  private _deleteInterval: number;
 
   /*
     weather or not to display the mat-table element
@@ -81,6 +80,12 @@ export class DataScreenComponent implements OnInit {
     return this._value;
   }
 
+  // To display GUI for project points
+  private _useAsProjectPoints = false;
+  get useAsProjectPoints() {
+    return this._useAsProjectPoints;
+  }
+
   constructor(
     public data: DataService,
     private ws: WebsocketService,
@@ -88,8 +93,14 @@ export class DataScreenComponent implements OnInit {
     private dialog: MatDialog,
     public login: LoginService,
     private trn: TranslateService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private route: ActivatedRoute
   ) {
+    this.route.data.subscribe(data=>{
+      if (data) {
+        this._useAsProjectPoints = data.useAsProjectPoints;
+      }
+    });
     this.trn
       .get([
         'value',
@@ -148,6 +159,7 @@ export class DataScreenComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    window.clearInterval(this._deleteInterval);
     this.notifier.next(true);
     this.notifier.unsubscribe();
   }
@@ -460,33 +472,45 @@ export class DataScreenComponent implements OnInit {
           .afterClosed()
           .subscribe(ret => {
             if (ret) {
+              this._varRefreshing = true;
               const queries = [];
-              for (const v of this.selection.selected) {
-                let cmd = '?TP_DELETEVAR("' + v.name + '")';
-                if (this.useAsProjectPoints) {
-                  cmd = '?TP_DELETE_project_points("' + v.name + '")';
-                }
+              if (!this.useAsProjectPoints) {
+                const cmd = '?TP_DELETEVAR("' + this.selection.selected.map(s=>s.name).join() + ',")';
                 queries.push(this.ws.query(cmd));
-              }
-              Promise.all(queries).then(() => {
-                this.selectedVar = null;
-                if(!this.utils.IsKuka)
-                {
-                  this.snackBar.open(this.words['success'], '', {
-                    duration: 2000,
-                  });
+              } else {
+                for (const v of this.selection.selected) {
+                  const cmd = '?TP_DELETE_project_points("' + v.name + '")';
+                  queries.push(this.ws.query(cmd));
                 }
-                const dataQueries = [
-                  this.data.refreshBases(),
-                  this.data.refreshTools(),
-                ];
-                Promise.all(dataQueries).then(() => {
+              }
+              Promise.all(queries).then(ret => {
+                if (this.useAsProjectPoints) {
+                  this.selectedVar = null;
                   this.data.refreshVariables();
-                });
+                } else {
+                  this.waitForDeletionToFinish();
+                }
               });
             }
           });
       });
+  }
+
+  private waitForDeletionToFinish() {
+    let done = false;
+    this._deleteInterval = window.setInterval(async()=>{
+      if (done) {
+        window.clearInterval(this._deleteInterval);
+        return;
+      };
+      const ret = await this.ws.query('?TP_GETDELETEVARSTATUS');
+      if (ret.result === '0') {
+        done = true;
+        window.clearInterval(this._deleteInterval);
+        this.selectedVar = null;
+        this.data.refreshVariables();
+      }
+    }, 500);
   }
 
   onKeyboardClose(v: TPVariable) {

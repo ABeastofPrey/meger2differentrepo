@@ -1,3 +1,4 @@
+import { LoginService } from './../../../core/services/login.service';
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DashboardRoutes } from '../../dashboard-routes';
@@ -18,13 +19,14 @@ export class DashboardComponent implements OnInit {
   }> = [];
 
   constructor(
-    private trn: TranslateService
+    private trn: TranslateService,
+    private login: LoginService
   ) {
-    this.tabs = [
-      { path: DashboardRoutes.Recording, label: 'dashboard.tab2', icon: 'show_chart' },
-      { path: DashboardRoutes.Dashboard, label: 'dashboard.tab1', icon: 'assessment' },
-      { path: DashboardRoutes.Trace, label: 'dashboard.tab3', icon: 'gps_fixed' }
-    ];
+    this.tabs.push({ path: DashboardRoutes.Recording, label: 'dashboard.tab2', icon: 'show_chart' });
+    if (this.login.isAdmin) {
+      this.tabs.push({ path: DashboardRoutes.Dashboard, label: 'dashboard.tab1', icon: 'assessment' });
+    }
+    this.tabs.push({ path: DashboardRoutes.Trace, label: 'dashboard.tab3', icon: 'gps_fixed' });
   }
 
   ngOnInit() {

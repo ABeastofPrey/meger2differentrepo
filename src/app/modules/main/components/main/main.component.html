@@ -52,29 +52,20 @@
         {{ 'mode_debug' | translate }}
         <button mat-button (click)="quitDebugMode()"><mat-icon>close</mat-icon></button>
       </div>
-			<mat-icon color="accent" *ngIf="ws.otherClients > 0"
-				[matTooltip]="ws.otherClients + ' Other connections are active'">warning</mat-icon>
-				<button 
-					matTooltip="{{ 'safety.ack_tooltip' | translate }}"
-					mat-raised-button
-					class="safety-ack"
-					color="accent"
-					*ngIf="tpOnline"
-					[disabled]="login.isViewer || !stat.wack"
-					(click)="stat.safetyAck()">
-					ACK
-				</button>
-			<button mat-raised-button *ngIf="tpOnline && stat.mode && cmn.isTablet" class="mode-selector" [disabled]="login.isViewer" (click)="utils.changeMode()">
-				{{ stat.mode === 'None' ? '--' : stat.mode }}
-			</button>
-			<mat-slide-toggle *ngIf="!login.isViewer && data.dataLoaded.value && !data.simulatedSystem" color="accent"
-				[checked]="data.simulated" (change)="data.toggleSimulated($event)">{{ 'simulative' | translate }}
-			</mat-slide-toggle>
-			<button mat-mini-fab [disabled]="login.isViewer || !stat.onlineStatus.value" color="warn"
-				[class.indicator-on]="stat.enabled" (click)="stat.toggleEnabled()" *ngIf="!screenManager.debugMode"
+		<mat-icon color="accent" *ngIf="ws.otherClients > 0" [matTooltip]="ws.otherClients + ' Other connections are active'">warning</mat-icon>
+		<button mat-raised-button *ngIf="tpOnline && stat.mode && cmn.isTablet" class="mode-selector" [disabled]="login.isViewer" (click)="utils.changeMode()">
+			{{ stat.mode === 'None' ? '--' : stat.modeCorrected }}
+		</button>
+		<mat-slide-toggle *ngIf="!login.isViewer && data.dataLoaded.value && !data.simulatedSystem" color="accent"
+			[checked]="data.simulated" (change)="data.toggleSimulated($event)">{{ 'simulative' | translate }}
+		</mat-slide-toggle>
+		<div matTooltip="{{'safety.en_tooltip' | translate}}" [matTooltipDisabled]="!stat.wack">
+			<button mat-mini-fab [disabled]="login.isViewer || !stat.onlineStatus.value || stat.wack" color="warn"
+				[class.indicator-on]="stat.enabled" [class.wack]="stat.wack" (click)="stat.toggleEnabled()" *ngIf="!screenManager.debugMode"
 				matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}">
 					<mat-icon>power_settings_new</mat-icon>
-      </button>
+					</button>
+		</div>
       <button
         *ngIf="!allowHiddenMenu && !screenManager.debugMode"
         mat-mini-fab
@@ -160,17 +151,20 @@
 						</button>
 					</div>
 					<div class="center-vertical" *ngIf="data.selectedRobot">
-						<button
-							mat-mini-fab
-							color="warn"
-							[class.indicator-on]="stat.enabled"
-							(click)="stat.toggleEnabled()"
-							matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}"
-							style="margin-right: 16px;"
-							[disabled]="login.isViewer || !stat.onlineStatus.value"
-						>
-							<mat-icon>power_settings_new</mat-icon>
-						</button>
+						<div matTooltip="{{'safety.en_tooltip' | translate}}" [matTooltipDisabled]="!stat.wack">
+							<button
+								mat-mini-fab
+								color="warn"
+								[class.wack] = "stat.wack"
+								[class.indicator-on]="stat.enabled"
+								(click)="stat.toggleEnabled()"
+								matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}"
+								style="margin-right: 16px;"
+								[disabled]="login.isViewer || !stat.onlineStatus.value || stat.wack"
+							>
+								<mat-icon>power_settings_new</mat-icon>
+							</button>
+						</div>
 						{{ data.selectedRobot }}
 					</div>
 					<div *ngIf="data.selectedRobot === null">

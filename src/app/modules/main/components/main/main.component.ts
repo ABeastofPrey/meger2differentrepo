@@ -264,6 +264,18 @@ export class MainComponent implements OnInit {
     if (x <= 0 || x >= w || y <= 0 || y >= h) this.mouseUp(null);
   }
 
+  @HostListener('window:mousemove', ['$event'])
+  onMouseMove2(e: MouseEvent) {
+    if  (this.jogButtonPressed) {
+      const el = e.target as HTMLElement;
+      const td = el.closest('td');
+      if (td && td.closest('.jog-table')) {
+        return;
+      }
+      this.mouseUp(null);
+    }
+  }
+
   ngOnDestroy() {
     this.notifier.next(true);
     this.notifier.unsubscribe();
@@ -407,12 +419,6 @@ export class MainComponent implements OnInit {
   
   quitDebugMode() {
     location.reload();
-    //    this.screenManager.debugMode = false;
-    //    this.cooService.setDebugMode(false);
-    //    this.grp.setDebugMode(false);
-    //    this.prj.setDebugMode(false);
-    //    this.task.setDebugMode(false);
-    //    this.prg.setDebugMode(false);
   }
 
   saveFloatingWindowsConfiguration() {

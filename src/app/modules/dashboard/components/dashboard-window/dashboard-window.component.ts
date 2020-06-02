@@ -80,8 +80,12 @@ export class DashboardWindowComponent implements OnInit {
     this.dashboard.save();
   }
 
-  toggleEnable() {
-    this.ws.query(this.params.name + '.en=' + (this.params.enable ? 0 : 1));
+  async toggleEnable() {
+    const val = this.params.enable ? 0 : 1;
+    const cmd = `${this.params.name}.en=${val}`;
+    const ret = await this.ws.query(cmd);
+    if (ret.err) return;
+    this.params.enable = !this.params.enable;
   }
   
   stopMotion() {

@@ -73,6 +73,8 @@ export class LoginService {
       this.dialog
         .open(LicenseDialogComponent, {
           autoFocus: false,
+          width: '100%',
+          height: '100%'
         })
         .afterClosed()
         .subscribe(ret => {

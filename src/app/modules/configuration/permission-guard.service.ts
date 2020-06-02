@@ -1,3 +1,4 @@
+import { DataService } from './../core/services/data.service';
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
 import { LoginService, TpStatService } from '../core';
@@ -9,7 +10,8 @@ export class PermissionGuardService implements CanActivate {
   constructor(
     public login: LoginService,
     public router: Router,
-    private stat: TpStatService
+    private stat: TpStatService,
+    private data: DataService
   ) {}
   canActivate(route: ActivatedRouteSnapshot) {
     return this.login.isAuthenticated.pipe(
@@ -19,6 +21,7 @@ export class PermissionGuardService implements CanActivate {
           this.router.navigate(['/login']);
           return false;
         }
+        if (route.data.safetyCard && !this.data.safetyCardRunning) return false;
         const user = this.login.permissionCode;
         const screen = route.data.permission;
         const requiresTP = route.data.requiresTP;

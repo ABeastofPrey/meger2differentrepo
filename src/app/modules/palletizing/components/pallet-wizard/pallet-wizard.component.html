@@ -8,7 +8,7 @@
 			{{ dataService.selectedPallet.name }}
 		</div>
 	</div>
-	<mat-horizontal-stepper #stepper="matHorizontalStepper" [linear]="true">
+	<mat-horizontal-stepper #stepper="matHorizontalStepper" [linear]="true" (selectionChange)="onStepChange($event)">
 		<mat-step [stepControl]="step1">
 			<form [formGroup]="step1">
 				<ng-template matStepLabel>{{ 'pallets.wizard.step1' | translate }}</ng-template>
@@ -186,6 +186,7 @@
 									color="primary"
 									[(ngModel)]="dataService.selectedPallet.diffOddEven"
 									formControlName="diffOddEven"
+									(change)="refreshDesigners()"
 									>{{ 'pallets.wizard.odd_even' | translate }}</mat-checkbox
 								>
 							</div>
@@ -247,6 +248,7 @@
 				<div class="step-wrapper">
 					<div class="step-content custom-level">
 						<pallet-level-designer
+							[level]="1"
 							[pallet]="dataService.selectedPallet"
 							#designer
 							(change)="onLevelChange(1, $event)"
@@ -265,6 +267,7 @@
 				<div class="step-wrapper">
 					<div class="step-content custom-level">
 						<pallet-level-designer
+							[level]="2"
 							[pallet]="dataService.selectedPallet"
 							#designer2
 							(change)="onLevelChange(2, $event)"

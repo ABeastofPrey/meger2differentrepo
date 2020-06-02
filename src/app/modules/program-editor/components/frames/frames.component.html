@@ -36,7 +36,9 @@
 					</ng-container>
 					<ng-container matColumnDef="name">
 						<mat-header-cell *matHeaderCellDef mat-sort-header="name">{{ 'name' | translate }}</mat-header-cell>
-						<mat-cell *matCellDef="let element">{{ element.name }}<span *ngIf="element.isArr"> [...]</span></mat-cell>
+						<mat-cell *matCellDef="let element">
+							<div class="name-wrap">{{ element.name }}<span *ngIf="element.isArr"> [...]</span></div>
+						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="arrIndex">
 						<mat-header-cell *matHeaderCellDef>{{ 'index' | translate }}</mat-header-cell>
@@ -52,9 +54,9 @@
 							</mat-form-field>
 						</mat-cell>
 					</ng-container>
-					<mat-header-row *matHeaderRowDef="['select', 'name', 'arrIndex']"></mat-header-row>
+					<mat-header-row *matHeaderRowDef="['select', 'name']"></mat-header-row>
 					<mat-row
-						*matRowDef="let row; columns: ['select', 'name', 'arrIndex']; let element"
+						*matRowDef="let row; columns: ['select', 'name']; let element"
 						(click)="rowClick(element)"
 						[class.highlighted]="selectedVar && element.name === selectedVar.name"
 						[class.current]="isElementCurrent(element.name)"
@@ -82,16 +84,18 @@
 							mat-raised-button
 							color="primary"
 							(click)="showCalibrationDialog()"
+							[disabled]="busy"
 						>
 							{{ 'button.calibrate' | translate }}
 						</button>
-						<button *ngIf="selectedVar" mat-raised-button color="primary" (click)="setAsCurrent()">
+						<button *ngIf="selectedVar" mat-raised-button color="primary" (click)="setAsCurrent()" [disabled]="busy">
 							{{ 'button.set_current' | translate }}
 						</button>
 						<button
 							*ngIf="selectedVar && selectedVar.name !== 'VOID'"
 							mat-raised-button
 							color="warn"
+							[disabled]="busy"
 							(click)="deleteSelected()"
 						>
 							{{ 'dataScreen.del' | translate: selectedVar }}
@@ -107,7 +111,7 @@
 								(change)="onKeyboardClose()"
 								virtualKeyboard
 								ktype="numeric"
-								[disabled]="selectedVar.name === 'VOID'"
+								[disabled]="selectedVar.name === 'VOID' || busy"
 								(onKeyboardClose)="onKeyboardClose()"
 							/>
 						</mat-form-field>

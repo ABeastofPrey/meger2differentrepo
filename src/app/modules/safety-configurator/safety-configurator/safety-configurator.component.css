@@ -1,35 +1,63 @@
-.wrapper {
-  padding: 24px;
-  white-space: pre;
-  overflow: hidden;
-  height: 100%;
-  box-sizing: border-box;
+mat-toolbar button {
+  margin-right: 24px;
 }
-.wrapper > *:not(:last-child) {
-  margin-right: 16px;
-  flex: 1;
-  overflow: auto;
-}
-.content, .wrapper {
-  display: flex;
-  flex-direction: row;
-}
-.content > div {
-  margin-right: 32px;
-}
-mat-form-field {
-  display: block;
-  width: 100px;
-}
-.buttons {
-  flex: 0;
-}
+
 .ini {
   font-family: 'cs-monospace';
-  margin-top: 16px;
-  font-size: 12px;
-  background: #eee;
-  padding: 16px;
-  color: #777;
+  white-space: pre-wrap;
+  background-color: #eee;
+  border: 1px solid;
+  border-color: #ccc;
+  padding: 8px;
+  font-size: 13px;
+  line-height: 1;
+  text-align: left;
+}
+
+.btn-pass {
+  margin-left: 24px;
+}
+.wait-for-drive {
+  width: 100%;
+  text-align: center;
+}
+.verification {
+  text-align: center;
+}
+.verification button {
+  margin: 16px;
+}
+.verification button mat-icon {
+  margin-right: 16px;
+}
+.verification table {
+  text-align: center;
   border: 1px solid #ccc;
+}
+.verification table td {
+  vertical-align: top;
+}
+.verification table tr td:first-child {
+  border-right: 1px solid black;
+}
+.confirmation ul {
+  list-style: disc;
+  margin-bottom: 16px;
+  padding-left: 40px;
+}
+.finish mat-icon {
+  font-size: 56px;
+  width: 48px;
+  height: 48px;
+  margin-right: 16px;
+}
+
+.finish h2 {
+  margin: 0;
+}
+
+.file-input {
+  visibility: hidden;
+  width: 0;
+  height: 0;
 }

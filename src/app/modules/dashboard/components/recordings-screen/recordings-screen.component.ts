@@ -64,14 +64,18 @@ export class RecordingsScreenComponent implements OnInit {
       });
   }
   
-  compare() {
+  compare(onSameChart: boolean) {
      this.dialog.open(ExternalGraphDialogComponent).afterClosed().subscribe(name=>{
       if (name) {
         const tab = new RecordTab(name, this.service);
         this.api.getRecordingCSV(tab.file).then(result=>{
           tab.init(result);
+          if (onSameChart) {
+            this.service.tabs[this.service.selectedTabIndex].addData(tab);
+          } else {
+            this.service.tabs[this.service.selectedTabIndex].compareTo = tab;
+          }
         });
-        this.service.tabs[this.service.selectedTabIndex].compareTo = tab;
       }
     });
   }

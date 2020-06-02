@@ -30,7 +30,8 @@ const routes: Routes = [
       },
       {
         path: 'projects',
-        component: ProgramEditorComponent,
+        loadChildren: () =>
+          import('../program-editor/program-editor.module').then(m => m.ProgramEditorModule),
         canActivate: [PermissionGuardService],
         data: { permission: 99 },
       },

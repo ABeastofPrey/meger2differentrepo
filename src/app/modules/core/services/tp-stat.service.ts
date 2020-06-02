@@ -1,3 +1,4 @@
+import { LoginService } from './login.service';
 import {
   Injectable,
   NgZone,
@@ -14,6 +15,7 @@ import { ApiService } from './api.service';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from './common.service';
+import { LangService } from './lang.service';
 
 class TPStatResponse {
   ENABLE: number;
@@ -52,6 +54,7 @@ export class TpStatService {
   private _virtualModeSelector = 'A';
   private _tpStatErrorHistory: TpStatError[] = [];
   private words: {};
+  private _debugMode = false;
 
   _enabled: boolean;
   _isMoving: boolean;
@@ -90,6 +93,20 @@ export class TpStatService {
   get mode(): string {
     return this._switch;
   }
+
+  /* REPLACES T with M */
+  get modeCorrected(): string {
+    switch (this._switch) {
+      case 'T1':
+        return 'M1';
+      case 'T2':
+        return 'M2';
+      default:
+        return this._switch;
+    }
+  }
+
+
   // SET MODE SYNC 
   async setMode(mode: string, pass?: string): Promise<boolean> {
     console.log(this.mode + ' --> ' + mode);
@@ -246,10 +263,6 @@ export class TpStatService {
     });
   }
 
-  safetyAck() {
-    this.ws.query('?sc_acknowledge');
-  }
-
   startTpLibChecker() {
     if (this.tpInterval !== null) this.ws.clearInterval(this.tpInterval);
     this.tpInterval = this.ws.send(
@@ -331,22 +344,25 @@ export class TpStatService {
     if (on) {
       // STOP TP_STAT
       this.ws.clearInterval(this.interval);
+      if (this.tpInterval !== null) this.ws.clearInterval(this.tpInterval);
       this._online = false;
       this.onlineStatus.next(false);
-    } else {
+    } else if (this._debugMode) { // _debugMode was TRUE and now it is FALSE
       // START TP_STAT
       this.startKeepAlive();
     }
+    this._debugMode = on;
   }
 
   constructor(
     private ws: WebsocketService,
     private dialog: MatDialog,
     private zone: NgZone,
-    private snack: MatSnackBar,
+    private login: LoginService,
     private api: ApiService,
     private trn: TranslateService,
-    private cmn: CommonService
+    private cmn: CommonService,
+    private lang: LangService
   ) {
     this.trn
       .get([
@@ -374,9 +390,15 @@ export class TpStatService {
         this.resetStat();
       }
     });
-    this.onlineStatus.subscribe(stat => {
+    this.onlineStatus.subscribe(async stat => {
       if (stat) {
         // TP_VER is OK
+        if (!this.login.isAdmin) {
+          const lang = await this.ws.query('?tp_get_language');
+          if (lang.err) return;
+          this.lang.setLang(lang.result.toLowerCase());
+          return;
+        }
         const cmd = '?tp_set_language("' + this.trn.currentLang + '")';
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
           if (ret.err || ret.result !== '0') {

@@ -55,12 +55,11 @@ export class NotificationService {
   Called whenever there is a new webserver async message from webserver
   */
   onWebserverMessage(msg: {user: string, msg: string, time: number, uuid: string}) {
-    console.log(msg);
     this.newWebserverMessage.emit();
   }
 
   onAsyncMessage(msg: string) {
-    const messages = msg.replace(/[\r]+/g, '').split('\n');
+    const messages = msg.split('\n');
     const nots: CSNotification[] = [];
     for (let m of messages) {
       m = m.trim();

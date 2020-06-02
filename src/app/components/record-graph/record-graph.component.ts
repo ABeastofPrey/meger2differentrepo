@@ -60,10 +60,13 @@ export class RecordGraphComponent implements OnInit {
   }
   
   private refreshChart() {
+    let cachedLayout = null;
     this._lastData = this.chartData.data;
     this._lastType = this.chartData.chartType;
+    const additional = this.chartData.additionalData;
+    const title = this.chartData.file + (additional ? ' ' + additional.file : '') + '.REC';
     const layout = {
-      title: this.chartData.file + '.REC',
+      title,
       autosize: true,
       showlegend: true,
       plot_bgcolor: this.utils.isDarkMode ? '#111' : null,
@@ -77,6 +80,8 @@ export class RecordGraphComponent implements OnInit {
       layout['xaxis'] = {
         title: 'Time [ms.]',
       };
+      cachedLayout = localStorage.getItem('plotRanges_' + this.chartData.file) ?
+        JSON.parse(localStorage.getItem('plotRanges_' + this.chartData.file)) : null;
     } else {
       layout['xaxis'] = {
         title: this.chartData.legends[this.chartData.legendX],
@@ -91,6 +96,15 @@ export class RecordGraphComponent implements OnInit {
       }
     }
     Plotly.newPlot(this.graph.nativeElement, this.chartData.data, layout, {responsive: true});
+    const name = this.chartData.file;
+    this.graph.nativeElement.on('plotly_relayout',e=>{
+      if (this.chartData.chartType === ChartType.Time) {
+        localStorage.setItem('plotRanges_' + name,JSON.stringify(e));
+      }
+    });
+    if (cachedLayout) {
+      Plotly.relayout(this.graph.nativeElement, cachedLayout);
+    }
   }
   
   ngDoCheck() {

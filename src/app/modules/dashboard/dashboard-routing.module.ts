@@ -6,6 +6,7 @@ import { DashboardScreenComponent } from './components/dashboard-screen/dashboar
 import { RecordingsScreenComponent } from './components/recordings-screen/recordings-screen.component';
 import { TraceTabComponent } from './components/trace/trace-tab/trace-tab.component';
 import { DashboardRoutes } from './dashboard-routes';
+import { PermissionGuardService } from '../configuration/permission-guard.service';
 
 const routes: Routes = [
   {
@@ -17,7 +18,9 @@ const routes: Routes = [
         redirectTo: DashboardRoutes.Recording,
       }, {
         path: DashboardRoutes.Dashboard,
-        component: DashboardScreenComponent
+        component: DashboardScreenComponent,
+        canActivate: [PermissionGuardService],
+        data: { permission: 0 },
       }, {
         path: DashboardRoutes.Recording,
         component: RecordingsScreenComponent

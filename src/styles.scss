@@ -307,3 +307,16 @@ input[type=number] {
 .global-hidden {
   display: none;
 }
+
+.virtual-select {
+  min-width: 100%!important;
+}
+
+.right-side {
+  router-outlet + * {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+}

@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import {
   Component,
   OnInit,
@@ -5,7 +6,7 @@ import {
   ElementRef,
   HostListener,
 } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
 import {
   NewPalletOptions,
@@ -28,7 +29,7 @@ const floor = new Color(50, 50, 50);
 const servotronixColor = new Color(0, 130, 130);
 const servotronixColor2 = new Color(0, 78, 78);
 const borderSize = 5;
-const maxXYsize = 10;
+const maxXYsize = 5;
 
 const kukaColor2 = new Color(229, 156, 96);
 const kukaColor = new Color(255, 115, 0);
@@ -56,16 +57,21 @@ export class PalletizingComponent implements OnInit {
     private dialog: MatDialog,
     private ws: WebsocketService,
     private trn: TranslateService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private router: Router
   ) {
     this.trn
-      .get(['button.delete', 'button.cancel', 'pallets.delete.msg'])
+      .get(['button.delete', 'button.cancel', 'pallets.delete.msg', 'before_nav_dialog'])
       .subscribe(words => {
         this.words = words;
       });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.data.selectedPallet) {
+      this.onPalletChange();
+    }
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -83,13 +89,18 @@ export class PalletizingComponent implements OnInit {
         y += element.offsetTop;
         element = element.offsetParent as HTMLElement;
       } while (element);
-      // Position blocklyDiv over blocklyArea.
-      this.preview.nativeElement.style.left = x + 'px';
-      this.preview.nativeElement.style.top = y + 'px';
-      this.preview.nativeElement.style.width =
-        this.container.nativeElement.offsetWidth + 'px';
-      this.preview.nativeElement.style.height =
-        this.container.nativeElement.offsetHeight + 'px';
+      const el = this.preview.nativeElement;
+      const cont = this.container.nativeElement;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.width = cont.offsetWidth + 'px';
+      el.style.height = cont.offsetHeight + 'px';
+      const oldWidth = el.width;
+      const oldHeight = el.height;
+      el.width = cont.offsetWidth;
+      el.height = cont.offsetHeight;
+      const newScale = this.scaleFactor * Math.max(el.width / oldWidth, el.height / oldHeight);
+      this.scaleFactor = Math.min(newScale, this.scaleFactor);
       this.drawPreview();
     }
   }
@@ -172,6 +183,20 @@ export class PalletizingComponent implements OnInit {
     setTimeout(() => {
       this.onWindowResize();
     }, 0);
+  }
+
+  warnUserBeforeLeave() : MatDialogRef<YesNoDialogComponent> {
+    if (this.dialog.openDialogs.length > 0) return;
+    return this.dialog.open(YesNoDialogComponent, {
+      maxWidth: '400px',
+      data: {
+        title: this.words['before_nav_dialog']['title'],
+        msg: this.words['before_nav_dialog']['msg'],
+        yes: this.words['before_nav_dialog']['yes'],
+        no: this.words['before_nav_dialog']['no'],
+        warnBtn: true
+      },
+    });
   }
 
   deletePallet() {
@@ -434,7 +459,7 @@ export class PalletizingComponent implements OnInit {
   onPalletChange() {
     this.getPalletInfo().then(() => {
       this.scaleFactor = 1;
-      this.drawPreview();
+      this.onWindowResize();
     });
   }
 

@@ -25,6 +25,7 @@ const epsilon = 0.1;
 export class PalletLevelDesignerComponent implements OnInit {
   @Input('pallet') pallet: Pallet;
   @Output('change') changed = new EventEmitter<number>();
+  @Input('level') level: number;
   rotation = 0;
   normalizePreview = 1;
   normalizeItem = 1;
@@ -148,13 +149,14 @@ export class PalletLevelDesignerComponent implements OnInit {
     this.refresh();
   }
 
-  onPalletInfoLoaded() {
+  onPalletInfoLoaded() : Promise<number> {
     if (this.pallet.dataFile) {
       return this.api.getFile(this.pallet.dataFile).then(content => {
         this.setDataFromString(content);
+        return this.items.length;
       });
     }
-    return Promise.resolve(null);
+    return Promise.resolve(0);
   }
 
   rotate() {
@@ -193,14 +195,22 @@ export class PalletLevelDesignerComponent implements OnInit {
   }
 
   private setDataFromString(str: string) {
-    const containerRect = ((
-      this.container.nativeElement
-    ) as HTMLElement).getBoundingClientRect();
     const lines = str.split('\n');
     const items: CustomPalletItem[] = [];
+    let inFirstLevel = true;
+    let itemsOnFirstLevel = 0;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      if (line.indexOf('---') >= 0) break;
+      if (line.indexOf('---') >= 0) {
+        inFirstLevel = false;
+        continue;
+      }
+      if (inFirstLevel) {
+        itemsOnFirstLevel++;
+        if (this.level === 2) continue;
+      } else if (this.level === 1) {
+        break;
+      }
       const parts = line.split(',');
       if (parts.length !== 3) continue;
       const x = Number(parts[0]);
@@ -211,7 +221,7 @@ export class PalletLevelDesignerComponent implements OnInit {
           x,
           y,
           r,
-          order: i + 1,
+          order: this.level === 1 ? i + 1 : i - itemsOnFirstLevel,
           error: false,
           element: null,
           untouched: false,
@@ -221,21 +231,20 @@ export class PalletLevelDesignerComponent implements OnInit {
     this._items = items;
     this._order = items.length + 1;
     this.changed.emit(this._items.length);
-    setTimeout(() => {
-      // FIX POSITIONS
-      // THE FIRST CHILD NODE IS A COMMENT, SO START FROM POSITION i=1...
-      for (let i = 1; i < this.container.nativeElement.childNodes.length; i++) {
-        const e = this.container.nativeElement.childNodes[i] as HTMLElement;
-        if (e.style && this.items[i - 1]) {
-          e.style.left = this.items[i - 1].x / this.normalizeItem + 'px';
-          e.style.top =
-            containerRect.height -
-            this.items[i - 1].y / this.normalizeItem -
-            e.getBoundingClientRect().height +
-            'px';
-        }
+    this.setPositions();
+  }
+
+  setPositions() {
+    const el: HTMLElement = this.container.nativeElement;
+    const containerRect = el.getBoundingClientRect();
+    // THE FIRST CHILD NODE IS A COMMENT, SO START FROM POSITION i=1...
+    for (let i = 1; i < el.childNodes.length; i++) {
+      const e = el.childNodes[i] as HTMLElement;
+      if (e.style && this.items[i - 1]) {
+        e.style.left = this.items[i - 1].x / this.normalizeItem + 'px';
+        e.style.top = containerRect.height - this.items[i - 1].y / this.normalizeItem - e.getBoundingClientRect().height + 'px';
       }
-    }, 200);
+    }
   }
 
   download() {

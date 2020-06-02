@@ -1,11 +1,11 @@
 <div class="wrapper">
 	<img *ngIf="!shouldDisplayTable" src="assets/pics/Curved_Arrow.svg" class="arrow invert">
 	<div class="filter-menu mat-elevation-z1">
-		<button mat-raised-button color="primary" (click)="showAddDialog()" class="btn-add">
+		<button mat-raised-button color="primary" (click)="showAddDialog()" class="btn-add" [disabled]="isRefreshing">
 			<mat-icon>add</mat-icon>
 			<span>{{ 'button.create' | translate }}</span>
 		</button>
-		<mat-button-toggle-group *ngIf="!useAsProjectPoints" #group="matButtonToggleGroup" [(ngModel)]="displayVarType" (change)="updateDataType()">
+		<mat-button-toggle-group *ngIf="!useAsProjectPoints" #group="matButtonToggleGroup" [(ngModel)]="displayVarType" (change)="updateDataType()" [disabled]="isRefreshing">
 			<mat-button-toggle *ngFor="let t of varTypes" [value]="t">
 				{{ t | translate }}
 			</mat-button-toggle>
@@ -15,6 +15,7 @@
 			mat-raised-button
 			color="warn"
 			style="flex: 1 0 50px!important;"
+			[disabled]="isRefreshing"
 			(click)="deleteChecked()"
 		>
 			{{ 'button.delete_selected' | translate }}
@@ -33,6 +34,7 @@
 						(change)="$event ? masterToggle() : null"
 						[checked]="selection.hasValue() && isAllSelected()"
 						[indeterminate]="selection.hasValue() && !isAllSelected()"
+						[disabled]="isRefreshing"
 						style="margin-right: 16px;"
 					>
 					</mat-checkbox>
@@ -43,6 +45,7 @@
 						(click)="$event.stopPropagation()"
 						(change)="$event ? selection.toggle(row) : null"
 						[checked]="selection.isSelected(row)"
+						[disabled]="isRefreshing"
 						style="margin-right: 16px;"
 					>
 					</mat-checkbox>
@@ -67,8 +70,11 @@
 							placeholder="{{ 'index' | translate }}"
 							[(ngModel)]="element.selectedIndex"
 							(selectionChange)="refreshVariable(element)"
+							panelClass="virtual-select"
 						>
-							<mat-option *ngFor="let data of element.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
+							<cdk-virtual-scroll-viewport [itemSize]="24" style="width: 84px; height: 210px;">
+								<mat-option *cdkVirtualFor="let data of element.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
+							</cdk-virtual-scroll-viewport>
 						</mat-select>
 					</mat-form-field>
 					<mat-form-field *ngIf="element.isArr && element.isTwoDimension" class="index-field" appearance="outline">
@@ -166,10 +172,11 @@
 						color="primary"
 						style="margin-right: 24px;"
 						(click)="teach(element)"
+						[disabled]="isRefreshing"
 					>
 						{{ 'button.teach' | translate }}
 					</button>
-					<button mat-raised-button color="warn" style="margin-right: 24px;" (click)="deleteSelected(element)">
+					<button mat-raised-button color="warn" style="margin-right: 24px;" (click)="deleteSelected(element)" [disabled]="isRefreshing">
 						<mat-icon>delete</mat-icon>
 					</button>
 				</td>

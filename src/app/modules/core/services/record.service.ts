@@ -56,6 +56,8 @@ export class RecordService {
   
   closeTab(i: number) {
     if (i >= 0 && i < this._tabs.length) {
+      const t = this._tabs[i];
+      localStorage.removeItem('plotRanges_' + t.file);
       this._tabs.splice(i,1);
     }
   }
@@ -134,10 +136,15 @@ export class RecordTab {
   private _recLines: string[] = [];
   private _derData: Array<Partial<Plotly.PlotData>> = [];
   private _compareTo: RecordTab = null;
+  private _additionalData: RecordTab = null;
   
   constructor(fileName: string, ref: RecordService) {
     this.file = fileName;
     this._serviceRef = ref;
+  }
+
+  get additionalData() {
+    return this._additionalData;
   }
 
   get csv() {
@@ -147,6 +154,17 @@ export class RecordTab {
       csv[1] += ',' + this._derData.map(d=>d.name).join(',');
       const yData = this._derData.map(d=>d.y);
       for (let i=2; i<csv.length; i++) {
+        csv[i] += yData.map(y=>y[i-2]).join(',');
+      }
+    }
+    if (this._additionalData &&  this._additionalData.data && this._additionalData.data.length > 0) {
+      const sizeBefore = csv[1].split(',');
+      csv[1] += ',' + this._additionalData.data.map(d=>d.name).join(',');
+      const yData = this._additionalData.data.map(d=>d.y);
+      for (let i=2; i<this._additionalData.data.length; i++) {
+        if (i >= csv.length) {
+          csv[i] = new Array(sizeBefore).join('0,').slice(0,-1);
+        }
         csv[i] += yData.map(y=>y[i-2]).join(',');
       }
     }
@@ -172,6 +190,11 @@ export class RecordTab {
   
   set derData(data: Array<Partial<Plotly.PlotData>>) {
     this._derData = data;
+    this.init(this._csv);
+  }
+
+  addData(otherTab: RecordTab) {
+    this._additionalData = otherTab;
     this.init(this._csv);
   }
   
@@ -219,7 +242,7 @@ export class RecordTab {
         this._recLines = csv.split('\n');
         // parse legends string
         const line = this._recLines[1];
-        const legends = [];
+        const legends: string[] = [];
         let isFuncFlag = false;
         let currLegend = '';
         for (let i = 0; i < line.length; i++) {
@@ -240,7 +263,11 @@ export class RecordTab {
             legends.push(currLegend);
           }
         }
-        this._legends = legends;
+        const MAX_LEGEND = 20;
+        const REG = new RegExp('(.{' + MAX_LEGEND + '})', 'g');
+        this._legends = legends.map(l=>{
+          return l.length <= MAX_LEGEND ? l : l.replace(REG,'$1<br>');
+        });
         this._legendX = 0;
         this._legendY = this.legends[1] ? 1 : 0;
         this._legendZ = this.legends[2] ? 2 : (this.legends[1] ? 1 : 0);
@@ -303,6 +330,9 @@ export class RecordTab {
         }
       }
       newData = newData.concat(this.derData);
+      if (this._additionalData && this._additionalData.data) {
+        newData = newData.concat(this._additionalData.data);
+      }
       this.data = newData;
       this._err = false;
     } catch (err) {

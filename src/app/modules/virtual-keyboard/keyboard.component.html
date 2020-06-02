@@ -10,7 +10,7 @@
       (touchstart)="onInputTouch($event)">
         <div>{{data.keyboardType !== 'password' ? currValue : (currValue | passPipe)}}</div>
       </div>
-      <div class="cursor blink" *ngIf="data.keyboardType !== 'numeric' && cursorInitDone" [style.left.px]="cursorX"></div>
+      <div class="cursor blink" *ngIf="data.keyboardType && !data.keyboardType.startsWith('numeric') && cursorInitDone" [style.left.px]="cursorX"></div>
     </div>
     <button matSuffix mat-mini-fab (click)="up()" color="accent" *ngIf="data.showArrows && terminal.history.length > 0">
       <mat-icon>arrow_upward</mat-icon>

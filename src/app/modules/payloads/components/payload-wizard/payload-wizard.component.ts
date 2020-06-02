@@ -255,6 +255,19 @@ export class PayloadWizardComponent implements OnInit {
 
   onPayloadChange() {
     const name = this.selectedPayload.name;
+
+    this._advanced = false;
+
+    if (name === 'NONE') {
+      this.ctrlMass.disable();
+      this.ctrlInertia.disable();
+      this.ctrllx.disable();
+    } else {
+      this.ctrlMass.enable();
+      this.ctrlInertia.enable();
+      this.ctrllx.enable();
+    }
+
     /* GET PAYLOAD INFO */
     // FOR SCARA
     const promises = [

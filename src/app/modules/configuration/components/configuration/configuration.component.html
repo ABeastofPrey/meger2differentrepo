@@ -8,6 +8,7 @@
 				routerLinkActive
 				#rla="routerLinkActive"
 				[active]="rla.isActive"
+				[disabled]="tab.safetyCard && !data.safetyCardRunning"
 			>
 				<mat-icon>{{ tab.icon }}</mat-icon>
 				{{ tab.label | translate }}

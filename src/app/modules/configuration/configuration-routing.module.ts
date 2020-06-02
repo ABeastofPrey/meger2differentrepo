@@ -66,7 +66,7 @@ const routes: Routes = [
         component: GuiComponent,
         canActivate: [PermissionGuard],
         data: {
-          permission: 99,
+          permission: 0,
         },
       },
       {
@@ -91,6 +91,7 @@ const routes: Routes = [
         canActivate: [PermissionGuard],
         data: {
           permission: 0,
+          safetyCard: true
         }
       },
       {

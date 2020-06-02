@@ -1,1471 +1,235 @@
 {
-    "404": "Page Not Found",
-    "number_input_range": "Type number in ",
-    "number_input_required": "Required field",
-    "sys_log": {
-        "confirm": "CONFIRM",
-        "confirm_all": "CONFIRM ALL",
-        "effects": "Effect(s)",
-        "possiable_causes": "Possible Cause(s)",
-        "cause": "Cause",
-        "solution": "Solution",
-        "description": "Description",
-        "sources": "Sources",
-        "types": "Types",
-        "firmware": "Firmware",
-        "drive": "Drive",
-        "library": "Library",
-        "web_server": "Web Server",
-        "error": "Error",
-        "warning": "Warning",
-        "info": "Information",
-        "clear_all_log": "CLEAR ALL LOG HISTORY",
-        "clear_all_drive_fault": "CLEAR ALL DRIVE FAULT",
-        "mc_task": "Task",
-        "mc_file": "File",
-        "mc_line": "Line",
-        "mc_module": "Module"
+  "404": "Page Not Found",
+  "number_input_range": "Enter number",
+  "number_input_required": "Required field",
+  "sys_log": {
+    "confirm": "CONFIRM",
+    "confirm_all": "CONFIRM ALL",
+    "effects": "Effect(s)",
+    "possiable_causes": "Possible Cause(s)",
+    "cause": "Cause",
+    "solution": "Solution",
+    "description": "Description",
+    "sources": "Sources",
+    "types": "Types",
+    "firmware": "Firmware",
+    "drive": "Drive",
+    "library": "Library",
+    "web_server": "Web Server",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
+    "clear_all_log": "CLEAR ALL LOG HISTORY",
+    "clear_all_drive_fault": "CLEAR ALL DRIVE FAULT",
+    "mc_task": "Task",
+    "mc_file": "File",
+    "mc_line": "Line",
+    "mc_module": "Module"
+  },
+  "about": {
+    "title": "About",
+    "subtitle": "Version information for this softMC controller",
+    "cabinet": "Cabinet FW",
+    "grippers": "Grippers Library",
+    "io": "I/O Mapping Library",
+    "lbn": "Lead By Nose Library",
+    "mcu": "MCU Version",
+    "mcuDev": "MCU S/N",
+    "pallet": "Pallets Library",
+    "payloads": "Payloads Library",
+    "safetyVer": "Safety Card",
+    "server": "Web Server",
+    "system": "System",
+    "tp": "TP Libraries"
+  },
+  "acknowledge": "ACKNOWLEDGE",
+  "actions": "Actions",
+  "add": "Add",
+  "Administrator": "Administrator",
+  "advanced": "Advanced",
+  "app_bar": {
+    "menu_toggle": "Expand/Collapse App Menu",
+    "toolbar_contract": "Collapse App Toolbar",
+    "toolbar_expand": "Expand App Toolbar"
+  },
+  "apps": {
+    "cabinet_update": "Cabinet Update Tool",
+    "err_mcu": "Error: could not update MCU firmware",
+    "firmware": "Update System Software",
+    "firmware_confirm": {
+      "title": "Update softMC System Software",
+      "msg": "softMC will disconnect during the process. Make sure you have saved all changes before proceeding.",
+      "yes": "UPDATE SYSTEM SOFTWARE",
+      "no": "CANCEL"
     },
-    "about": {
-        "title": "About",
-        "subtitle": "Version information for this softMC controller",
-        "cabinet": "Cabinet FW",
-        "grippers": "Grippers Library",
-        "io": "I/O Mapping Library",
-        "lbn": "Lead By Nose Library",
-        "mcu": "MCU Version",
-        "mcuDev": "MCU S/N",
-        "pallet": "Pallets Library",
-        "payloads": "Payloads Library",
-        "safetyVer": "Safety Card",
-        "server": "Web Server",
-        "system": "System",
-        "tp": "TP Libraries"
+    "modbus": "Modbus Configurator",
+    "reboot": "Reboot softMC",
+    "reboot_confirm": {
+      "title": "Reboot softMC?",
+      "msg": "softMC will reboot. Make sure you have saved all changes before proceeding.",
+      "yes": "REBOOT",
+      "no": "CANCEL"
     },
-    "acknowledge": "ACKNOWLEDGE",
-    "actions": "Actions",
-    "add": "Add",
-    "Administrator": "Administrator",
-    "advanced": "Advanced",
-    "app_bar": {
-        "menu_toggle": "Expand/Collapse App Menu",
-        "toolbar_contract": "Collapse App Toolbar",
-        "toolbar_expand": "Expand App Toolbar"
-    },
-    "apps": {
-        "err_mcu": "Error: could not update MCU firmware",
-        "firmware": "Update System Software",
-        "firmware_confirm": {
-            "title": "Update softMC System Software",
-            "msg": "softMC will disconnect during the process. Make sure you have saved all changes before proceeding.",
-            "yes": "UPDATE SYSTEM SOFTWARE",
-            "no": "CANCEL"
-        },
-        "modbus": "Modbus Configurator",
-        "reboot": "Reboot softMC",
-        "reboot_confirm": {
-            "title": "Reboot softMC?",
-            "msg": "softMC will reboot. Make sure you have saved all changes before proceeding.",
-            "yes": "REBOOT",
-            "no": "CANCEL"
-        },
-        "rebooting": "Rebooting softMC...",
-        "title": "softMC Tools",
-        "updating": "Updating System Software",
-        "restore": {
-            "default": "Default",
-            "desc": "Restore softMC to Factory State",
-            "msg": "This will also reset the calibration parameters. Robot DH parameters and Mastering parameters will have to be reconfigured manually after the system restore will be done.",
-            "robot": "Restore to the specified Robot",
-            "title": "Factory Restore"
-        }
-    },
-    "are_you_sure": "Are you sure?",
-    "arr": "Array",
-    "arr_size": "Array Size",
-    "one_dimension_size": "One dimension size",
-    "two_dimension_size": "Two dimension size",
-    "dimension": "Dimension",
-    "enter_integer": "Please enter an positive integer",
-    "back": "Go Back",
-    "base": "Base",
-    "bases": "Bases",
-    "binary": "Binary",
-    "blending": {
-        "continous": "Continous Path",
-        "method": "Blending Method",
-        "none": "None",
-        "overlap": "Motion Overlap",
-        "superPosition": "SuperPosition"
-    },
-    "button": {
-        "add": "ADD",
-        "back": "BACK",
-        "calibrate": "CALIBRATE",
-        "cancel": "CANCEL",
-        "change": "CHANGE",
-        "close": "CLOSE",
-        "confirm": "CONFIRM",
-        "copy": "CREATE COPY",
-        "create": "CREATE",
-        "delete": "DELETE",
-        "delete_selected": "DELETE SELECTED",
-        "discard": "DISCARD",
-        "edit": "EDIT",
-        "finish": "FINISH",
-        "insert": "INSERT",
-        "login": "LOGIN",
-        "logout": "LOGOUT",
-        "move": "MOVE",
-        "moves": "MOVES",
-        "next": "NEXT",
-        "ok": "OK",
-        "open": "OPEN",
-        "overwrite": "OVERWRITE",
-        "previous": "PREVIOUS",
-        "record": "RECORD",
-        "refresh": "REFRESH",
-        "rename": "RENAME",
-        "restore": "RESTORE",
-        "save": "SAVE",
-        "send": "SEND",
-        "set_current": "SET AS CURRENT",
-        "teach": "TEACH",
-        "update": "UPDATE",
-        "upload": "UPLOAD",
-        "reset": "RESET",
-        "verify": "VERIFY",
-        "apply": "APPLY",
-        "no": "NO",
-        "yes": "YES",
-        "excute": "Execute",
-        "dropAdd": "Add",
-        "dropCancel": "Cancel"
-    },
-    "options": {
-        "none": "None"
-    },
-    "calibrate": "Calibrate",
-    "cartesian": "Cartesian",
-    "changeError": "An error occurred, changes not saved",
-    "changeOK": "Changes saved",
-    "checkbox_enable": "Allow selection",
-    "circleCenter": "CircleCenter",
-    "circlePoint": "CirclePoint",
-    "clear_msgs": "Clear messages",
-    "close": "Close",
-    "cloud": {
-        "na": "This feature is not available in the cloud, only on real softMC."
-    },
-    "connected": "Connected",
-    "connecting": "Connecting",
-    "copy": "Copy",
-    "cut": "Cut",
-    "dashboard": {
-        "charts": {
-            "2d": "X/T Graph",
-            "3d": "XYZ Graph"
-        },
-        "err_file": "FILE NOT FOUND",
-        "err_move": "Error {{code}}: {{msg}}",
-        "err_target": "INVALID TARGET",
-        "external": {
-            "3d": "3D Graph",
-            "btnShow": "SHOW",
-            "name": "Recording Name",
-            "title": "Open Recording"
-        },
-        "move_sent": "MOTION COMMAND SENT",
-        "new": {
-            "err": "Dashboard already open",
-            "select": "Select an axis or a group",
-            "subtitle": "Monitor, record, and move groups and axes.",
-            "title": "Add an Axis/Group Dashboard"
-        },
-        "new-param": {
-            "title": "Monitor a New Parameter"
-        },
-        "record": {
-            "btnStart": "START RECORDING",
-            "buttons": {
-                "compare": "COMPARE...",
-                "derivative": "DERIVATIVE...",
-                "downloadCSV": "DOWNLOAD CSV FILE...",
-                "downloadRec": "DOWNLOAD REC FILE..."
-            },
-            "empty": "No open recordings.",
-            "recorded": "Recorded Data",
-            "title": "Start a New Recording",
-            "type": {
-                "2d": "X/T",
-                "2d-a": "XY",
-                "3d": "XYZ"
-            }
-        },
-        "trace": {
-            "remove_all": "Remove All",
-            "module_label": "Module",
-            "available_trigger": "Available Triggers",
-            "selected_trigger": "Selected Triggers",
-            "available_channel": "Available Channels",
-            "selected_channel": "Selected Channels",
-            "no_trace_choosed_tip": "No module available, please choose a trace in COMMON TAB first.",
-            "common": {
-                "tab_name": "Common",
-                "trace_name": "Trace Name",
-                "duration": "Duration",
-                "rate": "Recording Rate",
-                "state": "State",
-                "state_not_ready": "Trace ended",
-                "state_ready": "Wait",
-                "state_traceing": "Triggered",
-                "state_done": "Done",
-                "start_trace": "Start Trace",
-                "stop_trace": "Stop Trace",
-                "trigger": "Trigger",
-                "trace_limit": "At most add {{max}} traces",
-                "trace_add": "Add",
-                "trace_cancel": "Cancel",
-                "new_trace": "New Trace",
-                "name_exist": "Name already exists.",
-                "delete_trace": "Delete trace {{titlePara}}?",
-                "delete_trace_msg": "All the configration of current trace will be lost.",
-                "trace_name_tip": "Typing a trace name at most 32 letters with number, charactor or lodash."
-            },
-            "trigger": {
-                "tab_name": "Trigger"
-            },
-            "channel": {
-                "tab_name": "Channel Configuration",
-                "instance": "Instance"
-            }
-        },
-        "tab1": "Motion Dashboards",
-        "tab2": "Recordings",
-        "tab3": "Trace"
-    },
-    "dataScreen": {
-        "del": "DELETE {{name}}",
-        "delete": {
-            "msg": "This cannot be undone.",
-            "title": "Delete Variable {{name}}?",
-            "title_multi": "Delete {{num}} variables?"
-        },
-        "no-var": "No Variable is selected"
-    },
-    "date": "Date",
-    "date_format": "[MM/DD/YYYY]",
-    "decimal": "Decimal",
-    "delete": "Delete",
-    "derivative": "Derivative",
-    "derivative_deg": "Degree",
-    "diagnostics": {
-        "devices": "Devices State",
-        "master": "Master State",
-        "mcu": "MCU",
-        "no-data": "Data not available. Load TP libraries and try again.",
-        "title": "Diagnostics"
-    },
-    "Belt": "Belt",
-    "Spline grease": "Spline grease",
-    "Encoder battery": "Encoder battery",
-    "hours": "hours",
-    "km": "km",
-    "Ah": "Ah",
-    "maintenance": {
-        "Belt": "皮带",
-        "input": {
-            "tab_name": "Maintenance Input",
-            "maintenance_type": "Maintenance Module",
-            "used_life": "Used Life",
-            "apply_to_type": "Apply to type",
-            "person_company": "Person/Company",
-            "order_number": "Order Number",
-            "comment": "Comments",
-            "save": "Save",
-            "saveInput": "Maintenance Handbook",
-            "saveMsg": "Do you want to save the changes?",
-            "nameRequire": "Person/Company is required",
-            "ordernum": "OrderNum is required",
-            "commentRequire": "Comment is required",
-            "used_life_req_error": "Used Life is required",
-            "used_life_req_max": "Maximum input limit {{max}}"
-        },
-        "history": {
-            "tab_name": "Maintenance History",
-            "maintenance_type": "Maintenance Module",
-            "date": "Date",
-            "person_company": "Person/Company",
-            "surplus_life": "Surplus Life",
-            "order_no": "Order Number",
-            "comment": "Comments"
-        },
-        "information": {
-            "tab_name": "Maintenance Information",
-            "maintenance_type": "Maintenance Module",
-            "performed_on": "Performed Time",
-            "surplus_life": "Surplus Life"
-        },
-        "title": "Maintenance Handbook"
-    },
-    "dialogs": {
-        "jogSettings": "Jog Settings"
-    },
-    "disable": "Disable",
-    "disabled": "Disabled",
-    "disconnect": {
-        "title": "Connection to softMC was lost",
-        "msg": "Check your network connection."
-    },
-    "disconnected": "Disconnected",
-    "dismiss": "DISMISS",
-    "domain": "Application",
-    "done": "Done",
-    "double": "Double",
-    "doubles": "Doubles",
-    "duration": "Duration",
-    "edit": "Edit",
-    "element": "Element",
-    "empty_list": "List is empty",
-    "enable": "Enable",
-    "error": {
-        "conn_mc": "Can't connect to softMC",
-        "conn_ws": "Can't establish a websocket connection",
-        "err": "Error",
-        "estop": "E-STOP IS PRESSED",
-        "field_too_short": "Input is too short",
-        "firmware_update": {
-            "title": "System Software Update failed",
-            "msg": "We couldn't install the pacakge on the controller."
-        },
-        "invalid_etag": "It seems you recently updated ControlStudio+ and/or the softMC web server. Press CTRL + SHIFT + R to reload this page.",
-        "invalid_etag_tablet": "It seems you recently updated ControlStudio+ and/or the softMC web server. Please clear the browser cache, then reload this page.",
-        "invalid_feature": "Invalid feature",
-        "invalid_file_name": "Input must begin with a letter, include only letters, numbers or '_', and be 32 characters or less",
-        "invalid_full_name": "A Full name is made of a First AND Last name",
-        "invalid_regex": "Invalid input",
-        "invalid_username": "Username must include letter, numbers or '_'",
-        "invalid_username2": "This username is reserved",
-        "invalid_rec_motion": "Invalid motion recording file",
-        "invalid_var_name": "Input must begin with a letter, include only letters and numbers or '_', and be 32 characters or less",
-        "invalid_webserver": "Use web server {{ver}} (current is {{current}})",
-        "mismatch_pass": "Password doesn't match the previous field",
-        "orientation": "ControlStudio+ works in Landscape mode only.",
-        "tp": "Could not load TP Libraries, check console log for more details...",
-        "tp_tablet": "TP Library was not found. Reboot the controller and try again"
-    },
-    "errorHistory": {
-        "button": {
-            "clear": "CLEAR ERROR HISTORY",
-            "clear_drive": "CLEAR DRIVE FAULT"
-        }
-    },
-    "files": {
-        "backup": "CREATE BACKUP",
-        "confirm_delete": "The selected files will be deleted permanently.",
-        "confirm_upload": "Notice: The selected files will OVERWRITE existing files.",
-        "content": "File Contents",
-        "delete": "DELETE FILE(S)",
-        "dir_name": "Folder Name",
-        "download": "DOWNLOAD FILE(S)",
-        "err_delete": "ERROR: NOT ALL FILES WERE DELETED",
-        "err_ext": "INVALID EXTENSION IN {{name}}",
-        "err_permission": "INVALID PERMISSION",
-        "err_upload": "ERROR UPLOADING {{name}}",
-        "ext": "Extension",
-        "modified": "Last Modified",
-        "name": "File Name",
-        "names": "File Names",
-        "no_file": "No File Selected",
-        "open": "Open File",
-        "search_in": "Search In",
-        "success_delete": "Success. All files were deleted.",
-        "success_upload": "Success. All files were uploaded.",
-        "tree": "Controller Files",
-        "upload": "UPLOAD TO MC..."
-    },
-    "filter": "Filter",
-    "form_validation": {
-        "percent": "Value must be between 0 and 100",
-        "range": "Invalid Range"
-    },
-    "frame": "Motion Frame",
-    "frame_jog": "Jog Frame",
-    "frames": {
-        "BASE": "BASE",
-        "calibration": {
-            "origin": "Origin",
-            "posX": "Position X",
-            "posY": "Position Y",
-            "posXY": "Position XY",
-            "set": "Set as current",
-            "title": "Calibrate"
-        },
-        "create": [
-            "CREATE TOOL",
-            "CREATE BASE",
-            "CREATE MACHINE TABLE",
-            "CREATE WORK PIECE"
-        ],
-        "delete": {
-            "msg": "This cannot be undone.",
-            "title": "Delete {{name}}?",
-            "title_multi": "Delete {{num}} items?"
-        },
-        "JOINT": "JOINT",
-        "name": [
-            "Tool Name",
-            "Base Name",
-            "Machine Table Name",
-            "Work Piece Name"
-        ],
-        "new": [
-            "Add Tool",
-            "Add Base",
-            "Add Machine Table",
-            "Add Work Piece"
-        ],
-        "none": "No {{frameType}} is selected",
-        "TOOL": "TOOL",
-        "WORLD": "WORLD"
-    },
-    "gap": "Gap",
-    "gap_units": "Samples",
-    "grippers": {
-        "btnCycle": "CYCLE",
-        "btnTest": "TEST",
-        "close": "Close Gripper",
-        "cycle": "Cycle Test",
-        "cycle_time": "Cycle Time",
-        "dout1": "Primary output",
-        "dout2": "Secondary output",
-        "ef": "End Effector",
-        "fb1": "Primary feedback",
-        "fb2": "Secondary feedback",
-        "grp": "Gripper",
-        "new_ef": "New End Effector",
-        "new_grp": "New Gripper",
-        "open": "Open Gripper",
-        "pay_ef": "End Effector Payload",
-        "pay_item": "Item Payload",
-        "set": "Set Gripper",
-        "sleep": "Timing",
-        "test": "Test Gripper",
-        "use_tool": "Use Tool"
-    },
-    "gui": {
-        "dark": "Use Dark Mode",
-        "theme": {
-            "title": "Theme",
-            "subtitle": "Change the appereance of ControlStudio+"
-        }
-    },
-    "hello": "Hello",
-    "help": {
-        "bug": "Report a bug",
-        "bug_body": "Attach the downloaded ZIP file and other relevant files to this email",
-        "bug_desc": "Describe your bug/issue here, including steps to reproduce...",
-        "code": "Code Examples",
-        "contact": "Contact Support",
-        "downloads": "Downloads",
-        "keys": "Keyboard Shortcuts",
-        "shortcuts": {
-            "desc_autocomplete": "Show Autocomplete options",
-            "desc_delete": "Delete selected object",
-            "desc_duplicate": "Duplicate selected object",
-            "desc_find": "Find",
-            "desc_gotoLine": "Go to line",
-            "desc_replace": "Replace",
-            "desc_terminal_down": "Go to next command",
-            "desc_terminal_up": "Go to previous command",
-            "editor": "Program Editor",
-            "terminal": "Terminal",
-            "fold_unfold": "Fold/Unfold current block",
-            "toggle_comment": "Comment/Uncomment line"
-        },
-        "soon": "Coming Soon",
-        "title": "softMC Help Center",
-        "tour": "Tour",
-        "tourDisabled": "Tour is disabled because TP.LIB is not loaded",
-        "wiki": "softMC Wiki",
-        "activation": {
-            "title": "Activation",
-            "xpert": "KUKA Xpert",
-            "captchaPlaceholder": "Input captcha",
-            "incorrectCaptchaTip": "Captcha is incorrect.",
-            "lengthErr": "Captcha must be 6 characters",
-            "requireErr": "Captcha is required"
-        }
-    },
-    "hexadecimal": "Hexadecimal",
-    "home": {
-        "addFeature": {
-            "add": "Add Feature",
-            "code": "License Code",
-            "desc": "Feature Description",
-            "installing": "Installing new feature",
-            "name": "Feature Name",
-            "success": "Feature was installed successfuly",
-            "title": "Add a New Feature"
-        },
-        "axes_max": "Max. Axes",
-        "axes_real": "Real Axes",
-        "chart_ram": [
-            "Used RAM",
-            "Free RAM"
-        ],
-        "chart_space": [
-            "Used Space",
-            "Free Space"
-        ],
-        "features": "Features",
-        "groups": "Groups Configuration",
-        "platform": "Platform",
-        "port": "Connected on port",
-        "software": "Software",
-        "system": "System",
-        "ver": "Version",
-        "virtual_controller": "VIRTUAL CONTROLLER",
-        "virtual_tooltip": "This controller runs on VirtualBox",
-        "welcome": "Welcome"
-    },
-    "index": "Index",
-    "inputs": {
-        "slider": "Slider",
-        "slider_max": "Slider Min. Value",
-        "slider_min": "Slider Min. Value",
-        "text": "Text Box",
-        "toggle": "On/Off Switch",
-        "type": "Input Type"
-    },
-    "topology": {
-        "title": "Device Manager",
-        "errTip": "Ethercat is not in operation mode, please make sure that physical devices work well and then try to do reset all operation of CS in Task Manager.",
-        "exTip": "EXPAND",
-        "colTip": "COLLAPSE",
-        "controller": "Controller",
-        "driveBus": "Drive Bus",
-        "extensionBus": "Extension Bus"
-    },
-    "io": {
-        "standardView": "Standard View",
-        "hexadecimal": "Hexadecimal Values",
-        "invalidName": "Invalid Name",
-        "addView": "Add View",
-        "delView": "Del View",
-        "addRow": "Add Row",
-        "delRow": "Del Row",
-        "allInputs": "All Inputs",
-        "allOutputs": "All Outputs",
-        "driveIoInputs": "Drive IO Inputs",
-        "driveIoOutputs": "Drive IO Outputs",
-        "userIoInputs": "User IO Inputs",
-        "userIoOutputs": "User IO Outputs",
-        "bit": "Bit",
-        "byte": "Byte",
-        "word": "Word",
-        "status": "Status",
-        "value": "Value",
-        "label": "Label",
-        "type": "Type",
-        "port": "Port",
-        "dialogTitle": "Are you sure?",
-        "dialogMsg": "The selected custom view will be deleted permanently.",
-        "dialogYes": "DELETE",
-        "dialogNo": "CANCEL",
-        "inputBit": "Input Bit",
-        "inputByte": "Input Byte",
-        "inputWord": "Input Word",
-        "outputBit": "Output Bit",
-        "outputByte": "Output Byte",
-        "outputWord": "Output Word"
-    },
-    "interface": {
-        "title": "User Interface"
-    },
-    "invert": "Invert",
-    "ios": {
-        "inputs": "Inputs",
-        "mapping": "I/O Mapping",
-        "outputs": "Outputs",
-        "sim_tooltip": "System IOs are always simulated",
-        "table": {
-            "0": "Id",
-            "1": "State",
-            "2": "Name",
-            "3": "Description",
-            "4": "Simulated"
-        },
-        "updating": "Updating I/O modules",
-        "updating_confirm": "This will reboot softMC, please make sure you have saved all your changes before updating the I/O modules.",
-        "updating_succuss": "I/O modules updated successfuly"
-    },
-    "jogScreen": {
-        "menu": [
-            "Tool Align",
-            "Teach"
-        ],
-        "percision": "Percision",
-        "settings": "Jog Settings",
-        "speed": "Speed",
-        "speed_inc": {
-            "s": "Small",
-            "m": "Medium",
-            "l": "Large",
-            "xl": "Extra Large"
-        },
-        "tabs": {
-            "jog": "Jog",
-            "lbn": "Lead By Nose",
-            "handguiding": "Hand Guiding"
-        },
-        "tool_align": "Tool Align",
-        "var": "Variable",
-        "var_none": "No variables"
-    },
-    "handGuiding": {
-        "toggleMode": "Enable S-FREE Mode",
-        "toggleJ3J4": "Release brakes J1 + J2"
-    },
-    "joint": "Joint",
-    "joints": "Joints",
-    "lang": {
-        "cmn": "简体中文",
-        "en": "English",
-        "subtitle": "Set the language for the GUI and library messages",
-        "selected": "Selected Language"
-    },
-    "language": "Language",
-    "lbn": {
-        "err_timeout": "Error: Timeout Reached"
-    },
-    "legal": {
-        "terms": "Terms Of Use",
-        "title": "Legal",
-        "thirdParty": "Third Party Open-Source Libraries"
-    },
-    "license": {
-        "accept": "I AGREE TO THE ABOVE TERMS AND CONDITIONS",
-        "reject": "REJECT",
-        "title": "ControlStudio+ License Agreement"
-    },
-    "loading": "Loading",
-    "location": "Location",
-    "locations": "Locations",
-    "log": {
-        "file_del": "Deleted a file",
-        "firmware": "Updated system software with",
-        "login": "{{name}} has logged in",
-        "upload": "Uploaded file",
-        "user_del": "Deleted user",
-        "user_edit": "Edited user",
-        "user_new": "created a new user"
-    },
-    "login": {
-        "mc_offline": "Waiting for softMC to connect"
-    },
-    "long": "Long",
-    "longs": "Longs",
-    "main": {
-        "errJog": {
-            "coos": "Coordinates service is OFFLINE",
-            "lib": "Can't JOG - System isn't initialized",
-            "project": "Can't JOG while project app is loaded"
-        },
-        "jogControls": "Jog Controls",
-        "jogControlsToggle": "Toggle Jog Controls",
-        "no_robot": "No robot is selected",
-        "tour": {
-            "btnFinish": "END DEMO",
-            "err": {
-                "0": "Follow this step's instructions in order to proceed to the next step.",
-                "1": "No project is loaded",
-                "2": "Project DEMO must be loaded",
-                "3": "Missing app: CIRCLE"
-            },
-            "msg": "Would you like to take a guided demo tour now?",
-            "msg2": "Don't worry, you can always take the demo tour later from the HELP screen.",
-            "no": "NO, THANKS",
-            "title": "Welcome to ControlStudio+",
-            "yes": "YES, LET'S GO!"
-        }
-    },
-    "message_log": "Message Log",
-    "mode_debug": "DEBUG MODE",
-    "mode_remote": "REMOTE MODE",
-    "mode_selector": "Mode",
-    "motion_element": "Motion Element",
-    "motion_elements": "Motion Elements",
-    "motion_elements_empty": "No motion elements",
-    "mt": "Machine Table",
-    "mts": "Machine Tables",
-    "na": "N/A",
-    "name": "Name",
-    "offline": "OFFLINE",
-    "online": "ONLINE",
-    "open": "Open",
-    "optional": "Optional",
-    "other": "Other",
-    "pallet": "Pallet",
-    "pallets": {
-        "create": "Create a new Pallet",
-        "delete": {
-            "title": "Delete Pallet {{name}}?",
-            "msg": "This cannot be undone."
-        },
-        "err_item_count": "Invalid item count",
-        "name": "Pallet Name",
-        "selected": "Selected Pallet",
-        "type": "Pallet Type",
-        "type_CUSTOM": "Custom",
-        "type_GRID": "Grid",
-        "wizard": {
-            "3d_disable": "Too many items - 3D Preview is disabled",
-            "app": "Approach",
-            "app_dir": "Approach Direction",
-            "button": {
-                "teach_entry": "TEACH ENTRY POSITION",
-                "teach_origin": "TEACH ORIGIN",
-                "teach_posX": "TEACH POSITION X",
-                "teach_posY": "TEACH POSITION Y",
-                "teach_posXY": "TEACH POSITION XY"
-            },
-            "calibrated": "Calibrated",
-            "calibrated_not": "Not calibrated",
-            "calibrated_origin": "Calibrated Origin",
-            "conf": "Configuration Flags",
-            "curr_index": "Current item index",
-            "curr_pos": "Current Position",
-            "dimensions_item": "Item Dimensions [mm]",
-            "dimensions_pallet": "Pallet Dimensions [mm]",
-            "dir": "Direction",
-            "done_title": "Pallet setup is done!",
-            "entry": "Entry",
-            "entry_pos": "Entry Position",
-            "err_incomp_robot": "Incompatible Robot",
-            "exceed": "Can exceed pallet bounds",
-            "index_custom": "Custom",
-            "index_empty": "Empty",
-            "index_full": "Full",
-            "invalid_val": "Select pallet current index",
-            "level": "Level",
-            "levels": "Levels",
-            "levels_in_pallet": "Levels in pallet",
-            "num_of_items": "Number of items",
-            "odd_even": "Different Odd/Even levels",
-            "offH": "Horizontal Offset",
-            "offV": "Vertical Offset",
-            "order": "Order",
-            "origin": "Origin",
-            "origin_status": "Origin Status",
-            "posX": "Position X",
-            "posY": "Position Y",
-            "ret": "Retract",
-            "ret_dir": "Retract Direction",
-            "save": "Save changes to {{name}}?",
-            "step1": "General",
-            "step4": "Approach&Retract",
-            "sum_of": "Here's a summary of",
-            "title": "Pallet Wizard"
-        },
-        "wizard_open": "Open pallet wizard"
-    },
-    "parameter": "Parameter",
-    "parameters": "Parameters",
-    "password": "Password",
-    "password_confirm": "Confirm password",
-    "password_confirm_err": "Confirm password",
-    "password_err": "Wrong password",
-    "paste": "Paste",
-    "payloads": {
-        "advanced": "Advanced Mode",
-        "btn_create": "CREATE PAYLOAD",
-        "current": "Current values",
-        "delete_title": "Delete payload {{name}}?",
-        "delete_msg": "This cannot be undone.",
-        "done": "Payload identification succeeded",
-        "freq": "Frequencies",
-        "ident": {
-            "dialog": {
-                "title": "Caution",
-                "msg": "Payload Identification is about to begin. During this process, the robot will move to various positions in its working space. Make sure that the robot environment is clear of people, objects and other obstacles.",
-                "yes": "START IDENTIFICATION",
-                "no": "CANCEL"
-            },
-            "finish": "Moving robot to the original position...",
-            "moving": "Moving robot to start position...",
-            "title": "Robot is now performing Payload Identification",
-            "start": "START IDENTIFICATION...",
-            "subtitle": "During this process, the robot will move to various positions in its working space. Make sure that the robot environment is clear of people, objects and other obstacles."
-        },
-        "inertia": "Inertia",
-        "mass": "Mass",
-        "name": "Payload Name",
-        "new": "New Payload",
-        "offX": "Radius Offset",
-        "payload": "Payload",
-        "relative_pos": "Amplitude",
-        "start_pos": "Start Position",
-        "time": "Duration"
-    },
-    "vision": {
-        "templateConfigTab": "Template Config",
-        "calibrationTab": "Calibration",
-        "templateConfig": {
-            "station": "Selected station",
-            "edit": "Edit",
-            "delete": "DELETE",
-            "ip": "IP",
-            "port": "Port",
-            "terminator": "Terminator",
-            "encoding": "Encoding",
-            "createStationTitle": "Create a new vision station",
-            "createStationPlacehold": "Station name",
-            "createTemplateTitle": "Create Job Template",
-            "createTemplatePlacehold": "Job Template",
-            "createTemplateDialog": "Open configuration view",
-            "createRequired": "Name is required",
-            "createLetter": "Must start with an letter",
-            "ipRequired": "IP is required",
-            "ipValid": "Wrong IP address",
-            "dialogStationTitle": "Delete station {{titlePara}}",
-            "dialogTitle": "Delete template {{titlePara}}",
-            "dialogMsg": "The current template information will be deleted",
-            "list_max": "At most add {{max}} list",
-            "deleteStation": "The current station information will be deleted",
-            "nameExist": "Name already exists.",
-            "newTemplate": "New Template",
-            "jobTemplate": "Selected Template"
-        },
-        "calibration": {
-            "station": "Selected Station",
-            "title": "Machine Vision Calibration",
-            "Save": "SAVE",
-            "Calibrate": "CALIBRATE",
-            "Reset": "RESET",
-            "Create": "Create",
-            "Delete": "Delete",
-            "JobTemplate": "JobTemplate",
-            "ResponseData": "Respond Data",
-            "ResponseError": "Respond Error",
-            "ResponseStatus": "Respond Status",
-            "elementName": "Name",
-            "type": "Type",
-            "calibrationError": "Calibration Error",
-            "Pixel_x": "Pixel_x",
-            "Pixel_y": "Pixel_y",
-            "posX": "Pos_x",
-            "posY": "Pos_y"
-        }
-    },
-    "projectCommands": {
-        "call": {
-            "title": "Insert Call Command",
-            "name": "Sub Name"
-        },
-        "circle": {
-            "title": "Insert Circle Command"
-        },
-        "delay": {
-            "time": "Time",
-            "title": "Insert Delay Command"
-        },
-        "dim": {
-            "title": "Insert Dim Command"
-        },
-        "if": {
-            "condition": "Condition",
-            "else": "Also add an \"Else\" statement",
-            "title": "Insert If Command"
-        },
-        "menu": {
-            "flow": "FLOW",
-            "grippers": "GRIPPERS",
-            "interpolation": "INTERPOLATION",
-            "motion": "MOTION",
-            "pallets": "PALLETS",
-            "payloads": "PAYLOADS",
-            "program": "PROGRAM",
-            "variables": "VARIABLES",
-            "vision": "VISION"
-        },
-        "move": {
-            "index_from": "From Index",
-            "index_to": "To Index",
-            "move": "Move To...",
-            "range": "Array Range",
-            "title_move": "Insert Move Command",
-            "title_moves": "Insert Moves Command"
-        },
-        "other": {
-            "title_attach": "Insert Attach/Detach command",
-            "title_disable": "Insert Disable command",
-            "title_doPass": "Insert DoPass command",
-            "title_en": "Insert Enable command",
-            "title_home": "Insert Home command",
-            "title_inRef": "Insert Input Reference",
-            "title_outRef": "Insert Output Reference",
-            "title_pick": "Insert Pick command",
-            "title_place": "Insert Place command",
-            "title_plt_entry": "Insert Move to Entry Position command",
-            "title_plt_index": "Insert Get Pallet Index command",
-            "title_plt_status": "Insert Get Pallet Status command",
-            "title_waitForMotion": "Insert WaitForMotion command"
-        },
-        "pallet_index": {
-            "title": "Set Pallet Index"
-        },
-        "proceed": {
-            "title": "Insert Proceed Command",
-            "type": "Proceed Type"
-        },
-        "sleep": {
-            "time": "Sleep Time",
-            "title": "Insert Sleep Command"
-        },
-        "stop": {
-            "title": "Insert Stop Command",
-            "type": "Stop Type"
-        },
-        "while": {
-            "title": "Insert While Loop",
-            "condition": "Condition"
-        },
-        "goHome": {
-            "title": "Insert GoHome Command",
-            "vCruisePh": "VScale (Optional)",
-            "numRange": "Enter a number in"
-        },
-        "jump": {
-            "title": "Insert Jump Command",
-            "titleA": "Insert",
-            "titleB": "Command",
-            "requireErr": "This field is required",
-            "motionPh": "Motion Element",
-            "departPh": "Depart Point",
-            "approachPh": "Approach Point",
-            "destPh": "Dest Frame",
-            "archPh": "Arch Number",
-            "limitZPh": "limit Z",
-            "blendingPh": "Blending Percentage",
-            "speedPh": "Speed",
-            "accelerationPh": "Acceleration",
-            "numRange": "Enter a number in",
-            "intRange": "Enter an integer in",
-            "advanced": "Advanced"
-        },
-        "ptSource": {
-            "title": "Insert SetPTSource Command",
-            "sourcePh": "Choose PT Source",
-            "sourceDistance": "Distance",
-            "sourceTime": "Time",
-            "sourcePercentage": "Percentage"
-        },
-        "commandDialog": {
-            "commandTitle": "Insert {{command}} Command"
-        },
-        "jumpx": {
-            "target": "Target Point",
-            "ascending": "Ascending Point",
-            "descending": "Descending Point",
-            "motion": "Motion Element",
-            "arch": "Arch Number",
-            "limZ": "LimZ",
-            "blending": "Blending Percentage",
-            "vscale": "VScale",
-            "vtran": "Vtran",
-            "acc": "Acc",
-            "withPls": "Position Trigger",
-            "requireErr": "This field is required",
-            "numRange": "Please enter a number in {{range}}",
-            "intRange": "Please enter an integer in {{range}}",
-            "advanced": "Advanced"
-        },
-        "visionCommand": {
-            "jobNamePlaceHolder": "Job Name",
-            "jobNameRequiredErr": "Job Name is required",
-            "stationNamePlaceHolder": "Station Name",
-            "stationNameRequiredErr": "Station Name is required",
-            "timeoutPlaceHolder": "Timeout",
-            "timeoutPositiveErr": "Timeout should be a non-negative number",
-            "dimensionPlaceHolder": "Dimension",
-            "dimensionRequiredErr": "Dimension is required.",
-            "dataNumPlaceHolder": "Data Num",
-            "dataNumRequiredErr": "DataNum is required",
-            "asDataPlaceHolder": "As Data",
-            "asDataRequiredErr": "AsData is required",
-            "statusPlaceHolder": "Status",
-            "statusRequiredErr": "Status is required",
-            "errorPlaceHolder": "Error",
-            "errorRequiredErr": "Error is required",
-            "variablePlaceHolder": "Assigned To",
-            "configFilePathPlaceHolder": "Config File Path",
-            "configFilePathRequiredErr": "Config file path is required.",
-            "loadConfigFilePathError": "Load file failed.",
-            "Pixel_x": "Pixel_x",
-            "Pixel_y": "Pixel_y",
-            "Pixel_x_RequireErr": "Pixel_x is required",
-            "Pixel_y_RequireErr": "Pixel_y is required",
-            "Pos_x": "Pos_x",
-            "Pos_y": "Pos_y",
-            "Pos_x_RequireErr": "Pos_x is required",
-            "Pos_y_RequireErr": "Pos_y is required"
-        },
-        "createVar": "Add Variable",
-        "traceOn": {
-            "title": "Insert TraceOn Command",
-            "trace_holder": "Trace"
-        }
-    },
-    "projects": {
-        "ace": {
-            "bp_err": "Breakpoints can only be inserted on a loaded file",
-            "bp_lib": "Library breakpoints are not supported yet"
-        },
-        "btnCreate": "CREATE PROJECT",
-        "delete-dialog": {
-            "btn-delete": "DELETE SELECTED PROJECTS",
-            "input": "Select Projects to Delete",
-            "message": "The following projects will be removed from the system. This operation cannot be undone.",
-            "title": "Delete Projects"
-        },
-        "loaded": "Loaded",
-        "name": "Project Name",
-        "new": "New Project",
-        "notification": {
-            "at": "at",
-            "errMsg": "problems were found in the following lines:",
-            "exception": "Exception at task {{task}}",
-            "none": "No compilation errors.",
-            "title": "Problems"
-        },
-        "open": "OPEN PROJECT",
-        "saved": "File Saved",
-        "select": "Select a Project",
-        "status": {
-            "-1": "Not Loaded",
-            "999": "Unknown State",
-            "1": "Running",
-            "2": "Stopped",
-            "4": "Error",
-            "5": "Terminated",
-            "7": "Ready",
-            "9": "Kill Start",
-            "10": "Killed",
-            "11": "Interrupted",
-            "99": "Loaded Library"
-        },
-        "time": "Time",
-        "toolbar": {
-            "app": "App",
-            "app_create": "CREATE APP",
-            "app_name": "App Name",
-            "task_name": "Task Name",
-            "autostart": "Run Project automatically",
-            "backup": "Backup",
-            "changing": "Changing project...",
-            "controller": "Controller",
-            "copy_name": "New name",
-            "create": "Create",
-            "del_prj": "Delete Project",
-            "del_prj_msg": "All the project files will be removed permanently.",
-            "del_prj_other": "Delete other Project",
-            "del_prj_title": "Delete project {{name}}?",
-            "dep": "Dependency",
-            "dep_create": "CREATE DEPENDENCY",
-            "dep_load": "Load Dependencies",
-            "dep_name": "Dependency Name",
-            "dep_unload": "Unload dependencies",
-            "dialog_conflict": {
-                "title": "Settings Conflict Detected",
-                "msg": "The project settings are different from the currently active settings. Which settings do you want to use?",
-                "yes": "CURRENT SETTINGS",
-                "no": "PROJECT SETTINGS"
-            },
-            "download": "Download",
-            "edit": "Edit",
-            "err_change": "Can't change current project",
-            "err_create": "Can't create project.",
-            "err_import": "Import failed",
-            "err_import_file": "Invalid Project File",
-            "export": "Export",
-            "file": "File",
-            "file_name": "File Name",
-            "find": "Find",
-            "idle": "Idle",
-            "import": "Import",
-            "jtl": "Jump to Line",
-            "kill": "Kill & Unload",
-            "kill_only": "Kill",
-            "lib": "Library",
-            "lib_create": "CREATE LIBRARY",
-            "lib_name": "Library Name",
-            "menu_delete_files": "Delete selected",
-            "menu_download_files": "Download selected",
-            "new": "New",
-            "new_app": "New App",
-            "new_dep": "New Dependency",
-            "new_file": "New File",
-            "new_folder": "New Folder",
-            "new_lib": "New Library",
-            "new_bg_task": "New Background task",
-            "new_bg_task_name": "Task name",
-            "open": "Open",
-            "overwrite_file": {
-                "title": "Overwrite Existing File?",
-                "msg": "File {{name}} already exists. Do you want to overwrite it?"
-            },
-            "overwrite_prj": {
-                "title": "Overwrite Existing Project?",
-                "msg": "Project {{name}} already exists. Do you want to overwrite it with the imported project?"
-            },
-            "prg": "Program",
-            "redo": "Redo",
-            "remote_disable": "Disable Remote Mode",
-            "remote_enable": "Enable Remote Mode",
-            "rename": "Rename",
-            "rename_prj": "Rename Project",
-            "rename_prj_name": "New Project Name",
-            "replace": "Replace",
-            "restore": "Restore",
-            "run": "Run",
-            "run_prj": "Run Project",
-            "run_all_bg_tasks": "Run all BG tasks",
-            "save": "Save",
-            "save_as": "Save As",
-            "save_as_prj": "Save Project as...",
-            "save_load": "Save & Load",
-            "stop_prj": "Stop Project",
-            "stop_all_bg_tasks": "Stop all BG tasks",
-            "stp_into": "Step Into",
-            "stp_out": "Step Out",
-            "stp_over": "Step Over",
-            "undo": "Undo",
-            "unload": "Unload",
-            "upload": "Upload to softMC",
-            "vrate": "Project Velocity",
-            "Auxiliary": "Background Tasks",
-            "newBackgroundTask": "New Background Task"
-        },
-        "warning": "This will kill all tasks and libraries currently running."
-    },
-    "projectSettings": {
-        "ascale": "Joint Acceleration",
-        "apps": {
-            "app_desc": "Application description",
-            "app_desc_none": "No application description",
-            "cyclic": "Cyclic",
-            "desc": "Choose the applications to run when the project starts",
-            "en": "Enable App",
-            "id": "Remote ID",
-            "id_tooltip": "This ID can be used to start/pause/stop applications from remote I/O",
-            "title": "Applications"
-        },
-        "arch": {
-            "desc": "Define the parameters for Arch command",
-            "title": "Arch Settings",
-            "archCol": "Arch",
-            "departZCol": "AscendingZ",
-            "approachZCol": "DescendingZ",
-            "positiveNumTip": "Input a positive number!",
-            "valChangedTip": "Value has been updated!"
-        },
-        "base": {
-            "desc": "Define the base limits",
-            "title": "Base Limits"
-        },
-        "motion_frames": {
-            "desc": "Select the project's motion frames",
-            "title": "Motion Frames"
-        },
-        "motion_params": {
-            "desc": "Select the parameters for motion commands",
-            "title": "Motion Parameters"
-        },
-        "mt": {
-            "desc": "Define the machine table limits",
-            "title": "Machine Table Limits"
-        },
-        "pos": {
-            "desc": "Define the robot' position limits",
-            "title": "Position Limits"
-        },
-        "tool": {
-            "desc": "Define the tool limits",
-            "title": "Tool Limits"
-        },
-        "world": {
-            "desc": "Define the world limits",
-            "title": "World Limits"
-        },
-        "wp": {
-            "desc": "Define the work piece limits",
-            "title": "Work Piece Limits"
-        },
-        "position_trigger": {
-            "desc": "Define the parameters for Position Trigger",
-            "title": "Position Trigger",
-            "nameCol": "Name",
-            "outputCol": "Output",
-            "StateCol": "State",
-            "stateColTrue": "TRUE",
-            "stateColFalse": "FALSE",
-            "FromCol": "From",
-            "fromColStart": "START",
-            "fromColEnd": "END",
-            "valueCol": "Value",
-            "deleteBtn": "DELETE SELECTED",
-            "positiveNumTip": "Please input a non-negative number, and shouldn't greater than 100 for percentage",
-            "newPositionTrigger": {
-                "namePlaceholder": "Name",
-                "requireErr": "Name is required."
-            }
-        },
-        "home_config": {
-            "desc": "Define the parameters for Home Config",
-            "title": "Home Config",
-            "homePosition": "Home Position",
-            "homeOrder": "Home Order",
-            "degree": "Values are in deg/mm",
-            "curPositionBtn": "Read Current Position",
-            "stepOption": "Step",
-            "savedTip": "Changes saved!",
-            "validNumTip": "Enter a valid number.",
-            "numRange": "Enter a valid number between"
-        },
-        "vscale": "Joint Velocity",
-        "vtran": "Cartesian Velocity"
-    },
-    "projectTree": {
-        "Apps": "Apps",
-        "Conveyor": "Conveyor",
-        "cnt": "Controller",
-        "del_app_msg": "This operation cannot be undone, and will remove this application with all its data and libraries. Are you sure you wish to delete it?",
-        "del_app_title": "Delete App {{name}}?",
-        "del_bg_msg": "This operation cannot be undone, and will remove this task. Are you sure you wish to delete it?",
-        "del_bg_title": "Delete Task {{name}}?",
-        "del_dep_msg": "This operation cannot be undone. Are you sure you wish to delete this dependency?",
-        "del_dep_title": "Delete Dependency {{name}}?",
-        "del_lib_msg": "This operation cannot be undone. Are you sure you want to delete this library?",
-        "del_lib_title": "Delete Library {{name}}?",
-        "dirty": "File has changed",
-        "dirty_msg": "Do you want to save your changes to {{name}}?",
-        "Data": "Data",
-        "Dependencies": "Dependencies",
-        "Errors": "Errors",
-        "File": "Program",
-        "Frames": "Motion Frames",
-        "Grippers": "Grippers",
-        "IO": "I/O Mapping",
-        "Libraries": "Libraries",
-        "Macros": "Macros",
-        "Pallets": "Pallets",
-        "Payloads": "Payloads",
-        "prj": "Project",
-        "Settings": "Project Settings",
-        "pPoints": "Project Points",
-        "Vision": "Vision"
-    },
-    "record": "Record",
-    "record_done": "Motion recording is finished",
+    "rebooting": "Rebooting softMC...",
+    "title": "softMC Tools",
+    "updating": "Updating System Software",
     "restore": {
-        "restoring": "Restoring system from file",
-        "success": "System restored successfully!",
-        "home": "Home",
-        "insert_chart": "Motion Dashboard",
-        "insert_comment": "Program editor",
-        "3d_rotation": "3D Simulator",
-        "touch_app": "Teach",
-        "settings": "System Configration",
-        "playlist_play": "Task Manager",
-        "apps": "softMC Tools",
-        "error": "Error History",
-        "list": "Log",
-        "help_outline": "Help"
+      "default": "Default",
+      "desc": "Restore softMC to Factory State",
+      "msg": "This will also reset the calibration parameters. Robot DH parameters and Mastering parameters must be reconfigured manually after the system is restored.",
+      "robot": "Restore to the specified Robot",
+      "title": "Factory Restore"
+    }
+  },
+  "are_you_sure": "Are you sure?",
+  "arr": "Array",
+  "arr_size": "Array Size",
+  "one_dimension_size": "One dimension size",
+  "two_dimension_size": "Two dimension size",
+  "dimension": "Dimension",
+  "enter_integer": "Enter a positive integer",
+  "back": "Go Back",
+  "base": "Robot Base",
+  "bases": "Robot Bases",
+  "before_nav_dialog": {
+    "title": "Changes not saved",
+    "msg": "This screen contains unsaved data. If you leave now, the changes will not be saved. Are you sure you want to leave?",
+    "yes": "DISCARD CHANGES",
+    "no": "CANCEL"
+  },
+  "binary": "Binary",
+  "blending": {
+    "continous": "Continous Path",
+    "method": "Blending Method",
+    "none": "None",
+    "overlap": "Motion Overlap",
+    "superPosition": "SuperPosition"
+  },
+  "button": {
+    "abort": "ABORT",
+    "add": "ADD",
+    "back": "BACK",
+    "calibrate": "CALIBRATE",
+    "cancel": "CANCEL",
+    "change": "CHANGE",
+    "close": "CLOSE",
+    "confirm": "CONFIRM",
+    "copy": "CREATE COPY",
+    "create": "CREATE",
+    "delete": "DELETE",
+    "delete_selected": "DELETE SELECTED",
+    "discard": "DISCARD",
+    "edit": "EDIT",
+    "finish": "FINISH",
+    "insert": "INSERT",
+    "login": "LOGIN",
+    "logout": "LOGOUT",
+    "move": "MOVE",
+    "moves": "MOVES",
+    "next": "NEXT",
+    "ok": "OK",
+    "open": "OPEN",
+    "overwrite": "OVERWRITE",
+    "previous": "PREVIOUS",
+    "record": "RECORD",
+    "refresh": "REFRESH",
+    "rename": "RENAME",
+    "restore": "RESTORE",
+    "save": "SAVE",
+    "select_file": "SELECT FILE...",
+    "send": "SEND",
+    "set_current": "SET AS CURRENT",
+    "teach": "TEACH",
+    "update": "UPDATE",
+    "upload": "UPLOAD",
+    "reset": "RESET",
+    "verify": "VERIFY",
+    "apply": "APPLY",
+    "no": "NO",
+    "yes": "YES",
+    "excute": "Execute",
+    "dropAdd": "Add",
+    "dropCancel": "Cancel"
+  },
+  "options": {
+    "none": "None"
+  },
+  "calibrate": "Calibrate",
+  "cartesian": "Cartesian",
+  "changeError": "An error occurred, changes not saved",
+  "changeOK": "Changes saved",
+  "channel": {
+    "tab_name": "Channel Configuration",
+    "instance": "Instance"
+  },
+  "checkbox_enable": "Allow selection",
+  "circleCenter": "CircleCenter",
+  "circlePoint": "CirclePoint",
+  "clear_msgs": "Clear messages",
+  "close": "Close",
+  "cloud": {
+    "na": "This feature is not available in the cloud, only on real softMC."
+  },
+  "connected": "Connected",
+  "connecting": "Connecting",
+  "copy": "Copy",
+  "cut": "Cut",
+  "dashboard": {
+    "charts": {
+      "2d": "X/T Graph",
+      "3d": "XYZ Graph"
     },
-    "robot": "Robot",
-    "robots": {
-        "axes": "Robot Axes",
-        "battery": {
-            "masteringAck": "CONFIRM MASTERING DONE",
-            "status": "Battery Status"
-        },
-        "brakes": {
-            "btnStart": "START BRAKE TEST",
-            "dialog": {
-                "title": "Brake Test",
-                "msg": "The robot will perform subtle movements to test the brakes. Make sure there are no people in the proximate vicinity of the robot.",
-                "yes": "START TEST NOW",
-                "no": "CANCEL"
-            },
-            "title": "Brakes Test"
-        },
-        "btnChange": "CHANGE ROBOT",
-        "btnSetCurrent": "SET CURRENT",
-        "bus": "Bus Type",
-        "disp": "Mastering",
-        "max-payload": "Max Payload",
-        "mcu": {
-            "fan": "MCU Fan",
-            "fan-threshold": "MCU Fan Threshold",
-            "threshold": "Threshold"
-        },
-        "model": "Model",
-        "name": "Name",
-        "no-axes": "No axes found",
-        "no-model": "No models found",
-        "no-series": "No series found",
-        "params": "Robot Parameters",
-        "part": "Part Number",
-        "select": "Select a Robot",
-        "selected": "Selected Robot",
-        "series": "Series",
-        "title": "System",
-        "type": "Robot Type",
-        "updating": "Updating Robot Configuration",
-        "reference": {
-            "title": "Mastering by reference point"
-        },
-        "vord": {
-            "title": "Velocity Override",
-            "vmax": "Vmax Override"
-        },
-        "mastering": {
-            "cancelTitle": "Cancel mastering process?",
-            "cancelMsg": "Do you really want to cancel mastering, all calibrated data will lost?",
-            "cancelWarm": "Cannot go to fist wizard because reset original failed.",
-            "previousWarm": "Cannot go to previous because reset original failed.",
-            "leaveMsg": "Do you really want to leave this page, all calibrated data will lost?",
-            "masterZeroWarm": "Master zero failed!",
-            "masterFinalWarm": "Master final failed!",
-            "recordPointWarm": "Record point failed!",
-            "masterLeftRightWarm": "Master left right failed!",
-            "moveToRefWarn": "Move to reference point failed!",
-            "mainHead": "Main",
-            "axis": "Axis",
-            "position": "Position",
-            "offset": "Offset",
-            "j": "J",
-            "converse": "Converse",
-            "refPoint": "Reference Point",
-            "refError": "Reference point is required.",
-            "basicMaster": "Basic Mastering",
-            "enhancedMaster": "Enhanced Mastering (J2 only)",
-            "selectJoint": "Select joints",
-            "selectJointH": "This mastering will get back to the previously saved offset.",
-            "pickJoints": "Pick the joint/joints you want to calibrate.",
-            "all": "All",
-            "basicConfirm": "Basic master confirm",
-            "emjh": "Enhanced Master: Joint",
-            "emjsh1": "This mastering will set J2's offset to the actual mechanical offset.",
-            "emjsh2": "Please ensure all the joints have been mastered by basic master.",
-            "j20": "Jog to zero",
-            "bmj": "Basic Master: Joint",
-            "bmjsh": "Please ensure the joint/joints to be mastered are at zero pulse point",
-            "bmjsh2": "Please jog the robot into the near point of the marked point.",
-            "bmjsh3": "Please move the robot to the reference point by command",
-            "pulsePosition": "pulse position of joint",
-            "pulsePositionContent1": "position aligned with Y-axis in Robot coordinate system",
-            "pulsePositionContent2": "position where Arms #1 and #2 are in a straight line (Regardless of the Joint #1 direction)",
-            "pulsePositionContent3": "upper limit position in motion range",
-            "pulsePositionContent4": "position where the flat surface (or groove in the up/down mechanical stop) on the shaft faces forward the tip of Arm #2",
-            "j2t": "Jog to target",
-            "emj2h": "Enhanced Master: Joint 2",
-            "emj2sh": "Please jog the robot to the reference point.",
-            "emj2sh2": "Please move the robot to the reference point with inverse pose by command.",
-            "emj2sh3": "Please exactly jog the robot to the reference point",
-            "j2r": "Jog to Reference",
-            "ipbc": "Inverse pose by command",
-            "complexJogTip": "If you have more complex situation, please go to terminal window to move the robot in the upper-right conner.",
-            "mbc": "Master by command",
-            "aj": "Accurately jog",
-            "ajsh": "Please accurately jog the robot to the reference point.",
-            "confirm": "Confirm",
-            "congratulations": "Congratulations!",
-            "congratulationsContent1": "Mastering for Joint",
-            "congratulationsContent2": "has been successfully finished, please move the robot to existent points to verify."
-        }
+    "err_file": "FILE NOT FOUND",
+    "err_move": "Error {{code}}: {{msg}}",
+    "err_target": "INVALID TARGET",
+    "external": {
+      "3d": "3D Graph",
+      "btnShow": "SHOW",
+      "name": "Recording Name",
+      "title": "Open Recording"
     },
-    "safety": {
-        "ack_tooltip": "Safety Acknowledge",
-        "title": "Safety Card"
+    "move_sent": "MOTION COMMAND SENT",
+    "new": {
+      "err": "Dashboard already open",
+      "select": "Select an axis or a group",
+      "subtitle": "Monitor, record, and move groups and axes",
+      "title": "Add an Axis/Group Dashboard"
     },
-    "select": "Select",
-    "simulative": "Simulated",
-    "simulator": "3D Simulator",
-    "simulator_screen": {
-        "cube": "Cube",
-        "custom": "User Object",
-        "cylinder": "Cylinder",
-        "disabled": "No available 3D model exists for the current robot - 3D Preview is disabled.",
-        "load_rec": "LOAD RECORDING...",
-        "loading": "Loading...",
-        "mode_live": "Live Mode",
-        "prop": "Property",
-        "rec_close": "CLOSE RECORDING",
-        "record": "Record Motion",
-        "robot": "Robot",
-        "scene": "Scene",
-        "simulation": "Scene",
-        "sphere": "Sphere",
-        "stop": "Stop recording",
-        "val": "Value",
-        "background": "Background",
-        "trace": "Trace"
+    "new-param": {
+      "title": "Monitor a New Parameter"
     },
-    "softMC_log": "softMC Log",
-    "softMC User": "softMC User",
-    "standby": "Stand by, this process may take a few minutes...",
-    "stat": {
-        "err_critical": {
-            "title": "Critical Error",
-            "message": "Can't set TP MODE to A... {{appName}} will now logout."
-        },
-        "err_init": {
-            "title": "System Initialization Error",
-            "msg": "Init error ({{result}}) - Contact support for help."
-        }
+    "record": {
+      "btnStart": "START RECORDING",
+      "buttons": {
+        "compare": "COMPARE (SIDE BY SIDE)...",
+        "compare_same": "COMPARE (ON CHART)...",
+        "derivative": "DERIVATIVE...",
+        "downloadCSV": "DOWNLOAD CSV FILE...",
+        "downloadRec": "DOWNLOAD REC FILE..."
+      },
+      "empty": "No open recordings.",
+      "recorded": "Recorded Data",
+      "title": "Start a New Recording",
+      "type": {
+        "2d": "X/T",
+        "2d-a": "XY",
+        "3d": "XYZ"
+      }
     },
-    "status": "Status",
-    "string": "String",
-    "strings": "Strings",
-    "success": "Success!",
-    "system_state": {
-        "1000": "ACTIVE",
-        "loading": "Initializing system...",
-        "state": "System State"
-    },
-    "tabs": {
-        "blockly": "Blockly Graphic Programming",
-        "configuration": "System Configuration",
-        "dashboard": "Dashboards",
-        "editor": "Project Editor",
-        "help": "Help",
-        "history": "Error History",
-        "home": "Home",
-        "log": "Log",
-        "log_book": "Log Book",
-        "simulator": "3D Simulator",
-        "task": "Task Manager",
-        "teach": "Teach",
-        "tools": "softMC Tools"
-    },
-    "targetPoint": "TargetPoint",
-    "tasks": {
-        "display": "Display",
-        "idle": "Idle Task",
-        "kill": "Kill Task",
-        "lib": "Libraries",
-        "lib_g": "Global Libraries",
-        "name": "Task Name",
-        "prg": "Programs",
-        "priority": "Priority",
-        "reset": "RELOAD SYSTEM",
-        "run": "Run Task",
+    "trace": {
+      "remove_all": "Remove All",
+      "module_label": "Module",
+      "available_trigger": "Available Triggers",
+      "selected_trigger": "Selected Triggers",
+      "available_channel": "Available Channels",
+      "selected_channel": "Selected Channels",
+      "no_trace_choosed_tip": "No module available. Select a trace in COMMON TAB first.",
+      "common": {
+        "tab_name": "Common",
+        "trace_name": "Trace Name",
+        "duration": "Duration",
+        "rate": "Recording Rate",
         "state": "State",
-        "unload": "Unload Task",
-        "user": "User Tasks",
-        "background": "Background Tasks",
         "state_not_ready": "Trace ended",
         "state_ready": "Wait",
         "state_traceing": "Triggered",
@@ -1480,176 +244,1453 @@
         "name_exist": "Name already exists.",
         "delete_trace": "Delete trace {{titlePara}}?",
         "delete_trace_msg": "All the configration of current trace will be lost.",
-        "trace_name_tip": "Trace name allow only letters, numbers or '_' and at most 32 characters."
-    },
-    "trigger": {
+        "trace_name_tip": "Name must begin with a letter, include only letters, numbers or _, and not exceed 32 characters."
+      },
+      "trigger": {
         "tab_name": "Trigger"
-    },
-    "channel": {
+      },
+      "channel": {
         "tab_name": "Channel Configuration",
         "instance": "Instance"
+      }
     },
-    "teach": "Teach",
-    "teach_var": "Teach {{name}}?",
-    "terminal": "Terminal",
-    "terminal_restricted": "Terminal is not available for privilege level \"{{user}}\"",
-    "time_update": "softMC Date and Time is synced",
-    "tool": "Tool",
-    "tool_calib": {
-        "calibrate_tool": "CALIBRATE TOOL",
-        "calibrate_w_tool": "CALIBRATE WITH TOOL",
-        "calibrate_wo_tool": "CALIBRATE WITHOUT TOOL",
-        "multi": "Multi",
-        "multi_scara": "XYZ 3-Point",
-        "pnts": "Points added",
-        "single": "Single",
-        "calibrate_result": "Calibration Result",
-        "isApplyDataToTool": "Do you want to apply the following tool data for Tool",
-        "current": "current",
-        "new": "new",
-        "delta": "delta",
-        "error": "Error",
-        "calibrationSuccess": "Calibration Success.",
-        "resultOutOfScope": "The determined calculation error exceeds the allowable limit 5mm.\nThe use of this tool data can lead to undesirable behaviour.",
-        "apply": "APPLY",
-        "cancel": "CANCEL"
+    "tab1": "Motion Dashboards",
+    "tab2": "Recordings",
+    "tab3": "Trace"
+  },
+  "dataScreen": {
+    "del": "DELETE {{name}}",
+    "delete": {
+      "msg": "This cannot be undone.",
+      "title": "Delete Variable {{name}}?",
+      "title_multi": "Delete {{num}} variables?"
     },
-    "tools": "Tools",
-    "tour": [
-        {
-            "title": "Getting Started",
-            "content": "In this demo, we will load and run your first program. Click the <b>NEXT</b> button to continue."
-        },
-        {
-            "title": "Project Editor",
-            "content": " Click on <b>Project Editor</b> (the highlighted button) in the <b>main menu</b> to enter the Project Editor screen."
-        },
-        {
-            "title": "Menu Collapse",
-            "content": "In order to save screen space, click the <b>MENU EXPAND/COLLAPSE button</b> in the app's <b>toolbar</b>."
-        },
-        {
-            "title": "Project Editor",
-            "content": "In this demo we will go through the basic elements of the project editor."
-        },
-        {
-            "title": "This is the Project Tree",
-            "content": "The <b>Project Tree</b> contains all the programs, libraries, data and configuration files for your project."
-        },
-        {
-            "title": "Apps",
-            "content": "A project can contain <b>many applications</b>, listed under the <b>\"Apps\"</b> folder."
-        },
-        {
-            "title": "App Structure",
-            "content": "Each app has a <b>PROGRAM</b> file, a <b>DATA</b> file, and <b>LIBRARY</b> files."
-        },
-        {
-            "title": "Program Editor",
-            "content": "This is where you'll write your code. softMC applications are written in the <b>MC-Basic</b> language."
-        },
-        {
-            "title": "Loading an App",
-            "content": "When you're done writing your code, use the <b>SAVE & LOAD</b> button to save your code and then load it to the controller."
-        },
-        {
-            "title": "App Status",
-            "content": "Once the app is loaded, its <b>status</b> would change to <b>READY</b>."
-        },
-        {
-            "title": "Running the app",
-            "content": "To run the app, <b>click</b> on the <b>RUN</b> button and the app will start running."
-        },
-        {
-            "title": "Note #1",
-            "content": "While an app is loaded, you <b>CAN'T edit</b> it (notice how the editor is greyed out)."
-        },
-        {
-            "title": "Note #2",
-            "content": "You can monitor the progress of the app by looking at the <span style=\"color:green;\"><b>green lines</b></span> in the editor."
-        },
-        {
-            "title": "3D Preview",
-            "content": "You can use the <b>mouse's left and right</b> buttons to <b>rotate/pan</b> the 3D view. Use the <b>WHEEL</b> button to zoom in/out."
-        },
-        {
-            "title": "Toggle 3D Preview",
-            "content": "You can use this <b>toggle button</b> in order to show/hide the 3D simulator window."
-        },
-        {
-            "title": "Demo Completed!",
-            "content": "Congratulations, you just ran your first MC-Basic program!<p>To learn even more, visit the <b>HELP screen</b> (located at the bottom of the main menu).</p>"
-        }
+    "no-var": "No Variable is selected"
+  },
+  "date": "Date",
+  "date_format": "[MM/DD/YYYY]",
+  "decimal": "Decimal",
+  "delete": "Delete",
+  "derivative": "Derivative",
+  "derivative_deg": "Degree",
+  "diagnostics": {
+    "devices": "Devices State",
+    "master": "Master State",
+    "mcu": "MCU",
+    "no-data": "Data not available. Load TP libraries and try again.",
+    "title": "Diagnostics"
+  },
+  "Belt": "Belt",
+  "Spline grease": "Spline grease",
+  "Encoder battery": "Encoder battery",
+  "hours": "hours",
+  "km": "km",
+  "Ah": "Ah",
+  "maintenance": {
+    "Belt": "皮带",
+    "input": {
+      "tab_name": "Maintenance Input",
+      "maintenance_type": "Maintenance Module",
+      "used_life": "Used Life",
+      "apply_to_type": "Apply to type",
+      "person_company": "Person/Company",
+      "order_number": "Order Number",
+      "comment": "Comments",
+      "save": "Save",
+      "saveInput": "Maintenance Handbook",
+      "saveMsg": "Do you want to save the changes?",
+      "nameRequire": "Person/Company is required",
+      "ordernum": "OrderNum is required",
+      "commentRequire": "Comment is required",
+      "used_life_req_error": "Used Life is required",
+      "used_life_req_max":"Maximum input limit {{max}}"
+    },
+    "history": {
+      "tab_name": "Maintenance History",
+      "maintenance_type": "Maintenance Module",
+      "date": "Date",
+      "person_company": "Person/Company",
+      "surplus_life": "Surplus Life",
+      "order_no": "Order Number",
+      "comment": "Comments"
+    },
+    "information": {
+      "tab_name": "Maintenance Information",
+      "maintenance_type": "Maintenance Module",
+      "performed_on": "Performed Time",
+      "surplus_life": "Surplus Life"
+    },
+    "title": "Maintenance Handbook"
+  },
+  "dialogs": {
+    "jogSettings": "Jog Settings"
+  },
+  "disable": "Disable",
+  "disabled": "Disabled",
+  "disconnect": {
+    "title": "Connection to softMC was lost",
+    "msg": "Check your network connection."
+  },
+  "disconnected": "Disconnected",
+  "dismiss": "DISMISS",
+  "domain": "Application",
+  "done": "Done",
+  "double": "Double",
+  "doubles": "Doubles",
+  "duration": "Duration",
+  "edit": "Edit",
+  "element": "Element",
+  "empty_list": "List is empty",
+  "enable": "Enable",
+  "error": {
+    "conn_mc": "Can't connect to softMC",
+    "conn_ws": "Can't establish a websocket connection",
+    "err": "Error",
+    "estop": "E-STOP IS PRESSED",
+    "field_too_short": "Input is too short",
+    "firmware_update": {
+      "title": "System Software Update Failed",
+      "msg": "Couldn't install the package on the controller."
+    },
+    "invalid_etag": "It seems you recently updated ControlStudio+ and/or the softMC web server. Press CTRL + SHIFT + R to reload this page.",
+    "invalid_etag_tablet": "It seems you recently updated ControlStudio+ and/or the softMC web server. Click the REFRESH button to reload this page.",
+    "invalid_feature": "Invalid feature",
+    "invalid_file_name": "Must begin with a letter, include only letters, numbers or _, and not exceed 32 characters",
+    "invalid_full_name": "Must include first name and last name",
+    "invalid_regex": "Invalid input",
+    "invalid_username": "Must include letter, number or _",
+    "invalid_username2": "This username is reserved",
+    "invalid_rec_motion": "Invalid motion recording file",
+    "invalid_var_name": "Must begin with a letter, include only letters, numbers or _, and not exceed 32 characters",
+    "invalid_webserver": "Use web server {{ver}} (current is {{current}})",
+    "mismatch_pass": "Password does not match the previous field",
+    "orientation": "ControlStudio+ works in Landscape mode only.",
+    "tp": "Couldn't load TP Libraries, check console log for more details...",
+    "tp_tablet": "TP Library was not found. Reboot the controller and try again."
+  },
+  "errorHistory": {
+    "button": {
+      "clear": "CLEAR ERROR HISTORY",
+      "clear_drive": "CLEAR DRIVE FAULT"
+    }
+  },
+  "files": {
+    "backup": "CREATE BACKUP",
+    "confirm_delete": "The selected files will be deleted permanently.",
+    "confirm_upload": "Notice: The selected files will OVERWRITE existing files.",
+    "content": "File Contents",
+    "delete": "DELETE FILE(S)",
+    "dir_name": "Folder Name",
+    "download": "DOWNLOAD FILE(S)",
+    "err_delete": "ERROR: NOT ALL FILES WERE DELETED",
+    "err_ext": "INVALID EXTENSION IN {{name}}",
+    "err_permission": "INVALID PERMISSION",
+    "err_upload": "ERROR UPLOADING {{name}}",
+    "ext": "Extension",
+    "modified": "Last Modified",
+    "name": "File Name",
+    "names": "File Names",
+    "no_file": "No File Selected",
+    "open": "Open File",
+    "search_in": "Search In",
+    "success_delete": "Success. All files were deleted.",
+    "success_upload": "Success. All files were uploaded.",
+    "tree": "Controller Files",
+    "upload": "UPLOAD TO MC..."
+  },
+  "filter": "Filter",
+  "form_validation": {
+    "percent": "Value must be between 0 and 100",
+    "range": "Invalid Range"
+  },
+  "frame": "Motion Frame",
+  "frame_jog": "Jog Frame",
+  "frames": {
+    "BASE": "BASE",
+    "calibration": {
+      "origin": "Origin",
+      "posX": "Position X",
+      "posY": "Position Y",
+      "posXY": "Position XY",
+      "set": "Set as current",
+      "title": "Calibrate"
+    },
+    "create": [
+      "CREATE TOOL",
+      "CREATE BASE",
+      "CREATE MACHINE TABLE",
+      "CREATE WORK PIECE"
     ],
-    "trivia": [
-        "You can record the robot's motion by pressing the RECORD button on the main app toolbar.",
-        "You can add a new application to the project by right clicking the Apps folder.",
-        "You can EXPAND or COLLAPSE the application's toolbar by clicking on the arrow button in the app toolbar.",
-        "You can CLEAR all commands from the terminal by using the command CLEAR in the terminal.",
-        "You can UPLOAD a new PROFILE PICTURE by expanding the app's side menu, clicking the profile picture, and choosing a photo."
+    "delete": {
+      "msg": "This cannot be undone.",
+      "title": "Delete {{name}}?",
+      "title_multi": "Delete {{num}} items?"
+    },
+    "JOINT": "JOINT",
+    "name": [
+      "Tool Name",
+      "Base Name",
+      "Machine Table Name",
+      "Work Piece Name"
     ],
-    "trivia_title": "Did you know?",
-    "type": "Type",
-    "userManager": {
-        "btnCreate": "CREATE USER",
-        "btnEdit": "EDIT USER",
-        "delete": {
-            "title": "Are you sure?",
-            "msg": "The selected users will be deleted permanently.",
-            "yes": "DELETE",
-            "no": "CANCEL",
-            "success": "SELECTED USERS WERE DELETED",
-            "fail": "ERROR: ONE OR MORE USERS COULD NOT BE DELETED",
-            "fail2": "ERROR: ADMIN USER CANNOT BE DELETED",
-            "err": "INVALID REQUEST"
-        },
-        "err": "Error: User already exists or invalid parameters sent",
-        "err_username_reserved": "Reserved username. Choose another one.",
-        "full": "Full Name",
-        "new": "New User",
-        "permission": "Permission",
-        "profilePic": "Profile Picture",
-        "title": "User Manager",
-        "username": "Username"
+    "new": [
+      "Add Tool",
+      "Add Base",
+      "Add Machine Table",
+      "Add Work Piece"
+    ],
+    "none": "No {{frameType}} is selected",
+    "TOOL": "TOOL",
+    "WORLD": "WORLD"
+  },
+  "gap": "Gap",
+  "gap_units": "Samples",
+  "grippers": {
+    "btnCycle": "CYCLE",
+    "btnTest": "TEST",
+    "close": "Close Gripper",
+    "cycle": "Cycle Test",
+    "cycle_time": "Cycle Time",
+    "dout1": "Primary output",
+    "dout2": "Secondary output",
+    "ef": "End Effector",
+    "fb1": "Primary feedback",
+    "fb2": "Secondary feedback",
+    "grp": "Gripper",
+    "new_ef": "New End Effector",
+    "new_grp": "New Gripper",
+    "open": "Open Gripper",
+    "pay_ef": "End Effector Payload",
+    "pay_item": "Item Payload",
+    "set": "Set Gripper",
+    "sleep": "Timing",
+    "test": "Test Gripper",
+    "use_tool": "Use Tool"
+  },
+  "gui": {
+    "dark": "Use Dark Mode",
+    "theme": {
+      "title": "Theme",
+      "subtitle": "Change the appearance of ControlStudio+"
+    }
+  },
+  "hello": "Hello",
+  "help": {
+    "bug": "Report a bug",
+    "bug_body": "Attach the downloaded ZIP file and other relevant files to this email",
+    "bug_desc": "Describe your bug/issue here, including steps to reproduce...",
+    "code": "Code Examples",
+    "contact": "Contact Support",
+    "downloads": "Downloads",
+    "keys": "Keyboard Shortcuts",
+    "shortcuts": {
+      "desc_autocomplete": "Show Autocomplete options",
+      "desc_delete": "Delete selected object",
+      "desc_duplicate": "Duplicate selected object",
+      "desc_find": "Find",
+      "desc_gotoLine": "Go to line",
+      "desc_replace": "Replace",
+      "desc_terminal_down": "Go to next command",
+      "desc_terminal_up": "Go to previous command",
+      "editor": "Program Editor",
+      "terminal": "Terminal",
+      "fold_unfold": "Fold/Unfold current block",
+      "toggle_comment": "Comment/Uncomment line"
     },
-    "utils": {
-        "err_reset": "System Reset FAILED: {{result}}",
-        "success": "System Reset Success"
+    "soon": "Coming Soon",
+    "title": "softMC Help Center",
+    "tour": "Tour",
+    "tourDisabled": "Tour is disabled because TP.LIB is not loaded",
+    "wiki": "softMC Wiki",
+    "activation": {
+      "title": "Activation",
+      "xpert": "KUKA Xpert",
+      "captchaPlaceholder": "Input captcha",
+      "incorrectCaptchaTip": "Captcha is incorrect.",
+      "lengthErr": "Captcha must be 6 characters",
+      "requireErr": "Captcha is required"
+    }
+  },
+  "hexadecimal": "Hexadecimal",
+  "home": {
+    "addFeature": {
+      "add": "Add Feature",
+      "code": "License Code",
+      "desc": "Feature Description",
+      "installing": "Installing new feature",
+      "name": "Feature Name",
+      "success": "Feature was installed successfuly",
+      "title": "Add a New Feature"
     },
+    "axes_max": "Max. Axes",
+    "axes_real": "Real Axes",
+    "chart_ram": [
+      "Used RAM",
+      "Free RAM"
+    ],
+    "chart_space": [
+      "Used Space",
+      "Free Space"
+    ],
+    "features": "Features",
+    "groups": "Groups Configuration",
+    "platform": "Platform",
+    "port": "Connected on port",
+    "software": "Software",
+    "system": "System",
+    "ver": "Version",
+    "virtual_controller": "VIRTUAL CONTROLLER",
+    "virtual_tooltip": "This controller runs on VirtualBox",
+    "welcome": "Welcome"
+  },
+  "index": "Index",
+  "inputs": {
+    "slider": "Slider",
+    "slider_max": "Slider Min. Value",
+    "slider_min": "Slider Min. Value",
+    "text": "Text Box",
+    "toggle": "On/Off Switch",
+    "type": "Input Type"
+  },
+  "topology": {
+    "title": "Device Manager",
+    "errTip": "EtherCAT is not in operation mode. Make sure physical devices are functioning, then try Reset All in Task Manager.",
+    "exTip": "EXPAND",
+    "colTip": "COLLAPSE",
+    "controller": "Controller",
+    "driveBus": "Drive Bus",
+    "extensionBus": "Extension Bus"
+  },
+  "io": {
+    "standardView": "Standard View",
+    "hexadecimal": "Hexadecimal Values",
+    "invalidName": "Invalid Name",
+    "addView": "Add View",
+    "delView": "Del View",
+    "addRow": "Add Row",
+    "delRow": "Del Row",
+    "allInputs": "All Inputs",
+    "allOutputs": "All Outputs",
+    "driveIoInputs": "Drive I/O Inputs",
+    "driveIoOutputs": "Drive I/O Outputs",
+    "userIoInputs": "User I/O Inputs",
+    "userIoOutputs": "User I/O Outputs",
+    "bit": "Bit",
+    "byte": "Byte",
+    "word": "Word",
+    "status": "Status",
     "value": "Value",
-    "values": "Values",
-    "variables": {
-        "btn_create": "CREATE VARIABLE",
-        "name": "Variable Name",
-        "new": "Add Variable",
-        "none_exist": "No variables on this list",
-        "type": "Variable Type",
-        "get_current": "GET CURRENT",
-        "cannot_use_jog_tip": "Jog panel is disabled!"
+    "label": "Label",
+    "type": "Type",
+    "port": "Port",
+    "dialogTitle": "Are you sure?",
+    "dialogMsg": "The selected custom view will be deleted permanently.",
+    "dialogYes": "DELETE",
+    "dialogNo": "CANCEL",
+    "inputBit": "Input Bit",
+    "inputByte": "Input Byte",
+    "inputWord": "Input Word",
+    "outputBit": "Output Bit",
+    "outputByte": "Output Byte",
+    "outputWord": "Output Word"
+  },
+  "interface": {
+    "title": "User Interface"
+  },
+  "invert": "Invert",
+  "ios": {
+    "inputs": "Inputs",
+    "mapping": "I/O Mapping",
+    "outputs": "Outputs",
+    "sim_tooltip": "System I/Os are always simulated",
+    "table": {
+      "0": "Id",
+      "1": "State",
+      "2": "Name",
+      "3": "Description",
+      "4": "Simulated"
     },
-    "version": {
-        "releaseNote": "Release Note",
-        "userLicense": "User License",
-        "softMCDes": "This is soft mc",
-        "GUIDes": "This is GUI",
-        "webServerDes": "This is web server",
-        "successDialogTitle": "Success!",
-        "successDialogMsg": "The OS update was successful. The new version is: ",
-        "errorDialogTitle": "Failed!",
-        "errorDialogMsg": "The OS update has failed, please reinstall the old version: ",
-        "releaseNoteTitle": "ControlStudio+ Release Note"
+    "updating": "Updating I/O modules",
+    "updating_confirm": "This will reboot softMC. Make sure you have saved all your changes before updating the I/O modules.",
+    "updating_succuss": "I/O modules updated successfuly"
+  },
+  "jogScreen": {
+    "menu": [
+      "Tool Align",
+      "Teach"
+    ],
+    "percision": "Precision",
+    "settings": "Jog Settings",
+    "speed": "Speed",
+    "speed_inc": {
+      "s": "Small",
+      "m": "Medium",
+      "l": "Large",
+      "xl": "Extra Large"
     },
-    "watch": {
-        "context": "Context",
-        "name": "Variable Name",
-        "title": "Watch & Record"
+    "tabs": {
+      "jog": "Jog",
+      "lbn": "Lead By Nose",
+      "handguiding": "Hand Guiding"
     },
-    "websocket": {
-        "err_es_busy": {
-            "title": "Connection Failed",
-            "message": "All available entry stations are busy."
-        }
+    "tool_align": "Tool Align",
+    "var": "Variable",
+    "var_none": "No variables"
+  },
+  "handGuiding": {
+    "toggleMode": "Enable S-FREE Mode",
+    "toggleJ3J4": "Release brakes J1 + J2"
+  },
+  "joint": "Joint",
+  "joints": "Joints",
+  "lang": {
+    "cmn": "简体中文",
+    "en": "English",
+    "subtitle": "Set the language for the GUI and library messages",
+    "selected": "Selected Language"
+  },
+  "language": "Language",
+  "lbn": {
+    "err_timeout": "Error: Timeout Reached"
+  },
+  "legal": {
+    "terms": "Terms of Use",
+    "title": "Legal",
+    "thirdParty": "Third Party Open-Source Libraries"
+  },
+  "license": {
+    "accept": "I AGREE TO THE ABOVE TERMS AND CONDITIONS",
+    "reject": "REJECT",
+    "title": "ControlStudio+ License Agreement"
+  },
+  "loading": "Loading",
+  "location": "Location",
+  "locations": "Locations",
+  "log": {
+    "file_del": "Deleted a file",
+    "firmware": "Updated system software with",
+    "login": "{{name}} has logged in",
+    "upload": "Uploaded file",
+    "user_del": "Deleted user",
+    "user_edit": "Edited user",
+    "user_new": "created a new user"
+  },
+  "login": {
+    "mc_offline": "Waiting for softMC to connect"
+  },
+  "long": "Long",
+  "longs": "Longs",
+  "main": {
+    "errJog": {
+      "coos": "Coordinates service is OFFLINE",
+      "lib": "Can't Jog - System isn't initialized",
+      "project": "Can't Jog while project app is loaded"
     },
-    "wp": "Work Piece",
-    "wps": "Work Pieces"
+    "jogControls": "Jog Controls",
+    "jogControlsToggle": "Toggle Jog Controls",
+    "no_robot": "No robot is selected",
+    "tour": {
+      "btnFinish": "END DEMO",
+      "err": {
+        "0": "Follow instructions in this step to proceed to next step.",
+        "1": "No project is loaded",
+        "2": "Project DEMO must be loaded",
+        "3": "Missing app: CIRCLE"
+      },
+      "msg": "Do you want to watch a guided demo now?",
+      "msg2": "OK, you can watch demo any time from the Help screen.",
+      "no": "NO, THANKS",
+      "title": "Welcome to ControlStudio+",
+      "yes": "YES, LET'S GO!"
+    }
+  },
+  "message_log": "Message Log",
+  "mode_debug": "DEBUG MODE",
+  "mode_remote": "REMOTE MODE",
+  "mode_selector": "Mode",
+  "motion_element": "Motion Element",
+  "motion_elements": "Motion Elements",
+  "motion_elements_empty": "No motion elements",
+  "mt": "Machine Table",
+  "mts": "Machine Tables",
+  "na": "N/A",
+  "name": "Name",
+  "offline": "OFFLINE",
+  "online": "ONLINE",
+  "open": "Open",
+  "optional": "Optional",
+  "other": "Other",
+  "pallet": "Pallet",
+  "pallets": {
+    "create": "Create a new Pallet",
+    "delete": {
+      "title": "Delete Pallet {{name}}?",
+      "msg": "This cannot be undone."
+    },
+    "err_item_count": "Invalid item count",
+    "name": "Pallet Name",
+    "selected": "Selected Pallet",
+    "type": "Pallet Type",
+    "type_CUSTOM": "Custom",
+    "type_GRID": "Grid",
+    "wizard": {
+      "3d_disable": "Too many items - 3D Preview is disabled",
+      "app": "Approach",
+      "app_dir": "Approach Direction",
+      "button": {
+        "teach_entry": "TEACH ENTRY POSITION",
+        "teach_origin": "TEACH ORIGIN",
+        "teach_posX": "TEACH POSITION X",
+        "teach_posY": "TEACH POSITION Y",
+        "teach_posXY": "TEACH POSITION XY"
+      },
+      "calibrated": "Calibrated",
+      "calibrated_not": "Not calibrated",
+      "calibrated_origin": "Calibrated Origin",
+      "conf": "Configuration Flags",
+      "curr_index": "Current item index",
+      "curr_pos": "Current Position",
+      "dimensions_item": "Item Dimensions [mm]",
+      "dimensions_pallet": "Pallet Dimensions [mm]",
+      "dir": "Direction",
+      "done_title": "Pallet setup completed",
+      "entry": "Entry",
+      "entry_pos": "Entry Position",
+      "err_incomp_robot": "Incompatible Robot",
+      "exceed": "Can exceed pallet bounds",
+      "index_custom": "Custom",
+      "index_empty": "Empty",
+      "index_full": "Full",
+      "invalid_val": "Select pallet current index",
+      "level": "Level",
+      "levels": "Levels",
+      "levels_in_pallet": "Levels in pallet",
+      "num_of_items": "Number of items",
+      "odd_even": "Different Odd/Even levels",
+      "offH": "Horizontal Offset",
+      "offV": "Vertical Offset",
+      "order": "Order",
+      "origin": "Origin",
+      "origin_status": "Origin Status",
+      "posX": "Position X",
+      "posY": "Position Y",
+      "ret": "Retract",
+      "ret_dir": "Retract Direction",
+      "save": "Save changes to {{name}}?",
+      "step1": "General",
+      "step4": "Approach&Retract",
+      "sum_of": "Here's a summary of",
+      "title": "Pallet Wizard"
+    },
+    "wizard_open": "Open pallet wizard"
+  },
+  "parameter": "Parameter",
+  "parameters": "Parameters",
+  "password": "Password",
+  "password_confirm": "Confirm password",
+  "password_confirm_err": "Confirm password",
+  "password_err": "Wrong password",
+  "paste": "Paste",
+  "payloads": {
+    "advanced": "Advanced Mode",
+    "btn_create": "CREATE PAYLOAD",
+    "current": "Current values",
+    "delete_title": "Delete payload {{name}}?",
+    "delete_msg": "This cannot be undone.",
+    "done": "Payload identification succeeded",
+    "freq": "Frequencies",
+    "ident": {
+      "dialog": {
+        "title": "Caution",
+        "msg": "Payload Identification is about to begin. During this process, the robot will move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles.",
+        "yes": "START IDENTIFICATION",
+        "no": "CANCEL"
+      },
+      "finish": "Moving robot to the original position...",
+      "moving": "Moving robot to start position...",
+      "title": "Robot is now performing Payload Identification",
+      "start": "START IDENTIFICATION...",
+      "subtitle": "During this process, the robot will move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles."
+    },
+    "inertia": "Inertia",
+    "mass": "Mass",
+    "name": "Payload Name",
+    "new": "New Payload",
+    "offX": "Radius Offset",
+    "payload": "Payload",
+    "relative_pos": "Amplitude",
+    "start_pos": "Start Position",
+    "time": "Duration"
+  },
+  "projectCommands": {
+    "call": {
+      "title": "Insert Call Command",
+      "name": "Sub Name"
+    },
+    "circle": {
+      "title": "Insert Circle Command"
+    },
+    "delay": {
+      "time": "Time",
+      "title": "Insert Delay Command"
+    },
+    "dim": {
+      "title": "Insert Dim Command"
+    },
+    "if": {
+      "condition": "Condition",
+      "else": "Also add an \"Else\" statement",
+      "title": "Insert If Command"
+    },
+    "menu": {
+      "flow": "FLOW",
+      "grippers": "GRIPPERS",
+      "interpolation": "INTERPOLATION",
+      "motion": "MOTION",
+      "pallets": "PALLETS",
+      "payloads": "PAYLOADS",
+      "program": "PROGRAM",
+      "variables": "VARIABLES",
+      "vision": "VISION"
+    },
+    "move": {
+      "index_from": "From Index",
+      "index_to": "To Index",
+      "move": "Move To...",
+      "range": "Array Range",
+      "title_move": "Insert Move Command",
+      "title_moves": "Insert Moves Command"
+    },
+    "other": {
+      "title_attach": "Insert Attach/Detach command",
+      "title_disable": "Insert Disable command",
+      "title_doPass": "Insert DoPass command",
+      "title_en": "Insert Enable command",
+      "title_home": "Insert Home command",
+      "title_inRef": "Insert Input Reference",
+      "title_outRef": "Insert Output Reference",
+      "title_pick": "Insert Pick command",
+      "title_place": "Insert Place command",
+      "title_plt_entry": "Insert Move to Entry Position command",
+      "title_plt_index": "Insert Get Pallet Index command",
+      "title_plt_status": "Insert Get Pallet Status command",
+      "title_waitForMotion": "Insert WaitForMotion command"
+    },
+    "pallet_index": {
+      "title": "Set Pallet Index"
+    },
+    "proceed": {
+      "title": "Insert Proceed Command",
+      "type": "Proceed Type"
+    },
+    "sleep": {
+      "time": "Sleep Time",
+      "title": "Insert Sleep Command"
+    },
+    "stop": {
+      "title": "Insert Stop Command",
+      "type": "Stop Type"
+    },
+    "while": {
+      "title": "Insert While Loop",
+      "condition": "Condition"
+    },
+    "goHome": {
+      "title": "Insert GoHome Command",
+      "vCruisePh": "VScale (Optional)",
+      "numRange": "Enter a number in"
+    },
+    "jump": {
+      "title": "Insert Jump Command",
+      "titleA": "Insert",
+      "titleB": "Command",
+      "requireErr": "This field is required",
+      "motionPh": "Motion Element",
+      "departPh": "Depart Point",
+      "approachPh": "Approach Point",
+      "destPh": "Dest Frame",
+      "archPh": "Arch Number",
+      "limitZPh": "limit Z",
+      "blendingPh": "Blending Percentage",
+      "speedPh": "Speed",
+      "accelerationPh": "Acceleration",
+      "numRange": "Enter a number in",
+      "intRange": "Enter an integer in",
+      "advanced": "Advanced"
+    },
+    "ptSource": {
+      "title": "Insert SetPTSource Command",
+      "sourcePh": "Select PT Source",
+      "sourceDistance": "Distance",
+      "sourceTime": "Time",
+      "sourcePercentage": "Percentage"
+    },
+    "commandDialog": {
+      "commandTitle": "Insert {{command}} Command"
+    },
+    "jumpx": {
+      "target": "Target Point",
+      "ascending": "Ascending Point",
+      "descending": "Descending Point",
+      "motion": "Motion Element",
+      "arch": "Arch Number",
+      "limZ": "LimZ",
+      "blending": "Blending Percentage",
+      "vscale": "VScale",
+      "vtran": "Vtran",
+      "acc": "AScale",
+      "withPls": "Position Trigger",
+      "requireErr": "This field is required",
+      "numRange": "Enter a number in {{range}}",
+      "intRange": "Enter an integer in {{range}}",
+      "advanced": "Advanced"
+    },
+    "visionCommand": {
+      "jobNamePlaceHolder": "Job Name",
+      "jobNameRequiredErr": "Job Name is required",
+      "stationNamePlaceHolder": "Station Name",
+      "stationNameRequiredErr": "Station Name is required",
+      "timeoutPlaceHolder": "Timeout",
+      "timeoutPositiveErr": "Timeout must be a non-negative number",
+      "dimensionPlaceHolder": "Dimension",
+      "dimensionRequiredErr": "Dimension is required.",
+      "dataNumPlaceHolder": "Data Num",
+      "dataNumRequiredErr": "DataNum is required",
+      "asDataPlaceHolder": "As Data",
+      "asDataRequiredErr": "As Data is required",
+      "statusPlaceHolder": "Status",
+      "statusRequiredErr": "Status is required",
+      "errorPlaceHolder": "Error",
+      "errorRequiredErr": "Error is required",
+      "variablePlaceHolder": "Assigned To",
+      "configFilePathPlaceHolder": "Config File Path",
+      "configFilePathRequiredErr": "Config file path is required.",
+      "loadConfigFilePathError": "Load file failed.",
+      "Pixel_x": "Pixel_x",
+      "Pixel_y": "Pixel_y",
+      "Pixel_x_RequireErr": "Pixel_x is required",
+      "Pixel_y_RequireErr": "Pixel_y is required",
+      "Pos_x": "Pos_x",
+      "Pos_y": "Pos_y",
+      "Pos_x_RequireErr": "Pos_x is required",
+      "Pos_y_RequireErr": "Pos_y is required"
+    },
+    "createVar": "Add Variable",
+    "traceOn": {
+      "title": "Insert TraceOn Command",
+      "trace_holder": "Trace"
+    }
+  },
+  "projects": {
+    "ace": {
+      "bp_err": "Breakpoints can be inserted only on a loaded file",
+      "bp_lib": "Library breakpoints are not supported"
+    },
+    "btnCreate": "CREATE PROJECT",
+    "delete-dialog": {
+      "btn-delete": "DELETE SELECTED PROJECTS",
+      "input": "Select Projects to Delete",
+      "message": "The following projects will be removed from the system. This operation cannot be undone.",
+      "title": "Delete Projects"
+    },
+    "loaded": "Loaded",
+    "name": "Project Name",
+    "new": "New Project",
+    "notification": {
+      "at": "at",
+      "errMsg": "Problems were found in the following lines:",
+      "exception": "Exception at task {{task}}",
+      "none": "No compilation errors.",
+      "title": "Problems"
+    },
+    "open": "OPEN PROJECT",
+    "saved": "File Saved",
+    "select": "Select a Project",
+    "status": {
+      "-1": "Not Loaded",
+      "999": "Unknown State",
+      "1": "Running",
+      "2": "Stopped",
+      "4": "Error",
+      "5": "Terminated",
+      "7": "Ready",
+      "9": "Kill Start",
+      "10": "Killed",
+      "11": "Interrupted",
+      "99": "Loaded Library"
+    },
+    "time": "Time",
+    "toolbar": {
+      "app": "App",
+      "app_create": "CREATE APP",
+      "app_name": "App Name",
+      "task_name": "Task Name",
+      "autostart": "Run Project automatically",
+      "backup": "Backup",
+      "changing": "Changing project...",
+      "controller": "Controller",
+      "copy_name": "New name",
+      "create": "Create",
+      "del_prj": "Delete Project",
+      "del_prj_msg": "All the project files will be removed permanently.",
+      "del_prj_other": "Delete other Project",
+      "del_prj_title": "Delete project {{name}}?",
+      "dep": "Dependency",
+      "dep_create": "CREATE DEPENDENCY",
+      "dep_load": "Load Dependencies",
+      "dep_name": "Dependency Name",
+      "dep_unload": "Unload dependencies",
+      "dialog_conflict": {
+        "title": "Settings Conflict Detected",
+        "msg": "The project settings are different from the currently active settings. Which settings do you want to use?",
+        "yes": "CURRENT SETTINGS",
+        "no": "PROJECT SETTINGS"
+      },
+      "download": "Download",
+      "edit": "Edit",
+      "err_change": "Can't change current project",
+      "err_create": "Can't create project",
+      "err_import": "Import failed",
+      "err_import_file": "Invalid Project File",
+      "export": "Export",
+      "file": "File",
+      "file_name": "File Name",
+      "find": "Find",
+      "idle": "Idle",
+      "import": "Import",
+      "jtl": "Jump to Line",
+      "kill": "Kill & Unload",
+      "kill_only": "Kill",
+      "lib": "Library",
+      "lib_create": "CREATE LIBRARY",
+      "lib_name": "Library Name",
+      "menu_delete_files": "Delete selected",
+      "menu_download_files": "Download selected",
+      "new": "New",
+      "new_app": "New App",
+      "new_dep": "New Dependency",
+      "new_file": "New File",
+      "new_folder": "New Folder",
+      "new_lib": "New Library",
+      "new_bg_task": "New Background task",
+      "new_bg_task_name": "Task name",
+      "open": "Open",
+      "overwrite_file": {
+        "title": "Overwrite Existing File?",
+        "msg": "File {{name}} already exists. Do you want to overwrite it?"
+      },
+      "overwrite_prj": {
+        "title": "Overwrite Existing Project?",
+        "msg": "Project {{name}} already exists. Do you want to overwrite it with the imported project?"
+      },
+      "prg": "Program",
+      "redo": "Redo",
+      "remote_disable": "Disable Remote Mode",
+      "remote_enable": "Enable Remote Mode",
+      "rename": "Rename",
+      "rename_prj": "Rename Project",
+      "rename_prj_name": "New Project Name",
+      "replace": "Replace",
+      "restore": "Restore",
+      "run": "Run",
+      "run_prj": "Run Project",
+      "run_all_bg_tasks": "Run all BG tasks",
+      "save": "Save",
+      "save_as": "Save As",
+      "save_as_prj": "Save Project as...",
+      "save_load": "Save & Load",
+      "stop_prj": "Stop Project",
+      "stop_all_bg_tasks": "Stop all BG tasks",
+      "stp_into": "Step Into",
+      "stp_out": "Step Out",
+      "stp_over": "Step Over",
+      "undo": "Undo",
+      "unload": "Unload",
+      "upload": "Upload to softMC",
+      "vrate": "Project Velocity",
+      "Auxiliary": "Background Tasks",
+      "newBackgroundTask": "New Background Task"
+    },
+    "warning": "This will kill all tasks and libraries currently running."
+  },
+  "projectSettings": {
+    "ascale": "Joint Acceleration",
+    "apps": {
+      "app_desc": "Application description",
+      "app_desc_none": "No application description",
+      "cyclic": "Cyclic",
+      "desc": "Select the applications to run when the project starts",
+      "en": "Enable App",
+      "id": "Remote ID",
+      "id_tooltip": "This ID can be used to start/pause/stop applications from remote I/O",
+      "title": "Applications"
+    },
+    "arch": {
+      "desc": "Define the parameters for Arch command",
+      "title": "Arch Settings",
+      "archCol": "Arch",
+      "departZCol": "AscendingZ",
+      "approachZCol": "DescendingZ",
+      "positiveNumTip": "Input a positive number",
+      "valChangedTip": "Value has been updated"
+    },
+    "base": {
+      "desc": "Define the base limits",
+      "title": "Base Limits"
+    },
+    "motion_frames": {
+      "desc": "Select the project's motion frames",
+      "title": "Motion Frames"
+    },
+    "motion_params": {
+      "desc": "Select the parameters for motion commands",
+      "title": "Motion Parameters"
+    },
+    "mt": {
+      "desc": "Define the machine table limits",
+      "title": "Machine Table Limits"
+    },
+    "pos": {
+      "desc": "Define the robot' position limits",
+      "title": "Position Limits"
+    },
+    "tool": {
+      "desc": "Define the tool limits",
+      "title": "Tool Limits"
+    },
+    "world": {
+      "desc": "Define the world limits",
+      "title": "World Limits"
+    },
+    "wp": {
+      "desc": "Define the work piece limits",
+      "title": "Work Piece Limits"
+    },
+    "position_trigger": {
+      "desc": "Define the parameters for Position Trigger",
+      "title": "Position Trigger",
+      "nameCol": "Name",
+      "outputCol": "Output",
+      "StateCol": "State",
+      "stateColTrue": "TRUE",
+      "stateColFalse": "FALSE",
+      "FromCol": "From",
+      "fromColStart": "START",
+      "fromColEnd": "END",
+      "valueCol": "Value",
+      "deleteBtn": "DELETE SELECTED",
+      "positiveNumTip": "Enter a number that is non-negative and a percentage not exceeding 100",
+      "newPositionTrigger": {
+        "namePlaceholder": "Name",
+        "requireErr": "Name is required."
+      }
+    },
+    "home_config": {
+      "desc": "Define the parameters for Home Config",
+      "title": "Home Config",
+      "homePosition": "Home Position",
+      "homeOrder": "Home Order",
+      "degree": "Values are in deg/mm",
+      "curPositionBtn": "Read Current Position",
+      "stepOption": "Step",
+      "savedTip": "Changes saved!",
+      "validNumTip": "Enter a valid number.",
+      "numRange": "Enter a valid number between"
+    },
+    "vscale": "Joint Velocity",
+    "vtran": "Cartesian Velocity"
+  },
+  "projectTree": {
+    "Apps": "Apps",
+    "Conveyor": "Conveyor",
+    "cnt": "Controller",
+    "del_app_msg": "This operation cannot be undone, and will remove this application with all its data and libraries. Are you sure you wish to delete it?",
+    "del_app_title": "Delete App {{name}}?",
+    "del_bg_msg": "This operation cannot be undone, and will remove this task. Are you sure you wish to delete it?",
+    "del_bg_title": "Delete Task {{name}}?",
+    "del_dep_msg": "This operation cannot be undone. Are you sure you wish to delete this dependency?",
+    "del_dep_title": "Delete Dependency {{name}}?",
+    "del_lib_msg": "This operation cannot be undone. Are you sure you want to delete this library?",
+    "del_lib_title": "Delete Library {{name}}?",
+    "dirty": "File has changed",
+    "dirty_msg": "Do you want to save your changes to {{name}}?",
+    "Data": "Data",
+    "Dependencies": "Dependencies",
+    "Errors": "Errors",
+    "File": "Program",
+    "Frames": "Motion Frames",
+    "Grippers": "Grippers",
+    "IO": "I/O Mapping",
+    "Libraries": "Libraries",
+    "Macros": "Macros",
+    "Pallets": "Pallets",
+    "Payloads": "Payloads",
+    "prj": "Project",
+    "Settings": "Project Settings",
+    "pPoints": "Project Points",
+    "Vision": "Vision"
+  },
+  "record": "Record",
+  "record_done": "Motion recording is finished",
+  "restore": {
+    "restoring": "Restoring system from file",
+    "success": "System restored successfully!",
+    "home": "Home",
+    "insert_chart": "Motion Dashboard",
+    "insert_comment": "Program editor",
+    "3d_rotation": "3D Simulator",
+    "touch_app": "Teach",
+    "settings": "System Configration",
+    "playlist_play": "Task Manager",
+    "apps": "softMC Tools",
+    "error": "Error History",
+    "list": "Log",
+    "help_outline": "Help"
+  },
+  "robot": "Robot",
+  "robots": {
+    "axes": "Robot Axes",
+    "battery": {
+      "masteringAck": "CONFIRM MASTERING DONE",
+      "status": "Battery Status"
+    },
+    "brakes": {
+      "btnStart": "START BRAKE TEST",
+      "dialog": {
+        "title": "Brake Test",
+        "msg": "The robot will perform slight movements to test the brakes. Make sure there are no people in the proximate vicinity of the robot.",
+        "yes": "START TEST NOW",
+        "no": "CANCEL"
+      },
+      "title": "Brake Test"
+    },
+    "btnChange": "CHANGE ROBOT",
+    "btnSetCurrent": "SET CURRENT",
+    "bus": "Bus Type",
+    "disp": "Mastering",
+    "max-payload": "Max Payload",
+    "mcu": {
+      "fan": "MCU Fan",
+      "fan-threshold": "MCU Fan Threshold",
+      "threshold": "Threshold"
+    },
+    "model": "Model",
+    "name": "Name",
+    "no-axes": "No axes found",
+    "no-model": "No models found",
+    "no-series": "No series found",
+    "params": "Robot Parameters",
+    "part": "Part Number",
+    "select": "Select a Robot",
+    "selected": "Selected Robot",
+    "series": "Series",
+    "title": "System",
+    "type": "Robot Type",
+    "updating": "Updating Robot Configuration",
+    "reference": {
+      "title": "Mastering by reference point"
+    },
+    "vord": {
+      "title": "Velocity Override",
+      "vmax": "Vmax Override"
+    },
+    "mastering": {
+      "cancelTitle": "Cancel mastering process?",
+      "cancelMsg": "Are you sure you want to cancel mastering and lose all calibrated data?",
+      "cancelWarm": "Cannot go to first wizard because reset original failed.",
+      "previousWarm": "Cannot go to previous because reset original failed.",
+      "leaveMsg": "Are you sure you want to leave this page and lose all calibrated data?",
+      "masterZeroWarm": "Master zero failed!",
+      "masterFinalWarm": "Master final failed!",
+      "recordPointWarm": "Record point failed!",
+      "masterLeftRightWarm": "Master left right failed!",
+      "moveToRefWarn": "Move to reference point failed!",
+      "mainHead": "Main",
+      "axis": "Axis",
+      "position": "Position",
+      "offset": "Offset",
+      "j": "J",
+      "converse": "Converse",
+      "refPoint": "Reference Point",
+      "refError": "Reference point is required.",
+      "basicMaster": "Basic Mastering",
+      "enhancedMaster": "Enhanced Mastering (J2 only)",
+      "selectJoint": "Select joints",
+      "selectJointH": "This mastering will get back to the previously saved offset.",
+      "pickJoints": "Pick the joint/joints you want to calibrate.",
+      "all": "All",
+      "basicConfirm": "Basic master confirm",
+      "emjh": "Enhanced Master: Joint",
+      "emjsh1": "This mastering will set J2's offset to the actual mechanical offset.",
+      "emjsh2": "Make sure all joints have been mastered by basic master.",
+      "j20": "Jog to zero",
+      "bmj": "Basic Master: Joint",
+      "bmjsh": "Make sure the joint/joints to be mastered are at zero pulse point",
+      "bmjsh2": "Jog the robot into the near point of the marked point.",
+      "bmjsh3": "Move the robot to the reference point by command",
+      "pulsePosition": "pulse position of joint",
+      "pulsePositionContent1": "position aligned with Y-axis in Robot coordinate system",
+      "pulsePositionContent2": "position where Arms #1 and #2 are in a straight line (Regardless of the Joint #1 direction)",
+      "pulsePositionContent3": "upper limit position in motion range",
+      "pulsePositionContent4": "position where the flat surface (or groove in the up/down mechanical stop) on the shaft faces forward the tip of Arm #2",
+      "j2t": "Jog to target",
+      "emj2h": "Enhanced Master: Joint 2",
+      "emj2sh": "Jog the robot to the reference point.",
+      "emj2sh2": "Move the robot to the reference point with inverse pose by command.",
+      "emj2sh3": "Jog the robot exactly to the reference point",
+      "j2r": "Jog to Reference",
+      "ipbc": "Inverse pose by command",
+      "complexJogTip": "If you have more complex situation, go to terminal window to move the robot in the upper-right corner.",
+      "mbc": "Master by command",
+      "aj": "Accurately jog",
+      "ajsh": "Jog the robot accurately to the reference point.",
+      "confirm": "Confirm",
+      "congratulations": "Well done!",
+      "congratulationsContent1": "Mastering for Joint",
+      "congratulationsContent2": "Successful. Move the robot to existent points to verify."
+    }
+  },
+  "safety": {
+    "ack_tooltip": "Safety Acknowledge",
+    "buttons": {
+      "export": "EXPORT...",
+      "import": "IMPORT..."
+    },
+    "en_tooltip": "Waiting for acknowledge",
+    "password_change": {
+      "btn": "CHANGE PASSWORD...",
+      "change": "CHANGE PASSWORD",
+      "new": "New Password",
+      "old": "Current Password",
+      "title": "Safety Card Admin Password Change"
+    },
+    "steps": {
+      "step1": {
+        "ini": "Generated Configuration File:",
+        "title": "Safety Configuration"
+      },
+      "step2": {
+        "confirm": "CONFIRM PASSWORD",
+        "confirmed": "PASSWORD CONFIRMED",
+        "invalid": "Confirm safety password before proceeding to the next step.",
+        "title": "Safety Password"
+      },
+      "step3": {
+        "confirm": "CONFIRM CONFIGURATION",
+        "ini_drive": "Card Configuration",
+        "ini_user": "Your Configuration",
+        "title": "Verification",
+        "verifying": "Verifying configuration..."
+      }
+    },
+    "title": "Safety Card"
+  },
+  "select": "Select",
+  "simulative": "Simulated",
+  "simulator": "3D Simulator",
+  "simulator_screen": {
+    "cube": "Cube",
+    "custom": "User Object",
+    "cylinder": "Cylinder",
+    "disabled": "No available 3D model exists for the current robot - 3D Preview is disabled.",
+    "load_rec": "LOAD RECORDING...",
+    "loading": "Loading...",
+    "mode_live": "Live Mode",
+    "prop": "Property",
+    "rec_close": "CLOSE RECORDING",
+    "record": "Record Motion",
+    "robot": "Robot",
+    "scene": "Scene",
+    "simulation": "Scene",
+    "sphere": "Sphere",
+    "stop": "Stop recording",
+    "val": "Value",
+    "background": "Background",
+    "trace": "Trace"
+  },
+  "softMC_log": "softMC Log",
+  "softMC User": "softMC User",
+  "standby": "Stand by, this process may take a few minutes...",
+  "stat": {
+    "err_critical": {
+      "title": "Critical Error",
+      "message": "Can't set TP MODE to A... {{appName}} will now logout."
+    },
+    "err_init": {
+      "title": "System Initialization Error",
+      "msg": "Init error ({{result}}) - Contact support for help."
+    }
+  },
+  "status": "Status",
+  "string": "String",
+  "strings": "Strings",
+  "success": "Success!",
+  "system_state": {
+    "1000": "ACTIVE",
+    "loading": "Initializing system...",
+    "state": "System State"
+  },
+  "tabs": {
+    "blockly": "Blockly Graphic Programming",
+    "configuration": "System Configuration",
+    "dashboard": "Dashboards",
+    "editor": "Project Editor",
+    "help": "Help",
+    "history": "Error History",
+    "home": "Home",
+    "log": "Log",
+    "log_book": "Log Book",
+    "simulator": "3D Simulator",
+    "task": "Task Manager",
+    "teach": "Teach",
+    "tools": "softMC Tools"
+  },
+  "targetPoint": "TargetPoint",
+  "tasks": {
+    "display": "Display",
+    "idle": "Idle Task",
+    "kill": "Kill Task",
+    "lib": "Libraries",
+    "lib_g": "Global Libraries",
+    "name": "Task Name",
+    "prg": "Programs",
+    "priority": "Priority",
+    "reset": "RELOAD SYSTEM",
+    "run": "Run Task",
+    "state": "State",
+    "unload": "Unload Task",
+    "user": "User Tasks",
+    "background": "Background Tasks",
+    "state_not_ready": "Trace ended",
+    "state_ready": "Wait",
+    "state_traceing": "Triggered",
+    "state_done": "Done",
+    "start_trace": "Start Trace",
+    "stop_trace": "Stop Trace",
+    "trigger": "Trigger",
+    "trace_limit": "At most add {{max}} traces",
+    "trace_add": "Add",
+    "trace_cancel": "Cancel",
+    "new_trace": "New Trace",
+    "name_exist": "Name already exists.",
+    "delete_trace": "Delete trace {{titlePara}}?",
+    "delete_trace_msg": "All the configration of current trace will be lost.",
+    "trace_name_tip": "Trace name allow only letters, numbers or '_' and at most 32 characters."
+  },
+  "teach": "Teach",
+  "teach_var": "Teach {{name}}?",
+  "terminal": "Terminal",
+  "terminal_restricted": "Terminal is not available for privilege level \"{{user}}\"",
+  "time_update": "softMC Date and Time is synced",
+  "tool": "Robot Tool",
+  "tool_calib": {
+    "calibrate_tool": "CALIBRATE TOOL",
+    "calibrate_w_tool": "CALIBRATE WITH TOOL",
+    "calibrate_wo_tool": "CALIBRATE WITHOUT TOOL",
+    "multi": "Multi",
+    "multi_scara": "XYZ 3-Point",
+    "pnts": "Points added",
+    "single": "Single",
+    "calibrate_result": "Calibration Result",
+    "isApplyDataToTool": "Do you want to apply the following tool data for Tool",
+    "current": "current",
+    "new": "new",
+    "delta": "delta",
+    "error": "Error",
+    "calibrationSuccess": "Calibration Successful",
+    "resultOutOfScope": "The calculation error exceeds the allowed 5mm limit.\nUsing this tool data can lead to undesirable behavior.",
+    "apply": "APPLY",
+    "cancel": "CANCEL"
+  },
+  "tools": "Robot Tools",
+  "tour": [
+    {
+      "title": "Getting Started",
+      "content": "In this demo, we will load and run your first program. Click the <b>NEXT</b> button to continue."
+    },
+    {
+      "title": "Project Editor",
+      "content": " Click on <b>Project Editor</b> (the highlighted button) in the <b>main menu</b> to open the Project Editor screen."
+    },
+    {
+      "title": "Menu Collapse",
+      "content": "To save screen space, click the <b>MENU EXPAND/COLLAPSE button</b> in the app's <b>toolbar</b>."
+    },
+    {
+      "title": "Project Editor",
+      "content": "In this demo we will go through the basic elements of the Project editor."
+    },
+    {
+      "title": "This is the Project Tree",
+      "content": "The <b>Project Tree</b> contains all the programs, libraries, data and configuration files for your project."
+    },
+    {
+      "title": "Apps",
+      "content": "A project can contain <b>many applications</b>, listed under the <b>\"Apps\"</b> folder."
+    },
+    {
+      "title": "App Structure",
+      "content": "Each app has a <b>PROGRAM</b> file, a <b>DATA</b> file, and <b>LIBRARY</b> files."
+    },
+    {
+      "title": "Program Editor",
+      "content": "This is where you'll write your code. softMC applications are written in the <b>MC-Basic</b> language."
+    },
+    {
+      "title": "Loading an App",
+      "content": "When you're done writing your code, use the <b>SAVE & LOAD</b> button to save your code and then load it to the controller."
+    },
+    {
+      "title": "App Status",
+      "content": "Once the app is loaded, its <b>status</b> would change to <b>READY</b>."
+    },
+    {
+      "title": "Running the app",
+      "content": "To run the app, <b>click</b> on the <b>RUN</b> button and the app will start running."
+    },
+    {
+      "title": "Note #1",
+      "content": "While an app is loaded, you <b>CAN'T edit</b> it (notice how the editor is greyed out)."
+    },
+    {
+      "title": "Note #2",
+      "content": "You can monitor the progress of the app by looking at the <span style=\"color:green;\"><b>green lines</b></span> in the editor."
+    },
+    {
+      "title": "3D Preview",
+      "content": "You can use the <b>mouse's left and right</b> buttons to <b>rotate/pan</b> the 3D view. Use the <b>WHEEL</b> button to zoom in/out."
+    },
+    {
+      "title": "Toggle 3D Preview",
+      "content": "You can use this <b>toggle button</b> to show/hide the 3D simulator window."
+    },
+    {
+      "title": "Demo Completed!",
+      "content": "Well done! You just ran your first MC-Basic program!<p>To learn even more, visit the <b>HELP screen</b> (located at the bottom of the main menu).</p>"
+    }
+  ],
+  "trigger": {
+    "tab_name": "Trigger"
+  },
+  "trivia": [
+    "You can record the robot's motion by pressing the RECORD button on the main app toolbar.",
+    "You can add a new application to the project by right clicking the Apps folder.",
+    "You can EXPAND or COLLAPSE the application's toolbar by clicking on the arrow button in the app toolbar.",
+    "You can CLEAR all commands from the terminal by using the command CLEAR in the terminal.",
+    "You can UPLOAD a new PROFILE PICTURE by expanding the app's side menu, clicking the profile picture, and choosing a photo."
+  ],
+  "trivia_title": "Did you know?",
+  "type": "Type",
+  "userManager": {
+    "btnCreate": "CREATE USER",
+    "btnEdit": "EDIT USER",
+    "delete": {
+      "title": "Are you sure?",
+      "msg": "The selected users will be deleted permanently.",
+      "yes": "DELETE",
+      "no": "CANCEL",
+      "success": "SELECTED USERS WERE DELETED",
+      "fail": "ERROR: ONE OR MORE USERS COULD NOT BE DELETED",
+      "fail2": "ERROR: ADMIN USER CANNOT BE DELETED",
+      "err": "INVALID REQUEST"
+    },
+    "err": "Error: User already exists or invalid parameters sent",
+    "err_username_reserved": "Reserved username. Enter another one.",
+    "full": "Full Name",
+    "new": "New User",
+    "permission": "Permission",
+    "profilePic": "Profile Picture",
+    "title": "User Manager",
+    "username": "Username"
+  },
+  "utils": {
+    "err_reset": "System Reset Failed: {{result}}",
+    "success": "System Reset Successful"
+  },
+  "value": "Value",
+  "values": "Values",
+  "variables": {
+    "btn_create": "CREATE VARIABLE",
+    "name": "Variable Name",
+    "new": "Add Variable",
+    "none_exist": "No variables on this list",
+    "type": "Variable Type",
+    "get_current": "GET CURRENT",
+    "cannot_use_jog_tip": "Jog panel is disabled!"
+  },
+  "version": {
+    "releaseNote": "Release Notes",
+    "userLicense": "User License",
+    "softMCDes": "This is softMC",
+    "GUIDes": "This is GUI",
+    "webServerDes": "This is web server",
+    "successDialogTitle": "Success!",
+    "successDialogMsg": "OS update successful. The new version is: ",
+    "errorDialogTitle": "Failed!",
+    "errorDialogMsg": "OS update failed. Reinstall previous version: ",
+    "releaseNoteTitle": "ControlStudio+ Release Notes"
+  },
+  "vision": {
+    "templateConfigTab": "Template Config",
+    "calibrationTab": "Calibration",
+    "templateConfig": {
+        "station": "Selected station",
+        "edit": "Edit",
+        "delete": "DELETE",
+        "ip": "IP",
+        "port": "Port",
+        "terminator": "Terminator",
+        "encoding": "Encoding",
+        "createStationTitle": "Create a new vision station",
+        "createStationPlacehold": "Station name",
+        "createTemplateTitle": "Create Job Template",
+        "createTemplatePlacehold": "Job Template",
+        "createTemplateDialog": "Open configuration view",
+        "createRequired": "Name is required",
+        "createLetter": "Must start with an letter",
+        "ipRequired": "IP is required",
+        "ipValid": "Wrong IP address",
+        "dialogStationTitle": "Delete station {{titlePara}}",
+        "dialogTitle": "Delete template {{titlePara}}",
+        "dialogMsg": "The current template information will be deleted",
+        "list_max": "At most add {{max}} list",
+        "deleteStation": "The current station information will be deleted",
+        "nameExist": "Name already exists.",
+        "newTemplate": "New Template",
+        "jobTemplate": "Selected Template"
+    },
+    "calibration": {
+        "station": "Selected Station",
+        "title": "Machine Vision Calibration",
+        "Save": "SAVE",
+        "Calibrate": "CALIBRATE",
+        "Reset": "RESET",
+        "Create": "Create",
+        "Delete": "Delete",
+        "JobTemplate": "JobTemplate",
+        "ResponseData": "Respond Data",
+        "ResponseError": "Respond Error",
+        "ResponseStatus": "Respond Status",
+        "elementName": "Name",
+        "type": "Type",
+        "calibrationError": "Calibration Error",
+        "Pixel_x": "Pixel_x",
+        "Pixel_y": "Pixel_y",
+        "posX": "Pos_x",
+        "posY": "Pos_y"
+    }
+  },
+  "watch": {
+    "context": "Context",
+    "name": "Variable Name",
+    "title": "Watch & Record"
+  },
+  "websocket": {
+    "err_es_busy": {
+      "title": "Connection Failed",
+      "message": "All available entry stations are busy."
+    }
+  },
+  "wp": "Work Piece",
+  "wps": "Work Pieces"
 }

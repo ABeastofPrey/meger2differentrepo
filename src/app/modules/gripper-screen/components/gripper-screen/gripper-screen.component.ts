@@ -6,6 +6,7 @@ import {
   MatSlideToggleChange,
   MatDialog,
   MatSnackBar,
+  MatCheckboxChange,
 } from '@angular/material';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { of as ofObservable, Observable, BehaviorSubject, Subject } from 'rxjs';
@@ -384,12 +385,42 @@ export class GripperScreenComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse) => {});
   }
 
-  updateGripperCmd(i: number) {
+  // tslint:disable-next-line: no-any
+  updateGripperCmd(i: number, field: string, e: any) {
     const grp = this.selectedNode.item;
     const ef = this.selectedNode.parent.item;
     const g = this.selectedNode as Gripper;
-    const inv = i === 1 ? (g.cmd1_invert ? 1 : 0) : g.cmd2_invert ? 1 : 0;
-    const val = i === 1 ? g.cmd1 : g.cmd2;
+    let inv, val;
+    let old: string | boolean;
+    switch (field) {
+      default:
+        break;
+      case 'cmd1':
+        old = g.cmd1;
+        inv = i === 1 ? (g.cmd1_invert ? 1 : 0) : g.cmd2_invert ? 1 : 0;
+        val = e.value;
+        g.cmd1 = val;
+        break;
+      case 'cmd2':
+        old = g.cmd2;
+        inv = i === 1 ? (g.cmd1_invert ? 1 : 0) : g.cmd2_invert ? 1 : 0;
+        val = e.value;
+        g.cmd2 = val;
+        break;
+      case 'cmd1_invert':
+        old = g.cmd1_invert;
+        inv = (e.checked ? 1 : 0);
+        val = i === 1 ? g.cmd1 : g.cmd2;
+        g.cmd1_invert = inv;
+        break;
+      case 'cmd2_invert':
+        old = g.cmd2_invert;
+        inv = (e.checked ? 1 : 0);
+        val = i === 1 ? g.cmd1 : g.cmd2;
+        g.cmd2_invert = inv;
+        break;
+        
+    }
     const cmd =
       '?GRP_GRIPPER_DOUT_COMMAND_SET("' +
       ef +
@@ -404,6 +435,22 @@ export class GripperScreenComponent implements OnInit {
       ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result !== '0') {
+        switch (field) {
+          default:
+            break;
+          case 'cmd1':
+            g.cmd1 = old as string;
+            break;
+          case 'cmd2':
+            g.cmd2 = old as string;
+            break;
+          case 'cmd1_invert':
+            g.cmd1_invert = old as boolean;
+            break;
+          case 'cmd2_invert':
+            g.cmd2_invert = old as boolean;
+            break;
+        }
       }
     });
   }

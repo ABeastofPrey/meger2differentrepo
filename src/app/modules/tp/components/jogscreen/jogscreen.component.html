@@ -65,7 +65,7 @@
 					</mat-menu>
 				</mat-card-title>
 				<div class="menu-content">
-					<div class="inner-content content-teach" *ngIf="menuTypes[selectedMenuTypeIndex].name === 'Teach'">
+					<div class="inner-content content-teach" *ngIf="menuTypes[selectedMenuTypeIndex].name === 'Teach' || menuTypes[selectedMenuTypeIndex].name === 'Teach KUKA'">
 						<mat-form-field
 							[style.maxWidth]="teach.selectedTeachVariable && teach.selectedTeachVariable.isArr ? '50%' : '100%'"
 						>
