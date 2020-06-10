@@ -22,6 +22,15 @@ export interface MCQueryResponse {
   err: ErrorFrame[];
 }
 
+export class MCErrorDetails {
+  public cmd: string;
+  public desc: string;
+  public errs: ErrorFrame[];
+  constructor (_cmd: string, _desc: string, _errs: ErrorFrame[]) {
+    this.cmd = _cmd, this.desc = _desc, this.errs = [..._errs];
+  }
+}
+
 export function errorString(err: ErrorFrame[]) {
   return err ? err.map(e=>e.msg).join('') : null;
 }
@@ -194,13 +203,30 @@ export class WebsocketService {
     });
   }
 
+  simpleQuery(api: string): Observable<string | ErrorFrame> {
+    return Observable.create(observer => {
+      this.send(api, false, (result: string, cmd: string, err: ErrorFrame[]) => {
+        if (!!err && err.length !== 0) {
+          const errDetails = new MCErrorDetails(cmd, result, err);
+          console.log(`%c----Get error when call api "${api}", see the details below:----`, 'color: red;font-weight: bold;');
+          console.dir(errDetails);
+          console.log(`%c---------------------------------End---------------------------------`, 'color: red;font-weight: bold;');
+          observer.error(err[0]);
+        } else {
+          observer.next(result);
+          observer.complete();
+        }
+      });
+    });
+  };
+
   observableQuery(api: string): Observable<MCQueryResponse | ErrorFrame[]> {
     return Observable.create(observer => {
       this.send(api, false, (result: string, cmd: string, err: ErrorFrame[]) => {
         if (!!err) {
           observer.error(err);
         } else {
-          observer.next({ result, cmd, err });
+          observer.next({ result, cmd });
           observer.complete();
         }
       });

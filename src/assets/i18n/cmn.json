@@ -1627,5 +1627,14 @@
         }
     },
     "wp": "工件",
-    "wps": "工件"
+    "wps": "工件",
+    "diagnosis": {
+      "name": "KRCSDiag",
+      "prepareDiagnosis": "准备诊断...",
+      "generatingFiles": "文件生成中...",
+      "downloadZipFile": "ZIP文件下载中...",
+      "complete": "诊断完成!",
+      "confirmDialogTitle": "开始诊断？",
+      "confirmDialogMsg": "开始诊断之前，请避免运行占用高CPU的任务（例如变量监听，跟踪，机器人运动），否则可能导致诊断过程失败。"
+    }
 }

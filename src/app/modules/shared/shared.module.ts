@@ -36,6 +36,7 @@ import { PassPipe } from '../core/pipes/space-to-nbsp.pipe';
 import { RichSelectComponent } from '../../components/rich-select/rich-select.component';
 import { ColorfulSpanComponent } from '../../components/rich-select/colorful-span/colorful-span.component';
 import { NumberInputComponent } from '../../components/number-input/number-input.component';
+import { CSProgressComponent } from '../../components/progress/progress.component';
 import { VariableInputComponent } from '../../components/variable-input/variable-input.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
@@ -98,6 +99,7 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
     ClickOnceDirective,
     RichSelectComponent,
     NumberInputComponent,
+    CSProgressComponent,
     VariableInputComponent,
     ColorfulSpanComponent,
     CoordinatesComponent,
@@ -131,6 +133,7 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
     PassPipe,
     RichSelectComponent,
     NumberInputComponent,
+    CSProgressComponent,
     VariableInputComponent,
     ColorfulSpanComponent,
     CoordinatesComponent,
@@ -152,6 +155,7 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
     KeyboardDialog,
     RichSelectComponent,
     NumberInputComponent,
+    CSProgressComponent,
     VariableInputComponent,
     ColorfulSpanComponent,
     RecordDialogComponent,

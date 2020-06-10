@@ -13,13 +13,14 @@ import {
   TranslatePipe,
 } from '@ngx-translate/core';
 import { map, split, path, compose, converge, __, identity } from 'ramda';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { of, Observable } from 'rxjs';
 import { CommonService } from '../core/services/common.service';
 import { ApiService } from '../core/services/api.service';
 import { NgrxRootModule } from '../../modules/ngrx-root/ngrx-root-test.module';
 import { CsTranslateLoader } from '../../control-studio-routing.module';
 import { isUndefined } from 'ramda-adjunct';
+import { MaterialComponentsModule } from '../material-components/material-components.module';
 
 // tslint:disable-next-line: no-any
 declare const require: any;
@@ -64,7 +65,7 @@ export class TranslatePipeMock implements PipeTransform {
     }),
     RouterTestingModule.withRoutes([])
   ],
-  exports: [TranslateModule, TranslatePipeMock],
+  exports: [TranslateModule, TranslatePipeMock, MaterialComponentsModule, HttpClientModule],
   providers: [
     { provide: TranslateService, useClass: TranslateServiceStub },
     { provide: TranslatePipe, useClass: TranslatePipeMock },

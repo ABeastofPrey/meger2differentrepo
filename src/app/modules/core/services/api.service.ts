@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { RecordingData } from '../models/rec-data.model';
+import { saveAs } from 'file-saver';
 
 export const PERMISSION_ADMIN = 0;
 export const PERMISSION_PROGRAMMER = 1;
@@ -280,15 +281,17 @@ export class ApiService {
       .toPromise()
       .then(ret => {
         const blob = new Blob([ret], { type: 'application/zip' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        document.body.appendChild(a);
-        a.setAttribute('style', 'display: none');
-        a.href = url;
-        a.download = project.toUpperCase() + '.ZIP';
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        const name = project.toUpperCase() + '.ZIP';
+        saveAs(blob, name);
+        // const url = window.URL.createObjectURL(blob);
+        // const a = document.createElement('a');
+        // document.body.appendChild(a);
+        // a.setAttribute('style', 'display: none');
+        // a.href = url;
+        // a.download = project.toUpperCase() + '.ZIP';
+        // a.click();
+        // window.URL.revokeObjectURL(url);
+        // document.body.removeChild(a);
       });
   }
 
@@ -544,6 +547,12 @@ export class ApiService {
       })
       .toPromise() as Promise<boolean>;
   }
+
+  public getFileFromDrive(file: string): Observable<any>  {
+    const url = this.api_url + '/drive/api/file/' + file + '?ip=192.168.57.100';
+    return this.http.get(url, { responseType: 'text' });
+  }
+
 }
 
 export interface MCFile {

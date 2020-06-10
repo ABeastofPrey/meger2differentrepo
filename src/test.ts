@@ -59,3 +59,6 @@ syslogContext.keys().map(syslogContext);
 
 // const traceContext = require.context('./app/modules/dashboard/components/trace/', true, /\.spec\.ts$/);
 // traceContext.keys().map(traceContext);
+
+const diagnosisContext = require.context('./app/modules/tools/components/diagnosis/', true, /\.spec\.ts$/);
+diagnosisContext.keys().map(diagnosisContext);

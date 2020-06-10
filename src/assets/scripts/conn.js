@@ -84,7 +84,7 @@ function MCConnection() {
 
   // Private Variables
   var ws = null;
-  var MCPORT = 3010;
+  var MCPORT = 3010;  
   var IP = self.location.hostname;
   //var IP = '10.4.20.45';
   var reset = true;
