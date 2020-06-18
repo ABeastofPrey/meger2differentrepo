@@ -24,6 +24,7 @@ import { SingleInputDialogComponent } from '../../../../components/single-input-
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { UtilsService } from '../../../core/services/utils.service';
 import { HttpParams } from '@angular/common/http';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'mc-file-tree',
@@ -72,6 +73,7 @@ export class McFileTreeComponent implements OnInit {
     private trn: TranslateService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private login: LoginService,
     private utils: UtilsService,
     private router: Router
@@ -495,9 +497,10 @@ export class McFileTreeComponent implements OnInit {
  }
           this.api.uploadToPath(f, false, path).then((result: UploadResult) => {
             if (result.success) {
-              this.snack.open(this.words['success'], this.words['dismiss'], {
-                  duration: 1500,
-                });
+            //   this.snack.open(this.words['success'], this.words['dismiss'], {
+            //       duration: 1500,
+            //     });
+              this.snackbarService.openTipSnackBar("success");
               
               this.prj.fileRefreshNeeded.emit();
               this.service.setFile(ret, null, null, -1);
@@ -523,28 +526,31 @@ export class McFileTreeComponent implements OnInit {
                           .uploadToPath(f, true, path)
                           .then((result: UploadResult) => {
                             if (result.success) {
-                                this.snack.open(
-                                  this.words['success'],
-                                  this.words['dismiss'],
-                                  { duration: 1500 }
-                                );                             
+                                // this.snack.open(
+                                //   this.words['success'],
+                                //   this.words['dismiss'],
+                                //   { duration: 1500 }
+                                // );   
+                                this.snackbarService.openTipSnackBar("success");                          
                               this.prj.fileRefreshNeeded.emit();
                               this.service.setFile(ret, null, null, -1);
                             } else {
-                                this.snack.open(
-                                  this.words['error.err'],
-                                  this.words['dismiss'],
-                                  { duration: 2000 }
-                                );                             
+                                // this.snack.open(
+                                //   this.words['error.err'],
+                                //   this.words['dismiss'],
+                                //   { duration: 2000 }
+                                // );  
+                                this.snackbarService.openTipSnackBar("error.err");                           
                             }
                           });
                       }
                     });
                 });
             } else {
-                this.snack.open(this.words['error.err'], this.words['dismiss'], {
-                  duration: 2000,
-                });             
+                // this.snack.open(this.words['error.err'], this.words['dismiss'], {
+                //   duration: 2000,
+                // });      
+                this.snackbarService.openTipSnackBar("error.err");       
             }
           });
         }
@@ -573,14 +579,16 @@ export class McFileTreeComponent implements OnInit {
  }
           this.api.createFolder(path + name).then(result => {
             if (result) {
-                this.snack.open(this.words['success'], this.words['dismiss'], {
-                  duration: 1500,
-                });             
+                // this.snack.open(this.words['success'], this.words['dismiss'], {
+                //   duration: 1500,
+                // });   
+                this.snackbarService.openTipSnackBar("success");          
               this.prj.fileRefreshNeeded.emit();
             } else {
-                this.snack.open(this.words['error.err'], this.words['dismiss'], {
-                  duration: 2000,
-                });             
+                // this.snack.open(this.words['error.err'], this.words['dismiss'], {
+                //   duration: 2000,
+                // });    
+                this.snackbarService.openTipSnackBar("error.err");         
             }
           });
         }
@@ -600,9 +608,10 @@ export class McFileTreeComponent implements OnInit {
       if (result) {
         this.prj.fileRefreshNeeded.emit();
       } else {
-          this.snack.open(this.words['error.err'], this.words['dismiss'], {
-            duration: 2000,
-          });       
+        //   this.snack.open(this.words['error.err'], this.words['dismiss'], {
+        //     duration: 2000,
+        //   });    
+          this.snackbarService.openTipSnackBar("error.err");   
       }
     });
   }
@@ -640,14 +649,16 @@ export class McFileTreeComponent implements OnInit {
             : '') + name;
         this.api.copy(fromPath, toPath).then(result => {
           if (result) {
-              this.snack.open(this.words['success'], this.words['dismiss'], {
-                duration: 1500,
-              });
+            //   this.snack.open(this.words['success'], this.words['dismiss'], {
+            //     duration: 1500,
+            //   });
+              this.snackbarService.openTipSnackBar("success");
             this.prj.fileRefreshNeeded.emit();
           } else {
-              this.snack.open(this.words['error.err'], this.words['dismiss'], {
-                duration: 2000,
-              });
+            //   this.snack.open(this.words['error.err'], this.words['dismiss'], {
+            //     duration: 2000,
+            //   });
+              this.snackbarService.openTipSnackBar("error.err");
           }
         });
       });
@@ -691,9 +702,8 @@ export class McFileTreeComponent implements OnInit {
           const msg = ret
             ? this.words['files.success_delete']
             : this.words['files.err_delete'];
-          if (!this.utils.IsKuka) {
-            this.snack.open(msg, '', { duration: 2000 });
-          }
+            // this.snack.open(msg, '', { duration: 2000 });
+            this.snackbarService.openTipSnackBar(msg);
           if (ret) this.prj.fileRefreshNeeded.emit();
         });
       }

@@ -12,6 +12,7 @@ import { TreeNode } from '../../file-tree/components/mc-file-tree/mc-file-tree.c
 import { TpStatService } from './tp-stat.service';
 import {CommonService} from './common.service';
 import {UtilsService} from '../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 /*
  * THIS SERVICE MANAGES THE PROJECTS IN THE PROJECT EDITOR, BUT ALSO MANAGES
@@ -44,7 +45,8 @@ export class ProjectManagerService {
     private stat: TpStatService,
     private zone: NgZone,
     private cmn: CommonService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private snackbarService: SysLogSnackBarService
   ) {
     this.trn.get('changeOK').subscribe(words => {
       this.words = words;
@@ -451,9 +453,8 @@ export class ProjectManagerService {
       '")';
     this.ws.query(cmd).then(ret => {
       if (ret.result === '0') {
-        if (this.utils.IsNotKuka) {
-          this.snack.open(this.words, '', { duration: 1500 });
-        }
+        //   this.snack.open(this.words, '', { duration: 1500 });
+          this.snackbarService.openTipSnackBar(this.words);
         this.updateModel(name, limit, Number(target.value));
       } else {
         target.value = prevValue.toString();
@@ -508,9 +509,8 @@ export class ProjectManagerService {
       let ok = false;
       if (ret.result === '0') {
         ok = true;
-        if (this.utils.IsNotKuka) {
-          this.snack.open(this.words, '', { duration: 1500 });
-        }
+        //   this.snack.open(this.words, '', { duration: 1500 });
+          this.snackbarService.openTipSnackBar(this.words);
       }
       switch (setting) {
         case 'tool':

@@ -6,6 +6,7 @@ import { TPVariableType } from '../../core/models/tp/tp-variable-type.model';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from './data.service';
 import {UtilsService} from '../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 @Injectable()
 export class TeachService {
@@ -140,9 +141,10 @@ export class TeachService {
   constructor(
     private ws: WebsocketService,
     private snackBar: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
     private data: DataService,
-    private utils: UtilsService
+    private utils: UtilsService,
   ) {
     this.trn.get(['changeOK']).subscribe(words => {
       this.words = words;
@@ -181,9 +183,8 @@ export class TeachService {
         console.log(cmd);
         this.selectedTeachVariable = this.selectedTeachVariable;
         if (ret.result === '0') {
-          if(this.utils.IsNotKuka) {
-            this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
-          }
+            // this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
+            this.snackbarService.openTipSnackBar("changeOK");
         }
         else console.log(ret.cmd + '>>>' + ret.result);
       });

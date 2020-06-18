@@ -1,6 +1,5 @@
 <div class="log-profile">
     <div class="log-profile-icon">
-        <!-- <mat-icon aria-hidden="false" class="warn">warning</mat-icon> -->
         <ng-container [ngSwitch]="log?.type">
             <mat-icon *ngSwitchCase="'error'" aria-hidden="false" class="warn">cancel</mat-icon>
             <mat-icon *ngSwitchCase="'warning'" aria-hidden="false" color="primary">warning</mat-icon>
@@ -9,20 +8,24 @@
     </div>
     <div class="log-profile-content">
         <div class="log-profile-date">
-            <!-- <span>{{log?.date}}</span> &nbsp;
-            <span>{{log?.time}}</span> -->
-            <span>{{log?.timestamp | date:'yyyy/MM/dd h:mm:ss a'}}</span>
+            <span>{{log?.timestamp | date:'yyyy/MM/dd h:mm:ss a':'UTC'}}</span>
         </div>
         <div class="log-profile-desc">
             <ng-container [ngSwitch]="log.source">
-                <span *ngSwitchCase="'webServer'">
+                <span *ngSwitchCase="'webServer'"
+                    [matTooltip]="getTooltip('log.' + log?.message | translate:{ name: log?.userName.toUpperCase() }, log && log.paras[0] && log.paras[0].toUpperCase())"
+                    matTooltipPosition="above">
                     {{('log.' + log?.message) | translate:{ name: log?.userName.toUpperCase() } }} {{log?.paras[0]?.toUpperCase()}}
                 </span>
-                <span *ngSwitchCase="'lib'">
-                    <span>{{log?.code}}</span>&nbsp;&nbsp;&nbsp;{{'lib_code.' + log?.code | translate}} {{!!log?.message ? ' ' + log.message : ''}}
+                <span *ngSwitchCase="'lib'"
+                    [matTooltip]="getTooltip('lib_code.' + log?.code | translate, log?.message)"
+                    matTooltipPosition="above">
+                    {{log?.code}}&nbsp;&nbsp;{{'lib_code.' + log?.code | translate}} {{!!log?.message ? ' ' + log.message : ''}}
                 </span>
-                <span *ngSwitchDefault>
-                    <span>{{log?.code}}</span>&nbsp;&nbsp;&nbsp;{{log ? trn.getTranslation(log.code,log.message) : ''}}
+                <span *ngSwitchDefault
+                    [matTooltip]="getTooltip(log ? trn.getTranslation(log.code,log.message) : '')"
+                    matTooltipPosition="above">
+                    {{log?.code}}&nbsp;&nbsp;{{log ? trn.getTranslation(log.code,log.message) : ''}}
                 </span>
             </ng-container>
         </div>

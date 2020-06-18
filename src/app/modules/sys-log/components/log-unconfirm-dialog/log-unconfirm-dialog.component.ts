@@ -21,6 +21,10 @@ export class LogUnconfirmDialogComponent implements OnInit, AfterViewInit {
 
     private confirmEvent: EventEmitter<SystemLog> = new EventEmitter<SystemLog>();
 
+    public get hasNoCanConfirm(): boolean {
+        return this.unconfirmLog.every(x => x.canConfirm === false);
+    }
+
     constructor(
         private fetchLogService: SysLogFetchService,
         private ref: MatDialogRef<void>,

@@ -31,6 +31,7 @@ import { SingleInputDialogComponent } from '../../../../components/single-input-
 import { CommonService } from '../../../core/services/common.service';
 import { ProjectDeleteDialogComponent } from '../project-delete-dialog/project-delete-dialog.component';
 import {NewDependencyDialogComponent} from '../toolbar-dialogs/new-dependency-dialog/new-dependency-dialog.component';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'program-toolbar',
@@ -67,6 +68,7 @@ export class ProgramToolbarComponent implements OnInit {
     private ws: WebsocketService,
     public prj: ProjectManagerService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     public prgService: ProgramEditorService,
     private api: ApiService,
     private utl: UtilsService,
@@ -141,18 +143,17 @@ export class ProgramToolbarComponent implements OnInit {
                 this.words['projects.toolbar']['changing']
               );
             } else {
-              if(!this.utils.IsKuka) 
-              {
-                this.snack.open(
-                  this.words['error.err'] +
-                    ' ' +
-                    ret.result +
-                    ':' +
-                    this.words['projects.toolbar']['err_change'],
-                  '',
-                  { duration: 1500 }
-                );
-              }
+              
+                // this.snack.open(
+                //   this.words['error.err'] +
+                //     ' ' +
+                //     ret.result +
+                //     ':' +
+                //     this.words['projects.toolbar']['err_change'],
+                //   '',
+                //   { duration: 1500 }
+                // );
+                this.snackbarService.openTipSnackBar("error.err");
             }
           });
       }
@@ -276,9 +277,10 @@ export class ProgramToolbarComponent implements OnInit {
               }
             })
             .then(() => {
-                this.snack.open(this.words['success'], this.words['dismiss'], {
-                  duration: 1500,
-                });             
+                // this.snack.open(this.words['success'], this.words['dismiss'], {
+                //   duration: 1500,
+                // });          
+                this.snackbarService.openTipSnackBar("success");   
             });
         }
       });
@@ -292,9 +294,10 @@ export class ProgramToolbarComponent implements OnInit {
           const f = new File([new Blob([''])], ret);
           this.api.upload(f, false).then((result: UploadResult) => {
             if (result.success) {
-                this.snack.open(this.words['success'], this.words['dismiss'], {
-                  duration: 1500,
-                });           
+                // this.snack.open(this.words['success'], this.words['dismiss'], {
+                //   duration: 1500,
+                // });       
+                this.snackbarService.openTipSnackBar("success");    
               this.prj.fileRefreshNeeded.emit();
               this.prgService.setFile(ret, null, null, -1);
             } else if (result.err === -1) {
@@ -319,28 +322,31 @@ export class ProgramToolbarComponent implements OnInit {
                           .upload(f, true)
                           .then((result: UploadResult) => {
                             if (result.success) {
-                                this.snack.open(
-                                  this.words['success'],
-                                  this.words['dismiss'],
-                                  { duration: 1500 }
-                                );                             
+                                // this.snack.open(
+                                //   this.words['success'],
+                                //   this.words['dismiss'],
+                                //   { duration: 1500 }
+                                // );     
+                                this.snackbarService.openTipSnackBar("success");                        
                               this.prj.fileRefreshNeeded.emit();
                               this.prgService.setFile(ret, null, null, -1);
                             } else {
-                                this.snack.open(
-                                  this.words['error.err'],
-                                  this.words['dismiss'],
-                                  { duration: 2000 }
-                                );                              
+                                // this.snack.open(
+                                //   this.words['error.err'],
+                                //   this.words['dismiss'],
+                                //   { duration: 2000 }
+                                // );     
+                                this.snackbarService.openTipSnackBar("error.err");                           
                             }
                           });
                       }
                     });
                 });
             } else {
-                this.snack.open(this.words['error.err'], this.words['dismiss'], {
-                  duration: 2000,
-                });              
+                // this.snack.open(this.words['error.err'], this.words['dismiss'], {
+                //   duration: 2000,
+                // });     
+                this.snackbarService.openTipSnackBar("error.err");              
             }
           });
         }
@@ -364,14 +370,16 @@ export class ProgramToolbarComponent implements OnInit {
         if (name) {
           this.api.createFolder(name).then(result => {
             if (result) {
-                this.snack.open(this.words['success'], this.words['dismiss'], {
-                  duration: 1500,
-                });             
+                // this.snack.open(this.words['success'], this.words['dismiss'], {
+                //   duration: 1500,
+                // });    
+                this.snackbarService.openTipSnackBar("success");              
               this.prj.fileRefreshNeeded.emit();
             } else {
-                this.snack.open(this.words['error.err'], this.words['dismiss'], {
-                  duration: 2000,
-                });             
+                // this.snack.open(this.words['error.err'], this.words['dismiss'], {
+                //   duration: 2000,
+                // });             
+                this.snackbarService.openTipSnackBar("error.err");   
             }
           });
         }
@@ -384,18 +392,19 @@ export class ProgramToolbarComponent implements OnInit {
         this.prgService.close();
         this.prgService.mode = 'editor';
         this.router.navigateByUrl('/projects');
-        if(!this.utils.IsKuka)
-        {
-          this.snack.open(this.words['success'], '', { duration: 1500 });
-        }
+       
+        //   this.snack.open(this.words['success'], '', { duration: 1500 });
+        this.snackbarService.openTipSnackBar("success");   
+        
         if (projectName === this.prj.currProject.value.name) {
           return this.prj.getCurrentProject();
         }
       } else {
-          this.snack.open(
-            this.words['projects.toolbar']['err_import'],
-            this.words['dismiss']
-          );        
+        //   this.snack.open(
+        //     this.words['projects.toolbar']['err_import'],
+        //     this.words['dismiss']
+        //   );    
+          this.snackbarService.openTipSnackBar("projects.toolbar.err_import");       
       }
     });
   }
@@ -453,22 +462,25 @@ export class ProgramToolbarComponent implements OnInit {
                   default:
                     break;
                   case -2:
-                      this.snack.open(
-                        words['files.err_upload'],
-                        this.words['dismiss']
-                      );                   
+                    //   this.snack.open(
+                    //     words['files.err_upload'],
+                    //     this.words['dismiss']
+                    //   );    
+                      this.snackbarService.openTipSnackBar("files.err_upload");                    
                     break;
                   case -3:
-                      this.snack.open(
-                        words['files.err_ext'],
-                        this.words['dismiss']
-                      );                   
+                    //   this.snack.open(
+                    //     words['files.err_ext'],
+                    //     this.words['dismiss']
+                    //   );     
+                      this.snackbarService.openTipSnackBar("files.err_ext");                  
                     break;
                   case -4:
-                      this.snack.open(
-                        words['files.err_permission'],
-                        this.words['dismiss']
-                      );
+                    //   this.snack.open(
+                    //     words['files.err_permission'],
+                    //     this.words['dismiss']
+                    //   );
+                      this.snackbarService.openTipSnackBar("files.err_permission");    
                     break;
                 }
               });
@@ -525,10 +537,11 @@ export class ProgramToolbarComponent implements OnInit {
                             } else {
                               // SOMETHING WENT WRONG, TELL SERVER TO DELETE THE FILE
                               this.api.deleteProjectZip(verification.file);
-                              this.snack.open(
-                                  this.words['projects.toolbar']['err_import'],
-                                  this.words['dismiss']
-                                );                             
+                            //   this.snack.open(
+                            //       this.words['projects.toolbar']['err_import'],
+                            //       this.words['dismiss']
+                            //     );    
+                              this.snackbarService.openTipSnackBar("projects.toolbar.err_import");                         
                             }
                             this.prj.isLoading = false;
                           });
@@ -544,10 +557,11 @@ export class ProgramToolbarComponent implements OnInit {
           } else {
             // ZIP FILE IS INVALID
             this.prj.isLoading = false;
-            this.snack.open(
-                this.words['projects.toolbar']['err_import_file'],
-                this.words['dismiss']
-              );            
+            // this.snack.open(
+            //     this.words['projects.toolbar']['err_import_file'],
+            //     this.words['dismiss']
+            //   );   
+            this.snackbarService.openTipSnackBar("projects.toolbar.err_import_file");         
           }
         },
         (ret: HttpErrorResponse) => {
@@ -563,19 +577,22 @@ export class ProgramToolbarComponent implements OnInit {
               default:
                 break;
               case -2:
-                  this.snack.open(
-                    words['files.err_upload'],
-                    this.words['dismiss']
-                  );               
+                //   this.snack.open(
+                //     words['files.err_upload'],
+                //     this.words['dismiss']
+                //   );     
+                  this.snackbarService.openTipSnackBar("files.err_upload");            
                 break;
               case -3:
-                this.snack.open(words['files.err_ext'], this.words['dismiss']);              
+                // this.snack.open(words['files.err_ext'], this.words['dismiss']);  
+                this.snackbarService.openTipSnackBar("files.err_ext");              
                 break;
               case -4:
-                  this.snack.open(
-                    words['files.err_permission'],
-                    this.words['dismiss']
-                  );
+                //   this.snack.open(
+                //     words['files.err_permission'],
+                //     this.words['dismiss']
+                //   );
+                  this.snackbarService.openTipSnackBar("files.err_permission");     
                 break;
             }
           });
@@ -608,11 +625,10 @@ export class ProgramToolbarComponent implements OnInit {
             // ON SUCCUESS
             count++;
             if (count === targetCount) {
-              if (!this.utils.IsKuka) {
-                this.snack.open(this.words['files.success_upload'], '', {
-                  duration: 2000,
-                });
-              }
+                // this.snack.open(this.words['files.success_upload'], '', {
+                //   duration: 2000,
+                // });
+              this.snackbarService.openTipSnackBar("files.success_upload");
               this.prj.fileRefreshNeeded.emit();
             }
           },
@@ -628,22 +644,25 @@ export class ProgramToolbarComponent implements OnInit {
                 default:
                   break;
                 case -2:
-                    this.snack.open(
-                      words['files.err_upload'],
-                      this.words['dismiss']
-                    );                
+                    // this.snack.open(
+                    //   words['files.err_upload'],
+                    //   this.words['dismiss']
+                    // );    
+                    this.snackbarService.openTipSnackBar("files.err_upload");            
                   break;
                 case -3:
-                    this.snack.open(
-                      words['files.err_ext'],
-                      this.words['dismiss']
-                    );
+                    // this.snack.open(
+                    //   words['files.err_ext'],
+                    //   this.words['dismiss']
+                    // );
+                    this.snackbarService.openTipSnackBar("files.err_ext");  
                   break;
                 case -4:
-                    this.snack.open(
-                      words['files.err_permission'],
-                      this.words['dismiss']
-                    );                  
+                    // this.snack.open(
+                    //   words['files.err_permission'],
+                    //   this.words['dismiss']
+                    // );     
+                    this.snackbarService.openTipSnackBar("files.err_permission");               
                   break;
               }
             });
@@ -758,11 +777,10 @@ export class ProgramToolbarComponent implements OnInit {
               }
               return Promise.all(promises);
             } else {
-              if (!this.utils.IsKuka) {
-                this.snack.open(this.words['files.err_delete'], '', {
-                  duration: 2000,
-                });
-              }
+                // this.snack.open(this.words['files.err_delete'], '', {
+                //   duration: 2000,
+                // });
+                this.snackbarService.openTipSnackBar("files.err_delete");
             }
           })
           .then((ret: boolean[]) => {
@@ -773,9 +791,8 @@ export class ProgramToolbarComponent implements OnInit {
               const msg = finalResult
                 ? this.words['files.success_delete']
                 : this.words['files.err_delete'];
-              if (!this.utils.IsKuka) {
-                this.snack.open(msg, '', { duration: 2000 });
-              }
+                // this.snack.open(msg, '', { duration: 2000 });
+                this.snackbarService.openTipSnackBar(msg);
             }
           })
           .then(() => {
@@ -809,16 +826,18 @@ export class ProgramToolbarComponent implements OnInit {
         },
         err => {
           this.prj.isLoading = false;
-          this.snack.open(this.words['error.err'], this.words['dismiss'], {
-              duration: 2000,
-            });         
+        //   this.snack.open(this.words['error.err'], this.words['dismiss'], {
+        //       duration: 2000,
+        //     });  
+            this.snackbarService.openTipSnackBar("error.err");       
         }
       )
       .catch(err => {
         this.prj.isLoading = false;
-        this.snack.open(this.words['error.err'], this.words['dismiss'], {
-            duration: 2000,
-          });      
+        // this.snack.open(this.words['error.err'], this.words['dismiss'], {
+        //     duration: 2000,
+        //   });     
+        this.snackbarService.openTipSnackBar("error.err");    
       });
   }
 

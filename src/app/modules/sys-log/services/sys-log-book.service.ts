@@ -8,7 +8,7 @@ export class SysLogBookService {
     constructor(private fetchLog: SysLogFetchService) { }
 
     public getSysLogs(): Observable<SystemLog[]> {
-        return this.fetchLog.fetchSysLog();
+        return this.fetchLog.fetchAllSysLog();
     }
 
     public clearAllLogHistory(): Observable<boolean> {

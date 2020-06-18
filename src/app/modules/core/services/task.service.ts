@@ -6,6 +6,7 @@ import { TaskFilterPipe } from '../../task-manager/task-filter.pipe';
 import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 
 @Injectable()
@@ -24,7 +25,8 @@ export class TaskService {
     private stat: TpStatService,
     private zone: NgZone,
     private snack: MatSnackBar,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private snackbarService: SysLogSnackBarService
   ) {
     this.trn.get(['dismiss']).subscribe(words=>{
       this.words = words;
@@ -136,7 +138,8 @@ export class TaskService {
         const priorityStr = isUserTask ? ' priority=15' : '';
         this.ws.query('StartTask ' + task.name + priorityStr).then(ret=>{
           if (!showErrors || !ret.err) return;
-            this.snack.open(errorString(ret.err),this.words['dismiss']);        
+            // this.snack.open(errorString(ret.err),this.words['dismiss']);  
+            this.snackbarService.openTipSnackBar(errorString(ret.err));      
         });
       });
     }
@@ -149,7 +152,8 @@ export class TaskService {
       if (task.priority == null) continue;
       this.ws.query('KillTask ' + task.name).then(ret=>{
         if (!showErrors || !ret.err) return;
-          this.snack.open(errorString(ret.err),this.words['dismiss']);       
+        //   this.snack.open(errorString(ret.err),this.words['dismiss']); 
+          this.snackbarService.openTipSnackBar(errorString(ret.err));      
       });
     }
   }
@@ -161,7 +165,8 @@ export class TaskService {
       if (task.priority == null) continue;
       this.ws.query('IdleTask ' + task.name).then(ret=>{
         if (!showErrors || !ret.err) return;
-          this.snack.open(errorString(ret.err),this.words['dismiss']);       
+        //   this.snack.open(errorString(ret.err),this.words['dismiss']);   
+          this.snackbarService.openTipSnackBar(errorString(ret.err));    
       });
     }
   }
@@ -178,7 +183,8 @@ export class TaskService {
         if (task.priority || task.state.indexOf('Global') === -1) {
           this.ws.query('Unload ' + task.name).then(ret=>{
             if (!showErrors || !ret.err) return;
-            this.snack.open(errorString(ret.err),this.words['dismiss']);           
+            // this.snack.open(errorString(ret.err),this.words['dismiss']);  
+            this.snackbarService.openTipSnackBar(errorString(ret.err));         
           });
         }
       });

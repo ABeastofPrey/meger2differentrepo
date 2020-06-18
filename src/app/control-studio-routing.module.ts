@@ -5,31 +5,34 @@ import { TourService } from 'ngx-tour-md-menu';
 import { PreloadSelectedModulesList } from './modules/core/strategies/preload.strategy';
 import { AuthGuard } from './modules/core';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { HttpClient } from '@angular/common/http';
 import { from, Observable, combineLatest } from 'rxjs';
 import { map as rxjsMap } from 'rxjs/operators';
+import { ApiService } from './modules/core/services/api.service';
 
 export class CsTranslateLoader implements TranslateLoader {
+
+  constructor(private apiService: ApiService) { }
+
   getTranslation(lang: string): Observable<any> {
     const fromI18n = from(import(`../assets/i18n/${lang}.json`));
     const fromECodeI18n = from(import(`../assets/i18n-causes-effects/causes-effects-${lang}.json`));
-    const fromLibI18n = from(import(`../assets/i18n-lib/lib-${lang}.json`));
+    const fromLibI18n = from(this.apiService.getFile(`LIB_${lang.toUpperCase()}.JSON`));
     const combinedI18n = combineLatest([fromI18n, fromECodeI18n, fromLibI18n])
       .pipe(rxjsMap(([resI18n, resECI18n, resLibI18n]) => {
         resI18n['err_code'] = resECI18n['err_code'];
-        resI18n['lib_code'] = resLibI18n['lib_code'];
+        try {
+          resI18n['lib_code'] = JSON.parse(resLibI18n)['lib_code'];
+        } catch (err) {
+          console.log('Get lib code translation file failed.');
+        }
         return resI18n;
       }));
     return combinedI18n;
   }
 }
 
-// export function HttpLoaderFactory(http: HttpClient) {
-//   return new TranslateHttpLoader(http, './assets/i18n/');
-// }
-
-export function csLoaderFactory() {
-  return new CsTranslateLoader();
+export function csLoaderFactory(apiService: ApiService) {
+  return new CsTranslateLoader(apiService);
 }
 
 const routes: Routes = [
@@ -61,11 +64,11 @@ const routes: Routes = [
       loader: {
         provide: TranslateLoader,
         useFactory: csLoaderFactory,
-        deps: [HttpClient],
+        deps: [ApiService],
       },
     }),
   ],
   exports: [RouterModule],
   providers: [TourService, PreloadSelectedModulesList],
 })
-export class ControlStudioRoutingModule {}
+export class ControlStudioRoutingModule { }

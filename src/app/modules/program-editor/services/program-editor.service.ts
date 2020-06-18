@@ -25,6 +25,7 @@ import { TpStatService } from '../../core/services/tp-stat.service';
 import { ProjectManagerService } from '../../core/services/project-manager.service';
 import { DataService } from '../../core/services/data.service';
 import { FwTranslatorService } from '../../core/services/fw-translator.service';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 export const TASKSTATE_NOTLOADED = -1;
 export const TASKSTATE_RUNNING = 1;
@@ -118,6 +119,7 @@ export class ProgramEditorService {
     private prj: ProjectManagerService,
     private ws: WebsocketService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private data: DataService,
     private trn: TranslateService,
     private api: ApiService,
@@ -423,19 +425,22 @@ export class ProgramEditorService {
               default:
                 break;
               case -2:
-                  this.snack.open(
-                    words['files.err_upload'],
-                    this.words['dismiss']
-                  );               
+                //   this.snack.open(
+                //     words['files.err_upload'],
+                //     this.words['dismiss']
+                //   ); 
+                  this.snackbarService.openTipSnackBar("files.err_upload");              
                 break;
               case -3:
-                  this.snack.open(words['files.err_ext'], this.words['dismiss']);             
+                //   this.snack.open(words['files.err_ext'], this.words['dismiss']);   
+                  this.snackbarService.openTipSnackBar("files.err_ext");                  
                 break;
               case -4:
-                  this.snack.open(
-                    words['files.err_permission'],
-                    this.words['dismiss']
-                  );
+                //   this.snack.open(
+                //     words['files.err_permission'],
+                //     this.words['dismiss']
+                //   );
+                  this.snackbarService.openTipSnackBar("files.err_permission");             
                 break;
             }
           });
@@ -497,19 +502,22 @@ export class ProgramEditorService {
               default:
                 break;
               case -2:
-                  this.snack.open(
-                    words['files.err_upload'],
-                    this.words['dismiss']
-                  );       
+                //   this.snack.open(
+                //     words['files.err_upload'],
+                //     this.words['dismiss']
+                //   );       
+                  this.snackbarService.openTipSnackBar("files.err_upload");
                 break;
               case -3:
-                  this.snack.open(words['files.err_ext'], this.words['dismiss']);               
+                //   this.snack.open(words['files.err_ext'], this.words['dismiss']);    
+                  this.snackbarService.openTipSnackBar("files.err_ext");           
                 break;
               case -4:
-                  this.snack.open(
-                    words['files.err_permission'],
-                    this.words['dismiss']
-                  );
+                //   this.snack.open(
+                //     words['files.err_permission'],
+                //     this.words['dismiss']
+                //   );
+                  this.snackbarService.openTipSnackBar("files.err_permission"); 
                 break;
             }
             this.busy = false;
@@ -559,10 +567,9 @@ export class ProgramEditorService {
       this.ws.query('KillTask ' + this.activeFile).then(() => {
         this.ws.query('Unload ' + this.activeFile).then((ret: MCQueryResponse) => {
           if (ret.result.length > 0) {
-            if(!this.utils.IsKuka)
-            {
-              this.snack.open(ret.result, '', { duration: 2000 });
-            }
+            
+            //   this.snack.open(ret.result, '', { duration: 2000 });
+              this.snackbarService.openTipSnackBar(ret.result); 
             
           }
           this.busy = false;
@@ -598,10 +605,9 @@ export class ProgramEditorService {
     return this.ws.query('KillTask ' + f).then(() => {
       return this.ws.query('Unload ' + f).then((ret: MCQueryResponse) => {
         if (!force && ret.result.length > 0) {
-          if(!this.utils.IsKuka)
-          {
-            this.snack.open(ret.result, '', { duration: 2000 });
-          }
+         
+            // this.snack.open(ret.result, '', { duration: 2000 });
+            this.snackbarService.openTipSnackBar(ret.result); 
         }
         this.busy = false;
       });
@@ -847,14 +853,14 @@ export class ProgramEditorService {
             this.ws.query(cmdTeach).then(ret => {
               if (ret.result === '0') {
                 this.getVariable(fullName).then(result=>{
-                  this.snack.open(this.words['success'] + ' ( ' + result + ' )', this.words['dismiss']);
+                //   this.snack.open(this.words['success'] + ' ( ' + result + ' )', this.words['dismiss']);
+                  this.snackbarService.openTipSnackBar("success"); 
                 });
               } else {
                 const err = this.words['error.err'] + ' ' + ret.result;
-                if(!this.utils.IsKuka)
-                {
-                  this.snack.open(err, '', { duration: 2000 });
-                }
+               
+                //   this.snack.open(err, '', { duration: 2000 });
+                  this.snackbarService.openTipSnackBar(err);
               }
             });
           }

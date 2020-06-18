@@ -9,6 +9,7 @@ import { SafetyConfiguration } from '../../configuration/components/configuratio
 import { UtilsService } from '../../core/services/utils.service';
 import { HttpClient } from '@angular/common/http';
 import { MatHorizontalStepper, MatSnackBar } from '@angular/material';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'app-safety-configurator',
@@ -59,6 +60,7 @@ export class SafetyConfiguratorComponent implements OnInit {
     private utils: UtilsService,
     private trn: TranslateService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private http: HttpClient) { }
 
   ngOnInit() {
@@ -69,7 +71,8 @@ export class SafetyConfiguratorComponent implements OnInit {
   }
 
   private showError(code: number) {
-    this.snack.open(this.words['error.err'] + ' ' + code,this.words['dismiss']);
+    // this.snack.open(this.words['error.err'] + ' ' + code,this.words['dismiss']);
+    this.snackbarService.openTipSnackBar("error.err");
   }
 
   /* Load step i */

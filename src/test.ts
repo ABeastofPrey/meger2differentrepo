@@ -33,10 +33,10 @@ osUpgradeErrorDialogContext.keys().map(osUpgradeErrorDialogContext);
 const activationContext = require.context('./app/modules/help/components/activation/', true, /\.spec\.ts$/);
 activationContext.keys().map(activationContext);
 
-const ioContext = require.context('./app/modules/configuration/components/io/', true, /\.spec\.ts$/);
-ioContext.keys().map(ioContext);
+// const ioContext = require.context('./app/modules/configuration/components/io/', true, /\.spec\.ts$/);
+// ioContext.keys().map(ioContext);
 
-const configurationServiceContext = require.context('./app/modules/configuration/services/', true,/\.spec\.ts$/);
+// const configurationServiceContext = require.context('./app/modules/configuration/services/', true,/\.spec\.ts$/);
 // configurationServiceContext.keys().map(configurationServiceContext);
 
 const rmContext = require.context('./app/modules/configuration/components/reference-mastering/', true, /\.spec\.ts$/);
@@ -52,13 +52,13 @@ const vCommandContext = require.context('./app/modules/program-editor/components
 vCommandContext.keys().map(vCommandContext);
 
 const jumpxCommandContext = require.context('./app/modules/program-editor/components/combined-dialogs/components/jumpx-command/', true, /\.spec\.ts$/);
-// jumpxCommandContext.keys().map(jumpxCommandContext); // Unstable with unknow undefined.
-
-const syslogContext = require.context('./app/modules/sys-log/components/log-snackbar/', true, /\.spec\.ts$/);
-syslogContext.keys().map(syslogContext);
+jumpxCommandContext.keys().map(jumpxCommandContext); // Unstable with unknow undefined.
 
 // const traceContext = require.context('./app/modules/dashboard/components/trace/', true, /\.spec\.ts$/);
 // traceContext.keys().map(traceContext);
 
 const diagnosisContext = require.context('./app/modules/tools/components/diagnosis/', true, /\.spec\.ts$/);
 diagnosisContext.keys().map(diagnosisContext);
+
+const syslogContext = require.context('./app/modules/sys-log/components/log-cause/', true, /\.spec\.ts$/);
+syslogContext.keys().map(syslogContext);

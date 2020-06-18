@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material';
 import { ApiService, UploadResult } from './../../../core/services/api.service';
 import { Component, OnInit } from '@angular/core';
 import { UtilsService } from '../../../core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'fwconfig-editor',
@@ -28,6 +29,7 @@ export class FwconfigEditorComponent implements OnInit {
   constructor(
     private api: ApiService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
     private utils: UtilsService
   ) { }
@@ -46,10 +48,8 @@ export class FwconfigEditorComponent implements OnInit {
     return this.api.uploadToPath(new File([new Blob([text])], 'FWCONFIG'),true,'')
       .then((ret: UploadResult) => {
         const result = ret.success ? this.words['changeOK'] : this.words['error.err'];
-        if(!this.utils.IsKuka)
-        {
-          this.snack.open(result, '', { duration: 1500 });
-        }
+        // this.snack.open(result, '', { duration: 1500 });
+        this.snackbarService.openTipSnackBar(result);
       }).catch(err => {
         console.warn(err);
       });

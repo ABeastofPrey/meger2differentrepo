@@ -13,7 +13,7 @@ export class CSNotification {
 }
 
 export enum LibAsyncMessageCode {
-  MaitenanceLog = 1001,
+  MaitenanceNewLog = 1001,
 }
 
 export interface LibAsyncMessage {

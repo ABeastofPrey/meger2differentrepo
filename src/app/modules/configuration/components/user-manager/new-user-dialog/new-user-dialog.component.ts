@@ -6,6 +6,7 @@ import { UserWithPic } from '../user-mngr/user-mngr.component';
 import { LoginService } from '../../../../core';
 import { FormControl, Validators, ValidatorFn } from '@angular/forms';
 import {UtilsService} from '../../../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'app-new-user-dialog',
@@ -75,6 +76,7 @@ export class NewUserDialogComponent implements OnInit {
   constructor(
     private api: ApiService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private ref: MatDialogRef<boolean>,
     private trn: TranslateService,
     public login: LoginService,
@@ -108,9 +110,8 @@ export class NewUserDialogComponent implements OnInit {
         .then((res: string) => {
           if (res) this.ref.close(true);
           else {
-            if (!this.utils.IsKuka) {
-              this.snack.open(this.wordErr, '', { duration: 2000 });
-            }
+            //   this.snack.open(this.wordErr, '', { duration: 2000 });
+              this.snackbarService.openTipSnackBar(this.wordErr);
           }
         });
     }
@@ -124,9 +125,8 @@ export class NewUserDialogComponent implements OnInit {
       .then((res: string) => {
         if (res) this.ref.close(true);
         else {
-          if (!this.utils.IsKuka) {
-            this.snack.open(this.wordErr, '', { duration: 2000 });
-          }
+            // this.snack.open(this.wordErr, '', { duration: 2000 });
+            this.snackbarService.openTipSnackBar(this.wordErr);
         }
       });
   }

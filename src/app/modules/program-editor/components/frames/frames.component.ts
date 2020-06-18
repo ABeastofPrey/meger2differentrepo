@@ -11,6 +11,7 @@ import { ToolCalibrationDialogComponent } from '../tool-calibration-dialog/tool-
 import { FrameCalibrationDialogComponent } from '../frame-calibration-dialog/frame-calibration-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'frames',
@@ -42,6 +43,7 @@ export class FramesComponent implements OnInit {
     private dialog: MatDialog,
     private ws: WebsocketService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
     private utils: UtilsService
   ) {
@@ -134,10 +136,8 @@ export class FramesComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       this.rowClick(this.selectedVar, true); // REFRESH DATA
       if (ret.result === '0') {
-        if(!this.utils.IsKuka)
-        {
-          this.snack.open(this.words['changeOK'], null, { duration: 2000 });
-        }
+        // this.snack.open(this.words['changeOK'], null, { duration: 2000 });
+        this.snackbarService.openTipSnackBar("changeOK");
       }
       else console.log(ret.cmd + '>>>' + ret.result);
     });

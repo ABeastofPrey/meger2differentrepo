@@ -32,6 +32,7 @@ import { environment } from '../../../../../environments/environment';
 import { Router } from '@angular/router';
 import { RobotService } from '../../../core/services/robot.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 declare var Plotly;
 
@@ -96,6 +97,7 @@ export class HomeScreenComponent implements OnInit {
     public utils: UtilsService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     public stat: TpStatService,
     public prj: ProjectManagerService,
     private router: Router,
@@ -331,10 +333,11 @@ export class HomeScreenComponent implements OnInit {
                   }, 2000);
                 }, 10000);
               } else {
-                  this.snack.open(
-                    this.words['error.invalid_feature'],
-                    this.words['dismiss']
-                  );               
+                //   this.snack.open(
+                //     this.words['error.invalid_feature'],
+                //     this.words['dismiss']
+                //   );     
+                  this.snackbarService.openTipSnackBar("error.invalid_feature");          
               }
             });
           });

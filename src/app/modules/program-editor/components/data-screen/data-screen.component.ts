@@ -21,6 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 const BASE_COLS = ['select', 'name', 'arrIndex'];
 const SUFFIX_COLS = ['actions'];
@@ -90,6 +91,7 @@ export class DataScreenComponent implements OnInit {
     public data: DataService,
     private ws: WebsocketService,
     private snackBar: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private dialog: MatDialog,
     public login: LoginService,
     private trn: TranslateService,
@@ -440,12 +442,10 @@ export class DataScreenComponent implements OnInit {
                 if (ret.result === '0') {
                   this.data.refreshVariables();
                   if (this.selectedVar === element) this.selectedVar = null;
-                  if(!this.utils.IsKuka)
-                  {
-                    this.snackBar.open(this.words['success'], '', {
-                      duration: 2000,
-                    });
-                  }
+                    // this.snackBar.open(this.words['success'], '', {
+                    //   duration: 2000,
+                    // });
+                  this.snackbarService.openTipSnackBar("success");
                   this.selection.clear();
                 }
               });
@@ -557,10 +557,8 @@ export class DataScreenComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       this.refreshVariable(parent || v);
       if (ret.result === '0') {
-        if(!this.utils.IsKuka)
-        {
-          this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
-        }
+        // this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
+        this.snackbarService.openTipSnackBar("changeOK");
       }
       else console.log(ret.cmd + '>>>' + ret.result);
     });

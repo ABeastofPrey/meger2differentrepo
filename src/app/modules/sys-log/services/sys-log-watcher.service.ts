@@ -1,8 +1,8 @@
 import { Injectable, EventEmitter, NgZone } from '@angular/core';
 import { SystemLog } from '../enums/sys-log.model';
 import { Observable, combineLatest, Subscription, Subject, merge } from 'rxjs';
-import { takeUntil, debounceTime, map as rxjsMap, flatMap } from 'rxjs/operators';
-import { SysLogOverlayService } from './sys-log-overlay.service';
+import { takeUntil, debounceTime, map as rxjsMap, flatMap, filter as rxjsFilter } from 'rxjs/operators';
+import { SysLogSnackBarService } from './sys-log-snack-bar.service';
 import { SysLogFetchService } from './sys-log-fetch.service';
 import { isUndefined, isNotUndefined } from 'ramda-adjunct';
 import { LogUnconfirmDialogComponent } from '../components/log-unconfirm-dialog/log-unconfirm-dialog.component';
@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material';
 import { filter, map, prop, compose, find, head, length } from 'ramda';
 import { LogInfoComponent } from '../components/log-info/log-info.component';
 import { NotificationService } from '../../core/services/notification.service';
+import { LibAsyncMessageCode } from '../../core/notification.model';
 
 @Injectable({
     providedIn: 'root'
@@ -26,7 +27,7 @@ export class SysLogWatcherService {
     public refreshLog = new EventEmitter<void>();
 
     constructor(
-        private overlaySerivce: SysLogOverlayService,
+        private snackbarService: SysLogSnackBarService,
         private fetchLog: SysLogFetchService,
         private dialog: MatDialog,
         private notify: NotificationService,
@@ -38,7 +39,10 @@ export class SysLogWatcherService {
         const notifier = merge(
             this.notify.newMessage.pipe(debounceTime<any>(500)),
             this.notify.newWebserverMessage.pipe(debounceTime<any>(500)),
-            this.notify.newLibAsyncMessage.pipe(debounceTime<any>(500)),
+            this.notify.newLibAsyncMessage.pipe(
+                rxjsFilter(({ code }) => code === LibAsyncMessageCode.MaitenanceNewLog),
+                debounceTime<any>(500)
+            ),
             this.refreshLog.pipe(debounceTime<any>(200))
         ).pipe(takeUntil(this.stopListen));
         const getUnconfimredLogs = flatMap(() => this.getUnconfimredLogs());
@@ -52,7 +56,7 @@ export class SysLogWatcherService {
     public stopListenSysLog(): void {
         this.unsubscribeEvents();
         this.stopListen.next();
-        this.overlaySerivce.closeLogSnakbar();
+        !this.fisrtPrompt && this.snackbarService.closeLogSnackBar();
         this.fisrtPrompt = true;
         this.subscribeClicks = true;
     }
@@ -62,7 +66,7 @@ export class SysLogWatcherService {
     }
 
     private getUnconfimredLogs(): Observable<SystemLog[]> {
-        const fetchData = [this.fetchLog.fetchSysLog(), this.fetchLog.fetchConfirmedIds()];
+        const fetchData = [this.fetchLog.fetchErrHistoryAndMaintenaceLogs(), this.fetchLog.fetchConfirmedIds()];
         const filterUnconfirmed = ([allLog, confirmedLog]): SystemLog[] => {
             const findLog = log => confirmedLog.find(x => x === log.id);
             const isNotConfirmed = compose(isUndefined, findLog);
@@ -73,23 +77,25 @@ export class SysLogWatcherService {
 
     private promptLatestUnconfirmedLog(unconfirmedLog: SystemLog[]): void {
         this.unconfirmedLog = unconfirmedLog;
-        const latestUnconfirmedLog = head(unconfirmedLog);
-        const unconfirmedLogCount = length(unconfirmedLog);
+        const latestUnconfirmedLog = head(this.unconfirmedLog);
+        const unconfirmedLogCount = length(this.unconfirmedLog);
+        const hasNoCanConfirm = this.unconfirmedLog.every(x => x.canConfirm === false);
         if (isNotUndefined(latestUnconfirmedLog)) {
             if (this.fisrtPrompt) {
-                this.overlaySerivce.openLogSnakbar(latestUnconfirmedLog, unconfirmedLogCount);
+                this.snackbarService.openLogSnackbar(latestUnconfirmedLog, unconfirmedLogCount, hasNoCanConfirm);
                 this.fisrtPrompt = false;
             } else {
-                this.overlaySerivce.refreshSnakbar(latestUnconfirmedLog, unconfirmedLogCount);
+                this.snackbarService.refreshSnackBar(latestUnconfirmedLog, unconfirmedLogCount, hasNoCanConfirm);
             }
         } else {
-            this.overlaySerivce.closeLogSnakbar();
+            if (this.fisrtPrompt) return;
+            this.snackbarService.closeLogSnackBar();
             this.fisrtPrompt = true;
         }
     }
 
     private subscribeEvents(): void {
-        this.clickContentSubcription = this.overlaySerivce.clickContent.subscribe(id => {
+        this.clickContentSubcription = this.snackbarService.clickContent.subscribe(id => {
             this.pauseListenSysLog();
             this.dialog.open(LogUnconfirmDialogComponent, {
                 width: '800px',
@@ -99,7 +105,7 @@ export class SysLogWatcherService {
                 this.startListenSysLog();
             });
         });
-        this.clickQuestionSubscription = this.overlaySerivce.clickQuestion.subscribe(log => {
+        this.clickQuestionSubscription = this.snackbarService.clickQuestion.subscribe(log => {
             this.pauseListenSysLog();
             this.dialog.open(LogInfoComponent, {
                 width: '600px',
@@ -109,14 +115,14 @@ export class SysLogWatcherService {
                 this.startListenSysLog();
             });
         });
-        this.clickConfirmSubcription = this.overlaySerivce.clickConfirm.subscribe((log: SystemLog) => {
+        this.clickConfirmSubcription = this.snackbarService.clickConfirm.subscribe((log: SystemLog) => {
             const needConfirmErr = log.source !== 'webServer';
             this.fetchLog.setConfirmId(log.id, needConfirmErr).subscribe(success => {
                 if (!success) return;
                 this.refreshLog.next();
             });
         });
-        this.clickConfirmAllSubcription = this.overlaySerivce.clickConfirmAll.subscribe(() => {
+        this.clickConfirmAllSubcription = this.snackbarService.clickConfirmAll.subscribe(() => {
             const getIdList = compose(map(prop('id')), filter((x: SystemLog) => x.canConfirm));
             const isNotAllWebLog = compose(isNotUndefined, find(x => x.source !== 'webServer'))(this.unconfirmedLog);
             this.fetchLog.setConfirmIdList(getIdList(this.unconfirmedLog), isNotAllWebLog).subscribe(success => {

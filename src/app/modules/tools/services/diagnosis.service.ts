@@ -227,7 +227,7 @@ export class DiagnosisService {
                 uploadErroLogFile(erro)
             ]);
         };
-        return this.sysLogFetch.fetchSysLog().pipe(
+        return this.sysLogFetch.fetchAllSysLog().pipe(
             tap(getPropMax),
             rxjsMap(generateFilesString),
             switchMap(uploadFiles),

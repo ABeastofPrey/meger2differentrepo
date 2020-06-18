@@ -4,6 +4,7 @@ import { WebsocketService, MCQueryResponse } from './../../../core/services/webs
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {UtilsService} from '../../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 @Component({
   selector: 'app-axis-vord',
   templateUrl: './axis-vord.component.html',
@@ -21,8 +22,9 @@ export class AxisVordComponent implements OnInit {
     private ws: WebsocketService,
     private grp: GroupManagerService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
-    private utils: UtilsService
+    private utils: UtilsService,
   ) { }
 
   async ngOnInit() {
@@ -65,9 +67,8 @@ export class AxisVordComponent implements OnInit {
       if (ret.result !== '0') {
         this.vords[i].vord = prev;
       } else {
-        if (!this.utils.IsKuka) {
-          this.snack.open(this.words['changeOK'], '', {duration: 1500});
-        }
+        //   this.snack.open(this.words['changeOK'], '', {duration: 1500});
+            this.snackbarService.openTipSnackBar("changeOK");
       }
     });
   }

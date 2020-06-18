@@ -15,6 +15,7 @@ import { CommonService } from '../../../core/services/common.service';
 import { FormControl, FormGroupDirective, NgForm, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 export enum DataParameter {
   OneArraySize = 'OneArraySize',
@@ -70,6 +71,7 @@ export class AddVarComponent implements OnInit {
     private ws: WebsocketService,
     private coos: CoordinatesService,
     private snackbar: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
     private utils: UtilsService,
     private screenManagerService: ScreenManagerService,
@@ -122,9 +124,8 @@ export class AddVarComponent implements OnInit {
       if (!canNotOpen) {
         this.changeOverlayAndToggleJog();
       } else {
-        if (!this.utils.IsKuka) {
-          this.snackbar.open(this.words['variables.cannot_use_jog_tip'], '', { duration: 2000 });
-        }
+        //   this.snackbar.open(this.words['variables.cannot_use_jog_tip'], '', { duration: 2000 });
+          this.snackbarService.openTipSnackBar("variables.cannot_use_jog_tip");
       }
     });
 

@@ -23,8 +23,25 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 35px 5px 14px;
-            .confirm-all-btn {
-                width: 126px;
+            ::ng-deep .confirm-all-btn {
+                // width: 126px;
+                width: 97px;
+                margin-right: 28px;
+                .mat-button-wrapper {
+                    position: relative;
+                    height: 100%;
+                    width: 100%;
+                    display: block;
+                    .all-badge {
+                        position: absolute;
+                        bottom: 2px;
+                        right: 20px;
+                        width: 12px;
+                        height: 12px;
+                        font-size: 11px;
+                        line-height: 11px;
+                    }
+                }
             }
             .counter-container {
                 display: flex;

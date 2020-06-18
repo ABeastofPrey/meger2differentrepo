@@ -163,7 +163,7 @@ export class SysLogFetchService {
         });
     }
 
-    public fetchSysLog(): Observable<SystemLog[]> {
+    public fetchAllSysLog(): Observable<SystemLog[]> {
         return combineLatest([
             this.fetchFromWebserver(),
             this.fetchFromErrHistory(),
@@ -171,6 +171,19 @@ export class SysLogFetchService {
         ]).pipe(
             rxjsMap(
                 ([webSerLog, errHisLog, maiLog]) => [...webSerLog, ...errHisLog, ...maiLog]
+            ),
+            rxjsMap(sort(descend(prop('timestamp')))),
+            // rxjsMap(take(1000))
+        );
+    }
+
+    public fetchErrHistoryAndMaintenaceLogs(): Observable<SystemLog[]> {
+        return combineLatest([
+            this.fetchFromErrHistory(),
+            this.fetchFromLibMaintenance(),
+        ]).pipe(
+            rxjsMap(
+                ([errHisLog, maiLog]) => [...errHisLog, ...maiLog]
             ),
             rxjsMap(sort(descend(prop('timestamp')))),
             rxjsMap(take(1000))

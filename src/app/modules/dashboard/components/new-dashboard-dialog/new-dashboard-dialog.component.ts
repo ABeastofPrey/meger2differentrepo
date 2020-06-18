@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import {UtilsService} from '../../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'new-dashboard-dialog',
@@ -29,6 +30,7 @@ export class NewDashboardDialogComponent implements OnInit {
     private ws: WebsocketService,
     private dashboard: DashboardService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     public dialogRef: MatDialogRef<DashboardInitParams>,
     private trn: TranslateService,
     private utils: UtilsService,
@@ -39,9 +41,8 @@ export class NewDashboardDialogComponent implements OnInit {
       this.dialogRef.close(this.selectedElement);
     }
     else {
-      if (this.utils.IsNotKuka) {
-        this.snack.open(this.words, '', { duration: 1500 });
-      }
+        // this.snack.open(this.words, '', { duration: 1500 });
+        this.snackbarService.openTipSnackBar(this.words);
     }
   }
 

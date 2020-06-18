@@ -14,6 +14,7 @@ import { environment } from '../../../../../environments/environment';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'main-menu',
@@ -40,6 +41,7 @@ export class MainMenuComponent implements OnInit {
     public login: LoginService,
     private api: ApiService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     public mgr: ScreenManagerService,
     private router: Router,
     public stat: TpStatService,
@@ -101,10 +103,8 @@ export class MainMenuComponent implements OnInit {
           if (ret) {
             this.api.refreshProfilePic();
             this.trn.get('files.success_upload').subscribe(word => {
-              if(!this.utils.IsKuka)
-              {
-                this.snack.open(word, '', { duration: 2000 });
-              }
+            //   this.snack.open(word, '', { duration: 2000 });
+              this.snackbarService.openTipSnackBar(word);
             });
             this.profileSrc = this.api.getProfilePic(
               this.login.getCurrentUser().user.username
@@ -113,9 +113,8 @@ export class MainMenuComponent implements OnInit {
             this.trn
               .get('files.err_upload', { name: file.name })
               .subscribe(word => {
-                if (!this.utils.IsKuka) {
-                  this.snack.open(word, '', { duration: 2000 });
-                }
+                // this.snack.open(word, '', { duration: 2000 });
+                this.snackbarService.openTipSnackBar(word);
               });
           }
           this._busy = false;

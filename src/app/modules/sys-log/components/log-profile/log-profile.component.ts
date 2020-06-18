@@ -10,6 +10,10 @@ import { FwTranslatorService } from '../../../core/services/fw-translator.servic
 export class LogProfileComponent implements OnInit {
     @Input()log: SystemLog;
 
+    public getTooltip(key: string, par: string = ''): string {
+        return key + ' ' + par;
+    }
+
     constructor(public trn: FwTranslatorService) { }
 
     ngOnInit(): void { }

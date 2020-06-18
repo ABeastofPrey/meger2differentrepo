@@ -117,7 +117,7 @@ describe('LogBookComponent', () => {
   it('should slice log with page index and page size', async(() => {
     component.pageChange({ pageIndex: 0, pageSize: 10 } as PageEvent);
     fixture.whenStable().then(() => {
-      expect(component.visiableLogs.length).toEqual(7);
+      expect(component.visiableLogs.length).toEqual(6);
     });
   }));
 

@@ -31,7 +31,7 @@ const TRANSLATIONS = { ...TRANSLATIONS_EN, ...TRANSLATIONS_ERR_EN };
 const props = split('.');
 const value = path(__, TRANSLATIONS);
 const getVal = compose(value, props);
-const httpLoaderFactory = () => new CsTranslateLoader();
+const httpLoaderFactory = () => new CsTranslateLoader({} as any);
 
 @Injectable()
 export class TranslateServiceStub extends TranslateService {

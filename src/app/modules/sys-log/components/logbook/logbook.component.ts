@@ -22,7 +22,7 @@ export class LogBookComponent implements OnInit {
     public showFirm = true;
     public showLib = true;
     public showDrive = true;
-    public showServe = true;
+    public showServe = false;
     public showError = true;
     public showWarn = true;
     public showInfo = true;
@@ -35,7 +35,7 @@ export class LogBookComponent implements OnInit {
         private service: SysLogBookService,
         private sysLogWatcher: SysLogWatcherService,
         private ws: WebsocketService,
-        private cdRef: ChangeDetectorRef
+        private cdRef: ChangeDetectorRef,
     ) { }
 
     ngOnInit(): void {

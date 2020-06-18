@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material';
 import { MCQueryResponse, WebsocketService } from './websocket.service';
 import { TranslateService } from '@ngx-translate/core';
 import {UtilsService} from '../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 @Injectable()
 export class LeadByNoseServiceService {
@@ -103,7 +104,8 @@ export class LeadByNoseServiceService {
     private ws: WebsocketService,
     private snackbar: MatSnackBar,
     private trn: TranslateService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private snackbarService: SysLogSnackBarService
   ) {
     this.ws.isConnected.subscribe(stat => {
       if (!stat) {
@@ -162,9 +164,8 @@ export class LeadByNoseServiceService {
           }
           if (counter === 10) {
             clearInterval(initInterval);
-            if (this.utils.IsNotKuka) {
-              this.snackbar.open(this.wordErrTimeout, '', { duration: 2000 });
-            }
+            //   this.snackbar.open(this.wordErrTimeout, '', { duration: 2000 });
+              this.snackbarService.openTipSnackBar(this.wordErrTimeout);
             //this.mgr.mode = this.mgr.ScreenMode.TP;
             this.ws.clearInterval(this.keepAlive);
             this.ws.send('?LBN_EXECUTE(0)', true);

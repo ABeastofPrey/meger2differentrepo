@@ -11,6 +11,7 @@ import {GroupManagerService} from '../../core/services/group-manager.service';
 import {RecordParams} from '../../../components/record-dialog/record-dialog.component';
 import {UtilsService} from '../../../modules/core/services/utils.service';
 import { takeUntil } from 'rxjs/operators';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 @Injectable()
 export class DashboardService {
@@ -59,6 +60,7 @@ export class DashboardService {
     private dialog: MatDialog,
     private api: ApiService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private zone: NgZone,
     private trn: TranslateService,
     private grp: GroupManagerService,
@@ -158,10 +160,11 @@ export class DashboardService {
     this._busy = true;
     return this.api.getRecordingCSV(recName).then((csv: string) => {
       if (csv === null) {
-          this.snack.open(
-            this.words['dashboard.err_file'],
-            this.words['dismiss']
-          );    
+        //   this.snack.open(
+        //     this.words['dashboard.err_file'],
+        //     this.words['dismiss']
+        //   );   
+          this.snackbarService.openTipSnackBar("dashboard.err_file"); 
         return false;
       }
       this.lastChartData = this.csvToGraphs(csv);

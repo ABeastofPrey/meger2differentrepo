@@ -17,6 +17,7 @@ import {RecordDialogComponent, RecordParams} from '../../../../components/record
 import {RecordService} from '../../../core/services/record.service';
 import {Router} from '@angular/router';
 import {UtilsService} from '../../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'dashboard-window',
@@ -37,13 +38,14 @@ export class DashboardWindowComponent implements OnInit {
     private dashboard: DashboardService,
     private ws: WebsocketService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private dialog: MatDialog,
     private trn: TranslateService,
     public login: LoginService,
     private grp: GroupManagerService,
     private rec: RecordService,
     private router: Router,
-    private utils: UtilsService
+    private utils: UtilsService,
   ) {
     this.trn
       .get(['dashboard.err_target', 'dismiss', 'dashboard.move_sent'])
@@ -95,12 +97,11 @@ export class DashboardWindowComponent implements OnInit {
   move() {
     for (const t of this.params.target) {
       if (isNaN(t) || t === null) {
-        if (this.utils.IsNotKuka) {
-          return this.snack.open(this.words['dashboard.err_target'], '', {
-            duration: 1500,
-          });
-        }
-        return;
+        //   return this.snack.open(this.words['dashboard.err_target'], '', {
+        //     duration: 1500,
+        //   });
+          return this.snackbarService.openTipSnackBar("dashboard.err_target");
+        // return;
       }
     }
     let cmd = 'move ' + this.params.name;
@@ -123,7 +124,8 @@ export class DashboardWindowComponent implements OnInit {
             msg: err.errMsg,
           })
           .subscribe(word => {
-              this.snack.open(word, this.words['dismiss']);           
+            //   this.snack.open(word, this.words['dismiss']);       
+              this.snackbarService.openTipSnackBar(word);    
           });
       }
     });
@@ -189,11 +191,13 @@ export class DashboardWindowComponent implements OnInit {
           varList.join();
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
           if (ret.err) {
-              return this.snack.open(errorString(ret.err), 'DISMISS');
+            //   return this.snack.open(errorString(ret.err), 'DISMISS');
+              return this.snackbarService.openTipSnackBar(errorString(ret.err));
           }
           this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
             if (ret.err) {
-                return this.snack.open(errorString(ret.err), 'DISMISS');
+                // return this.snack.open(errorString(ret.err), 'DISMISS');
+                return this.snackbarService.openTipSnackBar(errorString(ret.err));
             }
             this.params.isRecording = true;
             this.params.recordingParams = params;

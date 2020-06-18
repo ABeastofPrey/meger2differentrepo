@@ -12,6 +12,7 @@ import { YesNoDialogComponent } from '../../../../../components/yes-no-dialog/ye
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import {UtilsService} from '../../../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'user-mngr',
@@ -33,9 +34,10 @@ export class UserMngrComponent implements OnInit {
     private api: ApiService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     public login: LoginService,
     private trn: TranslateService,
-    private utils: UtilsService
+    private utils: UtilsService,
   ) {
     this.refreshUsers();
     this.trn
@@ -94,34 +96,30 @@ export class UserMngrComponent implements OnInit {
               let success = true;
               for (const r of ret) success = success && r;
               if (success) {
-                if (!this.utils.IsKuka) {
-                  this.snack.open(
-                    this.words['userManager.delete']['success'],
-                    '',
-                    { duration: 2000 }
-                  );
-                }
+                //   this.snack.open(
+                //     this.words['userManager.delete']['success'],
+                //     '',
+                //     { duration: 2000 }
+                //   );
+                  this.snackbarService.openTipSnackBar("userManager.delete.success");
               }
               else if (selected.find(u=>u.username === 'admin')) {
-                if (!this.utils.IsKuka) {
-                  this.snack.open(this.words['userManager.delete']['fail2'], '', {
-                    duration: 2000,
-                  });
-                }
+                //   this.snack.open(this.words['userManager.delete']['fail2'], '', {
+                //     duration: 2000,
+                //   });
+                  this.snackbarService.openTipSnackBar("userManager.delete.fail2");
               } else {
-                if (!this.utils.IsKuka) {
-                  this.snack.open(this.words['userManager.delete']['fail'], '', {
-                    duration: 2000,
-                  });
-                }
+                //   this.snack.open(this.words['userManager.delete']['fail'], '', {
+                //     duration: 2000,
+                //   });
+                  this.snackbarService.openTipSnackBar("userManager.delete.fail");
               }
             },
             () => {
-              if (!this.utils.IsKuka) {
-                this.snack.open(this.words['userManager.delete']['err'], '', {
-                  duration: 2000,
-                });
-              }
+                // this.snack.open(this.words['userManager.delete']['err'], '', {
+                //   duration: 2000,
+                // });
+                this.snackbarService.openTipSnackBar("userManager.delete.err");
             }
           )
           .then(() => {
@@ -161,9 +159,10 @@ export class UserMngrComponent implements OnInit {
       .subscribe(ret => {
         if (ret) {
           this.refreshUsers();
-          this.snack.open(this.words['success'], this.words['dismiss'], {
-              duration: 1500,
-            });
+        //   this.snack.open(this.words['success'], this.words['dismiss'], {
+        //       duration: 1500,
+        //     });
+          this.snackbarService.openTipSnackBar("success");
         }
       });
   }

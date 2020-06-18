@@ -81,7 +81,7 @@ describe('LogUnconfirmDialogComponent', () => {
     component.confirmAll();
     component.unconfirmLog.length = 0;
     component.confirmAll();
-    expect(closeSpy).toHaveBeenCalledTimes(1);
+    expect(closeSpy).toHaveBeenCalled();
     closeSpy.calls.reset();
   });
 

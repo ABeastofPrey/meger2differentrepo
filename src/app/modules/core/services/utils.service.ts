@@ -13,6 +13,7 @@ import {
 import { DataService } from './data.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 /*
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
@@ -30,10 +31,11 @@ export class UtilsService {
     private stat: TpStatService,
     private task: TaskService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private dialog: MatDialog,
     private trn: TranslateService,
     public dataService: DataService,
-    private overlayContainer: OverlayContainer
+    private overlayContainer: OverlayContainer,
   ) {
     const darkMode = localStorage.getItem('darkMode');
     if (darkMode !== null) {
@@ -143,15 +145,13 @@ export class UtilsService {
           this.trn
             .get('utils.err_reset', { result: errorString(ret.err) })
             .subscribe(err => {
-              if (this.IsNotKuka) {
-                this.snack.open(err, this.words['acknowledge']);
-              }
+                // this.snack.open(err, this.words['acknowledge']);
+                this.snackbarService.openTipSnackBar(err);
             });
           return Promise.reject(false);
         }
-        if (this.IsNotKuka) {
-          this.snack.open(this.words['utils.success'], null, { duration: 1500 });
-        }
+        //   this.snack.open(this.words['utils.success'], null, { duration: 1500 });
+          this.snackbarService.openTipSnackBar("utils.success");
         this.stat.startTpLibChecker();
         if (loadautoexec) {
           if (!env.production) console.log('loading autoexec.prg...');
@@ -207,6 +207,9 @@ export class UtilsService {
     this.globalOverlayWrappers = document.getElementsByClassName('cdk-global-overlay-wrapper');
     if (this.globalOverlayWrappers && this.globalOverlayWrappers.length > 1) {
       for (let i = 0; i < this.globalOverlayWrappers.length - 1; i++) {
+        if(this.globalOverlayWrappers[i].getElementsByTagName("sys-log-snack-bar").length > 0){
+            continue;
+        }
         this.globalOverlayWrappers[i].classList.add('global-hidden');
       }
     }

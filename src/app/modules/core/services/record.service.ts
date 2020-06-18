@@ -7,6 +7,7 @@ import {ApiService} from './api.service';
 import {BehaviorSubject} from 'rxjs';
 import { PlotData } from 'plotly.js';
 import {UtilsService} from '../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 @Injectable({
   providedIn: 'root',
@@ -65,6 +66,7 @@ export class RecordService {
   constructor(
     private ws: WebsocketService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     public grp: GroupManagerService,
     private api: ApiService,
     private trn: TranslateService,
@@ -80,9 +82,8 @@ export class RecordService {
 
   private closeRecording() {
     this.ws.query('RecordClose').then(() => {
-      if (this.utils.IsNotKuka) {
-        this.snack.open(this._words['record_done'], null, { duration: 1500 });
-      }
+        // this.snack.open(this._words['record_done'], null, { duration: 1500 });
+        this.snackbarService.openTipSnackBar("record_done");
     });
     clearTimeout(this.timeout);
     this._isRecording = false;
@@ -101,12 +102,15 @@ export class RecordService {
       const cmd = `Record CSRECORD.rec ${samples} Gap=1 RecData=${axes}`;
       this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if (ret.err) {
-          return this.snack.open(errorString(ret.err), 'DISMISS');
+        //   return this.snack.open(errorString(ret.err), 'DISMISS');
+            return this.snackbarService.openTipSnackBar(errorString(ret.err));
         }
         this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
-          if (ret.err) return this.snack.open(errorString(ret.err), 'DISMISS');
+        //   if (ret.err) return this.snack.open(errorString(ret.err), 'DISMISS');
+          if(ret.err) return this.snackbarService.openTipSnackBar(errorString(ret.err));
           if (ret.err) {
-              return this.snack.open(errorString(ret.err), 'DISMISS');
+            //   return this.snack.open(errorString(ret.err), 'DISMISS');
+            return this.snackbarService.openTipSnackBar(errorString(ret.err));
           }
           this._isRecording = true;
           clearInterval(this.timeout);

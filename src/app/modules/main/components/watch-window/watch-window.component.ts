@@ -8,6 +8,7 @@ import { RecordService } from '../../../core/services/record.service';
 import { Router } from '@angular/router';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { of } from 'rxjs';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'watch-window',
@@ -25,6 +26,7 @@ export class WatchWindowComponent implements OnInit {
     private dialog: MatDialog,
     private ws: WebsocketService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private api: ApiService,
     private rec: RecordService,
     private router: Router,
@@ -69,12 +71,14 @@ export class WatchWindowComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err) 
       {
-        return this.snack.open(errorString(ret.err), 'DISMISS');
+        // return this.snack.open(errorString(ret.err), 'DISMISS');
+        return this.snackbarService.openTipSnackBar(errorString(ret.err));
       }
       this.ws.query('RecordOn').then((ret: MCQueryResponse) => {
         if (ret.err) 
         {
-          return this.snack.open(errorString(ret.err), 'DISMISS');
+        //   return this.snack.open(errorString(ret.err), 'DISMISS');
+          return this.snackbarService.openTipSnackBar(errorString(ret.err));
         }
         this.isRecording = true;
         let time = 0;

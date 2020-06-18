@@ -3,6 +3,7 @@
     "number_input_range": "输入值的范围为 ",
     "number_input_required": "必需项",
     "sys_log": {
+        "details": "详情",
         "confirm": "确认",
         "confirm_all": "确认所有",
         "effects": "影响",

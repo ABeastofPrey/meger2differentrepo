@@ -1,0 +1,56 @@
+<div class="snack-bar-container">
+    <mat-card *ngIf="tip" class="log-tip-snackbar" [ngStyle]="{'margin-bottom': !!log ? '10px': '0'}">
+        <span>{{tip | translate}}</span>
+    </mat-card>
+    <mat-card *ngIf="log" class="log-snackbar mat-elevation-z3 mat-typography">
+        <div class="left-portion">
+            <ng-container [ngSwitch]="log?.type">
+                <mat-icon *ngSwitchCase="'error'" aria-hidden="false" class="warn" aria-label="Example home icon">cancel</mat-icon>
+                <mat-icon *ngSwitchCase="'warning'" aria-hidden="false" color="primary" aria-label="Example home icon">warning</mat-icon>
+                <mat-icon *ngSwitchCase="'information'" aria-hidden="false" color="accent" aria-label="Example home icon">info</mat-icon>
+            </ng-container>
+            <!-- <mat-icon aria-hidden="false" color="primary" aria-label="Example home icon">error</mat-icon> -->
+            <span>{{unconfirmCount}}</span>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="center-portion" (click)="tpStat.onlineStatus.value && clickContent()">
+            <!-- <span>{{log?.date}} &nbsp; {{log?.time}}</span> -->
+            <span class="first-span">{{log?.timestamp | date:'yyyy/MM/dd h:mm:ss a':'UTC'}}</span>
+            <ng-container [ngSwitch]="log.source">
+                <span class="second-span" *ngSwitchCase="'webServer'">
+                    {{('log.' + log?.message) | translate:{ name: log.userName.toUpperCase() } }} 
+                    {{log?.paras[0]?.toUpperCase()}}
+                </span>
+                <span class="second-span" *ngSwitchCase="'lib'">
+                    {{log?.code}}&nbsp;&nbsp;{{'lib_code.' + log?.code | translate}} 
+                    {{!!log?.message ? ' ' + log.message : ''}}
+                </span>
+                <span class="second-span" *ngSwitchDefault>
+                    <span *ngIf="log">{{log.code}}&nbsp;&nbsp;{{trn.getTranslation(log.code,log.message)}}</span>
+                </span>
+            </ng-container>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="right-portion">
+            <button mat-flat-button color="primary" 
+                (click)="clickQuestionMark()"
+                [matTooltip]="'sys_log.details' | translate"
+                [disabled]="(log && log.type === 'information') || !tpStat.onlineStatus.value">
+                <mat-icon>help_outline</mat-icon>
+            </button>
+            <button mat-flat-button color="primary" 
+                [disabled]="!log?.canConfirm || !tpStat.onlineStatus.value"
+                [matTooltip]="'sys_log.confirm' | translate"
+                (click)="clickConform($event)">
+                <mat-icon>done</mat-icon>
+            </button>
+            <button mat-flat-button color="primary"
+                [disabled]="hasNoCanConfirm || !tpStat.onlineStatus.value"
+                [matTooltip]="'sys_log.confirm_all' | translate"
+                (click)="clickConformAll()">
+                <mat-icon>done_all</mat-icon>
+                <span class="all-badge">All</span>
+            </button>
+        </div>
+    </mat-card>    
+</div>

@@ -7,6 +7,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {UtilsService} from '../../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'brake-test',
@@ -29,7 +30,8 @@ export class BrakeTestComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private trn: TranslateService,
     private snack: MatSnackBar,
-    private utils: UtilsService
+    private snackbarService: SysLogSnackBarService,
+    private utils: UtilsService,
   ) { }
 
   private checkBit = (target: number, position: number) => {
@@ -94,9 +96,8 @@ export class BrakeTestComponent implements OnInit {
       this.busy = false;
       this.cd.detectChanges();
       if (result === '0') {
-        if (!this.utils.IsKuka) {
-          this.snack.open(this.words['success'],'',{duration: 1500});
-        }
+        //   this.snack.open(this.words['success'],'',{duration: 1500});
+          this.snackbarService.openTipSnackBar("success");
       }
     });
   }

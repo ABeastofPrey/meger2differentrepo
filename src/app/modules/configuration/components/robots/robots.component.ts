@@ -24,6 +24,7 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
 import { FormControl, Validators } from '@angular/forms';
 import {UtilsService} from '../../../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 const DEFAULT_MC_NAME = 'MC';
 
@@ -112,6 +113,7 @@ export class RobotsComponent implements OnInit {
     private api: ApiService,
     private data: DataService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
     public stat: TpStatService,
     private grp: GroupManagerService,
@@ -203,9 +205,8 @@ export class RobotsComponent implements OnInit {
       if (ret) {
         const ret2 = await this.ws.query('sys.date="'+dateFormated+'"');
         if (!ret2.err) {
-          if (!this.utils.IsKuka) {
-            this.snack.open(this.wordOk, '', { duration: 1500 });
-          }
+            // this.snack.open(this.wordOk, '', { duration: 1500 });
+            this.snackbarService.openTipSnackBar(this.wordOk);
         }
       }
       setTimeout(async()=>{
@@ -220,9 +221,8 @@ export class RobotsComponent implements OnInit {
     if (ret) {
       const ret2 = await this.ws.query('sys.time="'+t+'"');
       if (!ret2.err) {
-        if (!this.utils.IsKuka) {
-          this.snack.open(this.wordOk, '', { duration: 1500 });
-        }
+        //   this.snack.open(this.wordOk, '', { duration: 1500 });
+          this.snackbarService.openTipSnackBar(this.wordOk);
       }
     }
     setTimeout(async()=>{
@@ -243,9 +243,8 @@ export class RobotsComponent implements OnInit {
   onNameChange() {
     if (this.sysName.invalid) return;
     this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName.value + '")');
-    if (!this.utils.IsKuka) {
-      this.snack.open(this.wordOk, '', { duration: 1500 });
-    }
+    //   this.snack.open(this.wordOk, '', { duration: 1500 });
+      this.snackbarService.openTipSnackBar(this.wordOk);
   }
 
   private async refreshDisp() {
@@ -329,8 +328,9 @@ export class RobotsComponent implements OnInit {
           this.refreshDisp();
           return;
         }
-        if(!this.utils.IsKuka && ret.result === '0') {
-          this.snack.open(this.wordOk, '', { duration: 1500 });
+        if(ret.result === '0') {
+        //   this.snack.open(this.wordOk, '', { duration: 1500 });
+          this.snackbarService.openTipSnackBar(this.wordOk);
         }
       } else {
         this.ws
@@ -345,9 +345,8 @@ export class RobotsComponent implements OnInit {
           )
           .then((ret: MCQueryResponse) => {
             if (ret.result === '0') {
-              if (!this.utils.IsKuka) {
-                this.snack.open(this.wordOk, '', { duration: 1500 });
-              }
+                // this.snack.open(this.wordOk, '', { duration: 1500 });
+                this.snackbarService.openTipSnackBar(this.wordOk);
             }
           });
       }

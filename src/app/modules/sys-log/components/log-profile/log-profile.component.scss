@@ -16,6 +16,7 @@
     &-content {
         flex-grow: 1;
         padding: 5px 5px 5px 5px;
+        width: calc(100% - 40px);
         span {
             font-size: 14px;
             font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -25,7 +26,6 @@
         color: gray;
         font-size: 0.9em;
         height: 20px;
-        // margin-bottom: 4px;
     }
     &-desc {
         color: black !important;
@@ -34,14 +34,12 @@
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
-        span:nth-child(2) {
+        span {
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
             display: inline-block;
-            max-width: 85%;
-            margin-left: 5px;
-            // line-height: 17px;
+            max-width: 100%;
         }
     }
 }

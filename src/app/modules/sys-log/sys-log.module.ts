@@ -2,9 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { SysLogBookService } from './services/sys-log-book.service';
-import { SysLogOverlayService } from './services/sys-log-overlay.service';
 import { SysLogFetchService } from './services/sys-log-fetch.service';
-import { LogSnackbarComponent } from './components/log-snackbar/log-snackbar.component';
+import { LogSnackBarComponent } from './components/log-snack-bar/log-snack-bar.component';
 import { LogBookComponent } from './components/logbook/logbook.component';
 import { LogProfileComponent } from './components/log-profile/log-profile.component';
 import { LogDetailsComponent } from './components/log-details/log-details.component';
@@ -32,12 +31,12 @@ export class LogBookRoutingModule { }
 
 @NgModule({
     declarations: [
-        LogBookComponent, LogSnackbarComponent, LogProfileComponent, LogDetailsComponent,
+        LogBookComponent, LogSnackBarComponent, LogProfileComponent, LogDetailsComponent,
         LogCauseComponent, LogEffectComponent, LogInfoComponent, LogUnconfirmDialogComponent,
         LogMCInfoComponent,
     ],
     providers: [
-        SysLogOverlayService, SysLogBookService, SysLogFetchService,
+        SysLogBookService, SysLogFetchService,
     ],
     imports: [
         CommonModule,
@@ -47,7 +46,7 @@ export class LogBookRoutingModule { }
     ],
     exports: [],
     bootstrap: [],
-    entryComponents: [LogSnackbarComponent, LogInfoComponent, LogUnconfirmDialogComponent],
+    entryComponents: [LogSnackBarComponent, LogInfoComponent, LogUnconfirmDialogComponent],
 })
 export class SystemLogModule {
     constructor(private ws: WebsocketService, private sysLogWatcher: SysLogWatcherService) {

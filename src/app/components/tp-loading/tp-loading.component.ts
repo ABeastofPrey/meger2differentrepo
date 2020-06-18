@@ -14,6 +14,7 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import {TranslateService} from '@ngx-translate/core';
 import {CommonService} from '../../modules/core/services/common.service';
 import {UtilsService} from '../../modules/core/services/utils.service';
+import { SysLogSnackBarService } from '../../modules/sys-log/services/sys-log-snack-bar.service';
 
 const TIMEOUT = 30000; // 30 SECONDS
 
@@ -54,11 +55,12 @@ export class TpLoadingComponent implements OnInit {
     private stat: TpStatService,
     private trn: TranslateService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     public cmn: CommonService,
     private login: LoginService,
     private _zone: NgZone,
     public utils: UtilsService,
-    private ws: WebsocketService
+    private ws: WebsocketService,
   ) {}
 
   ngOnInit() {
@@ -95,7 +97,8 @@ export class TpLoadingComponent implements OnInit {
           console.log(this.prj.currProject.value);
           this.ref.close();
           const word = this.cmn.isTablet ? 'error.tp_tablet' : 'error.tp';
-          this.snack.open(this.words[word],this.words['dismiss']);          
+        //   this.snack.open(this.words[word],this.words['dismiss']);   
+          this.snackbarService.openTipSnackBar(word);       
           if (this.cmn.isTablet) {
             this.login.logout();
           }

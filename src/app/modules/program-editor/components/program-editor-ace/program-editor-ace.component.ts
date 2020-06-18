@@ -33,6 +33,7 @@ import { CommonService } from '../../../core/services/common.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { environment } from '../../../../../environments/environment';
 import { UtilsService } from '../../../core/services/utils.service';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 declare var ace;
 
 @Component({
@@ -76,6 +77,7 @@ export class ProgramEditorAceComponent implements OnInit {
     private prj: ProjectManagerService,
     private ws: WebsocketService,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
     private keywords: KeywordService,
     public login: LoginService,
@@ -483,10 +485,11 @@ export class ProgramEditorAceComponent implements OnInit {
         if (isFoldWidget || isAnnotation || this.service.modeToggle !== 'prj') return;
         if (this.service.activeFile.endsWith('B')) {
           this.zone.run(() => {
-              this.snack.open(
-                this.words['projects.ace']['bp_lib'],
-                this.words['dismiss']
-              );
+            //   this.snack.open(
+            //     this.words['projects.ace']['bp_lib'],
+            //     this.words['dismiss']
+            //   );
+            this.snackbarService.openTipSnackBar("projects.ace.bp_lib");
           });
           return;
         }
@@ -496,10 +499,11 @@ export class ProgramEditorAceComponent implements OnInit {
         ) {
           // PROGRAM NOT LOADED OR IS LIBRARY
           this.zone.run(() => {
-              this.snack.open(
-                this.words['projects.ace']['bp_err'],
-                this.words['dismiss']
-              );           
+            //   this.snack.open(
+            //     this.words['projects.ace']['bp_err'],
+            //     this.words['dismiss']
+            //   );     
+            this.snackbarService.openTipSnackBar("projects.ace.bp_err");      
           });
           return;
         }

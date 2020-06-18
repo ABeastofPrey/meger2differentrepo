@@ -12,6 +12,7 @@ import { CommonService } from './common.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar, MatSlideToggleChange } from '@angular/material';
 import { RobotCoordinateType } from '../models/robot-coordinate-type.model';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 //declare var Blockly:any;
 
@@ -286,7 +287,8 @@ export class DataService {
       if (ret.result !== '0') {
         this.refreshPayloadStart();
       } else {
-        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        // this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        this.snackbarService.openTipSnackBar("changeOK");
       }
     });
   }
@@ -303,7 +305,8 @@ export class DataService {
       if (ret.result !== '0') {
         this.refreshPayloadRelative();
       } else {
-        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        // this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        this.snackbarService.openTipSnackBar("changeOK");
       }
     });
   }
@@ -317,7 +320,8 @@ export class DataService {
       if (ret.result !== '0') {
         this.refreshPayloadFreq();
       } else {
-        this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        // this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        this.snackbarService.openTipSnackBar("changeOK");
       }
     });
   }
@@ -326,7 +330,10 @@ export class DataService {
     const cmd = '?PAY_SET_IDENT_TIME_SECONDS(' + this.payloadDuration + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result !== '0') this.refreshPayloadDuration();
-      else this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+      else {
+        // this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+        this.snackbarService.openTipSnackBar("changeOK");
+      }
     });
   }
 
@@ -844,7 +851,8 @@ export class DataService {
     private stat: TpStatService,
     private login: LoginService,
     private trn: TranslateService,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService
   ) {
     this.trn
       .get(['changeOK', 'time_update', 'button.refresh'])

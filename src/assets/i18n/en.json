@@ -3,8 +3,9 @@
   "number_input_range": "Enter number",
   "number_input_required": "Required field",
   "sys_log": {
-    "confirm": "CONFIRM",
-    "confirm_all": "CONFIRM ALL",
+    "details": "Details",
+    "confirm": "Confirm",
+    "confirm_all": "Confirm All",
     "effects": "Effect(s)",
     "possiable_causes": "Possible Cause(s)",
     "cause": "Cause",

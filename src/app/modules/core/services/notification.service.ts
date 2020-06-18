@@ -80,12 +80,12 @@ export class NotificationService {
   }
 
   onLibAsyncMessage(msg: string): void {
-    msg = JSON.stringify({
-      code: 1001,
-      hasErr: true,
-      result: 'This is from lib',
-      error: 'Woo, something wrong'
-    });
+    // msg = JSON.stringify({
+    //   code: 1001,
+    //   hasErr: true,
+    //   result: 'This is from lib',
+    //   error: 'Woo, something wrong'
+    // });
     try {
       const libMessage: LibAsyncMessage = JSON.parse(msg);
       this.newLibAsyncMessage.next(libMessage);

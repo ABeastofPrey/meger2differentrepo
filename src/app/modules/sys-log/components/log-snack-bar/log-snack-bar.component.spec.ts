@@ -3,26 +3,29 @@ import { SharedModule } from '../../../shared/shared.module';
 import { UnitTestModule } from '../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { fakeLog } from '../../enums/sys-log.model';
-import { SYS_LOG_SNAKBAR_DATA, SYS_LOG_SNAKBAR_COUNT } from '../../enums/sys-log.tokens';
-import { LogSnackbarComponent } from './log-snackbar.component';
+import { SYS_LOG_SNAKBAR_LOG, SYS_LOG_SNAKBAR_COUNT, SYS_LOG_SNAKBAR_TIP } from '../../enums/sys-log.tokens';
+import { LogSnackBarComponent } from './log-snack-bar.component';
+import { TpStatService } from '../../../core/services/tp-stat.service';
 
-describe('LogSnackbarComponent', () => {
-  let component: LogSnackbarComponent;
-  let fixture: ComponentFixture<LogSnackbarComponent>;
+describe('LogSnackBarComponent', () => {
+  let component: LogSnackBarComponent;
+  let fixture: ComponentFixture<LogSnackBarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [LogSnackbarComponent],
+      declarations: [LogSnackBarComponent],
       imports: [SharedModule, BrowserAnimationsModule, UnitTestModule,],
       providers: [
-        { provide: SYS_LOG_SNAKBAR_DATA, useValue: fakeLog },
+        { provide: SYS_LOG_SNAKBAR_TIP, useValue: 'Hello world' },
+        { provide: SYS_LOG_SNAKBAR_LOG, useValue: fakeLog },
         { provide: SYS_LOG_SNAKBAR_COUNT, useValue: 2 },
+        { provide: TpStatService, useValue: { onlineStatus: { value: true } } }
       ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LogSnackbarComponent);
+    fixture = TestBed.createComponent(LogSnackBarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -57,6 +60,27 @@ describe('LogSnackbarComponent', () => {
       expect(id).toEqual(fakeLog.id);
     });
     component.clickContent();
-    component.refresh();
+  });
+
+  it('should set tip success', () => {
+    const tip = 'Hello world';
+    fixture.detectChanges();
+    component.setTip(tip);
+    expect(component.tip).toEqual(tip);
+  });
+
+  it('should set log', () => {
+    component.setLog(fakeLog, 100, true);
+    expect(component.unconfirmCount).toEqual(100);
+  });
+
+  it('should destroy snack bar', () => {
+    component.setTip('');
+    component.destroySnackBar();
+    expect(component.tip).toEqual('');
+    
+    component.setTip('Hello');
+    component.destroySnackBar();
+    expect(component.tip).toEqual('Hello');
   });
 });

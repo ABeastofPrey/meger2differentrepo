@@ -19,6 +19,7 @@ import { SimulatorService } from '../../core/services/simulator.service';
 import { ExternalGraphDialogComponent } from '../../dashboard/components/external-graph-dialog/external-graph-dialog.component';
 import { UtilsService } from '../../core/services/utils.service';
 import { YesNoDialogComponent } from '../../../components/yes-no-dialog/yes-no-dialog.component';
+import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'simulator-v2',
@@ -51,6 +52,7 @@ export class SimulatorV2Component implements OnInit {
     private player: PlayerService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private scene: SceneService,
     private grp: GroupManagerService,
     private dataService: DataService,
@@ -121,7 +123,8 @@ export class SimulatorV2Component implements OnInit {
           const len = legends.length;
           if (i-1 === len || (legends[i-1] !== name1 && legends[i-1] !== name2)) {
             this.loaded = true;
-            this.snack.open(this.words['error.invalid_rec_motion'],this.words['dismiss']);
+            // this.snack.open(this.words['error.invalid_rec_motion'],this.words['dismiss']);
+            this.snackbarService.openTipSnackBar("error.invalid_rec_motion");
             return;
           }
         }
@@ -198,9 +201,8 @@ export class SimulatorV2Component implements OnInit {
         this.api.upload(f, false).then(async (ret: UploadResult) => {
           if (ret.success) {
             this.sim.scene.name = name;
-            if (!this.utils.IsKuka) {
-              this.snack.open(this.words['success'], null, { duration: 1500 });
-            }
+            //   this.snack.open(this.words['success'], null, { duration: 1500 });
+              this.snackbarService.openTipSnackBar("success");
           } else if (ret.err === -1) {
             const word = await this.trn.get('projects.toolbar.overwrite_file.msg', { name: name }).toPromise();
             this.dialog.open(YesNoDialogComponent, {
@@ -219,8 +221,9 @@ export class SimulatorV2Component implements OnInit {
                     this.sim.scene.name = name;
                   }
                   const msg = ret.success ? this.words['success'] : this.words['error.err'];
-                  if(!this.utils.IsKuka || ret.err) {
-                    this.snack.open(msg, null, { duration: 1500 });
+                  if(ret.err) {
+                    // this.snack.open(msg, null, { duration: 1500 });
+                    this.snackbarService.openTipSnackBar(msg);
                   }
                 });
               }

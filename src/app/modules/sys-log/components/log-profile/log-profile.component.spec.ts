@@ -1,20 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '../../../shared/shared.module';
 import { UnitTestModule } from '../../../shared/unit-test.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { fakeLog } from '../../enums/sys-log.model';
 import { LogProfileComponent } from './log-profile.component';
-import { SystemLogModule } from '../../sys-log.module';
 
 describe('LogProfileComponent', () => {
   let component: LogProfileComponent;
   let fixture: ComponentFixture<LogProfileComponent>;
-  
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [],
-      imports: [SharedModule, BrowserAnimationsModule, UnitTestModule, SystemLogModule],
-      providers: []
+      declarations: [LogProfileComponent],
+      imports: [SharedModule, UnitTestModule],
+      providers: [ ]
     }).compileComponents();
   }));
 

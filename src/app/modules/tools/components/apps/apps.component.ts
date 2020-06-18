@@ -17,6 +17,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
 import { MCQueryResponse, DataService, TpStatService } from '../../../core';
 import { FactoryRestoreComponent } from '../factory-restore/factory-restore.component';
+import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
   selector: 'apps',
@@ -61,6 +62,7 @@ export class AppsComponent implements OnInit {
     private api: ApiService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
+    private snackbarService: SysLogSnackBarService,
     private ws: WebsocketService,
     private trn: TranslateService,
     public utils: UtilsService,
@@ -183,10 +185,9 @@ export class AppsComponent implements OnInit {
         if (ret.success) {
           this.ws.query('?UTL_UPDATE_MCU_FW').then((ret: MCQueryResponse) => {
             if (ret.result !== '0') {
-              if(!this.utils.IsKuka)
-              {
-                this.snack.open(this.words['err_mcu'], '', { duration: 1500 });
-              }
+             
+                // this.snack.open(this.words['err_mcu'], '', { duration: 1500 });
+                this.snackbarService.openTipSnackBar("err_mcu");
             }
             dialog.close();
           });
@@ -243,27 +244,30 @@ export class AppsComponent implements OnInit {
                 this.trn
                   .get(['files.err_upload', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                  this.snack.open(
-                        words['files.err_upload'],
-                        words['dismiss']
-                      );    
+                //   this.snack.open(
+                //         words['files.err_upload'],
+                //         words['dismiss']
+                //       );   
+                    this.snackbarService.openTipSnackBar("files.err_upload"); 
                   });
                 break;
               case -3:
                 this.trn
                   .get(['files.err_ext', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                  this.snack.open(words['files.err_ext'], words['dismiss']);                   
+                //   this.snack.open(words['files.err_ext'], words['dismiss']);  
+                  this.snackbarService.openTipSnackBar("files.err_ext");                 
                   });
                 break;
               case -3:
                 this.trn
                   .get(['files.err_permission', 'dismiss'])
                   .subscribe(words => {
-                  this.snack.open(
-                        words['files.err_upload'],
-                        words['dismiss']
-                      );
+                //   this.snack.open(
+                //         words['files.err_upload'],
+                //         words['dismiss']
+                //       );
+                    this.snackbarService.openTipSnackBar("files.err_upload");  
                   });
                 break;
             }
