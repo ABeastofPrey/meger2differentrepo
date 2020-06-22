@@ -23,6 +23,11 @@
     margin: -5px 10px;
 }
 .content {
-    overflow: auto;
     padding: 10px;
+    mat-form-field{
+        width: 300px;
+        mat-error{
+            padding-bottom: 2px;
+        }
+    }
 }

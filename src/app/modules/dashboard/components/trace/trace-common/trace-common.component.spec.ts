@@ -34,6 +34,9 @@ export class NumberInputComponent {
 @Component({ selector: 'app-trace-new', template: '' })
 export class TraceNewComponent {
     @Input() traceList: Trace[] = [];
+    @Input() label: string;
+    @Input() placeholder: string;
+    @Input() beginWithLetter: boolean = false;
     @Output() createTraceEvent: EventEmitter<string> = new EventEmitter<string>();
 }
 

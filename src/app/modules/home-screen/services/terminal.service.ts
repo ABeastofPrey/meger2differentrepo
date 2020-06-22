@@ -34,25 +34,24 @@ export class TerminalService {
   sentCommandEmitter: EventEmitter<string> = new EventEmitter<string>();
   resizeRequired: EventEmitter<void> = new EventEmitter<void>();
 
-  onNewCommand: EventEmitter<TerminalCommand> = new EventEmitter<
-    TerminalCommand
-  >();
+  onNewCommand: EventEmitter<TerminalCommand> = new EventEmitter<TerminalCommand>();
 
   send(cmd: string) {
-    return this.ws.query(cmd).then((ret: MCQueryResponse) => {
+    return this.ws.query(cmd).then(async(ret: MCQueryResponse) => {
       const errCode = getLogCode(ret.result);
       const [firstPortion, secondPortion, thirdPortion] = isLibLog(errCode) ? splitLibMsg(ret.result) : ['', '', ''];
       const terminalCommand = { cmd, result: ret.result.replace(/[\r]+/g, ''), para: secondPortion, firstPortion, thirdPortion };
-      this.cmds.push(terminalCommand);
+      const [newCommand] = await this.getTranslationOfLibLogCmd([terminalCommand]);
+      this.cmds.push(newCommand);
       this.history.push(cmd);
-      this.onNewCommand.emit(terminalCommand);
-      return terminalCommand;
+      this.onNewCommand.emit(newCommand);
+      return newCommand;
     });
   }
 
   async cmdsAsString(): Promise<string> {
     if (this.cmds.length === 0) return '';
-    await this.recombinateLibLog(this.cmds);
+    this.cmds = await this.getTranslationOfLibLogCmd(this.cmds);
     const ret = (SEP + this.cmds.map(cmd => {
       return cmd.cmd + (cmd.result.length > 0 ? '\n' + cmd.result : '');
     }).join('\n' + SEP));
@@ -63,15 +62,18 @@ export class TerminalService {
     return ret;
   }
 
-  private async recombinateLibLog(cmds: TerminalCommand[]): Promise<any> {
-    for (let cmd of this.cmds) {
-      const logCode = getLogCode(cmd.result);
-      if (isLibLog(logCode)) {
-        const key = `lib_code.${logCode}`;
-        let translation = (await this.trn.get([key]).toPromise())[key];
-        cmd.result = `${cmd.firstPortion}${translation}${cmd.para ? ' ' + cmd.para : ''}${cmd.thirdPortion}`;
+  private async getTranslationOfLibLogCmd(cmds: TerminalCommand[]): Promise<TerminalCommand[]> {
+    return new Promise(async resolve => {
+      for (let cmd of cmds) {
+        const logCode = getLogCode(cmd.result);
+        if (isLibLog(logCode)) {
+          const key = `lib_code.${logCode}`;
+          let translation = (await this.trn.get([key]).toPromise())[key];
+          cmd.result = `${cmd.firstPortion}${translation}${cmd.para ? ' ' + cmd.para : ''}${cmd.thirdPortion}`;
+        }
       }
-    }
+      resolve([...cmds]);
+    });
   }
 
   constructor(private ws: WebsocketService, private trn: TranslateService,) {}

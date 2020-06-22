@@ -38,7 +38,7 @@ export class SysLogWatcherService {
         this.subscribeClicks && this.subscribeEvents();
         const notifier = merge(
             this.notify.newMessage.pipe(debounceTime<any>(500)),
-            this.notify.newWebserverMessage.pipe(debounceTime<any>(500)),
+            // this.notify.newWebserverMessage.pipe(debounceTime<any>(500)),
             this.notify.newLibAsyncMessage.pipe(
                 rxjsFilter(({ code }) => code === LibAsyncMessageCode.MaitenanceNewLog),
                 debounceTime<any>(500)

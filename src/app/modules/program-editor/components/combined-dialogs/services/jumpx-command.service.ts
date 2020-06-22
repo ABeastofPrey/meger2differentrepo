@@ -155,7 +155,8 @@ export class JumpxCommandService {
     }
 
     private retrieveVtranMax(motionElement: string): Observable<number> {
-        return this.queryLimit(`?${motionElement}.vtran`);
+        // return this.queryLimit(`?${motionElement}.vtran`);
+        return this.queryLimit('?TP_GET_PROJECT_PARAMETER("vtran","")')
     }
 
     private retrieveAccMax(motionElement: string): Observable<number> {

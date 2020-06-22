@@ -153,10 +153,10 @@
                         placeholder="{{'projectCommands.jumpx.vscale' | translate}} [%]"
                         [formControlName]="CommandOptions.VScale"
                         virtualKeyboard
-                        ktype="numeric_pos_int"
                         (blur)="updateStore(CommandOptions.VScale, $event.target.value)">
                     <mat-error *ngIf="model">
-                        {{'projectCommands.jumpx.numRange' | translate: {range: '[1-100]'} }}
+                        <!-- {{'projectCommands.jumpx.numRange' | translate: {range: '[1-100]'} }} -->
+                        {{'projectCommands.jumpx.numRange' | translate: {range: '('+model[CommandOptions.AccLimit]+']'} }}
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasVtran">

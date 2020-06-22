@@ -236,7 +236,7 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
         const addLimZControl = () => addControl(CommandOptions.LimZ, model[CommandOptions.LimZLimit]);
         const addBlendingPercentageControl = () => addControl(CommandOptions.BlendingPercentage, model[CommandOptions.BlendingPercentageLimit]);
         const addVcruiseControl = () => addControl(CommandOptions.VScale, model[CommandOptions.VcruiseLimit]);
-        const addVtransControl = () => addControl(CommandOptions.Vtran, model[CommandOptions.VtranLimit]);
+        const addVtransControl = () => addControl(CommandOptions.Vtran, model[CommandOptions.VtranLimit],true,false);
         when(identity, addArchNoControl)(hasArchNo);
         when(identity, addLimZControl)(hasLimZ);
         when(identity, addBlendingPercentageControl)(hasBlendingPercentage);
@@ -249,7 +249,8 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
         const option = {
             hasBackdrop: false,
             data: {
-                varType: varType
+                varType: varType,
+                hotVariableOption: [1,1,0,0,0]
             }
         };
         this.dialog.open(AddVarComponent, option).afterClosed().subscribe((addedVar: string) => {

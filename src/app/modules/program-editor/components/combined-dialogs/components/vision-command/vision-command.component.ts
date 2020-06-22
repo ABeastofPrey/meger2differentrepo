@@ -125,6 +125,9 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
             option.data.hotVariableOption = List;
             option.data.canUseArray = false;
         }
+        if(type === CommandOptions.AsData){
+            option.data.canUseArray = true;
+        }
 		this.dialog.open(AddVarComponent, option).afterClosed().subscribe(addedVar => {
 			let patchOption;
 			switch (type) {

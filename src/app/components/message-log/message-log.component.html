@@ -11,7 +11,20 @@
 				</span>
 			</ng-container>
 		</div>
-		<div *ngIf="n.err">Error: {{ n.err.errCode }}, "{{ trn.getTranslation(n.err.errCode,n.err.errMsg) }}", Task:
+		<div *ngIf="n.err">
+			Error: {{ n.err.errCode }}, 
+			<ng-container [ngSwitch]="isLibLog(n.err.msg)">
+				<span *ngSwitchCase="false">
+					"{{ trn.getTranslation(n.err.errCode,n.err.errMsg) }}", 
+				</span>
+				<span *ngSwitchCase="true">
+					"{{firstPortion}}
+					{{'lib_code.' + libLogcode | translate}}
+					{{secondPortion}}
+					{{thirdPortioin}}", "
+				</span>
+			</ng-container>
+			Task:
 			<span *ngIf="login.isAdmin" matRipple [matRippleRadius]="16" class="link" (mousedown)="goToError(n.err)">{{ n.err.errTask }}</span>
 			<span *ngIf="!login.isAdmin">{{ n.err.errTask }}</span>
 			, Line: {{ n.err.errLine }}, Module: {{ n.err.errModule }}

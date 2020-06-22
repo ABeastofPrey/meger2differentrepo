@@ -115,6 +115,10 @@ export class NumberInputComponent implements OnInit, OnChanges, AfterViewInit, O
         })(changes);
     }
 
+    resetStatus(): void {
+        this.control.reset();
+    }
+
     ngOnDestroy(): void {
         this.stopSubscribe.next();
         this.stopSubscribe.unsubscribe();

@@ -345,7 +345,14 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
         position,
         offset,
       });
-    const bindToTable = axisInfo => (this.tableData = axisInfo);
+    const bindToTable = axisInfo => {
+        this.tableData = [];
+        axisInfo.forEach((item: IAxis) => {
+            item.position = Math.round(item.position * 10000)/10000;
+            item.offset = Math.round(item.offset * 10000)/10000;
+            this.tableData.push(item);
+        });
+    }
     const detectChanges = () => this.cd.detectChanges();
     const assembleTable = compose(
       detectChanges,

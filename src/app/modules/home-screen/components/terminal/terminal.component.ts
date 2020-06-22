@@ -90,7 +90,7 @@ export class TerminalComponent implements OnInit {
     this.scrollToBottom();
   }
 
-  private initMainAce() {
+  private async initMainAce() {
     const editor = ace.edit(this.editorDiv.nativeElement);
     this.editor = editor;
     editor.setOptions({
@@ -113,7 +113,7 @@ export class TerminalComponent implements OnInit {
       if (!done) return;
       editor.completers = [this.keywords.getNewWordCompleter(true,SEP)];
     });
-    const val = this.terminal.cmdsAsString;
+    const val = await this.terminal.cmdsAsString();
     editor.setValue((val.length === 0 ? '' : val + '\n') + SEP + '\t', 1);
     editor.commands.on('exec', e=> {
       if (e.command.readOnly) {

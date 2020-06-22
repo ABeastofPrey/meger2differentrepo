@@ -20,7 +20,7 @@
         <div><button mat-raised-button color="warn" *ngIf="stationName"
                 (click)="confirmDelete()">{{'vision.templateConfig.delete' | translate}}</button></div>
     </div>
-    <div class="edit" *ngIf="stationName">
+    <div class="edit" [class.hide]="!stationName">
         <div class="box">
             <header>
                 <div class="config">
@@ -28,8 +28,8 @@
                         <app-ip-address [ip]="ip" (changeIpEmit)="changeIp($event)"></app-ip-address>
                     </span>
                     <span class="right">
-                        <cs-number-input type="int" [label]="'vision.templateConfig.port' | translate"
-                            [rightClosedInterval]="true" [(value)]="port.value" [min]="0" [max]="65535"
+                        <cs-number-input #numInput type="int" [label]="'vision.templateConfig.port' | translate"
+                            [rightClosedInterval]="true" [value]="port.value" (valueChange)="port.setValue($event)"  [min]="0" [max]="65535"
                             (blurEvent)="portBlur()" (isValidEvent)="changePort($event)" [required]="true"></cs-number-input>
                     </span>
                 </div>

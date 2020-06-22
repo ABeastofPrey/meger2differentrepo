@@ -51,11 +51,11 @@ topologyContext.keys().map(topologyContext);
 const vCommandContext = require.context('./app/modules/program-editor/components/combined-dialogs/components/vision-command/', true, /\.spec\.ts$/);
 vCommandContext.keys().map(vCommandContext);
 
-const jumpxCommandContext = require.context('./app/modules/program-editor/components/combined-dialogs/components/jumpx-command/', true, /\.spec\.ts$/);
-jumpxCommandContext.keys().map(jumpxCommandContext); // Unstable with unknow undefined.
+// const jumpxCommandContext = require.context('./app/modules/program-editor/components/combined-dialogs/components/jumpx-command/', true, /\.spec\.ts$/);
+// jumpxCommandContext.keys().map(jumpxCommandContext); // Unstable with unknow undefined.
 
-// const traceContext = require.context('./app/modules/dashboard/components/trace/', true, /\.spec\.ts$/);
-// traceContext.keys().map(traceContext);
+const traceContext = require.context('./app/modules/dashboard/components/trace/', true, /\.spec\.ts$/);
+traceContext.keys().map(traceContext);
 
 const diagnosisContext = require.context('./app/modules/tools/components/diagnosis/', true, /\.spec\.ts$/);
 diagnosisContext.keys().map(diagnosisContext);

@@ -11,6 +11,8 @@ import { DataService } from '../../../core';
 })
 export class VisionTemplateConfigComponent implements OnInit {
 
+    @ViewChild('numInput', { static: true }) numInput: any;
+
     constructor(private service: VisionService, private data: DataService) {
         let refresh = this.data.refreshVision();
         refresh.subscribe((value) => {
@@ -81,7 +83,7 @@ export class VisionTemplateConfigComponent implements OnInit {
         let data: CreateDialog = {
             "data": {
                 "title": "vision.templateConfig.createStationTitle",
-                "placeholder": "error.invalid_file_name",
+                "placeholder": "",
                 "label": "vision.templateConfig.createStationPlacehold",
                 "checkbox": false,
                 "stationList": this.stationList
@@ -104,6 +106,7 @@ export class VisionTemplateConfigComponent implements OnInit {
     }
 
     private edit(): void {
+        this.numInput.resetStatus();
         this.getStationBasicInfo();
     }
 
@@ -133,6 +136,7 @@ export class VisionTemplateConfigComponent implements OnInit {
 
     private getStationBasicInfo(): void {
         const api: string = `?getStationBasicInfo("${this.stationName}")`;
+        this.ip = "...";
         this.service.search(api).then((result: List) => {
             result.result = result.result.replace(/\\/g, '\\\\');
             let basicInfo: Array<any> = JSON.parse(result.result);

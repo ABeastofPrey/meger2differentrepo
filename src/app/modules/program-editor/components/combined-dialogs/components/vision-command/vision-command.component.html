@@ -38,7 +38,7 @@
                         {{dimension}}
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
-                        (click)="createVar(CommandOptions.Dimension, 'LONG')">
+                        (click)="createVar(CommandOptions.Dimension, 'LONG', [0,0,1,0,0])">
                         + {{ 'projectCommands.createVar' | translate }}
                     </mat-option>
                 </mat-select>
@@ -54,7 +54,7 @@
                         {{dataNum}}
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
-                        (click)="createVar(CommandOptions.DataNum, 'LONG')">
+                        (click)="createVar(CommandOptions.DataNum, 'LONG', [0,0,1,0,0])">
                         + {{ 'projectCommands.createVar' | translate }}
                     </mat-option>
                 </mat-select>
@@ -70,7 +70,7 @@
                         {{asData}}
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
-                        (click)="createVar(CommandOptions.AsData, 'STRING')">
+                        (click)="createVar(CommandOptions.AsData, 'STRING', [0,0,0,0,1])">
                         + {{ 'projectCommands.createVar' | translate }}
                     </mat-option>
                 </mat-select>
@@ -86,7 +86,7 @@
                         {{status}}
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
-                        (click)="createVar(CommandOptions.Status, 'STRING')">
+                        (click)="createVar(CommandOptions.Status, 'STRING', [0,0,0,0,1])">
                         + {{ 'projectCommands.createVar' | translate }}
                     </mat-option>
                 </mat-select>
@@ -102,7 +102,7 @@
                         {{error}}
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
-                        (click)="createVar(CommandOptions.Error, 'STRING')">
+                        (click)="createVar(CommandOptions.Error, 'STRING', [0,0,0,0,1])">
                         + {{ 'projectCommands.createVar' | translate }}
                     </mat-option>
                 </mat-select>
@@ -130,7 +130,7 @@
                         {{variable}}
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
-                        (click)="createVar(CommandOptions.Variable, 'LONG')">
+                        (click)="createVar(CommandOptions.Variable, 'LONG', [0,0,1,0,0])">
                         + {{ 'projectCommands.createVar' | translate }}
                     </mat-option>
                 </mat-select>

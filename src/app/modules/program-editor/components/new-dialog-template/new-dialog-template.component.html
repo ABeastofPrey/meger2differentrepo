@@ -9,7 +9,7 @@
                 <mat-error *ngIf="name.hasError('required')">{{ 'vision.templateConfig.createRequired' | translate }}
                 </mat-error>
                 <mat-error *ngIf="name.hasError('letter') && !name.hasError('exist') && !name.hasError('required')">
-                    {{ 'vision.templateConfig.createLetter' | translate }}</mat-error>
+                    {{ 'error.invalid_var_name' | translate }}</mat-error>
                 <mat-error *ngIf="name.hasError('exist') && !name.hasError('letter') && !name.hasError('required')">
                     {{ 'vision.templateConfig.nameExist' | translate }}</mat-error>
             </mat-form-field>

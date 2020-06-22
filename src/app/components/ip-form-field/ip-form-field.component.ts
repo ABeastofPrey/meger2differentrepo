@@ -127,6 +127,7 @@ export class IpFormFieldComponent {
                 this.ipForm.value["ip" + (index + 1)] = value;
                 this.ipForm.patchValue({ ...this.ipForm.value });
             })
+            this.ipValid = false;
         })(changes);
     }
 
