@@ -27,8 +27,8 @@ export const environment = {
   appName_Kuka: 'KUKA.ControlStudio',
   api_url: null,
   ip: null,
-  gui_ver: 'v1.4.1 2020-06-01',
-  compatible_webserver_ver: 'v3.4.1',
+  gui_ver: 'v1.4.2 2020-06-21',
+  compatible_webserver_ver: 'v3.4.2',
   platform: PLATFORMS.Kuka,
   platforms: PLATFORMS,
   useDarkTheme: false

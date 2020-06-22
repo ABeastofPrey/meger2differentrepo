@@ -138,7 +138,7 @@ describe('ToolCalibrationResultDialogComponent', () => {
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
-      expect(component.dialogRef.close).toHaveBeenCalledWith(true);
+      expect(component.dialogRef.close).toHaveBeenCalledWith({apply: true, setAsCurrent: true});
     });
   });
 
@@ -158,7 +158,7 @@ describe('ToolCalibrationResultDialogComponent', () => {
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
-      expect(component.dialogRef.close).toHaveBeenCalledWith(false);
+      expect(component.dialogRef.close).toHaveBeenCalledWith({apply: false, setAsCurrent: true});
     });
   });
 

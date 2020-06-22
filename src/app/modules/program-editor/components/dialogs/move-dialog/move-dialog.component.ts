@@ -71,7 +71,10 @@ export class MoveDialogComponent implements OnInit {
     locationIndex: new FormControl(-1),
     motionElement: new FormControl(null),
     rangeMode: new FormControl(false),
-    vscale: new FormControl(null)
+    vscale: new FormControl(null, [
+      Validators.min(0),
+      Validators.max(100)
+    ])
   }, {
     validators: [
       rangeValidator,

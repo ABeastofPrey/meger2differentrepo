@@ -1,4 +1,4 @@
-<div class="mat-typography" style="margin: -24px;">
+<div class="mat-typography">
 	<div class="header mat-toolbar mat-primary mat-elevation-z3">
 		<div class="title">{{ 'tool_calib.calibrate_result' | translate }} {{ toolName }}</div>
 	</div>
@@ -58,9 +58,14 @@
 			<mat-header-row *matHeaderRowDef="resultDisplayedColumns; sticky: true"></mat-header-row>
 			<mat-row *matRowDef="let row; columns: resultDisplayedColumns; let i = index"></mat-row>
 		</mat-table>
+
+		<div>
+			<mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{'frames.calibration.set' | translate}}</mat-checkbox>
+		</div>
+
 	</div>
 
-	<div class="warning">
+	<div class="warning center-vertical">
 		<div class="warning-icon">
 			<mat-icon>warning</mat-icon>
 		</div>
@@ -73,7 +78,6 @@
 			</ng-container>
 		</div>
 	</div>
-
 	<div class="multiple-buttons">
 		<button mat-raised-button class="apply-button" color="primary" (click)="onApply()">
 			{{ 'button.apply' | translate }}

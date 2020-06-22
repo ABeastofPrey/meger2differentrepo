@@ -65,7 +65,11 @@ export class FramesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataSource.data = this.getData();
+    this.data.dataLoaded.subscribe(data=>{
+      if (data) {
+        this.dataSource.data = this.getData();
+      }
+    });
   }
 
   ngAfterViewInit() {

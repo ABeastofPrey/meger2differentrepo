@@ -59,21 +59,20 @@ export class ChecklistDatabase {
   constructor(
     private ws: WebsocketService
     ) {
-    this.initialize();
   }
 
-  outputs: string[] = [];
-  inputs: string[] = [];
+  outputs: SysIO[] = [];
+  inputs: SysIO[] = [];
 
   initialize() {
     // GET INPUTS AND OUTPUTS
     const promises = [
-      this.ws.query('?IOMAP_GET_All_SYS_IOS(1)'),
-      this.ws.query('?IOMAP_GET_All_SYS_IOS(0)'),
+      this.ws.query('?getIOList("din","usr","bit","dec")'),
+      this.ws.query('?getIOList("dout","usr","bit","dec")'),
     ];
     Promise.all(promises).then((ret: MCQueryResponse[]) => {
-      this.inputs = ret[0].result.length === 0 ? [] : ret[0].result.split(',');
-      this.outputs = ret[1].result.length === 0 ? [] : ret[1].result.split(',');
+      this.inputs = JSON.parse(ret[0].result) as SysIO[];
+      this.outputs = JSON.parse(ret[1].result) as SysIO[];
       this.ws
         .query('?grp_end_effector_get_list')
         .then((ret: MCQueryResponse) => {
@@ -226,6 +225,8 @@ export class GripperScreenComponent implements OnInit {
           title,
           placeholder: this.words['name'],
           accept: title,
+          regex: '[a-zA-Z]+(\\w*)$',
+          maxLength: 32
         },
       })
       .afterClosed()
@@ -344,9 +345,7 @@ export class GripperScreenComponent implements OnInit {
       this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + efAndGrp + ',1)'),
       this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + efAndGrp + ',2)'),
       this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"OPEN")'),
-      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"CLOSE")'),
-      this.ws.query('?IOMAP_GET_All_SYS_IOS(0)'),
-      this.ws.query('?IOMAP_GET_All_SYS_IOS(1)'),
+      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"CLOSE")')
     ];
     Promise.all(promises).then((ret: MCQueryResponse[]) => {
       grp.useTool = ret[0].result === '1';
@@ -547,6 +546,10 @@ export class GripperScreenComponent implements OnInit {
     this.database.dataChange.pipe(takeUntil(this.notifier)).subscribe(data => {
       this.dataSource.data = data;
     });
+    this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+      if (!stat) return;
+      this.database.initialize();
+    });
   }
 
   ngOnDestroy() {
@@ -561,6 +564,12 @@ export class GripperScreenComponent implements OnInit {
     }
     Promise.all(promises);
   }
+}
+
+interface SysIO {
+  index: string;
+  value: string;
+  label: string;
 }
 
 export class EndEffector extends GripperTableNode {

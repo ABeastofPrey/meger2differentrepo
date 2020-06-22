@@ -114,6 +114,7 @@ export class WebsocketService {
                 Promise.all([
                   this.query('java_port'),
                   this.query('java_es'),
+                  // this.query('common shared GUI_ERR as error ""')
                 ]).then(ret => {
                     this._port = ret[0].result;
                     this._otherClients = Number(ret[1].result) - 1;

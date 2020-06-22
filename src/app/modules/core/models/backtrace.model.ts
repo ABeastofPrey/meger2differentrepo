@@ -19,7 +19,7 @@ export class Backtrace {
   }
 }
 
-class BacktraceFile {
+export class BacktraceFile {
   name: string;
   line: number;
   path: string;

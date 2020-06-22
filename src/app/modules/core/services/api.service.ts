@@ -23,7 +23,6 @@ export class ApiService {
 
   private _cloudToken: string = null;
   get cloudToken() {
-    //return this._cloudToken || '1622a6c4fc618b45f4f2529c64e331f0fe768f7c991902f84faaa4ed31898926000ef996ca886d2fd06e993deb314f4b8835fc15e61d92e0b5c6eb6169a1e808';
     return this._cloudToken;
   }
 
@@ -103,21 +102,36 @@ export class ApiService {
       );
   }
 
-  upload(file: File, overwrite: boolean) {
+  private async checkSpaceFor(f: File) {
+    const free = await this.get('/cs/api/free-space').toPromise();
+    return free > f.size;
+  }
+
+  async upload(file: File, overwrite: boolean): Promise<UploadResult> {
+    // check for size
+    const enoughSpace = await this.checkSpaceFor(file);
+    if (!enoughSpace) {
+      return Promise.reject({error: {err: -99}});
+    }
     let url = this.api_url + '/cs/upload';
     if (overwrite) url += '/overwrite';
     const formData = new FormData();
     formData.append('token', this.token);
     formData.append('file', file);
-    return this.http.post(url, formData).toPromise();
+    return this.http.post(url, formData).toPromise() as Promise<UploadResult>;
   }
 
-  uploadToDrive(file: File, ip: string) {
+  async uploadToDrive(file: File, ip: string): Promise<UploadResult> {
+    // check for size
+    const enoughSpace = await this.checkSpaceFor(file);
+    if (!enoughSpace) {
+      return Promise.reject({error: {err: -99}});
+    }
     const url = this.api_url + '/drive/api/upload';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('ip', ip);
-    return this.http.post(url, formData).toPromise();
+    return this.http.post(url, formData).toPromise() as Promise<UploadResult>;
   }
 
   sendToDrive(path: string, ip: string) {
@@ -130,7 +144,12 @@ export class ApiService {
     return this.http.post(url, { path, ip, driveFile }).toPromise() as Promise<boolean>;
   }
 
-  uploadToPath(file: File, overwrite: boolean, path: string): Promise<UploadResult> {
+  async uploadToPath(file: File, overwrite: boolean, path: string, keepCase?: boolean): Promise<UploadResult> {
+    // check for size
+    const enoughSpace = await this.checkSpaceFor(file);
+    if (!enoughSpace) {
+      return Promise.reject({error: {err: -99}});
+    }
     const url = this.api_url + '/cs/api/upload';
     const formData = new FormData();
     formData.append('file', file);
@@ -138,10 +157,11 @@ export class ApiService {
     body = body.set('token', this.token);
     body = body.set('path', path);
     if (overwrite) body = body.set('overwrite', 'true');
+    if (keepCase) body = body.set('keepCase', 'true');
     return this.http.post(url, formData, { params: body }).toPromise() as Promise<UploadResult>;
   }
 
-  uploadRec(file: File) {
+  async uploadRec(file: File) {
     const url = this.api_url + '/cs/api/uploadRec';
     const formData = new FormData();
     formData.append('file', file);
@@ -150,15 +170,26 @@ export class ApiService {
     return this.http.post(url, formData, { params: body }).toPromise();
   }
 
-  uploadIPK(file: File) {
+  async uploadIPK(file: File) {
+    // check for size
+    const enoughSpace = await this.checkSpaceFor(file);
+    if (!enoughSpace) {
+      return Promise.reject({error: {err: -99}});
+    }
     const url = this.api_url + '/cs/firmware';
     const formData = new FormData();
-    formData.append('token', this.token);
     formData.append('file', file);
-    return this.http.post(url, formData).toPromise();
+    let body = new HttpParams();
+    body = body.set('token', this.token);
+    return this.http.post(url, formData, { params: body }).toPromise();
   }
 
-  verifyProject(file: File) {
+  async verifyProject(file: File) {
+    // check for size
+    const enoughSpace = await this.checkSpaceFor(file);
+    if (!enoughSpace) {
+      return Promise.reject({error: {err: -99}});
+    }
     const url = this.api_url + '/cs/api/verifyProject';
     const formData = new FormData();
     formData.append('token', this.token);
@@ -265,6 +296,22 @@ export class ApiService {
     if (files) {
       body = body.set('files', files.join());
     }
+    return this.http
+      .post(this.api_url + '/cs/mczip', body)
+      .toPromise()
+      .then(ret => {
+        if (ret) window.location.href = this.api_url + '/cs/api/zipFile';
+      });
+  }
+
+  /*
+  path should be used relative to SSMC (i.e: DEMO/ refers to "/FFS0/SSMC/DEMO/");
+  */
+  downloadSubfolderZip(path: string) {
+    let body = new HttpParams();
+    body = body.set('token', this.token);
+    body = body.set('files', path);
+    body = body.set('singleFolder', "true");
     return this.http
       .post(this.api_url + '/cs/mczip', body)
       .toPromise()
@@ -499,14 +546,6 @@ export class ApiService {
       .post(this.api_url + '/tp/pallet/', body, {
         responseType: 'text',
       })
-      .toPromise();
-  }
-
-  updatePalletFile(name: string, data: string) {
-    let body = new HttpParams();
-    body = body.set('palletData', data);
-    return this.http
-      .post(this.api_url + '/tp/pallet/' + name, body)
       .toPromise();
   }
 

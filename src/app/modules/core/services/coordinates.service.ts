@@ -144,6 +144,7 @@ export class CoordinatesService {
               console.error('cyc2 returned wrong value:');
               console.error(result,cmd,err);
               this.interval = null;
+              this.oldString = null;
               this._zone.run(() => {
                 this.coosLoaded.next(false);
               });
@@ -164,6 +165,7 @@ export class CoordinatesService {
       if (!stat) {
         this.ws.clearInterval(this.interval);
         this.interval = null;
+        this.oldString = null;
         this.coosLoaded.next(false);
       }
     });

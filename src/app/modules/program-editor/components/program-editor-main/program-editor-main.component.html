@@ -78,11 +78,11 @@
           >stop</mat-icon
         >
         <mat-icon
-          (click)="status.statusCode === taskStates[0] ? null : service.run()"
+          (click)="status.statusCode === taskStates[0] || status.statusCode === taskStates[3] ? null : service.run()"
           tourAnchor="programRun"
           *ngIf="!login.isViewer && !service.isLib"
           matTooltip="{{ 'projects.toolbar.run' | translate }}"
-          [class.disabled]="status.statusCode === taskStates[0]"
+          [class.disabled]="status.statusCode === taskStates[0] || status.statusCode === taskStates[3]"
           >play_arrow</mat-icon
         >
         <mat-icon

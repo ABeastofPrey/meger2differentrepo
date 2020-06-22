@@ -106,7 +106,7 @@ export class ToolCalibrationDialogComponent implements OnInit {
         if (successRes.result === '0') {
           const ref = this.dialog.open(dialog, {
             width: '500px',
-            minHeight: '500px',
+            minHeight: '600px',
             data: {
               toolName: this.varName,
             },
@@ -115,9 +115,11 @@ export class ToolCalibrationDialogComponent implements OnInit {
           });
 
           ref.afterClosed().subscribe(result => {
-            if (result && successRes.result === '0') {
+            if (result.apply && successRes.result === '0') {
               this.dialogRef.close();
-              this.dataService.selectedTool = this.varName;
+              if (result.setAsCurrent) {
+                this.dataService._selectedTool = this.varName;
+              }
               this._singlePointStepTwo = false;
               this.pointsAdded = 0;
             }

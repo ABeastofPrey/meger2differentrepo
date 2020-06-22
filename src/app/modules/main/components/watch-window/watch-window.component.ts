@@ -33,6 +33,8 @@ export class WatchWindowComponent implements OnInit {
     private grp: GroupManagerService
   ) { }
 
+  private abortFlag = false;
+
   ngOnInit() {
     // catch variables with context of vars.
     this.watch.catchVariables();
@@ -45,6 +47,10 @@ export class WatchWindowComponent implements OnInit {
   }
 
   record() {
+    if (this.isRecording) {
+      this.abortFlag = true;
+      return;
+    }
     const params = this.watch.vars
       .filter(v => {
         return v.record && v.name.trim().length;
@@ -68,6 +74,7 @@ export class WatchWindowComponent implements OnInit {
       Math.ceil(recParams.duration / this.grp.sysInfo.cycleTime) +
       ' Gap=' + recParams.gap + ' RecData=' +
       params.join();
+    this.abortFlag = false;
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err) 
       {
@@ -86,7 +93,7 @@ export class WatchWindowComponent implements OnInit {
           time += 200;
           this.recPercentage = (time / recParams.duration) * 100;
           const mcRecording = (await this.ws.query('?recording')).result;
-          if (mcRecording === '0' || mcRecording === '4' || !this.isRecording) {
+          if (mcRecording === '0' || mcRecording === '4' || !this.isRecording || this.abortFlag) {
             clearInterval(interval);
             this.onRecordFinish(recParams);
           }

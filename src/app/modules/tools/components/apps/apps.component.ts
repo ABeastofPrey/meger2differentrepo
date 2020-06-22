@@ -98,6 +98,7 @@ export class AppsComponent implements OnInit {
   }
 
   cabinetUpdate() {
+    if (this.cmn.isCloud) return;
     this.dialog.open(CabinetUpdateDialogComponent).afterClosed().subscribe(ret=>{
       if (ret) {
         window.location.href = '/cabinet-update';
@@ -106,14 +107,17 @@ export class AppsComponent implements OnInit {
   }
 
   uploadIPK() {
+    if (this.cmn.isCloud) return;
     this.uploadInput.nativeElement.click();
   }
 
   restore() {
+    if (this.cmn.isCloud) return;
     this.dialog.open(FactoryRestoreComponent);
   }
 
   reboot() {
+    if (this.cmn.isCloud) return;
     const ref = this.dialog.open(YesNoDialogComponent, {
       width: '400px',
       data: this.words['reboot_confirm'],

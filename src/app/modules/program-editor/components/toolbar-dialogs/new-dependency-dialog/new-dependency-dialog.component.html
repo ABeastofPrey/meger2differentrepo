@@ -1,4 +1,4 @@
-<div class="mat-typography">
+<form class="mat-typography" [formGroup]="dialogForm" (ngSubmit)="create()">
 	<div class="title mat-elevation-z1">
 		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'projects.toolbar.new_dep' | translate }}
 	</div>
@@ -7,21 +7,22 @@
 			<input
 				matInput
 				placeholder="{{ 'projects.toolbar.dep_name' | translate }}"
-				[(ngModel)]="name"
+				formControlName="val"
 				(keyup.enter)="create()"
 				virtualKeyboard
 				ktype="text"
 				(onKeyboardClose)="create()"
 			/>
-      <span matSuffix>.ULB</span>
+			<span matSuffix>.ULB</span>
+			<mat-error *ngIf="dialogForm.invalid">{{ 'error.invalid_file_name' | translate }}</mat-error>
 		</mat-form-field>
 	</div>
 	<div class="actions">
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" type="submit" (click)="create()" [disabled]="isValueInvalid()">
+		<button mat-button color="primary" type="submit" (click)="create()" [disabled]="dialogForm.invalid">
 			{{ 'projects.toolbar.dep_create' | translate }}
 		</button>
 	</div>
-</div>
+</form>

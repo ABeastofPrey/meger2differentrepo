@@ -283,7 +283,7 @@ export class LoginScreenComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.login.purgeAuth();
+    // this.login.purgeAuth();
     this.platform = navigator.platform;
     this.api.ready.pipe(takeUntil(this.notifier)).subscribe(stat=>{
       if (!stat) return;

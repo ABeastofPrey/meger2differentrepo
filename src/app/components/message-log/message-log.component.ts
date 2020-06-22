@@ -41,8 +41,14 @@ export class MessageLogComponent implements OnInit {
   contextMenuY = 0;
   contextSelection: string = null;
 
+  // LIB LOG
+  firstPortion: string;
+  secondPortion: string;
+  thirdPortioin: string;
+  libLogcode: number;
+
   private notifier: Subject<boolean> = new Subject();
-  private last = 0;
+  private _timeout;
 
   constructor(
     public notification: NotificationService,
@@ -57,12 +63,11 @@ export class MessageLogComponent implements OnInit {
       this.notification.newMessage
         .pipe(takeUntil(this.notifier))
         .subscribe(() => {
-          const now = new Date().getTime();
-          const diff = now - this.last;
-          if (diff < MIN_REFRESH_RATE) return;
-          this.last = now;
-          this.cd.detectChanges();
-          this.msgContainer.scrollToIndex(this.msgContainer.getDataLength());
+          clearTimeout(this._timeout);
+          this._timeout = setTimeout(()=>{
+            this.cd.detectChanges();
+            this.msgContainer.scrollToIndex(this.msgContainer.getDataLength());
+          },MIN_REFRESH_RATE);
         });
     }
   
@@ -113,24 +118,18 @@ export class MessageLogComponent implements OnInit {
       path = path.substring(0, path.lastIndexOf('/')) + '/';
       const fileName = err.errTask.substring(err.errTask.lastIndexOf('/') + 1);
       this.mgr.screen = this.mgr.screens[2];
-      this.prg.modeToggle = 'mc';
       this.prg.mode = 'editor';
-      this.router.navigateByUrl('/projects');
+      this.prg.modeToggle = 'mc';
       this.prg.setFile(fileName, path, null, -1);
     }
 
-    public firstPortion: string;
-    public secondPortion: string;
-    public thirdPortioin: string;
-    public libLogcode: number;
-
-    public isLibLog(msg: string): boolean {
+    isLibLog(msg: string): boolean {
       if (typeof msg !== 'string' || msg.trim() === '') {
         return false;
       }
       const strIdx = msg.indexOf(':') + 1;
       const endIdx = msg.indexOf(',');
-      const logCode = parseInt(msg.slice(strIdx, endIdx).trim());
+      const logCode = Number(msg.slice(strIdx, endIdx).trim());
       const isLibLog = errCode => errCode >= 20000 && errCode <= 20999;
       this.libLogcode = logCode;
       this.recombinateLibMsg(msg);

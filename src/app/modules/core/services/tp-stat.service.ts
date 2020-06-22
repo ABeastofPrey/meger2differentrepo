@@ -391,6 +391,7 @@ export class TpStatService {
       }
     });
     this.onlineStatus.subscribe(async stat => {
+      // this.ws.query('common shared GUI_ERR as error ""');
       if (stat) {
         // TP_VER is OK
         if (!this.login.isAdmin) {
@@ -399,12 +400,6 @@ export class TpStatService {
           this.lang.setLang(lang.result.toLowerCase());
           return;
         }
-        const cmd = '?tp_set_language("' + this.trn.currentLang + '")';
-        this.ws.query(cmd).then((ret: MCQueryResponse) => {
-          if (ret.err || ret.result !== '0') {
-            console.log('LANG ERR', ret.result);
-          }
-        });
       }
     });
     this.onProjectLoaded.subscribe(loaded => {

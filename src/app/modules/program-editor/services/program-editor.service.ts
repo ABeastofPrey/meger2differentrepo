@@ -40,7 +40,9 @@ export const TASKSTATE_LIB_LOADED = 99;
 
 const endsWithBKG = (x: string) => x && x.endsWith('BKG');
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ProgramEditorService {
 
   files: MCFile[] = [];
@@ -93,6 +95,8 @@ export class ProgramEditorService {
   private oldStatString: string;
   private _modeToggle = 'prj';
   private stepMode = false; // True when user clicks on STEP button
+
+  wizardMode = false;
 
   // LINE PARSING
   parser: LineParser = new LineParser(this.data);
@@ -169,6 +173,7 @@ export class ProgramEditorService {
       'button.cancel',
       'dismiss',
       'error.err',
+      'error.not_enough_space',
       'success',
       'button.save',
       'button.discard',
@@ -192,6 +197,8 @@ export class ProgramEditorService {
     return this._modeToggle;
   }
   set modeToggle(val: string) {
+    if (this._modeToggle === val) return;
+    this.backtrace = null;
     this._modeToggle = val;
     this.close();
     if (val === 'mc') {
@@ -200,9 +207,27 @@ export class ProgramEditorService {
       // open selected tab
       const tab = this.tabs[this.selectedTabIndex];
       if (!tab) return;
-      this.setFile(tab.file,tab.path,null,tab.line);
+      this.setFile(tab.file,tab.path,null,tab.line, this.backtrace);
     } else {
       this.router.navigateByUrl('/projects');
+    }
+  }
+
+  async setModeToggle(val: string) {
+    if (this._modeToggle === val) return;
+    this.backtrace = null;
+    this._modeToggle = val;
+    this.close();
+    if (val === 'mc') {
+      // go to editor mode
+      this.mode = 'editor';
+      await this.router.navigateByUrl('/projects');
+      // open selected tab
+      const tab = this.tabs[this.selectedTabIndex];
+      if (!tab) return;
+      await this.setFile(tab.file,tab.path,null,tab.line);
+    } else {
+      await this.router.navigateByUrl('/projects');
     }
   }
   
@@ -250,13 +275,14 @@ export class ProgramEditorService {
     }
     const tab = this.tabs[i];
     if (tab) {
-      this.setFile(tab.file, tab.path, null, tab.line);
+      this.setFile(tab.file, tab.path, null, tab.line, this.backtrace);
     }
   }
 
   setFile(f: string, path: string, ref: App, line: number, bt?: Backtrace) {
     // OPEN A FILE
     this.fileRef = ref;
+    this.backtrace = bt;
     if (f === this.activeFile && path === this.activeFilePath) return;
     const tab = this.tabs[this.selectedTabIndex];
     if (this._modeToggle === 'mc' && tab && tab.file === f && tab.path === this.activeFilePath && f === this.activeFile) return;
@@ -267,8 +293,6 @@ export class ProgramEditorService {
         line = l;
       }
     }
-
-    this.backtrace = bt;
     this.close(bt);
     this.activeFile = f;
     this.isLib = f.endsWith('.LIB') || f.endsWith('.ULB');
@@ -289,7 +313,7 @@ export class ProgramEditorService {
         this.tabs.push({
           file: f,
           path: finalPath,
-          line: -1
+          line: line || -1
         });
         this.selectedTabIndex = this.tabs.length - 1;
       } else {
@@ -297,7 +321,7 @@ export class ProgramEditorService {
       }
     }
     if (f === 'FWCONFIG') {
-      this.api.getFile(f).then(ret => {
+      return this.api.getFile(f).then(ret => {
         this.editorText = ret;
         this.editorTextChange.emit(ret);
         this.refreshStatus(false);
@@ -314,9 +338,8 @@ export class ProgramEditorService {
         this.dragEnd.emit();
         this.busy = false;
       });
-      return;
     }
-    this.api.getPathFile(finalPath + f).then((ret: string) => {
+    return this.api.getPathFile(finalPath + f).then((ret: string) => {
       this.editorText = ret;
       this.editorTextChange.emit(ret);
       this.refreshStatus(true);
@@ -399,6 +422,7 @@ export class ProgramEditorService {
     if (!bt) this.errors = [];
     this.editorLine = -1;
     this.isDirty = false;
+    this.backtrace = bt;
     // this.fileRef = null;
   }
 
@@ -414,6 +438,7 @@ export class ProgramEditorService {
       .then((ret: UploadResult) => {
         if (ret.success) {
           this.isDirty = false;
+          this.snackbarService.openTipSnackBar('projects.saved');
         } else {
           const words = [
             'files.err_upload',
@@ -442,6 +467,9 @@ export class ProgramEditorService {
                 //   );
                   this.snackbarService.openTipSnackBar("files.err_permission");             
                 break;
+              case -99:
+                this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                break;
             }
           });
         }
@@ -463,6 +491,7 @@ export class ProgramEditorService {
       .then((ret: UploadResult) => {
         if (ret.success) {
           this.isDirty = false;
+          this.snackbarService.openTipSnackBar('projects.saved');
           if (this.fileRef) {
             const prj = this.prj.currProject.value.name;
             const file = this.activeFile.substring(
@@ -518,6 +547,9 @@ export class ProgramEditorService {
                 //     this.words['dismiss']
                 //   );
                   this.snackbarService.openTipSnackBar("files.err_permission"); 
+                break;
+              case -99:
+                this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
                 break;
             }
             this.busy = false;

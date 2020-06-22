@@ -191,10 +191,9 @@ import { VisionService } from './services/vision.service';
     ProgramEditorComponent,
     JumpxCommandComponent,
     VisionLoadStationBookComponent,
-    VisionCommandComponent,
+    VisionCommandComponent
   ],
   providers: [
-    ProgramEditorService,
     ArchSettingService,
     Jump3DialogService,
     HomeDialogService,

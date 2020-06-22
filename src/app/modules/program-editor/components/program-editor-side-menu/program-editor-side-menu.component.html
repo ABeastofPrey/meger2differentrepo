@@ -8,7 +8,7 @@
 		>
 			<mat-tree-node *matTreeNodeDef="let node" [class.disabled]="isNodeDisabled(node)">
 				<li class="leaf" [class.background-leaf]="node.type === 'BG'" (contextmenu)="openContextMenu($event, node)">
-					<div (click)="openFile(node)" (click)="selectNode(node)"
+					<div (click)="openFile(node)"
 						[class.selected]="lastSelectedNode === node" [class.disabled]="isNodeDisabled(node)"
 						[class.background-node]="node.type === 'BG'">
 						<mat-icon class="leaf mat-primary" color="primary" *ngIf="node.type === 'File'">insert_drive_file</mat-icon>
@@ -105,23 +105,23 @@
 			</div>
 			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'App'">
 				<button mat-button (click)="runApp(lastSelectedNode.name)"
-					*ngIf="lastSelectedNode.ref && lastSelectedNode.ref.status !== 2">
+					*ngIf="lastSelectedNode.ref && lastSelectedNode.ref.status === 7">
 					<mat-icon color="primary">play_arrow</mat-icon>{{ 'projects.toolbar.run' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
-				<button mat-button (click)="newLib(lastSelectedNode.name)">
+				<button mat-button (click)="newLib(lastSelectedNode.name)" *ngIf="!prj.activeProject">
 					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_lib' | translate }}...
 				</button>
-				<mat-divider></mat-divider>
-				<button mat-button (click)="renameApp(lastSelectedNode.name)">
+				<mat-divider *ngIf="!prj.activeProject"></mat-divider>
+				<button mat-button (click)="renameApp(lastSelectedNode.name)" *ngIf="!prj.activeProject">
 					<mat-icon color="primary">edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}
 					{{ lastSelectedNode.name }}...
 				</button>
-				<button mat-button (click)="saveAppAs(lastSelectedNode.name)">
+				<button mat-button (click)="saveAppAs(lastSelectedNode.name)" *ngIf="!prj.activeProject">
 					<mat-icon color="primary">save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...
 				</button>
-				<mat-divider></mat-divider>
-				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name)">
+				<mat-divider *ngIf="!prj.activeProject"></mat-divider>
+				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name)" *ngIf="!prj.activeProject">
 					<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>

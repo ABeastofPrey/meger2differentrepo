@@ -1,3 +1,4 @@
+import { WebsocketService } from './../../../../core/services/websocket.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../../../modules/core/services/api.service';
 import { LoginService } from '../../../../../modules/core/services/login.service';
@@ -38,6 +39,7 @@ export class UserMngrComponent implements OnInit {
     public login: LoginService,
     private trn: TranslateService,
     private utils: UtilsService,
+    private ws: WebsocketService
   ) {
     this.refreshUsers();
     this.trn
@@ -124,6 +126,7 @@ export class UserMngrComponent implements OnInit {
           )
           .then(() => {
             this.refreshUsers().then(() => {
+              if (this.login.isSuper || this.login.getCurrentUser().user.username === 'admin') return;
               let found = false;
               for (const u of this.dataSource.data as UserWithPic[]) {
                 if (u.username === this.login.getCurrentUser().user.username) {

@@ -114,7 +114,6 @@ export class DashboardService {
             promises.push(this.ws.query('?' + w.name + '.' + p.name));
           }
           Promise.all(promises).then(ret => {
-            console.log(ret);
             if (ret[0].err) {
               this.close(w.name);
               return;
@@ -153,23 +152,6 @@ export class DashboardService {
         cmd += v;
     }
     this.ws.query(cmd);
-  }
-
-  private getRecordingData(recName: string) {
-    if (recName === null) this.graphType = '2d';
-    this._busy = true;
-    return this.api.getRecordingCSV(recName).then((csv: string) => {
-      if (csv === null) {
-        //   this.snack.open(
-        //     this.words['dashboard.err_file'],
-        //     this.words['dismiss']
-        //   );   
-          this.snackbarService.openTipSnackBar("dashboard.err_file"); 
-        return false;
-      }
-      this.lastChartData = this.csvToGraphs(csv);
-      return true;
-    });
   }
 
   /*

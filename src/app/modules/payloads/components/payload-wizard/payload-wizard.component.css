@@ -14,6 +14,12 @@
 .menu mat-form-field {
   max-width: 100px;
 }
+.buttons {
+  margin-bottom: 16px;
+}
+.buttons button {
+  margin-right: 24px;
+}
 mat-horizontal-stepper {
   flex: 1;
   display: flex;

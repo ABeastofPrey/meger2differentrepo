@@ -33,7 +33,6 @@ export class TerminalService {
   history: string[] = [];
   sentCommandEmitter: EventEmitter<string> = new EventEmitter<string>();
   resizeRequired: EventEmitter<void> = new EventEmitter<void>();
-
   onNewCommand: EventEmitter<TerminalCommand> = new EventEmitter<TerminalCommand>();
 
   send(cmd: string) {

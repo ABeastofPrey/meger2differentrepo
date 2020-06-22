@@ -64,6 +64,13 @@ export class NotificationService {
     for (let m of messages) {
       m = m.trim();
       if (m.length === 0) continue;
+      const notification = new CSNotification(m);
+      if (notification.err) {
+        setTimeout(()=>{ // TO AVOID PERFORMANCE ISSUES
+          this.newMessage.next();
+        },0);
+        return;
+      }
       nots.push(new CSNotification(m));
     }
     if (this._count === this.notificationsLimit) {
@@ -88,7 +95,11 @@ export class NotificationService {
     // });
     try {
       const libMessage: LibAsyncMessage = JSON.parse(msg);
-      this.newLibAsyncMessage.next(libMessage);
+      setTimeout(()=>{ // TO AVOID PERFORMANCE ISSUES
+        console.log(libMessage);
+        this.newLibAsyncMessage.next(libMessage);
+        this.newMessage.next();
+      },0);
     } catch (error) {
       console.warn('Parse lib async message failed: ' + msg);
     }

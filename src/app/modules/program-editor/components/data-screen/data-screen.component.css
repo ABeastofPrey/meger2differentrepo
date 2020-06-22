@@ -91,3 +91,6 @@
   z-index: 1;
   transform: rotate(90deg) scale(-1, 1);
 }
+.tablet-ui .filter-menu > *:not(:last-child) {
+  margin-right: 24px;
+}

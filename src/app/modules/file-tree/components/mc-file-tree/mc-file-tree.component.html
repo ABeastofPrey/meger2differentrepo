@@ -10,6 +10,7 @@
 			[(ngModel)]="filterByString"
 			(ngModelChange)="onSearchChange()"
 			(keydown.enter)="onSearchChange(true)"
+			(onKeyboardClose)="onSearchChange(true)"
 			[disabled]="isRefreshing"
 			#searchInput
 			virtualKeyboard
@@ -24,7 +25,7 @@
 			<mat-option value="content">{{ 'files.content' | translate }}</mat-option>
 		</mat-select>
 	</mat-form-field>
-	<mat-slide-toggle class="checkbox_en" color="primary" [(ngModel)]="enableSelect">{{
+	<mat-slide-toggle class="checkbox_en" color="primary" [(ngModel)]="enableSelect" (change)="onEnableSelectChange()" [disabled]="selectBusy">{{
 		'checkbox_enable' | translate
 	}}</mat-slide-toggle>
 	<div class="center-vertical-horizontal">
@@ -56,9 +57,8 @@
 		<mat-tree-node *matTreeNodeDef="let node">
 			<li (contextmenu)="openContextMenu($event, node)" class="leaf">
 				<div (click)="openFile(node)" [class.selected]="lastSelectedNode === node">
-					<mat-checkbox
+					<mat-checkbox *ngIf="enableSelect"
 						class="checklist-leaf-node"
-						*ngIf="enableSelect"
 						[checked]="prj.checklistSelection.isSelected(node)"
 						(change)="leafSelectionToggle(node, $event)"
 						(click)="$event.stopPropagation()"
@@ -74,10 +74,9 @@
 					<mat-icon>
 						{{ nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
 					</mat-icon>
-					<mat-checkbox
-						*ngIf="enableSelect"
+					<mat-checkbox *ngIf="enableSelect"
 						[checked]="descendantsAllSelected(node)"
-						[indeterminate]="descendantsPartiallySelected(node)"
+						[indeterminate]="!descendantsAllSelected(node) && descendantsPartiallySelected(node)"
 						(change)="nodeSelectionToggle(node)"
 						(click)="$event.stopPropagation()"
 					></mat-checkbox>

@@ -227,6 +227,19 @@ export class PayloadWizardComponent implements OnInit {
     });
   }
 
+  /* RESET CURRENT PAYLOAD DATA*/
+  async reset() {
+    const ret = await this.ws.query('?pay_reset_payload_data("' + this.selectedPayload.name + '")');
+    if (ret.result === '0') {
+      this.onPayloadChange();
+    }
+  }
+
+  /* SET THE SELECT PAYLOAD AS CURRENT PAYLOAD */
+  setAsCurrent() {
+    this.ws.query('PAY_SET_PAYLOAD("' + this.selectedPayload.name + '")');
+  }
+
   delete() {
     this.trn
       .get('payloads.delete_title', { name: this.selectedPayload.name })

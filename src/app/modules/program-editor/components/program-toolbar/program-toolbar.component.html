@@ -17,7 +17,7 @@
 		<li
 			(mouseenter)="currMenu = 3"
 			[class.selected]="onFocus && currMenu === 3 && prgService.mode === 'editor'"
-			[class.disabled]="prgService.mode !== 'editor' || prj.activeProject || login.isOperator"
+			[class.disabled]="prgService.mode !== 'editor' || prj.activeProject || login.isOperator || !prgService.activeFile"
 		>
 			{{ 'projects.toolbar.edit' | translate }}
 		</li>
@@ -39,7 +39,7 @@
 		</li>
 	</ul>
 	<ul class="mat-elevation-z1 prj-buttons" *ngIf="cmn.isTablet && prj.currProject.value && prgService.modeToggle === 'prj'">
-    <button (click)="toggleDependencies()" mat-raised-button color="accent" style="margin-right: 24px;">
+    <button (click)="toggleDependencies()" mat-raised-button color="accent" style="margin-right: 8px;">
 			<mat-icon>public</mat-icon>
       <mat-icon class="secondary-icon">
         {{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}
@@ -49,7 +49,7 @@
 			(click)="stop()"
 			mat-raised-button
 			color="primary"
-			style="margin-right: 24px;"
+			style="margin-right: 8px;"
 			matTooltip="{{ 'projects.toolbar.stop_prj' | translate }}"
 		>
 			<mat-icon>stop</mat-icon>
@@ -79,7 +79,7 @@
 		</button>
 	</ul>
 	<ul class="mat-elevation-z1" *ngIf="login.isAdmin">
-		<mat-button-toggle-group [(ngModel)]="prgService.modeToggle" (change)="currMenu = 0; onFocus = false">
+		<mat-button-toggle-group [(ngModel)]="prgService.modeToggle" (change)="currMenu = 0; onFocus = false" [disabled]="prgService.wizardMode">
 			<mat-button-toggle value="prj">{{ 'projectTree.prj' | translate }}</mat-button-toggle>
 			<mat-button-toggle value="mc">{{ 'projectTree.cnt' | translate }}</mat-button-toggle>
 		</mat-button-toggle-group>
@@ -116,13 +116,13 @@
 	</ul>
 	<ul
 		class="dropdown-menu menu3"
-		*ngIf="currMenu === 3 && prgService.mode === 'editor' && !prj.activeProject && !login.isOperator"
+		*ngIf="currMenu === 3 && prgService.mode === 'editor' && !prj.activeProject && !login.isOperator && prgService.activeFile"
 	>
 		<li (click)="undo()"><mat-icon>undo</mat-icon>{{ 'projects.toolbar.undo' | translate }}</li>
 		<li (click)="redo()"><mat-icon>redo</mat-icon>{{ 'projects.toolbar.redo' | translate }}</li>
 		<div class="seperator"></div>
 		<li (click)="find()"><mat-icon>find_in_page</mat-icon>{{ 'projects.toolbar.find' | translate }}...</li>
-		<li (click)="replace()"><mat-icon>find_replace</mat-icon>{{ 'projects.toolbar.replace' | translate }}...</li>
+		<li (click)="replace()" *ngIf="!cmn.isTablet"><mat-icon>find_replace</mat-icon>{{ 'projects.toolbar.replace' | translate }}...</li>
 	</ul>
 	<ul class="dropdown-menu menu4" *ngIf="currMenu === 4 && this.prj.currProject.value">
 		<li (click)="$event.stopImmediatePropagation(); prj.toggleAutoStart()">

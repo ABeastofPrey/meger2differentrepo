@@ -130,15 +130,18 @@ export class LoginService {
 
   async logout(serverDisconnected?: boolean) {
     if (!this.jwtService.getToken()) return true;
-    if (!serverDisconnected && this.ws.connected) {
-      await this.ws.query('?tp_exit');
-      this.ws.reset();
-    }
-    this.purgeAuth();
     const params = serverDisconnected ? { serverDisconnected: 'true' } : {};
-    this.router.navigate(['/login'], { queryParams: params });
+    const nav = await this.router.navigate(['/login'], { queryParams: params });
+    if (nav === false) return;
     const ref = this.snack._openedSnackBarRef;
     if (ref) ref.dismiss();
+    this.purgeAuth();
+    setTimeout(async ()=>{
+      if (!serverDisconnected && this.ws.connected) {
+        await this.ws.query('?tp_exit');
+        this.ws.reset();
+      }
+    },200);
     return true;
   }
 

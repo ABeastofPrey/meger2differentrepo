@@ -1,8 +1,8 @@
 <div class="wrapper mat-typography">
 	<div class="cs-gradient" [style.opacity]="!ws.connected && compInit ? 1 : 0"></div>
-	<img src="assets/pics/robot2_{{utils.theme}}.svg" class="robot robot1" [@robot1]="!ws.connected && compInit ? 'shown' : 'none'" />
+	<!-- <img src="assets/pics/robot2_{{utils.theme}}.svg" class="robot robot1" [@robot1]="!ws.connected && compInit ? 'shown' : 'none'" />
 	<img src="assets/pics/cabinet_{{utils.theme}}.svg" class="cabinet" [@cabinet]="!ws.connected && compInit ? 'shown' : 'none'" />
-	<div class="floor" [@floor]="!ws.connected && compInit ? 'shown' : 'none'"></div>
+	<div class="floor" [@floor]="!ws.connected && compInit ? 'shown' : 'none'"></div> -->
 	<button mat-fab color="primary" (click)="reload()" class="reload" *ngIf="incompatibility"><mat-icon>refresh</mat-icon></button>
 	<mat-card
 		class="login-card mat-elevation-z24"
@@ -15,58 +15,59 @@
 				<h2>{{ isMcAvailable ? 'connecting' : 'login.mc_offline' | translate }}...</h2>
 			</div>
 		</div>
-		<header [style.background-image]="'url(' + loginBgImgUrl + ')'">
-			<div class="black-overlay" *ngIf="utils.IsKuka"></div>
-			<div class="center-vertical" [class.kuka-center-vertical]="utils.IsKuka" [class.stx-ver]="!utils.IsKuka" style="z-index: 2;">
+		<header>
+			<div class="center-vertical" style="z-index: 2;">
 				<div style="flex:1;">
-					<div class="title" *ngIf="utils.IsKuka">{{ appName }}</div>
+					<div class="title">{{ appName }}</div>
 					<div class="subtitle">{{ ver }}</div>
 				</div>
 			</div>
 		</header>
-		<div class="info">
-			{{info?.name}} | {{info?.ip}} | {{info?.sn}}
-		</div>
-		<div class="main">
-			<form [formGroup]="authForm" (ngSubmit)="submitForm()">
-				<fieldset [disabled]="isSubmitting">
-					<mat-form-field appearance="outline">
-						<mat-label>{{ 'userManager.username' | translate }}</mat-label>
-						<mat-icon class="mat-primary" matPrefix>person</mat-icon>
-						<input
-							matInput
-							placeholder="{{ 'userManager.username' | translate }}"
-							formControlName="username"
-							virtualKeyboard
-							ktype="text"
-							id="username"
-						/>
-					</mat-form-field>
-					<mat-form-field appearance="outline">
-						<mat-label>{{ 'password' | translate }}</mat-label>
-						<mat-icon class="mat-primary" matPrefix>security</mat-icon>
-						<input
-							matInput
-							placeholder="{{ 'password' | translate }}"
-							type="password"
-							formControlName="password"
-							virtualKeyboard
-							ktype="password"
-							id="password"
-						/>
-					</mat-form-field>
-					<button
-						mat-raised-button
-						color="primary"
-						type="submit"
-						id="btnLogin"
-						[disabled]="!authForm.valid || !isVersionOK || isSubmitting"
-					>
-						{{ 'button.login' | translate }}
-					</button>
-					<div class="error" *ngIf="errors.error" id="errors">{{ errors.error }}</div>
-				</fieldset>
-			</form>
+		<div class="content">
+			<div class="info">
+				{{info?.name}} | {{info?.ip}} | {{info?.sn}}
+			</div>
+			<div class="main">
+				<form [formGroup]="authForm" (ngSubmit)="submitForm()">
+					<fieldset [disabled]="isSubmitting">
+						<mat-form-field appearance="fill">
+							<mat-label>{{ 'userManager.username' | translate }}</mat-label>
+							<mat-icon class="mat-primary" matPrefix>person</mat-icon>
+							<input
+								matInput
+								placeholder="{{ 'userManager.username' | translate }}"
+								formControlName="username"
+								virtualKeyboard
+								ktype="text"
+								id="username"
+							/>
+						</mat-form-field>
+						<mat-form-field appearance="fill">
+							<mat-label>{{ 'password' | translate }}</mat-label>
+							<mat-icon class="mat-primary" matPrefix>security</mat-icon>
+							<input
+								matInput
+								placeholder="{{ 'password' | translate }}"
+								type="password"
+								formControlName="password"
+								virtualKeyboard
+								ktype="password"
+								id="password"
+							/>
+						</mat-form-field>
+						<button
+							mat-raised-button
+							color="primary"
+							type="submit"
+							id="btnLogin"
+							[disabled]="!authForm.valid || !isVersionOK || isSubmitting"
+						>
+							{{ 'button.login' | translate }}
+						</button>
+						<div class="error" *ngIf="errors.error" id="errors">{{ errors.error }}</div>
+					</fieldset>
+				</form>
+			</div>
 		</div>
 	</mat-card>
 </div>

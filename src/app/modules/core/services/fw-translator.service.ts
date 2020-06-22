@@ -26,8 +26,9 @@ export class FwTranslatorService {
 
   getTranslation(code: number, msg: string) {
     const trn = this._data[code];
-    if (!trn || this.trn.currentLang === 'en' || !trn[this.trn.currentLang]) return msg;
-    const data = trn[this.trn.currentLang];
+    if (!trn) return msg;
+    const data = trn[this.trn.currentLang] || trn['msg'];
+    if (this.trn.currentLang === 'en') return data;
     // HANDLE SPECIAL CASES
     let prefix = '';
     if (trn.module === 'Motion' || trn.module === 'Robot') {
@@ -42,7 +43,7 @@ export class FwTranslatorService {
         prefix += MOTION[this.trn.currentLang][1] + match[1];
       }
     }
-    return prefix + trn[this.trn.currentLang];
+    return prefix + data;
   }
 
     

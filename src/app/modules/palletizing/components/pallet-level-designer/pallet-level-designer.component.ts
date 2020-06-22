@@ -151,7 +151,7 @@ export class PalletLevelDesignerComponent implements OnInit {
 
   onPalletInfoLoaded() : Promise<number> {
     if (this.pallet.dataFile) {
-      return this.api.getFile(this.pallet.dataFile).then(content => {
+      return this.api.getPathFile(this.pallet.dataFile).then(content => {
         this.setDataFromString(content);
         return this.items.length;
       });

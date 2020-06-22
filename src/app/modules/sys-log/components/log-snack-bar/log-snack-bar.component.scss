@@ -1,16 +1,16 @@
 .snack-bar-container {
-    width: 30vw;
-    min-width: 330px;
-    max-width: 600px;
     .log-tip-snackbar {
-        // margin: 0 0 10px 0;
-        padding: 10px 40px;
-        background: black;
-        color: white;
+        max-width: 600px;
+        min-width: 344px;
+        padding: 14px 16px;
+        box-sizing: border-box;
+        min-height: 48px;
+        background: #323232;
+        color: rgba(255,255,255,0.8);
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
+        font-size: 16px;
         span {
             overflow:hidden;
             word-break: break-all;
@@ -21,6 +21,9 @@
         }
     }
     .log-snackbar {
+        max-width: 600px;
+        min-width: 344px;
+        width: 33vw;
         display: flex;
         flex-direction: row;
         padding: 5px;
@@ -40,11 +43,11 @@
             display: flex;
             flex-direction: column;
             justify-content: space-around;
-            padding: 0 2px;
+            padding: 0 4px;
             flex-grow: 1;
             overflow: hidden;
             .first-span {
-                color: #9e9e9e;
+                color: #323232;
                 font-size: 14px;
             }
             .second-span {
@@ -55,6 +58,7 @@
                 word-break: normal;
                 overflow-y: auto;
                 overflow-x: hidden;
+                font-weight: 500;
             }
         }
         .right-portion {

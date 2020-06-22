@@ -239,11 +239,6 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     return false;
   }
 
-  selectNode(node: TreeNode) {
-    this.lastSelectedNode = node;
-    this.lastSelectedFile = null;
-  }
-
   selectFile(file: MCFile) {
     this.lastSelectedFile = file;
     this.lastSelectedNode = null;
@@ -259,11 +254,12 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   runApp(app: string, isBG = false) {
     const cmd = isBG ? `BKG_runProgram("${this.currProject.name}", "${app}", ".BKG")` :
     '?tp_run_app("' + this.currProject.name + '","' + app + '")';
-    this.ws.query(cmd).then((res: MCQueryResponse) => {
-      if (res.err) {
-        console.warn(res.err);
-      }
-    });
+    this.ws.query(cmd);
+  }
+
+  selectNode(n: TreeNode) {
+    this.lastSelectedFile = null;
+    this.lastSelectedNode = n;
   }
 
   openFile(n: TreeNode) {
@@ -298,10 +294,12 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     }
     const projName = this.currProject.name;
     if (n.type !== 'File' && n.type !== 'Dependency') this.service.close();
+    this.lastSelectedFile = null;
     if (n.type === 'Data') {
       if (this.data.selectedDomain === n.parent.name) {
         this.service.mode = 'data';
-        this.router.navigateByUrl('/projects/' + this.service.mode);
+        this.router.navigateByUrl('/projects/' + this.service.mode)
+          .then(success=>{if (success) this.lastSelectedNode = n;});
         return;
       }
       this.service.busy = true;
@@ -312,96 +310,111 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         })
         .then(() => {
           this.service.mode = 'data';
+          this.router.navigateByUrl('/projects/' + this.service.mode).then(success=>{if (success) this.lastSelectedNode = n;});
           this.service.busy = false;
         });
       return;
     }
     if (n.type === 'Settings') {
       this.service.mode = 'settings';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === projectPoints) {
       this.service.mode = projectPoints;
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'Frames') {
       this.service.mode = 'frames';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'Pallets') {
       this.service.mode = 'pallets';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'Grippers') {
       this.service.mode = 'grippers';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'Vision') {
       this.service.mode = 'vision';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'Conveyor') {
       this.service.mode = 'conveyor';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'Errors') {
       this.service.mode = 'errors';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'Macros') {
       this.service.mode = 'macros';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'IO') {
       this.service.mode = 'io';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
     if (n.type === 'Payloads') {
       this.service.mode = 'payloads';
-      this.router.navigateByUrl('/projects/' + this.service.mode);
+      this.router.navigateByUrl('/projects/' + this.service.mode)
+        .then(success=>{if (success) this.lastSelectedNode = n;});
       return;
     }
-    this.service.mode = 'editor';
-    this.router.navigateByUrl('/projects');
-    setTimeout(() => {
-      this.service.dragEnd.emit();
-    }, 200);
-    let path: string;
-    if (n.type === 'File') {
-      path = projName + '/' + n.parent.name + '/';
-      this.service.setFile(n.parent.name + '.UPG', path, n.ref, -1);
-      // REFRESH VARIABLES IF NEEDED
-      if (this.data.selectedDomain === n.parent.name) return;
-      this.service.busy = true;
-      this.ws
-        .query('?tp_set_application("' + n.parent.name + '")')
-        .then(() => {
-          return this.data.refreshDomains();
-        })
-        .then(() => {
-          this.service.busy = false;
-        });
-    } else if (n.type === 'Library') {
-      const appName = n.parent.parent.name;
-      path = projName + '/' + appName + '/LIBS/';
-      this.service.setFile(n.name + '.ULB', path, n.ref, -1);
-    } else if (n.type === 'BG') {
-      path = projName + '/BKG/';
-      this.service.setFile(n.name + '.BKG', path, n.ref, -1);
-    } else if (n.type === 'Dependency') {
-      path = projName + '/DEPENDENCIES/';
-      this.service.setFile(n.name, path,n.ref, -1);
-    }
+    this.router.navigateByUrl('/projects').then(success=>{
+      if (success === false) return;
+      this.service.mode = 'editor';
+      this.lastSelectedNode = n;
+      setTimeout(() => {
+        this.service.dragEnd.emit();
+      }, 200);
+      let path: string;
+      if (n.type === 'File') {
+        path = projName + '/' + n.parent.name + '/';
+        this.service.setFile(n.parent.name + '.UPG', path, n.ref, -1);
+        // REFRESH VARIABLES IF NEEDED
+        if (this.data.selectedDomain === n.parent.name) return;
+        this.service.busy = true;
+        this.ws
+          .query('?tp_set_application("' + n.parent.name + '")')
+          .then(() => {
+            return this.data.refreshDomains();
+          })
+          .then(() => {
+            this.service.busy = false;
+          });
+      } else if (n.type === 'Library') {
+        const appName = n.parent.parent.name;
+        path = projName + '/' + appName + '/LIBS/';
+        this.service.setFile(n.name + '.ULB', path, n.ref, -1);
+      } else if (n.type === 'BG') {
+        path = projName + '/BKG/';
+        this.service.setFile(n.name + '.BKG', path, n.ref, -1);
+      } else if (n.type === 'Dependency') {
+        path = projName + '/DEPENDENCIES/';
+        this.service.setFile(n.name, path,n.ref, -1);
+      }
+    });
   }
 
   newApp() {
@@ -561,7 +574,9 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           title: this.words['projects.toolbar.rename'] + ' ' + dep,
           placeholder: this.words[ph],
           accept: this.words['button.rename'],
-          suffix: '.ULB'
+          suffix: '.ULB',
+          regex: '[a-zA-Z]+(\\w*)$',
+          maxLength: 32
         },
       }).afterClosed().subscribe((name: string) => {
         if (name) {
@@ -589,7 +604,9 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           title: dep + ' - ' + this.words['projects.toolbar.save_as'] + '...',
           placeholder: this.words[ph],
           accept: this.words['button.save'],
-          suffix: '.ULB'
+          suffix: '.ULB',
+          regex: '[a-zA-Z]+(\\w*)$',
+          maxLength: 32
         },
       })
       .afterClosed()
@@ -693,7 +710,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   openContextMenu(event: MouseEvent, node: TreeNode) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (this.login.isOperator || this.login.isViewer || this.prj.activeProject) return;
+    if (this.login.isOperator || this.login.isViewer || (this.prj.activeProject && node.type !== 'App')) return;
     this.selectNode(node);
     switch (node.type) {
       case 'Dependencies':

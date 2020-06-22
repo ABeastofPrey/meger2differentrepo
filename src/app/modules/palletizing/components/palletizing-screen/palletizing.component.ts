@@ -1,3 +1,4 @@
+import { ProgramEditorService } from './../../../program-editor/services/program-editor.service';
 import { Router } from '@angular/router';
 import {
   Component,
@@ -50,12 +51,12 @@ export class PalletizingComponent implements OnInit {
   private words: {};
 
   abnormalItemCount = false;
-  wizardMode = false;
 
   constructor(
     public data: DataService,
+    public prg: ProgramEditorService,
     private dialog: MatDialog,
-    private ws: WebsocketService,
+    public ws: WebsocketService,
     private trn: TranslateService,
     private utils: UtilsService,
     private router: Router
@@ -71,6 +72,10 @@ export class PalletizingComponent implements OnInit {
     if (this.data.selectedPallet) {
       this.onPalletChange();
     }
+  }
+
+  ngOnDestroy() {
+    this.prg.wizardMode = false;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -175,11 +180,11 @@ export class PalletizingComponent implements OnInit {
   }
 
   editPallet() {
-    this.wizardMode = true;
+    this.prg.wizardMode = true;
   }
 
   onWizardClose() {
-    this.wizardMode = false;
+    this.prg.wizardMode = false;
     setTimeout(() => {
       this.onWindowResize();
     }, 0);

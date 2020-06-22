@@ -5,6 +5,7 @@ import { MCTask, ScreenManagerService, LoginService } from '../core';
 import { Router } from '@angular/router';
 import { ProgramEditorService } from '../program-editor/services/program-editor.service';
 
+
 @Component({
   selector: 'task-mngr',
   templateUrl: './task-mngr.component.html',
@@ -38,17 +39,15 @@ export class TaskMngrComponent implements OnInit {
     this.task.stop();
   }
 
-  openFile(task: MCTask) {
+  async openFile(task: MCTask) {
     if (!this.login.isAdmin && !this.login.isSuper) return;
     let path = task.filePath;
     if (path) path = path.substring(0, path.lastIndexOf('/')) + '/';
     this.prg.mode = 'editor';
-    this.prg.modeToggle = 'mc';
+    await this.router.navigateByUrl('/projects');
     this.mgr.screen = this.mgr.screens[2];
-    this.router.navigateByUrl('/projects');
-    setTimeout(()=>{
-      this.prg.setFile(task.name, path, null, -1);
-    },200);
+    await this.prg.setModeToggle('mc');
+    this.prg.setFile(task.name, path, null, -1);
   }
 
   onSelectionStart(index) {

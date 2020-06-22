@@ -1,3 +1,5 @@
+import { ErrorDialogComponent } from './../../../../components/error-dialog/error-dialog.component';
+import { ApiService } from './../../../core/services/api.service';
 import { TerminalService } from './../../../home-screen/services/terminal.service';
 import {
   Component,
@@ -141,7 +143,8 @@ export class MainComponent implements OnInit {
     public rec: RecordService,
     public sim: SimulatorService,
     public terminal: TerminalService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private api: ApiService
   ) {
     this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(event => {
       this.refreshLang();
@@ -176,7 +179,7 @@ export class MainComponent implements OnInit {
   }
 
   private refreshLang() {
-    this.trn.get(['main.errJog', 'main.jogControlsToggle']).subscribe(words => {
+    this.trn.get(['main.errJog', 'main.jogControlsToggle', 'error.space']).subscribe(words => {
       this.words = words;
     });
   }
@@ -198,6 +201,21 @@ export class MainComponent implements OnInit {
   // }
 
   ngOnInit() {
+    this.api.ready.pipe(takeUntil(this.notifier)).subscribe(stat => {
+      if (stat) {
+        this.api.get('/cs/api/free-space').toPromise().then(free=>{
+          if (free < 50 * 1024 * 1024 ) { // < 50MB
+            this.dialog.open(ErrorDialogComponent, {
+              maxWidth: '400px',
+              data: {
+                title: this.words['error.space']['title'],
+                message: this.words['error.space']['msg'],
+              },
+            });
+          }
+        });
+      }
+    });
     this.tour.stepShow$.pipe(takeUntil(this.notifier)).subscribe(step => {
       if (step === this.tour.steps[4]) {
         this.simOpen = true;
@@ -249,7 +267,7 @@ export class MainComponent implements OnInit {
       if (!this.ws.connected) return this.router.navigateByUrl('/login');
       if (this.cmn.isTablet) {
         this.ws.query('?tp_ver').then((ret:MCQueryResponse)=>{
-          if (ret.err) return this.router.navigateByUrl('/login');
+          if (ret.err) return this.login.logout();
         });
       }
     }, 2000);
@@ -261,11 +279,10 @@ export class MainComponent implements OnInit {
     const h = window.innerHeight;
     const x = e.pageX,
       y = e.pageY;
-    if (x <= 0 || x >= w || y <= 0 || y >= h) this.mouseUp(null);
-  }
-
-  @HostListener('window:mousemove', ['$event'])
-  onMouseMove2(e: MouseEvent) {
+    if (x <= 0 || x >= w || y <= 0 || y >= h) {
+      this.mouseUp(null);
+      return;
+    }
     if  (this.jogButtonPressed) {
       const el = e.target as HTMLElement;
       const td = el.closest('td');
@@ -454,6 +471,7 @@ export class MainComponent implements OnInit {
     el.style.top = json.y + 'px';
     el.style.width = json.w + 'px';
     el.style.height = json.h + 'px';
+    this.terminal.resizeRequired.emit();
   }
 }
 

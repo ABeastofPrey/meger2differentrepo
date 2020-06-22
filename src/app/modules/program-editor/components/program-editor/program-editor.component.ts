@@ -51,8 +51,6 @@ export class ProgramEditorComponent implements OnInit {
     this.service.errLinesChange.pipe(takeUntil(this.notifier)).subscribe(lines => {
       this.selectedTab = 0;
     });
-
-    
   }
 
   ngOnDestroy() {
@@ -77,7 +75,11 @@ export class ProgramEditorComponent implements OnInit {
     this.terminal.resizeRequired.emit();
   }
 
-  
+  async onLinkClick(file) {
+    const bt = this.service.backtrace;
+    await this.service.setModeToggle('mc');
+    this.service.setFile(file.name, file.path, null, file.line, bt);
+  }
 
   onTabChange(i: number) {
     this.selectedTab = i;

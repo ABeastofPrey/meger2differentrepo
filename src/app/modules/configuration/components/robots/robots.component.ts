@@ -201,33 +201,20 @@ export class RobotsComponent implements OnInit {
       const month = this.pad(d.getMonth()+1);
       const year = d.getFullYear().toString().slice(-2);
       const dateFormated = `${day}/${month}/${year}`;
-      const ret = await this.api.get('/cs/api/timeChangeMode/on').toPromise();
-      if (ret) {
-        const ret2 = await this.ws.query('sys.date="'+dateFormated+'"');
-        if (!ret2.err) {
-            // this.snack.open(this.wordOk, '', { duration: 1500 });
-            this.snackbarService.openTipSnackBar(this.wordOk);
-        }
+      const ret = await this.ws.query('sys.date="'+dateFormated+'"');
+      if (!ret.err) {
+
+		this.snackbarService.openTipSnackBar(this.wordOk);
       }
-      setTimeout(async()=>{
-        await this.api.get('/cs/api/timeChangeMode/off').toPromise();
-      },1000);
   }
 
   async onTimeChange() {
     if (this.sysTime.invalid) return;
     const t = this.sysTime.value + ':00';
-    const ret = await this.api.get('/cs/api/timeChangeMode/on').toPromise();
-    if (ret) {
-      const ret2 = await this.ws.query('sys.time="'+t+'"');
-      if (!ret2.err) {
-        //   this.snack.open(this.wordOk, '', { duration: 1500 });
-          this.snackbarService.openTipSnackBar(this.wordOk);
-      }
+    const ret = await this.ws.query('sys.time="'+t+'"');
+    if (!ret.err) {
+      this.snackbarService.openTipSnackBar(this.wordOk);
     }
-    setTimeout(async()=>{
-      await this.api.get('/cs/api/timeChangeMode/off').toPromise();
-    },1000);
   }
 
   initMCU() {

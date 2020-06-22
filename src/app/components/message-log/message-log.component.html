@@ -1,4 +1,4 @@
-<cdk-virtual-scroll-viewport itemSize="20" #wrapper (contextmenu)="onContextMenu($event)" class="content">
+<cdk-virtual-scroll-viewport itemSize="20" minBufferPx="800" maxBufferPx="1080" #wrapper (contextmenu)="onContextMenu($event)" class="content">
 	<div *cdkVirtualFor="let n of notification.notificationsAsArray" style="height: 20px;">
 		<div *ngIf="n.msg">
 			<ng-container [ngSwitch]="isLibLog(n.msg)">

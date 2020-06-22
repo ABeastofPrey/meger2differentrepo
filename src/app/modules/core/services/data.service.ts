@@ -138,7 +138,7 @@ export class DataService {
 
   // Tools
   private _tools: string[] = [];
-  private _selectedTool: string = null;
+  public _selectedTool: string = null;
   get tools() {
     return this._tools;
   }
@@ -449,7 +449,7 @@ export class DataService {
     return this._JavaVersion;
   }
   get WebServerInfo() {
-    return this._JavaVersion.split(' ');
+    return this._JavaVersion ? this._JavaVersion.split(' ') : null;
   }
 
   // Variables
@@ -900,11 +900,17 @@ export class DataService {
     ];
     this.teachServiceNeedsReset.next();
     this.reset();
-    this.ws
-      .query('?TP_SET_PERMISSION(' + this.login.permissionCode + ')')
-      .then(() => {
-        return Promise.all(promises);
-      })
+    this.ws.query('?TP_SET_PERMISSION(' + this.login.permissionCode + ')').then(() => {
+      if (this.login.isAdmin) {
+        return this.ws.query('?tp_set_language("' + this.trn.currentLang + '")').then((ret: MCQueryResponse) => {
+          if (ret.err || ret.result !== '0') {
+            console.log('LANG ERR', ret.result);
+          }
+        });
+      }
+    }).then(()=>{
+      return Promise.all(promises);
+    })
       .then(() => {
         return this.ws.query('?tp_get_switch_mode');
       })

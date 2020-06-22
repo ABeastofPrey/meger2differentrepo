@@ -22,6 +22,9 @@ import {
  * This class describes the logics to the tool calibration result dialog.
  */
 export class ToolCalibrationResultDialogComponent implements OnInit {
+
+  setAsCurrent = true; // Sets the current tool as current after apply
+
   /**
    * The columns of the tool calibration result table.
    */
@@ -89,20 +92,18 @@ export class ToolCalibrationResultDialogComponent implements OnInit {
    *  The handler when the user clicks the apply button.
    */
   onApply() {
-    this.ws
-      .query(
-        CalibrationCommand.ApplyCalibrationOnTool + '("' + this.toolName + '")'
-      )
-      .then((cmdRes: MCQueryResponse) => {
-        this.dialogRef.close(true);
-      });
+    const setAsCurrent = this.setAsCurrent ? 1 : 0;
+    const cmd = CalibrationCommand.ApplyCalibrationOnTool + '("' + this.toolName + '",' + setAsCurrent + ')';
+    this.ws.query(cmd).then((cmdRes: MCQueryResponse) => {
+      this.dialogRef.close({apply: true, setAsCurrent: this.setAsCurrent});
+    });
   }
 
   /**
    * The handler when the user clicks the cancel button.
    */
   onCancel() {
-    this.dialogRef.close(false);
+    this.dialogRef.close({apply: false, setAsCurrent: this.setAsCurrent});
   }
 
   /**

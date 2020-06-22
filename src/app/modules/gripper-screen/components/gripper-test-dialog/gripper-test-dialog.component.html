@@ -23,8 +23,12 @@
 				{{ 'grippers.btnCycle' | translate }}
 			</button>
 			<div class="center-vertical">
-				<span>{{ 'status' | translate }}:</span>
+				<span>{{ 'grippers.status1' | translate }}:</span>
 				<div class="indicator" [class.green]="status"></div>
+			</div>
+			<div class="center-vertical">
+				<span>{{ 'grippers.status2' | translate }}:</span>
+				<div class="indicator" [class.green]="grpStatus"></div>
 			</div>
 		</div>
 	</div>

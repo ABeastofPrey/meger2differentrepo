@@ -31,6 +31,10 @@
 					'payloads.advanced' | translate
 				}}</mat-slide-toggle>
 			</div>
+			<div class="buttons">
+				<button mat-raised-button color="primary" (click)="setAsCurrent()">{{ 'button.set_current' | translate }}</button>
+				<button mat-raised-button color="warn" [disabled]="selectedPayload.name === 'NONE'" (click)="reset()">{{ 'payloads.btn_reset' | translate }}</button>
+			</div>
 			<mat-form-field>
 				<input
 					matInput

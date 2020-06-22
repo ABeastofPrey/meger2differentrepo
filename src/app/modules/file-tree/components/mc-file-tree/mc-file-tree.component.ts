@@ -48,6 +48,7 @@ export class McFileTreeComponent implements OnInit {
   env = environment;
   isRefreshing = false;
   enableSelect = false;
+  selectBusy = false;
   searchIn = 'names';
 
   private _aborting = false;
@@ -135,6 +136,14 @@ export class McFileTreeComponent implements OnInit {
   ngOnDestroy() {
     this.notifier.next(true);
     this.notifier.unsubscribe();
+  }
+
+  onEnableSelectChange() {
+    if (!this.enableSelect) return;
+    this.selectBusy = true;
+    setTimeout(()=>{
+      this.selectBusy = false;
+    },1000);
   }
 
   openContextMenu(event: MouseEvent, node: TreeNode) {
@@ -310,6 +319,9 @@ export class McFileTreeComponent implements OnInit {
     if (!node.isFolder || node.children.length === 0) {
       return this.prj.checklistSelection.isSelected(node);
     }
+    return node.children.every(c=>{
+      return this.prj.checklistSelection.isSelected(c);
+    });
     const descendants = this.nestedTreeControl.getDescendants(node);
     const descAllSelected = descendants.every(child =>
       this.prj.checklistSelection.isSelected(child)
@@ -323,10 +335,9 @@ export class McFileTreeComponent implements OnInit {
       return false;
     }
     const descendants = this.nestedTreeControl.getDescendants(node);
-    const result = descendants.some(child =>
-      this.prj.checklistSelection.isSelected(child)
-    );
-    return result && !this.descendantsAllSelected(node);
+    return node.children.some(c=>{
+      return this.prj.checklistSelection.isSelected(c);
+    });
   }
 
   /** Toggle the item selection. Select/deselect all the descendants node */
@@ -381,7 +392,8 @@ export class McFileTreeComponent implements OnInit {
   }
 
   openFile(n: TreeNode) {
-    const path = n.parent ? n.parent.decodedPath : '';
+    let path = n.parent ? n.parent.decodedPath : '';
+    if (!path) path = null; // to handle files in SSMC
     if (this.service.activeFile === n.name && this.service.activeFilePath === path) return;
     if (this.service.isDirty && this.service.activeFile) {
       this.trn.get('projectTree.dirty_msg', { name: this.service.activeFile }).subscribe(word => {
@@ -416,6 +428,7 @@ export class McFileTreeComponent implements OnInit {
       this.service.showFwconfigEditor();
       return;
     }
+    console.log(n.parent ? n.parent.decodedPath : '');
     this.service.setFile(
       n.name,
       n.parent ? n.parent.decodedPath : '',
@@ -425,40 +438,35 @@ export class McFileTreeComponent implements OnInit {
   }
 
   openContentFile(n: TreeNodeContent) {
-    const prefix = '/FFS0/SSMC';
+    const prefix = '/FFS0/SSMC/';
     const i = n.path.lastIndexOf('/');
     const path = n.path.substring(prefix.length,i+1);
     if (this.service.activeFile === n.file && this.service.activeFilePath === path) {
-      this.service.skipLineRequest.next(n.index+1);
+      this.service.skipToLine(n.index+1);
       return;
     };
     if (this.service.isDirty && this.service.activeFile) {
-      this.trn
-        .get('projectTree.dirty_msg', { name: this.service.activeFile })
-        .subscribe(word => {
-          this.dialog
-            .open(YesNoDialogComponent, {
-              data: {
-                title: this.words['projectTree.dirty'],
-                msg: word,
-                yes: this.words['button.save'],
-                no: this.words['button.discard'],
-              },
-              width: '500px',
-            })
-            .afterClosed()
-            .subscribe(ret => {
-              if (ret) {
-                this.service.save().then(() => {
-                  this.openContentFile(n);
-                });
-              } else {
-                this.service.isDirty = false;
-                this.openContentFile(n);
-              }
+      this.trn.get('projectTree.dirty_msg', { name: this.service.activeFile }).subscribe(word => {
+        this.dialog.open(YesNoDialogComponent, {
+          data: {
+            title: this.words['projectTree.dirty'],
+            msg: word,
+            yes: this.words['button.save'],
+            no: this.words['button.discard'],
+          },
+          width: '500px',
+        }).afterClosed().subscribe(ret => {
+          if (ret) {
+            this.service.save().then(() => {
+              this.openContentFile(n);
             });
-          return;
+          } else {
+            this.service.isDirty = false;
+            this.openContentFile(n);
+          }
         });
+      });
+      return;
     }
     this.service.close();
     this.service.mode = 'editor';
@@ -470,6 +478,7 @@ export class McFileTreeComponent implements OnInit {
       this.service.showFwconfigEditor();
       return;
     }
+    console.log(path);
     this.service.setFile(n.file,path,null,n.index+1);
   }
 
@@ -564,9 +573,7 @@ export class McFileTreeComponent implements OnInit {
           icon: 'create_new_folder',
           title: this.words['projects.toolbar.new_folder'],
           placeholder: this.words['files.dir_name'],
-          accept: this.words['button.create'],
-          regex: '[a-zA-Z]+(\\w*)$',
-          maxLength: 32
+          accept: this.words['button.create']
         },
       })
       .afterClosed()
@@ -629,7 +636,7 @@ export class McFileTreeComponent implements OnInit {
           title: this.words['copy'],
           placeholder: this.words['projects.toolbar.copy_name'],
           initialValue: copyName,
-          accept: this.words['button.copy'],
+          accept: this.words['button.copy']
         },
       })
       .afterClosed()

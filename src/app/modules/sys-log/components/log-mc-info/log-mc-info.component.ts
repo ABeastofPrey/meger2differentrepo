@@ -20,13 +20,16 @@ export class LogMCInfoComponent implements OnInit {
 
     ngOnInit(): void { }
 
-    public goToError(err: string): void {
-        let path = err.substring(11);
-        path = path.substring(0, path.lastIndexOf('/')) + '/';
-        const fileName = err.substring(err.lastIndexOf('/') + 1);
-        this.mgr.screen = this.mgr.screens[2];
-        this.router.navigateByUrl('/projects');
-        this.prg.setFile(fileName, path, null, -1);
+    async goToError(err: string) {
+        if (!this.login.isAdmin && !this.login.isSuper) return;
+        const i = err.lastIndexOf('/');
+        const path = i === -1 ? '' : err.substring(0,i+1);
+        const name = err.substring(i+1);
         this.prg.mode = 'editor';
+        const ret = await this.router.navigateByUrl('/projects');
+        if (ret === false) return;
+        this.mgr.screen = this.mgr.screens[2];
+        await this.prg.setModeToggle('mc');
+        this.prg.setFile(name, path, null, -1);
     }
 }

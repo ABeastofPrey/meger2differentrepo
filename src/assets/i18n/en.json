@@ -172,6 +172,7 @@
       "title": "Add an Axis/Group Dashboard"
     },
     "new-param": {
+      "err_slider": "Min value must be smaller than Max value",
       "title": "Monitor a New Parameter"
     },
     "record": {
@@ -279,7 +280,7 @@
       "ordernum": "OrderNum is required",
       "commentRequire": "Comment is required",
       "used_life_req_error": "Used Life is required",
-      "used_life_req_max": "Maximum input limit {{max}}"
+      "used_life_req_max":"Maximum input limit {{max}}"
     },
     "history": {
       "tab_name": "Maintenance History",
@@ -340,7 +341,12 @@
     "invalid_var_name": "Must begin with a letter, include only letters, numbers or _, and not exceed 32 characters",
     "invalid_webserver": "Use web server {{ver}} (current is {{current}})",
     "mismatch_pass": "Password does not match the previous field",
+    "not_enough_space": "Not enough space left on the device",
     "orientation": "ControlStudio+ works in Landscape mode only.",
+    "space": {
+      "msg": "Your softMC controller has less than 50MB of free space left on the disk. We recommend deleting files to free more space. The system may not operate properly while the device is low on space.",
+      "title": "Low disk space"
+    },
     "tp": "Couldn't load TP Libraries, check console log for more details...",
     "tp_tablet": "TP Library was not found. Reboot the controller and try again."
   },
@@ -440,6 +446,8 @@
     "pay_item": "Item Payload",
     "set": "Set Gripper",
     "sleep": "Timing",
+    "status1": "Output Status",
+    "status2": "Open Status",
     "test": "Test Gripper",
     "use_tool": "Use Tool"
   },
@@ -748,7 +756,7 @@
       "origin": "Origin",
       "origin_status": "Origin Status",
       "posX": "Position X",
-      "posY": "Position Y",
+      "posY": "Position XY",
       "ret": "Retract",
       "ret_dir": "Retract Direction",
       "save": "Save changes to {{name}}?",
@@ -769,6 +777,7 @@
   "payloads": {
     "advanced": "Advanced Mode",
     "btn_create": "CREATE PAYLOAD",
+    "btn_reset": "RESET PAYLOAD",
     "current": "Current values",
     "delete_title": "Delete payload {{name}}?",
     "delete_msg": "This cannot be undone.",
@@ -1233,7 +1242,7 @@
       "btnStart": "START BRAKE TEST",
       "dialog": {
         "title": "Brake Test",
-        "msg": "The robot will perform slight movements to test the brakes. Make sure there are no people in the proximate vicinity of the robot.",
+        "msg": "The robot will perform slight movements to test the brakes. Make sure there are no people in the close proximity to the robot.",
         "yes": "START TEST NOW",
         "no": "CANCEL"
       },
@@ -1381,7 +1390,7 @@
     "stop": "Stop recording",
     "val": "Value",
     "background": "Background",
-    "trace": "Trace"
+    "trace": "Show Path"
   },
   "softMC_log": "softMC Log",
   "softMC User": "softMC User",
@@ -1625,7 +1634,7 @@
     "GUIDes": "This is GUI",
     "webServerDes": "This is web server",
     "successDialogTitle": "Success!",
-    "successDialogMsg": "The OS update was successful. The new version is: ",
+    "successDialogMsg": "OS update successful. The new version is: ",
     "errorDialogTitle": "Failed!",
     "errorDialogMsg": "OS update failed. Reinstall previous version: ",
     "releaseNoteTitle": "ControlStudio+ Release Notes"

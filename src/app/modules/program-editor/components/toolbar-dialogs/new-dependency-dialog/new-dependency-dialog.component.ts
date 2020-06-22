@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialogRef} from '@angular/material';
-import {WebsocketService, ProjectManagerService, DataService, MCQueryResponse} from '../../../../core';
+import {WebsocketService, ProjectManagerService, MCQueryResponse} from '../../../../core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-dependency-dialog',
@@ -9,19 +10,21 @@ import {WebsocketService, ProjectManagerService, DataService, MCQueryResponse} f
 })
 export class NewDependencyDialogComponent implements OnInit {
   
-  name: string;
   submitting = false;
+
+  dialogForm = new FormGroup({
+    val: new FormControl('',[Validators.required, Validators.pattern('[a-zA-Z]+(\\w*)$'),Validators.maxLength(32)])
+  });
 
   constructor(
     public dialogRef: MatDialogRef<NewDependencyDialogComponent, void>,
     private ws: WebsocketService,
-    private prj: ProjectManagerService,
-    private data: DataService
+    private prj: ProjectManagerService
   ) {}
 
   create() {
-    if (this.isValueInvalid()) return;
-    const name = this.name.toUpperCase() + '.ULB';
+    if (this.submitting || this.dialogForm.invalid) return;
+    const name = (this.dialogForm.controls['val'].value as string).toUpperCase() + '.ULB';
     const proj = this.prj.currProject.value;
     this.submitting = true;
     const cmd = '?prj_add_dependency("' + proj.name + '","USER","' + name + '")';
@@ -40,11 +43,5 @@ export class NewDependencyDialogComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
-    this.name = '';
-  }
-
-  isValueInvalid() {
-    return !this.name || this.name.length === 0 || this.submitting || this.name.includes('.');
-  }
+  ngOnInit() {}
 }

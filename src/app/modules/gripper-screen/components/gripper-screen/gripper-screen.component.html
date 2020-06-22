@@ -90,7 +90,7 @@
 							[disabled]="login.isOperator"
 						>
 							<mat-option *ngIf="database.outputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
-							<mat-option *ngFor="let o of database.outputs" [value]="o">{{ o }}</mat-option>
+							<mat-option *ngFor="let o of database.outputs" [value]="o.label">{{ o.label }}</mat-option>
 						</mat-select>
 					</mat-form-field>
 					<mat-checkbox
@@ -142,7 +142,7 @@
 							[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
 						>
 							<mat-option *ngIf="database.outputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
-							<mat-option *ngFor="let o of database.outputs" [value]="o">{{ o }}</mat-option>
+							<mat-option *ngFor="let o of database.outputs" [value]="o.label">{{ o.label }}</mat-option>
 						</mat-select>
 					</mat-form-field>
 					<mat-checkbox
@@ -165,7 +165,7 @@
 							[disabled]="login.isOperator || !selectedNode.fb1_enabled"
 						>
 							<mat-option *ngIf="database.inputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
-							<mat-option *ngFor="let o of database.inputs" [value]="o">{{ o }}</mat-option>
+							<mat-option *ngFor="let o of database.inputs" [value]="o.label">{{ o.label }}</mat-option>
 						</mat-select>
 					</mat-form-field>
 					<mat-checkbox
@@ -188,7 +188,7 @@
 							[disabled]="login.isOperator || !selectedNode.fb2_enabled"
 						>
 							<mat-option *ngIf="database.inputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
-							<mat-option *ngFor="let o of database.inputs" [value]="o">{{ o }}</mat-option>
+							<mat-option *ngFor="let o of database.inputs" [value]="o.label">{{ o.label }}</mat-option>
 						</mat-select>
 					</mat-form-field>
 					<mat-checkbox

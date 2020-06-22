@@ -1,3 +1,4 @@
+import { TerminalService } from './../home-screen/services/terminal.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -24,6 +25,7 @@ import { KeywordService } from './services/keywords.service';
 import { CommonService } from './services/common.service';
 import { TaskFilterPipe } from '../task-manager/task-filter.pipe';
 import {PassPipe} from './pipes/space-to-nbsp.pipe';
+import { ProgramEditorService } from '../program-editor/services/program-editor.service';
 
 @NgModule({
   imports: [CommonModule],
@@ -49,8 +51,10 @@ import {PassPipe} from './pipes/space-to-nbsp.pipe';
     LangService,
     KeywordService,
     CommonService,
+    TerminalService,
     TaskFilterPipe,
-    PassPipe
+    PassPipe,
+    ProgramEditorService
   ]
 })
 export class CoreModule {}

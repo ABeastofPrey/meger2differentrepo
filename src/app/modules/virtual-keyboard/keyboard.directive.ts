@@ -83,48 +83,6 @@ export class KeyboardDirective {
     });
   }
 
-  @HostListener('keydown',['$event'])
-  onkeydown(e: KeyboardEvent) {
-    const copyPaste = e.ctrlKey && (e.key === 'v' || e.key === 'c');
-    const isNumeric = this.ktype && this.ktype.includes('numeric');
-    const oldVal = this.el.nativeElement.value;
-    setTimeout(()=>{
-      const val = this.el.nativeElement.value;
-      const toNum = Number(val);
-      if (isNumeric && isNaN(toNum) && this.ctrl && this.ctrl.control) {
-        this.ctrl.control.setErrors({'invalid': true});
-        if (copyPaste) {
-          this.ctrl.control.setValue(oldVal);
-        }
-      }
-    },0);
-    if (!e.key || copyPaste) return;
-    if (!this.cmn.isTablet && this.ktype && e.key.length === 1) {
-      if (isNumeric) {
-        const isPos = this.ktype.includes('pos');
-        const isInt = this.ktype.includes('int');
-        if (e.key !== '.' && e.key !== '-' && e.key !== 'e' && isNaN(Number(e.key))) {
-          e.preventDefault();
-        }
-        if (isPos && e.key === '-') e.preventDefault();
-        if (isInt && e.key === '.') e.preventDefault();
-      }
-    }
-  }
-
-  @HostListener('input',['$event'])
-  onInput(e: Event) {
-    if (this.ktype && this.ktype.includes('numeric')) {
-      const el = e.target as HTMLInputElement;
-      const val = Number(el.value);
-      const data = e['data'];
-      if (isNaN(val) && !data) {
-        e.preventDefault();
-        el.value = '';
-      }
-    }
-  }
-
   constructor(
     public el: ElementRef,
     public dialog: MatDialog,
@@ -134,10 +92,37 @@ export class KeyboardDirective {
     @Optional() private ctrl: NgControl,
     private name: FormControlName
   ) {
-    const element = el.nativeElement as HTMLElement;
+    const element = el.nativeElement as HTMLInputElement;
     element.setAttribute('autocomplete','off');
     element.setAttribute('step','any');
+    this.setInputFilter(element, val=>{
+      if (this.ktype && this.ktype.includes('numeric')) {
+        return /^-?\d*\.?\d*$/.test(val);
+      }
+      return true;
+    });
   }
+
+  private setInputFilter(textbox: Element, inputFilter: (value: string) => boolean): void {
+    ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(event=> {
+      textbox.addEventListener(event, function(this: (HTMLInputElement | HTMLTextAreaElement) & {oldValue: string; oldSelectionStart: number | null, oldSelectionEnd: number | null}) {
+        if (inputFilter(this.value)) {
+          this.oldValue = this.value;
+          this.oldSelectionStart = this.selectionStart;
+          this.oldSelectionEnd = this.selectionEnd;
+        } else if (Object.prototype.hasOwnProperty.call(this, 'oldValue')) {
+          this.value = this.oldValue;
+          if (this.oldSelectionStart !== null &&
+            this.oldSelectionEnd !== null) {
+            this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+          }
+        } else {
+          this.value = "";
+        }
+      });
+    });
+  }
+
 }
 
 @Component({
@@ -194,7 +179,7 @@ export class KeyboardDialog implements OnInit {
     this.layout = this.data.layout;
     this.onKeyboardClose = this.data.accept;
     this.ctrl = this.data.name;
-    this.control = this.data.ctrl ? this.data.ctrl.control : null;    
+    this.control = this.data.ctrl ? this.data.ctrl.control : null;
     if (this.control) {
       this.control.valueChanges.subscribe((val: string)=>{
         const isNumeric = this.inputType && this.inputType.startsWith('numeric');
@@ -266,7 +251,6 @@ export class KeyboardDialog implements OnInit {
     const start = new Date().getTime();
     const TIMEOUT = 200; // 200 ms
     let diff = 0;
-    console.log(this.data.keyboardType, this.displayInput);
     if (this.data.keyboardType.startsWith('numeric') || !this.displayInput) return;
     // scroll to cursor position, if needed
     const el = this.displayInput.nativeElement as HTMLElement;
@@ -554,7 +538,7 @@ const LAYOUT_STRING: string[][] = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
   ['arrow_upward', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'backspace'],
-  ['more', ' ', '.', '?', 'keyboard_return'],
+  ['more', ' ', '.', '?','_','keyboard_return'],
 ];
 
 const LAYOUT_STRING_SHIFT: string[][] = [

@@ -1,3 +1,6 @@
+import { TranslateService } from '@ngx-translate/core';
+import { FwTranslatorService } from './../../../core/services/fw-translator.service';
+import { ErrorFrame } from './../../../core/models/error-frame.model';
 import {
   Component,
   OnInit,
@@ -63,7 +66,9 @@ export class TerminalComponent implements OnInit {
     private ref: ChangeDetectorRef,
     public cmn: CommonService,
     public login: LoginService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private fw: FwTranslatorService,
+    private trn: TranslateService
   ) {}
 
   ngAfterViewInit() {
@@ -80,12 +85,12 @@ export class TerminalComponent implements OnInit {
 
   private adjustEditorLines() {
     if (!this.wrapper) return;
-    const h = this.wrapper.nativeElement.offsetHeight;
+    const h = this.wrapper.nativeElement.offsetHeight - 15;
     const lineHeight = this.editor.renderer.lineHeight;
     const lines = Math.floor(h / lineHeight);
     this.editor.setOptions({
-      minLines: lines-2,
-      maxLines: lines-1
+      minLines: lines-1,
+      maxLines: lines
     });
     this.scrollToBottom();
   }
@@ -307,8 +312,9 @@ export class TerminalComponent implements OnInit {
     } catch (err) {
 
     }
-    this.terminal.send(cmd).then(ret => {
-      const result = ret.result.length === 0 ? '\n' : '\n' + ret.result + '\n';
+    this.terminal.send(cmd).then(async ret => {
+      let result = await this.parseResult(ret.result);
+      result = result.length === 0 ? '\n' : '\n' + result + '\n';
       const row = this.editor.session.getLength() - 1;
       const newLine = SEP + '\t' + cmd + result + SEP + '\t';
       this.editor.session.replace(new this.Range(row, 0, row, Number.MAX_VALUE), newLine);
@@ -321,6 +327,26 @@ export class TerminalComponent implements OnInit {
       this.lastCmdIndex = -1;
       if (this.ref) this.ref.detectChanges();
     });
+  }
+
+  /*
+    If a message is an error - translate it
+  */
+  private async parseResult(msg: string) {
+    if (!msg.startsWith('Error')) return msg;
+    try {
+      const err = new ErrorFrame(msg);
+      const code = Number(err.errCode);
+      if (code === 0) return msg;
+      const isLibError = code >= 20000 && code <= 20999;
+      if (isLibError) {
+        const ret = await this.trn.get('lib_code.'+code).toPromise();
+        return `Error: ${code}, "${ret}", Task: ${err.errTask}, Line: ${err.errLine}, Module: ${err.errModule}, uuid: ${err.errUUID}`;
+      }
+      return `Error: ${code}, "${this.fw.getTranslation(code, err.errMsg)}", Task: ${err.errTask}, Line: ${err.errLine}, Module: ${err.errModule}, uuid: ${err.errUUID}`;
+    } catch (err) {
+      return msg;
+    }
   }
 
   openScriptDialog() {
@@ -379,7 +405,18 @@ export class TerminalComponent implements OnInit {
     this.ref.detectChanges();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(async e=>{
+      if (this.editor) {
+        const lines = this.editor.getValue().split('\n') as string[];
+        for (let i=0; i<lines.length; i++) {
+          if (lines[i].startsWith('-->')) continue;
+          lines[i] = await this.parseResult(lines[i]);
+        }
+        this.editor.setValue(lines.join('\n'), 1);
+      }
+    });
+  }
 
   ngOnDestroy() {
     this.ref.detach();

@@ -55,6 +55,7 @@ li.selected {
 }
 .disabled {
   cursor: not-allowed;
+  color: rgba(255,0,0,0.3);
 }
 .list {
   overflow: auto;

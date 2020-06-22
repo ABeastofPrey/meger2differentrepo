@@ -1,5 +1,5 @@
 <div class="wrapper" [class.tablet-ui]="cmn.isTablet">
-	<program-toolbar tourAnchor="project-toolbar-1" *ngIf="!login.isViewer"></program-toolbar>
+	<program-toolbar tourAnchor="project-toolbar-1" *ngIf="!login.isViewer && !service.wizardMode"></program-toolbar>
 	<div class="blocker" *ngIf="prj.isLoading"></div>
   <div *ngIf="prj.isLoading" class="center-block">
 		<img src="assets/pics/{{ env.platform.spinner }}" />
@@ -61,7 +61,7 @@
 										<div>Backtrace:</div>
 										<div *ngFor="let file of service.backtrace.files">
 											{{ file.name }}(<a
-												(click)="service.setFile(file.name, file.path, null, file.line, service.backtrace)"
+												(click)="onLinkClick(file)"
 												>{{ file.path }}{{ file.name }}:{{ file.line }}</a
 											>)
 										</div>
@@ -72,7 +72,7 @@
 											{{ 'projects.notification.at' | translate }} {{ file.name }}(<a
 												matRipple
 												matRippleUnbounded="false"
-												(click)="login.isAdmin && service.setFile(file.name, file.path, null, file.line, service.backtrace)"
+												(click)="login.isAdmin && onLinkClick(file)"
 												[class.disabled]="!login.isAdmin"
 												>{{ file.path }}{{ file.name }}:{{ file.line }}</a
 											>)

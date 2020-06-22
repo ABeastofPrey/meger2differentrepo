@@ -56,7 +56,7 @@ function timer(id, interval, msg, force) {
 }
 
 function getWebsocketPort(ip) {
-  //const PORT  = '32027';
+  //const PORT  = '32447';
   const PORT = self.location.port === '4200' ? '1207' : self.location.port;
   return new Promise((resolve,reject)=>{
     const http = new XMLHttpRequest();

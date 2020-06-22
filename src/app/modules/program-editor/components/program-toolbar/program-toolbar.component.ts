@@ -83,6 +83,7 @@ export class ProgramToolbarComponent implements OnInit {
       .get([
         'projects.toolbar',
         'error.err',
+        'error.not_enough_space',
         'button.cancel',
         'button.delete',
         'success',
@@ -399,12 +400,17 @@ export class ProgramToolbarComponent implements OnInit {
         if (projectName === this.prj.currProject.value.name) {
           return this.prj.getCurrentProject();
         }
-      } else {
+      } else if (ret.err !== -99) {
         //   this.snack.open(
         //     this.words['projects.toolbar']['err_import'],
         //     this.words['dismiss']
         //   );    
           this.snackbarService.openTipSnackBar("projects.toolbar.err_import");       
+      } else {
+        this.snack.open(
+          this.words['error.not_enough_space'],
+          this.words['dismiss']
+        );
       }
     });
   }
@@ -481,6 +487,9 @@ export class ProgramToolbarComponent implements OnInit {
                     //     this.words['dismiss']
                     //   );
                       this.snackbarService.openTipSnackBar("files.err_permission");    
+                    break;
+                  case -99:
+                    this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
                     break;
                 }
               });
@@ -664,6 +673,9 @@ export class ProgramToolbarComponent implements OnInit {
                     // );     
                     this.snackbarService.openTipSnackBar("files.err_permission");               
                   break;
+                case -99:
+                  this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                  break;
               }
             });
           }
@@ -755,49 +767,40 @@ export class ProgramToolbarComponent implements OnInit {
             promises.push(this.api.deleteFile(n.path));
           }
         }
-        Promise.all(promises)
-          .then((ret: boolean[]) => {
-            // check if all results are true
-            return ret.every((result: boolean) => {
+        Promise.all(promises).then((ret: boolean[]) => {
+          // check if all results are true
+          return ret.every((result: boolean) => {
+            return result;
+          });
+        }).then(result => {
+          if (result) {
+            // ALL FILES DELETES SUCCESSFULY - CONTINUE TO DELETE FOLDERS..
+            promises = [];
+            for (const n of selected) {
+              if (!n.isFolder || n.name === 'SSMC') continue;
+              if (
+                n.parent === null ||
+                !this.prj.checklistSelection.isSelected(n.parent)
+              ) {
+                promises.push(this.deleteRecursivly(n));
+              }
+            }
+            return Promise.all(promises);
+          } else {
+            this.snackbarService.openTipSnackBar("files.err_delete");
+          }
+        }).then((ret: boolean[]) => {
+          if (ret) {
+            const finalResult = ret.every((result: boolean) => {
               return result;
             });
-          })
-          .then(result => {
-            if (result) {
-              // ALL FILES DELETES SUCCESSFULY - CONTINUE TO DELETE FOLDERS..
-              promises = [];
-              for (const n of selected) {
-                if (!n.isFolder || n.name === 'SSMC') continue;
-                if (
-                  n.parent === null ||
-                  !this.prj.checklistSelection.isSelected(n.parent)
-                ) {
-                  promises.push(this.deleteRecursivly(n));
-                }
-              }
-              return Promise.all(promises);
-            } else {
-                // this.snack.open(this.words['files.err_delete'], '', {
-                //   duration: 2000,
-                // });
-                this.snackbarService.openTipSnackBar("files.err_delete");
+            if (!finalResult) {
+              this.snackbarService.openTipSnackBar("files.err_delete");
             }
-          })
-          .then((ret: boolean[]) => {
-            if (ret) {
-              const finalResult = ret.every((result: boolean) => {
-                return result;
-              });
-              const msg = finalResult
-                ? this.words['files.success_delete']
-                : this.words['files.err_delete'];
-                // this.snack.open(msg, '', { duration: 2000 });
-                this.snackbarService.openTipSnackBar(msg);
-            }
-          })
-          .then(() => {
-            this.prj.fileRefreshNeeded.emit();
-          });
+          }
+        }).then(() => {
+          this.prj.fileRefreshNeeded.emit();
+        });
       }
     });
   }

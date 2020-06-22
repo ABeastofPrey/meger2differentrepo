@@ -731,17 +731,6 @@ export const DOCS = {
       range: '0 - 4'
     },
     {
-      name: 'BlendingPercentage',
-      desc: `Overrides values of BLENDINGFACTOR and CP nodaly.
-
-            <b>0%</b> – no blending at all
-            <b>100%</b> – maximum amount of blending for the specified blending pair and specified blending method.
-      
-            works for both BLENDINGMETHOD - 1(CP) and 2(SP).`,
-      type: 1,
-      range: '0 - 100'
-    },
-    {
       name: 'BlendingStartCondition',
       desc: `Defines if the third motion in a blending sequence is blended with the first motion in the case that the second motion is finished before the first one.
               <b>0</b> – do not blend third motion with the first

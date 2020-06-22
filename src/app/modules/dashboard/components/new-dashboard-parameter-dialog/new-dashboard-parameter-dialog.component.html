@@ -28,13 +28,6 @@
 					[(ngModel)]="newParam.name"
 				/>
 			</mat-form-field>
-			<!--<mat-form-field>
-				<mat-select placeholder="{{ 'base' | translate }}" [(ngModel)]="newParam.base">
-					<mat-option value="DEC">{{ 'decimal' | translate }}</mat-option>
-					<mat-option value="HEX">{{ 'hexadecimal' | translate }}</mat-option>
-					<mat-option value="BIN">{{ 'binary' | translate }}</mat-option>
-				</mat-select>
-			</mat-form-field>-->
 			<mat-form-field>
 				<mat-select placeholder="{{ 'inputs.type' | translate }}" [(ngModel)]="newParam.inputType">
 					<mat-option value="INPUT">{{ 'inputs.text' | translate }}</mat-option>
@@ -62,6 +55,9 @@
 					ktype="numeric"
 				/>
 			</mat-form-field>
+			<div class="warn" *ngIf="newParam.inputType === 'SLIDER' && newParam.sliderMin > newParam.sliderMax">
+				{{ 'dashboard.new-param.err_slider' | translate }}
+			</div>
 		</div>
 	</div>
 	<div class="actions">
@@ -72,7 +68,9 @@
 			mat-button
 			color="primary"
 			(click)="add()"
-			[disabled]="newParam.name === null || !verifyOption(newParam.name)"
+			[disabled]="newParam.name === null ||
+				(newParam.inputType === 'SLIDER' && newParam.sliderMin > newParam.sliderMax) ||
+				!verifyOption(newParam.name)"
 		>
 			{{ 'button.add' | translate }}
 		</button>

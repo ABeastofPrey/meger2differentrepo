@@ -14,6 +14,7 @@ export class GripperTestDialogComponent implements OnInit {
   time = 5;
   duty = 50;
   status = false;
+  grpStatus = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {
@@ -32,9 +33,12 @@ export class GripperTestDialogComponent implements OnInit {
     }
     this.interval = window.setInterval(() => {
       this.ws
-        .query('?sys.dout.dout::' + this.data.dOut)
+        .query('?sys.dout.dout::' + this.data.dOut + '\n?GRP_GET_GRIPPER_STATE')
         .then((ret: MCQueryResponse) => {
-          this.status = ret.result === '1';
+          if (ret.err) return;
+          const results = ret.result.split('\n');
+          this.status = results[0] === '1';
+          this.grpStatus = results[1] === '2';
         });
     }, 200);
   }

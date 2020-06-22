@@ -346,7 +346,8 @@ export class ProgramEditorAceComponent implements OnInit {
       readOnly: this.cmn.isTablet,
       tabSize: 2,
       fontFamily: 'cs-monospace',
-      enableLinking: true
+      enableLinking: true,
+      fixedWidthGutter: true
     });
     this.api
       .getDocs()
@@ -634,6 +635,7 @@ export class ProgramEditorAceComponent implements OnInit {
         clearTimeout(this.tooltipTimeout);
       }
       this.lastWord = tokenNoSpaces;
+      if (!isNaN(Number(tokenNoSpaces))) return;
       const cmd1 = 'watch ' + this.service.activeFile + ' ' + tokenNoSpaces;
       const cmd2 = 'watch ' + tokenNoSpaces;
       const nameWithoutExt = this.service.activeFile.split('.')[0];

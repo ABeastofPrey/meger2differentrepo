@@ -116,21 +116,22 @@ export class RecordingsScreenComponent implements OnInit {
     const tab = this.service.tabs[this.service.selectedTabIndex];
     const data = tab.data;
     const graphData = data[dataIndex];
+    const cycleTime = this.service.grp.sysInfo.cycleTime;
     let newY = [];
     if (graphData.y) {
       for (let i = 0; i < deg; i++) {
         const y = i === 0 ? graphData.y : newY;
         const tmpY: number[] = [];
         for (let j = 0; j < y.length; j++) {
-          if (j === 0 || j === y.length - 1) tmpY[j] = 0;
+          if (j < i) {
+            tmpY[j] = 0;
+          }
           else {
-            const y0 = y[j - 1];
-            const y1 = y[j + 1];
-            const mul = i === 0 ? 1000 / 4 : 1;
-            tmpY[j] = (y1 - y0) / 2 * mul ; // 2 ms between points
+            tmpY[j-i] = (y[j] - y[j - 1]) / (cycleTime / 1000);
           }
         }
         newY = tmpY;
+        
       }
     }
     tab.derData = tab.derData.concat([{

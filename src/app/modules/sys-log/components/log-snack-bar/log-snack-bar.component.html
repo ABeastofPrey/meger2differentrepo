@@ -1,8 +1,8 @@
-<div class="snack-bar-container">
-    <mat-card *ngIf="tip" class="log-tip-snackbar" [ngStyle]="{'margin-bottom': !!log ? '10px': '0'}">
+<div class="snack-bar-container mat-typography mat-elevation-z3">
+    <mat-card *ngIf="tip" class="log-tip-snackbar" [ngStyle]="{'margin-bottom': !!log ? '10px': '0'}" @snackAnimation>
         <span>{{tip | translate}}</span>
     </mat-card>
-    <mat-card *ngIf="log" class="log-snackbar mat-elevation-z3 mat-typography">
+    <mat-card *ngIf="log" class="log-snackbar" @snackAnimation>
         <div class="left-portion">
             <ng-container [ngSwitch]="log?.type">
                 <mat-icon *ngSwitchCase="'error'" aria-hidden="false" class="warn" aria-label="Example home icon">cancel</mat-icon>

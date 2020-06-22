@@ -1,9 +1,9 @@
-<div class="main mat-typography">
+<form class="main mat-typography" [formGroup]="ctrl">
 	<div class="wrapper">
 		<div class="title">{{ 'projectCommands.circle.title' | translate }}</div>
 		<div class="content">
 			<mat-form-field>
-				<mat-select placeholder="{{ (data.angle ? 'circleCenter' : 'circlePoint') | translate }}" [(ngModel)]="circlePoint" (selectionChange)="resetIndexCirclePoint()">
+				<mat-select placeholder="{{ (data.angle ? 'circleCenter' : 'circlePoint') | translate }}" formControlName="circlePoint" (selectionChange)="resetIndexCirclePoint()">
 					<mat-optgroup label="{{ 'joints' | translate }}" *ngIf="this.dataService.joints.length > 0"
 						><mat-option *ngFor="let data of this.dataService.joints" [value]="data"
 							>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
@@ -20,15 +20,15 @@
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field *ngIf="circlePoint && circlePoint.isArr">
-				<mat-select placeholder="{{ 'index' | translate }}" [(ngModel)]="circlePointIndex">
+				<mat-select placeholder="{{ 'index' | translate }}" formControlName="circlePointIndex">
 					<mat-option *ngFor="let data of circlePoint.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field *ngIf="data.angle">
-				<input matInput placeholder="Angle" [(ngModel)]="angle" virtualKeyboard ktype="numeric" />
+				<input matInput placeholder="Angle" formControlName="angle" virtualKeyboard ktype="numeric" />
 			</mat-form-field>
 			<mat-form-field *ngIf="!data.angle">
-				<mat-select placeholder="{{ 'targetPoint' | translate }}" [(ngModel)]="targetPoint" (selectionChange)="resetIndexTargetPoint()">
+				<mat-select placeholder="{{ 'targetPoint' | translate }}" formControlName="targetPoint" (selectionChange)="resetIndexTargetPoint()">
 					<mat-optgroup label="{{ 'joints' | translate }}" *ngIf="this.dataService.joints.length > 0"
 						><mat-option *ngFor="let data of this.dataService.joints" [value]="data"
 							>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
@@ -45,28 +45,35 @@
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field *ngIf="targetPoint && targetPoint.isArr && !data.angle">
-				<mat-select placeholder="{{ 'index' | translate }}" [(ngModel)]="targetPointIndex">
+				<mat-select placeholder="{{ 'index' | translate }}" formControlName="targetPointIndex">
 					<mat-option *ngFor="let data of targetPoint.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
 				</mat-select>
 			</mat-form-field>
-			<mat-slide-toggle [(ngModel)]="advancedMode" style="margin-bottom: 8px;" color="primary">{{
+			<mat-slide-toggle formControlName="advancedMode" style="margin-bottom: 8px;" color="primary">{{
 				'advanced' | translate
 			}}</mat-slide-toggle>
 			<div *ngIf="advancedMode">
 				<mat-form-field>
-					<mat-select placeholder="{{ 'motion_element' | translate }}" [(ngModel)]="motionElement">
+					<mat-select placeholder="{{ 'motion_element' | translate }}" formControlName="motionElement">
 						<mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{ e }}</mat-option>
 					</mat-select>
 				</mat-form-field>
 				<mat-form-field>
-					<input matInput placeholder="Vtran [mm/s]" [(ngModel)]="vtran" virtualKeyboard ktype="numeric" />
+					<input matInput placeholder="Vtran [mm/s]" formControlName="vtran" virtualKeyboard ktype="numeric" />
 				</mat-form-field>
 				<mat-form-field>
-					<input matInput placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}" [(ngModel)]="blending" virtualKeyboard ktype="numeric" />
+					<input 
+						matInput
+						placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}"
+						formControlName="blendingPh"
+						virtualKeyboard ktype="numeric" />
 					<span matSuffix>%</span>
+          <mat-error *ngIf="blendingPh.invalid">
+            {{ 'form_validation.percent' | translate }}
+          </mat-error>
 				</mat-form-field>
 				<mat-form-field>
-					<mat-select placeholder="{{ 'projectSettings.position_trigger.title' | translate }}" [(ngModel)]="pts" multiple>
+					<mat-select placeholder="{{ 'projectSettings.position_trigger.title' | translate }}" formControlName="pts" multiple>
 						<mat-option *ngFor="let pt of ptList" [value]="pt">{{ pt }}</mat-option>
 					</mat-select>
 				</mat-form-field>
@@ -82,15 +89,14 @@
 			color="primary"
 			(click)="insert()"
 			[disabled]="
-				this.circlePoint == null ||
 				(!this.data.angle && this.targetPoint == null) ||
 				(this.data.angle && this.angle.length === 0) ||
 				(this.circlePoint.isArr && this.circlePointIndex < 0) ||
 				(this.targetPoint && this.targetPoint.isArr && this.targetPointIndex < 0) ||
-				invalidBlending()
+				ctrl.invalid
 			"
 		>
 			{{ (!this.withParams ? 'button.insert' : 'button.edit') | translate }}
 		</button>
 	</div>
-</div>
+</form>

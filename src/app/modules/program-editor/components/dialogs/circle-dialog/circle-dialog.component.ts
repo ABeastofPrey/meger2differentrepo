@@ -5,6 +5,7 @@ import { DataService } from '../../../../core';
 import { PositionTriggerService } from '../../../services/position-trigger.service';
 import { reduce, isEmpty, complement } from 'ramda';
 import { AddVarComponent } from '../../add-var/add-var.component';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'circle-dialog',
@@ -12,18 +13,85 @@ import { AddVarComponent } from '../../add-var/add-var.component';
   styleUrls: ['./circle-dialog.component.css'],
 })
 export class CircleDialogComponent implements OnInit {
-  circlePoint: TPVariable;
-  targetPoint: TPVariable;
-  circlePointIndex = -1;
-  targetPointIndex = -1;
-  motionElement: string = null;
-  vtran: string = null;
-  advancedMode = false;
-  angle = '';
+
   withParams = false;
-  blending: string = null;
   ptList: string[] = [];
-  pts: string[] = [];
+
+  ctrl: FormGroup = new FormGroup({
+    advancedMode: new FormControl(false),
+    angle: new FormControl(''),
+    blendingPh: new FormControl('', [
+      Validators.min(0),
+      Validators.max(100)
+    ]),
+    circlePoint: new FormControl(null, Validators.required),
+    circlePointIndex: new FormControl(-1),
+    motionElement: new FormControl(null),
+    pts: new FormControl([]),
+    targetPoint: new FormControl(null),
+    targetPointIndex: new FormControl(-1),
+    vtran: new FormControl(null),
+  });
+
+  get advancedMode() {
+    return this.ctrl.get('advancedMode').value;
+  }
+
+  set advancedMode(val) {
+    this.ctrl.get('advancedMode').setValue(val);
+  }
+
+  get angle() {
+    return this.ctrl.get('angle').value;
+  }
+
+  get blendingPh() {
+    return this.ctrl.get('blendingPh');
+  }
+
+  get circlePoint() {
+    return this.ctrl.get('circlePoint').value;
+  }
+
+  get motionElement() {
+    return this.ctrl.get('motionElement').value;
+  }
+
+  set motionElement(val) {
+    this.ctrl.get('motionElement').setValue(val);
+  }
+
+  get pts() {
+    return this.ctrl.get('pts').value;
+  }
+
+  get targetPoint() {
+    return this.ctrl.get('targetPoint').value;
+  }
+
+  set targetPoint(val: TPVariable) {
+    this.ctrl.get('targetPoint').setValue(val);
+  }
+
+  get targetPointIndex() {
+    return this.ctrl.get('targetPointIndex').value;
+  }
+
+  set targetPointIndex(val) {
+    this.ctrl.get('targetPointIndex').setValue(val);
+  }
+
+  get vtran() {
+    return this.ctrl.get('vtran').value;
+  }
+
+  set vtran(val) {
+    this.ctrl.get('vtran').setValue(val);
+  }
+
+  get circlePointIndex() {
+    return this.ctrl.get('circlePointIndex').value;
+  }
 
   get joints(): TPVariable[] {
     return this.dataService.joints;
@@ -34,7 +102,7 @@ export class CircleDialogComponent implements OnInit {
   }
 
   resetIndexCirclePoint() {
-    this.circlePointIndex = -1;
+    this.ctrl.get('circlePointIndex').setValue(-1);
   }
   resetIndexTargetPoint() {
     this.targetPointIndex = -1;
@@ -73,8 +141,8 @@ export class CircleDialogComponent implements OnInit {
           this.dataService.locations
         )) {
           if (v.name === params['target'][0].name) {
-            this.circlePoint = v;
-            this.circlePointIndex = params['target'][0].selectedIndex;
+            this.ctrl.get('circlePoint').setValue(v);
+            this.ctrl.get('circlePointIndex').setValue(params['target'][0].selectedIndex);
           }
           if (params['target'][1] && v.name === params['target'][1].name) {
             this.targetPoint = v;
@@ -85,19 +153,19 @@ export class CircleDialogComponent implements OnInit {
 
       // PARSE ANGLE
       if (params['angle']) {
-        this.angle = params['angle'];
+        this.ctrl.get('angle').setValue(params['angle']);
       }
 
       // PARSE OTHER PARAMS
       if (params['vtran']) this.vtran = params['vtran'];
       if (params['blending']) {
-        this.blending = params['blending'];
+        this.ctrl.get('blendingPh').setValue(params['blending']);
       }
     }
   }
 
   createPoint(type: string): void {
-    const preCPoint = this.circlePoint;
+    const preCPoint = this.ctrl.get('circlePoint').value;
     const preTPoint = this.targetPoint;
     const option = {
       hasBackdrop: false,
@@ -107,31 +175,23 @@ export class CircleDialogComponent implements OnInit {
       let _point = this.locations.find(x => x.name === addedVar);
       _point = _point ? _point : this.joints.find(x => x.name === addedVar);
       if (type === 'circle') {
-        this.circlePoint = _point;
+        this.ctrl.get('circlePoint').setValue(_point);
         const preJIdx = preTPoint ? this.joints.findIndex(x => x.name === preTPoint.name) : -1;
         const preLIdx = preTPoint ? this.locations.findIndex(x => x.name === preTPoint.name) : -1;
         this.targetPoint = (preJIdx !== -1) ? this.joints[preJIdx] : this.locations[preLIdx];
-        if (this.circlePoint.isArr) {
-          this.circlePointIndex = 1;
+        if (this.ctrl.get('circlePoint').value.isArr) {
+          this.ctrl.get('circlePointIndex').setValue(1);
         }
       } else if (type === 'target') {
         this.targetPoint = _point;
         const preJIdx = preCPoint ? this.joints.findIndex(x => x.name === preCPoint.name) : -1;
         const preLIdx = preCPoint ? this.locations.findIndex(x => x.name === preCPoint.name) : -1;
-        this.circlePoint = (preJIdx !== -1) ? this.joints[preJIdx] : this.locations[preLIdx];
+        this.ctrl.get('circlePoint').setValue((preJIdx !== -1) ? this.joints[preJIdx] : this.locations[preLIdx]);
         if (this.targetPoint.isArr) {
           this.targetPointIndex = 1;
         }
       }
     });
-  }
-
-  invalidBlending(): boolean {
-    if (this.blending) {
-      const n = Number(this.blending);
-      if (!isNaN(n) && (n < 0 || n > 100)) return true;
-    }
-    return false;
   }
 
   ngOnInit() {
@@ -146,10 +206,10 @@ export class CircleDialogComponent implements OnInit {
 
   insert() {
     let cmd = 'Circle ';
-    let name1 = this.circlePoint.name;
+    let name1 = this.ctrl.get('circlePoint').value.name;
     let name2 = this.data.angle ? '' : this.targetPoint.name;
     const robot = this.motionElement ? this.motionElement + ' ' : '';
-    if (this.circlePoint.isArr) name1 += '[' + this.circlePointIndex + ']';
+    if (this.ctrl.get('circlePoint').value.isArr) name1 += '[' + this.circlePointIndex + ']';
     if (!this.data.angle && this.targetPoint.isArr) {
       name2 += '[' + this.targetPointIndex + ']';
     }
@@ -162,7 +222,7 @@ export class CircleDialogComponent implements OnInit {
       ? ' CircleCenter=' + name1
       : ' TargetPoint=' + name2;
     let blendingString = '';
-    if (this.blending) blendingString = ' BlendingPercentage=' + this.blending;
+    if (this.ctrl.get('blendingPh').valid) blendingString = ' BlendingPercentage=' + this.blendingPh.value;
     cmd += robot + circlePoint + targetPoint + vtranString + blendingString;
     // add pls to cmds.
     if (complement(isEmpty(this.pts.length))) {

@@ -174,7 +174,7 @@ export class LineParser {
         if (element) params['element'] = element;
         searchWord = 'ANGLE';
         index = line.indexOf(searchWord);
-        if (index !== 1) {
+        if (index !== -1) {
           // CIRCLE ANGLE
           let tmp = line.replace(/=/gi, ' ').trim();
           const i = tmp.indexOf('ANGLE');

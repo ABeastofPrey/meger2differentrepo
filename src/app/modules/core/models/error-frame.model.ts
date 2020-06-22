@@ -36,7 +36,7 @@ export class ErrorFrame {
         this.errUUID = parts[3].substr(parts[3].indexOf(':')+1).trim();
       }
     } else {
-      this.errTask += ',' + parts[1];
+      // this.errTask += ',' + parts[1]; // WHY IS THAT LINE HERE ANYWAY?
       i = parts[2].indexOf(':');
       this.errLine = parts[2].substr(i + 1).trim();
       this.errModule = parts[3].substr(parts[3].indexOf(':') + 1).trim();

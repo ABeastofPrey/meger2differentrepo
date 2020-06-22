@@ -68,7 +68,7 @@ export class PalletWizardComponent implements OnInit {
   isCurrentRobotCompatible = true;
   lastError: string;
   isPreview1Showing = false;
-  originPicName = 'origin.png';
+  originPicName;
   abnormalItemCount = false;
 
   previewWidth: number;
@@ -87,6 +87,7 @@ export class PalletWizardComponent implements OnInit {
   private isPreview1Init = false;
   private words: {};
   private _originResult: string = null;
+  private _doubleCheck = false; // TRUE WHEN TRYING TO CROSS-CHECK A FIELD, USED TO PREVENT LOOP CALLS
 
   get originResult() {
     return this._originResult;
@@ -113,16 +114,16 @@ export class PalletWizardComponent implements OnInit {
       default:
         break;
       case 0:
-        this.originPicName = 'origin.png';
+        this.originPicName = this.dataService.selectedPallet.type === 'GRID' ? 'origin.png': 'origin-custom.jpg';
         break;
       case 1:
-        this.originPicName = 'origin.gif';
+        this.originPicName = this.dataService.selectedPallet.type === 'GRID' ? 'origin.gif': 'origin-custom.jpg';
         break;
       case 2:
-        this.originPicName = 'origin2.gif';
+        this.originPicName = this.dataService.selectedPallet.type === 'GRID' ? 'origin2.gif': 'x-custom.jpg';
         break;
       case 3:
-        this.originPicName = 'origin3.gif';
+        this.originPicName = this.dataService.selectedPallet.type === 'GRID' ? 'origin3.gif': 'xy-custom.jpg';
         break;
     }
   }
@@ -200,7 +201,7 @@ export class PalletWizardComponent implements OnInit {
       this.ws.query('?PLT_GET_ITEM_DIMENSION("' + name + '","X")'),
       this.ws.query('?PLT_GET_ITEM_DIMENSION("' + name + '","Y")'),
       this.ws.query('?PLT_GET_ITEM_DIMENSION("' + name + '","Z")'),
-      this.ws.query('?PLT_GET_PALLETIZING_ORDER("' + name + '")'),
+      this.dataService.selectedPallet.type === 'CUSTOM' ? null : this.ws.query('?PLT_GET_PALLETIZING_ORDER("' + name + '")'),
       this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '","o")'),
       this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '","x")'),
       this.ws.query('?PLT_FRAME_CALIBRATION_GET("' + name + '","xy")'),
@@ -253,10 +254,8 @@ export class PalletWizardComponent implements OnInit {
       this.dataService.selectedPallet.itemSizeX = Number(ret[2].result);
       this.dataService.selectedPallet.itemSizeY = Number(ret[3].result);
       this.dataService.selectedPallet.itemSizeZ = Number(ret[4].result);
-      this.dataService.selectedPallet.order = ret[5].result;
-      this.dataService.selectedPallet.origin = this.parseLocation(
-        ret[6].result
-      );
+      this.dataService.selectedPallet.order = ret[5] ? ret[5].result : null;
+      this.dataService.selectedPallet.origin = this.parseLocation(ret[6].result);
       this.dataService.selectedPallet.posX = this.parseLocation(ret[7].result);
       this.dataService.selectedPallet.posY = this.parseLocation(ret[8].result);
       this.isCurrentRobotCompatible = ret[10].result === '1';
@@ -519,6 +518,7 @@ export class PalletWizardComponent implements OnInit {
     if (typeof control.value === 'undefined') {
       return Promise.resolve(null);
     }
+    console.log(pallet.itemsX, pallet.itemsY, pallet.itemsZ);
     let cmd;
     switch (control.value) {
       case 'full':
@@ -1294,6 +1294,7 @@ export class PalletWizardComponent implements OnInit {
 
   ngOnInit() {
     this.initControls();
+    this.setOriginPic(0);
   }
 
   private initControls() {
@@ -1368,6 +1369,73 @@ export class PalletWizardComponent implements OnInit {
             ],
       diffOddEven: pallet.type === 'GRID' ? [''] : ['',[],this.validateDiffOdd.bind(this)],
     });
+    // listen to pallet and item change events
+    this.step1.get('itemSizeX').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemsX').updateValueAndValidity();
+      this.step1.get('palletSizeX').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+    this.step1.get('itemsX').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemSizeX').updateValueAndValidity();
+      this.step1.get('palletSizeX').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+    this.step1.get('palletSizeX').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemSizeX').updateValueAndValidity();
+      this.step1.get('itemsX').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+
+    this.step1.get('itemSizeY').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemsY').updateValueAndValidity();
+      this.step1.get('palletSizeY').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+    this.step1.get('itemsY').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemSizeY').updateValueAndValidity();
+      this.step1.get('palletSizeY').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+    this.step1.get('palletSizeY').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemSizeY').updateValueAndValidity();
+      this.step1.get('itemsY').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+
+    this.step1.get('itemSizeZ').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemsZ').updateValueAndValidity();
+      this.step1.get('palletSizeZ').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+    this.step1.get('itemsZ').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemSizeZ').updateValueAndValidity();
+      this.step1.get('palletSizeZ').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+    this.step1.get('palletSizeZ').valueChanges.subscribe(e=>{
+      if (this._doubleCheck) return;
+      this._doubleCheck = true;
+      this.step1.get('itemSizeZ').updateValueAndValidity();
+      this.step1.get('itemsZ').updateValueAndValidity();
+      this._doubleCheck = false;
+    });
+
     this.step2 = this._formBuilder.group({
       originX: ['', [Validators.required], this.validateOrigin.bind(this, 'x')],
       originY: ['', [Validators.required], this.validateOrigin.bind(this, 'y')],
