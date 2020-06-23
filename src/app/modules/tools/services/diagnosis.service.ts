@@ -117,7 +117,7 @@ export class DiagnosisService {
      */
     public downloadZipFile(folderName: string): Observable<boolean> {
         if (folderName === '') return throwError(false);
-        return from(this.apiService.downloadProjectZip(folderName)).pipe(
+        return from(this.apiService.downloadSubfolderZip(folderName)).pipe(
             rxjsMap(() => true),
             catchError(() => throwError('Download zip file failed.'))
         );

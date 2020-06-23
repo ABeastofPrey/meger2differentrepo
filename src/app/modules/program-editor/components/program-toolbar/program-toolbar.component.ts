@@ -407,10 +407,11 @@ export class ProgramToolbarComponent implements OnInit {
         //   );    
           this.snackbarService.openTipSnackBar("projects.toolbar.err_import");       
       } else {
-        this.snack.open(
-          this.words['error.not_enough_space'],
-          this.words['dismiss']
-        );
+        // this.snack.open(
+        //   this.words['error.not_enough_space'],
+        //   this.words['dismiss']
+        // );
+        this.snackbarService.openTipSnackBar('error.not_enough_space');       
       }
     });
   }
@@ -489,7 +490,8 @@ export class ProgramToolbarComponent implements OnInit {
                       this.snackbarService.openTipSnackBar("files.err_permission");    
                     break;
                   case -99:
-                    this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                    // this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                    this.snackbarService.openTipSnackBar('err.not_enough_space');   
                     break;
                 }
               });
@@ -674,7 +676,8 @@ export class ProgramToolbarComponent implements OnInit {
                     this.snackbarService.openTipSnackBar("files.err_permission");               
                   break;
                 case -99:
-                  this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                  // this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                  this.snackbarService.openTipSnackBar('err.not_enough_space');    
                   break;
               }
             });

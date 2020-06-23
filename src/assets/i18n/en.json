@@ -280,7 +280,7 @@
       "ordernum": "OrderNum is required",
       "commentRequire": "Comment is required",
       "used_life_req_error": "Used Life is required",
-      "used_life_req_max":"Maximum input limit {{max}}"
+      "used_life_req_max": "Maximum input limit {{max}}"
     },
     "history": {
       "tab_name": "Maintenance History",
@@ -1634,7 +1634,7 @@
     "GUIDes": "This is GUI",
     "webServerDes": "This is web server",
     "successDialogTitle": "Success!",
-    "successDialogMsg": "OS update successful. The new version is: ",
+    "successDialogMsg": "The OS update was successful. The new version is: ",
     "errorDialogTitle": "Failed!",
     "errorDialogMsg": "OS update failed. Reinstall previous version: ",
     "releaseNoteTitle": "ControlStudio+ Release Notes"
@@ -1704,7 +1704,7 @@
   "wps": "Work Pieces",
   "diagnosis": {
     "name": "KRCSDiag",
-    "prepareDiagnosis": "Prepare Diagnosis...",
+    "prepareDiagnosis": "Preparing Diagnosis...",
     "generatingFiles": "Generating Files...",
     "downloadZipFile": "Downloading ZIP file...",
     "complete": "Diagnosis Complete!",

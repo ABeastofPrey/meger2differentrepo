@@ -468,7 +468,8 @@ export class ProgramEditorService {
                   this.snackbarService.openTipSnackBar("files.err_permission");             
                 break;
               case -99:
-                this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                // this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                this.snackbarService.openTipSnackBar('err.not_enough_space');   
                 break;
             }
           });
@@ -549,7 +550,8 @@ export class ProgramEditorService {
                   this.snackbarService.openTipSnackBar("files.err_permission"); 
                 break;
               case -99:
-                this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                // this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
+                this.snackbarService.openTipSnackBar('err.not_enough_space'); 
                 break;
             }
             this.busy = false;

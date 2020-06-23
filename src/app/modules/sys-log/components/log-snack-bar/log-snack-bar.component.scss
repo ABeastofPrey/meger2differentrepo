@@ -1,5 +1,9 @@
 .snack-bar-container {
+    max-width: 600px;
+    width: 33vw;
+    box-shadow: none;
     .log-tip-snackbar {
+        box-sizing: border-box;
         max-width: 600px;
         min-width: 344px;
         padding: 14px 16px;
@@ -21,9 +25,9 @@
         }
     }
     .log-snackbar {
+        box-sizing: border-box;
         max-width: 600px;
         min-width: 344px;
-        width: 33vw;
         display: flex;
         flex-direction: row;
         padding: 5px;

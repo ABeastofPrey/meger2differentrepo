@@ -6,7 +6,6 @@ import { environment } from '../../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { RecordingData } from '../models/rec-data.model';
-import { saveAs } from 'file-saver';
 
 export const PERMISSION_ADMIN = 0;
 export const PERMISSION_PROGRAMMER = 1;
@@ -307,7 +306,7 @@ export class ApiService {
   /*
   path should be used relative to SSMC (i.e: DEMO/ refers to "/FFS0/SSMC/DEMO/");
   */
-  downloadSubfolderZip(path: string) {
+  public downloadSubfolderZip(path: string): Promise<void> {
     let body = new HttpParams();
     body = body.set('token', this.token);
     body = body.set('files', path);
@@ -316,7 +315,21 @@ export class ApiService {
       .post(this.api_url + '/cs/mczip', body)
       .toPromise()
       .then(ret => {
-        if (ret) window.location.href = this.api_url + '/cs/api/zipFile';
+        if (!ret) return;
+        const zipUrl = this.api_url + '/cs/api/zipFile';
+        const zipGenerator = (buffer: ArrayBuffer) => {
+          const blob = new Blob([buffer], { type: 'application/zip' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          document.body.appendChild(a);
+          a.setAttribute('style', 'display: none');
+          a.href = url;
+          a.download = path.toUpperCase() + '.ZIP';
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        };
+        this.http.get(zipUrl, { responseType: 'arraybuffer' }).subscribe(zipGenerator);
       });
   }
 
@@ -328,17 +341,15 @@ export class ApiService {
       .toPromise()
       .then(ret => {
         const blob = new Blob([ret], { type: 'application/zip' });
-        const name = project.toUpperCase() + '.ZIP';
-        saveAs(blob, name);
-        // const url = window.URL.createObjectURL(blob);
-        // const a = document.createElement('a');
-        // document.body.appendChild(a);
-        // a.setAttribute('style', 'display: none');
-        // a.href = url;
-        // a.download = project.toUpperCase() + '.ZIP';
-        // a.click();
-        // window.URL.revokeObjectURL(url);
-        // document.body.removeChild(a);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = project.toUpperCase() + '.ZIP';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
       });
   }
 
