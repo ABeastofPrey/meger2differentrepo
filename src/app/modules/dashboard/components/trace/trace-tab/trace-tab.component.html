@@ -1,15 +1,15 @@
-<mat-tab-group dynamicHeight>
+<mat-tab-group dynamicHeight disabled="true">
     <mat-tab label="{{'dashboard.trace.common.tab_name' | translate}}">
         <ng-template matTabContent>
-            <app-trace-common></app-trace-common>
+            <app-trace-common (isDisableEidtEvent)="isDisableEidtHandler($event)"></app-trace-common>
         </ng-template>
     </mat-tab>
-    <mat-tab label="{{'dashboard.trace.trigger.tab_name' | translate}}">
+    <mat-tab [disabled]="canNotEdit" label="{{'dashboard.trace.trigger.tab_name' | translate}}">
         <ng-template matTabContent>
             <app-trace-trigger></app-trace-trigger>
         </ng-template>
     </mat-tab>
-    <mat-tab label="{{'dashboard.trace.channel.tab_name' | translate}}">
+    <mat-tab [disabled]="canNotEdit" label="{{'dashboard.trace.channel.tab_name' | translate}}">
         <ng-template matTabContent>
             <app-trace-channel></app-trace-channel>
         </ng-template>

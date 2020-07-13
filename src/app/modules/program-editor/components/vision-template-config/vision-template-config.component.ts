@@ -42,18 +42,20 @@ export class VisionTemplateConfigComponent implements OnInit {
         this.getDataTypeList();
     }
 
-    private getStationList(): void {
+    private getStationList(create?: boolean): void {
         const api: string = '?getStationList';
         this.service.search(api).then((result: List) => {
             this.stationList = JSON.parse(result.result);
-            this.service.getCurrentStation().then((result: List) => {
-                if (result.result && this.stationList.includes(result.result)) {
-                    this.stationName = result.result;
-                    this.edit();
-                } else {
-                    this.stationName = "";
-                }
-            })
+            if (!create) {
+                this.service.getCurrentStation().then((result: List) => {
+                    if (result.result && this.stationList.includes(result.result)) {
+                        this.stationName = result.result;
+                        this.edit();
+                    } else {
+                        this.stationName = "";
+                    }
+                })
+            }
         })
     }
 
@@ -93,6 +95,7 @@ export class VisionTemplateConfigComponent implements OnInit {
             if (nameDialog.status) {
                 this.stationList.push(nameDialog.name.toUpperCase());
                 this.stationName = nameDialog.name.toUpperCase();
+                this.getStationList(true);
                 this.selectedStation();
             } else if (nameDialog.name) {
                 this.stationName = "";
@@ -137,6 +140,7 @@ export class VisionTemplateConfigComponent implements OnInit {
     private getStationBasicInfo(): void {
         const api: string = `?getStationBasicInfo("${this.stationName}")`;
         this.ip = "...";
+        this.port.patchValue("");
         this.service.search(api).then((result: List) => {
             result.result = result.result.replace(/\\/g, '\\\\');
             let basicInfo: Array<any> = JSON.parse(result.result);

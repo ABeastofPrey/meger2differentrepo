@@ -32,6 +32,7 @@ import { IoSelectorDialogComponent } from '../../components/io-selector-dialog/i
 import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { ControlStudioGestureConfig } from './cs-gesture-config';
 import { ClickOnceDirective } from '../../directives/click-once.directive';
+import { NumberDirective } from '../../directives/number.directive';
 import { PassPipe } from '../core/pipes/space-to-nbsp.pipe';
 import { RichSelectComponent } from '../../components/rich-select/rich-select.component';
 import { ColorfulSpanComponent } from '../../components/rich-select/colorful-span/colorful-span.component';
@@ -97,6 +98,7 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
     NgScrollbarModule,
     IoSelectorDialogComponent,
     ClickOnceDirective,
+    NumberDirective,
     RichSelectComponent,
     NumberInputComponent,
     CSProgressComponent,
@@ -130,6 +132,7 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
     KeyboardDialog,
     IoSelectorDialogComponent,
     ClickOnceDirective,
+    NumberDirective,
     PassPipe,
     RichSelectComponent,
     NumberInputComponent,

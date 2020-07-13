@@ -31,10 +31,10 @@
                 <cdk-virtual-scroll-viewport itemSize="50" class="view-port">
                     <hr [style.border-width]="0" />
                      <ng-container *cdkVirtualFor="let item of unconfirmLog; templateCacheSize: 0">
-                        <mat-expansion-panel *ngIf="canExpand">
-                            <mat-expansion-panel-header>
+                        <mat-expansion-panel #thePanel *ngIf="canExpand">
+                            <mat-expansion-panel-header expandedHeight="auto">
                                 <div class="panel-container">
-                                    <app-log-profile [log]="item"></app-log-profile>
+                                    <app-log-profile [log]="item" [expanded]="thePanel.expanded"></app-log-profile>
                                     <button class="confirm-btn" 
                                         mat-raised-button color="primary"
                                         matTooltipPosition="left"

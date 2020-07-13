@@ -2,6 +2,7 @@
   margin: -24px;
   background: #eee;
   height: calc(100% + 48px);
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -29,6 +30,7 @@
   padding: 24px;
   box-sizing: border-box;
   background: #fff;
+  font: 400 14px/20px Roboto, "Helvetica Neue", sans-serif;
 }
 button {
   margin-right: 16px;

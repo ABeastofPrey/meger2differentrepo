@@ -1,69 +1,33 @@
-.header {
-  margin: -24px -24px 16px -24px;
-}
 
-.title {
-  font-size: 20px;
-  flex: 1;
-  padding: 16px;
+.mat-dialog-title {
+  margin: -24px -24px 0px -24px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 24px;
+}
+.mat-inner-title{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: normal;
+}
+pre{
+  white-space: normal;
+  padding-left: 8px;
+  line-height: 1.5em;
 }
 
 .tooltip {
   display: flex;
+  align-items: center;
 }
-
-.tooltip-icon {
-  margin-top: 7px;
-  margin-left: 10px;
+.tooltip, .checkbox-container{
+  margin-top: 24px;
 }
 
 .tooltip-text {
-  margin-top: 10px;
-  margin-left: 5px;
   font-size: 14px;
 }
 
-.result-table {
-  padding-left: 5px;
-  padding-right: 5px;
-}
 
-.warning {
-  display: flex;
-}
-
-.warning-icon {
-  margin-top: 15px;
-  margin-left: 10px;
-}
-
-.warning-text {
-  margin-top: 18px;
-  margin-left: 5px;
-  font-size: 14px;
-}
-
-.multiple-buttons {
-  margin-top: 20px;
-  margin-right: 5px;
-  position: relative;
-  text-align: right;
-}
-
-.ok-button {
-  position: absolute;
-  top: -5px;
-  right: 30px;
-}
-
-.apply-button {
-  position: absolute;
-  top: 5px;
-  right: 100px;
-}
-
-.cancel-button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-}

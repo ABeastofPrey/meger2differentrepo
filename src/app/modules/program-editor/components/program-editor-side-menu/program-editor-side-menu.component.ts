@@ -57,6 +57,7 @@ const disableWhenProjectActive = [
   'PALLETS',
   'GRIPPERS',
   'PAYLOADS',
+  'VISION',
   projectPoints.toUpperCase(),
 ];
 
@@ -468,6 +469,9 @@ export class ProgramEditorSideMenuComponent implements OnInit {
             if (this.service.fileRef && this.service.fileRef.name === app) {
               this.service.close();
             }
+            if (isBG) {
+              this.service.close();
+            }
             const prj = this.prj.currProject.value;
             const cmd = isBG ? `BKG_removeBgTask("${prj.name}", "${app}")` : '?prj_remove_app("' + prj.name + '","' + app + '")';
             this.ws
@@ -707,9 +711,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     });
   }
 
-  openContextMenu(event: MouseEvent, node: TreeNode) {
+  public async openContextMenu(event: MouseEvent, node: TreeNode): Promise<void> {
     event.preventDefault();
     event.stopImmediatePropagation();
+
+    const isBGT = node.type === 'BG';
+    const isGBTAndLoaded = isBGT && await this.prj.isBGTLoaded(node.name);
+    if(isGBTAndLoaded) return;
+
     if (this.login.isOperator || this.login.isViewer || (this.prj.activeProject && node.type !== 'App')) return;
     this.selectNode(node);
     switch (node.type) {

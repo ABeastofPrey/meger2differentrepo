@@ -537,4 +537,13 @@ export class ProjectManagerService {
       }
     });
   }
+
+  public async isBGTLoaded(name: string): Promise<boolean> {
+    const api = `?${name}.BKG.STATE`;
+    return new Promise(resolve => {
+      this.ws.query(api).then(({err}) => {
+        resolve(err === null);
+      });
+    });
+  }
 }

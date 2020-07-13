@@ -1,0 +1,54 @@
+$marginGap: 24px;
+.mat-dialog-title {
+  margin: -24px -24px 0px -24px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 $marginGap;
+  justify-content: space-between;
+}
+.mat-dialog-content {
+   margin-top: 24px;
+}
+.mat-inner-title{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: normal;
+  margin-right: 20px;
+}
+.close-btn {
+  padding: 0;
+  min-width: 36px;
+}
+.points-container {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+  font-weight: 500;
+}
+.inner-content--wrapper{
+  text-align: center;
+  margin-top: 1.2em;
+}
+.points-button-container {
+  margin-bottom: 1em;
+}
+
+.points-button-container button {
+  margin-right: 0.5em;
+}
+
+.radio-button-visible {
+  visibility: visible;
+}
+
+.radio-button-invisible {
+  visibility: hidden;
+}
+
+.good {
+  color: #008800;
+}
+.bad {
+  color: #aa0000;
+}

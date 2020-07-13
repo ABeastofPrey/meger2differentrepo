@@ -563,6 +563,7 @@
     "byte": "Byte",
     "word": "Word",
     "status": "Status",
+    "value": "value",
     "label": "Label",
     "type": "Type",
     "port": "Port",
@@ -835,7 +836,8 @@
       "payloads": "PAYLOADS",
       "program": "PROGRAM",
       "variables": "VARIABLES",
-      "vision": "VISION"
+      "vision": "VISION",
+      "jobTemplate": "TEMPLATE"
     },
     "move": {
       "index_from": "From Index",

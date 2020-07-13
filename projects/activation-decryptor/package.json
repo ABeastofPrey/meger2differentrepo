@@ -1,0 +1,23 @@
+{
+  "name": "activation-aes-decryptor",
+  "version": "1.0.0",
+  "description": "This is just a simple project to provide decrypt algorithm script to get captcha of activation qr code for tester",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js https://wx1.kuka-robotics.cn/deviceactivation/n0QJwHzB3fXjrxxc7r9Xl0g+a/WsU2Orbl0a15XvKrL7PSKKPqDZ0H7oNRHdhZwKDHUCD40mcfRo8ckfyVArPw==",
+    "build": "webpack --config webpack.config.js",
+    "copy": "copy src\\index.js dist\\test.js",
+    "test": "node dist/test.js https://wx1.kuka-robotics.cn/deviceactivation/n0QJwHzB3fXjrxxc7r9Xl0g+a/WsU2Orbl0a15XvKrL7PSKKPqDZ0H7oNRHdhZwKDHUCD40mcfRo8ckfyVArPw==",
+    "serve": "npm run build && npm run copy && npm run test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "crypto-js": "^4.0.0"
+  }
+}

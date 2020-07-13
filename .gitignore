@@ -53,3 +53,6 @@ Thumbs.db
 /report.20191127.104843.15436.0.001.json
 /report.20191127.113459.6088.0.001.json
 /TESTS-Chrome_80.0.3987_(Windows_7.0.0).xml
+
+# Decrypt script of activation
+/projects/activation-decryptor/dist/

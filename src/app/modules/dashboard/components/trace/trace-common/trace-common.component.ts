@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { Observable, zip, from, of } from 'rxjs';
-import { map as rxjsMap, tap } from 'rxjs/operators';
+import { map as rxjsMap, tap, filter, switchMap, debounceTime } from 'rxjs/operators';
 import { TraceService, Trace, TraceStatus } from '../../../services/trace.service';
 import { MatDialog } from '@angular/material';
 import { isNotUndefined, isUndefined } from 'ramda-adjunct';
@@ -13,6 +13,8 @@ import { YesNoDialogComponent } from '../../../../../components/yes-no-dialog/ye
 })
 export class TraceCommonComponent implements OnInit {
     private firstRate: number;
+    private previousStatus: TraceStatus;
+    public hasSelectedTrigger: boolean = false;
     public unknowTracing = false;
     public addingNewTrace = false;
     public isValid = true;
@@ -23,11 +25,39 @@ export class TraceCommonComponent implements OnInit {
     public curTraceStatus: TraceStatus = TraceStatus.NOTREADY;
     public traceList: Observable<Trace[]>;
     public rateList: Observable<number[]>;
+    public changeStatusEvent: EventEmitter<void> = new EventEmitter<void>();
+    @Output() isDisableEidtEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    get disableEidt(): boolean {
+        return (this.curTraceStatus !== TraceStatus.NOTREADY) || this.unknowTracing;
+    }
 
     constructor(
         private service: TraceService,
         private dialog: MatDialog,
-    ) { }
+        private changeDetectorRef: ChangeDetectorRef
+    ) {
+        this.changeStatusEvent.pipe(debounceTime(300)).subscribe(() => {
+            this.service.getTraceStatus().pipe(
+                filter(status => {
+                    const statChanged = status !== this.previousStatus;
+                    const allNotReady = status === TraceStatus.NOTREADY && this.previousStatus === TraceStatus.NOTREADY;
+                    return statChanged || allNotReady;
+                }),
+                tap(status => {
+                    this.previousStatus = status;
+                    this.curTraceStatus = status;
+                }),
+                rxjsMap(status => status === TraceStatus.NOTREADY),
+                tap(traceOn => {
+                    traceOn && this.isDisableEidtEvent.emit(true);
+                }),
+                switchMap(traceOn => this.service.traceOnOff(this.selectedTrace.name, traceOn))
+            ).subscribe(success => {
+                console.log(success);
+            });
+        });
+    }
 
     ngOnInit(): void {
         this.traceList = this.service.getTraceList();
@@ -38,6 +68,9 @@ export class TraceCommonComponent implements OnInit {
             ([name, traces]) => traces.find(x => x.name === name)
         )).subscribe(trace => {
             this.selectedTrace = trace;
+            this.service.hasSelectedTrigger(trace.name).subscribe(hasSelectedTrigger => {
+                this.hasSelectedTrigger = hasSelectedTrigger;
+            });
         });
         this.rateList = this.service.getRateList().pipe(tap(rateList => {
             this.firstRate = rateList[0];
@@ -52,9 +85,11 @@ export class TraceCommonComponent implements OnInit {
                 } else if (isUndefined(finded) && status === TraceStatus.TRACEING || status === TraceStatus.READY) {
                     this.curTraceStatus = TraceStatus.NOTREADY;
                     this.unknowTracing = true;
+                    this.isDisableEidtEvent.emit(this.disableEidt);
                     return;
                 }
                 this.curTraceStatus = status;
+                this.isDisableEidtEvent.emit(this.disableEidt);
             });
         };
         this.service.startCheckTraceStatus().subscribe(checkState);
@@ -94,10 +129,7 @@ export class TraceCommonComponent implements OnInit {
 
     public addTrace(event: MouseEvent): void {
         event.stopPropagation();
-        from(this.traceList).subscribe(res => {
-            if (res.length >= this.traceLimit) return;
-            this.addingNewTrace = !this.addingNewTrace;
-        })
+        this.addingNewTrace = !this.addingNewTrace;
     }
 
     public createTrace(name: string): void {
@@ -115,8 +147,7 @@ export class TraceCommonComponent implements OnInit {
     }
 
     public changeTraceStatus(): void {
-        const traceOn = this.curTraceStatus === TraceStatus.NOTREADY;
-        this.service.traceOnOff(this.selectedTrace.name, traceOn).subscribe(success => { });
+        this.changeStatusEvent.emit();
     }
 
     public changeSelectedTrace({ value }): void {
@@ -125,6 +156,7 @@ export class TraceCommonComponent implements OnInit {
                 traces => traces.find(x => x.name.toUpperCase() === value.toUpperCase())
             )).subscribe(res => {
                 this.selectedTrace = res;
+                this.changeDetectorRef.detectChanges();
             });
         });
     }

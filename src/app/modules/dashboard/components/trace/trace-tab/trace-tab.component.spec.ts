@@ -32,6 +32,7 @@ describe('TraceTabComponent', () => {
   });
 
   it('should create', () => {
+    component.isDisableEidtHandler(true);
     expect(component).toBeTruthy();
   });
 });

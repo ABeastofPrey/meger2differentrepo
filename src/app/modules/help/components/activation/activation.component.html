@@ -9,7 +9,8 @@
 				placeholder="{{ 'help.activation.captchaPlaceholder' | translate }}"
 				[formControl]="control"
 				[(ngModel)]="pinCode"
-				virtualKeyboard/>
+				virtualKeyboard
+				ktype="text"/>
 			<mat-error *ngIf="(control.hasError('minlength') || control.hasError('maxlength')) && !control.hasError('required')">
 				{{ 'help.activation.lengthErr' | translate }}
 			</mat-error>

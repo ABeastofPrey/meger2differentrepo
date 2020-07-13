@@ -861,6 +861,61 @@ const SIL_SOURCE = `Copyright 2010, 2012 Adobe Systems Incorporated (http://www.
 
                     DISCLAIMER
                     THE FONT SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.`;
+
+const NGRX_MIT = `The MIT License (MIT)
+                    
+                    Copyright (c) 2017 Brandon Roberts, Mike Ryan, Victor Savkin, Rob Wormald
+                    
+                    Permission is hereby granted, free of charge, to any person obtaining a copy
+                    of this software and associated documentation files (the "Software"), to deal
+                    in the Software without restriction, including without limitation the rights
+                    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                    copies of the Software, and to permit persons to whom the Software is
+                    furnished to do so, subject to the following conditions:
+                    
+                    The above copyright notice and this permission notice shall be included in all
+                    copies or substantial portions of the Software.
+                    
+                    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                    SOFTWARE.
+                    
+                    This repository includes a file "debounceSync.ts" originially copied from
+                    https://github.com/cartant/rxjs-etc by Nicholas Jamieson, MIT licensed. See the
+                    file header for details.`;
+
+const FAKER_LICENSE = `faker.js - Copyright (c) 2010-2015
+Matthew Bergman & Marak Squires
+http://github.com/marak/faker.js/
+
+faker.js was inspired by and has used data definitions from:
+
+ * https://github.com/stympy/faker/ - Copyright (c) 2007-2010 Benjamin Curtis
+ * http://search.cpan.org/~jasonk/Data-Faker-0.07/ - Copyright 2004-2005 by Jason Kohles
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`;
+
 @Component({
   selector: 'app-third-party',
   templateUrl: './third-party.component.html',
@@ -881,7 +936,7 @@ export class ThirdPartyComponent implements OnInit {
     return result;
   }
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     // GET CS+ LICENSE
@@ -1032,6 +1087,32 @@ export class ThirdPartyComponent implements OnInit {
       name: 'withinviewport',
       license: WITHIN_ISC,
     });
+    // ngrx
+    this.libs.push({
+      name: '@ngrx/data',
+      license: NGRX_MIT
+    });
+    this.libs.push({
+      name: '@ngrx/effects',
+      license: NGRX_MIT
+    });
+    this.libs.push({
+      name: '@ngrx/entity',
+      license: NGRX_MIT
+    });
+    this.libs.push({
+      name: '@ngrx/store',
+      license: NGRX_MIT
+    });
+    this.libs.push({
+      name: '@ngrx/store-devtools',
+      license: NGRX_MIT
+    });
+    // faker
+    this.libs.push({
+      name: 'faker',
+      license: FAKER_LICENSE
+    })
   }
 }
 

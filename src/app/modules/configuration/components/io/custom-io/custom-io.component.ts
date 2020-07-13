@@ -4,7 +4,11 @@ import {
   OnDestroy,
   ViewChild,
   AfterViewInit,
-  Input
+  Input,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  ElementRef,
+  EventEmitter
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatTable, MatTableDataSource, MatRow } from '@angular/material';
@@ -19,6 +23,8 @@ import {
   IoService,
   CustomIOPort,
 } from '../../../services/io.service';
+import { fromEvent } from 'rxjs';
+import { takeUntil, throttleTime } from 'rxjs/operators';
 
 let refreshInterval: number;
 
@@ -26,6 +32,7 @@ let refreshInterval: number;
   selector: 'app-custom-io',
   templateUrl: './custom-io.component.html',
   styleUrls: ['./custom-io.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 /**
  * This class describes the logics to custom io view.
@@ -111,11 +118,19 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   private allCustomIoTypes: Array<{ key: CustomIOTypes, value: string }>;
 
+  private stopNoticer: EventEmitter<any> = new EventEmitter<any>();
+
+  @ViewChild('addRow',{static: true}) private addRowViewRef:  any;
+  @ViewChild('deleteRow',{static: true}) private deleteRowViewRef:any;
+
   /**
    * Constructor.
    * @param ioService The ioService instance.
    */
-  constructor(private ioService: IoService, private trn: TranslateService) {
+  constructor(private ioService: IoService, 
+    private _elementRef: ElementRef,
+    private trn: TranslateService,
+    private changeDetectorRef: ChangeDetectorRef) {
     this.tableIndex = 1;
     this.customDataSource = new MatTableDataSource([]);
     this.changeSelectRow(null, -1);
@@ -138,24 +153,46 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() { }
 
   ngOnDestroy() {
-    clearInterval(refreshInterval);
+    refreshInterval && clearInterval(refreshInterval);
     refreshInterval = null;
+     this.stopNoticer.emit(false);
   }
 
   ngAfterViewInit() {
-    this.ioService
-      .queryCustomIoPorts()
-      .then(() => {
-        this.customIoPorts = this.ioService.getCustomIoPorts();
-        this.checkCustomIoTypes();
-      })
-      .then(() => {
-        this.refreshTable();
-        !refreshInterval && (refreshInterval = setInterval(() => {
-          this.refreshTable();
-        }, 500) as any);
-      });
+    this.queryCustomIOPorts();
+
+    fromEvent(this.addRowViewRef._elementRef.nativeElement,'click')
+    .pipe(takeUntil(this.stopNoticer),throttleTime(200))
+    .subscribe(()=>{
+        this.addRowInCustomTable();
+    });
+
+    fromEvent(this.deleteRowViewRef._elementRef.nativeElement,'click')
+    .pipe(takeUntil(this.stopNoticer),throttleTime(200))
+    .subscribe(()=>{
+      this.deleteRowInCustomTable();
+  });
+
   }
+
+/**
+ * query custom ports
+ */
+  public queryCustomIOPorts(){
+    this.ioService
+    .queryCustomIoPorts()
+    .then(() => {
+      this.customIoPorts = this.ioService.getCustomIoPorts();
+      this.checkCustomIoTypes();
+    })
+    .then(() => {
+      this.refreshTable();
+      !refreshInterval && (refreshInterval = setInterval(() => {
+        this.refreshTable();
+      }, 1000) as any);
+    });
+  }
+  
 
   /**
    * Select one row in the custom IO table.
@@ -318,11 +355,14 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
         this.customHex
       )
       .then(() => {
-        this.customDataSource.data[index] = this.ioService.getCustomIo(
+         let rowData = this.ioService.getCustomIo(
           this.customIOTypes,
           this.customIoPorts
         );
-        this.customTable.renderRows();
+        if(rowData){
+          this.customDataSource.data[index] = rowData;
+          this.customTable.renderRows();
+        }
       });
   }
 
@@ -362,7 +402,7 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ioService.setIoByBit(entry.selectedPort, entry.value).then(() => {
       this.customTable.renderRows();
     });
-    this.ngAfterViewInit();
+    this.queryCustomIOPorts();
     return true;
   }
 
@@ -387,6 +427,8 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.customIOTypes.length) {
       this.isAddEnable = false;
     }
+
+    this.changeDetectorRef.markForCheck();
   }
 
   /**

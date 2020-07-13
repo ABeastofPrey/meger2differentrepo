@@ -15,8 +15,8 @@
 								[(ngModel)]="leftSelected.key"
 								(selectionChange)="onViewSelectionChange('left')"
 							>
-								<mat-option *ngFor="let option of ioOptions" [value]="option.key">
-									{{ option.value }}
+								<mat-option *ngFor="let option of ioOptions" [value]="option?.key">
+									{{ option?.value }}
 								</mat-option>
 							</mat-select>
 						</mat-form-field>
@@ -42,39 +42,39 @@
 						<mat-table [dataSource]="leftDataSource" class="io-table" matSort>
 							<ng-container matColumnDef="{{ IoTableColumnReference.Port }}">
 								<mat-header-cell *matHeaderCellDef mat-sort-header>
-									{{ leftRadioOptions.value }}
+									{{ leftRadioOptions?.value }}
 								</mat-header-cell>
 								<mat-cell *matCellDef="let element">
-									{{ element.port }}
+									{{ element?.port }}
 								</mat-cell>
 							</ng-container>
 
-							<ng-container matColumnDef="{{ IoTableColumnReference.Value }}">
+							<ng-container matColumnDef="{{ IoTableColumnReference?.Value }}">
 								<mat-header-cell *matHeaderCellDef mat-sort-header>
-									<span *ngIf="leftRadioOptions.key === IoFormatOptionsReference.Bit">
+									<span *ngIf="leftRadioOptions?.key === IoFormatOptionsReference?.Bit">
 										{{ 'io.status' | translate }}
 									</span>
-									<span *ngIf="leftRadioOptions.key !== IoFormatOptionsReference.Bit">
+									<span *ngIf="leftRadioOptions?.key !== IoFormatOptionsReference?.Bit">
 										{{ 'io.value' | translate }}
 									</span>
 								</mat-header-cell>
-								<ng-container *ngIf="leftRadioOptions.key === IoFormatOptionsReference.Bit">
+								<ng-container *ngIf="leftRadioOptions?.key === IoFormatOptionsReference?.Bit">
 									<mat-cell color="primary" *matCellDef="let element">
 										<io-button
-											[status]="element.value === '1'"
-											(click)="onClickRadioButtonInIO(element.port, 'left')"
-											[disabled]="login.isViewer"
+											[status]="element?.value === '1'"
+											(click)="onClickRadioButtonInIO(element?.port, 'left')"
+											[disabled]="login?.isViewer"
 										></io-button>
 									</mat-cell>
 								</ng-container>
-								<ng-container *ngIf="leftRadioOptions.key !== IoFormatOptionsReference.Bit">
+								<ng-container *ngIf="leftRadioOptions?.key !== IoFormatOptionsReference?.Bit">
 									<mat-cell color="primary" *matCellDef="let element">
 										{{ element.value }}
 									</mat-cell>
 								</ng-container>
 							</ng-container>
 
-							<ng-container matColumnDef="{{ IoTableColumnReference.Label }}">
+							<ng-container matColumnDef="{{ IoTableColumnReference?.Label }}">
 								<mat-header-cell *matHeaderCellDef mat-sort-header>
 									{{ 'io.label' | translate }}
 								</mat-header-cell>
@@ -122,7 +122,7 @@
 
 					<div class="table-container">
 						<mat-table [dataSource]="rightDataSource" class="io-table" matSort>
-							<ng-container matColumnDef="{{ IoTableColumnReference.Port }}">
+							<ng-container matColumnDef="{{ IoTableColumnReference?.Port }}">
 								<mat-header-cell *matHeaderCellDef mat-sort-header>
 									{{ rightRadioOptions.value }}
 								</mat-header-cell>
@@ -131,7 +131,7 @@
 								</mat-cell>
 							</ng-container>
 
-							<ng-container matColumnDef="{{ IoTableColumnReference.Value }}">
+							<ng-container matColumnDef="{{ IoTableColumnReference?.Value }}">
 								<mat-header-cell *matHeaderCellDef mat-sort-header>
 									<span *ngIf="rightRadioOptions.key === IoFormatOptionsReference.Bit">
 										{{ 'io.status' | translate }}
@@ -140,18 +140,18 @@
 										{{ 'io.value' | translate }}
 									</span>
 								</mat-header-cell>
-								<ng-container *ngIf="rightRadioOptions.key === IoFormatOptionsReference.Bit">
+								<ng-container *ngIf="rightRadioOptions?.key === IoFormatOptionsReference?.Bit">
 									<mat-cell color="primary" *matCellDef="let element">
 										<io-button
-											[status]="element.value === '1'"
-											(click)="onClickRadioButtonInIO(element.port, 'right')"
-											[disabled]="login.isViewer"
+											[status]="element?.value === '1'"
+											(click)="onClickRadioButtonInIO(element?.port, 'right')"
+											[disabled]="login?.isViewer"
 										></io-button>
 									</mat-cell>
 								</ng-container>
-								<ng-container *ngIf="rightRadioOptions.key !== IoFormatOptionsReference.Bit">
+								<ng-container *ngIf="rightRadioOptions?.key !== IoFormatOptionsReference?.Bit">
 									<mat-cell color="primary" *matCellDef="let element">
-										{{ element.value }}
+										{{ element?.value }}
 									</mat-cell>
 								</ng-container>
 							</ng-container>
@@ -161,7 +161,7 @@
 									{{ 'io.label' | translate }}
 								</mat-header-cell>
 								<mat-cell *matCellDef="let element">
-									{{ element.label }}
+									{{ element?.label }}
 								</mat-cell>
 							</ng-container>
 							<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
@@ -178,9 +178,9 @@
 		</mat-tab>
 		<mat-tab *ngFor="let tab of tabs; let index = index" class="content" #customIOTab>
 			<ng-template mat-tab-label>
-				<input *ngIf="!customIOTab.isActive" matInput [(ngModel)]="customViewFormControl[index].value" />
+				<input *ngIf="!customIOTab?.isActive" matInput [(ngModel)]="customViewFormControl[index].value" />
 				<input
-					*ngIf="customIOTab.isActive"
+					*ngIf="customIOTab?.isActive"
 					matInput
 					placeholder=""
 					[(ngModel)]="customViewFormControl[index].value"
@@ -196,8 +196,8 @@
 					{{ 'io.invalidName' | translate }}
 				</mat-error>
 			</ng-template>
-			<app-custom-io *ngIf="customIOTab.isActive" [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
-			<app-custom-io *ngIf="!customIOTab.isActive" [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
+			<app-custom-io *ngIf="customIOTab?.isActive" [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
+			<app-custom-io *ngIf="!customIOTab?.isActive" [tableIndex]="calculateCustomIoTabIndex(index + 1)"></app-custom-io>
 		</mat-tab>
 	</mat-tab-group>
 
@@ -205,7 +205,7 @@
 		<button
 			mat-button
 			class="custombutton mat-button-no-hover-background"
-			[disabled]="tabs.length >= 3"
+			[disabled]="tabs?.length >= 3"
 			(click)="addCustomTab()"
 			disableRipple="true"
 		>
@@ -215,7 +215,7 @@
 		<button
 			mat-button
 			class="custom-button mat-button-no-hover-background"
-			[disabled]="tabs.length === 0 || customTabDeleteIndex === 0"
+			[disabled]="tabs?.length === 0 || customTabDeleteIndex === 0"
 			(click)="deleteCustomTab()"
 			disableRipple="true"
 		>

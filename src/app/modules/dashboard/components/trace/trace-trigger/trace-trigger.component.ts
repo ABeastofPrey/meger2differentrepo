@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 // import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TraceService } from '../../../services/trace.service';
 import { isEmptyString, isNotUndefined } from 'ramda-adjunct';
@@ -28,7 +28,7 @@ export class TraceTriggerComponent implements OnInit {
     public todoItems: Item[] = [];
     public doneItems: Item[] = [];
 
-    constructor(private service: TraceService) { }
+    constructor(private service: TraceService, private changeDetectorRef: ChangeDetectorRef) { }
 
     ngOnInit(): void {
         this.service.getSelectedTraceName().subscribe(trace => {
@@ -98,6 +98,14 @@ export class TraceTriggerComponent implements OnInit {
                 turnOn: x.turnOn,
                 disabled: true,
             }));
+            this.changeDetectorRef.detectChanges();
         });
+    }
+
+    ngOnDestroy(): void {
+        const elements: HTMLCollectionOf<Element> = document.getElementsByTagName("app-trace-trigger");
+        for(let i=0;i<elements.length;i++){
+            elements[i].parentNode.removeChild(elements[i]);
+        }
     }
 }

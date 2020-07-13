@@ -36,6 +36,8 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 declare var ace;
 
+const isBKGFile = (fileName: string): boolean => fileName.split('.').pop().toUpperCase() === 'BKG';
+
 @Component({
   selector: 'program-editor-ace',
   templateUrl: './program-editor-ace.component.html',
@@ -146,8 +148,9 @@ export class ProgramEditorAceComponent implements OnInit {
           const app = fileName.substring(0, fileName.indexOf('.'));
           const prjAndApp =
             '"' + this.prj.currProject.value.name + '","' + app + '"';
+          const api = isBKGFile(this.service.activeFile) ? `?BKG_getAppBreakpointsList(${prjAndApp})` : `?TP_GET_APP_BREAKPOINTS_LIST(${prjAndApp})`;
           this.ws
-            .query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')')
+            .query(api)
             .then((ret: MCQueryResponse) => {
               this.setBreakpoints(ret.result);
             });
@@ -201,8 +204,9 @@ export class ProgramEditorAceComponent implements OnInit {
           const app = fileName.substring(0, fileName.indexOf('.'));
           const prjAndApp =
             '"' + this.prj.currProject.value.name + '","' + app + '"';
+          const api = isBKGFile(this.service.activeFile) ? `?BKG_getAppBreakpointsList(${prjAndApp})` : `?TP_GET_APP_BREAKPOINTS_LIST(${prjAndApp})`;
           this.ws
-            .query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')')
+            .query(api)
             .then((ret: MCQueryResponse) => {
               this.setBreakpoints(ret.result);
             });
@@ -514,25 +518,26 @@ export class ProgramEditorAceComponent implements OnInit {
         );
         const prjAndApp =
           '"' + this.prj.currProject.value.name + '","' + app + '"';
+        const api = isBKGFile(this.service.activeFile) ?
+                    `?BKG_getAppBreakpointsList(${prjAndApp})` : 
+                    `?TP_GET_APP_BREAKPOINTS_LIST(${prjAndApp})`;
+        
         let changedFlag = false;
         e.stop();
         const line = e.getDocumentPosition().row;
         const bpts = Object.keys(this.editor.getSession().getBreakpoints());
+        const cmd = isBKGFile(this.service.activeFile) ? 
+                    `?BKG_toggleAppBreakpoint(${prjAndApp},${line + 1})` :
+                    `?TP_TOGGLE_APP_BREAKPOINT(${prjAndApp},${line + 1})`;
         for (let i = 0; i < bpts.length && !changedFlag; i++) {
           if (line === bpts[i]) {
             changedFlag = true;
             this.ws
-              .query(
-                '?TP_TOGGLE_APP_BREAKPOINT(' +
-                  prjAndApp +
-                  ',' +
-                  (line + 1) +
-                  ')'
-              )
+              .query(cmd)
               .then((ret: MCQueryResponse) => {
                 if (ret.err) return;
                 this.ws
-                  .query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')')
+                  .query(api)
                   .then((ret: MCQueryResponse) => {
                     this.setBreakpoints(ret.result);
                   });
@@ -541,13 +546,11 @@ export class ProgramEditorAceComponent implements OnInit {
         }
         if (!changedFlag) {
           this.ws
-            .query(
-              '?TP_TOGGLE_APP_BREAKPOINT(' + prjAndApp + ',' + (line + 1) + ')'
-            )
+            .query(cmd)
             .then((ret: MCQueryResponse) => {
               if (ret.err) return;
               this.ws
-                .query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')')
+                .query(api)
                 .then((ret: MCQueryResponse) => {
                   this.setBreakpoints(ret.result);
                 });
@@ -673,8 +676,10 @@ export class ProgramEditorAceComponent implements OnInit {
       );
       const prjAndApp =
         '"' + this.prj.currProject.value.name + '","' + app + '"';
+      const api = isBKGFile(this.service.activeFile) ? `?BKG_getAppBreakpointsList(${prjAndApp})` : `?TP_GET_APP_BREAKPOINTS_LIST(${prjAndApp})`;
+      
       this.ws
-        .query('?TP_GET_APP_BREAKPOINTS_LIST(' + prjAndApp + ')')
+        .query(api)
         .then((ret: MCQueryResponse) => {
           this.setBreakpoints(ret.result);
         });

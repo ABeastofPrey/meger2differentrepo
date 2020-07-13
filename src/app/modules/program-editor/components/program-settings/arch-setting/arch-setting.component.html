@@ -12,7 +12,7 @@
 			{{ 'projectSettings.arch.departZCol' | translate }}
 		</mat-header-cell>
 		<mat-cell *matCellDef="let element">
-			<mat-form-field>
+			<!-- <mat-form-field>
 				<input
 					matInput
 					
@@ -22,9 +22,18 @@
 					(keyup)="onKeyup($event)"
 					virtualKeyboard
 					ktype="numeric"
-					(onKeyboardClose)="onBlur($event, element.index, element.depart, 1)"
+                    (onKeyboardClose)="onBlur($event, element.index, element.depart, 1)"
 				/>
-			</mat-form-field>
+            </mat-form-field>  -->
+            <cs-number-input 
+                type="float" 
+                [required]="true"
+                [min]="0"
+				[leftClosedInterval]=true 
+				[(value)]="element.depart"
+                (pressEnterEvent)="onBlur({target:{value:$event}}, element.index, element.depart, 1)"
+				(blurEvent)="onBlur({target:{value:$event}}, element.index, element.depart, 1)">
+            </cs-number-input>
 		</mat-cell>
 	</ng-container>
 	<!-- Approach Column -->
@@ -33,7 +42,7 @@
 			{{ 'projectSettings.arch.approachZCol' | translate }}
 		</mat-header-cell>
 		<mat-cell *matCellDef="let element">
-			<mat-form-field>
+			<!-- <mat-form-field>
 				<input
 					matInput
 					
@@ -45,7 +54,17 @@
 					ktype="numeric"
 					(onKeyboardClose)="onBlur($event, element.index, element.approach, 2)"
 				/>
-			</mat-form-field>
+            </mat-form-field> -->
+            <cs-number-input 
+                type="float" 
+                [required]="true"
+                [min]="0"
+                [leftClosedInterval]=true 
+                [value]="element.approach"  
+                (valueChange)="element.approach = $event" 
+                (pressEnterEvent)="onBlur({target:{value:$event}}, element.index, element.approach, 2)"
+                (blurEvent)="onBlur({target:{value:$event}}, element.index, element.approach, 2)" >
+            </cs-number-input>
 		</mat-cell>
 	</ng-container>
 

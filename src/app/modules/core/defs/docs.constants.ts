@@ -1,5 +1,5 @@
 export const DOCS = {
-  types: ['long','double','string','element','position','object','other','location','number'],
+  types: ['long','double','string','element','position','object','other','location','number','int'],
   ac_objects: ['sys'],
   keywords: [
     {name: 'long', meta: 'Variable Type'},
@@ -700,6 +700,12 @@ export const DOCS = {
       range: '0.1 - 100'
     },
     {
+      name: 'ArchNo',
+      desc: 'ArchNo.',
+      type: 9,
+      range: '[1,7]'
+    },
+    {
       name: 'AttachedTo',
       desc: `Returns name of an attached task to the given element.\n\n<b>Note</b> - If a group is not attached but the axes belonging to it are, the list of active axes and their tasks is returned. If the element is not attached to any program, an empty string is returned.`,
       type: 2,
@@ -918,6 +924,12 @@ export const DOCS = {
       type: 1,
       range: `0.1 - 100`
     },
+    {
+        name: 'Limz',
+        desc: 'Limz.',
+        type: 8,
+        range: '[-300,10]'
+      },
     {
       name: 'Motion',
       desc: `The MOTION value must be 1 (ON) for any motion command to be executed successfully. In addition, the status of MOTION is terminated by the servo interrupt. If MOTION switches to 0 (OFF), any motion currently in progress is aborted and any motion in the motion buffers is flushed. The drive can be enabled if MOTION is off.
@@ -1176,6 +1188,44 @@ export const DOCS = {
 				optionalType: 2, // will use optionals[2] 
 				desc: 'Issues a circular (arc) path trajectory, with a circle point and the final point of the arc.'
 			}
+    ],
+    jump:[
+        {
+            syntax:	'Jump [element] [position]',
+            optionalType: 8, 
+            desc:'Jump to the target position with specified element'
+        },
+        {
+            syntax:	'Jump [position]',
+            optionalType: 8, 
+            desc: 'Jump to the target position'
+        }
+    ],
+        
+    jump3:[
+        {
+            syntax: 'Jump3 [element] AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
+            optionalType: 9,
+            desc: 'Jump to the target position depends on Ascending Point and Descending Point with specified element'
+        },
+        {
+            syntax: 'Jump3 AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
+            optionalType: 9,
+            desc: 'Jump to the target position depends on Ascending Point and Descending Point'
+        }
+    ],
+        
+    jump3cp:[
+        {
+            syntax: 'Jump3cp [element] AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
+            optionalType: 10,
+            desc: 'Jump to the target position depends on Ascending Point and Descending Point with specified element'
+        },
+        {
+            syntax: 'Jump3cp AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
+            optionalType: 10,
+            desc: 'Jump to the target position depends on Ascending Point and Descending Point'
+        },
     ],
     detach: [ 
 			{
@@ -1970,6 +2020,22 @@ export const DOCS = {
     { // used in STARTTASK and STARTTASK$
       priority: { type: 0, desc: `Priority level`},
       numberOfLoops: { type: 0, desc: `A task can be started and specified to run for a number of execution loops, then stop.`}
+    },
+    {
+        ArchNo:{type: 9,desc:'interge [1,7] , Select the depart length and approach length.'},
+        Limz:{type: 8, desc: 'Limz [-300,10],Defines the limit of z direction.'},
+        Vscale:{type: 8,desc: 'Defines the translation velocity of the robot.'},
+        Ascale:{type: 8,desc: 'Defines the translation acceleration of the robot.'}
+    },
+    {
+        ArchNo:{type: 9,desc:'interge [1,7] , Select the depart length and approach length.'},
+        VTran:{type: 8,desc: 'Defines the translation velocity of the robot.'},
+        Ascale:{type: 8,desc: 'Defines the translation acceleration of the robot.'}
+    },
+    {
+        ArchNo:{type: 9,desc:'interge [1,7] , Select the depart length and approach length.'},
+        VTran:{type: 8,desc: 'Defines the translation velocity of the robot.'},
+        Ascale:{type: 8,desc: 'Defines the translation acceleration of the robot.'}
     }
 	]
 };

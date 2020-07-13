@@ -62,9 +62,9 @@
             </mat-card>
             <mat-accordion>
                 <ng-container *ngFor="let item of visiableLogs">
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <app-log-profile [log]="item" [ngStyle]="{'width': '100%'}"></app-log-profile>
+                    <mat-expansion-panel #thePanel>
+                        <mat-expansion-panel-header expandedHeight="auto">
+                            <app-log-profile [log]="item" [ngStyle]="{'width': '100%'}" [expanded]="thePanel.expanded"></app-log-profile>
                         </mat-expansion-panel-header><br />
                         <app-log-details [log]="item"></app-log-details>
                     </mat-expansion-panel>

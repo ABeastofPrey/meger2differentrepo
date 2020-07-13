@@ -14,7 +14,7 @@ import { ToolCalibrationResultDialogComponent } from '../tool-calibration-result
 @Component({
   selector: 'app-tool-calibration-dialog',
   templateUrl: './tool-calibration-dialog.component.html',
-  styleUrls: ['./tool-calibration-dialog.component.css'],
+  styleUrls: ['./tool-calibration-dialog.component.scss'],
 })
 export class ToolCalibrationDialogComponent implements OnInit {
   varName: string;

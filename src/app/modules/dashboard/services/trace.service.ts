@@ -159,6 +159,14 @@ export class TraceService {
         );
     }
 
+    public hasSelectedTrigger(selectedTrace: string): Observable<boolean> {
+        const api = `?TRACE_getSelectedList("${selectedTrace}", "TRIGGER")`;
+        return this.ws.simpleQuery(api).pipe(
+            rxjsMap((res: string) => res !== '[]'),
+            catchError(() => of(false))
+        );
+    }
+
     public selectOne(trace, tab: 'TRIGGER' | 'CHANNEL', moduleName, variable, turnOn: 0 | 1 | 2 | 3 | 4): Observable<boolean> {
         const api = `TRACE_addTraceItem("${trace}", "${tab}", "${moduleName}", "${variable}", ${turnOn})`;
         return this.ws.observableQuery(api).pipe(

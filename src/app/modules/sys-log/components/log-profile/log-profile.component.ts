@@ -8,13 +8,10 @@ import { FwTranslatorService } from '../../../core/services/fw-translator.servic
     styleUrls: ['./log-profile.component.scss']
 })
 export class LogProfileComponent implements OnInit {
-    @Input()log: SystemLog;
+    @Input() log: SystemLog;
+    @Input() expanded: boolean = false;
 
-    public getTooltip(key: string, par: string = ''): string {
-        return key + ' ' + par;
-    }
-
-    constructor(public trn: FwTranslatorService) { }
+        constructor(public trn: FwTranslatorService) { }
 
     ngOnInit(): void { }
 }

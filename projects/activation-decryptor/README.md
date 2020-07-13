@@ -1,0 +1,1 @@
+This is just a simple project to provide decrypt algorithm script to get captcha of activation qr code for tester to do automation test.

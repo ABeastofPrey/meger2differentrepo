@@ -57,7 +57,7 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     this.previousValue = (event.target as HTMLInputElement).value;
   }
 
-  async onBlur(
+  public async onBlur(
     event: FocusEvent | { target: { value: string | number }},
     index: string,
     changedValue: string,

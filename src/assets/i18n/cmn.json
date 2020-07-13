@@ -29,6 +29,7 @@
         "toolbar_expand": "打开工具栏"
     },
     "apps": {
+        "cabinet_update": "控制柜更新工具",
         "err_mcu": "错误：无法更新MCU固件",
         "firmware": "更新固件",
         "firmware_confirm": {
@@ -66,6 +67,12 @@
     "back": "返回",
     "base": "基坐标",
     "bases": "基坐标组",
+    "before_nav_dialog": {
+        "title": "修改未保存",
+        "msg": "当前页面有未保存数据. 如果此时离开, 修改将不被保存. 确定要离开当前页面?",
+        "yes": "放弃修改",
+        "no": "取消"
+    },
     "binary": "二进制",
     "blending": {
         "continous": "连续路径",
@@ -75,6 +82,7 @@
         "superPosition": "叠加"
     },
     "button": {
+        "abort": "关于",
         "add": "添加",
         "back": "返回",
         "calibrate": "校准",
@@ -104,6 +112,7 @@
         "rename": "重命名",
         "restore": "重置",
         "save": "保存",
+        "select_file": "选择文件...",
         "send": "发送",
         "set_current": "设为当前",
         "teach": "示教",
@@ -125,6 +134,10 @@
     "cartesian": "笛卡尔坐标系",
     "changeError": "检测出报错，未保存当前修改",
     "changeOK": "修改已保存",
+    "channel": {
+        "tab_name": "通道配置",
+        "instance": "实例"
+    },
     "checkbox_enable": "允许选择",
     "circleCenter": "圆心",
     "circlePoint": "原点",
@@ -159,12 +172,14 @@
             "title": "添加轴/组控制板"
         },
         "new-param": {
+            "err_slider": "最小值必须小于最大值",
             "title": "监控一个新的参数"
         },
         "record": {
             "btnStart": "开始记录",
             "buttons": {
                 "compare": "比对...",
+                "compare_same": "比较 (图表)...",
                 "derivative": "模拟...",
                 "downloadCSV": "下载CSV文件",
                 "downloadRec": "下载REC文件"
@@ -323,9 +338,15 @@
         "invalid_username": "用户名必须包括字母，数字或下划线",
         "invalid_username2": "该用户名已保存",
         "invalid_rec_motion": "该运动记录文件无效",
+        "invalid_var_name": "必须以字面开头，仅包含字母、数字或_，且不超过32个字符",
         "invalid_webserver": "使用web服务器v{{ver}} (当前是{{current}})",
         "mismatch_pass": "密码不匹配先前字段",
-        "orientation": "ControlStudio+ 仅在Landscape模式下工作",
+        "not_enough_space": "设备空间不足",
+        "orientation": "ControlStudio+ 仅能横向显示",
+        "space": {
+            "msg": "softMC控制器磁盘剩余空间不足50MB。建议删除文件释放空间。磁盘空间不足的情况下系统无法正常工作。",
+            "title": "磁盘剩余空间不足"
+        },
         "tp": "无法加载TP库，详细信息请查看打印日志...",
         "tp_tablet": "无法找到tp库，请重新启动控制器再次尝试。"
     },
@@ -339,6 +360,7 @@
         "backup": "创建备份",
         "confirm_delete": "已选中文件将被永久删除。",
         "confirm_upload": "注意: 已选中文件将覆盖已存在文件。",
+        "content": "文件内容",
         "delete": "删除文件",
         "dir_name": "文件夹名称",
         "download": "下载文件",
@@ -349,8 +371,10 @@
         "ext": "后缀名",
         "modified": "上次修改",
         "name": "文件名称",
+        "names": "文件名称",
         "no_file": "文件未选中",
         "open": "打开文件",
+        "search_in": "搜索",
         "success_delete": "成功删除所有文件。",
         "success_upload": "成功上传所有文件。",
         "tree": "控制柜文件",
@@ -422,8 +446,17 @@
         "pay_item": "有效负载值",
         "set": "设置抓手",
         "sleep": "睡眠时间",
+        "status1": "输出状态",
+        "status2": "打开状态",
         "test": "测试抓手",
         "use_tool": "使用工具"
+    },
+    "gui": {
+        "dark": "使用深色模式",
+        "theme": {
+            "title": "主题",
+            "subtitle": "修改ControlStudio+的外观"
+        }
     },
     "hello": "你好",
     "help": {
@@ -626,6 +659,9 @@
         "user_edit": "编辑用户",
         "user_new": "创建新用户"
     },
+    "login": {
+        "mc_offline": "等待softMC连接"
+    },
     "long": "长整形",
     "longs": "长整形",
     "main": {
@@ -742,6 +778,7 @@
     "payloads": {
         "advanced": "高级模式",
         "btn_create": "创建负载",
+        "btn_reset": "复位负载",
         "current": "当前负载",
         "delete_title": "删除负载{{name}}?",
         "delete_msg": "该操作不能被撤销",
@@ -769,55 +806,6 @@
         "relative_pos": "振幅",
         "start_pos": "初始位置",
         "time": "持续时间"
-    },
-    "vision": {
-        "templateConfigTab": "模板配置",
-        "calibrationTab": "校准",
-        "templateConfig": {
-            "edit": "编辑",
-            "delete": "删除",
-            "ip": "ip地址",
-            "port": "端口号",
-            "terminator": "终端",
-            "encoding": "编码形式",
-            "createStationTitle": "创建新的视觉工作站",
-            "createStationPlacehold": "站点名称",
-            "createTemplateTitle": "创建工作模板",
-            "createTemplatePlacehold": "工作模板",
-            "createTemplateDialog": "打开配置视图",
-            "createRequired": "名称必填",
-            "createLetter": "必须以首字母开头",
-            "ipRequired": "IP地址必填",
-            "ipValid": "IP地址有误",
-            "dialogStationTitle": "删除站点 {{titlePara}}",
-            "dialogTitle": "删除模板{{titlePara}}",
-            "dialogMsg": "当前的模板信息将会全部删除。",
-            "list_max": "最多添加 {{max}} 列表",
-            "deleteStation": "当前站点信息将会全部删除",
-            "nameExist": "名字已存在",
-            "newTemplate": "新建模板",
-            "jobTemplate": "选择模板"
-        },
-        "calibration": {
-            "station": "选择站点",
-            "title": "机器视觉标定",
-            "Save": "保存",
-            "Calibrate": "校准",
-            "Reset": "重置",
-            "Create": "创建",
-            "Delete": "删除",
-            "JobTemplate": "工作模板",
-            "ResponseData": "响应数据",
-            "ResponseError": "响应错误",
-            "ResponseStatus": "响应状态",
-            "elementName": "名字",
-            "type": "类型",
-            "calibrationError": "校准错误",
-            "Pixel_x": "像素X",
-            "Pixel_y": "像素Y",
-            "posX": "位置X",
-            "posY": "位置Y"
-        }
     },
     "projectCommands": {
         "call": {
@@ -876,6 +864,10 @@
         },
         "pallet_index": {
             "title": "设置托盘索引"
+        },
+        "proceed": {
+            "title": "插入执行命令",
+            "type": "执行类型"
         },
         "sleep": {
             "time": "睡眠时间",
@@ -1054,6 +1046,7 @@
             "import": "导入",
             "jtl": "跳转到行",
             "kill": "终止&卸载",
+            "kill_only": "终止",
             "lib": "库",
             "lib_create": "创建库",
             "lib_name": "库名称",
@@ -1107,6 +1100,7 @@
         "warning": "这将终止所有目前在运行的任务和库。"
     },
     "projectSettings": {
+        "ascale": "关节加速度",
         "apps": {
             "app_desc": "应用描述",
             "app_desc_none": "未找到应用描述",
@@ -1188,7 +1182,9 @@
             "savedTip": "修改已保存！",
             "validNumTip": "输入一个有效值。",
             "numRange": "输入值有效范围"
-        }
+        },
+        "vscale": "关节速度",
+        "vtran": "笛卡尔速度"
     },
     "projectTree": {
         "Apps": "应用",
@@ -1341,7 +1337,39 @@
         }
     },
     "safety": {
-        "ack_tooltip": "安全确认"
+        "ack_tooltip": "安全确认",
+        "buttons": {
+            "export": "导出...",
+            "import": "导入..."
+        },
+        "en_tooltip": "等待确认",
+        "password_change": {
+            "btn": "修改密码...",
+            "change": "修改密码",
+            "new": "新密码",
+            "old": "当前密码",
+            "title": "安全卡管理员密码修改"
+        },
+        "steps": {
+            "step1": {
+                "ini": "生成配置文件:",
+                "title": "安全配置"
+            },
+            "step2": {
+                "confirm": "确认密码",
+                "confirmed": "密码已确认",
+                "invalid": "进行下一步之前先确认密码。",
+                "title": "安全密码"
+            },
+            "step3": {
+                "confirm": "确认配置",
+                "ini_drive": "卡配置",
+                "ini_user": "你的配置",
+                "title": "验证",
+                "verifying": "验证配置..."
+            }
+        },
+        "title": "安全卡"
     },
     "select": "选择",
     "simulative": "模拟",
@@ -1460,16 +1488,10 @@
         "delete_trace_msg": "当前追踪的配置信息将会全部删除。",
         "trace_name_tip": "跟踪名称只允许字母、下划线、数字和最多32个字符。"
     },
-    "trigger": {
-        "tab_name": "触发"
-    },
-    "channel": {
-        "tab_name": "信道配置",
-        "instance": "轴"
-    },
     "teach": "示教",
     "teach_var": "示教{{name}}?",
     "terminal": "终端",
+    "terminal_restricted": "终端不开放给用户权限 \"{{user}}\"",
     "time_update": "softMC的日期和时间已同步",
     "tool": "工具",
     "tool_calib": {
@@ -1558,6 +1580,9 @@
             "content": "恭喜你的第一个基础程序刚运行完成！<p>需要知道更多有关信息请打开<b>HELP screen</b>（主菜单下方）。</p>"
         }
     ],
+    "trigger": {
+        "tab_name": "触发"
+    },
     "trivia": [
         "你可以点击主应用工具栏中的记录按钮记录机器人的动作",
         "你可以右击应用文件夹以在项目中添加新的应用",
@@ -1615,6 +1640,56 @@
         "errorDialogTitle": "失败!",
         "errorDialogMsg": "OS升级失败，请重装旧版本: ",
         "releaseNoteTitle": "ControlStudio+ 发布 Note"
+    },
+    "vision": {
+        "templateConfigTab": "模板配置",
+        "calibrationTab": "校准",
+        "templateConfig": {
+            "station": "选中工作站",
+            "edit": "编辑",
+            "delete": "删除",
+            "ip": "ip地址",
+            "port": "端口号",
+            "terminator": "终端",
+            "encoding": "编码形式",
+            "createStationTitle": "创建新的视觉工作站",
+            "createStationPlacehold": "站点名称",
+            "createTemplateTitle": "创建工作模板",
+            "createTemplatePlacehold": "工作模板",
+            "createTemplateDialog": "打开配置视图",
+            "createRequired": "名称必填",
+            "createLetter": "必须以首字母开头",
+            "ipRequired": "IP地址必填",
+            "ipValid": "IP地址有误",
+            "dialogStationTitle": "删除站点 {{titlePara}}",
+            "dialogTitle": "删除模板{{titlePara}}",
+            "dialogMsg": "当前的模板信息将会全部删除。",
+            "list_max": "最多添加 {{max}} 列表",
+            "deleteStation": "当前站点信息将会全部删除",
+            "nameExist": "名字已存在",
+            "newTemplate": "新建模板",
+            "jobTemplate": "选择模板"
+        },
+        "calibration": {
+            "station": "选择站点",
+            "title": "机器视觉标定",
+            "Save": "保存",
+            "Calibrate": "校准",
+            "Reset": "重置",
+            "Create": "创建",
+            "Delete": "删除",
+            "JobTemplate": "工作模板",
+            "ResponseData": "响应数据",
+            "ResponseError": "响应错误",
+            "ResponseStatus": "响应状态",
+            "elementName": "名字",
+            "type": "类型",
+            "calibrationError": "校准错误",
+            "Pixel_x": "像素X",
+            "Pixel_y": "像素Y",
+            "posX": "位置X",
+            "posY": "位置Y"
+        }
     },
     "watch": {
         "context": "上下文",

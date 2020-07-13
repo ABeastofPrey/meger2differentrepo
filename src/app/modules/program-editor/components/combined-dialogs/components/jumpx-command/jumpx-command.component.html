@@ -124,13 +124,16 @@
                     <input matInput type="text"
                         placeholder="{{'projectCommands.jumpx.arch' | translate}}" 
                         [formControlName]="CommandOptions.ArchNo"
+                        autocomplete="off"
+                        [formGroup]="form"
+                        numberInput="int"
                         (blur)="updateStore(CommandOptions.ArchNo, $event.target.value)">
                     <mat-error *ngIf="model">
                         {{'projectCommands.jumpx.intRange' | translate: {range: '['+model[CommandOptions.ArchNoLimit]+']'} }}
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasLimZ">
-                    <input matInput type="text"
+                    <input matInput type="text" [formGroup]="form" numberInput="float"
                         placeholder="{{'projectCommands.jumpx.limZ' | translate}} [mm]"
                         [formControlName]="CommandOptions.LimZ"
                         (blur)="updateStore(CommandOptions.LimZ, $event.target.value)">
@@ -139,7 +142,7 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasBlendingPercentage">
-                    <input matInput type="text"
+                    <input matInput type="text" [formGroup]="form" numberInput="float"
                         placeholder="{{'projectCommands.jumpx.blending' | translate}}"
                         [formControlName]="CommandOptions.BlendingPercentage"
                         (blur)="updateStore(CommandOptions.ArchNo, $event.target.value)">
@@ -149,7 +152,7 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasVcruise">
-                    <input matInput type="text"
+                    <input matInput type="text" [formGroup]="form" numberInput="float"
                         placeholder="{{'projectCommands.jumpx.vscale' | translate}} [%]"
                         [formControlName]="CommandOptions.VScale"
                         virtualKeyboard
@@ -160,7 +163,7 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasVtran">
-                    <input matInput type="text"
+                    <input matInput type="text" [formGroup]="form" numberInput="float"
                         placeholder="{{'projectCommands.jumpx.vtran' | translate}} [mm/s]"
                         [formControlName]="CommandOptions.Vtran"
                         (blur)="updateStore(CommandOptions.Vtran, $event.target.value)">
@@ -169,7 +172,7 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="commandOptionAuth.hasAcc">
-                    <input matInput type="text"
+                    <input matInput type="text" [formGroup]="form" numberInput="float"
                         placeholder="{{'projectCommands.jumpx.acc' | translate}} [%]"
                         [formControlName]="CommandOptions.Acc"
                         (blur)="updateStore(CommandOptions.Acc, $event.target.value)">

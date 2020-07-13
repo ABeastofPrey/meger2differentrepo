@@ -6,6 +6,8 @@ import {
   ViewChildren,
   AfterViewInit,
   QueryList,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   MatSort,
@@ -31,6 +33,7 @@ import { LoginService } from '../../../core';
   selector: 'app-io',
   templateUrl: './io.component.html',
   styleUrls: ['./io.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 /**
@@ -163,7 +166,8 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
     private ioService: IoService,
     private dialog: MatDialog,
     public login: LoginService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.trn.get(['io']).subscribe(words => {
       this.words = words['io'];
@@ -213,12 +217,13 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    clearInterval(this.refreshInterval);
+    this.refreshInterval && clearInterval(this.refreshInterval);
   }
 
   ngAfterViewInit() {
     this.onViewSelectionChange('all');
     this.customTabDeleteIndex = 0;
+    this.refreshInterval && clearInterval(this.refreshInterval);
     this.refreshInterval = setInterval(() => {
       if (this.standardIOTab.isActive) {
         this.onViewSelectionChange('all');
@@ -255,9 +260,9 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ioService.setCustomTabName(this.customTabAddIndex, tabName);
     this.customEmptyIndex[this.customTabAddIndex - 1] = 1;
 
-    setTimeout(() => {
-      this.selected.setValue(this.customTabAddIndex - 1);
-    }, 0);
+    // setTimeout(() => {
+    //   this.selected.setValue(this.customTabAddIndex - 1);
+    // }, 0);
     setTimeout(() => {
       this.selected.setValue(this.customTabAddIndex);
     }, 0);
@@ -432,7 +437,7 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
       item => item.tableIndex === selectedIndex
     );
     if (customIo) {
-      customIo.ngAfterViewInit();
+      customIo.queryCustomIOPorts();
     }
   }
 
@@ -453,6 +458,8 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ioService.queryIos(ioOption, formatOption, isHex).then(() => {
       dataSource.data = this.ioService.getIos();
       dataSource.sort = sort;
+      this.changeDetectorRef.markForCheck();
+      
     });
   }
 

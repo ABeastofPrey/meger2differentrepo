@@ -7,7 +7,7 @@
                     (selectionChange)="changeSelectedTrace($event)"
                     (openedChange)="addingNewTrace = false"
                     [disableOptionCentering]="true"
-                    [disabled]="(curTraceStatus !== TraceStatus.NOTREADY) || unknowTracing">
+                    [disabled]="disableEidt">
                     <div *ngFor="let trace of traceList | async" class="option-container">
                         <mat-option [value]="trace.name">
                             {{trace.name}}
@@ -34,7 +34,7 @@
                             }}
                         </span>
                         <ng-template #limitSpan>
-                            <span (click)="addTrace($event)" class="create-trace-option">
+                            <span (click)="$event.stopPropagation()" class="create-trace-option">
                                 {{'dashboard.trace.common.trace_limit' | translate:{ max:traceLimit } }}
                             </span>
                         </ng-template>
@@ -54,7 +54,7 @@
             [leftClosedInterval]="false"
             (blurEvent)="changeDuration()"
             (isValidEvent)="checkIsValid($event)"
-            [disabled]="(curTraceStatus !== TraceStatus.NOTREADY) || !selectedTrace || unknowTracing"
+            [disabled]="disableEidt || !selectedTrace"
             [(value)]="selectedTrace && selectedTrace.duration">
         </cs-number-input>
         <mat-form-field class="rate">
@@ -62,7 +62,7 @@
             <mat-select 
                 [disableOptionCentering]="true"
                 [(ngModel)]="selectedTrace && selectedTrace.rate" 
-                [disabled]="(curTraceStatus !== TraceStatus.NOTREADY) || !selectedTrace || unknowTracing"
+                [disabled]="disableEidt || !selectedTrace"
                 (selectionChange)="changeRate()">
                 <mat-option *ngFor="let rate of rateList | async" [value]="rate">
                     {{rate}}
@@ -105,7 +105,7 @@
         <button mat-raised-button
             color="primary"
             (click)="startTrigger()"
-            [disabled]="!selectedTrace || !isValid || (curTraceStatus !== TraceStatus.READY)">
+            [disabled]="!selectedTrace || !isValid || !hasSelectedTrigger || (curTraceStatus !== TraceStatus.READY)">
             {{'dashboard.trace.common.trigger' | translate}}
         </button>
     </div>

@@ -1,72 +1,70 @@
-<div class="mat-typography" style="margin: -24px;">
-	<div class="header mat-toolbar mat-primary mat-elevation-z3">
-		<div class="title">{{ ('calibrate' | translate) + ' ' + varName }}</div>
+
+<h2 mat-dialog-title class="mat-toolbar mat-primary mat-elevation-z3">
+	<div class="mat-inner-title" title="{{ ('calibrate' | translate) + ' ' + varName }}">{{ ('calibrate' | translate) + ' ' + varName }}</div>
 	<button mat-button class="close-btn" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
-	</div>
-	<div class="content">
-		<mat-radio-group [(ngModel)]="calibType" style="font-size: 1.5em;">
-			<mat-radio-button value="MULTIPLE_POINTS" style="margin-right: 1em;">{{
-				(isScara ? 'tool_calib.multi_scara' : 'tool_calib.multi') | translate
-			}}</mat-radio-button>
-			<mat-radio-button
-				value="SINGLE_POINT"
-				[ngClass]="{
-					'radio-button-invisible': isScara,
-					'radio-button-visible': !isScara
-				}"
-				>{{ 'tool_calib.single' | translate }}</mat-radio-button
-			>
-		</mat-radio-group>
-		<div class="inner-content--wrapper">
-			<div *ngIf="calibType === 'MULTIPLE_POINTS'">
-				<div class="points-container">
-					<span [class.good]="pointsAdded >= maxPoints" [class.bad]="pointsAdded < maxPoints">{{ pointsAdded }} </span
-					><span *ngIf="pointsAdded < maxPoints">/ {{ maxPoints }} </span>{{ 'tool_calib.pnts' | translate }}
-				</div>
-				<div class="points-button-container">
-					<button
-						mat-fab
-						color="primary"
-						(click)="addPoint()"
-						[disabled]="dataService.tools.length === 0 || pointsAdded >= 3"
-					>
-						<mat-icon>add</mat-icon>
-					</button>
-					<button
-						mat-fab
-						color="primary"
-						(click)="removePoint()"
-						[disabled]="dataService.tools.length === 0 || pointsAdded === 0"
-					>
-						<mat-icon>remove</mat-icon>
-					</button>
-					<button
-						mat-fab
-						color="primary"
-						(click)="clearCalibrationPoints()"
-						[disabled]="dataService.tools.length === 0 || pointsAdded === 0"
-					>
-						<mat-icon>delete</mat-icon>
-					</button>
-				</div>
-				<button
-					class="action"
-					mat-raised-button
-					color="primary"
-					[disabled]="pointsAdded < maxPoints"
-					(click)="calibrate(true)"
-				>
-					{{ 'tool_calib.calibrate_tool' | translate }}
-				</button>
+</h2>
+<mat-dialog-content>
+	<mat-radio-group [(ngModel)]="calibType" style="font-size: 1.5em;">
+		<mat-radio-button value="MULTIPLE_POINTS" style="margin-right: 1em;">{{
+			(isScara ? 'tool_calib.multi_scara' : 'tool_calib.multi') | translate
+		}}</mat-radio-button>
+		<mat-radio-button
+			value="SINGLE_POINT"
+			[ngClass]="{
+				'radio-button-invisible': isScara,
+				'radio-button-visible': !isScara
+			}"
+			>{{ 'tool_calib.single' | translate }}</mat-radio-button
+		>
+	</mat-radio-group>
+	<div class="inner-content--wrapper">
+		<div *ngIf="calibType === 'MULTIPLE_POINTS'">
+			<div class="points-container">
+				<span [class.good]="pointsAdded >= maxPoints" [class.bad]="pointsAdded < maxPoints">{{ pointsAdded }} </span
+				><span *ngIf="pointsAdded < maxPoints">/ {{ maxPoints }} </span>{{ 'tool_calib.pnts' | translate }}
 			</div>
-			<div *ngIf="calibType === 'SINGLE_POINT'">
-				<button class="action" mat-raised-button color="primary" (click)="calibrate(false)">
-					<span *ngIf="!singlePointStepTwo">{{ 'tool_calib.calibrate_wo_tool' | translate }}</span
-					><span *ngIf="singlePointStepTwo">{{ 'tool_calib.calibrate_w_tool' | translate }}</span>
+			<div class="points-button-container">
+				<button
+					mat-fab
+					color="primary"
+					(click)="addPoint()"
+					[disabled]="dataService.tools.length === 0 || pointsAdded >= 3"
+				>
+					<mat-icon>add</mat-icon>
+				</button>
+				<button
+					mat-fab
+					color="primary"
+					(click)="removePoint()"
+					[disabled]="dataService.tools.length === 0 || pointsAdded === 0"
+				>
+					<mat-icon>remove</mat-icon>
+				</button>
+				<button
+					mat-fab
+					color="primary"
+					(click)="clearCalibrationPoints()"
+					[disabled]="dataService.tools.length === 0 || pointsAdded === 0"
+				>
+					<mat-icon>delete</mat-icon>
 				</button>
 			</div>
 		</div>
 	</div>
-</div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+	<button
+	mat-raised-button
+	color="primary"
+	[disabled]="pointsAdded < maxPoints"
+	(click)="calibrate(true)">
+	{{ 'tool_calib.calibrate_tool' | translate }}
+</button>
+	<button *ngIf="calibType === 'SINGLE_POINT'" mat-raised-button color="primary" (click)="calibrate(false)">
+		<span *ngIf="!singlePointStepTwo">{{ 'tool_calib.calibrate_wo_tool' | translate }}</span
+		><span *ngIf="singlePointStepTwo">{{ 'tool_calib.calibrate_w_tool' | translate }}</span>
+	</button>
+</mat-dialog-actions>

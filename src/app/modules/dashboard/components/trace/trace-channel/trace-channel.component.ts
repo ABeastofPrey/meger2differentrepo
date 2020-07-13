@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 // import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TraceService } from '../../../services/trace.service';
 import { isEmptyString, isNotUndefined } from 'ramda-adjunct';
@@ -41,7 +41,7 @@ export class TraceChannelComponent implements OnInit {
     public todoItems: Item[] = [];
     public doneItems: Item[] = [];
 
-    constructor(private service: TraceService) { }
+    constructor(private service: TraceService, private changeDetectorRef: ChangeDetectorRef) { }
 
     ngOnInit(): void {
         this.service.getSelectedTraceName().subscribe(trace => {
@@ -125,6 +125,7 @@ export class TraceChannelComponent implements OnInit {
                 axis3Disabled: true,
                 axis4Disabled: true,
             }));
+            this.changeDetectorRef.detectChanges();
         });
     }
 }

@@ -113,6 +113,9 @@
 
             <mat-form-field *ngIf="commandOptionAuth.hasTimeout">
                 <input matInput [formControlName]="CommandOptions.Timeout"
+                    autocomplete="off"
+                    [formGroup]="form"
+                    numberInput="int"
                     placeholder="{{ 'projectCommands.visionCommand.timeoutPlaceHolder' | translate }} [ms]"
                     (blur)="updateStore(form.value)" [readonly]="!(selectedModel | async)">
                 <!-- <span matSuffix>ms</span> -->

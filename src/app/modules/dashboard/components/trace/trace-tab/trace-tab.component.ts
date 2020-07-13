@@ -7,7 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TraceTabComponent implements OnInit {
     
+    public canNotEdit: boolean = false;
+
     constructor() { }
 
     ngOnInit(): void { }
+
+    public isDisableEidtHandler(e): void {
+        this.canNotEdit = e;
+    }
 }

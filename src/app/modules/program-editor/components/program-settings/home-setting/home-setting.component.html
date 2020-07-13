@@ -8,6 +8,7 @@
 				<span matPrefix>J{{ i + 1 }}: &nbsp;</span>
 				<input
 					matInput
+					numberInput="float"
 					[(ngModel)]="p"
 					(focus)="onFocus($event.target.value)"
 					(blur)="updatePosition(i + 1, $event.target)"
@@ -15,7 +16,7 @@
 					ktype="numeric"
 					(onKeyboardClose)="updatePosition(i + 1, $event.target)"
 					(keyup)="onKeyup($event)"
-        />
+        	/>
         <span matSuffix>{{i == 2 ? "[mm]" : "[deg]"}}</span>
 			</mat-form-field>
 		</div>

@@ -4,14 +4,13 @@ import {
 } from '@angular/core';
 import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
 import { fromEvent, Subject } from 'rxjs';
-import { isNotNaN, isNotNumber, isUndefined, isNull } from 'ramda-adjunct';
-import { takeUntil } from 'rxjs/operators';
+import { isNotNumber, isUndefined, isNull } from 'ramda-adjunct';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 import { FormControl, Validators } from '@angular/forms';
 import { UtilsService } from '../../modules/core/services/utils.service';
+import { InputType, getValidNumberString, isFloat, isInt } from '../../directives/number.directive';
 
 export type Appearance = 'standard' | 'legacy' | 'legacy' | 'outline';
-
-export type InputType = 'int' | 'float';
 
 @Component({
     selector: 'cs-number-input',
@@ -42,7 +41,7 @@ export class NumberInputComponent implements OnInit, OnChanges, AfterViewInit, O
     @ViewChild('numInput', { static: true }) numInput: ElementRef<FromEventTarget<{ target: HTMLInputElement }>>;
 
     private stopSubscribe: Subject<void> = new Subject<null>();
-    
+
     public control: FormControl = new FormControl();
 
     constructor(private utils: UtilsService) { }
@@ -56,44 +55,17 @@ export class NumberInputComponent implements OnInit, OnChanges, AfterViewInit, O
     }
 
     ngAfterViewInit(): void {
-        const inputEvent = fromEvent<{ target: HTMLInputElement }>(this.numInput.nativeElement, 'input');
-        const bulrEvent = fromEvent<{ target: HTMLInputElement }>(this.numInput.nativeElement, 'blur');
-        const keyupEvent = fromEvent<{ target: HTMLInputElement }>(this.numInput.nativeElement, 'keyup');
-        inputEvent.pipe(takeUntil(this.stopSubscribe)).subscribe(input => {
-            const curStr = input.target.value.trim();
-            let validValue = null;
-            if (this.type.toLowerCase() === 'float') {
-                const [validStr] = curStr.match(/[-]?[0-9]*[\.]?[0-9]*/g);
-                const lastIsPoint = [...validStr].pop() === '.';
-                const floatNumver = parseFloat(validStr);
-                const finalNumber = lastIsPoint ? `${floatNumver}.` : floatNumver.toString();
-                const finalString = isNotNaN(floatNumver) ? finalNumber : '';
-                validValue = (validStr === '.' || validStr === '-') ? validStr : finalString;
-            } else if (this.type.toLowerCase() === 'int') {
-                const [validStr] = curStr.match(/[-]?[0-9]*/g);
-                const intNumber = parseInt(validStr);
-                const finalString = isNotNaN(intNumber) ? intNumber.toString() : '';
-                validValue = (validStr === '-') ? validStr : finalString;
-            }
-            this.control.setValue(validValue);
-            this.control.markAsTouched();
-            this.valueChange.emit(validValue);
-            this.isValidEvent.emit(this.control.valid);
-        });
+        fromEvent(this.numInput.nativeElement, 'input').pipe(
+            debounceTime(20), takeUntil(this.stopSubscribe)
+        ).subscribe(this.inputEventHandler.bind(this));
 
-        bulrEvent.pipe(takeUntil(this.stopSubscribe)).subscribe(() => {
-            this.control.markAsTouched();
-            this.blurEvent.emit(this.control.value);
-            this.isValidEvent.emit(this.control.valid);
-        });
+        fromEvent(this.numInput.nativeElement, 'blur').pipe(
+            takeUntil(this.stopSubscribe)
+        ).subscribe(this.blurEventHandler.bind(this));
 
-        keyupEvent.pipe(takeUntil(this.stopSubscribe)).subscribe((event: any) => {
-            const isNotPressEnter = event.keyCode !== 13;
-            if (isNotPressEnter) return;
-            this.control.markAsTouched();
-            this.pressEnterEvent.emit(this.control.value);
-            this.isValidEvent.emit(this.control.valid);
-        });
+        fromEvent(this.numInput.nativeElement, 'keyup').pipe(
+            takeUntil(this.stopSubscribe)
+        ).subscribe(this.keyupEventHandler.bind(this));
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -122,5 +94,42 @@ export class NumberInputComponent implements OnInit, OnChanges, AfterViewInit, O
     ngOnDestroy(): void {
         this.stopSubscribe.next();
         this.stopSubscribe.unsubscribe();
+    }
+
+    private blurEventHandler(): void {
+        if (isFloat(this.type)) {
+            const parsedVal = parseFloat(this.control.value);
+            if (parsedVal !== NaN && (Math.abs(parsedVal) === 0)) {
+                this.control.setValue('0');
+            }
+            if ([...this.control.value.toString()].pop() === '.') {
+                this.control.setValue(this.control.value.slice(0, -1));
+            }
+        }
+        if (isInt(this.type)) {
+            const parsedVal = parseInt(this.control.value);
+            if (parsedVal !== NaN && (Math.abs(parsedVal) === 0)) {
+                this.control.setValue('0');
+            }
+        }
+        this.control.markAsTouched();
+        this.blurEvent.emit(this.control.value);
+        this.isValidEvent.emit(this.control.valid);
+    }
+
+    private keyupEventHandler(event: any): void {
+        const isNotPressEnter = event.keyCode !== 13;
+        if (isNotPressEnter) return;
+        this.control.markAsTouched();
+        this.pressEnterEvent.emit(this.control.value);
+        this.isValidEvent.emit(this.control.valid);
+    }
+
+    private inputEventHandler({ target: { value } }): void {
+        const validValue = getValidNumberString(value, this.type);
+        this.control.setValue(validValue);
+        this.control.markAsTouched();
+        this.valueChange.emit(validValue);
+        this.isValidEvent.emit(this.control.valid);
     }
 }

@@ -1,18 +1,18 @@
-<div class="mat-typography">
-	<div class="header mat-toolbar mat-primary mat-elevation-z3">
-		<div class="title">{{ 'tool_calib.calibrate_result' | translate }} {{ toolName }}</div>
-	</div>
 
+<h2 mat-dialog-title class="mat-toolbar mat-primary mat-elevation-z3">
+	<div class="mat-inner-title">
+		{{ 'tool_calib.calibrate_result' | translate }} {{ toolName }}
+	</div>
+</h2>
+<mat-dialog-content>
 	<div class="tooltip">
-		<div class="tooltip-icon">
-			<mat-icon>help</mat-icon>
-		</div>
+		<mat-icon>help</mat-icon>
 		<div class="tooltip-text">
 			<pre>{{ 'tool_calib.isApplyDataToTool' | translate }} {{ toolName }}?</pre>
 		</div>
 	</div>
-	<div class="result-table">
-		<mat-table #resultTable [dataSource]="calibrationResultSource">
+
+	<mat-table #resultTable [dataSource]="calibrationResultSource">
 			<ng-container matColumnDef="{{ CalibrationTableColumnReference.Axis }}">
 				<mat-header-cell *matHeaderCellDef></mat-header-cell>
 				<ng-container>
@@ -59,17 +59,13 @@
 			<mat-row *matRowDef="let row; columns: resultDisplayedColumns; let i = index"></mat-row>
 		</mat-table>
 
-		<div>
-			<mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{'frames.calibration.set' | translate}}</mat-checkbox>
-		</div>
-
+	<div class="checkbox-container">
+		<mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{'frames.calibration.set' | translate}}</mat-checkbox>
 	</div>
 
-	<div class="warning center-vertical">
-		<div class="warning-icon">
-			<mat-icon>warning</mat-icon>
-		</div>
-		<div class="warning-text">
+	<div class="tooltip">
+	    <mat-icon>warning</mat-icon>
+		<div class="tooltip-text">
 			<ng-container *ngIf="!calibrationOutOfScope">
 				<pre>{{ 'tool_calib.calibrationSuccess' | translate }}</pre>
 			</ng-container>
@@ -78,12 +74,9 @@
 			</ng-container>
 		</div>
 	</div>
-	<div class="multiple-buttons">
-		<button mat-raised-button class="apply-button" color="primary" (click)="onApply()">
-			{{ 'button.apply' | translate }}
-		</button>
-		<button mat-raised-button class="cancel-button" color="primary" (click)="onCancel()">
-			{{ 'button.cancel' | translate }}
-		</button>
-	</div>
-</div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+	<button mat-raised-button  color="primary" (click)="onApply()">	{{ 'button.apply' | translate }}</button>
+	<button mat-raised-button color="primary" (click)="onCancel()">	{{ 'button.cancel' | translate }}</button>
+ </mat-dialog-actions>
