@@ -1778,7 +1778,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
             list = varList;
         }
         const v2 = list.find(v=>{
-            return v.name.toLowerCase() === parts[6] && v.shared === isShared;
+            return v.name.toLowerCase() === parts[6].toLowerCase() && v.shared === isShared;
         });
         if (v2) {
             error('Multiple definitions of the same variable', idx, 'error');

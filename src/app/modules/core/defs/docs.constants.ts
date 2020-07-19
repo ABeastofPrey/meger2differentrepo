@@ -700,6 +700,13 @@ export const DOCS = {
       range: '0.1 - 100'
     },
     {
+      name: 'AScale',
+      desc: `This property specifies percentage of desired acceleration and deceleration compared to maximal possible velocity for this type of movement. The motion generator attempts to reach this velocity during motion commands. The ability of the motion generator to reach this value is constrained by the value of ACCELERATION, DECELERATION, SMOOTHFACTOR and the final position. This properties used inside a motion command to override the permanent value.
+            Active only when VelocitySettings is set to 1.`,
+      type: 1,
+      range: '0.1 - 100'
+    },
+    {
       name: 'ArchNo',
       desc: 'ArchNo.',
       type: 9,
@@ -1289,24 +1296,6 @@ export const DOCS = {
 				syntax: 'MoveSKD [position]',
 				optionalType: 0, // will use optionals[0] 
 				desc: 'Kino-Dynamic Straight Line move command. Straight line moment that uses maximum available joint capabilities (VNAX,AMAX,JMAX).The path is a straight line from current position to the given target position.'
-			},
-    ],
-    nextitem: [ 
-			{
-				syntax: 'nextItem',
-				desc: `Command that moves the robot focus to the limits of the next-item in the trigger queue. Each tracked item defines a moving window that is relative to its trigger position. It is defined by UpMaster, DownMaster and trigger position values For the current master position value of master axis -  Pmaster( pcmd, pfb or pext) - the up & down limits of the current moving frame window will be:
-              <b>Lower Limit:</b> Pmaster > UpMaster+TriggerPosition
-              <b>Upper Limit:</b> Pmaster < DownMaster+TriggerPosition
-              When the master position exit the current window an error is generated. When issuing this command while tracking an object, the current window’s boundaries will be updated to the boundaries defined by the next item in the trigger queue.
-              Number of items in the queue will be reduced by one in one of the next events - exiting the tracking process (slave=0) , item exits the window limits, or issued NextItem commands.`
-			},
-			{
-				syntax: 'nextItem [element]',
-				desc: `Command that moves the robot focus to the limits of the next-item in the trigger queue. Each tracked item defines a moving window that is relative to its trigger position. It is defined by UpMaster, DownMaster and trigger position values For the current master position value of master axis -  Pmaster( pcmd, pfb or pext) - the up & down limits of the current moving frame window will be:
-              <b>Lower Limit:</b> Pmaster > UpMaster+TriggerPosition
-              <b>Upper Limit:</b> Pmaster < DownMaster+TriggerPosition
-              When the master position exit the current window an error is generated. When issuing this command while tracking an object, the current window’s boundaries will be updated to the boundaries defined by the next item in the trigger queue.
-              Number of items in the queue will be reduced by one in one of the next events - exiting the tracking process (slave=0) , item exits the window limits, or issued NextItem commands.`
 			},
     ],
     "power_off()": [

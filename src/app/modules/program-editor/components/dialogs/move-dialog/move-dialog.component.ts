@@ -162,6 +162,11 @@ export class MoveDialogComponent implements OnInit {
     this.ctrl.controls['location'].valueChanges.subscribe(val=>{
       this.onLocationChange(null);
     });
+    if (this.data.moveS) {
+      const ctrl = this.ctrl.controls['vscale'];
+      ctrl.clearValidators();
+      ctrl.setValidators([Validators.min(0)]);
+    }
   }
 
   ngAfterContentInit() {

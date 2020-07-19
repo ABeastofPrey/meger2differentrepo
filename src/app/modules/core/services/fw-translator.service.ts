@@ -27,11 +27,21 @@ export class FwTranslatorService {
   getTranslation(code: number, msg: string) {
     const trn = this._data[code];
     if (!trn) return msg;
-    const data = trn[this.trn.currentLang] || trn['msg'];
-    if (this.trn.currentLang === 'en') return data;
+    const data = (trn[this.trn.currentLang] || trn['msg']) as string;
+    if (this.trn.currentLang === 'en') return msg;
     // HANDLE SPECIAL CASES
-    let prefix = '';
+    if (code >= 19000 && code <= 19999) {
+      const match = msg.match(new RegExp('Axis (\w) '));
+      if (!match) return data;
+      return data.replace('0',match[1]);
+    }
+    if (code >= 7000 && code <= 8000) {
+      const match = msg.match(new RegExp('Token :(.*)$'));
+      if (!match) return data;
+      return data + match[1];
+    }
     if (trn.module === 'Motion' || trn.module === 'Robot') {
+      let prefix = '';
       const regex1 = new RegExp('in group:? (\\w+)','i');
       const regex2 = new RegExp('at axis (\\w+)','i');
       let match = msg.match(regex1);
@@ -42,8 +52,9 @@ export class FwTranslatorService {
       if (match) {
         prefix += MOTION[this.trn.currentLang][1] + match[1];
       }
+      return prefix + data;
     }
-    return prefix + data;
+    return data;
   }
 
     

@@ -22,6 +22,8 @@ export class DashboardService {
   private _interval: number;
 
   lastChartData: Graph[] = null;
+  
+  longProcess = false; // true when a long operation (like enable=1) is called, works almost like busy
 
   get busy() {
     return this._busy;
@@ -52,6 +54,14 @@ export class DashboardService {
       this._windows.splice(index, 1);
       this.save();
     }
+  }
+
+  get totalParamCount() {
+    let count = 0;
+    for (const w of this._windows) {
+      count += w.params.length;
+    }
+    return count;
   }
 
   constructor(
@@ -89,11 +99,19 @@ export class DashboardService {
       this._windows = windows;
       this.resetWindows();
     }
+    this.ws.isConnected.subscribe(stat=>{
+      window.clearInterval(this._interval);
+      if (stat && this.router.url === '/dashboard/dashboards') {
+        this.startInterval();
+      }
+    });
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         if (event.url === '/dashboard/dashboards') {
           this.zone.runOutsideAngular(() => {
-            this.startInterval();
+            if (this.ws.connected) {
+              this.startInterval();
+            }
           });
         } else {
           window.clearInterval(this._interval);
@@ -104,30 +122,32 @@ export class DashboardService {
 
   private startInterval() {
     window.clearInterval(this._interval);
-    this._interval = window.setInterval(() => {
+    this._interval = window.setInterval(()=>{
+      if (this._busy) return;
+      this._busy = true;
       for (const w of this.windows) {
         if (w.name === 'SCARA (Tour)') continue;
-        this.zone.run(()=>{
+        this.zone.run(async ()=>{
           const promises = [];
           promises.push(this.ws.query('?' + w.name + '.en'));
           for (const p of w.params) {
             promises.push(this.ws.query('?' + w.name + '.' + p.name));
           }
-          Promise.all(promises).then(ret => {
-            if (ret[0].err) {
-              this.close(w.name);
-              return;
+          const ret = await Promise.all(promises);
+          this._busy = false;
+          if (ret[0].err) {
+            this.close(w.name);
+            return;
+          }
+          w.enable = !(ret[0].result === '0' || ret[0].err);
+          for (let i = 0; i < w.params.length; i++) {
+            if (ret[i + 1] && w.params[i]) {
+              w.params[i].value = ret[i + 1].result;
             }
-            w.enable = !(ret[0].result === '0' || ret[0].err);
-            for (let i = 0; i < w.params.length; i++) {
-              if (ret[i + 1] && w.params[i]) {
-                w.params[i].value = ret[i + 1].result;
-              }
-            }
-          });
+          }
         });
       }
-    }, 200);
+    }, 500);
   }
 
   resetWindows() {
@@ -232,8 +252,7 @@ export class DashboardWindow {
   cartesian = false;
   target: number[];
   vscale: number;
-  acc: number;
-  dec: number;
+  ascale: number;
   jerk: number;
   pos: IPosition;
   isGroup: boolean;
@@ -260,8 +279,8 @@ export class DashboardParam {
   value: string | number | boolean = null;
   base = 'DEC'; // DEC, HEX, BIN
   inputType = 'INPUT'; // INPUT, TOGGLE, SLIDER
-  sliderMin = 0;
-  sliderMax = 100;
+  sliderMin: number = 0;
+  sliderMax: number = 100;
 }
 
 interface Graph {

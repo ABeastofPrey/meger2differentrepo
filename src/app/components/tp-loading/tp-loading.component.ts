@@ -97,7 +97,6 @@ export class TpLoadingComponent implements OnInit {
           console.log(this.prj.currProject.value);
           this.ref.close();
           const word = this.cmn.isTablet ? 'error.tp_tablet' : 'error.tp';
-        //   this.snack.open(this.words[word],this.words['dismiss']);   
           this.snackbarService.openTipSnackBar(word);       
           if (this.cmn.isTablet) {
             this.login.logout();

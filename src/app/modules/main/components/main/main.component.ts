@@ -471,6 +471,21 @@ export class MainComponent implements OnInit {
     el.style.top = json.y + 'px';
     el.style.width = json.w + 'px';
     el.style.height = json.h + 'px';
+    setTimeout(()=>{
+      const top = el.getBoundingClientRect().top;
+      const transform = el.style.transform;
+      let transformY = 0;
+      try {
+        transformY = transform && transform.indexOf(')') > 0 ? Number(transform.split(',')[1].trim().slice(0, -4)) : 0;
+      } catch (err) {
+
+      }
+      const y = top + transformY;
+      if (y < 0) {
+        el.style.top = 0 + 'px';
+        this.terminal.resizeRequired.emit();
+      }
+    }, 200);
     this.terminal.resizeRequired.emit();
   }
 }

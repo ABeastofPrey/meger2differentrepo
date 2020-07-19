@@ -40,3 +40,10 @@
   right: 0;
   bottom: 0;
 }
+.errors {
+  z-index: 10;
+  background: #fff;
+  padding: 16px;
+  border: 1px solid;
+  max-width: 100px;
+}

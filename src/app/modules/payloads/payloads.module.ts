@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { NewPayloadDialogComponent } from './components/new-payload-dialog/new-payload-dialog.component';
 import { IdentDialogComponent } from './components/ident-dialog/ident-dialog.component';
 import {StxsimNgModule} from 'stxsim-ng';
+import { PayloadResultsComponent } from './components/payload-results/payload-results.component';
 
 @NgModule({
   imports: [CommonModule, SharedModule, StxsimNgModule],
@@ -12,8 +13,9 @@ import {StxsimNgModule} from 'stxsim-ng';
     PayloadWizardComponent,
     NewPayloadDialogComponent,
     IdentDialogComponent,
+    PayloadResultsComponent,
   ],
-  entryComponents: [NewPayloadDialogComponent, IdentDialogComponent],
+  entryComponents: [NewPayloadDialogComponent, IdentDialogComponent, PayloadResultsComponent],
   exports: [PayloadWizardComponent],
 })
 export class PayloadsModule {}

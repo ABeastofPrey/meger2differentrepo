@@ -67,8 +67,7 @@ export class AxisVordComponent implements OnInit {
       if (ret.result !== '0') {
         this.vords[i].vord = prev;
       } else {
-        //   this.snack.open(this.words['changeOK'], '', {duration: 1500});
-            this.snackbarService.openTipSnackBar("changeOK");
+        this.snackbarService.openTipSnackBar("changeOK");
       }
     });
   }

@@ -2,10 +2,12 @@
   padding: 16px;
   display: flex;
   flex-direction: row;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .robots {
   flex: 1;
-  width: 100%;
+  overflow: hidden;
 }
 .system {
   flex: 1;
@@ -13,6 +15,12 @@
   margin-left: 16px;
   display: flex;
   flex-direction: column;
+}
+.system button {
+  margin-bottom: 16px;
+}
+.system button mat-icon {
+  margin-right: 16px;
 }
 mat-card {
   margin-bottom: 16px;

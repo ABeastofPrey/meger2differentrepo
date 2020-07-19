@@ -60,11 +60,18 @@
 			[checked]="data.simulated" (change)="data.toggleSimulated($event)">{{ 'simulative' | translate }}
 		</mat-slide-toggle>
 		<div matTooltip="{{'safety.en_tooltip' | translate}}" [matTooltipDisabled]="!stat.wack">
-			<button mat-mini-fab [disabled]="login.isViewer || !stat.onlineStatus.value || stat.wack" color="warn"
-				[class.indicator-on]="stat.enabled" [class.wack]="stat.wack" (click)="stat.toggleEnabled()" *ngIf="!screenManager.debugMode"
+			<button
+				id="main-power-btn"
+				mat-mini-fab
+				[disabled]="login.isViewer || !stat.onlineStatus.value || stat.wack"
+				color="warn"
+				[class.indicator-on]="stat.enabled"
+				[class.wack]="stat.wack"
+				(click)="stat.toggleEnabled()"
+				*ngIf="!screenManager.debugMode"
 				matTooltip="{{ 'enable' | translate }}/{{ 'disable' | translate }} {{ data.selectedRobot }}">
-					<mat-icon>power_settings_new</mat-icon>
-					</button>
+				<mat-icon>power_settings_new</mat-icon>
+			</button>
 		</div>
       <button
         *ngIf="!allowHiddenMenu && !screenManager.debugMode"

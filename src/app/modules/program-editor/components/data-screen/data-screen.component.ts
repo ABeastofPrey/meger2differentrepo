@@ -1,3 +1,4 @@
+import { CommonService } from './../../../core/services/common.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import {
@@ -90,13 +91,12 @@ export class DataScreenComponent implements OnInit {
   constructor(
     public data: DataService,
     private ws: WebsocketService,
-    private snackBar: MatSnackBar,
     private snackbarService: SysLogSnackBarService,
     private dialog: MatDialog,
     public login: LoginService,
     private trn: TranslateService,
-    private utils: UtilsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public cmn: CommonService
   ) {
     this.route.data.subscribe(data=>{
       if (data) {
@@ -297,17 +297,6 @@ export class DataScreenComponent implements OnInit {
     this._varRefreshing = true;
     const queries: Array<Promise<void>> = [];
     for (const v of this.dataSource.data) {
-      /*if (!v.isArr && v.dataLoaded) continue;
-      if (v.isArr) {
-        if(!v.isTwoDimension) {
-          const selectedChild = v.value[v.selectedIndex - 1] as TPVariable;
-        if (selectedChild.dataLoaded) continue;
-        } else {
-          const selectedChild = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1] as TPVariable;
-          if (selectedChild.dataLoaded) continue;
-        }
-
-      }*/
       queries.push(this.refreshVariable(v));
     }
     return Promise.all(queries).then(results => {

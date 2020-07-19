@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
 import { TPVariable } from '../../../core/models/tp/tp-variable.model';
 import { MatTableDataSource, MatDialog, MatSnackBar, MatSort } from '@angular/material';
@@ -12,6 +12,8 @@ import { FrameCalibrationDialogComponent } from '../frame-calibration-dialog/fra
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'frames',
@@ -30,11 +32,12 @@ export class FramesComponent implements OnInit {
   // To sort the table
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  private _legend: string[] = [];
-  private _value: Array<{ value: number | string }> = [];
+  _legend: string[] = [];
+  _value: Array<{ value: number }>;
   private currFrameType = 'tool';
   private _calibrationDialogShowing = false;
   private words: {};
+  private notifier: Subject<boolean> = new Subject();
 
   busy = false;
 
@@ -42,10 +45,9 @@ export class FramesComponent implements OnInit {
     private data: DataService,
     private dialog: MatDialog,
     private ws: WebsocketService,
-    private snack: MatSnackBar,
     private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
-    private utils: UtilsService
+    private cd: ChangeDetectorRef
   ) {
     this.trn
       .get([
@@ -65,11 +67,16 @@ export class FramesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.data.dataLoaded.subscribe(data=>{
+    this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(data=>{
       if (data) {
         this.dataSource.data = this.getData();
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -78,7 +85,7 @@ export class FramesComponent implements OnInit {
 
   get frameTypeTranslated() {
     return {
-      frameType: this.words[this.currFrameType]
+      frameType: this.words ? this.words[this.currFrameType] : ''
     };
   }
 
@@ -190,11 +197,7 @@ export class FramesComponent implements OnInit {
   }
 
   rowClick(element: TPVariable, forceRefresh) {
-    if (
-      !forceRefresh &&
-      this.selectedVar &&
-      this.selectedVar.name === element.name
-    ) {
+    if (!forceRefresh && (this.busy || (this.selectedVar && this.selectedVar.name === element.name))) {
       return;
     }
     this.selectedVar = element;
@@ -202,8 +205,7 @@ export class FramesComponent implements OnInit {
     if (this.selectedVar.isArr) {
       fullname += '[' + this.selectedVar.selectedIndex + ']';
     }
-    const cmd =
-      '?tp_get_frame_value("' + fullname + '","' + this.currFrameType + '")';
+    const cmd = '?tp_get_frame_value("' + fullname + '","' + this.currFrameType + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       this._value = [];
       this._legend = [];
@@ -216,13 +218,13 @@ export class FramesComponent implements OnInit {
       }
       if (valuesString.indexOf(',') === -1) {
         this._legend = [this.words['value']];
-        this._value = [{ value: valuesString.trim() }];
+        this._value = [{ value: Number(valuesString.trim()) }];
         return;
       }
       const values = valuesString.substr(1, valuesString.length - 2).split(',');
       let newLegend = [];
       for (let i = 0; i < values.length; i++) {
-        this._value[i] = { value: values[i].trim() };
+        this._value[i] = { value: Number(values[i].trim()) };
         if (this.selectedVar.varType === TPVariableType.JOINT) {
           newLegend.push('J' + (i + 1));
         }
@@ -237,6 +239,11 @@ export class FramesComponent implements OnInit {
         }
       }
       this._legend = newLegend;
+    }).then(()=>{
+      this.cd.detectChanges();
+      setTimeout(()=>{
+        this.cd.detectChanges();
+      },0);
     });
   }
 
@@ -303,12 +310,8 @@ export class FramesComponent implements OnInit {
         .afterClosed()
         .subscribe(ret => {
           if (ret) {
-            const cmd =
-              '?TP_REMOVE_FRAME("' +
-              this.currFrameType +
-              '","' +
-              this.selectedVar.name +
-              '")';
+            this.busy = true;
+            const cmd = '?TP_REMOVE_FRAME("' + this.currFrameType + '","' + this.selectedVar.name + '")';
             this.ws.query(cmd).then((ret: MCQueryResponse) => {
               if (ret.result === '0') {
                 this.selectedVar = null;
@@ -321,8 +324,10 @@ export class FramesComponent implements OnInit {
                 Promise.all(queries).then(() => {
                   this.dataSource.data = this.getData();
                   this.selection.clear();
+                  this.busy = false;
                 });
               }
+              this.busy = false;
             });
           }
         });
@@ -347,6 +352,7 @@ export class FramesComponent implements OnInit {
           .afterClosed()
           .subscribe(ret => {
             if (ret) {
+              this.busy = true;
               const queries = [];
               for (const v of this.selection.selected) {
                 const cmd =
@@ -369,6 +375,7 @@ export class FramesComponent implements OnInit {
                   this.data.refreshVariables().then(()=>{
                     this.dataSource.data = this.getData();
                     this.selection.clear();
+                    this.busy = false;
                   });
                 });
               });
@@ -385,7 +392,7 @@ export class FramesComponent implements OnInit {
         ? ToolCalibrationDialogComponent
         : FrameCalibrationDialogComponent;
     const ref = this.dialog.open(dialog, {
-      width: '450px',
+      width: '550px',
       data: {
         variable: this.selectedVar,
         frameType: this.currFrameType,

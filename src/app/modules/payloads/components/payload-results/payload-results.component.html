@@ -1,0 +1,49 @@
+<div class="wrapper mat-typography">
+	<div class="title mat-elevation-z1">
+		{{ 'payloads.ident.result-dialog.title' | translate }}
+	</div>
+	<table>
+    <tr>
+      <td>{{'payloads.mass' | translate}}</td>
+      <td>{{data.mass}} [Kg]</td>
+    </tr>
+    <tr>
+      <td>{{'payloads.inertia' | translate}}</td>
+      <td>{{data.inertia}} [Kg * m<sup>2</sup>]</td>
+    </tr>
+    <tr>
+      <td>{{'payloads.offX' | translate}}</td>
+      <td>{{data.offset}} [m]</td>
+    </tr>
+    <tr>
+      <td>{{'payloads.ident.result-dialog.max' | translate}}</td>
+      <td>
+        <table>
+          <tr><td>A1</td><td [class.warn]="data.max.A1 > 50">{{data.max.A1}}%</td></tr>
+          <tr><td>A2</td><td [class.warn]="data.max.A2 > 50">{{data.max.A2}}%</td></tr>
+          <tr><td>A3</td><td [class.warn]="data.max.A3 > 50">{{data.max.A3}}%</td></tr>
+          <tr><td>A4</td><td [class.warn]="data.max.A4 > 50">{{data.max.A4}}%</td></tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>{{'payloads.ident.result-dialog.mean' | translate}}</td>
+      <td>
+        <table>
+          <tr><td>A1</td><td [class.warn]="data.mean.A1 > 50">{{data.mean.A1}}%</td></tr>
+          <tr><td>A2</td><td [class.warn]="data.mean.A2 > 50">{{data.mean.A2}}%</td></tr>
+          <tr><td>A3</td><td [class.warn]="data.mean.A3 > 50">{{data.mean.A3}}%</td></tr>
+          <tr><td>A4</td><td [class.warn]="data.mean.A4 > 50">{{data.mean.A4}}%</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+	<div class="actions">
+		<button mat-button (click)="close(false)" [color]="data.enableapply ? '' : 'primary'">
+			{{ 'button.close' | translate }}
+		</button>
+		<button mat-button color="primary" (click)="close(true)" *ngIf="data.enableapply">
+			{{ 'payloads.ident.result-dialog.apply' | translate }}
+		</button>
+	</div>
+</div>

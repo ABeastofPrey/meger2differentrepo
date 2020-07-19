@@ -228,7 +228,7 @@ export class TpStatService {
             this.modeChanged.next(this._switch);
           }
         } else {
-          if (this._switch !== stat.SWITCH) this.modeChanged.next(this._switch);
+          if (this._switch !== stat.SWITCH) this.modeChanged.next(stat.SWITCH);
           this._switch = stat.SWITCH;
         }
 
@@ -240,19 +240,6 @@ export class TpStatService {
               time: new Date().getTime(),
               err,
             });
-            // this.zone.run(() => {
-            //   setTimeout(() => {
-            //     if (environment.platform.name !== environment.platforms.Kuka.name) {
-            //       this.snack
-            //       .open(err, this.words['acknowledge'])
-            //       .afterDismissed()
-            //       .subscribe(() => {
-            //         if (!this.onlineStatus.value) return;
-            //         this.ws.send('?TP_CONFIRM_ERROR', true);
-            //       });
-            //     }
-            //   }, 0);
-            // });
           }
         }
       } catch (err) {
@@ -320,6 +307,7 @@ export class TpStatService {
     this._deadman = false;
     this._switch = null;
     this.modeChanged.next(null);
+    this.lastStatString = null;
   }
 
   resetAll() {
@@ -411,6 +399,8 @@ export class TpStatService {
   private startKeepAlive() {
     // START KEEPALIVE
     this.ws.clearInterval(this.interval);
+    this.lastStatString = null;
+    this.lastErrString = null;
     this.interval = this.ws.send(
       'cyc0',
       true,

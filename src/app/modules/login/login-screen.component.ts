@@ -256,6 +256,7 @@ export class LoginScreenComponent implements OnInit {
     this.api.getSysBasicInfo().then((ret: SysInfo) => {
       this.info = ret;
       this.info.ip = this.info.ip.substring(0,this.info.ip.indexOf(':'));
+      if (this.info.ip === '0.0.0.0') this.info.ip = 'N/A';
     });
     this.api.get('/cs/api/java-version').subscribe((ret: { ver: string }) => {
       if (etag.length > 0 && ret.ver !== etag) { // can only happen if page is cached

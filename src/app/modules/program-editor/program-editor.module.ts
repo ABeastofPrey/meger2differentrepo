@@ -73,6 +73,7 @@ import { VisionCalibrationComponent } from './components/vision-calibration/visi
 import { VisionTemplateConfigRightComponent } from './components/vision-template-config-right/vision-template-config-right.component';
 import { NewDialogTemplateComponent } from './components/new-dialog-template/new-dialog-template.component';
 import { VisionService } from './services/vision.service';
+import { CanDeactivateDataGuard } from './can-deactivate-data';
 
 @NgModule({
   imports: [
@@ -203,6 +204,7 @@ import { VisionService } from './services/vision.service';
     VisionCommandService,
     TraceService,
     VisionService,
+    CanDeactivateDataGuard
   ],
 })
 export class ProgramEditorModule {}

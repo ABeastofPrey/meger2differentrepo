@@ -60,15 +60,19 @@ export class BrakeTestComponent implements OnInit {
             val: false
           }
         });
-        const ret = await this.ws.query('?BT_GET_AXES_BITMAP');
-        if (ret.err) return;
-        const n = Number(ret.result);
-        for (let i=0; i<this.brakes.length; i++) {
-          this.brakes[i].val = this.checkBit(n,i+1);
-        }
-        this.cd.detectChanges();
+        await this.refresh();
       }
     });
+  }
+
+  async refresh() {
+    const ret = await this.ws.query('?BT_GET_AXES_BITMAP');
+    if (ret.err) return;
+    const n = Number(ret.result);
+    for (let i=0; i<this.brakes.length; i++) {
+      this.brakes[i].val = this.checkBit(n,i+1);
+    }
+    this.cd.detectChanges();
   }
 
   ngOnDestroy() {
@@ -96,9 +100,9 @@ export class BrakeTestComponent implements OnInit {
       this.busy = false;
       this.cd.detectChanges();
       if (result === '0') {
-        //   this.snack.open(this.words['success'],'',{duration: 1500});
-          this.snackbarService.openTipSnackBar("success");
+        this.snackbarService.openTipSnackBar("success");
       }
+      this.refresh();
     });
   }
 

@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 .filter-menu {
   display: flex;
@@ -55,7 +56,7 @@
   margin-bottom: -16px;
 }
 .text-field {
-  max-width: 250px !important;
+  max-width: 200px !important;
 }
 .current {
   font-weight: bold;
@@ -91,6 +92,11 @@
   z-index: 1;
   transform: rotate(90deg) scale(-1, 1);
 }
-.tablet-ui .filter-menu > *:not(:last-child) {
-  margin-right: 24px;
+:host-context(.tablet-ui) .filter-menu > *:not(:last-child) {
+  margin-right: 16px;
+}
+.name-wrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

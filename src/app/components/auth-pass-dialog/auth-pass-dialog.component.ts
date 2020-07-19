@@ -17,10 +17,6 @@ export class AuthPassDialogComponent implements OnInit {
   username = '';
   mode = '';
   isError = false;
-  
-  get hasSafety() {
-    return this.dataService.safetyCardRunning;
-  }
 
   constructor(
     public cmn: CommonService,
@@ -30,7 +26,8 @@ export class AuthPassDialogComponent implements OnInit {
     private stat: TpStatService,
     private dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: {
-      withModeSelector?: boolean
+      withModeSelector?: boolean,
+      currentMode: string
     }
   ) {}
 
@@ -40,12 +37,16 @@ export class AuthPassDialogComponent implements OnInit {
   }
 
   async confirm() {
-    if (!this.hasSafety) {
-      this.val = '123';
-    }
     if (this.val.length === 0) return;
     if (this.data.withModeSelector) {
-      const ret = await this.stat.setMode(this.mode, this.val);
+      // authenticate with web server
+      const auth = await this.api.confirmSafetyPass(this.val);
+      if (!auth) {
+        // wrong password
+        this.isError = true;
+        return;
+      }
+      const ret = await this.stat.setMode(this.mode);
       if (ret) {
         this.dialogRef.close(this.mode);
       } else {

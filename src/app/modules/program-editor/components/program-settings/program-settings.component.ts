@@ -1,3 +1,6 @@
+import { takeUntil } from 'rxjs/operators';
+import { ScreenManagerService } from './../../../core/services/screen-manager.service';
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import {
   ProjectManagerService,
@@ -7,6 +10,7 @@ import {
 } from '../../../core';
 import { App } from '../../../core/models/project/mc-project.model';
 import { MatSelectChange } from '@angular/material';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'program-settings',
@@ -14,13 +18,34 @@ import { MatSelectChange } from '@angular/material';
   styleUrls: ['./program-settings.component.css'],
 })
 export class ProgramSettingsComponent implements OnInit {
+
+  private notifier: Subject<boolean> = new Subject();
+
   constructor(
     public prj: ProjectManagerService,
     public dataService: DataService,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    private mgr: ScreenManagerService,
+    private router: Router
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.prj.onAppStatusChange.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+      if (this.prj.activeProject) {
+        this.router.navigateByUrl('/projects');
+      }
+    });
+    this.mgr.projectActiveStatusChange.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+      if (stat) {
+        this.router.navigateByUrl('/projects');
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
+  }
 
   busy = false;
 

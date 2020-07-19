@@ -71,7 +71,7 @@ export class ProgramToolbarComponent implements OnInit {
     private snackbarService: SysLogSnackBarService,
     public prgService: ProgramEditorService,
     private api: ApiService,
-    private utl: UtilsService,
+    public utl: UtilsService,
     private trn: TranslateService,
     public stat: TpStatService,
     public login: LoginService,
@@ -144,17 +144,7 @@ export class ProgramToolbarComponent implements OnInit {
                 this.words['projects.toolbar']['changing']
               );
             } else {
-              
-                // this.snack.open(
-                //   this.words['error.err'] +
-                //     ' ' +
-                //     ret.result +
-                //     ':' +
-                //     this.words['projects.toolbar']['err_change'],
-                //   '',
-                //   { duration: 1500 }
-                // );
-                this.snackbarService.openTipSnackBar("error.err");
+              this.snackbarService.openTipSnackBar("error.err");
             }
           });
       }
@@ -370,17 +360,11 @@ export class ProgramToolbarComponent implements OnInit {
       .subscribe((name: string) => {
         if (name) {
           this.api.createFolder(name).then(result => {
-            if (result) {
-                // this.snack.open(this.words['success'], this.words['dismiss'], {
-                //   duration: 1500,
-                // });    
-                this.snackbarService.openTipSnackBar("success");              
+            if (result) { 
+              this.snackbarService.openTipSnackBar("success");              
               this.prj.fileRefreshNeeded.emit();
-            } else {
-                // this.snack.open(this.words['error.err'], this.words['dismiss'], {
-                //   duration: 2000,
-                // });             
-                this.snackbarService.openTipSnackBar("error.err");   
+            } else {           
+              this.snackbarService.openTipSnackBar("error.err");   
             }
           });
         }
@@ -393,24 +377,13 @@ export class ProgramToolbarComponent implements OnInit {
         this.prgService.close();
         this.prgService.mode = 'editor';
         this.router.navigateByUrl('/projects');
-       
-        //   this.snack.open(this.words['success'], '', { duration: 1500 });
         this.snackbarService.openTipSnackBar("success");   
-        
         if (projectName === this.prj.currProject.value.name) {
           return this.prj.getCurrentProject();
         }
       } else if (ret.err !== -99) {
-        //   this.snack.open(
-        //     this.words['projects.toolbar']['err_import'],
-        //     this.words['dismiss']
-        //   );    
-          this.snackbarService.openTipSnackBar("projects.toolbar.err_import");       
+        this.snackbarService.openTipSnackBar("projects.toolbar.err_import");       
       } else {
-        // this.snack.open(
-        //   this.words['error.not_enough_space'],
-        //   this.words['dismiss']
-        // );
         this.snackbarService.openTipSnackBar('error.not_enough_space');       
       }
     });
@@ -832,19 +805,18 @@ export class ProgramToolbarComponent implements OnInit {
         },
         err => {
           this.prj.isLoading = false;
-        //   this.snack.open(this.words['error.err'], this.words['dismiss'], {
-        //       duration: 2000,
-        //     });  
             this.snackbarService.openTipSnackBar("error.err");       
         }
       )
       .catch(err => {
-        this.prj.isLoading = false;
-        // this.snack.open(this.words['error.err'], this.words['dismiss'], {
-        //     duration: 2000,
-        //   });     
+        this.prj.isLoading = false; 
         this.snackbarService.openTipSnackBar("error.err");    
       });
+  }
+
+  toggleFullScreen(e: Event) {
+    e.stopImmediatePropagation();
+    this.cmn.toggleFullScreen();
   }
 
   onVrateChange(e: MatSliderChange | number) {

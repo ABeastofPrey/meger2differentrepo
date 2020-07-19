@@ -42,13 +42,13 @@ export class ConfigurationComponent implements OnInit {
         icon: 'group_work',
         permission: 0,
       },
-      {
-        path: 'safety',
-        label: 'safety.title',
-        icon: 'security',
-        permission: 0,
-        safetyCard: true
-      },
+      // {
+      //   path: 'safety',
+      //   label: 'safety.title',
+      //   icon: 'security',
+      //   permission: 0,
+      //   safetyCard: true
+      // },
       { path: 'io', label: 'I/O', icon: 'compare_arrows', permission: 99 },
       {
         path: 'gui-settings',

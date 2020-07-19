@@ -204,7 +204,7 @@ export class KeywordService {
           .concat(this.data.doubles)
           .filter(v=>{
             if (varList.find(blockVar=>{
-              return v.name.toLowerCase() === blockVar.name
+              return v.name.toLowerCase() === blockVar.name.toLowerCase()
             })) {
               return false;
             }
@@ -409,7 +409,9 @@ export class KeywordService {
           STEP 3 - CHECK IF WORD IS A PART OF COMMAND OR OBJECT
           WE SHOULD SHOW COMMANDS AND SNIPPETS ONLY IF IT IS THE FIRST WORD IN THE LINE
         */
-        if (context.length === 0 || prefix.length === 0) return;
+        if (context.length === 0 || prefix.length === 0) {
+          return callback();
+        }
         const scopes = this.snippetManager.getActiveScopes(editor);
         const snippetMap = this.snippetManager.snippetMap;
         let snippetCompletions = [];

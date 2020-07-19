@@ -138,8 +138,7 @@ export class DiagnosticsComponent implements OnInit {
       this.ws.query('?MCU_GET_FAN_THRESHOLD').then((ret: MCQueryResponse) => {
         this.mcuThreshold = Number(ret.result);
         this.mcuInterval = window.setInterval(()=>{
-        this.ws
-          .query('?MCU_SEND_GETFANVALUE_COMMAND')
+        this.ws.query('?MCU_GET_FAN_SPEED')
           .then((ret: MCQueryResponse) => {
             if (ret.err) {
               this.generateMcuChart(0);
@@ -205,6 +204,12 @@ export class DiagnosticsComponent implements OnInit {
     Plotly.newPlot('mcu', data as Array<Partial<Plotly.PlotData>>, layout as Partial<Plotly.Annotations>, {
       responsive: true,
       displayModeBar: false
+    });
+  }
+
+  clearAllDriveFaults(): void {
+    this.ws.query('?TP_CLRFAULT').then(() => {
+      this.ws.query('?TP_CONFIRM_ERROR');
     });
   }
 

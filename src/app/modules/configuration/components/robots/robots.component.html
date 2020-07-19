@@ -152,8 +152,15 @@
 				matInput
 				[formControl]="sysTime"
 				(change)="onTimeChange()"
+				virtualKeyboard
+				ktype="text"
+				(onKeyboardClose)="onTimeChange()"
 			/>
 		</mat-form-field>
+		<button mat-raised-button color="primary" (click)="changeSafetyPassword()">
+			<mat-icon>security</mat-icon>
+			{{'safety.password_change.btn' | translate }}
+		</button>
 		<mat-form-field appearance="outline">
 			<mat-label>{{ 'robots.mcu.fan-threshold' | translate }}</mat-label>
 			<input

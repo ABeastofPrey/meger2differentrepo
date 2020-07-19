@@ -1,3 +1,4 @@
+import { UtilsService } from './../../../core/services/utils.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -936,15 +937,14 @@ export class ThirdPartyComponent implements OnInit {
     return result;
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private utils: UtilsService) {}
 
   ngOnInit() {
     // GET CS+ LICENSE
-    this.http
-      .get('assets/license/stx.html', { responseType: 'text' })
-      .subscribe(ret => {
-        this.license = ret;
-      });
+    const fileName = this.utils.IsKuka ? 'kuka.html' : 'stx.html';
+    this.http.get(`assets/license/${fileName}`, { responseType: 'text' }).subscribe(text => {
+      this.license = text;
+    });
 
     // Angular
     this.libs.push(

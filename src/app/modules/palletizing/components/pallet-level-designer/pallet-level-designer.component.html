@@ -12,21 +12,24 @@
 		></div>
 		<h2 style="margin-top: 8px;">Options</h2>
 		<div style="display: flex;">
-			<button mat-fab color="primary" (click)="rotate()">
+			<button mat-fab color="primary" (click)="rotate()" matTooltip="{{'pallets.wizard.item_rotate' | translate}}">
 				<mat-icon>rotate_right</mat-icon>
 			</button>
-			<button mat-fab color="primary" (click)="addItem()">
+			<button mat-fab color="primary" (click)="addItem()" matTooltip="{{'pallets.wizard.item_new' | translate}}">
 				<mat-icon>add</mat-icon>
 			</button>
 		</div>
-		<div style="display: flex;">
-			<button mat-fab color="accent" (click)="uploadFile()">
-				<mat-icon>insert_drive_file</mat-icon>
-			</button>
-			<button mat-fab color="accent" (click)="download()">
-				<mat-icon>save</mat-icon>
-			</button>
-		</div>
+		<mat-divider style="margin-bottom: 16px;"></mat-divider>
+		<button mat-raised-button color="accent" (click)="uploadFile()" style="display: block;">
+			{{'pallets.wizard.import' | translate }}
+		</button>
+		<button  mat-raised-button color="accent" (click)="download()" style="display: block;">
+			{{'pallets.wizard.export' | translate }}
+		</button>
+		<mat-divider style="margin: 16px 0;"></mat-divider>
+		<button  mat-raised-button color="warn" (click)="reset()" style="display: block;">
+			{{'pallets.wizard.reset' | translate }}
+		</button>
 		<input type="file" accept=".DAT, .dat" #upload (change)="onUploadFilesChange($event)" class="file-input" />
 	</div>
 	<div class="container" #container>
@@ -48,5 +51,14 @@
 		>
 			{{ item.order }}
 		</div>
+	</div>
+	<div class="errors warn" *ngIf="errorList.length > 0">
+		<h2>{{ 'projectTree.Errors' | translate }}:</h2>
+		<mat-chip-list>
+			<mat-chip *ngFor="let e of errorList" [removable]="true" (removed)="onChipRemoved(e)" color="warn">
+				{{e}}
+				<mat-icon matChipRemove>cancel</mat-icon>
+			</mat-chip>
+		</mat-chip-list>
 	</div>
 </div>

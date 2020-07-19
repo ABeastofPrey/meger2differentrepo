@@ -1,6 +1,9 @@
+import { YesNoDialogComponent } from './../../../../components/yes-no-dialog/yes-no-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
+import { CoordinatesService } from './../../../core/services/coordinates.service';
 import { TPVariable } from './../../../core/models/tp/tp-variable.model';
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { WebsocketService, DataService, MCQueryResponse } from '../../../core';
 
 @Component({
@@ -9,18 +12,25 @@ import { WebsocketService, DataService, MCQueryResponse } from '../../../core';
   styleUrls: ['./frame-calibration-dialog.component.css'],
 })
 export class FrameCalibrationDialogComponent implements OnInit {
+
   varName: string;
   positionOK: boolean[] = [false, false, false];
-  setAsCurrent = false;
+  teachVal: string[] = [null, null, null];
+  setAsCurrent = true;
+
+  private words: {};
 
   constructor(
+    private dialog: MatDialog,
+    private trn: TranslateService,
     public dialogRef: MatDialogRef<FrameCalibrationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       variable: TPVariable,
       frameType: string
     },
     private ws: WebsocketService,
-    public dataService: DataService
+    public dataService: DataService,
+    private coos: CoordinatesService
   ) {
     this.varName = this.data.variable.name;
     if (this.data.variable.isArr) {
@@ -28,10 +38,27 @@ export class FrameCalibrationDialogComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.trn.get('frames.calibration.dialog_close').subscribe(word=>{
+      this.words = word;
+    });
+  }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialog.open(YesNoDialogComponent, {
+      maxWidth: '600px',
+      data: {
+        title: this.words['title'],
+        msg: this.words['msg'],
+        yes: this.words['yes'],
+        no: this.words['no'],
+        caution: true
+      },
+    }).afterClosed().subscribe(ret => {
+      if (ret) {
+        this.dialogRef.close();
+      }
+    });
   }
 
   resetPos(i: number) {
@@ -45,6 +72,7 @@ export class FrameCalibrationDialogComponent implements OnInit {
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (pos === 4) pos = 3;
       this.positionOK[pos - 1] = ret.result === '0';
+      this.teachVal[pos - 1] = '#{' + this.coos.locations.map(l=>l.value).join() + '}';
     });
   }
 
@@ -72,7 +100,7 @@ export class FrameCalibrationDialogComponent implements OnInit {
               break;
           }
         }
-        this.closeDialog();
+        this.dialogRef.close();
       }
     });
   }

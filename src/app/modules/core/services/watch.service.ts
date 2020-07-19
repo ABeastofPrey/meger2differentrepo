@@ -12,6 +12,7 @@ const GLOBAL = '_Global';
 
 @Injectable()
 export class WatchService {
+
   vars: WatchVar[];
   newVarName: string;
   newVarContext: string = GLOBAL;
@@ -21,6 +22,8 @@ export class WatchService {
   private interval: number;
   private env = environment;
   private variableListMap = new Map<string, string[]>();
+  private _varsInit = false;
+  private _busy = false;
 
   readonly MAX_VARS = 16;
 
@@ -78,7 +81,12 @@ export class WatchService {
     localStorage.setItem('watch', '[' + this.vars.toString() + ']');
   }
 
+  resetVars() {
+    this._varsInit = false;
+  }
+
   start() {
+    this._varsInit = false;
     this.task.getList().then((list: MCTask[]) => {
       this.contexts = list
         .filter(t => {
@@ -100,6 +108,7 @@ export class WatchService {
       }
     });
     this.interval = window.setInterval(async() => {
+      if (this._busy) return;
       for (const v of this.vars) {
         if (v.name.trim().length === 0) v.record = false;
         if (!v.active) {
@@ -110,6 +119,33 @@ export class WatchService {
           continue;
         }
       }
+      this._busy = true;
+      if (!this._varsInit) { // SEND THEM ONE BY ONE
+        this._varsInit = true;
+        this.vars.filter(v=>v.active).forEach(async v=>{
+          let context: string;
+          let separator = ' ';
+          if (v.context === GLOBAL) {
+            context = '';
+          } else if (v.context.endsWith('_DATA')) {
+            context = v.context.slice(0,-5) + '::';
+            separator = '';
+          } else {
+            context = v.context;
+          }
+          const ret = await this.ws.query('watch ' + context + separator + v.name);
+          if (!this.env.production) console.log(ret);
+          if (ret.err) {
+            v.value = ret.err[0].errCode === '7195' ? '-' : ret.err[0].errMsg;
+            v.active = false;
+          } else {
+            v.value = ret.result;
+          }
+        });
+        this._busy = false;
+        return;
+      }
+      // ELSE, SEND THEM TOGETHER
       const queryAll = this.vars.filter(v=>v.active).map(v=>{
         let context: string;
         let separator = ' ';
@@ -123,17 +159,21 @@ export class WatchService {
         }
         return 'watch ' + context + separator + v.name;
       }).join('\n?"$end$"\n');
-      if (queryAll.length === 0) return;
+      if (queryAll.length === 0) {
+        this._busy = false;
+        return;
+      }
       const ret = await this.ws.query(queryAll);
+      if (!this.env.production) console.log(ret);
       if (!ret.err) {
-        const results = ret.result.split('\n$end$\n');
+        const results = ret.result.split('$end$');
         let j = 0;
         for (let i=0; i<this.vars.length; i++) {
           if (!this.vars[i].active) {
             j++;
             continue;
           }
-          this.vars[i].value = results[i-j];
+          this.vars[i].value = results[i-j].trim();
         }
       } else {
         this.vars.forEach((v,i)=>{
@@ -142,6 +182,7 @@ export class WatchService {
           v.value = ret.err[0].errMsg;
         });
       }
+      this._busy = false;
     }, 400);
   }
 
@@ -153,6 +194,8 @@ export class WatchService {
     v.active = !v.active;
     if (!v.active) {
       v.value = '';
+    } else {
+      this.resetVars();
     }
   }
 
@@ -167,10 +210,11 @@ export class WatchService {
       result = true;
     }
     this.storeVars();
+    this.resetVars();
     return result;
   }
 
-  public catchVariables(): void {
+  catchVariables(): void {
     this.variableListMap.clear();
     const contextSet = new Set<string>();
     this.vars.forEach(item => {

@@ -34,8 +34,10 @@ export class DashboardWindowComponent implements OnInit {
 
   cart: string[];
 
+  MAX_PARAMS = 15;
+
   constructor(
-    private dashboard: DashboardService,
+    public dashboard: DashboardService,
     private ws: WebsocketService,
     private snack: MatSnackBar,
     private snackbarService: SysLogSnackBarService,
@@ -85,7 +87,9 @@ export class DashboardWindowComponent implements OnInit {
   async toggleEnable() {
     const val = this.params.enable ? 0 : 1;
     const cmd = `${this.params.name}.en=${val}`;
+    this.dashboard.longProcess = true;
     const ret = await this.ws.query(cmd);
+    this.dashboard.longProcess = false;
     if (ret.err) return;
     this.params.enable = !this.params.enable;
   }
@@ -111,8 +115,7 @@ export class DashboardWindowComponent implements OnInit {
     if (this.params.cartesian) target = '#' + target;
     cmd += ' ' + target;
     if (this.params.vscale) cmd += ' VScale=' + this.params.vscale;
-    if (this.params.acc) cmd += ' Acc=' + this.params.acc;
-    if (this.params.dec) cmd += ' Dec=' + this.params.dec;
+    if (this.params.ascale) cmd += ' AScale=' + this.params.ascale;
     if (this.params.jerk) cmd += ' Jerk=' + this.params.jerk;
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err) {
@@ -135,8 +138,13 @@ export class DashboardWindowComponent implements OnInit {
     this.dashboard.close(this.params.name);
   }
 
+  get invalidTarget() {
+    return this.params.target.some(val => val === null);
+  }
+
   addParam() {
     const ref = this.dialog.open(NewDashboardParameterDialogComponent,{
+      minWidth: '300px',
       data: {
         isGroup: this.params.isGroup
       }

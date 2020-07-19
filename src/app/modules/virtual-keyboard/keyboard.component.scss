@@ -9,12 +9,25 @@
   margin-right: -24px;
   margin-bottom: -24px;
 }
+.dragger {
+  text-align: center;
+  margin: -24px -24px 8px -24px;
+  background: #d0d0d0;
+  border-bottom: 1px solid #c0c0c0;
+  padding: 4px 0;
+  mat-icon {
+    height: 36px;
+    width: 36px;
+    line-height: 36px;
+    font-size: 36px;
+  }
+}
 .input-wrapper {
   margin-bottom: 12px;
 }
 .input-container {
   overflow: hidden;
-  margin-right: 16px;
+  margin-right: 24px;
   position: relative;
   white-space: pre;
   flex:1;

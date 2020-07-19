@@ -3,9 +3,6 @@
         <button mat-raised-button color="primary" (click)="clearAllLogHistory()" [disabled]="allLogs.length === 0">
             {{ 'sys_log.clear_all_log' | translate }}
         </button>
-        <button mat-raised-button color="primary" (click)="clearAllDriveFault()" [disabled]="dirveLogs.length === 0">
-            {{ 'sys_log.clear_all_drive_fault' | translate }}
-        </button>
     </div>
     <mat-card class="main-card">
         <mat-card-content>

@@ -90,55 +90,27 @@ export class UserMngrComponent implements OnInit {
         const promises = [];
         const selected = this.selection.selected;
         for (const u of selected) {
-          promises.push(this.api.deleteUser(u.username));
+          if (u.username !== this.login.getCurrentUser().user.username) {
+            promises.push(this.api.deleteUser(u.username));
+          }
         }
-        Promise.all(promises)
-          .then(
-            (ret: boolean[]) => {
-              let success = true;
-              for (const r of ret) success = success && r;
-              if (success) {
-                //   this.snack.open(
-                //     this.words['userManager.delete']['success'],
-                //     '',
-                //     { duration: 2000 }
-                //   );
-                  this.snackbarService.openTipSnackBar("userManager.delete.success");
-              }
-              else if (selected.find(u=>u.username === 'admin')) {
-                //   this.snack.open(this.words['userManager.delete']['fail2'], '', {
-                //     duration: 2000,
-                //   });
-                  this.snackbarService.openTipSnackBar("userManager.delete.fail2");
-              } else {
-                //   this.snack.open(this.words['userManager.delete']['fail'], '', {
-                //     duration: 2000,
-                //   });
-                  this.snackbarService.openTipSnackBar("userManager.delete.fail");
-              }
-            },
-            () => {
-                // this.snack.open(this.words['userManager.delete']['err'], '', {
-                //   duration: 2000,
-                // });
-                this.snackbarService.openTipSnackBar("userManager.delete.err");
-            }
-          )
-          .then(() => {
-            this.refreshUsers().then(() => {
-              if (this.login.isSuper || this.login.getCurrentUser().user.username === 'admin') return;
-              let found = false;
-              for (const u of this.dataSource.data as UserWithPic[]) {
-                if (u.username === this.login.getCurrentUser().user.username) {
-                  found = true;
-                }
-              }
-              if (!found) {
-                // ACTIVE USER IS NOT ON THE LIST, PROBABLY DELETED
-                this.login.logout();
-              }
-            });
-          });
+        Promise.all(promises).then((ret: boolean[]) => {
+          let success = true;
+          for (const r of ret) success = success && r;
+          if (success) {
+              this.snackbarService.openTipSnackBar("userManager.delete.success");
+          }
+          else if (selected.find(u=>u.username === 'admin')) {
+              this.snackbarService.openTipSnackBar("userManager.delete.fail2");
+          } else {
+              this.snackbarService.openTipSnackBar("userManager.delete.fail");
+          }
+        },
+        () => {
+            this.snackbarService.openTipSnackBar("userManager.delete.err");
+        }).then(() => {
+          this.refreshUsers();
+        });
       }
     });
   }

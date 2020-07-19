@@ -16,8 +16,11 @@
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>
-				<td *ngIf="positionOK[0]">
-					<mat-icon color="primary">check_circle</mat-icon>
+				<td *ngIf="positionOK[0] && teachVal[0]">
+					<div class="center-vertical">
+						<mat-icon color="primary" style="margin-right: 16px;">check_circle</mat-icon>
+						<span>{{teachVal[0]}}</span>
+					</div>
 				</td>
 				<td *ngIf="positionOK[0]">
 					<button mat-icon-button color="warn" (click)="resetPos(0)">
@@ -32,8 +35,11 @@
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>
-				<td *ngIf="positionOK[1]">
-					<mat-icon color="primary">check_circle</mat-icon>
+				<td *ngIf="positionOK[1] && teachVal[1]">
+					<div class="center-vertical">
+						<mat-icon color="primary" style="margin-right: 16px;">check_circle</mat-icon>
+						<span>{{teachVal[1]}}</span>
+					</div>
 				</td>
 				<td *ngIf="positionOK[1]">
 					<button mat-icon-button color="warn" (click)="resetPos(1)">
@@ -48,8 +54,11 @@
 						{{ 'button.teach' | translate }}
 					</button>
 				</td>
-				<td *ngIf="positionOK[2]">
-					<mat-icon color="primary">check_circle</mat-icon>
+				<td *ngIf="positionOK[2] && teachVal[2]">
+					<div class="center-vertical">
+						<mat-icon color="primary" style="margin-right: 16px;">check_circle</mat-icon>
+						<span>{{teachVal[2]}}</span>
+					</div>
 				</td>
 				<td *ngIf="positionOK[2]">
 					<button mat-icon-button color="warn" (click)="resetPos(2)">

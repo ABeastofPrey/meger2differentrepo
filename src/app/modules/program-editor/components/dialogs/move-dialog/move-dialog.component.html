@@ -67,7 +67,7 @@
 						[placeholder]="data.moveS ? 'VTran [mm/s]' : 'VScale [%]'"
 						formControlName="vscale"
 						virtualKeyboard
-						ktype="numeric"
+						ktype="numeric_pos"
 					/>
 					<mat-error *ngIf="ctrl.get('vscale').invalid">
             {{ 'form_validation.percent' | translate }}

@@ -101,6 +101,22 @@ export class ApiService {
       );
   }
 
+  confirmSafetyPass(pass: string) {
+    return this.post('/cs/api/safety/auth', { password: pass }).toPromise().then(ret => {
+      return ret;
+    }, err => {
+      return false;
+    });
+  }
+
+  changeSafetyPass(newPass: string) {
+    return this.post('/cs/api/safety/reset', {newPass}).toPromise().then(ret=>{
+      return ret;
+    }, err => {
+      return false;
+    });
+  }
+
   private async checkSpaceFor(f: File) {
     const free = await this.get('/cs/api/free-space').toPromise();
     return free > f.size;
@@ -306,7 +322,7 @@ export class ApiService {
   /*
   path should be used relative to SSMC (i.e: DEMO/ refers to "/FFS0/SSMC/DEMO/");
   */
-  public downloadSubfolderZip(path: string): Promise<void> {
+  downloadSubfolderZip(path: string) {
     let body = new HttpParams();
     body = body.set('token', this.token);
     body = body.set('files', path);
@@ -315,21 +331,7 @@ export class ApiService {
       .post(this.api_url + '/cs/mczip', body)
       .toPromise()
       .then(ret => {
-        if (!ret) return;
-        const zipUrl = this.api_url + '/cs/api/zipFile';
-        const zipGenerator = (buffer: ArrayBuffer) => {
-          const blob = new Blob([buffer], { type: 'application/zip' });
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          document.body.appendChild(a);
-          a.setAttribute('style', 'display: none');
-          a.href = url;
-          a.download = path.toUpperCase() + '.ZIP';
-          a.click();
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-        };
-        this.http.get(zipUrl, { responseType: 'arraybuffer' }).subscribe(zipGenerator);
+        if (ret) window.location.href = this.api_url + '/cs/api/zipFile';
       });
   }
 

@@ -4,7 +4,7 @@
   "number_input_required": "Required field",
   "about": {
     "title": "About",
-    "subtitle": "Version information for this softMC controller",
+    "subtitle": "Version information for this controller",
     "cabinet": "Cabinet FW",
     "grippers": "Grippers Library",
     "io": "I/O Mapping Library",
@@ -33,25 +33,25 @@
     "err_mcu": "Error: could not update MCU firmware",
     "firmware": "Update System Software",
     "firmware_confirm": {
-      "title": "Update softMC System Software",
-      "msg": "softMC will disconnect during the process. Make sure you have saved all changes before proceeding.",
+      "title": "Update System Software",
+      "msg": "The controller will disconnect during the process. Make sure you have saved all changes before proceeding.",
       "yes": "UPDATE SYSTEM SOFTWARE",
       "no": "CANCEL"
     },
     "modbus": "Modbus Configurator",
-    "reboot": "Reboot softMC",
+    "reboot": "Reboot Controller",
     "reboot_confirm": {
-      "title": "Reboot softMC?",
-      "msg": "softMC will reboot. Make sure you have saved all changes before proceeding.",
+      "title": "Reboot Controller?",
+      "msg": "The controller will reboot. Make sure you have saved all changes before proceeding.",
       "yes": "REBOOT",
       "no": "CANCEL"
     },
-    "rebooting": "Rebooting softMC...",
-    "title": "softMC Tools",
+    "rebooting": "Rebooting Controller...",
+    "title": "Controller Tools",
     "updating": "Updating System Software",
     "restore": {
       "default": "Default",
-      "desc": "Restore softMC to Factory State",
+      "desc": "Restore Controller to Factory State",
       "msg": "This will also reset the calibration parameters. Robot DH parameters and Mastering parameters must be reconfigured manually after the system is restored.",
       "robot": "Restore to the specified Robot",
       "title": "Factory Restore"
@@ -144,7 +144,7 @@
   "clear_msgs": "Clear messages",
   "close": "Close",
   "cloud": {
-    "na": "This feature is not available in the cloud, only on real softMC."
+    "na": "This feature is not available in the cloud, only on real controllers."
   },
   "connected": "Connected",
   "connecting": "Connecting",
@@ -157,6 +157,7 @@
     },
     "err_file": "FILE NOT FOUND",
     "err_move": "Error {{code}}: {{msg}}",
+    "err_param_count": "Can't monitor more than {{count}} parameters",
     "err_target": "INVALID TARGET",
     "external": {
       "3d": "3D Graph",
@@ -280,7 +281,7 @@
       "ordernum": "OrderNum is required",
       "commentRequire": "Comment is required",
       "used_life_req_error": "Used Life is required",
-      "used_life_req_max": "Maximum input limit {{max}}"
+      "used_life_req_max":"Maximum input limit {{max}}"
     },
     "history": {
       "tab_name": "Maintenance History",
@@ -305,7 +306,7 @@
   "disable": "Disable",
   "disabled": "Disabled",
   "disconnect": {
-    "title": "Connection to softMC was lost",
+    "title": "Connection to the controller was lost",
     "msg": "Check your network connection."
   },
   "disconnected": "Disconnected",
@@ -320,7 +321,7 @@
   "empty_list": "List is empty",
   "enable": "Enable",
   "error": {
-    "conn_mc": "Can't connect to softMC",
+    "conn_mc": "Can't connect to the controller",
     "conn_ws": "Can't establish a websocket connection",
     "err": "Error",
     "estop": "E-STOP IS PRESSED",
@@ -329,8 +330,8 @@
       "title": "System Software Update Failed",
       "msg": "Couldn't install the package on the controller."
     },
-    "invalid_etag": "It seems you recently updated ControlStudio+ and/or the softMC web server. Press CTRL + SHIFT + R to reload this page.",
-    "invalid_etag_tablet": "It seems you recently updated ControlStudio+ and/or the softMC web server. Click the REFRESH button to reload this page.",
+    "invalid_etag": "It seems you recently updated ControlStudio+ and/or the controller's web server. Press CTRL + SHIFT + R to reload this page.",
+    "invalid_etag_tablet": "It seems you recently updated ControlStudio+ and/or the controller's web server. Click the REFRESH button to reload this page.",
     "invalid_feature": "Invalid feature",
     "invalid_file_name": "Must begin with a letter, include only letters, numbers or _, and not exceed 32 characters",
     "invalid_full_name": "Must include first name and last name",
@@ -344,7 +345,7 @@
     "not_enough_space": "Not enough space left on the device",
     "orientation": "ControlStudio+ works in Landscape mode only.",
     "space": {
-      "msg": "Your softMC controller has less than 50MB of free space left on the disk. We recommend deleting files to free more space. The system may not operate properly while the device is low on space.",
+      "msg": "Your controller has less than 50MB of free space left on the disk. We recommend deleting files to free more space. The system may not operate properly while the device is low on space.",
       "title": "Low disk space"
     },
     "tp": "Couldn't load TP Libraries, check console log for more details...",
@@ -395,7 +396,13 @@
       "posY": "Position Y",
       "posXY": "Position XY",
       "set": "Set as current",
-      "title": "Calibrate"
+      "title": "Calibrate",
+      "dialog_close": {
+        "title": "Are you sure?",
+        "msg": "Calibration data will be lost, are you sure you want to close the calibration dialog?",
+        "yes": "CLOSE",
+        "no": "CANCEL"
+      }
     },
     "create": [
       "CREATE TOOL",
@@ -428,11 +435,10 @@
   "gap": "Gap",
   "gap_units": "Samples",
   "grippers": {
-    "btnCycle": "CYCLE",
+    "btnCycle": "RUN TEST",
     "btnTest": "TEST",
     "close": "Close Gripper",
-    "cycle": "Cycle Test",
-    "cycle_time": "Cycle Time",
+    "cycle_time": "Test Duration",
     "dout1": "Primary output",
     "dout2": "Secondary output",
     "ef": "End Effector",
@@ -482,7 +488,7 @@
       "toggle_comment": "Comment/Uncomment line"
     },
     "soon": "Coming Soon",
-    "title": "softMC Help Center",
+    "title": "ControlStudio+ Help Center",
     "tour": "Tour",
     "tourDisabled": "Tour is disabled because TP.LIB is not loaded",
     "wiki": "softMC Wiki",
@@ -530,7 +536,7 @@
   "index": "Index",
   "inputs": {
     "slider": "Slider",
-    "slider_max": "Slider Min. Value",
+    "slider_max": "Slider Max. Value",
     "slider_min": "Slider Min. Value",
     "text": "Text Box",
     "toggle": "On/Off Switch",
@@ -595,7 +601,7 @@
       "4": "Simulated"
     },
     "updating": "Updating I/O modules",
-    "updating_confirm": "This will reboot softMC. Make sure you have saved all your changes before updating the I/O modules.",
+    "updating_confirm": "This will reboot the controller. Make sure you have saved all your changes before updating the I/O modules.",
     "updating_succuss": "I/O modules updated successfuly"
   },
   "jogScreen": {
@@ -660,7 +666,7 @@
     "user_new": "created a new user"
   },
   "login": {
-    "mc_offline": "Waiting for softMC to connect"
+    "mc_offline": "Waiting for controller to connect"
   },
   "long": "Long",
   "longs": "Longs",
@@ -742,10 +748,14 @@
       "entry_pos": "Entry Position",
       "err_incomp_robot": "Incompatible Robot",
       "exceed": "Can exceed pallet bounds",
+      "export": "EXPORT...",
+      "import": "IMPORT...",
       "index_custom": "Custom",
       "index_empty": "Empty",
       "index_full": "Full",
       "invalid_val": "Select pallet current index",
+      "item_new": "Add a new item",
+      "item_rotate": "Rotate 90 degrees",
       "level": "Level",
       "levels": "Levels",
       "levels_in_pallet": "Levels in pallet",
@@ -758,6 +768,7 @@
       "origin_status": "Origin Status",
       "posX": "Position X",
       "posY": "Position XY",
+      "reset": "CLEAR LEVEL",
       "ret": "Retract",
       "ret_dir": "Retract Direction",
       "save": "Save changes to {{name}}?",
@@ -793,9 +804,16 @@
       },
       "finish": "Moving robot to the original position...",
       "moving": "Moving robot to start position...",
-      "title": "Robot is now performing Payload Identification",
+      "result-dialog": {
+        "apply": "APPLY AND CLOSE",
+        "max": "Max relative torque error",
+        "mean": "Mean relative torque error",
+        "title": "Payload Identification Results"
+      },
+      "robot_disabled": "Robot must be enabled",
       "start": "START IDENTIFICATION...",
-      "subtitle": "During this process, the robot will move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles."
+      "subtitle": "During this process, the robot will move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles.",
+      "title": "Robot is now performing Payload Identification"
     },
     "inertia": "Inertia",
     "mass": "Mass",
@@ -804,6 +822,7 @@
     "offX": "Radius Offset",
     "payload": "Payload",
     "relative_pos": "Amplitude",
+    "reset_msg": "This payload's values will be reset. This cannot be undone. Are you sure you want to proceed?",
     "start_pos": "Start Position",
     "time": "Duration"
   },
@@ -1014,6 +1033,7 @@
       "autostart": "Run Project automatically",
       "backup": "Backup",
       "changing": "Changing project...",
+      "continue_prj": "Resume Project",
       "controller": "Controller",
       "copy_name": "New name",
       "create": "Create",
@@ -1069,6 +1089,7 @@
         "title": "Overwrite Existing Project?",
         "msg": "Project {{name}} already exists. Do you want to overwrite it with the imported project?"
       },
+      "pause_prj": "Pause Project",
       "prg": "Program",
       "redo": "Redo",
       "remote_disable": "Disable Remote Mode",
@@ -1092,7 +1113,7 @@
       "stp_over": "Step Over",
       "undo": "Undo",
       "unload": "Unload",
-      "upload": "Upload to softMC",
+      "upload": "Upload to Controller",
       "vrate": "Project Velocity",
       "Auxiliary": "Background Tasks",
       "newBackgroundTask": "New Background Task"
@@ -1228,7 +1249,7 @@
     "touch_app": "Teach",
     "settings": "System Configration",
     "playlist_play": "Task Manager",
-    "apps": "softMC Tools",
+    "apps": "Controller Tools",
     "error": "Error History",
     "list": "Log",
     "help_outline": "Help"
@@ -1344,8 +1365,9 @@
     },
     "en_tooltip": "Waiting for acknowledge",
     "password_change": {
-      "btn": "CHANGE PASSWORD...",
-      "change": "CHANGE PASSWORD",
+      "btn": "CHANGE SAFETY PASSWORD...",
+      "change": "Change Safety password",
+      "err": "Could not change password",
       "new": "New Password",
       "old": "Current Password",
       "title": "Safety Card Admin Password Change"
@@ -1394,8 +1416,8 @@
     "background": "Background",
     "trace": "Show Path"
   },
-  "softMC_log": "softMC Log",
-  "softMC User": "softMC User",
+  "softMC_log": "Controller Log",
+  "softMC User": "Controller User",
   "standby": "Stand by, this process may take a few minutes...",
   "stat": {
     "err_critical": {
@@ -1454,7 +1476,7 @@
     "simulator": "3D Simulator",
     "task": "Task Manager",
     "teach": "Teach",
-    "tools": "softMC Tools"
+    "tools": "Controller Tools"
   },
   "targetPoint": "TargetPoint",
   "tasks": {
@@ -1492,7 +1514,7 @@
   "teach_var": "Teach {{name}}?",
   "terminal": "Terminal",
   "terminal_restricted": "Terminal is not available for privilege level \"{{user}}\"",
-  "time_update": "softMC Date and Time is synced",
+  "time_update": "Controller Date and Time are synced",
   "tool": "Robot Tool",
   "tool_calib": {
     "calibrate_tool": "CALIBRATE TOOL",
@@ -1609,6 +1631,7 @@
     "err_username_reserved": "Reserved username. Enter another one.",
     "full": "Full Name",
     "new": "New User",
+    "password_hint": "Leave blank to remain unchanged",
     "permission": "Permission",
     "profilePic": "Profile Picture",
     "title": "User Manager",
@@ -1632,11 +1655,11 @@
   "version": {
     "releaseNote": "Release Notes",
     "userLicense": "User License",
-    "softMCDes": "This is softMC",
+    "softMCDes": "This is Controller",
     "GUIDes": "This is GUI",
     "webServerDes": "This is web server",
     "successDialogTitle": "Success!",
-    "successDialogMsg": "The OS update was successful. The new version is: ",
+    "successDialogMsg": "OS update successful. The new version is: ",
     "errorDialogTitle": "Failed!",
     "errorDialogMsg": "OS update failed. Reinstall previous version: ",
     "releaseNoteTitle": "ControlStudio+ Release Notes"
@@ -1705,7 +1728,7 @@
   "wp": "Work Piece",
   "wps": "Work Pieces",
   "diagnosis": {
-    "name": "KRCSDiag",
+    "name": "KRC S Diagnostics",
     "prepareDiagnosis": "Preparing Diagnosis...",
     "generatingFiles": "Generating Files...",
     "downloadZipFile": "Downloading ZIP file...",

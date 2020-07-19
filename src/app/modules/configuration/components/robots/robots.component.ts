@@ -1,3 +1,4 @@
+import { SingleInputDialogComponent } from './../../../../components/single-input-dialog/single-input-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { RobotService } from '../../../core/services/robot.service';
 import { MatDialog, MatSnackBar, MatDatepickerInputEvent } from '@angular/material';
@@ -127,7 +128,7 @@ export class RobotsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const words = ['changeOK', 'robots.updating'];
+    const words = ['changeOK', 'robots.updating', 'safety.password_change'];
     this.trn.get(words).subscribe(words => {
       this.wordOk = words['changeOK'];
       this.wordUpdating = words['robots.updating'];
@@ -230,8 +231,7 @@ export class RobotsComponent implements OnInit {
   onNameChange() {
     if (this.sysName.invalid) return;
     this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName.value + '")');
-    //   this.snack.open(this.wordOk, '', { duration: 1500 });
-      this.snackbarService.openTipSnackBar(this.wordOk);
+    this.snackbarService.openTipSnackBar(this.wordOk);
   }
 
   private async refreshDisp() {
@@ -316,7 +316,6 @@ export class RobotsComponent implements OnInit {
           return;
         }
         if(ret.result === '0') {
-        //   this.snack.open(this.wordOk, '', { duration: 1500 });
           this.snackbarService.openTipSnackBar(this.wordOk);
         }
       } else {
@@ -332,8 +331,7 @@ export class RobotsComponent implements OnInit {
           )
           .then((ret: MCQueryResponse) => {
             if (ret.result === '0') {
-                // this.snack.open(this.wordOk, '', { duration: 1500 });
-                this.snackbarService.openTipSnackBar(this.wordOk);
+              this.snackbarService.openTipSnackBar(this.wordOk);
             }
           });
       }
@@ -393,7 +391,31 @@ export class RobotsComponent implements OnInit {
     this.prj.setDebugMode(on);
     this.task.setDebugMode(on);
     this.prg.setDebugMode(on);
-    
+  }
+
+  changeSafetyPassword() {
+    this.dialog.open(SingleInputDialogComponent,{
+      data: {
+        icon: 'security',
+        title: this.words['safety.password_change']['change'],
+        placeholder: this.words['safety.password_change']['new'],
+        accept: this.words['safety.password_change']['change'].toUpperCase(),
+        regex: '\\S+$',
+        maxLength: 32
+      }
+    }).afterClosed().subscribe(async ret=>{
+      if (ret) {
+        try {
+          const change = await this.api.changeSafetyPass(ret);
+          if (change) {
+            this.snackbarService.openTipSnackBar(this.wordOk);
+            return;
+          }
+        } catch (err) {
+        }
+        this.snackbarService.openTipSnackBar(this.words['safety.password_change']['err']);
+      }
+    });
   }
 }
 

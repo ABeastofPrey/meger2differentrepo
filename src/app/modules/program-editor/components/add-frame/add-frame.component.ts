@@ -28,7 +28,7 @@ export class AddFrameComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.values = ['0', '0', '0', '0', '0', '0'];
+    this.values = [0,0,0,0,0,0];
   }
 
   closeDialog(result?: boolean) {
@@ -37,7 +37,8 @@ export class AddFrameComponent implements OnInit {
 
   get validateValues() : boolean {
     if (this.isArray) return true;
-    return !this.values.some(v=>v.toString().trim() === '');
+    const ret = this.values.some(v=>v === null || v.toString().trim().length === 0);
+    return !ret;
   }
 
   add() {

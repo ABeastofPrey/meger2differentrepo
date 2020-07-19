@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable } from '@angular/core';
+import { Component, OnInit, Injectable, NgZone } from '@angular/core';
 import {
   MatTreeFlatDataSource,
   MatTreeFlattener,
@@ -67,13 +67,13 @@ export class ChecklistDatabase {
   initialize() {
     // GET INPUTS AND OUTPUTS
     const promises = [
-      this.ws.query('?getIOList("din","usr","bit","dec")'),
-      this.ws.query('?getIOList("dout","usr","bit","dec")'),
+      this.ws.query('?iomap_get_dropdown_list("inputs")'),
+      this.ws.query('?iomap_get_dropdown_list("outputs")'),
     ];
-    Promise.all(promises).then((ret: MCQueryResponse[]) => {
+    return Promise.all(promises).then((ret: MCQueryResponse[]) => {
       this.inputs = JSON.parse(ret[0].result) as SysIO[];
       this.outputs = JSON.parse(ret[1].result) as SysIO[];
-      this.ws
+      return this.ws
         .query('?grp_end_effector_get_list')
         .then((ret: MCQueryResponse) => {
           if (ret.err || ret.result.length === 0) return;
@@ -83,7 +83,7 @@ export class ChecklistDatabase {
           for (const ef of efs) {
             promises.push(this.ws.query('?grp_get_gripper_list("' + ef + '")'));
           }
-          Promise.all(promises).then((ret: MCQueryResponse[]) => {
+          return Promise.all(promises).then((ret: MCQueryResponse[]) => {
             for (let i = 0; i < efs.length; i++) {
               const children: GripperTableNode[] = [];
               const ef = new EndEffector();
@@ -121,6 +121,7 @@ export class ChecklistDatabase {
       this.data.unshift(child);
     }
     this.dataChange.next(this.data);
+    return child;
   }
 
   deleteItem(node: GripperTableNode) {
@@ -148,14 +149,9 @@ export class ChecklistDatabase {
   providers: [ChecklistDatabase],
 })
 export class GripperScreenComponent implements OnInit {
-  flatNodeMap: Map<GripperTableFlatNode, GripperTableNode> = new Map<
-    GripperTableFlatNode,
-    GripperTableNode
-  >();
-  nestedNodeMap: Map<GripperTableNode, GripperTableFlatNode> = new Map<
-    GripperTableNode,
-    GripperTableFlatNode
-  >();
+
+  flatNodeMap: Map<GripperTableFlatNode, GripperTableNode> = new Map<GripperTableFlatNode,GripperTableNode>();
+  nestedNodeMap: Map<GripperTableNode, GripperTableFlatNode> = new Map<GripperTableNode,GripperTableFlatNode>();
   selectedParent: GripperTableFlatNode | null = null;
   newItemName = '';
   treeControl: FlatTreeControl<GripperTableFlatNode>;
@@ -165,6 +161,7 @@ export class GripperScreenComponent implements OnInit {
 
   private words: {};
   private notifier: Subject<boolean> = new Subject();
+  private _initDone = false;
 
   constructor(
     public data: DataService,
@@ -173,7 +170,8 @@ export class GripperScreenComponent implements OnInit {
     private dialog: MatDialog,
     private trn: TranslateService,
     public login: LoginService,
-    public mgr: ScreenManagerService
+    public mgr: ScreenManagerService,
+    private _zone: NgZone
   ) {}
 
   getLevel = (node: GripperTableFlatNode) => {
@@ -238,7 +236,9 @@ export class GripperScreenComponent implements OnInit {
             this.ws
               .query('?grp_end_effector_new("' + name + '")')
               .then((ret: MCQueryResponse) => {
-                if (ret.result === '0') this.database.insertItem(null, name);
+                if (ret.result === '0') {
+                  this.selectedNode = this.database.insertItem(null, name);
+                }
               });
           } else {
             const ef = node.item;
@@ -297,13 +297,16 @@ export class GripperScreenComponent implements OnInit {
   }
 
   setContent(node: GripperTableFlatNode) {
-    const flatNode = this.flatNodeMap.get(node);
-    this.selectedNode = flatNode;
-    if (flatNode.nodeType === 'ef') {
-      this.getEndEffectorData(flatNode as EndEffector);
-    } else {
-      this.getGripperData(flatNode as Gripper);
-    }
+    this._zone.run(()=>{
+      const flatNode = this.flatNodeMap.get(node);
+      this.selectedNode = flatNode;
+      if (flatNode.nodeType === 'ef') {
+        this.getEndEffectorData(flatNode as EndEffector);
+      } else {
+        this.getGripperData(flatNode as Gripper);
+      }
+    });
+
   }
 
   test() {
@@ -319,11 +322,13 @@ export class GripperScreenComponent implements OnInit {
   }
 
   private getEndEffectorData(ef: EndEffector) {
+    ef.payload = null;
+    ef.payloadItem = null;
     const promises = [
       this.ws.query('?GRP_GET_END_EFFECTOR_PAYLOAD("' + ef.item + '")'),
       this.ws.query('?GRP_GET_ITEM_PAYLOAD("' + ef.item + '")'),
     ];
-    Promise.all(promises).then((ret: MCQueryResponse[]) => {
+    return Promise.all(promises).then((ret: MCQueryResponse[]) => {
       for (const p of this.data.payloads) {
         if (p.name === ret[0].result) ef.payload = p;
         if (p.name === ret[1].result) ef.payloadItem = p;
@@ -344,8 +349,6 @@ export class GripperScreenComponent implements OnInit {
       this.ws.query('?GRP_GRIPPER_COMMAND_INVERT_GET(' + efAndGrp + ',2)'),
       this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + efAndGrp + ',1)'),
       this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + efAndGrp + ',2)'),
-      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"OPEN")'),
-      this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"CLOSE")')
     ];
     Promise.all(promises).then((ret: MCQueryResponse[]) => {
       grp.useTool = ret[0].result === '1';
@@ -358,11 +361,10 @@ export class GripperScreenComponent implements OnInit {
       grp.cmd2_invert = ret[7].result === '1';
       grp.fb1_invert = ret[8].result === '1';
       grp.fb2_invert = ret[9].result === '1';
-      grp.sleep_open = Number(ret[10].result);
-      grp.sleep_close = Number(ret[11].result);
       grp.cmd2_enabled = grp.cmd2.length > 0;
       grp.fb1_enabled = grp.fb1.length > 0;
       grp.fb2_enabled = grp.fb2.length > 0;
+      this.refreshSleepTimes(grp);
     });
   }
 
@@ -490,15 +492,24 @@ export class GripperScreenComponent implements OnInit {
     });
   }
 
-  updateGripperSleep(openClose: string) {
+  async updateGripperSleep(openClose: string) {
     const grp = this.selectedNode.item;
     const ef = this.selectedNode.parent.item;
     const gripper: Gripper = this.selectedNode as Gripper;
     const val = openClose === 'OPEN' ? gripper.sleep_open : gripper.sleep_close;
     const cmd = '?GRP_GRIPPER_SET_SLEEP_TIME';
-    this.ws.query(
-      cmd + '("' + ef + '","' + grp + '","' + openClose + '",' + val + ')'
-    );
+    const ret = await this.ws.query(cmd + '("' + ef + '","' + grp + '","' + openClose + '",' + val + ')');
+    if (ret.result !== '0') {
+      this.refreshSleepTimes(gripper);
+    }
+  }
+
+  async refreshSleepTimes(grp: Gripper) {
+    const efAndGrp = '"' + grp.parent.item + '","' + grp.item + '"';
+    const ret1 = await this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"OPEN")');
+    const ret2 = await this.ws.query('?GRP_GRIPPER_GET_SLEEP_TIME(' + efAndGrp + ',"CLOSE")');
+    grp.sleep_open = Number(ret1.result);
+    grp.sleep_close = Number(ret2.result);
   }
 
   updateGripperTool(e: MatSelectChange) {
@@ -546,9 +557,19 @@ export class GripperScreenComponent implements OnInit {
     this.database.dataChange.pipe(takeUntil(this.notifier)).subscribe(data => {
       this.dataSource.data = data;
     });
-    this.ws.isConnected.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+    this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(async stat => {
       if (!stat) return;
-      this.database.initialize();
+      this._zone.run(async()=>{
+        await this.database.initialize();
+        if (!this._initDone) {
+          for (const node of this.dataSource.data) {
+            if (node.nodeType === 'ef') {
+              await this.getEndEffectorData(node as EndEffector);
+            }
+          }
+          this._initDone = true;
+        }
+      });
     });
   }
 

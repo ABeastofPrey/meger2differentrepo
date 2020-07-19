@@ -41,20 +41,18 @@ export class CommonService {
     }
     this.refreshTheme();
     // calculate font width
-    const e: HTMLInputElement = document.createElement('input');
-    e.size = 1;
+    const e: HTMLElement = document.createElement('div');
     e.style.fontFamily = 'monospace';
     e.style.fontSize = '24px';
     e.style.padding = '0';
     e.style.border = '0';
     e.style.outline = '0';
+    e.style.position = 'absolute';
+    e.style.top = '0';
+    e.innerText = 'a';
     document.body.appendChild(e);
-    this._fontWidth = e.getBoundingClientRect().width / 2;
-    const isWin = navigator && navigator.platform === 'Win32';
-    if (this.isTablet && !isWin) {
-      this._fontWidth = this._fontWidth * 1.5; // because of screen scaling
-    }
-    console.log(this._fontWidth);
+    this._fontWidth = e.getBoundingClientRect().width;
+    // console.log(this._fontWidth);
     e.remove();
   }
 
@@ -101,6 +99,13 @@ export class CommonService {
     const s = screenfull as Screenfull;
     if (s.enabled) {
       s.request();
+    }
+  }
+
+  toggleFullScreen() {
+    const s = screenfull as Screenfull;
+    if (s.enabled) {
+      s.toggle();
     }
   }
 

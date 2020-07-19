@@ -1,6 +1,6 @@
 <div class="mat-typography">
 	<div class="title mat-elevation-z1">
-		<mat-icon>security</mat-icon>&nbsp;&nbsp;{{ (hasSafety ? 'password_confirm' : 'mode_selector') | translate }} <span *ngIf="hasSafety">({{ username }})</span>
+		<mat-icon>security</mat-icon>&nbsp;&nbsp;{{ 'password_confirm' | translate }}
 	</div>
 	<div class="name-wrapper">
     <div class="center-vertical" *ngIf="data.withModeSelector">
@@ -12,7 +12,7 @@
         <mat-button-toggle color="primary" value="R" [disabled]="data.currentMode === 'R'">R</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-		<mat-form-field appearance="outline" style="margin-top: 24px;" *ngIf="hasSafety">
+		<mat-form-field appearance="outline" style="margin-top: 24px;">
 
 			<input
 				matInput
@@ -24,13 +24,13 @@
 				(keydown)="isError = false"
 			/>
 		</mat-form-field>
-		<div class="warn" *ngIf="isError">{{ (hasSafety ? 'password_err' : 'error.err') | translate }}</div>
+		<div class="warn" *ngIf="isError">{{ 'password_err' | translate }}</div>
 	</div>
 	<div class="actions">
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-raised-button color="primary" (click)="confirm()" [disabled]="hasSafety && (val === null || val.length === 0)">
+		<button mat-raised-button color="primary" (click)="confirm()" [disabled]="val === null || val.length === 0">
 			{{ 'button.confirm' | translate }}
 		</button>
 	</div>

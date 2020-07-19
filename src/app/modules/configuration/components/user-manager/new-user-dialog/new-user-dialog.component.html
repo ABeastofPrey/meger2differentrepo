@@ -38,7 +38,7 @@
 			ktype="text"
 		/>
 		<mat-hint align="start" *ngIf="data && passwordValidator.invalid"
-			><strong>Leave blank to remain unchanged</strong>
+			><strong>{{ 'userManager.password_hint' | translate }}</strong>
 		</mat-hint>
 	</mat-form-field>
 	<mat-form-field>

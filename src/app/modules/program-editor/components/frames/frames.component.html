@@ -11,7 +11,14 @@
 	<div class="table-wrapper">
 		<as-split direction="horizontal">
 			<as-split-area size="30">
-				<mat-table #table [dataSource]="dataSource" matSort class="data-table mat-elevation-z3">
+				<mat-table
+					#table
+					[dataSource]="dataSource"
+					matSort
+					matSortActive="name"
+					matSortDirection="asc"
+					matSortDisableClear
+					class="data-table mat-elevation-z3">
 					<ng-container matColumnDef="select">
 						<mat-header-cell *matHeaderCellDef class="dont-flex">
 							<mat-checkbox
@@ -95,19 +102,19 @@
 							*ngIf="selectedVar && selectedVar.name !== 'VOID'"
 							mat-raised-button
 							color="warn"
-							[disabled]="busy"
+							[disabled]="busy || isElementCurrent(selectedVar.name)"
 							(click)="deleteSelected()"
 						>
 							{{ 'dataScreen.del' | translate: selectedVar }}
 						</button>
 					</div>
 					<div class="var-details" *ngIf="selectedVar">
-						<mat-form-field *ngFor="let val of this._value; let i = index" floatLabel="never">
+						<mat-form-field *ngFor="let val of _value; let i = index" floatLabel="never">
 							<span matPrefix style="font-weight: bold;">{{ this._legend[i] }}:&nbsp;&nbsp;</span>
 							<input
 								matInput
-								[placeholder]="this._legend[i]"
-								[(ngModel)]="this._value[i].value"
+								[placeholder]="_legend[i]"
+								[(ngModel)]="_value[i].value"
 								(change)="onKeyboardClose()"
 								virtualKeyboard
 								ktype="numeric"

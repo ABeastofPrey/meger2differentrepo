@@ -204,7 +204,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     );
     this.subscriptions.push(
       this.prj.onExpandDep.subscribe(name => {
-        const depsNode = this.nestedDataSource.data[1];
+        const depsNode = this.nestedDataSource.data[2];
         this.nestedTreeControl.expand(depsNode);
       })
     );

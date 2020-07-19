@@ -562,14 +562,18 @@ export class ProgramEditorService {
 
   run() {
     if (this.activeFile === null) return;
-    const prj = this.prj.currProject.value.name;
-    const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
     if (this.fileRef) {
-      this.ws.query('?tp_run_app("' + prj + '","' + file + '")');
+      const prj = this.prj.currProject.value;
+      const prjName = prj ? prj.name : null;
+      const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
+      this.ws.query('?tp_run_app("' + prjName + '","' + file + '")');
       return;
     }
     if (endsWithBKG(this.activeFile)) {
-      const cmd = `BKG_runProgram("${prj}", "${file}", ".BKG")`;
+      const prj = this.prj.currProject.value;
+      const prjName = prj ? prj.name : null;
+      const file = this.activeFile.substring(0, this.activeFile.indexOf('.'));
+      const cmd = `BKG_runProgram("${prjName}", "${file}", ".BKG")`;
       this.ws.query(cmd);
     } else {
       this.ws.query('KillTask ' + this.activeFile).then(() => {
@@ -601,10 +605,7 @@ export class ProgramEditorService {
       this.ws.query('KillTask ' + this.activeFile).then(() => {
         this.ws.query('Unload ' + this.activeFile).then((ret: MCQueryResponse) => {
           if (ret.result.length > 0) {
-            
-            //   this.snack.open(ret.result, '', { duration: 2000 });
-              this.snackbarService.openTipSnackBar(ret.result); 
-            
+            this.snackbarService.openTipSnackBar(ret.result); 
           }
           this.busy = false;
         });
@@ -796,7 +797,7 @@ export class ProgramEditorService {
                 this.status.statusCode === TASKSTATE_STOPPED
               ) {
                 this.getBackTrace().then((bt: Backtrace) => {
-                  if (bt === null) return;
+                  if (bt === null || this.status === null) return;
                   if (bt.files[0].name === file) {
                     this.backtrace = null;
                     this.status.programLine = bt.files[0].line;

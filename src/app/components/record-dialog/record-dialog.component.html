@@ -50,6 +50,8 @@
     [disabled]="
       (data && data.params.length === 0 && recMode === '1') ||
       duration === null ||
+      gap === null ||
+      duration === null ||
       gap < 1 ||
       duration < 10 ||
       fileName.invalid

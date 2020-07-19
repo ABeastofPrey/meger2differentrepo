@@ -6,12 +6,11 @@
 			<button mat-raised-button color="primary" (click)="close()">
 				{{ 'button.close' | translate }} {{ data.grp }}
 			</button>
-			<h3 style="margin-top: 16px;">{{ 'grippers.cycle' | translate }}</h3>
+			<div style="margin: 8px 0;"></div>
 			<mat-form-field class="time">
 				<input
 					matInput
 					placeholder="{{ 'grippers.cycle_time' | translate }}"
-					
 					[(ngModel)]="time"
 					(change)="onCycleChange()"
 					virtualKeyboard

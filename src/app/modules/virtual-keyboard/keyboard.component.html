@@ -1,4 +1,11 @@
-<div class="wrapper virtual-keyboard tablet-ui mat-typography">
+<div
+  class="wrapper virtual-keyboard tablet-ui mat-typography"
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+  cdkDragBoundary="body">
+  <div class="dragger" cdkDragHandle>
+    <mat-icon>open_with</mat-icon>
+  </div>
   <div class="input-wrapper center-vertical">
     <div class="input-container">
       <div class="placeholder mat-subtitle-color">{{ placeholder }}</div>

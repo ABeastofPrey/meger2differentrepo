@@ -7068,6 +7068,18 @@
         "cmn": "JUMP-起点和/或目标点的Z坐标大于LimZ"
     },
     {
+        "code": 13182,
+        "module": "Robot",
+        "msg": "JUMP - multiple pls positions not allowed with JUMP family of commands",
+        "cmn": "JUMP-JUMP系列命令不允许多个pls位置"
+    },
+    {
+        "code": 13183,
+        "module": "Robot",
+        "msg": "PATHLENGTH cannot be used as PLSSOURCE in joint interpolated motion",
+        "cmn": "PATHLENGTH不能用作关节插补运动中的PLSSOURCE"
+    },
+    {
         "code": 16001,
         "module": "Root",
         "msg": "SSMC Hardware............",
@@ -7300,12 +7312,6 @@
         "module": "Root",
         "msg": "Microchip PIC............",
         "cmn": "Microchip PIC ............"
-    },
-    {
-        "code": 16040,
-        "module": "Root",
-        "msg": "Motion controller Firmware Version Number = 4.20.3r4m572-C2 , Date = Feb  3 2020 [07:07:17] loaded",
-        "cmn": "运动控制器固件版本号= 4.20.3r4m572-C2，日期= 2020年2月3日[07:07:17]已加载"
     },
     {
         "code": 16041,
@@ -7758,103 +7764,103 @@
         "cmn": "文件不存在"
     },
     {
-        "code": 21001,
+        "code": 23001,
         "module": "I/O system",
         "msg": "Cannot create semaphore",
         "cmn": "无法创建信号量"
     },
     {
-        "code": 21002,
+        "code": 23002,
         "module": "I/O system",
         "msg": "Invalid memory address",
         "cmn": "无效的内存地址"
     },
     {
-        "code": 21003,
+        "code": 23003,
         "module": "I/O system",
         "msg": "Invalid I/O address",
         "cmn": "无效的I / O地址"
     },
     {
-        "code": 21004,
+        "code": 23004,
         "module": "I/O system",
         "msg": "Invalid address",
         "cmn": "无效地址"
     },
     {
-        "code": 21005,
+        "code": 23005,
         "module": "I/O system",
         "msg": "Invalid bit number",
         "cmn": "无效的位数"
     },
     {
-        "code": 21006,
+        "code": 23006,
         "module": "I/O system",
         "msg": "Invalid range",
         "cmn": "范围无效"
     },
     {
-        "code": 21007,
+        "code": 23007,
         "module": "I/O system",
         "msg": "Invalid port index",
         "cmn": "无效的端口索引"
     },
     {
-        "code": 21008,
+        "code": 23008,
         "module": "I/O system",
         "msg": "Cannot delete semaphore",
         "cmn": "无法删除信号量"
     },
     {
-        "code": 21009,
+        "code": 23009,
         "module": "I/O system",
         "msg": "Invalid value",
         "cmn": "无效值"
     },
     {
-        "code": 21010,
+        "code": 23010,
         "module": "I/O system",
         "msg": "PLS toggling time exceeded cycle time",
         "cmn": "PLS切换时间超过循环时间"
     },
     {
-        "code": 21011,
+        "code": 23011,
         "module": "I/O system",
         "msg": "Too many PLS toggling requested or cycle source is not routed to PLS module",
         "cmn": "请求的PLS切换过多或循环源未路由到PLS模块"
     },
     {
-        "code": 21012,
+        "code": 23012,
         "module": "I/O system",
         "msg": "Invalid error code",
         "cmn": "无效的错误代码"
     },
     {
-        "code": 21013,
+        "code": 23013,
         "module": "I/O system",
         "msg": "Cannot create PLS task",
         "cmn": "无法创建PLS任务"
     },
     {
-        "code": 21014,
+        "code": 23014,
         "module": "I/O system",
         "msg": "PDO Parameters Error: make sure Digital IOs PDO entries are mapped in the drive",
         "cmn": "PDO参数错误：确保数字IO PDO条目已映射到驱动器中"
     },
     {
-        "code": 21015,
+        "code": 23015,
         "module": "I/O system",
         "msg": "Slave Address Error",
         "cmn": "从站地址错误"
     },
     {
-        "code": 21016,
+        "code": 23016,
         "module": "I/O system",
         "msg": "Only 1 or 0 allowed.",
         "cmn": "仅允许1或0。"
     },
     {
-        "code": 21017,
+        "code": 23017,
         "module": "I/O system",
         "msg": "For simulated , only one IO each time",
         "cmn": "对于模拟，每次仅一个IO"

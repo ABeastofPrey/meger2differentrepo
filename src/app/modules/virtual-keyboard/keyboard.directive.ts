@@ -23,7 +23,8 @@ import { TerminalService } from '../home-screen/services/terminal.service';
   selector: '[virtualKeyboard]',
   providers: [NgModel, FormControlName],
 })
-export class KeyboardDirective {
+export class KeyboardDirective implements OnInit {
+
   private _dialogOpen = false;
   private ref?: MatDialogRef<KeyboardDialog>;
 
@@ -92,19 +93,21 @@ export class KeyboardDirective {
     @Optional() private ctrl: NgControl,
     private name: FormControlName
   ) {
-    const element = el.nativeElement as HTMLInputElement;
+  }
+
+  ngOnInit(): void {
+    const element = this.el.nativeElement as HTMLInputElement;
     element.setAttribute('autocomplete','off');
     element.setAttribute('step','any');
-    this.setInputFilter(element, val=>{
-      if (this.ktype && this.ktype.includes('numeric')) {
-        return /^-?\d*\.?\d*$/.test(val);
-      }
-      return true;
-    });
+    if (this.ktype && this.ktype.includes('numeric')) {
+      const reg = this.ktype.includes('pos') ? /^\d*\.?\d*$/ : /^-?\d*\.?\d*$/;
+      this.setInputFilter(element, val=>reg.test(val));
+    }
   }
 
   private setInputFilter(textbox: Element, inputFilter: (value: string) => boolean): void {
     ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(event=> {
+      const context = this;
       textbox.addEventListener(event, function(this: (HTMLInputElement | HTMLTextAreaElement) & {oldValue: string; oldSelectionStart: number | null, oldSelectionEnd: number | null}) {
         if (inputFilter(this.value)) {
           this.oldValue = this.value;
@@ -112,13 +115,27 @@ export class KeyboardDirective {
           this.oldSelectionEnd = this.selectionEnd;
         } else if (Object.prototype.hasOwnProperty.call(this, 'oldValue')) {
           this.value = this.oldValue;
-          if (this.oldSelectionStart !== null &&
-            this.oldSelectionEnd !== null) {
+          if (this.oldSelectionStart !== null && this.oldSelectionEnd !== null) {
             this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
           }
         } else {
           this.value = "";
         }
+        if (event !== 'input') return;
+        // update model
+        const curr = this.value;
+        const num = Number(this.value);
+        const val = this.value === '' || isNaN(num) ? null : num;
+        if (context.ngModel) {
+          context.ngModel.control.setValue(val);
+        }
+        if (context.ctrl) {
+          context.ctrl.control.setValue(val);
+        }
+        if (context.name && context.name.control) {
+          context.name.control.setValue(val);
+        }
+        this.value = curr;
       });
     });
   }

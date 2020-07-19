@@ -16,9 +16,9 @@
 			color="warn"
 			style="flex: 1 0 50px!important;"
 			[disabled]="isRefreshing"
-			(click)="deleteChecked()"
-		>
-			{{ 'button.delete_selected' | translate }}
+			(click)="deleteChecked()">
+			<span *ngIf="!cmn.isTablet">{{ 'button.delete_selected' | translate }}</span>
+			<mat-icon *ngIf="cmn.isTablet">delete_sweep</mat-icon>
 		</button>
 	</div>
 	<div class="behind" *ngIf="!shouldDisplayTable">
@@ -56,9 +56,12 @@
 					{{ 'name' | translate }}
 				</th>
 				>
-				<td mat-cell *matCellDef="let element">{{ element.name }}
-					<span *ngIf="element.isArr"> [...]</span>
-					<span *ngIf="element.isTwoDimension"> [...]</span>
+				<td mat-cell *matCellDef="let element">
+					<div class="name-wrap">
+						{{ element.name }}
+						<span *ngIf="element.isArr"> [...]</span>
+						<span *ngIf="element.isTwoDimension"> [...]</span>
+					</div>
 				</td>
 			</ng-container>
 			<ng-container matColumnDef="arrIndex">
@@ -176,7 +179,7 @@
 					>
 						{{ 'button.teach' | translate }}
 					</button>
-					<button mat-raised-button color="warn" style="margin-right: 24px;" (click)="deleteSelected(element)" [disabled]="isRefreshing">
+					<button mat-raised-button color="warn" (click)="deleteSelected(element)" [disabled]="isRefreshing">
 						<mat-icon>delete</mat-icon>
 					</button>
 				</td>

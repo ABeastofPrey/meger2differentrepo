@@ -85,15 +85,15 @@ const routes: Routes = [
           permission: 99,
         },
       },
-      {
-        path: 'safety',
-        component: SafetyConfiguratorComponent,
-        canActivate: [PermissionGuard],
-        data: {
-          permission: 0,
-          safetyCard: true
-        }
-      },
+      // {
+      //   path: 'safety',
+      //   component: SafetyConfiguratorComponent,
+      //   canActivate: [PermissionGuard],
+      //   data: {
+      //     permission: 0,
+      //     safetyCard: true
+      //   }
+      // },
       {
         path: '**',
         redirectTo: 'about',

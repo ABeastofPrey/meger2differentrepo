@@ -45,8 +45,7 @@ const fakeService = {
         cb();
       }
     })
-  }),
-  clearAllDriveFault: () => Promise.resolve()
+  })
 };
 const ws = jasmine.createSpyObj('WebsocketService', ['']);
 ws.isConnected = {
@@ -127,9 +126,4 @@ describe('LogBookComponent', () => {
       expect(component.pageIndex).toEqual(0);
     });
   }));
-
-  it('should clearAllDriveFault', () => {
-    component.clearAllDriveFault();
-    expect(true).toBe(true);
-  })
 });

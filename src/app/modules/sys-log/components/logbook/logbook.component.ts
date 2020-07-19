@@ -91,22 +91,15 @@ export class LogBookComponent implements OnInit {
         this.pageIndex = 0;
     }
 
-    public pageChange({ pageIndex, pageSize }: PageEvent): void {
+    pageChange({ pageIndex, pageSize }: PageEvent): void {
         this.pageIndex = pageIndex;
         const strIndex = pageIndex * pageSize;
         const endIndex = strIndex + pageSize;
         this.visiableLogs = slice(strIndex, endIndex)(this.filteredLogs);
     }
 
-    public clearAllLogHistory(): void {
+    clearAllLogHistory(): void {
         this.service.clearAllLogHistory().pipe(takeUntil(this.notifier)).subscribe(() => {
-            this.fetchLog();
-            this.sysLogWatcher.refreshLog.next();
-        });
-    }
-
-    public clearAllDriveFault(): void {
-        this.service.clearAllDriveFault().then(() => {
             this.fetchLog();
             this.sysLogWatcher.refreshLog.next();
         });

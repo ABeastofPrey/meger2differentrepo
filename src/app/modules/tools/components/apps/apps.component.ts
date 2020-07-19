@@ -101,7 +101,7 @@ export class AppsComponent implements OnInit {
     if (this.cmn.isCloud) return;
     this.dialog.open(CabinetUpdateDialogComponent).afterClosed().subscribe(ret=>{
       if (ret) {
-        window.location.href = '/cabinet-update';
+        window.location.href = '/cabinet-update/';
       }
     });
   }

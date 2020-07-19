@@ -10,6 +10,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ProgramEditorComponent } from './components/program-editor/program-editor.component';
 import { ProgramEditorMainComponent } from './components/program-editor-main/program-editor-main.component';
+import { CanDeactivateDataGuard } from './can-deactivate-data';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
       },
       {
         path: 'data',
-        component: DataScreenComponent
+        component: DataScreenComponent,
+        canDeactivate: [CanDeactivateDataGuard]
       },
       {
         path: 'pPoints',

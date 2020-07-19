@@ -172,17 +172,27 @@ export class HomeScreenComponent implements OnInit {
       },
       paper_bgcolor: 'transparent',
     };
+    const total = sysInfo.diskSize;
+    const used = (total - sysInfo.freeDiskSpace) / total * 100;
+    const free = sysInfo.freeDiskSpace / total * 100;
+    const rounded = [
+      '' + Math.round((used+Number.EPSILON) * 100) / 100 + '%',
+      '' + Math.round((free + Number.EPSILON) * 100) / 100 + '%'
+    ];
+
     const data = [
       {
         values: [
-          sysInfo.diskSize - sysInfo.freeDiskSpace,
-          sysInfo.freeDiskSpace,
+          total - sysInfo.freeDiskSpace,
+          total,
         ],
         labels: this.words['home.chart_space'],
         type: 'pie',
         marker: {
           colors,
         },
+        text: rounded,
+        textinfo: 'text'
       },
     ];
     const data2 = [

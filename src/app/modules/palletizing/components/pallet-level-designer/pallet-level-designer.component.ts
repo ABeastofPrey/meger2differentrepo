@@ -7,8 +7,10 @@ import {
   ViewChild,
   Output,
   EventEmitter,
+  ChangeDetectorRef,
+  NgZone,
 } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatChipEvent } from '@angular/material';
 import { CustomItemMenuComponent } from '../custom-item-menu/custom-item-menu.component';
 import { Pallet } from '../../../core/models/pallet.model';
 import { ApiService } from '../../../core';
@@ -26,6 +28,7 @@ export class PalletLevelDesignerComponent implements OnInit {
   @Input('pallet') pallet: Pallet;
   @Output('change') changed = new EventEmitter<number>();
   @Input('level') level: number;
+  @Input('errors') errors: {invalidDataFile: string[]};
   rotation = 0;
   normalizePreview = 1;
   normalizeItem = 1;
@@ -37,13 +40,20 @@ export class PalletLevelDesignerComponent implements OnInit {
     return this._items;
   }
 
+  get errorList() {
+    if (!this.errors) return [];
+    return this.errors.invalidDataFile || [];
+  }
+
   private _items: CustomPalletItem[] = [];
   private _order = 1;
 
   constructor(
     private dialog: MatDialog,
     private api: ApiService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private cd: ChangeDetectorRef,
+    private zone: NgZone
   ) {}
 
   showMenu(item: CustomPalletItem) {
@@ -64,6 +74,12 @@ export class PalletLevelDesignerComponent implements OnInit {
         }
       }
     });
+  }
+
+  reset() {
+    this._items = [];
+    this._order = 1;
+    this.changed.emit(0);
   }
 
   refresh() {
@@ -143,6 +159,9 @@ export class PalletLevelDesignerComponent implements OnInit {
     }
     item.error = error;
     this.changed.emit(this._items.length);
+    setTimeout(()=>{
+      this.cd.detectChanges();
+    },200);
   }
 
   ngOnInit() {
@@ -183,6 +202,12 @@ export class PalletLevelDesignerComponent implements OnInit {
     for (let i = index; i < this._items.length; i++) this._items[i].order--;
     this._order--;
     this.changed.emit(this._items.length);
+  }
+
+  onChipRemoved(e: string) {
+    const i = Number(e);
+    if (isNaN(i)) return;
+    this.removeItem(i - 1);
   }
 
   getDataAsString(): string {

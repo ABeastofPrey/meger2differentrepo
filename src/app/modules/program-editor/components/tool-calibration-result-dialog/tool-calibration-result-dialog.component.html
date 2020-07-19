@@ -6,13 +6,13 @@
 </h2>
 <mat-dialog-content>
 	<div class="tooltip">
-		<mat-icon>help</mat-icon>
+			<mat-icon>help</mat-icon>
 		<div class="tooltip-text">
 			<pre>{{ 'tool_calib.isApplyDataToTool' | translate }} {{ toolName }}?</pre>
 		</div>
 	</div>
 
-	<mat-table #resultTable [dataSource]="calibrationResultSource">
+		<mat-table #resultTable [dataSource]="calibrationResultSource">
 			<ng-container matColumnDef="{{ CalibrationTableColumnReference.Axis }}">
 				<mat-header-cell *matHeaderCellDef></mat-header-cell>
 				<ng-container>
@@ -61,10 +61,10 @@
 
 	<div class="checkbox-container">
 		<mat-checkbox color="primary" [(ngModel)]="setAsCurrent">{{'frames.calibration.set' | translate}}</mat-checkbox>
-	</div>
+		</div>
 
 	<div class="tooltip">
-	    <mat-icon>warning</mat-icon>
+			<mat-icon>warning</mat-icon>
 		<div class="tooltip-text">
 			<ng-container *ngIf="!calibrationOutOfScope">
 				<pre>{{ 'tool_calib.calibrationSuccess' | translate }}</pre>

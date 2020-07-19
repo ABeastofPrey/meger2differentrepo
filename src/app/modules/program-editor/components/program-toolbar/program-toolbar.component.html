@@ -1,5 +1,8 @@
 <div class="wrapper mat-typography">
 	<ul class="menu menu-big mat-elevation-z1" *ngIf="prgService.modeToggle === 'prj'" (click)="toggleFocus($event)">
+		<li *ngIf="!cmn.isTablet && !utl.IsKuka">
+			<button mat-icon-button (click)="toggleFullScreen($event)"><mat-icon>aspect_ratio</mat-icon></button>
+		</li>
 		<li
 			(mouseenter)="currMenu = 1"
 			[class.selected]="onFocus && currMenu === 1"

@@ -37,7 +37,6 @@
 			</mat-form-field>
 			<mat-form-field *ngIf="newParam.inputType === 'SLIDER'">
 				<input
-					
 					placeholder="{{ 'inputs.slider_min' | translate }}"
 					matInput
 					[(ngModel)]="newParam.sliderMin"
@@ -47,7 +46,6 @@
 			</mat-form-field>
 			<mat-form-field *ngIf="newParam.inputType === 'SLIDER'">
 				<input
-					
 					placeholder="{{ 'inputs.slider_max' | translate }}"
 					matInput
 					[(ngModel)]="newParam.sliderMax"
@@ -55,7 +53,7 @@
 					ktype="numeric"
 				/>
 			</mat-form-field>
-			<div class="warn" *ngIf="newParam.inputType === 'SLIDER' && newParam.sliderMin > newParam.sliderMax">
+			<div class="warn" *ngIf="newParam.inputType === 'SLIDER' && invalidSlider">
 				{{ 'dashboard.new-param.err_slider' | translate }}
 			</div>
 		</div>
@@ -69,7 +67,7 @@
 			color="primary"
 			(click)="add()"
 			[disabled]="newParam.name === null ||
-				(newParam.inputType === 'SLIDER' && newParam.sliderMin > newParam.sliderMax) ||
+				(newParam.inputType === 'SLIDER' && invalidSlider) ||
 				!verifyOption(newParam.name)"
 		>
 			{{ 'button.add' | translate }}

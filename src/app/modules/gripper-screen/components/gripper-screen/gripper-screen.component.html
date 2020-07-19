@@ -21,7 +21,7 @@
 					<mat-icon style="margin-right: 16px;" color="primary">settings_input_component</mat-icon>
 					<span style="margin-right: 16px;">{{ node.item }}</span>
 				</button>
-				<button mat-raised-button color="primary" *ngIf="!login.isOperator" (click)="addNewItem(node)">
+				<button mat-raised-button color="primary" *ngIf="!login.isOperator" (click)="addNewItem(node)" [disabled]="!flatNodeMap.get(node).payload || !flatNodeMap.get(node).payloadItem">
 					<mat-icon>add</mat-icon>{{ 'grippers.new_grp' | translate }}
 				</button>
 				<button mat-icon-button color="warn" *ngIf="!login.isOperator" (click)="deleteNode(node)" style="width: 40px;">

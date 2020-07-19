@@ -52,13 +52,18 @@
 				style="margin-bottom: 8px;"
 				[checked]="params.enable"
 				(change)="toggleEnable()"
-				[disabled]="login.isViewer"
+				[disabled]="login.isViewer || dashboard.longProcess"
 				>{{ 'enable' | translate }}</mat-slide-toggle
 			>
 			<div class="params-container">
-				<div class="params-title center-vertical">
+				<div
+					class="params-title center-vertical"
+					matTooltip="{{ 'dashboard.err_param_count' | translate:{count:MAX_PARAMS} }}"
+					[matTooltipDisabled]="dashboard.totalParamCount < MAX_PARAMS">
 					<span style="flex: 1;">{{ 'parameters' | translate }}</span>
-					<button mat-icon-button color="primary" (click)="addParam()">
+					<button mat-icon-button color="primary"
+						(click)="addParam()"
+						[disabled]="dashboard.totalParamCount >= MAX_PARAMS">
 						<mat-icon>add</mat-icon>
 					</button>
 				</div>
@@ -109,7 +114,14 @@
 		</div>
 		<div style="flex: 1;" *ngIf="params.isExpanded">
 			<div class="move-content" tourAnchor="dashboard-move">
-				<button mat-raised-button color="primary" (touchstart)="move()" (mousedown)="move()" (touchend)="stopMotion()" (mouseup)="stopMotion()">
+				<button 
+					mat-raised-button
+					color="primary"
+					[disabled]="invalidTarget"
+					(touchstart)="move()"
+					(mousedown)="move()"
+					(touchend)="stopMotion()"
+					(mouseup)="stopMotion()">
 					{{ 'button.move' | translate }}
 				</button>
 				<mat-slide-toggle
@@ -141,18 +153,10 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Acc</td>
+						<td>AScale</td>
 						<td>
 							<mat-form-field
-								><input matInput [(ngModel)]="params.acc" virtualKeyboard ktype="numeric"
-							/></mat-form-field>
-						</td>
-					</tr>
-					<tr>
-						<td>Dec</td>
-						<td>
-							<mat-form-field
-								><input matInput [(ngModel)]="params.dec"  virtualKeyboard ktype="numeric"
+								><input matInput [(ngModel)]="params.ascale"  virtualKeyboard ktype="numeric_int_pos"
 							/></mat-form-field>
 						</td>
 					</tr>

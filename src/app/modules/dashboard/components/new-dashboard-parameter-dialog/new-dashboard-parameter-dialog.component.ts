@@ -67,4 +67,10 @@ export class NewDashboardParameterDialogComponent implements OnInit {
   add() {
     this.ref.close(this.newParam);
   }
+
+  get invalidSlider() {
+    const min = this.newParam.sliderMin;
+    const max = this.newParam.sliderMax;
+    return min === null || max === null || min > max;
+  }
 }

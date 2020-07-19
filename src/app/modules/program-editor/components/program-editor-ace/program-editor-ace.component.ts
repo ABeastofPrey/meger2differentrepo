@@ -367,6 +367,7 @@ export class ProgramEditorAceComponent implements OnInit {
     this.editor.$blockScrolling = Infinity;
     if (this.service.editorText) {
       this.editor.setValue(this.service.editorText, -1);
+      this.editor.getSession().setUndoManager(new ace.UndoManager());
     } else {
       this.editor.setReadOnly(true);
       this.cd.detectChanges();
@@ -690,9 +691,14 @@ export class ProgramEditorAceComponent implements OnInit {
   }
 
   // tslint:disable-next-line: no-any
-  private showTooptip(e: any, val: string) {
+  private showTooptip(e: {domEvent: MouseEvent}, val: string) {
     this.tooltipX = e.domEvent.offsetX + 50;
     this.tooltipY = e.domEvent.offsetY + 8;
+    const editorWidth = (this.editorDiv.nativeElement as HTMLElement).offsetWidth;
+    const tooltipWidth = (this.lastWord.length + val.length + 3) * 12; // 12px per character
+    if (this.tooltipX + tooltipWidth >= editorWidth) {
+      this.tooltipX = editorWidth - tooltipWidth;
+    }
     this.tooltipVisible = true;
     this.tooltipValue = val;
     this.cd.detectChanges();

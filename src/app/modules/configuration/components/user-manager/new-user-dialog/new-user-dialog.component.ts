@@ -24,7 +24,7 @@ export class NewUserDialogComponent implements OnInit {
     if (name.trim().length === 0) {
       return {empty: true};
     }
-    if (name.toLowerCase() === 'admin' || name.toLowerCase() === 'super') {
+    if (name === 'admin' || name === 'super') {
       return {reserved: true};
     }
     return null;
@@ -110,8 +110,7 @@ export class NewUserDialogComponent implements OnInit {
         .then((res: string) => {
           if (res) this.ref.close(true);
           else {
-            //   this.snack.open(this.wordErr, '', { duration: 2000 });
-              this.snackbarService.openTipSnackBar(this.wordErr);
+            this.snackbarService.openTipSnackBar(this.wordErr);
           }
         });
     }
@@ -125,8 +124,7 @@ export class NewUserDialogComponent implements OnInit {
       .then((res: string) => {
         if (res) this.ref.close(true);
         else {
-            // this.snack.open(this.wordErr, '', { duration: 2000 });
-            this.snackbarService.openTipSnackBar(this.wordErr);
+          this.snackbarService.openTipSnackBar(this.wordErr);
         }
       });
   }

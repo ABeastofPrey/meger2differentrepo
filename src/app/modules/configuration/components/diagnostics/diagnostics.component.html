@@ -3,8 +3,11 @@
 		<div class="primary-bg-dark header mat-elevation-z1">
 			<mat-icon style="margin-right: 16px;">dvr</mat-icon>
 			<h2>{{ 'diagnostics.title' | translate }}</h2>
-			<button mat-mini-fab color="accent" (click)="refresh()" style="margin-left: 16px;">
+			<button mat-mini-fab color="accent" (click)="refresh()" style="margin: 0 16px;">
 				<mat-icon>refresh</mat-icon>
+			</button>
+			<button mat-raised-button color="accent" (click)="clearAllDriveFaults()">
+				{{ 'sys_log.clear_all_drive_fault' | translate }}
 			</button>
 			<mat-radio-group class="options" [(ngModel)]="state" (change)="refresh()">
 				<mat-radio-button value="1">{{ 'diagnostics.devices' | translate }}</mat-radio-button>
