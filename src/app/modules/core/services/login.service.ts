@@ -56,6 +56,10 @@ export class LoginService {
     return this.permissionCode === 99;
   }
 
+  get isProgrammer(): boolean {
+    return this.permissionCode === 1;
+  }
+
   populate() {
     // If JWT detected, attempt to get & store user's info
     if (this.jwtService.getToken()) {
@@ -136,9 +140,8 @@ export class LoginService {
     const ref = this.snack._openedSnackBarRef;
     if (ref) ref.dismiss();
     this.purgeAuth();
-    setTimeout(async ()=>{
+    setTimeout(()=>{
       if (!serverDisconnected && this.ws.connected) {
-        await this.ws.query('?tp_exit');
         this.ws.reset();
       }
     },200);

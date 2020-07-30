@@ -1439,6 +1439,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         currFunction = null;
         currSub = null;
         isProgramBlockStarted = false;
+        isNonDimLineFound = false;
         const result = startParsing();
         exports.functions = functions;
         exports.subs = subs;
@@ -1457,17 +1458,32 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
     }
 
     function parseFunction() {
-        const re = /(public )?\s*function\s+(\w+)(\(((byval )?\s*(\w+)\s+as\s+(\w+)(:?,\s+)?)+\))?\s+as\s+(.+)/i;
+        // handle case of function and \
+        const shortRe = /(public )?\s*function\s+(\w+)/i;
+        const re = /(public )?\s*function\s+(\w+)(\((?:(?:byval )?\s*(?:\w+)\s+as\s+(?:(?:generic )?\w+)(?:,\s+)?)+\))?\s+(?:as)?\s+(.+)/i;
         const parts = re.exec(line);
-        if (parts === null) return null;
-        const func = {
-            name: parts[2],
-            isPublic: parts[1] ? parts[1].length > 0 : false,
-            retType: parts[8] ? parts[8].trim() : null,
-            line: idx
-        };
-        functions.push(func);
-        return func;
+        const shortParts = shortRe.exec(line);
+        if (parts === null && shortParts == null) return null;
+        if (parts) {
+            const func = {
+                name: parts[2],
+                isPublic: parts[1] ? parts[1].length > 0 : false,
+                retType: parts[4] ? parts[4].trim() : null,
+                line: idx
+            };
+            functions.push(func);
+            return func;
+        }
+        if (shortParts) {
+            const func = {
+                name: shortParts[2],
+                isPublic: shortParts[1] ? shortParts[1].length > 0 : false,
+                retType: null,
+                line: idx
+            };
+            functions.push(func);
+            return func;
+        }
     }
 
     function parseSub() {
@@ -1552,7 +1568,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
             if (isDim()) {
                 parseDim();
                 continue;
-            } else if (isProgramBlockStarted) {
+            } else if (isProgramBlockStarted && line.trim().length > 0) {
                 isNonDimLineFound = true;
             }
             if (token = isBlockStart()) {
@@ -1564,6 +1580,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
                         break;
                     case 'for':
                         err = validateForCommand(line);
+                        break;
                     case 'program':
                         isProgramBlockStarted = true;
                         blocks.program.start = i;
@@ -1727,7 +1744,18 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         returns error string or null if everything is OK.
     */
    function validateForCommand(line) {
-    const match = /^\s*for\s*(\S+)?\s*=?\s*(\S+)?\s*(to)?\s*(\S+)?\s*(\S+)?/i.exec(line);
+    const match = /^\s*for\s*(\S+)?\s*=?\s*(\S+)?\s*(to)?\s*(\S+(?:\s*[+\-*\/]\s*\S+)*)?\s*(?:\bstep\b\s*\S+)?\s*(\S+)?/i.exec(line);
+    if (!match[1]) return new SyntaxError('Missing variable in for command',match,1);
+    if (!match[2]) return new SyntaxError('Missing loop starting value',match,2);
+    if (!match[3]) return new SyntaxError('Missing "to" keyword',match,3);
+    if (!match[4]) return new SyntaxError('Missing loop ending value',match,4);
+    if (match[5]) {
+        const len  = match[5].length;
+        if (len>0 && match[5][0] === "'") return null;
+        if (len>2 && match[5].substring(0,3) === 'rem') return null;
+        return new SyntaxError('Unexpected token found: '+ match[5],match,4);
+    }
+    
     return null;
 }
 
@@ -1749,7 +1777,15 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
             if (!isProgramBlockStarted) msg+= ' or the "shared" keyword';
             error(new SyntaxError(msg,parts,2),idx,'error');
             return;
-        } 
+        }
+        if (isNonDimLineFound && isProgramBlockStarted) {
+            error(new SyntaxError('Structure Error: Variables should be declared at the TOP of the PROGRAM block',parts,1),idx,'error');
+            return;
+        }
+        if (!isProgramBlockStarted && !currFunction && !currSub && !parts[4]) {
+            error(new SyntaxError('Structure Error: Only SHARED variables can be declared outside of the PROGRAM block',parts,1),idx,'error');
+            return;
+        }
         if (parts[4] && isProgramBlockStarted) { // check dim shared is outside program
             error(
                 new SyntaxError('Dim shared must be above the PROGRAM block',parts,2),

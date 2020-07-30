@@ -2,8 +2,8 @@
 	<div class="wrapper">
 		<div class="title">{{ 'grippers.test' | translate }} {{ data.grp }}</div>
 		<div class="content">
-			<button mat-raised-button color="primary" (click)="open()">{{ 'button.open' | translate }} {{ data.grp }}</button>
-			<button mat-raised-button color="primary" (click)="close()">
+			<button mat-raised-button color="primary" (click)="open()" [disabled]="running">{{ 'button.open' | translate }} {{ data.grp }}</button>
+			<button mat-raised-button color="primary" (click)="close()" [disabled]="running">
 				{{ 'button.close' | translate }} {{ data.grp }}
 			</button>
 			<div style="margin: 8px 0;"></div>
@@ -15,10 +15,11 @@
 					(change)="onCycleChange()"
 					virtualKeyboard
 					ktype="numeric_int_pos"
+					[disabled]="running"
 				/>
 				<span matSuffix>ms.</span>
 			</mat-form-field>
-			<button mat-raised-button color="primary" (click)="cycle()">
+			<button mat-raised-button color="primary" (click)="cycle()" [disabled]="running">
 				{{ 'grippers.btnCycle' | translate }}
 			</button>
 			<div class="center-vertical">

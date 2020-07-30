@@ -220,7 +220,7 @@ export class LoginScreenComponent implements OnInit {
   private getEtag() : string {
     if (!this.env.production) return '';
     const req = new XMLHttpRequest();
-    req.open('GET', this.api.api_url + '/rs/assets/scripts/conn.js', false);
+    req.open('GET', this.api.api_url + '/rs/assets/scripts/conn.js?t=' + new Date().getTime(), false);
     req.send(null);
     const etag = req.getResponseHeader('etag');
     return etag ? etag.trim() : '';
@@ -228,6 +228,7 @@ export class LoginScreenComponent implements OnInit {
 
   private startConnectionCheck() {
     this.checkConnection();
+    window.clearInterval(this.interval);
     this.interval = window.setInterval(() => {
       this.checkConnection();
     }, 2000);
@@ -247,7 +248,7 @@ export class LoginScreenComponent implements OnInit {
   }
 
   reload() {
-    window.location.reload(true);
+    window.location.href = window.location.href + '?time=' + new Date().getTime();
   }
 
   private refreshInfo() {
@@ -261,6 +262,7 @@ export class LoginScreenComponent implements OnInit {
     this.api.get('/cs/api/java-version').subscribe((ret: { ver: string }) => {
       if (etag.length > 0 && ret.ver !== etag) { // can only happen if page is cached
         // ask user to do hard reload
+        console.log(etag, ret.ver);
         this.isVersionOK = false;
         const err = this.cmn.isTablet ? 'error.invalid_etag_tablet' : 'error.invalid_etag';
         this.trn.get(err).subscribe(str => {

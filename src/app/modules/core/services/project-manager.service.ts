@@ -113,6 +113,7 @@ export class ProjectManagerService {
                 this.oldStat = ret.result;
                 const parts = ret.result.split(';');
                 this.currProject.value.dependenciesLoaded = parts[1] === '1';
+                this.currProject.value.projectPaused = parts[2] === '1';
                 if (parts[0].length === 0) {
                   this.activeProject = false;
                   this.mgr.projectActiveStatusChange.next(this.activeProject);

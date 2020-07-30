@@ -27,7 +27,7 @@
         mat-mini-fab
         matTooltip="{{ 'simulator' | translate }}"
         (click)="toggleSimulator()"
-        [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator || screenManager.screen.url === 'simulator'"
+        [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator || (screenManager.screen && screenManager.screen.url === 'simulator')"
       >
         <mat-icon>3d_rotation</mat-icon>
       </button>
@@ -108,7 +108,7 @@
         mat-mini-fab
         matTooltip="{{ 'simulator' | translate }}"
         (click)="toggleSimulator()"
-        [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator || screenManager.screen.url === 'simulator'"
+        [disabled]="!cooService.coosLoaded.value || !sim.shouldShowSimulator || (screenManager.screen && screenManager.screen.url === 'simulator')"
         *ngIf="!allowHiddenMenu && !screenManager.debugMode"
       >
         <mat-icon>3d_rotation</mat-icon>
@@ -325,12 +325,12 @@
 		tourAnchor="simWindow"
 		(started)="onWindowMoving(simWindow)"
 		(stopped)="saveFloatingWindowsConfiguration()"
-		*ngIf="simOpen && screenManager.screen.url !== 'simulator'"
+		*ngIf="simOpen && screenManager.screen && screenManager.screen.url !== 'simulator'"
 		class="window window-sim mat-elevation-z6"
 		style="left: 20%; top: 20%"
 		ngDraggable
 		ngResizable
-		rzMinWidth="200"
+		rzMinWidth="370"
 		rzMinHeight="150"
 		rzContainment="#container"
 		[bounds]="container"

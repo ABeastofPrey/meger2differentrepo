@@ -869,10 +869,9 @@ export class DataService {
     this.ws.isConnected.subscribe(stat => {
       if (!stat) { 
         this.dataLoaded.next(false);
-      }
-      else if (this._JavaVersion === null) {
+      } else {
         this.getMinimumVersions();
- }
+      }
     });
   }
 
@@ -919,6 +918,7 @@ export class DataService {
           await this.stat.setMode('A');
         } else if (this.stat.mode === null) {
           this.stat._switch = ret.result;
+          this.stat.modeChanged.next(ret.result);
         }
         return this.refreshData();
       })

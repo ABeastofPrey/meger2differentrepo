@@ -39,7 +39,7 @@
 						(click)="toggleNode(node); selectNode(node)"
 						[matTooltip]="node.ref && node.ref.desc ? node.ref.desc : 'nope'"
 						matTooltipShowDelay="0"
-						[matTooltipDisabled]="!node.ref || !node.ref.desc">
+						[matTooltipDisabled]="!node.ref || !node.ref.desc || cmn.isTablet">
 						<mat-icon class="mat-primary">
 							{{ nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
 						</mat-icon>
@@ -78,13 +78,13 @@
 <div class="menu-backdrop" *ngIf="menuVisible" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault()">
 	<div class="menu-wrapper">
 		<div class="menu mat-elevation-z3" [style.top]="menuTop" [style.left]="menuLeft">
-			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Apps'">
+			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Apps' && !login.isOperator">
 				<button mat-button (click)="newApp()">
 					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_app' | translate }}...
 				</button>
 			</div>
 			<!-- new background task -->
-			<div *ngIf="lastSelectedNode && (lastSelectedNode.type === 'Auxiliary')">
+			<div *ngIf="lastSelectedNode && (lastSelectedNode.type === 'Auxiliary') && !login.isOperator">
 				<button mat-button [disabled]="bgtCount >= 8" (click)="newBackgroundTask()">
 					<mat-icon class="primary-light">add</mat-icon>
 					{{ 'projects.toolbar.newBackgroundTask' | translate }}...
@@ -98,8 +98,8 @@
 					</mat-icon>
 					{{ (prj.currProject.value.dependenciesLoaded ? 'projects.toolbar.dep_unload' : 'projects.toolbar.dep_load') | translate }}
 				</button>
-				<mat-divider *ngIf="!currProject.dependenciesLoaded"></mat-divider>
-				<button mat-button (click)="newDep()" *ngIf="!currProject.dependenciesLoaded">
+				<mat-divider *ngIf="!currProject.dependenciesLoaded && !login.isOperator"></mat-divider>
+				<button mat-button (click)="newDep()" *ngIf="!currProject.dependenciesLoaded && !login.isOperator">
 					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_dep' | translate }}...
 				</button>
 			</div>
@@ -109,29 +109,29 @@
 					<mat-icon color="primary">play_arrow</mat-icon>{{ 'projects.toolbar.run' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
-				<button mat-button (click)="newLib(lastSelectedNode.name)" *ngIf="!prj.activeProject">
+				<button mat-button (click)="newLib(lastSelectedNode.name)" *ngIf="!prj.activeProject && !login.isOperator">
 					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_lib' | translate }}...
 				</button>
-				<mat-divider *ngIf="!prj.activeProject"></mat-divider>
-				<button mat-button (click)="renameApp(lastSelectedNode.name)" *ngIf="!prj.activeProject">
+				<mat-divider *ngIf="!prj.activeProject && !login.isOperator"></mat-divider>
+				<button mat-button (click)="renameApp(lastSelectedNode.name)" *ngIf="!prj.activeProject && !login.isOperator">
 					<mat-icon color="primary">edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}
 					{{ lastSelectedNode.name }}...
 				</button>
-				<button mat-button (click)="saveAppAs(lastSelectedNode.name)" *ngIf="!prj.activeProject">
+				<button mat-button (click)="saveAppAs(lastSelectedNode.name)" *ngIf="!prj.activeProject && !login.isOperator">
 					<mat-icon color="primary">save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...
 				</button>
 				<mat-divider *ngIf="!prj.activeProject"></mat-divider>
-				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name)" *ngIf="!prj.activeProject">
+				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name)" *ngIf="!prj.activeProject && !login.isOperator">
 					<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
 			</div>
-			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Libraries'">
+			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Libraries' && !login.isOperator">
 				<button mat-button (click)="newLib()">
 					<mat-icon color="primary">add</mat-icon>{{ 'projects.toolbar.new_lib' | translate }}...
 				</button>
 			</div>
-			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Library'">
+			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Library' && !login.isOperator">
 				<button mat-button color="warn" (click)="deleteLib()">
 					<mat-icon color="warn">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
@@ -143,21 +143,21 @@
 					<mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
-				<mat-divider></mat-divider>
-				<button mat-button (click)="renameApp(lastSelectedNode.name, true)">
+				<mat-divider *ngIf="!login.isOperator"></mat-divider>
+				<button mat-button (click)="renameApp(lastSelectedNode.name, true)" *ngIf="!login.isOperator">
 					<mat-icon class="primary-light">edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}
 					{{ lastSelectedNode.name }}...
 				</button>
-				<button mat-button (click)="saveAppAs(lastSelectedNode.name, true)">
+				<button mat-button (click)="saveAppAs(lastSelectedNode.name, true)"  *ngIf="!login.isOperator">
 					<mat-icon class="primary-light">save</mat-icon>{{ 'projects.toolbar.save_as' | translate }}...
 				</button>
-				<mat-divider></mat-divider>
-				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name, true)">
+				<mat-divider *ngIf="!login.isOperator"></mat-divider>
+				<button mat-button color="warn" (click)="deleteApp(lastSelectedNode.name, true)"  *ngIf="!login.isOperator">
 					<mat-icon class="primary-light">delete</mat-icon>{{ 'delete' | translate }}
 					{{ lastSelectedNode.name }}
 				</button>
 			</div>
-			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependency'">
+			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependency' && !login.isOperator">
 				<button mat-button (click)="renameDep(lastSelectedNode.name)">
 					<mat-icon color="primary">edit</mat-icon>{{ 'projects.toolbar.rename' | translate }}
 					{{ lastSelectedNode.name }}...

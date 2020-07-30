@@ -357,7 +357,7 @@ export const DOCS = {
     },
     {
       name: 'VELOCITYFEEDBACKCARTESIAN',
-      short: 'VFbkCart',
+      short: 'VFbCart',
       desc: `Returns the carent cartesian feedback velocity.`,
       type: 4,
       readOnly: true

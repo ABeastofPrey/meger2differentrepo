@@ -31,7 +31,8 @@ const routes: Routes = [
         component: DataScreenComponent,
         data: {
           useAsProjectPoints: true
-        }
+        },
+        canDeactivate: [CanDeactivateDataGuard]
       },
       {
         path: 'settings',

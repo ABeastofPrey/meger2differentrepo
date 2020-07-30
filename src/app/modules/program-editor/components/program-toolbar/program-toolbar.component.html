@@ -133,7 +133,11 @@
 			{{ 'projects.toolbar.autostart' | translate }}
 		</li>
 		<mat-divider></mat-divider>
-		<li (click)="run()"><mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run_prj' | translate }}</li>
+		<li (click)="run()" *ngIf="!prj.currProject.value.projectPaused"><mat-icon>play_arrow</mat-icon>{{ 'projects.toolbar.run_prj' | translate }}</li>
+		<li (click)="togglePause()">
+			<mat-icon>{{ prj.currProject.value.projectPaused ? 'play_arrow' : 'pause' }}</mat-icon>
+			{{ (prj.currProject.value.projectPaused ? 'projects.toolbar.continue_prj' : 'projects.toolbar.pause_prj') | translate }}
+		</li>
 		<li (click)="stop()"><mat-icon>stop</mat-icon>{{ 'projects.toolbar.stop_prj' | translate }}</li>
     <li (click)="toggleDependencies()">
       <mat-icon>public</mat-icon>

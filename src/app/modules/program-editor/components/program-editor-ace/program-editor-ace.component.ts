@@ -593,6 +593,7 @@ export class ProgramEditorAceComponent implements OnInit {
       }
     });
     this.editor.on("linkClick",data => {
+      if (this.currFuncRow === -1) return;
       const line = this.editor.getSession().getLine(this.currFuncRow-1);
       this.editor.gotoLine(this.currFuncRow, line.length);
     });
@@ -605,7 +606,6 @@ export class ProgramEditorAceComponent implements OnInit {
     // HANDLE MOUSE HOVER OVER WORDS
     this.editor.on('mousemove', e => {
       const position = e.getDocumentPosition();
-      //console.log(this.editor.session.getTokenAt(position.row, position.column));
       if (this.service.status === null) {
         this.hideTooltip();
         return;
@@ -787,14 +787,15 @@ export class ProgramEditorAceComponent implements OnInit {
   
 
   /*************** Virtual Keyboard **********************/
-  @ViewChild(MatInput, { static: false }) dummyInput: MatInput;
+  @ViewChild('dummyInput', { static: false }) dummyInput: ElementRef;
   dummyText = '';
   showKeyboard() {
     const editor = this.editor;
     const position = editor.getCursorPosition();
     const row = position.row; // current row
     this.dummyText = editor.session.getLine(row).replace(/\t/g,'  ');
-    this.dummyInput.focus();
+    this.dummyInput.nativeElement.setAttribute('column', position.column);
+    this.dummyInput.nativeElement.focus();
   }
   onDummyKeyboardClose() {
     const editor = this.editor;

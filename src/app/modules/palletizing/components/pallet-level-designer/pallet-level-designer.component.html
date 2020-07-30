@@ -1,15 +1,17 @@
 <div class="wrapper">
 	<div class="toolbar">
-		<h2>Item:</h2>
-		<div
-			class="item"
-			[style.height]="
-				(rotation % 180 === 0 ? pallet.itemSizeY / normalizePreview : pallet.itemSizeX / normalizePreview) + 'px'
-			"
-			[style.width]="
-				(rotation % 180 === 0 ? pallet.itemSizeX / normalizePreview : pallet.itemSizeY / normalizePreview) + 'px'
-			"
-		></div>
+		<h2>{{ 'pallets.wizard.item' | translate}}</h2>
+		<div class="item-wrapper" [style.height]="(pallet.itemSizeY > pallet.itemSizeX ? pallet.itemSizeY / normalizePreview : pallet.itemSizeX / normalizePreview) + 'px'">
+			<div
+				class="item"
+				[style.height]="
+					(rotation % 180 === 0 ? pallet.itemSizeY / normalizePreview : pallet.itemSizeX / normalizePreview) + 'px'
+				"
+				[style.width]="
+					(rotation % 180 === 0 ? pallet.itemSizeX / normalizePreview : pallet.itemSizeY / normalizePreview) + 'px'
+				"
+			></div>
+		</div>
 		<h2 style="margin-top: 8px;">Options</h2>
 		<div style="display: flex;">
 			<button mat-fab color="primary" (click)="rotate()" matTooltip="{{'pallets.wizard.item_rotate' | translate}}">

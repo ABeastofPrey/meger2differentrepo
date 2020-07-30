@@ -43,6 +43,6 @@ export class DraggableItemDirective {
   @HostListener('mouseup')
   onMouseUp() {
     const diff = new Date().getTime() - this._time;
-    if (diff < 100) this.shortclick.emit();
+    if (diff < 200) this.shortclick.emit();
   }
 }

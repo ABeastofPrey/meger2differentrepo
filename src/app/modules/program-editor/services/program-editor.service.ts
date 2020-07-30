@@ -584,10 +584,14 @@ export class ProgramEditorService {
   }
 
   jump() {
-    const prgName = this.activeFile;
-    this.ws.query(
-      'ContinueTask ' + prgName + ' programline = ' + this.editorLine
-    );
+    if (this.fileRef) {
+      const app = this.fileRef.name;
+      const cmd = `?tp_jump_to_line("${app}", ${this.editorLine})`;
+      this.ws.query(cmd); 
+    } else {
+      const prgName = this.activeFile;
+      this.ws.query('ContinueTask ' + prgName + ' programline = ' + this.editorLine);
+    }
   }
 
   kill() {

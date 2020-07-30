@@ -57,7 +57,7 @@
 				</th>
 				>
 				<td mat-cell *matCellDef="let element">
-					<div class="name-wrap">
+					<div class="name-wrap" [matTooltip]="element.name">
 						{{ element.name }}
 						<span *ngIf="element.isArr"> [...]</span>
 						<span *ngIf="element.isTwoDimension"> [...]</span>

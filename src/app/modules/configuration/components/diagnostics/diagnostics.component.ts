@@ -209,7 +209,7 @@ export class DiagnosticsComponent implements OnInit {
 
   clearAllDriveFaults(): void {
     this.ws.query('?TP_CLRFAULT').then(() => {
-      this.ws.query('?TP_CONFIRM_ERROR');
+      this.ws.query('call TP_CONFIRM_ERROR');
     });
   }
 

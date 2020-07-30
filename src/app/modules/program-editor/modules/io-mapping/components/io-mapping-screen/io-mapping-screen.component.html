@@ -66,6 +66,7 @@
 											maxlength="32"
 											[disabled]="prj.activeProject"
 											ktype="text"
+											virtualKeyboard
 											(onKeyboardClose)="updateName($event, io)"
 										/>
 									</mat-form-field>
@@ -79,6 +80,7 @@
 											(change)="updateDescription($event, io)"
 											maxlength="80"
 											[disabled]="prj.activeProject"
+											virtualKeyboard
 											ktype="text"
 											(onKeyboardClose)="updateDescription($event, io)"
 										/>
@@ -115,6 +117,7 @@
 											(change)="updateName($event, io)"
 											maxlength="32"
 											[disabled]="prj.activeProject"
+											virtualKeyboard
 											ktype="text"
 											(onKeyboardClose)="updateName($event, io)"
 										/>
@@ -129,6 +132,7 @@
 											(change)="updateDescription($event, io)"
 											maxlength="80"
 											[disabled]="prj.activeProject"
+											virtualKeyboard
 											ktype="text"
 											(onKeyboardClose)="updateDescription($event, io)"
 										/>

@@ -126,10 +126,8 @@ export class PalletLevelDesignerComponent implements OnInit {
     // CHECK BOUNDS
     if (left + width - containerRect.width >= 1 || left < 0) {
       error = true;
-      console.log('OBJECT OUTSIDE X');
     } else if (top + height - containerRect.height >= 1 || top < 0) {
       error = true;
-      console.log('OBJECT OUTSIDE Y');
     }
 
     // COMPARE ITEM TO ALL OTHER ITEMS
@@ -152,12 +150,11 @@ export class PalletLevelDesignerComponent implements OnInit {
           (otherLeft > left && left + width > otherLeft + epsilon)
         ) {
           error = true;
-          console.log(otherTop, otherHeight, top, height);
-          console.log(otherLeft, left, otherWidth, width);
         }
       }
     }
     item.error = error;
+    // TODO: ADD ITEM TO INVALID ITEMS LIST
     this.changed.emit(this._items.length);
     setTimeout(()=>{
       this.cd.detectChanges();
@@ -257,6 +254,12 @@ export class PalletLevelDesignerComponent implements OnInit {
     this._order = items.length + 1;
     this.changed.emit(this._items.length);
     this.setPositions();
+    setTimeout(()=>{
+      for (const item of this._items) {
+        this.validate(item);
+      }
+      this.cd.detectChanges();
+    },500);
   }
 
   setPositions() {

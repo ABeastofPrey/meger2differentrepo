@@ -42,7 +42,9 @@ export class WatchService {
       try {
         const vars: WatchVar[] = [];
         for (const v of JSON.parse(cachedStr)) {
-          vars.push(new WatchVar(v.name, v.context));
+          const newVar = new WatchVar(v.name, v.context);
+          newVar.active = true;
+          vars.push(newVar);
         }
         this.vars = vars;
       } catch (err) {
@@ -75,6 +77,7 @@ export class WatchService {
       v.active = true;
     });
     this.storeVars();
+    this.resetVars();
   }
 
   storeVars() {
@@ -173,14 +176,10 @@ export class WatchService {
             j++;
             continue;
           }
-          this.vars[i].value = results[i-j].trim();
+          this.vars[i].value = results[i-j] ? results[i-j].trim() : '';
         }
       } else {
-        this.vars.forEach((v,i)=>{
-          if (!v.active || i === this.vars.length - 1) return;
-          v.active = false;
-          v.value = ret.err[0].errMsg;
-        });
+        this.resetVars();
       }
       this._busy = false;
     }, 400);
@@ -194,9 +193,8 @@ export class WatchService {
     v.active = !v.active;
     if (!v.active) {
       v.value = '';
-    } else {
-      this.resetVars();
     }
+    this.resetVars();
   }
 
   /*

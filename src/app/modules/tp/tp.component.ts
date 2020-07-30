@@ -61,9 +61,7 @@ export class TpComponent implements OnInit, OnDestroy {
     if (this.stat.mode.charAt(0) !== 'T') {
       this.router.navigateByUrl('/');
     } else {
-      this.stat.modeChanged
-      .pipe(takeUntil(this.unsubscribeEvent))
-      .subscribe(mode => {
+      this.stat.modeChanged.pipe(takeUntil(this.unsubscribeEvent)).subscribe(mode => {
         if (mode !== 'T1' && mode !== 'T2') {
           this.router.navigateByUrl('/');
         }

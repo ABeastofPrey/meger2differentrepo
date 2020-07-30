@@ -228,8 +228,12 @@ export class TpStatService {
             this.modeChanged.next(this._switch);
           }
         } else {
-          if (this._switch !== stat.SWITCH) this.modeChanged.next(stat.SWITCH);
-          this._switch = stat.SWITCH;
+          if (this._switch !== stat.SWITCH) {
+            this._switch = stat.SWITCH;
+            this.modeChanged.next(this._switch);
+          } else {
+            this._switch = stat.SWITCH;
+          }
         }
 
         if (this.lastErrString !== this.errorString) {

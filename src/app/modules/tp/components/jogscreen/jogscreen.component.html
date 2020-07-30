@@ -6,7 +6,7 @@
 					<span class="title-text">{{ 'jogScreen.settings' | translate }}</span>
 				</mat-card-title>
 				<mat-card-content class="jog-parameters">
-					<robot-selector class="jog-parameter" [disabled]="login.isViewer || login.isOperator"></robot-selector>
+					<robot-selector class="jog-parameter" [disabled]="login.isViewer || login.isOperator || login.isProgrammer"></robot-selector>
 					<frame-selector
 						class="jog-parameter"
 						*ngIf="data.isRobotType"
@@ -150,6 +150,7 @@
 								{{ 'button.move' | translate }}
 							</button>
 							<button
+								*ngIf="data.isRobotType"
 								mat-menu-item
 								(click)="$event.stopPropagation()"
 								(mousedown)="teach.move(true)"

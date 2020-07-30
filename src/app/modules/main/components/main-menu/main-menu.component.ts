@@ -52,7 +52,7 @@ export class MainMenuComponent implements OnInit {
 
   onClick(s: ControlStudioScreen) {
     if (this.mgr.isScreenDisabled(s)) return;
-    if (this.mgr.screen.url === s.url) return;
+    if (this.mgr.screen && this.mgr.screen.url === s.url) return;
     if (this.cmn.isTablet) this.drawer.close();
     this.router.navigateByUrl('/' + s.url).then(success=>{
       if (success) {

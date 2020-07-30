@@ -117,8 +117,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     private zone: NgZone,
     private trn: TranslateService,
     private dd: DragDrop,
-    private login: LoginService,
-    private cmn: CommonService,
+    public login: LoginService,
+    public cmn: CommonService,
     private tour: TourService,
     private router: Router
   ) {
@@ -719,7 +719,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     const isGBTAndLoaded = isBGT && await this.prj.isBGTLoaded(node.name);
     if(isGBTAndLoaded) return;
 
-    if (this.login.isOperator || this.login.isViewer || (this.prj.activeProject && node.type !== 'App')) return;
+    if (this.login.isViewer || (this.prj.activeProject && node.type !== 'App')) return;
     this.selectNode(node);
     switch (node.type) {
       case 'Dependencies':

@@ -195,15 +195,11 @@ export class ScreenManagerService {
     if (!isToggleByAddVar) {
       this.utils.removeShrinkStretchOverlay();
     }
-    // this.controlsAnimating.next(true);
     this.openedControls.next(!this.openedControls.value);
     if (!this.cmn.isTablet) {
       const newMode = this.openedControls.value ? 'T1' : 'A';
       const result = await this.stat.setMode(newMode);
     }
-    // setTimeout(() => {
-    //   this.controlsAnimating.next(false);
-    // }, 300);
     if (
       this.stat.mode !== 'T1' &&
       this.stat.mode !== 'T2' &&
@@ -404,7 +400,7 @@ export class ScreenManagerService {
         // this.controlsAnimating.next(true);
         setTimeout(() => {
           // this.controlsAnimating.next(false);
-          if (this.stat.mode === mode) {
+          if (this.stat.mode === mode && !this.login.isViewer) {
             this.openedControls.next(true);
           }
         }, 300);

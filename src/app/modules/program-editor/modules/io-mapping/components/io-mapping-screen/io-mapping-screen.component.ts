@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {
   DataService,
@@ -20,6 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import {UpdateDialogComponent} from '../../../../../../components/update-dialog/update-dialog.component';
 import {YesNoDialogComponent} from '../../../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { UtilsService } from '../../../../../../../app/modules/core/services/utils.service';
+import { Subject } from 'rxjs';
 
 export class TreeNode {
   children: TreeNode[] = [];
@@ -45,6 +47,7 @@ export class TreeNode {
   styleUrls: ['./io-mapping-screen.component.css'],
 })
 export class IoMappingScreenComponent implements OnInit {
+
   /* TREE VARIABLES */
   treeControl: NestedTreeControl<TreeNode>;
   dataSource: MatTreeNestedDataSource<TreeNode>;
@@ -56,6 +59,7 @@ export class IoMappingScreenComponent implements OnInit {
   private interval: number = null;
 
   private words: {};
+  private notifier: Subject<boolean> = new Subject();
 
   constructor(
     private data: DataService,
@@ -77,11 +81,16 @@ export class IoMappingScreenComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataSource.data = this.buildTree();
+    this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+      if (!stat) return;
+      this.dataSource.data = this.buildTree();
+    });
   }
 
   ngOnDestroy() {
     if (this.interval) clearInterval(this.interval);
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   private buildTree(): TreeNode[] {

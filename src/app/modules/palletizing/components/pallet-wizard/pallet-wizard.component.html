@@ -184,7 +184,7 @@
 							<mat-error *ngIf="step1.controls['index'].hasError('invalidIndex')">{{
 								'pallets.wizard.invalid_val' | translate
 							}}</mat-error>
-							<mat-radio-group formControlName="index">
+							<mat-radio-group formControlName="index" (change)="blurActive()">
 								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'">
 									<span>{{ 'pallets.wizard.index_full' | translate }}</span>
 									<span *ngIf="dataService.selectedPallet.itemsX && dataService.selectedPallet.itemsY && dataService.selectedPallet.itemsZ">({{

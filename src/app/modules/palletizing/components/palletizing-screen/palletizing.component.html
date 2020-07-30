@@ -21,7 +21,7 @@
 		<button mat-raised-button color="warn" [disabled]="data.selectedPallet === null" (click)="deletePallet()">
 			{{ 'button.delete' | translate }}
 		</button>
-		<div class="zoom-box">
+		<div class="zoom-box" *ngIf="data.selectedPallet && data.selectedPallet.type === 'GRID'">
 			<button
 				mat-fab
 				color="accent"

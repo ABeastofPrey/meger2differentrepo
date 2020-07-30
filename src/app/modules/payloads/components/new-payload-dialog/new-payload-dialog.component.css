@@ -22,4 +22,5 @@
 .content {
   overflow: auto;
   padding: 16px;
+  min-height: 100px;
 }

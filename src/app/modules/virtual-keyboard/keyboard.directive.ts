@@ -100,7 +100,7 @@ export class KeyboardDirective implements OnInit {
     element.setAttribute('autocomplete','off');
     element.setAttribute('step','any');
     if (this.ktype && this.ktype.includes('numeric')) {
-      const reg = this.ktype.includes('pos') ? /^\d*\.?\d*$/ : /^-?\d*\.?\d*$/;
+      const reg = this.ktype.includes('pos') ? /^(?!0\d)\d*\.?\d*$/ : /^-?(?!0\d)\d*\.?\d*$/;
       this.setInputFilter(element, val=>reg.test(val));
     }
   }
@@ -130,9 +130,12 @@ export class KeyboardDirective implements OnInit {
           context.ngModel.control.setValue(val);
         }
         if (context.ctrl) {
+          const validator = context.ctrl.control.asyncValidator;
+          context.ctrl.control.setAsyncValidators([]);
           context.ctrl.control.setValue(val);
+          context.ctrl.control.setAsyncValidators(validator);
         }
-        if (context.name && context.name.control) {
+        if (context.name !== context.ctrl && context.name && context.name.control) {
           context.name.control.setValue(val);
         }
         this.value = curr;
@@ -215,7 +218,12 @@ export class KeyboardDialog implements OnInit {
           this.currValue = val;
           if (!this.cursorInitDone) {
             setTimeout(()=>{
-              this._cursorPos = this.currValue.length;
+              const col = this.data.el.getAttribute('column');
+              if (col && col.length > 0) {
+                this._cursorPos = Number(col);
+              } else {
+                this._cursorPos = this.currValue.length;
+              }
               this.scrollToCursor();
               this.cursorInitDone = true;
             },0);
@@ -231,7 +239,12 @@ export class KeyboardDialog implements OnInit {
           this.currValue = val;
           if (!this.cursorInitDone) {
             setTimeout(()=>{
-              this._cursorPos = this.currValue.length;
+              const col = this.data.el.getAttribute('column');
+              if (col && col.length > 0) {
+                this._cursorPos = Number(col);
+              } else {
+                this._cursorPos = this.currValue.length;
+              }
               this.scrollToCursor();
               this.cursorInitDone = true;
             },0);
@@ -247,7 +260,12 @@ export class KeyboardDialog implements OnInit {
           this.currValue = val;
           if (!this.cursorInitDone) {
             setTimeout(()=>{
-              this._cursorPos = this.currValue.length;
+              const col = this.data.el.getAttribute('column');
+              if (col && col.length > 0) {
+                this._cursorPos = Number(col);
+              } else {
+                this._cursorPos = this.currValue.length;
+              }
               this.scrollToCursor();
               this.cursorInitDone = true;
             },0);
@@ -256,7 +274,12 @@ export class KeyboardDialog implements OnInit {
       }
     }
     setTimeout(()=>{
-      this._cursorPos = this.currValue.length;
+      const col = this.data.el.getAttribute('column');
+      if (col && col.length > 0) {
+        this._cursorPos = Number(col);
+      } else {
+        this._cursorPos = this.currValue.length;
+      }
       this.scrollToCursor();
       this.cursorInitDone = true;
     },0);

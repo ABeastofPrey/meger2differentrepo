@@ -738,7 +738,7 @@
       "calibrated_not": "Not calibrated",
       "calibrated_origin": "Calibrated Origin",
       "conf": "Configuration Flags",
-      "curr_index": "Current item index",
+      "curr_index": "Quantity of items on pallet",
       "curr_pos": "Current Position",
       "dimensions_item": "Item Dimensions [mm]",
       "dimensions_pallet": "Pallet Dimensions [mm]",
@@ -750,17 +750,18 @@
       "exceed": "Can exceed pallet bounds",
       "export": "EXPORT...",
       "import": "IMPORT...",
-      "index_custom": "Custom",
+      "index_custom": "Specify",
       "index_empty": "Empty",
       "index_full": "Full",
-      "invalid_val": "Select pallet current index",
+      "invalid_val": "Specify the quantity of items on pallet",
+      "item": "Item",
       "item_new": "Add a new item",
       "item_rotate": "Rotate 90 degrees",
-      "level": "Level",
-      "levels": "Levels",
-      "levels_in_pallet": "Levels in pallet",
+      "level": "Layout",
+      "levels": "Layers",
+      "levels_in_pallet": "Pallet layers",
       "num_of_items": "Number of items",
-      "odd_even": "Different Odd/Even levels",
+      "odd_even": "Alternating layers",
       "offH": "Horizontal Offset",
       "offV": "Vertical Offset",
       "order": "Order",
@@ -768,7 +769,7 @@
       "origin_status": "Origin Status",
       "posX": "Position X",
       "posY": "Position XY",
-      "reset": "CLEAR LEVEL",
+      "reset": "CLEAR LAYOUT",
       "ret": "Retract",
       "ret_dir": "Retract Direction",
       "save": "Save changes to {{name}}?",
@@ -1158,7 +1159,7 @@
       "title": "Machine Table Limits"
     },
     "pos": {
-      "desc": "Define the robot' position limits",
+      "desc": "Define the joint position limits",
       "title": "Position Limits"
     },
     "tool": {
@@ -1368,6 +1369,7 @@
       "btn": "CHANGE SAFETY PASSWORD...",
       "change": "Change Safety password",
       "err": "Could not change password",
+      "err_regex": "Password cannot contain spaces",
       "new": "New Password",
       "old": "Current Password",
       "title": "Safety Card Admin Password Change"
@@ -1434,6 +1436,7 @@
   "strings": "Strings",
   "success": "Success!",
   "system_state": {
+    "-999": "Communication Error",
     "1000": "ACTIVE",
     "loading": "Initializing system...",
     "state": "System State"

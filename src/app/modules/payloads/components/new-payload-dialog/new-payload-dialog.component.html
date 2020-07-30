@@ -6,10 +6,11 @@
 				<input
 					matInput
 					placeholder="{{ 'payloads.name' | translate }}"
-					[(ngModel)]="name"
+					[formControl]="name"
 					virtualKeyboard
 					ktype="text"
 				/>
+				<mat-error *ngIf="name.invalid">{{ 'error.invalid_file_name' | translate }}</mat-error>
 			</mat-form-field>
 		</div>
 	</div>
@@ -17,7 +18,7 @@
 		<button mat-button color="primary" matDialogClose>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="insert()" [disabled]="name == null || name.length === 0">
+		<button mat-button color="primary" (click)="insert()" [disabled]="name.invalid">
 			{{ 'payloads.btn_create' | translate }}
 		</button>
 	</div>

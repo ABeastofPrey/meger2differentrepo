@@ -4,6 +4,7 @@ import { SystemLog } from '../../sys-log/enums/sys-log.model';
 import DATA from '../../../../assets/i18-fw/trn.json';
 
 const MOTION = {
+  en: ['in group ', 'in axis '],
   cmn: ['在组中', '轴中']
 };
 
@@ -26,24 +27,25 @@ export class FwTranslatorService {
 
   getTranslation(code: number, msg: string) {
     const trn = this._data[code];
-    if (!trn) return msg;
+    if (!trn || !this.trn.currentLang) return msg;
     const data = (trn[this.trn.currentLang] || trn['msg']) as string;
-    if (this.trn.currentLang === 'en') return msg;
     // HANDLE SPECIAL CASES
     if (code >= 19000 && code <= 19999) {
-      const match = msg.match(new RegExp('Axis (\w) '));
+      const match = msg.match(new RegExp('(?:Axis |轴)(\w) '));
       if (!match) return data;
       return data.replace('0',match[1]);
     }
     if (code >= 7000 && code <= 8000) {
-      const match = msg.match(new RegExp('Token :(.*)$'));
+      const match = msg.match(new RegExp('(?:Token :|牌：)(.*)$'));
       if (!match) return data;
       return data + match[1];
     }
     if (trn.module === 'Motion' || trn.module === 'Robot') {
       let prefix = '';
-      const regex1 = new RegExp('in group:? (\\w+)','i');
-      const regex2 = new RegExp('at axis (\\w+)','i');
+      const groupRegex = Object.keys(MOTION).map(key=>MOTION[key][0]).join('|');
+      const axisRegex = Object.keys(MOTION).map(key=>MOTION[key][1]).join('|');
+      const regex1 = new RegExp(`(?:${groupRegex})` + ':? ?(\\w+)','i');
+      const regex2 = new RegExp(`(?:${axisRegex})` + '(\\w+)','i');
       let match = msg.match(regex1);
       if (match) {
         prefix += MOTION[this.trn.currentLang][0] + match[1];
@@ -52,6 +54,7 @@ export class FwTranslatorService {
       if (match) {
         prefix += MOTION[this.trn.currentLang][1] + match[1];
       }
+      if (this.trn.currentLang !== 'cmn') prefix += ' ';
       return prefix + data;
     }
     return data;

@@ -461,6 +461,9 @@ export class GripperScreenComponent implements OnInit {
     const ef = this.selectedNode.parent.item;
     const g = this.selectedNode as Gripper;
     const inv = i === 1 ? (g.fb1_invert ? 1 : 0) : g.fb2_invert ? 1 : 0;
+    if (!val) {
+      val = i === 1 ? g.fb1 : g.fb2;
+    }
     let oldVal;
     if (i === 1) {
       oldVal = g.fb1;
@@ -469,18 +472,7 @@ export class GripperScreenComponent implements OnInit {
       oldVal = g.fb2;
       g.fb2 = val;
     }
-    const cmd =
-      '?GRP_GRIPPER_DIN_FEEDBACK_SET("' +
-      ef +
-      '","' +
-      grp +
-      '",' +
-      i +
-      ',"' +
-      val +
-      '",' +
-      inv +
-      ')';
+    const cmd = '?GRP_GRIPPER_DIN_FEEDBACK_SET("' + ef + '","' + grp + '",' + i + ',"' + val + '",' + inv + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result !== '0') {
         if (i === 1) {

@@ -84,12 +84,12 @@ export class ErrorHistoryComponent implements OnInit {
 
   clearDrive() {
     this.ws.query('?TP_CLRFAULT').then(() => {
-      this.ws.query('?TP_CONFIRM_ERROR');
+      this.ws.query('call TP_CONFIRM_ERROR');
     });
   }
 
   acknowledge() {
-    this.ws.send('?TP_CONFIRM_ERROR', true);
+    this.ws.send('call TP_CONFIRM_ERROR', true);
   }
 
   refreshErrors() {
@@ -97,7 +97,7 @@ export class ErrorHistoryComponent implements OnInit {
     this.ws.query('?errorhistory').then((result: MCQueryResponse) => {
       if (result.err) return;
       this.update(result.result);
-      this.ws.query('?TP_CONFIRM_ERROR');
+      this.ws.query('call TP_CONFIRM_ERROR');
     });
   }
 

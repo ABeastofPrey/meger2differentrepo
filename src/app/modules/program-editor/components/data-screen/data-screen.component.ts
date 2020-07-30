@@ -459,47 +459,71 @@ export class DataScreenComponent implements OnInit {
             },
           })
           .afterClosed()
-          .subscribe(ret => {
+          .subscribe(async ret => {
             if (ret) {
               this._varRefreshing = true;
               const queries = [];
               if (!this.useAsProjectPoints) {
-                const cmd = '?TP_DELETEVAR("' + this.selection.selected.map(s=>s.name).join() + ',")';
-                queries.push(this.ws.query(cmd));
+                // divide into 80-char queries...
+                const list = this.selection.selected.map(s=>s.name);
+                let tmpArr = [];
+                let count = 0;
+                let ret1, ret2;
+                while (list.length) {
+                  const str = list.pop();
+                  const len = str.length + 1;
+                  if (count + len < 80) {
+                    tmpArr.push(str);
+                    count += len;
+                  } else {
+                    ret1 = await this.ws.query('?TP_DELETEVAR("' + tmpArr.join() + ',")');
+                    console.log(ret1);
+                    ret2 = await this.waitForDeletionToFinish();
+                    console.log(ret2);
+                    count = len;
+                    tmpArr = [str];
+                  }
+                }
+                ret1 = await this.ws.query('?TP_DELETEVAR("' + tmpArr.join() + ',")');
+                console.log(ret1);
+                ret2 = await this.waitForDeletionToFinish();
+                console.log(ret2);
               } else {
                 for (const v of this.selection.selected) {
                   const cmd = '?TP_DELETE_project_points("' + v.name + '")';
                   queries.push(this.ws.query(cmd));
                 }
               }
-              Promise.all(queries).then(ret => {
-                if (this.useAsProjectPoints) {
-                  this.selectedVar = null;
-                  this.data.refreshVariables();
-                } else {
-                  this.waitForDeletionToFinish();
-                }
-              });
+              if (queries.length > 0) {
+                await Promise.all(queries);
+              }
+              if (this.useAsProjectPoints) {
+                this.selectedVar = null;
+              }
+              this.data.refreshVariables();
             }
           });
       });
   }
 
   private waitForDeletionToFinish() {
-    let done = false;
-    this._deleteInterval = window.setInterval(async()=>{
-      if (done) {
-        window.clearInterval(this._deleteInterval);
-        return;
-      };
-      const ret = await this.ws.query('?TP_GETDELETEVARSTATUS');
-      if (ret.result === '0') {
-        done = true;
-        window.clearInterval(this._deleteInterval);
-        this.selectedVar = null;
-        this.data.refreshVariables();
-      }
-    }, 500);
+    return new Promise(resolve=>{
+      let done = false;
+      this._deleteInterval = window.setInterval(async()=>{
+        if (done) {
+          window.clearInterval(this._deleteInterval);
+          resolve(true);
+          return;
+        };
+        const ret = await this.ws.query('?TP_GETDELETEVARSTATUS');
+        if (ret.result === '0') {
+          done = true;
+          window.clearInterval(this._deleteInterval);
+          this.selectedVar = null;
+          resolve(true);
+        }
+      }, 500);
+    });
   }
 
   onKeyboardClose(v: TPVariable) {

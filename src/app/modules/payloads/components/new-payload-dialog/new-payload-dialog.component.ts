@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { DataService } from '../../../core';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-payload-dialog',
@@ -8,7 +9,8 @@ import { DataService } from '../../../core';
   styleUrls: ['./new-payload-dialog.component.css'],
 })
 export class NewPayloadDialogComponent implements OnInit {
-  name: string;
+  
+  name = new FormControl('',[Validators.required, Validators.pattern('[a-zA-Z]+(\\w*)$'),Validators.maxLength(32)]);
 
   constructor(
     public dataService: DataService,
@@ -18,6 +20,6 @@ export class NewPayloadDialogComponent implements OnInit {
   ngOnInit() {}
 
   insert() {
-    this.ref.close(this.name);
+    this.ref.close(this.name.value);
   }
 }

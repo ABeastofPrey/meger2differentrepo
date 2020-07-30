@@ -953,6 +953,7 @@ export class PalletWizardComponent implements OnInit {
       control.value +
       ')';
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
+      console.log(ret);
       return ret.err || ret.result !== '0' ? { invalidSizeX: true } : null;
     });
   }
@@ -1382,6 +1383,8 @@ export class PalletWizardComponent implements OnInit {
               this.validateLevels.bind(this),
             ],
       diffOddEven: pallet.type === 'GRID' ? [''] : ['',[],this.validateDiffOdd.bind(this)],
+    }, {
+      updateOn: 'blur'
     });
     // listen to pallet and item change events
     this.step1.get('itemSizeX').valueChanges.subscribe(e=>{
@@ -1748,6 +1751,10 @@ export class PalletWizardComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.onWindowResize();
+  }
+
+  blurActive() {
+    (document.activeElement as HTMLElement).blur();
   }
 
   onWindowResize() {

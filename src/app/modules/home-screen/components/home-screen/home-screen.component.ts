@@ -33,6 +33,7 @@ import { Router } from '@angular/router';
 import { RobotService } from '../../../core/services/robot.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
+import { values } from 'd3';
 
 declare var Plotly;
 
@@ -176,15 +177,19 @@ export class HomeScreenComponent implements OnInit {
     const used = (total - sysInfo.freeDiskSpace) / total * 100;
     const free = sysInfo.freeDiskSpace / total * 100;
     const rounded = [
-      '' + Math.round((used+Number.EPSILON) * 100) / 100 + '%',
-      '' + Math.round((free + Number.EPSILON) * 100) / 100 + '%'
+      Math.round((used+Number.EPSILON) * 100) / 100 + '%',
+      Math.round((free + Number.EPSILON) * 100) / 100 + '%'
+    ];
+    const hoverTextDisk = [
+      this.words['home.chart_space'][0] + '<br>' + (total - sysInfo.freeDiskSpace).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' bytes<br>',
+      this.words['home.chart_space'][1] + '<br>' + sysInfo.freeDiskSpace.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' bytes',
     ];
 
     const data = [
       {
         values: [
           total - sysInfo.freeDiskSpace,
-          total,
+          sysInfo.freeDiskSpace,
         ],
         labels: this.words['home.chart_space'],
         type: 'pie',
@@ -192,7 +197,9 @@ export class HomeScreenComponent implements OnInit {
           colors,
         },
         text: rounded,
-        textinfo: 'text'
+        textinfo: 'text',
+        hovertext: hoverTextDisk,
+        hoverinfo: 'text'
       },
     ];
     const data2 = [

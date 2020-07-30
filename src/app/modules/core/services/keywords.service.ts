@@ -143,7 +143,7 @@ export class KeywordService {
         const line: string = 
           session.getLine(pos.row).substring(sep ? sep.length : 0,cursorPosition.column);
         const trimmed = line.trim();
-        const isComment = /^(?:'|REM).*/i.test(trimmed);
+        const isComment = /(?:'|REM).*/i.test(trimmed);
         if (!token || trimmed.length === 0 || isComment) {
           return callback();
         };

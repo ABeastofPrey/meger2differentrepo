@@ -12,6 +12,7 @@ export class MCProject {
   apps: App[] = [];
   backgroundTaskList: string[] = [];
   dependenciesLoaded: boolean;
+  projectPaused: boolean;
 
   constructor(name: string) {
     this.name = name;

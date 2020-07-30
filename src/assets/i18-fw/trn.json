@@ -1548,6 +1548,12 @@
         "cmn": "没有以前的软件包。"
     },
     {
+        "code": 3157,
+        "module": "Motion",
+        "msg": "VelocitySettings current state is not appropriate for this command.",
+        "cmn": "VelocitySettings current state is not appropriate for this command."
+    },
+    {
         "code": 3158,
         "module": "Motion",
         "msg": "Property value can not be changed while drive is disabled",
@@ -3740,7 +3746,7 @@
     {
         "code": 7011,
         "module": "Translator",
-        "msg": "Array does not exist Token :-",
+        "msg": "Array does not exist Token :",
         "cmn": "数组不存在令牌："
     },
     {
@@ -3788,8 +3794,8 @@
     {
         "code": 7019,
         "module": "Translator",
-        "msg": "Variable or constant does not exist Token :-",
-        "cmn": "变量或常量不存在令牌：-"
+        "msg": "Variable or constant does not exist Token :",
+        "cmn": "变量或常量不存在令牌："
     },
     {
         "code": 7020,
@@ -4088,8 +4094,8 @@
     {
         "code": 7069,
         "module": "Translator",
-        "msg": "Name is a reserved command name or contains invalid symbols Token :-",
-        "cmn": "名称是保留的命令名称或包含无效的符号令牌：-"
+        "msg": "Name is a reserved command name or contains invalid symbols Token :",
+        "cmn": "名称是保留的命令名称或包含无效的符号令牌："
     },
     {
         "code": 7070,
@@ -4634,8 +4640,8 @@
     {
         "code": 7160,
         "module": "Translator",
-        "msg": "Undefined structure-type Token :-",
-        "cmn": "未定义的结构类型令牌：-"
+        "msg": "Undefined structure-type Token :",
+        "cmn": "未定义的结构类型令牌："
     },
     {
         "code": 7161,
@@ -4670,8 +4676,8 @@
     {
         "code": 7166,
         "module": "Translator",
-        "msg": "Undefined structure member Token :-",
-        "cmn": "未定义结构成员令牌：-"
+        "msg": "Undefined structure member Token :",
+        "cmn": "未定义结构成员令牌："
     },
     {
         "code": 7167,

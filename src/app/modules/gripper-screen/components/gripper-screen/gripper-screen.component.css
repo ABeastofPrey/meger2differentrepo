@@ -71,6 +71,13 @@ mat-tree,
   right: 0;
 }
 
+@media only screen and (max-width: 1152px) {
+  .helper {
+    position: relative!important;
+    margin-bottom: 8px;
+  }
+}
+
 :host-context(.cs-dark) .gripper-data,
 :host-context(.cs-dark) .new-node {
   background-color: #424242;

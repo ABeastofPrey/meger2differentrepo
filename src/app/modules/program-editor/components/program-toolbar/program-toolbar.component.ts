@@ -151,6 +151,12 @@ export class ProgramToolbarComponent implements OnInit {
     });
   }
 
+  togglePause() {
+    const name = this.prj.currProject.value.name;
+    const cmd = this.prj.currProject.value.projectPaused ? `?PRJ_CONTINUE("${name}")` : `?PRJ_IDLE("${name}")`;
+    this.ws.query(cmd);
+  }
+
   run() {
     const cmd = '?tp_run_project("' + this.prj.currProject.value.name + '",';
     this.ws.query(cmd + '0)').then((ret: MCQueryResponse) => {
@@ -375,12 +381,17 @@ export class ProgramToolbarComponent implements OnInit {
     return this.api.importProject(fileName).then((ret: UploadResult) => {
       if (ret.success) {
         this.prgService.close();
-        this.prgService.mode = 'editor';
-        this.router.navigateByUrl('/projects');
-        this.snackbarService.openTipSnackBar("success");   
-        if (projectName === this.prj.currProject.value.name) {
-          return this.prj.getCurrentProject();
-        }
+        this.ws.query('?prj_set_current_project("' + projectName + '")').then(ret => {
+          console.log(ret);
+          if (ret.result === '0') {
+            this.prgService.close();
+            this.ws.updateFirmwareMode = true;
+            this.prj.currProject.next(null);
+            this.utl.resetAllDialog(this.words['projects.toolbar']['changing']);
+          } else {
+            this.snackbarService.openTipSnackBar("error.err");
+          }
+        });
       } else if (ret.err !== -99) {
         this.snackbarService.openTipSnackBar("projects.toolbar.err_import");       
       } else {

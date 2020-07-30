@@ -407,15 +407,22 @@ export class TerminalComponent implements OnInit {
 
   ngOnInit() {
     this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(async e=>{
-      if (this.editor) {
-        const lines = this.editor.getValue().split('\n') as string[];
-        for (let i=0; i<lines.length; i++) {
-          if (lines[i].startsWith('-->')) continue;
-          lines[i] = await this.parseResult(lines[i]);
-        }
-        this.editor.setValue(lines.join('\n'), 1);
-      }
+      this.onLangChange();
     });
+    setTimeout(()=>{
+      this.onLangChange();
+    },0);
+  }
+
+  async onLangChange() {
+    if (this.editor) {
+      const lines = this.editor.getValue().split('\n') as string[];
+      for (let i=0; i<lines.length; i++) {
+        if (lines[i].startsWith('-->')) continue;
+        lines[i] = await this.parseResult(lines[i]);
+      }
+      this.editor.setValue(lines.join('\n'), 1);
+    }
   }
 
   ngOnDestroy() {

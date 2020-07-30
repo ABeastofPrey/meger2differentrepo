@@ -10,11 +10,13 @@ import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
 export class GripperTestDialogComponent implements OnInit {
   
   private interval: number = null;
+  private testInterval: number = null;
   
   time = 5;
   duty = 50;
   status = false;
   grpStatus = false;
+  running = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {
@@ -32,8 +34,7 @@ export class GripperTestDialogComponent implements OnInit {
       this.time = Number(time);
     }
     this.interval = window.setInterval(() => {
-      this.ws
-        .query('?sys.dout.dout::' + this.data.dOut + '\n?GRP_GET_GRIPPER_STATE')
+      this.ws.query('?sys.dout.dout::' + this.data.dOut + '\n?GRP_GET_GRIPPER_STATE')
         .then((ret: MCQueryResponse) => {
           if (ret.err) return;
           const results = ret.result.split('\n');
@@ -41,11 +42,19 @@ export class GripperTestDialogComponent implements OnInit {
           this.grpStatus = results[1] === '2';
         });
     }, 200);
+    this.testInterval = window.setInterval(() => {
+      this.ws.query('?GRP_CYCLE_TEST_RUNNING_STATE')
+      .then((ret: MCQueryResponse) => {
+        this.running = ret.result === '1';
+      });
+    }, 200);
   }
   
   ngOnDestroy() {
-    clearInterval(this.interval);
+    window.clearInterval(this.interval);
+    window.clearInterval(this.testInterval);
     this.interval = null;
+    this.testInterval = null;
   }
 
   open() {

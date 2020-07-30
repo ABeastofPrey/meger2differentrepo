@@ -97,7 +97,7 @@ export class SysLogFetchService {
 
     public async clearDriveFault(): Promise<MCQueryResponse> {
         await this.ws.query('?TP_CLRFAULT');
-        return this.ws.query('?TP_CONFIRM_ERROR');
+        return this.ws.query('call TP_CONFIRM_ERROR');
     }
 
     public setConfirmId(id: string, needConfirmErr: boolean): Observable<boolean> {
@@ -109,7 +109,7 @@ export class SysLogFetchService {
                 this.ws.query(`call setConfirmID("${id}")`).then(res => {
                     this.ws.query('?saveConfirmId').then(() => {
                         if (needConfirmErr) {
-                            this.ws.query('?TP_CONFIRM_ERROR');
+                            this.ws.query('call TP_CONFIRM_ERROR');
                         }
                         observer.next(true);
                     });
@@ -150,7 +150,7 @@ export class SysLogFetchService {
             const onComplete = () => {
                 observer.next(true);
                 observer.complete();
-                needConfirmErr && this.ws.query('?TP_CONFIRM_ERROR');
+                needConfirmErr && this.ws.query('call TP_CONFIRM_ERROR');
             };
             const saveConfirmId = () => {
                 this.ws.observableQuery('?saveConfirmId').subscribe(null, onError, onComplete);

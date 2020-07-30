@@ -16,7 +16,7 @@
 			/>
 			<span matSuffix *ngIf="data.suffix">{{ data.suffix }}</span>
 			<mat-error *ngIf="dialogForm.controls['val'].invalid">
-				{{ 'error.invalid_file_name' | translate }}
+				{{ (data.error || 'error.invalid_file_name') | translate }}
 			</mat-error>
 		</mat-form-field>
 	</div>
