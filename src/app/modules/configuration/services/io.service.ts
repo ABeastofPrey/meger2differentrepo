@@ -173,7 +173,15 @@ export class IoService {
    */
   queryCustomTabs() {
     const cmd = `${IoServiceCommand.QueryCustomTab}`;
-    return this.send(cmd);
+    // return this.send(cmd);
+    return new Promise(resolve => {
+      this.ws.isConnected.subscribe(connected => {
+        if (!connected) return;
+        this.send(cmd).then(() => {
+          resolve();
+        });
+      });
+    });
   }
 
   /**

@@ -6,6 +6,8 @@ import { PositionTriggerService } from '../../../services/position-trigger.servi
 import { reduce, isEmpty, complement } from 'ramda';
 import { AddVarComponent } from '../../add-var/add-var.component';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { JumpxCommandService } from '../../combined-dialogs/services/jumpx-command.service';
+import { UtilsService } from '../../../../core/services/utils.service';
 
 @Component({
   selector: 'circle-dialog',
@@ -30,7 +32,7 @@ export class CircleDialogComponent implements OnInit {
     pts: new FormControl([]),
     targetPoint: new FormControl(null),
     targetPointIndex: new FormControl(-1),
-    vtran: new FormControl(null),
+    vtran: new FormControl(''),
   });
 
   get advancedMode() {
@@ -112,6 +114,8 @@ export class CircleDialogComponent implements OnInit {
     public dataService: DataService,
     public dialogRef: MatDialogRef<CircleDialogComponent>,
     private mtService: PositionTriggerService,
+    private jumpxService: JumpxCommandService,
+    private utilsService: UtilsService,
     @Inject(MAT_DIALOG_DATA) public data: {
       angle: boolean,
       isArr: boolean,
@@ -194,9 +198,16 @@ export class CircleDialogComponent implements OnInit {
     });
   }
 
+  public vtranMax: number;
   ngOnInit() {
     this.mtService.plsNameList().then(nameList => {
       this.ptList = nameList;
+    });
+    this.jumpxService.retrieveVtranMax().subscribe(max => {
+      this.vtranMax = max;
+      this.ctrl.controls['vtran'].setValidators(
+        this.utilsService.limitValidator(0, max, false, false)
+      );
     });
   }
 

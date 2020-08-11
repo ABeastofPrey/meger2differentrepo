@@ -1551,7 +1551,7 @@
         "code": 3157,
         "module": "Motion",
         "msg": "VelocitySettings current state is not appropriate for this command.",
-        "cmn": "VelocitySettings current state is not appropriate for this command."
+        "cmn": "当前速度设置状态不适合此命令."
     },
     {
         "code": 3158,
@@ -2223,103 +2223,103 @@
         "code": 3270,
         "module": "Motion",
         "msg": "Velocity rate initialized to its limit",
-        "cmn": "Velocity rate initialized to its limit"
+        "cmn": "速度比例初始化位速度极限"
     },
     {
         "code": 3271,
         "module": "Motion",
         "msg": "Acceleration rate initialized to its limit",
-        "cmn": "Acceleration rate initialized to its limit"
+        "cmn": "加速度比例初始化为加速度极限"
     },
     {
         "code": 3272,
         "module": "Motion",
         "msg": "Deceleration rate initialized to its limit",
-        "cmn": "Deceleration rate initialized to its limit"
+        "cmn": "减速度比例初始化为减速度极限"
     },
     {
         "code": 3273,
         "module": "Motion",
         "msg": "Jerk rate initialized to its limit",
-        "cmn": "Jerk rate initialized to its limit"
+        "cmn": "Jerk比例初始化位Jerk极限"
     },
     {
         "code": 3274,
         "module": "Motion",
         "msg": "Digital torque can be connected with an immediate movement from the same type only.",
-        "cmn": "Digital torque can be connected with an immediate movement from the same type only."
+        "cmn": "数字转矩只能以同一种形式与最近的运动相连。"
     },
     {
         "code": 3275,
         "module": "Motion",
         "msg": "The property can not be queried if no tracking (slave <>0) has been established.",
-        "cmn": "The property can not be queried if no tracking (slave <>0) has been established."
+        "cmn": "如果还没有建立跟踪，这个属性不能被查询。"
     },
     {
         "code": 3276,
         "module": "Motion",
         "msg": "Element is detached by the system in order to avoid endless error messaging.",
-        "cmn": "Element is detached by the system in order to avoid endless error messaging."
+        "cmn": "为了避免一直报错，元素已经被系统分离。"
     },
     {
         "code": 3277,
         "module": "Motion",
         "msg": "Absolute motion not allowed",
-        "cmn": "Absolute motion not allowed"
+        "cmn": "不允许绝对运动"
     },
     {
         "code": 3278,
         "module": "Motion",
         "msg": "Wrong buffer size.",
-        "cmn": "Wrong buffer size."
+        "cmn": "错误的缓冲区大小"
     },
     {
         "code": 3279,
         "module": "Motion",
         "msg": "The correct setting is: passbuffermin < passbuffermax < passbuffersize.",
-        "cmn": "The correct setting is: passbuffermin < passbuffermax < passbuffersize."
+        "cmn": "正确的设置是: passbuffermin < passbuffermax < passbuffersize."
     },
     {
         "code": 3280,
         "module": "Motion",
         "msg": "Wrong stretch factor value.",
-        "cmn": "Wrong stretch factor value."
+        "cmn": "错误的拉伸因子值。"
     },
     {
         "code": 3281,
         "module": "Motion",
         "msg": "Wrong size of stretch factor vector or user parameter vector.",
-        "cmn": "Wrong size of stretch factor vector or user parameter vector."
+        "cmn": "拉伸因子向量或用户参数向量大小错误。"
     },
     {
         "code": 3282,
         "module": "Motion",
         "msg": "Wrong relationship between passfrom and passupto properties.",
-        "cmn": "Wrong relationship between passfrom and passupto properties."
+        "cmn": "passfrom 和 passupto 属性关系错误。"
     },
     {
         "code": 3283,
         "module": "Motion",
         "msg": "No more points to interpolate.",
-        "cmn": "No more points to interpolate."
+        "cmn": "没有点可以插入。"
     },
     {
         "code": 3284,
         "module": "Motion",
         "msg": "Wrong BlendingMethod.",
-        "cmn": "Wrong BlendingMethod."
+        "cmn": "错误的 BlendingMethod."
     },
     {
         "code": 3285,
         "module": "Motion",
         "msg": "Advance interpolation/Conveyer tracking cannot be used with starttype immediate or sync.",
-        "cmn": "Advance interpolation/Conveyer tracking cannot be used with starttype immediate or sync."
+        "cmn": "超前插补/传送带跟踪不能与starttype immediate或sync一起使用。"
     },
     {
         "code": 3286,
         "module": "Motion",
         "msg": "Advance interpolation - points have been lost.",
-        "cmn": "Advance interpolation - points have been lost."
+        "cmn": "超前插补点已经丢失。"
     },
     {
         "code": 3287,
@@ -4155,379 +4155,379 @@
         "code": 7079,
         "module": "Translator",
         "msg": "Wrong given master type",
-        "cmn": "Wrong given master type"
+        "cmn": "给定的主类型错误"
     },
     {
         "code": 7080,
         "module": "Translator",
         "msg": "Null address of destination string",
-        "cmn": "Null address of destination string"
+        "cmn": "目标字符串的空地址"
     },
     {
         "code": 7081,
         "module": "Translator",
         "msg": "Location must be of Cartesian type",
-        "cmn": "Location must be of Cartesian type"
+        "cmn": "位置必须是笛卡尔类型"
     },
     {
         "code": 7082,
         "module": "Translator",
         "msg": "Location must be of joint type",
-        "cmn": "Location must be of joint type"
+        "cmn": "位置必须是关节类型"
     },
     {
         "code": 7083,
         "module": "Translator",
         "msg": "Syntax error in PROTO.PRO file",
-        "cmn": "Syntax error in PROTO.PRO file"
+        "cmn": "PROTO.PRO 文件中的语法错误"
     },
     {
         "code": 7084,
         "module": "Translator",
         "msg": "Wrong syntax for joints",
-        "cmn": "Wrong syntax for joints"
+        "cmn": "关节语法错误"
     },
     {
         "code": 7085,
         "module": "Translator",
         "msg": "Wrong syntax for Cartesian locations",
-        "cmn": "Wrong syntax for Cartesian locations"
+        "cmn": "笛卡尔坐标语法错误"
     },
     {
         "code": 7086,
         "module": "Translator",
         "msg": "Potential mismatch of robot-types",
-        "cmn": "Potential mismatch of robot-types"
+        "cmn": "机器人类型的潜在不匹配"
     },
     {
         "code": 7087,
         "module": "Translator",
         "msg": "Dimension mismatch",
-        "cmn": "Dimension mismatch"
+        "cmn": "维度不匹配"
     },
     {
         "code": 7088,
         "module": "Translator",
         "msg": "Cannot use location inside a vector",
-        "cmn": "Cannot use location inside a vector"
+        "cmn": "不能在一个矢量中使用位置"
     },
     {
         "code": 7089,
         "module": "Translator",
         "msg": "User function does not exist",
-        "cmn": "User function does not exist"
+        "cmn": "用户函数不存在"
     },
     {
         "code": 7090,
         "module": "Translator",
         "msg": "System camming element does not exist",
-        "cmn": "System camming element does not exist"
+        "cmn": "系统凸轮元素不存在"
     },
     {
         "code": 7091,
         "module": "Translator",
         "msg": "Camming element can only be a system element",
-        "cmn": "Camming element can only be a system element"
+        "cmn": "凸轮原始只能是系统元素"
     },
     {
         "code": 7092,
         "module": "Translator",
         "msg": "Wrong input type for the select statement.",
-        "cmn": "Wrong input type for the select statement."
+        "cmn": "所选语句的输入类型错误。"
     },
     {
         "code": 7093,
         "module": "Translator",
         "msg": "Local variable or element is not used within declaration block.",
-        "cmn": "Local variable or element is not used within declaration block."
+        "cmn": "在声明范围内，局部变量或元素没有被使用"
     },
     {
         "code": 7094,
         "module": "Translator",
         "msg": "Cannot execute the Drive command for axes",
-        "cmn": "Cannot execute the Drive command for axes"
+        "cmn": "无法对轴执行驱动器命令"
     },
     {
         "code": 7095,
         "module": "Translator",
         "msg": "The hex/decimal/bin keywords can only be used into a query command",
-        "cmn": "The hex/decimal/bin keywords can only be used into a query command"
+        "cmn": "十六进制/十进制/二进制 关键字只能用于查询命令"
     },
     {
         "code": 7096,
         "module": "Translator",
         "msg": "OnError can be defined only once in a program",
-        "cmn": "OnError can be defined only once in a program"
+        "cmn": "OnError只能在程序中定义一次"
     },
     {
         "code": 7097,
         "module": "Translator",
         "msg": "Incorrect print format",
-        "cmn": "Incorrect print format"
+        "cmn": "错误的打印格式"
     },
     {
         "code": 7098,
         "module": "Translator",
         "msg": "Event name should not be longer than 8 characters",
-        "cmn": "Event name should not be longer than 8 characters"
+        "cmn": "事件名称不应该超过8个字符"
     },
     {
         "code": 7099,
         "module": "Translator",
         "msg": "Returned value was not assigned",
-        "cmn": "Returned value was not assigned"
+        "cmn": "没有分配返回值"
     },
     {
         "code": 7100,
         "module": "Translator",
         "msg": "This property is a nodal only property",
-        "cmn": "This property is a nodal only property"
+        "cmn": "这是一个 nodal only 类型的属性"
     },
     {
         "code": 7101,
         "module": "Translator",
         "msg": "Use only single-dimension arrays",
-        "cmn": "Use only single-dimension arrays"
+        "cmn": "只使用一维数组"
     },
     {
         "code": 7102,
         "module": "Translator",
         "msg": "Try block mismatch",
-        "cmn": "Try block mismatch"
+        "cmn": "试块不匹配"
     },
     {
         "code": 7103,
         "module": "Translator",
         "msg": "Cannot write a catch-case after the finally-case",
-        "cmn": "Cannot write a catch-case after the finally-case"
+        "cmn": "不能在 finally-case 后再写一个 catch-case"
     },
     {
         "code": 7104,
         "module": "Translator",
         "msg": "This property is a read-only property",
-        "cmn": "This property is a read-only property"
+        "cmn": "这是一个 read-only 类型的属性"
     },
     {
         "code": 7105,
         "module": "Translator",
         "msg": "Undefined pls in command",
-        "cmn": "Undefined pls in command"
+        "cmn": "指令中的 Pls 未定义"
     },
     {
         "code": 7106,
         "module": "Translator",
         "msg": "Pls could not be added to symbol table",
-        "cmn": "Pls could not be added to symbol table"
+        "cmn": "不能将 Pls 添加到符号表中"
     },
     {
         "code": 7107,
         "module": "Translator",
         "msg": "Pls is already defined",
-        "cmn": "Pls is already defined"
+        "cmn": "Pls 已经被定义"
     },
     {
         "code": 7108,
         "module": "Translator",
         "msg": "Name of pls is invalid",
-        "cmn": "Name of pls is invalid"
+        "cmn": "无效的 Pls 名称"
     },
     {
         "code": 7109,
         "module": "Translator",
         "msg": "The with block must be closed before entering this block",
-        "cmn": "The with block must be closed before entering this block"
+        "cmn": "在进入此块之前，必须关闭 with 块"
     },
     {
         "code": 7110,
         "module": "Translator",
         "msg": "Cannot use locals in this context",
-        "cmn": "Cannot use locals in this context"
+        "cmn": "不能在此上下文中使用局部变量"
     },
     {
         "code": 7111,
         "module": "Translator",
         "msg": "The maximal length of the expression must be less than 128",
-        "cmn": "The maximal length of the expression must be less than 128"
+        "cmn": "表达式的最大长度必须小于128"
     },
     {
         "code": 7112,
         "module": "Translator",
         "msg": "Cannot move without target point",
-        "cmn": "Cannot move without target point"
+        "cmn": "没有目标点不能移动"
     },
     {
         "code": 7113,
         "module": "Translator",
         "msg": "Expression can only contain strings",
-        "cmn": "Expression can only contain strings"
+        "cmn": "表达式只能包含字符串"
     },
     {
         "code": 7114,
         "module": "Translator",
         "msg": "This function cannot be used as a condition",
-        "cmn": "This function cannot be used as a condition"
+        "cmn": "此函数不能用作条件"
     },
     {
         "code": 7115,
         "module": "Translator",
         "msg": "The pls cannot be declared into a program",
-        "cmn": "The pls cannot be declared into a program"
+        "cmn": "不能将 Pls 声明到程序中"
     },
     {
         "code": 7116,
         "module": "Translator",
         "msg": "Nesting of try statement is not allowed",
-        "cmn": "Nesting of try statement is not allowed"
+        "cmn": "不允许嵌套 try 语句"
     },
     {
         "code": 7117,
         "module": "Translator",
         "msg": "Missing end onevent statement",
-        "cmn": "Missing end onevent statement"
+        "cmn": "缺少 end onevent 语句"
     },
     {
         "code": 7118,
         "module": "Translator",
         "msg": "Then statement missing",
-        "cmn": "Then statement missing"
+        "cmn": "后面声明丢失"
     },
     {
         "code": 7119,
         "module": "Translator",
         "msg": "Library function is not loaded into memory",
-        "cmn": "Library function is not loaded into memory"
+        "cmn": "库函数未加载到内存中"
     },
     {
         "code": 7120,
         "module": "Translator",
         "msg": "Cannot record this kind of expression",
-        "cmn": "Cannot record this kind of expression"
+        "cmn": "不能记录这种表达"
     },
     {
         "code": 7121,
         "module": "Translator",
         "msg": "This is not a subroutine, but this is a function",
-        "cmn": "This is not a subroutine, but this is a function"
+        "cmn": "这是一个 function 而不是一个 subroutine"
     },
     {
         "code": 7122,
         "module": "Translator",
         "msg": "This is not a function, but this is a subroutine",
-        "cmn": "This is not a function, but this is a subroutine"
+        "cmn": "这是一个 subroutine 而不是一个 function"
     },
     {
         "code": 7123,
         "module": "Translator",
         "msg": "Multiple definition of else statement",
-        "cmn": "Multiple definition of else statement"
+        "cmn": "else 语句重复定义"
     },
     {
         "code": 7124,
         "module": "Translator",
         "msg": "Multiple definition of next statement",
-        "cmn": "Multiple definition of next statement"
+        "cmn": "next 语句重复定义"
     },
     {
         "code": 7125,
         "module": "Translator",
         "msg": "Cannot record a vector",
-        "cmn": "Cannot record a vector"
+        "cmn": "不能记录一个向量"
     },
     {
         "code": 7126,
         "module": "Translator",
         "msg": "Cannot use vector for condition",
-        "cmn": "Cannot use vector for condition"
+        "cmn": "不能将向量作为条件"
     },
     {
         "code": 7127,
         "module": "Translator",
         "msg": "The record file or number of recording points is missing",
-        "cmn": "The record file or number of recording points is missing"
+        "cmn": "记录文件或记录点的数量缺失"
     },
     {
         "code": 7128,
         "module": "Translator",
         "msg": "The recorder file is missing",
-        "cmn": "The recorder file is missing"
+        "cmn": "记录文件丢失了"
     },
     {
         "code": 7129,
         "module": "Translator",
         "msg": "Cannot use this operator for strings",
-        "cmn": "Cannot use this operator for strings"
+        "cmn": "不能对字符串使用此操作符"
     },
     {
         "code": 7130,
         "module": "Translator",
         "msg": "Cannot import library file. Library file must be loaded into memory",
-        "cmn": "Cannot import library file. Library file must be loaded into memory"
+        "cmn": "无法导入库文件，库文件必须加载入内存"
     },
     {
         "code": 7131,
         "module": "Translator",
         "msg": "Cannot import file which isn't a library file",
-        "cmn": "Cannot import file which isn't a library file"
+        "cmn": "不能导入非库文件的文件"
     },
     {
         "code": 7132,
         "module": "Translator",
         "msg": "Input can only contain one string input",
-        "cmn": "Input can only contain one string input"
+        "cmn": "输入只能包含一个字符串输入"
     },
     {
         "code": 7133,
         "module": "Translator",
         "msg": "Catch statement is missing or must be before the statement block",
-        "cmn": "Catch statement is missing or must be before the statement block"
+        "cmn": "Catch 语句丢失或必须在语句块之前"
     },
     {
         "code": 7134,
         "module": "Translator",
         "msg": "A filename cannot have more than 8 characters",
-        "cmn": "A filename cannot have more than 8 characters"
+        "cmn": "文件名不能超过8个字符"
     },
     {
         "code": 7135,
         "module": "Translator",
         "msg": "Wrong input parameter for the print command",
-        "cmn": "Wrong input parameter for the print command"
+        "cmn": "打印命令的输入参数错误"
     },
     {
         "code": 7136,
         "module": "Translator",
         "msg": "Declaration type is missing",
-        "cmn": "Declaration type is missing"
+        "cmn": "缺少声明类型"
     },
     {
         "code": 7137,
         "module": "Translator",
         "msg": "Parameter name is a reserved command name or contains invalid symbols",
-        "cmn": "Parameter name is a reserved command name or contains invalid symbols"
+        "cmn": "参数名是保留命令名或包含无效符号"
     },
     {
         "code": 7138,
         "module": "Translator",
         "msg": "Cannot use wildcards for this command",
-        "cmn": "Cannot use wildcards for this command"
+        "cmn": "不能对此命令使用通配符"
     },
     {
         "code": 7139,
         "module": "Translator",
         "msg": "Variable passed by reference has another type as in subroutine/function declaration",
-        "cmn": "Variable passed by reference has another type as in subroutine/function declaration"
+        "cmn": "在 subroutine/function 声明中，通过引用传递的变量有另一种类型"
     },
     {
         "code": 7140,
         "module": "Translator",
         "msg": "Cannot pass constants, returned values and complex expressions by reference to a subroutine/function",
-        "cmn": "Cannot pass constants, returned values and complex expressions by reference to a subroutine/function"
+        "cmn": "不能通过引用 subroutine/function 来传递常量、返回值和复杂表达式"
     },
     {
         "code": 7141,
         "module": "Translator",
         "msg": "Cannot use external device for this command",
-        "cmn": "Cannot use external device for this command"
+        "cmn": "不能为此命令使用外部设备"
     },
     {
         "code": 7142,

@@ -79,7 +79,9 @@ export class GraphComponent implements OnInit {
         };
       }
       Plotly.newPlot(this.graph.nativeElement, data, layout, {
-        responsive: true
+        responsive: true,
+        displaylogo: !this.utils.isTablet,
+        modeBarButtonsToRemove: [this.utils.isTablet && 'sendDataToCloud'].filter(Boolean),
       });
     } catch (err) {
       console.log(err);

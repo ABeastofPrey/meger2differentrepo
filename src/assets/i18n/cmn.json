@@ -382,7 +382,7 @@
     },
     "filter": "过滤器",
     "form_validation": {
-        "percent": "数值必须在0到100之间",
+        "percent": "数值必须在[0, 100]之间",
         "range": "数据超限"
     },
     "frame": "运动坐标系",

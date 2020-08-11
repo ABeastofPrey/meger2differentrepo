@@ -42,7 +42,7 @@ export class JumpxCommandService {
             this.retrieveDescendingPoints(),
             this.retrieveWithPls(),
             this.retrieveVcruiseMax(_motion),
-            this.retrieveVtranMax(_motion),
+            this.retrieveVtranMax(),
             this.retrieveAccMax(_motion),
             this.retrieveLimitofLimZ(_motion)
         ]);
@@ -65,7 +65,7 @@ export class JumpxCommandService {
     public selectMotionElement(motion: string): Observable<any> {
         const queries = _motion => combineLatest([
             this.retrieveVcruiseMax(_motion),
-            this.retrieveVtranMax(_motion),
+            this.retrieveVtranMax(),
             this.retrieveAccMax(_motion),
             this.retrieveLimitofLimZ(_motion)
         ]);
@@ -154,7 +154,7 @@ export class JumpxCommandService {
         return of(100);
     }
 
-    private retrieveVtranMax(motionElement: string): Observable<number> {
+    public retrieveVtranMax(): Observable<number> {
         // return this.queryLimit(`?${motionElement}.vtran`);
         return this.queryLimit('?TP_GET_PROJECT_PARAMETER("vtran","")')
     }

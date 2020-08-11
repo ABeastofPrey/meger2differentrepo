@@ -60,6 +60,9 @@
 				</mat-form-field>
 				<mat-form-field>
 					<input matInput placeholder="Vtran [mm/s]" formControlName="vtran" virtualKeyboard ktype="numeric" />
+					<mat-error>
+						{{'projectCommands.jumpx.intRange' | translate: {range: '(0, '+vtranMax+']'} }}
+					</mat-error>
 				</mat-form-field>
 				<mat-form-field>
 					<input 

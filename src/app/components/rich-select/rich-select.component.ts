@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { map as rxjsMap, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map as rxjsMap, distinctUntilChanged, debounceTime, bufferCount, takeUntil } from 'rxjs/operators';
 import { __, toLower, compose, filter, indexOf, gte, prop, sortBy, map } from 'ramda';
 
 @Component({
@@ -12,53 +12,107 @@ import { __, toLower, compose, filter, indexOf, gte, prop, sortBy, map } from 'r
 export class RichSelectComponent implements OnInit, OnDestroy {
     @Input() placeholder: string;
     @Input() options: string[] = [];
-    @Input() current: string;
-    @Output() currentChange: EventEmitter<string> = new EventEmitter<string>();
+    @Input() value: string = '';
+    @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() focusEvent: EventEmitter<string> = new EventEmitter<string>();
     @Output() blurEvent: EventEmitter<string> = new EventEmitter<string>();
     @Output() inputEvent: EventEmitter<string> = new EventEmitter<string>();
-    @Output() openSelectEvent: EventEmitter<null> = new EventEmitter<null>();
-    @Output() closeSelectEvent: EventEmitter<null> = new EventEmitter<null>();
     public filteredOptions: Observable<string[]>;
-    private filterWatcher: Subject<string> = new Subject<string>();
-    private currentWatcher: Subject<string> = new Subject<string>();
-    private currentWatcherSubscription: Subscription;
-    private blurtWatcher: Subject<string> = new Subject<string>();
-    private blurWatcherSubscription: Subscription;
-    private inputWatcher: Subject<string> = new Subject<string>();
-    private inputWatcherSubscription: Subscription;
+    private filterWatcher: EventEmitter<string> = new EventEmitter<string>();
+    private inputWatcher: EventEmitter<string> = new EventEmitter<string>();
+    private focusOrBlurWatcher: EventEmitter<boolean> = new EventEmitter<boolean>();
+    private stopListenEvent: EventEmitter<void> = new EventEmitter<void>();
     private isSelectOpened = false;
+    private isSelectAutoComplete = false;
 
     constructor() { }
 
     ngOnInit(): void {
-        // watch filter
-        this.filteredOptions = this.filterWatcher.pipe(rxjsMap(value => this.fuzzyQuery(value, this.options)));
-        // watch current value
-        const emitCurrent = value => this.currentChange.emit(value);
-        this.currentWatcherSubscription = this.currentWatcher.pipe(distinctUntilChanged()).subscribe(emitCurrent);
-        // watch blur
-        const blurEmit = value => {
-            this.blurEvent.emit(value);
-            this.filterWatcher.next('');
-        }
-        this.blurWatcherSubscription = this.blurtWatcher.pipe(debounceTime(300)).subscribe(blurEmit);
-        // watch input
-        const triggerInput = value => {
-            this.filterWatcher.next(value);
-            this.currentWatcher.next(value);
-            this.inputEvent.emit(value);
-        };
-        this.inputWatcherSubscription = this.inputWatcher.pipe(
-            debounceTime(500), 
-            distinctUntilChanged()
-        ).subscribe(triggerInput);
+        this.filteredOptions = this.filterWatcher.pipe(
+            rxjsMap(value => {
+                return !this.isSelectOpened ? this.fuzzyQuery(value, this.options) : [];
+            }),
+            takeUntil(this.stopListenEvent)
+        );
+
+        this.inputWatcher.pipe(
+            debounceTime(200),
+            distinctUntilChanged(),
+            takeUntil(this.stopListenEvent)
+        ).subscribe((value) => {
+            console.log('Emit Input: ', value);
+            this.value = value;
+            this.inputEvent.next(this.value);
+            this.valueChange.next(this.value);
+            this.filterWatcher.next(this.value);
+        });
+
+        this.focusOrBlurWatcher.pipe(
+            debounceTime(300),
+            bufferCount(2, 1),
+            takeUntil(this.stopListenEvent)
+        ).subscribe(([preIsFocus, curIsFocus]) => {
+            if (this.isSelectOpened) return;
+            if (preIsFocus && curIsFocus) return;
+            if (curIsFocus) {
+                console.log('Emit Focus: ', this.value);
+                this.focusEvent.next(this.value);
+            } else if (!curIsFocus) {
+                console.log('Emit Blur: ', this.value);
+                this.blurEvent.next(this.value);
+                this.filterWatcher.next('');
+            }
+        });
+        this.focusOrBlurWatcher.next(false);
     }
 
     ngOnDestroy(): void {
-        this.currentWatcherSubscription.unsubscribe();
-        this.blurWatcherSubscription.unsubscribe();
-        this.inputWatcherSubscription.unsubscribe();
+        this.stopListenEvent.next();
+        this.stopListenEvent.unsubscribe();
+    }
+
+    // Input events
+    public onInputFocus(): void {
+        if (this.isSelectOpened) {
+            const hasNoOptions = (!this.options || this.options.length === 0);
+            !hasNoOptions && this.filterWatcher.next('');
+            return;
+        };
+        this.filterWatcher.next(this.value);
+        this.focusOrBlurWatcher.next(true);
+    }
+
+    public onInputBlur(): void {
+        this.focusOrBlurWatcher.next(false);
+    }
+
+    public onInputChange(value: string): void {
+        this.inputWatcher.next(value);
+    }
+
+    // Auto complete events
+    public autoCompleteChange(value: string): void {
+        this.isSelectAutoComplete = true;
+        this.inputWatcher.next(value);
+    }
+
+    // Select events
+    public openSelect(): void {
+        this.isSelectOpened = true;
+    }
+
+    public openedChange(isOpen: boolean): void {
+        if (!isOpen) {
+            this.isSelectOpened = false;
+            this.focusOrBlurWatcher.next(false);
+        } else {
+            this.isSelectOpened = true;
+        }
+    }
+
+    public onSelectionChange(value: string): void {
+        this.inputWatcher.next(value);
+        this.focusOrBlurWatcher.next(false);
     }
 
     public viewPortHeight(items): string {
@@ -73,45 +127,6 @@ export class RichSelectComponent implements OnInit, OnDestroy {
             default: max = 5;
         }
         return 42 * max + 'px';
-    }
-
-    public onFocus(): void {
-        if (!this.options || this.options.length === 0) {
-            this.focusEvent.emit(this.current);
-        } else if (this.isSelectOpened) {
-            this.filterWatcher.next('');
-        } else {
-            this.filterWatcher.next(this.current);
-            this.focusEvent.emit(this.current);
-        }
-    }
-
-    public openSelect(): void {
-        this.isSelectOpened = true;
-    }
-
-    public openedChange(isOpen: boolean): void {
-        if (!isOpen) {
-            this.isSelectOpened = false;
-            this.blurtWatcher.next(this.current);
-            this.closeSelectEvent.emit();
-        } else {
-            this.openSelectEvent.emit();
-        }
-    }
-
-    public onSelectionChange(current: string): void {
-        this.current = current;
-        this.currentWatcher.next(this.current);
-    }
-
-    public onInput(): void {
-        this.inputWatcher.next(this.current);
-    }
-
-    public onBlur(): void {
-        this.currentWatcher.next(this.current);
-        this.blurtWatcher.next(this.current);
     }
 
     /**

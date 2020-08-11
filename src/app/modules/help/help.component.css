@@ -37,6 +37,29 @@ a {
   flex-basis: 130px;
 }
 
+.tablet-link {
+  cursor: not-allowed;
+  text-align: center;
+  padding: 24px;
+  transition: box-shadow 200ms, color 200ms;
+  -webkit-transition: box-shadow 200ms, color 200ms;
+  -moz-transition: box-shadow 200ms, color 200ms;
+  -o-transition: box-shadow 200ms, color 200ms;
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.54) !important;
+  flex-basis: 130px;
+}
+
+.tablet-link mat-icon {
+  width: 64px;
+  height: 64px;
+  font-size: 64px;
+  color: rgba(0, 0, 0, 0.26);
+}
+.tablet-link div {
+  color: rgba(0, 0, 0, 0.26);
+}
+
 a:hover {
   box-shadow: 0 4px 16px #e4e4e4;
   color: rgba(0, 0, 0, 0.87) !important;

@@ -173,4 +173,14 @@ export class TraceCommonComponent implements OnInit {
     public checkIsValid(isValid: boolean): void {
         this.isValid = isValid;
     }
+
+    // public test = 'default';
+    // public oncontextmenua(event: any): void {
+    //     this.test = event.target.value;
+    //     event.preventDefault();
+    // }
+
+    // public oncontextmenub(event: any): void {
+    //     this.test = event.target.value;
+    // }
 }

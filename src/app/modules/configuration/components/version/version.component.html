@@ -40,8 +40,8 @@
 						<mat-expansion-panel-header>
 							<mat-panel-title><mat-icon>web</mat-icon>&nbsp;Web Server </mat-panel-title>
 							<mat-panel-description>
-								<span>{{ data.WebServerInfo[0] }}</span>
-								<span class="date-container">{{ data.WebServerInfo[1] }}</span>
+								<span>{{ data.WebServerInfo && data.WebServerInfo[0] }}</span>
+								<span class="date-container">{{ data.WebServerInfo && data.WebServerInfo[1] }}</span>
 							</mat-panel-description>
 						</mat-expansion-panel-header>
 						<p>{{ 'version.webServerDes' | translate }}</p>

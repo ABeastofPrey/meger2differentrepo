@@ -65,25 +65,28 @@ export class VersionComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.wholeLibs = await this.getLibDescriptions();
-    this.visableLibs = slice(0, this.pageSize)(this.wholeLibs);
-    // get the main version(Control Studio Version)
-    this.mainVer = await this.getMainVersion();
-    // get latest lib date as main lib date.
-    const getDate = (x: ILib) => x.date;
-    const dates = map(getDate, this.wholeLibs);
-    const filterNilDate = filter(isNotNil);
-    const differ = (a, b) => b - a;
-    const sorter = sort(differ);
-    const getLatestDate = compose(head, sorter, filterNilDate);
-    this.libVer = getLatestDate(dates);
+    this.ws.isConnected.subscribe(async connected => {
+      if (!connected) return;
+      this.wholeLibs = await this.getLibDescriptions();
+      this.visableLibs = slice(0, this.pageSize)(this.wholeLibs);
+      // get the main version(Control Studio Version)
+      this.mainVer = await this.getMainVersion();
+      // get latest lib date as main lib date.
+      const getDate = (x: ILib) => x.date;
+      const dates = map(getDate, this.wholeLibs);
+      const filterNilDate = filter(isNotNil);
+      const differ = (a, b) => b - a;
+      const sorter = sort(differ);
+      const getLatestDate = compose(head, sorter, filterNilDate);
+      this.libVer = getLatestDate(dates);
 
-    const que = '?VI_getLibraryVersion';
-    this.ws.observableQuery(que)
-      .pipe(
+      const que = '?VI_getLibraryVersion';
+      this.ws.observableQuery(que)
+        .pipe(
           rxjsMap((res: MCQueryResponse) => JSON.parse(res.result)),
           catchError((err: ErrorFrame[]) => throwError(err[0] ? err[0].errMsg : ''))
-      ).subscribe(res => console.log(res), err => console.warn(err));
+        ).subscribe(res => console.log(res), err => console.warn(err));
+    })
   }
 
   clickReleaseNote(): void {

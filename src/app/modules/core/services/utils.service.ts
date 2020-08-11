@@ -14,6 +14,7 @@ import { DataService } from './data.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
+import { CommonService } from './common.service';
 
 /*
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
@@ -36,6 +37,7 @@ export class UtilsService {
     private trn: TranslateService,
     public dataService: DataService,
     private overlayContainer: OverlayContainer,
+    private commonService: CommonService,
   ) {
     const darkMode = localStorage.getItem('darkMode');
     if (darkMode !== null) {
@@ -201,6 +203,10 @@ export class UtilsService {
 
   get IsScara(): boolean {
     return this.dataService.robotType === 'SCARA' ? true : false;
+  }
+
+  get isTablet(): boolean {
+    return this.commonService.isTablet;
   }
 
   hiddenOverlayWrappers(): void {

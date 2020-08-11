@@ -1,31 +1,27 @@
 <form class="rich-select">
     <mat-form-field>
-        <input matInput #autoCompleteInput
-            [matAutocomplete]="richAuto" 
+        <input matInput autocomplete="off"
+            #autoCompleteInput
+            [(ngModel)]="value"
+            [matAutocomplete]="richAuto"
             [placeholder]="placeholder"
-            [(ngModel)]="current"
             (keyup.enter)="autoCompleteInput.blur()"
-            (blur)="onBlur()"
-            (focus)="onFocus()"
-            (input)="onInput()"
+            (blur)="onInputBlur()"
+            (focus)="onInputFocus()"
+            (input)="onInputChange($event.target.value)"
             [ngModelOptions]="{standalone: true}">
-        <mat-autocomplete autoActiveFirstOption #richAuto="matAutocomplete">
-            <!-- <cdk-virtual-scroll-viewport itemSize="10" [style.height]="viewPortHeight(filteredOptions | async)">
-                <mat-option *cdkVirtualFor="let option of filteredOptions | async"
-                    [value]="option">
-                    {{option}}
-                </mat-option>
-            </cdk-virtual-scroll-viewport> -->
+        <mat-autocomplete #richAuto="matAutocomplete">
             <mat-option *ngFor="let option of filteredOptions | async"
-                [value]="option">
-                <colorful-span [key]="current" [value]="option"></colorful-span>
+                [value]="option"
+                (click)="autoCompleteChange(option)">
+                <colorful-span [key]="value" [value]="option"></colorful-span>
             </mat-option>
         </mat-autocomplete>
         <mat-select [disabled]="options?.length === 0"
             (selectionChange)="onSelectionChange($event.value)"
             (openedChange)="openedChange($event)"
             (click)="openSelect()"
-            [(ngModel)]="current"
+            [disableOptionCentering]="true"
             [ngModelOptions]="{standalone: true}">
             <ng-container *ngIf="options?.length < 1000 else virtualScroll">
                 <mat-option *ngFor="let option of options" [value]="option">{{option}}</mat-option>
