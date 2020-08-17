@@ -14,6 +14,7 @@ export class CSNotification {
 
 export enum LibAsyncMessageCode {
   MaitenanceNewLog = 1001,
+  PluginInstallingLog = 1002
 }
 
 export interface LibAsyncMessage {

@@ -44,5 +44,19 @@
 		<a>
 			<cs-diagnosis></cs-diagnosis>
 		</a>
+		<a (click)="loadPluginFiles()" *ngIf="login.isAdmin" [class.disabled]="cmn.isCloud  || pluginDisabled" matTooltip="{{'cloud.na' | translate}}" [matTooltipDisabled]="!cmn.isCloud">
+			   <!-- <mat-icon>system_update</mat-icon> -->
+			   <mat-icon>extension</mat-icon>
+			  <div>{{ 'pluginInstall.name' | translate }}...</div>
+		 </a>
+		 <input
+		 *ngIf="login.isAdmin && !cmn.isCloud"
+		 type="file"
+		 accept=".zip,.ZIP"
+		 #uploadPlugin
+		 [(ngModel)]="pluginFiles"
+		 (change)="onUploadFilesChangePlugin($event)"
+		 class="file-input"
+	 />
 	</mat-card>
 </div>

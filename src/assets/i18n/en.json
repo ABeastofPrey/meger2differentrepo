@@ -281,7 +281,7 @@
       "ordernum": "OrderNum is required",
       "commentRequire": "Comment is required",
       "used_life_req_error": "Used Life is required",
-      "used_life_req_max":"Maximum input limit {{max}}"
+      "used_life_req_max": "Maximum input limit {{max}}"
     },
     "history": {
       "tab_name": "Maintenance History",
@@ -416,18 +416,8 @@
       "title_multi": "Delete {{num}} items?"
     },
     "JOINT": "JOINT",
-    "name": [
-      "Tool Name",
-      "Base Name",
-      "Machine Table Name",
-      "Work Piece Name"
-    ],
-    "new": [
-      "Add Tool",
-      "Add Base",
-      "Add Machine Table",
-      "Add Work Piece"
-    ],
+    "name": ["Tool Name", "Base Name", "Machine Table Name", "Work Piece Name"],
+    "new": ["Add Tool", "Add Base", "Add Machine Table", "Add Work Piece"],
     "none": "No {{frameType}} is selected",
     "TOOL": "TOOL",
     "WORLD": "WORLD"
@@ -514,14 +504,8 @@
     },
     "axes_max": "Max. Axes",
     "axes_real": "Real Axes",
-    "chart_ram": [
-      "Used RAM",
-      "Free RAM"
-    ],
-    "chart_space": [
-      "Used Space",
-      "Free Space"
-    ],
+    "chart_ram": ["Used RAM", "Free RAM"],
+    "chart_space": ["Used Space", "Free Space"],
     "features": "Features",
     "groups": "Groups Configuration",
     "platform": "Platform",
@@ -605,10 +589,7 @@
     "updating_succuss": "I/O modules updated successfuly"
   },
   "jogScreen": {
-    "menu": [
-      "Tool Align",
-      "Teach"
-    ],
+    "menu": ["Tool Align", "Teach"],
     "percision": "Precision",
     "settings": "Jog Settings",
     "speed": "Speed",
@@ -857,7 +838,8 @@
       "program": "PROGRAM",
       "variables": "VARIABLES",
       "vision": "VISION",
-      "jobTemplate": "TEMPLATE"
+      "jobTemplate": "TEMPLATE",
+      "pluginCommand": "PLUGINCOMMAND"
     },
     "move": {
       "index_from": "From Index",
@@ -1237,6 +1219,54 @@
     "Settings": "Project Settings",
     "pPoints": "Project Points",
     "Vision": "Vision"
+  },
+  "pluginInstall": {
+    "name": "Install Plugin",
+    "title": "Installing Plugin",
+    "fileLoading": "Loading File",
+    "rollback": "Rollbacking Plugin",
+    "noConfiFile": "Hasn't get plugin config file",
+    "fileFormatError": "File format error,need .zip file",
+    "chooseFileError": "Choose file error",
+    "exceedSize": "File size exceed, need <100M",
+    "unzipError": "File unzip error",
+    "uploadError": "File upload error",
+    "versionCheckEror": "Unexpection error of version detection",
+    "nextStep": "NEXT",
+    "install": "Install",
+    "unReady": "System is unready",
+    "unexception": "Unexpection error",
+    "pluginNameError": "A plugin name only can contain the following characters:a-z A-Z 0-9 . _ ",
+    "historyCheck": {
+      "title": "Existence Check",
+      "notInstallTips": "The plugin {{name}} is not installed, click 'NEXT' to continue",
+      "sameVersionTips": "The plugin {{name}} is installed with {{version}}, click 'CANCEL' to exit",
+      "diffVersionTips": "The plugin {{name}} is installed with {{previousVersion}}, click 'NEXT' to install {{version}}"
+    },
+    "dependenciesCheck": {
+      "title": "Dependency Check",
+      "dependenciesCheckError": "Dependencies detection error",
+      "canInstallTips": "All dependencies of the plugin {{name}}-{{version}} match, click 'NEXT' to continue",
+      "unSatisfiedTips": "Some dependencies are not matched, please check whether the following dependencies match",
+      "dependencies": {
+        "name": "Name",
+        "require": "Require",
+        "state": "State",
+        "installed": "Installed ({{version}})",
+        "notInstall": "Not Install"
+      }
+    },
+    "duplicationCheck": {
+      "title": "Duplication Check",
+      "detectionError": "Unexpection error of duplication  detection",
+      "canInstallTips": "Duplicated files are not found, click 'NEXT' to continue",
+      "hasDuplicateFile": "The following files are duplicated: {{files}}, files will be overwritten if you click 'NEXT' to continue"
+    },
+    "installing": {
+      "title": "Plugin Install",
+      "installFailed": "Plugin Install failed",
+      "installSuccess": "Plugin Install Success"
+    }
   },
   "record": "Record",
   "record_done": "Motion recording is finished",
@@ -1731,7 +1761,7 @@
   "wp": "Work Piece",
   "wps": "Work Pieces",
   "diagnosis": {
-    "name": "KRC S Diagnostics",
+    "name": "KRCS Diagnostics",
     "prepareDiagnosis": "Preparing Diagnosis...",
     "generatingFiles": "Generating Files...",
     "downloadZipFile": "Downloading ZIP file...",

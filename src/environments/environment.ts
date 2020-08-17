@@ -3,6 +3,8 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
+import { FooterRowOutlet } from '@angular/cdk/table';
+
 export interface Platform {
   name: string;
   logo: string;
@@ -26,6 +28,11 @@ export const PLATFORMS = {
   Servotronix: STX,
 };
 
+export const LANGS = {//support langurage
+  cmn: 'cmn',
+  en: 'en',
+}
+
 export const environment = {
   production: false,
   appName: 'ControlStudio+',
@@ -36,5 +43,7 @@ export const environment = {
   compatible_webserver_ver: 'v3.5.3',
   platform: PLATFORMS.Servotronix,
   platforms: PLATFORMS,
+  langs: LANGS,
   useDarkTheme: false
 };
+

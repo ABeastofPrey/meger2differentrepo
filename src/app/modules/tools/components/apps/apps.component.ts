@@ -18,6 +18,10 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { MCQueryResponse, DataService, TpStatService } from '../../../core';
 import { FactoryRestoreComponent } from '../factory-restore/factory-restore.component';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
+import { InstallPluginComponent } from '../../../../modules/plugins/install-plugin/install-plugin.component';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { PluginsService } from '../../../../modules/plugins/plugins.service';
 
 @Component({
   selector: 'apps',
@@ -53,15 +57,19 @@ export class AppsComponent implements OnInit {
 
   @ViewChild('upload', { static: false }) uploadInput: ElementRef;
 
+  @ViewChild('uploadPlugin', { static: false })
+  uploadPluginElementRef: ElementRef;
+
   private words: {};
   private _factoryAvailable = false;
   private _interval: number;
+
+  private noticer: Subject<any> = new Subject<any>();
 
   constructor(
     public login: LoginService,
     private api: ApiService,
     private dialog: MatDialog,
-    private snack: MatSnackBar,
     private snackbarService: SysLogSnackBarService,
     private ws: WebsocketService,
     private trn: TranslateService,
@@ -69,6 +77,7 @@ export class AppsComponent implements OnInit {
     public data: DataService,
     private task: TaskService,
     public cmn: CommonService,
+    private pluginService: PluginsService
   ) {
     this.trn.get('apps').subscribe(words => {
       this.words = words;
@@ -81,29 +90,34 @@ export class AppsComponent implements OnInit {
 
   ngOnInit() {
     this.checkFactoryAvailable();
-    this._interval = window.setInterval(()=>{
+    this._interval = window.setInterval(() => {
       this.checkFactoryAvailable();
-    },2000);
+    }, 2000);
   }
 
   private async checkFactoryAvailable() {
     const tasks = await this.task.getList();
-    this._factoryAvailable = tasks.some(t=>{
+    this._factoryAvailable = tasks.some(t => {
       return t.name === 'FACTORY.LIB';
     });
   }
 
   ngOnDestroy() {
     clearInterval(this._interval);
+    this.noticer.complete();
+    this.noticer.unsubscribe();
   }
 
   cabinetUpdate() {
     if (this.cmn.isCloud) return;
-    this.dialog.open(CabinetUpdateDialogComponent).afterClosed().subscribe(ret=>{
-      if (ret) {
-        window.location.href = '/cabinet-update/';
-      }
-    });
+    this.dialog
+      .open(CabinetUpdateDialogComponent)
+      .afterClosed()
+      .subscribe(ret => {
+        if (ret) {
+          window.location.href = '/cabinet-update/';
+        }
+      });
   }
 
   uploadIPK() {
@@ -171,7 +185,7 @@ export class AppsComponent implements OnInit {
     });
   }
 
-  onUploadFilesChange(e: {target: {files: File[], value: File }}) {
+  onUploadFilesChange(e: { target: { files: File[]; value: File } }) {
     const file: File = e.target.files[0];
     this.storeVersionInfo();
     if (file && file.name.toUpperCase() === 'MCU_FW.ZIP') {
@@ -189,9 +203,8 @@ export class AppsComponent implements OnInit {
         if (ret.success) {
           this.ws.query('?UTL_UPDATE_MCU_FW').then((ret: MCQueryResponse) => {
             if (ret.result !== '0') {
-             
-                // this.snack.open(this.words['err_mcu'], '', { duration: 1500 });
-                this.snackbarService.openTipSnackBar("err_mcu");
+              // this.snack.open(this.words['err_mcu'], '', { duration: 1500 });
+              this.snackbarService.openTipSnackBar('err_mcu');
             }
             dialog.close();
           });
@@ -248,30 +261,30 @@ export class AppsComponent implements OnInit {
                 this.trn
                   .get(['files.err_upload', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                //   this.snack.open(
-                //         words['files.err_upload'],
-                //         words['dismiss']
-                //       );   
-                    this.snackbarService.openTipSnackBar("files.err_upload"); 
+                    //   this.snack.open(
+                    //         words['files.err_upload'],
+                    //         words['dismiss']
+                    //       );
+                    this.snackbarService.openTipSnackBar('files.err_upload');
                   });
                 break;
               case -3:
                 this.trn
                   .get(['files.err_ext', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                //   this.snack.open(words['files.err_ext'], words['dismiss']);  
-                  this.snackbarService.openTipSnackBar("files.err_ext");                 
+                    //   this.snack.open(words['files.err_ext'], words['dismiss']);
+                    this.snackbarService.openTipSnackBar('files.err_ext');
                   });
                 break;
               case -3:
                 this.trn
                   .get(['files.err_permission', 'dismiss'])
                   .subscribe(words => {
-                //   this.snack.open(
-                //         words['files.err_upload'],
-                //         words['dismiss']
-                //       );
-                    this.snackbarService.openTipSnackBar("files.err_upload");  
+                    //   this.snack.open(
+                    //         words['files.err_upload'],
+                    //         words['dismiss']
+                    //       );
+                    this.snackbarService.openTipSnackBar('files.err_upload');
                   });
                 break;
             }
@@ -280,5 +293,68 @@ export class AppsComponent implements OnInit {
       }
       e.target.value = null;
     });
+  }
+
+  public pluginDisabled: boolean = false;
+  loadPluginFiles() {
+    let unReadyTips = 'pluginInstall.unReady';
+    if (this.cmn.isCloud || this.pluginDisabled) {
+      this.snackbarService.openTipSnackBar(unReadyTips);
+      return;
+    }
+    //plugin install is readied; robot is not runing and programs are not loading
+    this.pluginService
+      .inStallIsReady()
+      .pipe(takeUntil(this.noticer))
+      .subscribe(
+        res => {
+          if (!res) {
+            this.pluginDisabled = false;
+            this.snackbarService.openTipSnackBar(unReadyTips);
+            return;
+          }
+          this.uploadPluginElementRef.nativeElement.click();
+        },
+        error => {
+          this.pluginDisabled = false;
+          this.snackbarService.openTipSnackBar(unReadyTips);
+        }
+      );
+  }
+
+  public pluginFiles: any;
+  public onUploadFilesChangePlugin(e: {
+    target: { files: File[]; value: File };
+  }): void {
+    this.pluginService
+      .onUploadFilesChangePlugin(e)
+      .subscribe((res: { error: string; file: File }) => {
+        this.pluginFiles = null;
+        if (res && res.error) {
+          this.snackbarService.openTipSnackBar(res.error);
+          return;
+        }
+
+        //check configfile right
+        this.pluginService
+          .readFile(res.file)
+          .then((resConfig: { error?: string; successful?: boolean }) => {
+            if (!resConfig || resConfig.error) {
+              this.snackbarService.openTipSnackBar(resConfig.error);
+              return;
+            }
+
+            this.dialog
+              .open(InstallPluginComponent, {
+                data: res.file,
+                width: '480px',
+                minHeight: '350px',
+                maxHeight: '600px',
+                hasBackdrop: true,
+              })
+              .afterClosed()
+              .subscribe(res => {});
+          });
+      });
   }
 }

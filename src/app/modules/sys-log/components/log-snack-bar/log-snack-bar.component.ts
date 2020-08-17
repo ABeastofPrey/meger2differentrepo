@@ -1,9 +1,9 @@
-import { Component, OnInit, Output, Inject, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, HostBinding } from '@angular/core';
+import { Component, OnInit, Output, Inject, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { SYS_LOG_SNAKBAR_LOG, SYS_LOG_SNAKBAR_COUNT, SYS_LOG_SNAKBAR_TIP } from '../../enums/sys-log.tokens';
 import { SystemLog } from '../../enums/sys-log.model';
 import { FwTranslatorService } from '../../../core/services/fw-translator.service';
 import { TpStatService } from '../../../core/services/tp-stat.service';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
@@ -26,15 +26,16 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
         ])
     ]
 })
-export class LogSnackBarComponent implements OnInit {
+export class LogSnackBarComponent implements OnInit, OnDestroy {
 
     @Output() questionMarkEvent = new EventEmitter<SystemLog>();
     @Output() confirmEvent = new EventEmitter<SystemLog>();
     @Output() confirmAllEvent = new EventEmitter<string>();
     @Output() contentEvent = new EventEmitter<string>();
-    
+    private doCheckEvent = new EventEmitter<void>();
     private clearTipMessage = new EventEmitter<void>();
     private tipWasCleared = new EventEmitter<void>();
+    private stopListener = new EventEmitter<void>();
 
     public hasNoCanConfirm: boolean = false;
 
@@ -57,16 +58,24 @@ export class LogSnackBarComponent implements OnInit {
         public trn: FwTranslatorService,
         public tpStat: TpStatService,
         private cdRef: ChangeDetectorRef,
-    ) { }
-
-    ngOnInit(): void {
-        this.clearTipMessage.pipe(
-            debounceTime(2000),
-        ).subscribe(() => {
+    ) { 
+        const clearTip = () => {
             this._tip = '';
             this.cdRef.detectChanges();
             this.tipWasCleared.emit();
+        };
+        this.doCheckEvent.pipe(debounceTime(500), takeUntil(this.stopListener)).subscribe(() => {
+            this.cdRef.detectChanges();
+            (this._tip !== '') && this.clearTipMessage.emit();
         });
+        this.clearTipMessage.pipe(debounceTime(2000), takeUntil(this.stopListener)).subscribe(clearTip);
+    }
+
+    ngOnInit(): void {}
+
+    ngOnDestroy(): void {
+        this.stopListener.emit();
+        this.stopListener.unsubscribe();
     }
 
     public clickQuestionMark(): void {
@@ -88,15 +97,14 @@ export class LogSnackBarComponent implements OnInit {
 
     public setTip(msg: string): void {
         this._tip = msg;
-        this.cdRef.detectChanges();
-        this.clearTipMessage.emit();
+        this.doCheckEvent.emit();
     }
 
     public setLog(log: SystemLog, unconfirmCount: number, hasNoCanConfirm: boolean): void {
         this._log = log;
         this._unconfirmCount = unconfirmCount;
         (hasNoCanConfirm !== null || hasNoCanConfirm !== undefined) && (this.hasNoCanConfirm = hasNoCanConfirm);
-        this.cdRef.detectChanges();
+        this.doCheckEvent.emit();
     }
 
     public destroySnackBar(): Promise<void> {

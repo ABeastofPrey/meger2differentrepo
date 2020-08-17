@@ -1,43 +1,50 @@
 ::ng-deep .kuka .cs-progress .mat-progress-bar-buffer {
-    // background: #E4E8EB;
+  // background: #E4E8EB;
 }
 
 ::ng-deep .kuka .cs-progress .mat-progress-bar-background {
-    fill: yellowgreen;
+  fill: yellowgreen;
 }
 
 ::ng-deep .stx .cs-progress .mat-progress-bar-buffer {
-    // background: #E4E8EB;
+  // background: #E4E8EB;
 }
 
 ::ng-deep .stx .cs-progress .mat-progress-bar-background {
-    fill: yellowgreen;
+  fill: yellowgreen;
 }
 
-
 .cs-progress {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  .p-title {
+    font-size: 18px;
+  }
+  .progress-bar {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    .p-title {
-        font-size: 18px;
+    background: #f1f1f1;
+    padding: 30px 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    mat-progress-bar {
+      border: 1px solid white;
+      height: 12px;
+      border-radius: 7px;
     }
-    .progress-bar {
-        width: 100%;
-        background: #f1f1f1;
-        padding: 30px 10px;
-        margin: 10px 0;
-        border-radius: 5px;
-        mat-progress-bar {
-            border: 1px solid white;
-            height: 12px;
-            border-radius: 7px;
-        }
-    }
-    .tip {
-        position: absolute;
-        bottom: 15px;
-    }
+  }
+  .tip {
+    position: absolute;
+    bottom: 15px;
+  }
+}
+
+:host ::ng-deep .gray-theme .mat-progress-bar-fill::after {
+  background-color: lightgray;
+}
+
+:host ::ng-deep .gray-theme .mat-progress-bar-background {
+  fill: lightgray;
 }

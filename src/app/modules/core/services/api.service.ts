@@ -79,7 +79,7 @@ export class ApiService {
       .pipe(catchError(this.formatErrors));
   }
 
-  private get token() {
+   get token() {
     return window.localStorage['jwtToken'];
   }
 

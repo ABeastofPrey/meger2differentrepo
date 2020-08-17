@@ -29,6 +29,7 @@ import { VisionLoadStationBookComponent } from '../dialogs/vision-load-station-b
 import { JumpxCommandComponent } from '../combined-dialogs/components/jumpx-command/jumpx-command.component';
 import { TraceSelectorComponent } from '../dialogs/trace-selector/trace-selector.component';
 import { ProceedDialogComponent } from '../dialogs/proceed-dialog/proceed-dialog.component';
+import { PluginService } from '../../services/plugin.service';
 
 @Component({
   selector: 'program-edit-menu',
@@ -40,20 +41,46 @@ export class ProgramEditMenuComponent implements OnInit {
   isScara = false;
   visionCommandType = VisionCommandType;
   jumpxCommandType = JumpxCommandType;
+  hasCommand = false;
 
   constructor(
     public prg: ProgramEditorService,
     public data: DataService,
     private dialog: MatDialog,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    private ps: PluginService
   ) {}
 
   ngOnInit() {
+    this.ws.isConnected.subscribe(stat => {
+        if (stat) { 
+            this.ps.pluginPlace("command", () => {
+                document.getElementById("command").innerHTML? (this.hasCommand = true) : (this.hasCommand = false);
+            });
+        } else { 
+         
+        }
+    });
+    document.onclick = ($event) => {
+        const targetEle = $event.target['parentNode'];
+        if(targetEle && (targetEle['parentNode']['className'] !== "pluginCommandBox") && (targetEle['className'] !== "pluginCommandBox")){
+            document.getElementById("command") && (document.getElementById("command").style.display = 'none');
+        }
+    }
     this.parser = this.prg.parser;
     this.data.dataLoaded.subscribe(stat=>{
       if (!stat) return;
       this.isScara = this.data.robotType === 'SCARA';
     });
+  }
+
+  showCommand() {
+      if(!document.getElementById("command").innerHTML) {
+          return;
+      }
+      this.ps.sendCustomEvent("ws",{ws:this.ws});
+      document.getElementById("command").style.display = 'block';
+      this.ps.sendCustomEvent("addCommand",{"addCommand": this.prg})
   }
 
   menu_grp_use() {

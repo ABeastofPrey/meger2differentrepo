@@ -7,10 +7,19 @@ import { FactoryRestoreComponent } from './components/factory-restore/factory-re
 import { DiagnosisService } from './services/diagnosis.service';
 import { DiagnosisComponent } from './components/diagnosis/diagnosis.component';
 import { CabinetUpdateDialogComponent } from './components/cabinet-update-dialog/cabinet-update-dialog.component';
+import { PluginsModule } from '../plugins/plugins.module';
 
 @NgModule({
-  imports: [CommonModule, SharedModule, ToolsRoutingModule],
-  declarations: [AppsComponent, FactoryRestoreComponent, DiagnosisComponent, CabinetUpdateDialogComponent],
+  imports: [
+    CommonModule,
+     SharedModule, 
+     ToolsRoutingModule,
+     PluginsModule
+    ],
+  declarations: [AppsComponent, 
+    FactoryRestoreComponent,
+     DiagnosisComponent, 
+     CabinetUpdateDialogComponent],
   exports: [AppsComponent],
   providers: [DiagnosisService],
   entryComponents: [FactoryRestoreComponent, CabinetUpdateDialogComponent],

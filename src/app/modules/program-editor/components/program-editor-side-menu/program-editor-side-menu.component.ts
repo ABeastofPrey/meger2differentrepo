@@ -27,6 +27,7 @@ import { CdkDragDrop, moveItemInArray, DragDrop } from '@angular/cdk/drag-drop';
 import { CommonService } from '../../../core/services/common.service';
 import {NewDependencyDialogComponent} from '../toolbar-dialogs/new-dependency-dialog/new-dependency-dialog.component';
 import { take } from 'rxjs/operators';
+import { PluginService } from '../../services/plugin.service';
 
 export const projectPoints = 'pPoints';
 
@@ -120,7 +121,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     public login: LoginService,
     public cmn: CommonService,
     private tour: TourService,
-    private router: Router
+    private router: Router,
+    private ps: PluginService
   ) {
     this.trn
       .get([
@@ -145,6 +147,45 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.ws.isConnected.subscribe(stat => {
+        if (stat) { 
+          this.ps.pluginPlace("plugin",(routerPlugin: string) => {
+            if (this.service.isDirty && this.service.activeFile) {
+                this.trn
+                  .get('projectTree.dirty_msg', { name: this.service.activeFile })
+                  .subscribe(word => {
+                    this.dialog
+                      .open(YesNoDialogComponent, {
+                        data: {
+                          title: this.words['projectTree.dirty'],
+                          msg: word,
+                          yes: this.words['button.save'],
+                          no: this.words['button.discard'],
+                        },
+                        width: '500px',
+                      })
+                      .afterClosed()
+                      .subscribe(ret => {
+                        if (ret) {
+                          this.service.save().then(() => {
+                           
+                          });
+                        } else {
+                            this.service.isDirty = false;
+                        }
+                        this.goPlugin(routerPlugin);
+                      });
+                });
+            }else {
+                this.goPlugin(routerPlugin);
+            }
+            
+          })
+        } else { 
+         
+        }
+    });
+  
     this.nestedTreeControl = new NestedTreeControl<TreeNode>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.subscriptions.push(
@@ -222,6 +263,15 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     );
   }
 
+  goPlugin(component: string) {
+    this.service.mode = "plugin";
+    this.router.navigateByUrl(`/projects/plugin?component=${component}`);
+    setTimeout(() => {
+        this.ps.sendCustomEvent("ws",{ws:this.ws});
+        this.ps.sendCustomEvent("router",{router:this.router});
+    }, 0);
+  }
+
   ngOnDestroy() {
     for (const sub of this.subscriptions) {
       sub.unsubscribe();
@@ -293,6 +343,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
         });
       return;
     }
+    this.ps.sendCustomEvent("changeProject",{"className":"pluginHover"});
     const projName = this.currProject.name;
     if (n.type !== 'File' && n.type !== 'Dependency') this.service.close();
     this.lastSelectedFile = null;

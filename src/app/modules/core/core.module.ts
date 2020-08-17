@@ -54,7 +54,7 @@ import { ProgramEditorService } from '../program-editor/services/program-editor.
     TerminalService,
     TaskFilterPipe,
     PassPipe,
-    ProgramEditorService
+    ProgramEditorService,
   ]
 })
 export class CoreModule {}

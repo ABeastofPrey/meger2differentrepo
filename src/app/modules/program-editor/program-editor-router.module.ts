@@ -11,6 +11,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProgramEditorComponent } from './components/program-editor/program-editor.component';
 import { ProgramEditorMainComponent } from './components/program-editor-main/program-editor-main.component';
 import { CanDeactivateDataGuard } from './can-deactivate-data';
+import { PluginComponent } from './components/plugins/plugin.component';
 
 const routes: Routes = [
   {
@@ -61,6 +62,10 @@ const routes: Routes = [
       {
         path: 'vision',
         component: VisionComponent
+      },
+      {
+        path: 'plugin',
+        component: PluginComponent
       },
       {
         path: 'pallets',

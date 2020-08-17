@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgramEditorComponent } from './components/program-editor/program-editor.component';
 import { ProgramEditorSideMenuComponent } from './components/program-editor-side-menu/program-editor-side-menu.component';
@@ -74,6 +74,7 @@ import { VisionTemplateConfigRightComponent } from './components/vision-template
 import { NewDialogTemplateComponent } from './components/new-dialog-template/new-dialog-template.component';
 import { VisionService } from './services/vision.service';
 import { CanDeactivateDataGuard } from './can-deactivate-data';
+import { PluginComponent } from './components/plugins/plugin.component';
 
 @NgModule({
   imports: [
@@ -143,6 +144,7 @@ import { CanDeactivateDataGuard } from './can-deactivate-data';
     VisionCalibrationComponent,
     VisionTemplateConfigRightComponent,
     NewDialogTemplateComponent,
+    PluginComponent,
   ],
   entryComponents: [
     NewProjectDialogComponent,
@@ -186,6 +188,7 @@ import { CanDeactivateDataGuard } from './can-deactivate-data';
     VisionCalibrationComponent,
     VisionTemplateConfigRightComponent,
     NewDialogTemplateComponent,
+    PluginComponent,
 
   ],
   exports: [
@@ -206,5 +209,6 @@ import { CanDeactivateDataGuard } from './can-deactivate-data';
     VisionService,
     CanDeactivateDataGuard
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class ProgramEditorModule {}

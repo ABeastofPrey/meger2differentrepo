@@ -1,7 +1,30 @@
+.sideDisplay{
+    display: none;
+}
 .side-menu-content {
   display: flex;
   flex-direction: column;
   overflow: auto;
+}
+.pluginCommandBox {
+    width: 100%;
+    background-color: #ff7300;
+    min-height: 34px;
+    margin: 2px;
+    line-height: 34px;
+    text-align: center;
+    color: white !important;
+    position: relative;
+}
+.pluginCommand {
+    position: absolute;
+    bottom: 34px;
+    left: 0;
+    background-color: white;
+    padding: 8px;
+    width: 80%;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.87);
 }
 .side-menu-content button {
   margin: 2px;

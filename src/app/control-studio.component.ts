@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { CommonService } from './modules/core/services/common.service';
 import { TourState } from 'ngx-tour-core';
+import { PluginService } from './modules/program-editor/services/plugin.service';
 
 declare var gtag;
 
@@ -22,7 +23,7 @@ declare var gtag;
   animations: [fadeAnimation],
 })
 export class ControlStudioComponent {
-  
+
   env = environment;
   landscape: boolean;
 
@@ -40,7 +41,8 @@ export class ControlStudioComponent {
     public tour: TourService,
     private mgr: ScreenManagerService,
     private prg: ProgramEditorService,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    private ps: PluginService
   ) {
     this.overlayContainer
       .getContainerElement()
@@ -52,9 +54,9 @@ export class ControlStudioComponent {
   }
 
   get currStepIndex() {
-    for (let i=0; i<this.tour.steps.length; i++) {
+    for (let i = 0; i < this.tour.steps.length; i++) {
       if (this.tour.steps[i] === this.tour.currentStep) {
-        return i+1;
+        return i + 1;
       }
     }
     return 0;
@@ -65,14 +67,14 @@ export class ControlStudioComponent {
     const isTourActive = this.tour.getStatus() === TourState.ON;
     if (!isTourActive) return;
     const step = this.tour.currentStep;
-    setTimeout(()=>{
+    setTimeout(() => {
       if (this.tour.currentStep !== step) return;
       const disableNext = step['disableNext'];
       if (!disableNext) return;
       if (!disableNext() && this.tour.hasNext(step)) {
         this.tour.next();
       }
-    },400);
+    }, 400);
   }
 
   initTour() {
@@ -89,7 +91,7 @@ export class ControlStudioComponent {
           title: tour[1].title,
           content: tour[1].content,
           enableBackdrop: true,
-          disableNext: ()=>{
+          disableNext: () => {
             return this.mgr.screen.name !== 'editor';
           }
         },
@@ -98,7 +100,7 @@ export class ControlStudioComponent {
           title: tour[2].title,
           content: tour[2].content,
           enableBackdrop: true,
-          disableNext: ()=>{
+          disableNext: () => {
             return this.mgr.menuExpanded;
           }
         },
@@ -143,7 +145,7 @@ export class ControlStudioComponent {
           content: tour[8].content,
           enableBackdrop: true,
           route: '/projects',
-          disableNext: ()=>{
+          disableNext: () => {
             return this.prg.status && this.prg.status.statusCode === TASKSTATE_NOTLOADED;
           }
         },
@@ -160,7 +162,7 @@ export class ControlStudioComponent {
           content: tour[10].content,
           enableBackdrop: true,
           route: '/projects',
-          disableNext: ()=>{
+          disableNext: () => {
             return this.prg.status && this.prg.status.statusCode !== TASKSTATE_RUNNING;
           }
         },
@@ -201,12 +203,12 @@ export class ControlStudioComponent {
       this.tour.initialize(steps);
     });
   }
-  
+
   @HostListener('window:orientationchange', ['$event'])
   onOrientationChange(event) {
     this.getOrientation();
   }
-  
+
   private getOrientation() {
     const s = screen as {
       msOrientation?: string,
@@ -219,9 +221,11 @@ export class ControlStudioComponent {
     console.log(orientation);
     this.landscape = !this.cmn.isTablet || orientation.startsWith('landscape');
   }
-  
-  
+
+
   ngOnInit() {
+    this.ps.getInstalledPluginScripts().subscribe(this.ps.appendScriptsToBody.bind(this));
+
     // if (!this.env.production) {
     //   this.printpath('', this.router.config);
     // }
@@ -238,7 +242,7 @@ export class ControlStudioComponent {
       }
     });
   }
-  
+
   ngOnDestroy() {
     this.landscape = true;
   }

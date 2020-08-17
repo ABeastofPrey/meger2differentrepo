@@ -21,6 +21,11 @@ export const PLATFORMS = {
   Servotronix: STX,
 };
 
+export const LANGS = {//support langurage
+  cmn: 'cmn',
+  en: 'en',
+}
+
 export const environment = {
   production: true,
   appName: 'ControlStudio+',
@@ -31,5 +36,6 @@ export const environment = {
   compatible_webserver_ver: 'v3.5.3',
   platform: PLATFORMS.Kuka,
   platforms: PLATFORMS,
+  langs: LANGS,
   useDarkTheme: false
 };

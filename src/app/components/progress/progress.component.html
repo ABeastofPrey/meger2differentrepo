@@ -1,7 +1,14 @@
-<div class="cs-progress">
-    <span class="p-title"><b>{{title | translate}}</b></span>
-    <div class="progress-bar">
-        <mat-progress-bar mode="buffer" [value]="value" [bufferValue]="bufferValue"></mat-progress-bar>
-    </div>
-    <span class="tip">{{value}}%</span>
+<div class="cs-progress {{ progressbarTheme }}">
+  <span class="p-title"
+    ><b>{{ title | translate }}</b></span
+  >
+  <div class="progress-bar">
+    <mat-progress-bar
+      mode="buffer"
+      [value]="value"
+      [bufferValue]="bufferValue"
+      [color]="color"
+    ></mat-progress-bar>
+  </div>
+  <span class="tip">{{ value }}%</span>
 </div>

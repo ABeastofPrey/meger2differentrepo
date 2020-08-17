@@ -62,3 +62,6 @@ diagnosisContext.keys().map(diagnosisContext);
 
 const syslogContext = require.context('./app/modules/sys-log/components/log-cause/', true, /\.spec\.ts$/);
 syslogContext.keys().map(syslogContext);
+
+const pluginInstallContext = require.context('./app/modules/plugins/install-plugin/', true, /\.spec\.ts$/);
+pluginInstallContext.keys().map(pluginInstallContext);

@@ -26,13 +26,10 @@ export class SysLogSnackBarService {
     public openTipSnackBar(message: string): void {
         if (this._overlayRef === undefined || this._snakbarRef === undefined) {
             this.openLogSnackbar(null, null, null);
-            setTimeout(() => {
-                this._snakbarRef.instance.setTip(message);
-            }, 0);
+            this._snakbarRef.instance.setTip(message);
         } else {
             this._snakbarRef.instance.setTip(message);
         }
-        
     }
 
     public openLogSnackbar(log: SystemLog, unconfirmCount: number, hasNoCanConfirm: boolean): void {

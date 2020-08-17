@@ -125,6 +125,14 @@ mat-icon {
   color: #6d4c41;
 }
 
+#plugin {
+    background: white;
+    margin: 0 16px;
+}
+.pluginHidden {
+    display: none;
+}
+
 .menu {
   position: absolute;
   left: 0;

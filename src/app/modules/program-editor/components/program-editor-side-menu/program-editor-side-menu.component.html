@@ -1,5 +1,5 @@
 <div class="wrapper mat-typography">
-	<div class="project-tree" *ngIf="currProject && service.modeToggle === 'prj'" tourAnchor="project-tree">
+	<div class="project-tree" *ngIf="currProject && service.modeToggle === 'prj'" tourAnchor="project-tree" id="trees">
 		<div class="title" tourAnchor="projectName">{{ currProject.name }}</div>
 		<mat-tree
 			[dataSource]="nestedDataSource"
@@ -9,7 +9,7 @@
 			<mat-tree-node *matTreeNodeDef="let node" [class.disabled]="isNodeDisabled(node)">
 				<li class="leaf" [class.background-leaf]="node.type === 'BG'" (contextmenu)="openContextMenu($event, node)">
 					<div (click)="openFile(node)"
-						[class.selected]="lastSelectedNode === node" [class.disabled]="isNodeDisabled(node)"
+						[class.selected]="lastSelectedNode === node && service.mode !== 'plugin'" [class.disabled]="isNodeDisabled(node)"
 						[class.background-node]="node.type === 'BG'">
 						<mat-icon class="leaf mat-primary" color="primary" *ngIf="node.type === 'File'">insert_drive_file</mat-icon>
 						<mat-icon class="leaf mat-primary" color="primary" *ngIf="node.type === 'BG'">insert_drive_file</mat-icon>
@@ -68,8 +68,11 @@
 					</ul>
 				</li>
 			</mat-nested-tree-node>
-		</mat-tree>
-	</div>
+        </mat-tree>
+        <div id="plugin" [class.pluginHidden] = "!(currProject && service.modeToggle === 'prj')">
+           
+        </div>
+    </div>
 	<div *ngIf="service.modeToggle === 'mc'" class="file-tree-wrapper">
 		<div class="title">{{ 'files.tree' | translate }}</div>
 		<mc-file-tree></mc-file-tree>
