@@ -324,20 +324,25 @@ export class ProgramEditorSideMenuComponent implements OnInit {
               data: {
                 title: this.words['projectTree.dirty'],
                 msg: word,
-                yes: this.words['button.save'],
-                no: this.words['button.discard'],
+                yes: this.words['button.discard'],
+                no: this.words['button.cancel'],
+                third: this.words['button.save'],
+                thirdColor: 'primary',
+                warnBtn: true
               },
               width: '500px',
             })
             .afterClosed()
             .subscribe(ret => {
-              if (ret) {
+              if (ret === 3) {
                 this.service.save().then(() => {
                   this.openFile(n);
                 });
-              } else {
+              } else if (ret) {
                 this.service.isDirty = false;
                 this.openFile(n);
+              } else {
+                return;
               }
             });
         });
@@ -771,6 +776,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     if(isGBTAndLoaded) return;
 
     if (this.login.isViewer || (this.prj.activeProject && node.type !== 'App')) return;
+    if (this.login.isOperator) {
+      if (node.type !== 'App' && node.type !== 'Dependencies' && node.type !== 'BG') {
+        return;
+      }
+      if (node.type === 'App' && this.lastSelectedNode.ref.status !== 7) {
+        return;
+      }
+    }
     this.selectNode(node);
     switch (node.type) {
       case 'Dependencies':

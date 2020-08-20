@@ -73,7 +73,6 @@
 					<mat-slider
 						class="vscale"
 						thumbLabel="true"
-						tickInterval="1"
 						[min]="1"
 						[max]="100"
 						[(ngModel)]="prj.currProject.value.settings.vscale"
@@ -87,7 +86,6 @@
 					<mat-slider
 						class="vscale"
 						thumbLabel="true"
-						tickInterval="1"
 						[min]="1"
 						[max]="100"
 						[(ngModel)]="prj.currProject.value.settings.ascale"
@@ -101,9 +99,8 @@
 						matInput
 						placeholder="{{ 'projectSettings.vtran' | translate }} (VTran)"
 						[(ngModel)]="prj.currProject.value.settings.vtran"
-						
 						virtualKeyboard
-						ktype="numeric"
+						ktype="numeric_pos"
 					/>
 					<span matSuffix>mm/sec</span>
 				</mat-form-field>

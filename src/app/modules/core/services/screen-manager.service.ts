@@ -1,8 +1,9 @@
+import { ControlStudioScreen } from './screen-manager.service';
 import { TourService } from 'ngx-tour-md-menu';
 import { CoordinatesService } from './coordinates.service';
 import { OSUpgradeSuccessDialogComponent } from './../../../components/osupgrade-success-dialog/osupgrade-success-dialog.component';
 import { environment } from './../../../../environments/environment';
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { LoginService } from './login.service';
 import { TpStatService } from './tp-stat.service';
 import { Router, ActivatedRoute, RouterEvent, NavigationEnd } from '@angular/router';
@@ -105,6 +106,8 @@ export class ScreenManagerService {
     false
   );
 
+  screenChange = new EventEmitter<{old: ControlStudioScreen, new: ControlStudioScreen}>();
+
   private tpOnline = false;
   private words: {};
   private _menuExpanded: boolean;
@@ -177,6 +180,8 @@ export class ScreenManagerService {
     return this._screen;
   }
   set screen(s: ControlStudioScreen) {
+    if (s === this._screen) return;
+    const old = this._screen;
     if (
       typeof s === 'undefined' ||
       this.isScreenDisabled(s) ||
@@ -188,6 +193,7 @@ export class ScreenManagerService {
       this.router.navigateByUrl('/');
     } else {
       this._screen = s;
+      this.screenChange.emit({old, new: this._screen});
     }
   }
 
@@ -210,14 +216,10 @@ export class ScreenManagerService {
 
   async showControls() {
     if (this.openedControls) return;
-    // this.controlsAnimating.next(true);
     this.openedControls.next(true);
     if (!this.cmn.isTablet) {
       await this.stat.setMode('T1');
     }
-    // setTimeout(() => {
-    //   this.controlsAnimating.next(false);
-    // }, 300);
     if (
       this.stat.mode !== 'T1' &&
       this.stat.mode !== 'T2' &&
@@ -248,15 +250,13 @@ export class ScreenManagerService {
 
   async closeControls() {
     if (!this.openedControls.value) return;
-    // this.controlsAnimating.next(true);
     this.openedControls.next(false);
     if (!this.cmn.isTablet) {
-      console.log('closed controls');
-      await this.stat.setMode('A');
+      const ret = await this.stat.setMode('A');
+      if (!ret) {
+        this.openedControls.next(true);
+      }
     }
-    // setTimeout(() => {
-    //   this.controlsAnimating.next(false);
-    // }, 300);
   }
 
   handleFromPath() {
@@ -438,6 +438,7 @@ export class ScreenManagerService {
         !navUrl.startsWith(currScreenUrl) ||
         (currScreenUrl === '' && navUrl !== currScreenUrl)
       ) {
+        const old = this._screen;
         this._screen = this._screens.find(s => {
           const url = s.url === '/' ? '' : s.url;
           if (url === '' && navUrl.substring(1) !== '') return false;
@@ -446,6 +447,7 @@ export class ScreenManagerService {
           }
           return false;
         });
+        this.screenChange.emit({old, new: this._screen});
       }
     });
   }

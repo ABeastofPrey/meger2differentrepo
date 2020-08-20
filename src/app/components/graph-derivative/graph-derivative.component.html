@@ -20,7 +20,7 @@
 				<mat-option *ngFor="let d of data; let i = index" [value]="i">{{ d }}</mat-option>
 			</mat-select>
 		</mat-form-field>
-		<button mat-button color="primary" (click)="done()">
+		<button mat-raised-button color="primary" (click)="done()">
 			{{ 'derivative' | translate | uppercase }}
 		</button>
 	</div>

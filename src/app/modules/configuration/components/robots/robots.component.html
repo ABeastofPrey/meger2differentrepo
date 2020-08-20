@@ -36,6 +36,9 @@
 				</div>
 			</div>
 			<div *ngIf="robot.selectedRobot === null">{{ 'na' | translate }}</div>
+			<div *ngIf="robot.rarm" @fade>
+				<span class="mat-subtitle-color"><b>{{'rarm' | translate}}:</b></span> {{robot.rarm.PN}} | {{robot.rarm.SN}}
+			</div>
 		</mat-card>
 		<mat-card *ngIf="robot.selectedRobot && stat.onlineStatus.value" style="min-height: 200px;">
 			<h2>{{ 'robots.params' | translate }}</h2>
@@ -54,6 +57,7 @@
 									(onKeyboardClose)="onSettingsKeyboardClose()"
 								/>
 								<span matSuffix *ngIf="units">[{{ units[i] }}]</span>
+								<mat-hint *ngIf="rarmDisp && rarmDisp['A' + (i+1)]"><b>{{'rarm' | translate}}:</b> {{rarmDisp['A' + (i+1)]}}</mat-hint>
 							</mat-form-field>
 							<button
 								mat-raised-button
@@ -104,6 +108,8 @@
 								(onKeyboardClose)="onSettingsKeyboardClose(i)"
 							/>
 							<span matSuffix>[mm]</span>
+							<mat-hint *ngIf="rarmDH && d.name === 'L1'"><b>{{'rarm' | translate}}:</b> {{rarmDH.L1}}</mat-hint>
+							<mat-hint *ngIf="rarmDH && d.name === 'L2'"><b>{{'rarm' | translate}}:</b> {{rarmDH.L2}}</mat-hint>
 						</mat-form-field>
 					</div>
 				</mat-tab>

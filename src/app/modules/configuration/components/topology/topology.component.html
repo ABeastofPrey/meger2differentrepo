@@ -50,7 +50,7 @@
                     <mat-icon matRipple matTreeNodeToggle class="clickable">devices</mat-icon>&nbsp;
                 </ng-container>
             </ng-container>
-            <div [ngSwitch]="node.name" matRipple class="clickable status-{{node.status}}" matTreeNodeToggle>
+            <div [ngSwitch]="node.name" class="clickable status-{{node.status}}" matTreeNodeToggle>
                 <span *ngSwitchCase="'Controller'">{{'topology.controller'|translate}}</span>
                 <span *ngSwitchCase="'Drive Bus'">{{'topology.driveBus'|translate}}</span>
                 <span *ngSwitchCase="'Extension Bus'">{{'topology.extensionBus'|translate}}</span>

@@ -104,7 +104,7 @@ export class ProjectManagerService {
             .then((ret: MCQueryResponse) => {
               waiting = false;
               if (ret.result.length === 0) {
-                console.log('CYC3 RETURNED BLANK RESULT');
+                console.warn('CYC3 RETURNED BLANK RESULT');
                 this.stopStatusRefresh();
                 return;
               }

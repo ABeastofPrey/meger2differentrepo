@@ -291,7 +291,7 @@ export class WebsocketService {
             const msg = JSON.parse(data['msg'].substring(3));
             this.notification.onWebserverMessage(msg);
           } catch (err) {
-            console.log('Couldnt parse webserver message:' + data['msg'] + '...');
+            
           }
       } else if (data['msg'].startsWith('#libAsyncMessge#')) {
         const message = data['msg'].substring(16);

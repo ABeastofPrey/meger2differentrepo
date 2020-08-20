@@ -40,7 +40,6 @@
     "ngx-scrollbar": "^4.2.0",
     "ngx-tour-core": "^4.1.0",
     "ngx-tour-md-menu": "^4.1.0",
-    "plotly": "^1.0.6",
     "ramda": "^0.26.0",
     "ramda-adjunct": "^2.21.0",
     "ramda-fantasy": "^0.8.0",

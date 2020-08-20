@@ -46,6 +46,7 @@
 				[colorPicker]="'#' + lastSelectedNode.color"
 				(colorPickerChange)="onColorChange($event)"
 				[style.background]="'#' + lastSelectedNode.color"
+				cpAlphaChannel="disabled"
 			>
 				{{ lastSelectedNode.color }}
 			</td>
@@ -175,6 +176,7 @@
 			<td
 				class="color-select"
 				[colorPicker]="'#' + lastSelectedNode.color"
+				cpAlphaChannel="disabled"
 				(colorPickerChange)="onColorChange($event)"
 				[style.background]="'#' + lastSelectedNode.color"
 			>

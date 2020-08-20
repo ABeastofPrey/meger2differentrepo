@@ -1,3 +1,4 @@
+import { DataService } from './../../core/services/data.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import {
   MCQueryResponse,
@@ -75,7 +76,15 @@ export class TerminalService {
     });
   }
 
-  constructor(private ws: WebsocketService, private trn: TranslateService,) {}
+  constructor(
+    private ws: WebsocketService,
+    private trn: TranslateService,
+    private data: DataService
+  ) {
+    this.data.mcChange.subscribe(sn=>{
+      this.clear();
+    });
+  }
 
   clear() {
     this.cmds = [];

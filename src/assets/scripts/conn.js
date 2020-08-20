@@ -56,7 +56,7 @@ function timer(id, interval, msg, force) {
 }
 
 function getWebsocketPort(ip) {
-  //const PORT  = '32045';
+  //const PORT  = '32323';
   const PORT = self.location.port === '4200' ? '1207' : self.location.port;
   return new Promise((resolve,reject)=>{
     const http = new XMLHttpRequest();
@@ -124,7 +124,6 @@ function MCConnection() {
       ws = new WebSocket('ws://' + IP + ':' + port);
       ws.onopen = function() {
         console.log('WEBSOCKET OPENED');
-        console.log('X');
         ws.send('X');
         setTimeout(() => {
           worker.postMessage({ serverMsg: true, msg: 0 }); // ONOPEN MESSAGE
@@ -147,7 +146,6 @@ function MCConnection() {
       };
       ws.onmessage = function(msg) {
         if (msg.data === 'O') {
-          console.log('O');
           lastPong = new Date().getTime();
           return;
         }

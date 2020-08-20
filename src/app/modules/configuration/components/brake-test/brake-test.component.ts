@@ -81,7 +81,6 @@ export class BrakeTestComponent implements OnInit {
   }
 
   async onBitmapChange() {
-    console.log(this.brakes);
     console.log(await this.ws.query(`call BT_SET_AXES_BITMAP(${this.bitmap})`));
     this.cd.detectChanges();
   }
@@ -97,12 +96,35 @@ export class BrakeTestComponent implements OnInit {
       this.busy = true;
       this.cd.detectChanges();
       const result = (await this.ws.query('?BT_EXECUTE_BRAKE_TEST')).result;
-      this.busy = false;
-      this.cd.detectChanges();
-      if (result === '0') {
-        this.snackbarService.openTipSnackBar("success");
+      if (result !== '0') {
+        this.busy = false;
+        this.cd.detectChanges();
+      } else {
+        const wait = await this.waitForBt();
+        this.busy = false;
+        if (wait) {
+          this.snackbarService.openTipSnackBar("success");
+        }
+        this.cd.detectChanges();
       }
       this.refresh();
+    });
+  }
+
+  private waitForBt() {
+    return new Promise(resolve=>{
+      setTimeout(()=>{
+        let done = false;
+        const interval = setInterval(async()=>{
+          if (done) return;
+          const ret = await this.ws.query('?BT_GET_STATUS');
+          if (ret.result !== '1') {
+            done = true;
+            resolve(ret.result === '2');
+            clearInterval(interval);
+          }
+        }, 1000);
+      },200);
     });
   }
 

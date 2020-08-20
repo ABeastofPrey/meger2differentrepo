@@ -94,7 +94,8 @@ export class TopologyComponent implements OnInit, OnDestroy {
     clearInterval(this.interval);
   }
 
-  private async refresh(): Promise<void> {
+  async refresh(): Promise<void> {
+    clearInterval(this.interval);
     let isErrState = await this.checkStateWithOpMode();
     await this.retrieveAndAssemble();
     setTimeout(() => {

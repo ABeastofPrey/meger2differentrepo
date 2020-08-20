@@ -29,9 +29,7 @@
               "node_modules/jquery-ui-dist/jquery-ui.min.css"
             ],
             "scripts": [
-              "src/assets/scripts/plotly-latest.min.js",
               "src/assets/scripts/numeric.min.js",
-              "src/assets/scripts/isomer.min.js",
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/jquery-ui-dist/jquery-ui.min.js",
               "src/assets/scripts/jquery.ui.touch-punch.min.js"
@@ -115,7 +113,6 @@
               "src/app/modules/sys-log/services/**/*.ts"
             ],
             "scripts": [
-              "src/assets/scripts/plotly-latest.min.js",
               "src/assets/scripts/numeric.min.js",
               "src/assets/scripts/kuka-decrypt.js"
             ],

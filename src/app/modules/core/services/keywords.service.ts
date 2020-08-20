@@ -616,8 +616,8 @@ export class KeywordService {
       (function() {
       
         // regular expressions that identify starting and stopping points
-        this.foldingStartMarker = /\b(then|while|function|sub|try|select|program|onsystemerror|onerror|onevent)\b|{\s*$|(\[=*\[)/i;
-        this.foldingStopMarker = /\bend\b (if|while|function|sub|try|select|program|onsystemerror|onerror|onevent)/i;
+        this.foldingStartMarker = /\b(then|while|function|sub|try|select|program|onsystemerror|onerror|onevent|with|for)\b|{\s*$|(\[=*\[)/i;
+        this.foldingStopMarker = /\b(?:next|end|terminate)\b (if|while|function|sub|try|select|program|onsystemerror|onerror|onevent|with)/i;
 
         // tslint:disable-next-line: only-arrow-functions
         this.mcBasicBlock = function(session, row, column, tokenRange) {
@@ -631,10 +631,14 @@ export class KeywordService {
             "sub": 1,
             "try": 1,
             "select": 1,
+            "terminate": -1,
             "program": 1,
             "onsystemerror": 1,
             "onerror": 1,
-            "onevent": 1
+            "onevent": 1,
+            "with": 1,
+            "for": 1,
+            "next": -1
           };
           let token = stream.getCurrentToken();
           if (
@@ -660,10 +664,11 @@ export class KeywordService {
           // tslint:disable-next-line: no-conditional-assignment
           while(token = stream.step()) {
             token.value = token.value.toLowerCase();
+            //console.log(token);
             if (token.type !== "keyword.control.asp" || !indentKeywords[token.value]) {
               continue;
             }
-            //console.log('found token:',token.value);
+            //console.log('found token:',token.value, token.type);
             const level = dir * indentKeywords[token.value];
             if (level > 0) {
               stack.unshift(token.value);
@@ -678,7 +683,7 @@ export class KeywordService {
                 stack.unshift(token.value);
                 //console.log(stack);
               }
-              if (token.value === 'end') { // ignore next keyword (i.e: end try)
+              if (token.value === 'end' || token.value === 'terminate') { 
                 while (token) {
                   token = stream.stepForward();
                   if (token && token.value.trim().length > 0) break;
@@ -703,6 +708,7 @@ export class KeywordService {
         this.getFoldWidgetRange = function (session, foldStyle, row) {
           const line = session.getLine(row).toLowerCase();
           let match = this.foldingStartMarker.exec(line);
+          //console.log(line, match);
           if (match) {
             if (match[1]) {
                 return this.mcBasicBlock(session, row, match.index + 1);
@@ -715,8 +721,9 @@ export class KeywordService {
           }
 
           match = this.foldingStopMarker.exec(line);
+          //console.log(line, match);
           if (match) {
-            if (match[0] === "end") {
+            if (match[0] === "end" || match[0] === 'terminate') {
               const type = session.getTokenAt(row, match.index + 1).type;
               if (type === "keyword.control.asp" || type === 'storage.type.function.asp') {
                 return this.mcBasicBlock(session, row, match.index + 1);

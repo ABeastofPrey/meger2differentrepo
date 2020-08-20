@@ -136,7 +136,7 @@ export class PalletWizardComponent implements OnInit {
         this.originPicName = this.dataService.selectedPallet.type === 'GRID' ? 'origin2.gif': 'x-custom.jpg';
         break;
       case 3:
-        this.originPicName = this.dataService.selectedPallet.type === 'GRID' ? 'origin3.gif': 'xy-custom.jpg';
+        this.originPicName = 'xy-custom.jpg';
         break;
     }
   }
@@ -411,22 +411,18 @@ export class PalletWizardComponent implements OnInit {
     return result;
   }
 
-  calibrate() {
+  calibrate(e: Event) {
     const p = this.dataService.selectedPallet;
-    this.ws
-      .query('?PLT_ORIGIN_CALIBRATION("' + p.name + '")')
-      .then((ret: MCQueryResponse) => {
-        if (ret.result === '0') {
-          p.isFrameCalibrated = true;
-          this.ws
-            .query('?PLT_GET_ORIGIN("' + p.name + '")')
-            .then((ret: MCQueryResponse) => {
-              this._originResult = ret.result;
-            });
-        } else {
-          this.dataService.selectedPallet.isFrameCalibrated = false;
-        }
-      });
+    this.ws.query('?PLT_ORIGIN_CALIBRATION("' + p.name + '")').then(ret => {
+      if (ret.result === '0') {
+        p.isFrameCalibrated = true;
+        this.ws.query('?PLT_GET_ORIGIN("' + p.name + '")').then(ret => {
+          this._originResult = ret.result;
+        });
+      } else {
+        this.dataService.selectedPallet.isFrameCalibrated = false;
+      }
+    });
   }
 
   private checkCalibrationStatus() {
@@ -532,8 +528,11 @@ export class PalletWizardComponent implements OnInit {
 
   private validateIndex(control: AbstractControl) {
     const pallet = this.dataService.selectedPallet;
-    if (typeof control.value === 'undefined') {
+    if (!control.touched && !control.dirty && typeof control.value !== 'undefined') {
       return Promise.resolve(null);
+    }
+    if (typeof control.value === 'undefined') {
+      return Promise.resolve({invalidIndex: true});
     }
     let cmd;
     switch (control.value) {
@@ -835,35 +834,28 @@ export class PalletWizardComponent implements OnInit {
       return Promise.resolve(null);
     }
     let data = null;
-    if (i === 1 && this.designer) {
+    let invalid = false;
+    if (this.designer && this.designer.initDone) {
       data = this.designer.getDataAsString();
-      if (data.length === 0) return Promise.resolve({ invalidDataFile: [] });
-      const file = this.dataService.selectedPallet.dataFile;
-      return this.api.createPalletFile(data, file).then(fileName => {
-        const success = fileName.length > 0;
-        if (!success) {
-          return { invalidDataFile: [] };
+      if (data.length === 0 || this.designer.items.find(i=>i.error === true)) {
+        invalid = true;
+      }
+      if (this.designer2 && this.designer2.initDone) {
+        const data2 = this.designer2.getDataAsString();
+        if (i === 2 && (data2.length === 0 || this.designer2.items.find(i=>i.error === true))) {
+          invalid = true;
         }
-        // validate level with library
-        const cmd = `?PLT_VALIDATE_CUSTOM_LEVEL("${this.dataService.selectedPallet.name}",${i})`;
-        return this.ws.query(cmd).then(result=>{
-          return result.result === '' ? null : {invalidDataFile: result.result.split(',').filter(a=>a.length>0)};
-        });
-      },
-      () => {
-        return { invalidDataFile: [] };
-      });
-    } else if (this.designer2) {
-      data = this.designer.getDataAsString();
-      const data2 = this.designer2.getDataAsString();
-      if (data.length === 0 || data2.length === 0) {
+        data = data + '---\n' + data2;
+      } else if (this.dataService.selectedPallet.diffOddEven) {
+        setTimeout(()=>{
+          this.onLevelChange(2, this.designer2.items.length);
+        },200);
         return Promise.resolve({ invalidDataFile: [] });
       }
-      data = data + '---\n' + data2;
       const file = this.dataService.selectedPallet.dataFile;
       return this.api.createPalletFile(data, file).then(fileName => {
         const success = fileName.length > 0;
-        if (!success) {
+        if (!success || invalid) {
           return { invalidDataFile: [] };
         }
         // validate level with library
@@ -880,7 +872,7 @@ export class PalletWizardComponent implements OnInit {
   }
 
   private validateLevels(control: AbstractControl) {
-    if (this.dataService.selectedPallet.type === 'GRID') {
+    if (this.dataService.selectedPallet.type === 'GRID' ||(!control.touched && !control.dirty)) {
       return Promise.resolve(null);
     }
     const pallet = this.dataService.selectedPallet.name;
@@ -938,13 +930,14 @@ export class PalletWizardComponent implements OnInit {
         return Promise.resolve(null);
       });
     }
-    this.step1.controls['itemsX'].setErrors({ invalidItemCount: true });
-    this.step1.controls['itemsY'].setErrors({ invalidItemCount: true });
-    this.step1.controls['itemsZ'].setErrors({ invalidItemCount: true });
+    this.step1.controls['itemsX'].setErrors(null);
+    this.step1.controls['itemsY'].setErrors(null);
+    this.step1.controls['itemsZ'].setErrors(null);
     return Promise.resolve(null);
   }
 
   private validateItemSizeX(control: AbstractControl) {
+    if (!control.touched && !control.dirty) return Promise.resolve(null);
     const pallet = this.dataService.selectedPallet;
     const cmd =
       '?PLT_SET_ITEM_DIMENSION("' +
@@ -953,12 +946,12 @@ export class PalletWizardComponent implements OnInit {
       control.value +
       ')';
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      console.log(ret);
       return ret.err || ret.result !== '0' ? { invalidSizeX: true } : null;
     });
   }
 
   private validateItemSizeY(control: AbstractControl) {
+    if (!control.touched && !control.dirty) return Promise.resolve(null);
     const pallet = this.dataService.selectedPallet;
     const cmd =
       '?PLT_SET_ITEM_DIMENSION("' +
@@ -972,6 +965,7 @@ export class PalletWizardComponent implements OnInit {
   }
 
   private validateItemSizeZ(control: AbstractControl) {
+    if (!control.touched && !control.dirty) return Promise.resolve(null);
     const pallet = this.dataService.selectedPallet;
     const cmd =
       '?PLT_SET_ITEM_DIMENSION("' +
@@ -1125,6 +1119,7 @@ export class PalletWizardComponent implements OnInit {
   }
 
   private validateFlag(flag: number, control: AbstractControl) {
+    if (!control.touched && !control.dirty) return Promise.resolve(null);
     const pal = this.dataService.selectedPallet;
     // if every flag is NaN or one flag is AUTO - this is wrong
     const newVal = control.value;
@@ -1133,7 +1128,7 @@ export class PalletWizardComponent implements OnInit {
       return Promise.resolve({ invalidFlag: true });
     }
     pal.flags[flag] = newVal;
-    const flags = pal.flags.join(',');
+    const flags = pal.flags.map(f=>f === -1 ? 0 : f).join(',');
     const cmd = '?PLT_SET_CONFIGURATION_FLAGS("' + pal.name + '",' + flags + ')';
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err || ret.result !== '0') {
@@ -1365,15 +1360,15 @@ export class PalletWizardComponent implements OnInit {
       ],
       palletSizeX: [
         '',
-        [Validators.required, Validators.min(10)],
+        [Validators.required],
         this.validatePalletSize.bind(this, 'x'),
       ],
       palletSizeY: [
         '',
-        [Validators.required, Validators.min(10)],
+        [Validators.required],
         this.validatePalletSize.bind(this, 'y'),
       ],
-      index: [null, [], this.validateIndex.bind(this)],
+      index: [null, [Validators.required], this.validateIndex.bind(this)],
       levels:
         pallet.type === 'GRID'
           ? ['']
@@ -1489,6 +1484,8 @@ export class PalletWizardComponent implements OnInit {
         Validators.requiredTrue,
         this.checkCalibrationStatus.bind(this),
       ],
+    }, {
+      updateOn: 'blur'
     });
     this.step3 = this._formBuilder.group({
       x: ['', [Validators.required], this.validateEntry.bind(this, 'x')],
@@ -1502,9 +1499,11 @@ export class PalletWizardComponent implements OnInit {
       ],
       roll: ['', [Validators.required], this.validateEntry.bind(this, 'roll')],
       entryEnable: ['', []],
-      flag0: ['', [Validators.required], this.validateFlag.bind(this, 0)],
-      flag1: ['', [Validators.required], this.validateFlag.bind(this, 1)],
-      flag2: ['', [Validators.required], this.validateFlag.bind(this, 2)],
+      flag0: [-1, [Validators.required, Validators.min(0)], this.validateFlag.bind(this, 0)],
+      flag1: [-1, [Validators.required, Validators.min(0)], this.validateFlag.bind(this, 1)],
+      flag2: [-1, [Validators.required, Validators.min(0)], this.validateFlag.bind(this, 2)],
+    }, {
+      updateOn: 'blur'
     });
     // disable unused flags
     const len = this.dataService.robotCoordinateType.flags.length;
@@ -1514,23 +1513,23 @@ export class PalletWizardComponent implements OnInit {
     this.step4 = this._formBuilder.group({
       app_off_v: [
         '',
-        [Validators.required, Validators.min(0)],
+        [Validators.required],
         this.validateAppOffsetV.bind(this),
       ],
       app_off_h: [
         '',
-        [Validators.required, Validators.min(0)],
+        [Validators.required],
         this.validateAppOffsetH.bind(this),
       ],
       app_dir: ['', [Validators.required], this.validateAppDir.bind(this)],
       ret_off_v: [
         '',
-        [Validators.required, Validators.min(0)],
+        [Validators.required],
         this.validateRetOffsetV.bind(this),
       ],
       ret_off_h: [
         '',
-        [Validators.required, Validators.min(0)],
+        [Validators.required],
         this.validateRetOffsetH.bind(this),
       ],
       ret_dir: ['', [Validators.required], this.validateRetDir.bind(this)],
@@ -1538,6 +1537,8 @@ export class PalletWizardComponent implements OnInit {
       retEnable: ['', []],
       appExceed: ['', []],
       retExceed: ['', []],
+    }, {
+      updateOn: 'blur'
     });
     this.stepCustom1 = this._formBuilder.group({
       levelExists: [
@@ -1558,7 +1559,10 @@ export class PalletWizardComponent implements OnInit {
   onLevelChange(i: number, itemCount: number) {
     const ctrl = i === 1 ? this.stepCustom1.controls['levelExists'] : this.stepCustom2.controls['levelExists'];
     ctrl.markAsDirty();
-    ctrl.setValue(itemCount);      
+    ctrl.setValue(itemCount);
+    if (itemCount === 0) { // force validation
+      this.validateLevel(i, ctrl);
+    }
   }
 
   get invalidOrigin() {
@@ -1727,7 +1731,6 @@ export class PalletWizardComponent implements OnInit {
 
   async ngAfterViewInit() {
     await this.getPalletInfo();
-    // TODO: SET SOME FLAG FOR INIT DONE, AND ONLY VALIDATE STUFF AFTER INIT IS DONE
     await this.refreshDesigners();
   }
 
@@ -1813,6 +1816,10 @@ export class PalletWizardComponent implements OnInit {
     }
     this.isPreview1Showing = true;
   }
+  
+  save() {
+    return this.ws.query('?PLT_STORE_PALLET_DATA("' + name + '")');
+  }
 
   closeDialog(prompt: boolean) {
     if (prompt) {
@@ -1830,7 +1837,7 @@ export class PalletWizardComponent implements OnInit {
         ref.afterClosed().subscribe(ret => {
           if (ret === null) return;
           if (ret) {
-            this.ws.query('?PLT_STORE_PALLET_DATA("' + name + '")');
+            this.save();
           } else {
             this.ws.query('?PLT_RESTORE_PALLET("' + name + '")').then(ret=>{
               this.getPalletInfo();
@@ -1850,8 +1857,10 @@ export class PalletWizardComponent implements OnInit {
     if (type === 'CUSTOM') {
       if (i === 1) {
         this.designer.setPositions();
+        this.designer.validateAll();
       } else if (i === 2  && this.dataService.selectedPallet.diffOddEven) {
         this.designer2.setPositions();
+        this.designer2.validateAll();
       }
     }
   }

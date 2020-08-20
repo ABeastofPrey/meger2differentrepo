@@ -95,7 +95,7 @@
 			</div>
 			<!-- end -->
 			<div *ngIf="lastSelectedNode && lastSelectedNode.type === 'Dependencies'">
-				<button mat-button (click)="toggleDependencies()">
+				<button mat-button (click)="toggleDependencies()" [disabled]="prj.activeProject">
 					<mat-icon color="primary">
 						{{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}
 					</mat-icon>

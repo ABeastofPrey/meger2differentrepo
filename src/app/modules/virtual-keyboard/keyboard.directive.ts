@@ -100,7 +100,21 @@ export class KeyboardDirective implements OnInit {
     element.setAttribute('autocomplete','off');
     element.setAttribute('step','any');
     if (this.ktype && this.ktype.includes('numeric')) {
-      const reg = this.ktype.includes('pos') ? /^(?!0\d)\d*\.?\d*$/ : /^-?(?!0\d)\d*\.?\d*$/;
+      let reg;
+      switch (this.ktype) {
+        case 'numeric_int': // any int
+          reg = /^-?(?!0\d)\d*$/
+          break;
+        case 'numeric_int_pos': // any positive int
+          reg = /^(?!0\d)\d*$/;
+          break;
+        case 'numeric_pos': // any positive number
+          reg = /^(?!0\d)\d*\.?\d*$/;
+          break;
+        default: // any number
+          reg = /^-?(?!0\d)\d*\.?\d*$/;
+          break;
+      }
       this.setInputFilter(element, val=>reg.test(val));
     }
   }

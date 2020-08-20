@@ -27,7 +27,7 @@
 		<button mat-button color="primary" mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="show()" [disabled]="selectedFile === null">
+		<button mat-raised-button color="primary" (click)="show()" [disabled]="selectedFile === null">
 			{{ 'dashboard.external.btnShow' | translate }}
 		</button>
 	</div>

@@ -196,7 +196,7 @@
 			<button mat-button [mat-dialog-close]="null" cdkFocusInitial>
 				{{ 'button.cancel' | translate }}
             </button>
-			<button mat-button color="primary" type="submit" [disabled]="form.pristine || form.invalid">
+			<button mat-raised-button color="primary" type="submit" [disabled]="form.pristine || form.invalid">
 				{{ (!data.model ? 'button.insert' : 'button.edit') | translate }}
 			</button>
 		</mat-card-actions>

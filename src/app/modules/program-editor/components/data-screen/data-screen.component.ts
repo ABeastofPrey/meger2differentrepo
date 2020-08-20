@@ -461,39 +461,29 @@ export class DataScreenComponent implements OnInit {
           .afterClosed()
           .subscribe(async ret => {
             if (ret) {
+              const delCmd = this.useAsProjectPoints ? '?TP_DELETE_PROJECT_POINTS' : '?TP_DELETE_VAR';
               this._varRefreshing = true;
               const queries = [];
-              if (!this.useAsProjectPoints) {
-                // divide into 80-char queries...
-                const list = this.selection.selected.map(s=>s.name);
-                let tmpArr = [];
-                let count = 0;
-                let ret1, ret2;
-                while (list.length) {
-                  const str = list.pop();
-                  const len = str.length + 1;
-                  if (count + len < 80) {
-                    tmpArr.push(str);
-                    count += len;
-                  } else {
-                    ret1 = await this.ws.query('?TP_DELETEVAR("' + tmpArr.join() + ',")');
-                    console.log(ret1);
-                    ret2 = await this.waitForDeletionToFinish();
-                    console.log(ret2);
-                    count = len;
-                    tmpArr = [str];
-                  }
-                }
-                ret1 = await this.ws.query('?TP_DELETEVAR("' + tmpArr.join() + ',")');
-                console.log(ret1);
-                ret2 = await this.waitForDeletionToFinish();
-                console.log(ret2);
-              } else {
-                for (const v of this.selection.selected) {
-                  const cmd = '?TP_DELETE_project_points("' + v.name + '")';
-                  queries.push(this.ws.query(cmd));
+              // divide into 80-char queries...
+              const list = this.selection.selected.map(s=>s.name);
+              let tmpArr = [];
+              let count = 0;
+              let ret1, ret2;
+              while (list.length) {
+                const str = list.pop();
+                const len = str.length + 1;
+                if (count + len < 80) {
+                  tmpArr.push(str);
+                  count += len;
+                } else {
+                  ret1 = await this.ws.query(delCmd + '("' + tmpArr.join() + ',")');
+                  ret2 = await this.waitForDeletionToFinish();
+                  count = len;
+                  tmpArr = [str];
                 }
               }
+              ret1 = await this.ws.query(delCmd + '("' + tmpArr.join() + ',")');
+              ret2 = await this.waitForDeletionToFinish();
               if (queries.length > 0) {
                 await Promise.all(queries);
               }
@@ -515,7 +505,8 @@ export class DataScreenComponent implements OnInit {
           resolve(true);
           return;
         };
-        const ret = await this.ws.query('?TP_GETDELETEVARSTATUS');
+        const cmd = this.useAsProjectPoints ? '?TP_GETDELETEPNTSTATUS' : '?TP_GETDELETEVARSTATUS';
+        const ret = await this.ws.query(cmd);
         if (ret.result === '0') {
           done = true;
           window.clearInterval(this._deleteInterval);

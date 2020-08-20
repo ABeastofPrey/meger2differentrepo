@@ -49,13 +49,14 @@ export class RecordGraphComponent implements OnInit {
   
   @HostListener('window:resize')
   onResize() {
-    if (this.graph.nativeElement) {
-      Plotly.relayout(this.graph.nativeElement, {});
-    }
+    setTimeout(()=>{
+      if (this.graph.nativeElement) {
+        Plotly.relayout(this.graph.nativeElement, {});
+      }
+    }, 200);
   }
   @HostListener('resize')
   onHostResize() {
-    console.log('host resize');
     this.onResize();
   }
   

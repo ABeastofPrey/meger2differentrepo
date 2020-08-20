@@ -6,7 +6,7 @@ export class CSNotification {
   msg: string;
 
   constructor(msg: string) {
-    if (msg.startsWith('Error:')) this.err = new ErrorFrame(msg);
+    if (msg.startsWith('Error:') || msg.startsWith('Note:') || msg.startsWith('Info:')) this.err = new ErrorFrame(msg);
     else this.msg = msg;
   }
 

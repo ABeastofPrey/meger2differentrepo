@@ -15,7 +15,7 @@
 		<button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" [disabled]="(name === '')" (click)="close()">
+		<button mat-raised-button color="primary" [disabled]="(name === '')" (click)="close()">
 			{{ 'button.create' | translate }}
 		</button>
 	</div>

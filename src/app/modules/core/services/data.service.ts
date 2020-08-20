@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { BehaviorSubject, Subject, Observable, Observer } from 'rxjs';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { TPVariable } from '../../core/models/tp/tp-variable.model';
@@ -54,6 +54,9 @@ export class DataService {
       if (ret.result !== '0') this._simulated = !this._simulated;
     });
   }
+  private _serialNumber: string;
+  get serialNumber() { return this._serialNumber; }
+  mcChange = new EventEmitter<string>();
 
   // Robots
   private _robots: string[] = [];
@@ -281,8 +284,14 @@ export class DataService {
     return this._payloadStart;
   }
   onPayloadStartChange() {
-    const cmd =
-      '?PAY_SET_START_POSITION("' + this.payloadStart.join(',') + '")';
+    const err = this.payloadStart.some(p=>{
+      return p === null;
+    });
+    if (err) {
+      this.refreshPayloadStart();
+      return;
+    }
+    const cmd = '?PAY_SET_START_POSITION("' + this.payloadStart.join(',') + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result !== '0') {
         this.refreshPayloadStart();
@@ -296,25 +305,41 @@ export class DataService {
   get payloadRelative() {
     return this._payloadRelative;
   }
-  onPayloadRelativeChange() {
+  async onPayloadRelativeChange(hideSuccess?: boolean) {
+    const err = this.payloadRelative.some(p=>{
+      return p === null;
+    });
+    if (err) {
+      this.refreshPayloadRelative();
+      return false;
+    }
     const cmd =
       '?PAY_SET_RELATIVE_TARGET_POSITION("' +
       this.payloadRelative.join(',') +
       '")';
-    this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (ret.result !== '0') {
-        this.refreshPayloadRelative();
-      } else {
-        // this.snack.open(this.words['changeOK'], '', { duration: 1500 });
+    const ret = await this.ws.query(cmd);
+    if (ret.result !== '0') {
+      this.refreshPayloadRelative();
+      return false;
+    } else {
+      if (!hideSuccess) {
         this.snackbarService.openTipSnackBar("changeOK");
       }
-    });
+      return true;
+    }
   }
   private _payloadFreq: number[] = null;
   get payloadFreq() {
     return this._payloadFreq;
   }
   onPayloadFreqChange() {
+    const err = this.payloadFreq.some(p=>{
+      return p === null;
+    });
+    if (err) {
+      this.refreshPayloadFreq();
+      return;
+    }
     const cmd = '?PAY_SET_FREQUENCY("' + this.payloadFreq.join(',') + '")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result !== '0') {
@@ -327,6 +352,10 @@ export class DataService {
   }
   payloadDuration: number = null;
   onPayloadDurationChange() {
+    if (this.payloadDuration === null) {
+      this.refreshPayloadDuration();
+      return;
+    }
     const cmd = '?PAY_SET_IDENT_TIME_SECONDS(' + this.payloadDuration + ')';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.result !== '0') this.refreshPayloadDuration();
@@ -562,13 +591,17 @@ export class DataService {
         this._payloads = payloads;
       })
       .then(() => {
-        return Promise.all([
-          this.refreshPayloadStart(),
-          this.refreshPayloadRelative(),
-          this.refreshPayloadFreq(),
-          this.refreshPayloadDuration(),
-        ]);
+        return this.refreshPayloadParams();
       });
+  }
+
+  refreshPayloadParams() {
+    return Promise.all([
+      this.refreshPayloadStart(),
+      this.refreshPayloadRelative(),
+      this.refreshPayloadFreq(),
+      this.refreshPayloadDuration(),
+    ]);
   }
 
   refreshVision() {
@@ -578,16 +611,14 @@ export class DataService {
   }
 
   private refreshPayloadStart() {
-    return this.ws
-      .query('?PAY_GET_START_POSITION')
-      .then((ret: MCQueryResponse) => {
-        this._payloadStart = ret.result
-          .substring(1, ret.result.length - 1)
-          .split(',')
-          .map(s => {
-            return Number(s);
-          });
-      });
+    return this.ws.query('?PAY_GET_START_POSITION').then((ret: MCQueryResponse) => {
+      this._payloadStart = ret.result
+        .substring(1, ret.result.length - 1)
+        .split(',')
+        .map(s => {
+          return Number(s);
+        });
+    });
   }
   private refreshPayloadRelative() {
     return this.ws
@@ -882,11 +913,17 @@ export class DataService {
   getMinimumVersions() {
     const promises = [
       this.ws.query('?ver'),
-      this.ws.query('java_ver')
+      this.ws.query('java_ver'),
+      this.ws.query('?sys.serialNumber')
     ];
     return Promise.all(promises).then((ret: MCQueryResponse[])=>{
       this._MCVersion = ret[0].result;
       this._JavaVersion = ret[1].result;
+      const mcChange = this._serialNumber && this._serialNumber !== ret[2].result;
+      this._serialNumber = ret[2].result;
+      if (mcChange) {
+        this.mcChange.next(this._serialNumber);
+      }
     });
   }
 

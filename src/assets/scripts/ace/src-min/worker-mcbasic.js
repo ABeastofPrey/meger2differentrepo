@@ -1708,7 +1708,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
             blockType: null,
             err: 'Expected block type after "end"'
         };
-        if (match[3] && match[3] !== "'" && match[3] !== 'rem') return {
+        if (match[3] && !match[3].startsWith("'") && !match[3].toLowerCase().startsWith('rem')) return {
             blockType: null,
             err: 'Unexpected token "' + match[3] + '" after end block'
         };
@@ -1744,7 +1744,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         returns error string or null if everything is OK.
     */
    function validateForCommand(line) {
-    const match = /^\s*for\s*(\S+)?\s*=?\s*(\S+)?\s*(to)?\s*(\S+(?:\s*[+\-*\/]\s*\S+)*)?\s*(?:\bstep\b\s*\S+)?\s*(\S+)?/i.exec(line);
+    const match = /^\s*for\s*([^\s=]+)?\s*=?\s*(\S+)?\s*(to)?\s*((?:(?!step).)+)?\s*(?:\bstep\b\s*\S+)?\s*(\S+)?/i.exec(line);
     if (!match[1]) return new SyntaxError('Missing variable in for command',match,1);
     if (!match[2]) return new SyntaxError('Missing loop starting value',match,2);
     if (!match[3]) return new SyntaxError('Missing "to" keyword',match,3);
@@ -1769,16 +1769,12 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         let isShared = false;
         if (parts === null) return;
         if (!parts[6]) { // just dim
-            if (isNonDimLineFound && isProgramBlockStarted) {
-                error(new SyntaxError('Structure Error: Variables should be declared at the TOP of the PROGRAM block',parts,1),idx,'error');
-                return;
-            }
             let msg = 'Syntax Error: expected variable name';
             if (!isProgramBlockStarted) msg+= ' or the "shared" keyword';
             error(new SyntaxError(msg,parts,2),idx,'error');
             return;
         }
-        if (isNonDimLineFound && isProgramBlockStarted) {
+        if (isNonDimLineFound && isProgramBlockStarted && !currSub && !currFunction) {
             error(new SyntaxError('Structure Error: Variables should be declared at the TOP of the PROGRAM block',parts,1),idx,'error');
             return;
         }
@@ -1786,7 +1782,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
             error(new SyntaxError('Structure Error: Only SHARED variables can be declared outside of the PROGRAM block',parts,1),idx,'error');
             return;
         }
-        if (parts[4] && isProgramBlockStarted) { // check dim shared is outside program
+        if (parts[4] && isProgramBlockStarted && !currSub && !currFunction) { // check dim shared is outside program
             error(
                 new SyntaxError('Dim shared must be above the PROGRAM block',parts,2),
                 idx,

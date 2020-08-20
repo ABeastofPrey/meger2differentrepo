@@ -367,10 +367,6 @@ export class LoginScreenComponent implements OnInit {
     this.route.queryParams.pipe(takeUntil(this.notifier)).subscribe(params => {
       if (params['serverDisconnected']) {
         this.router.navigate(this.route.snapshot.url, { queryParams: {} });
-        setTimeout(() => {
-          // TO FINISH THE ANIMATION TRANSITION
-          this.dialog.open(ServerDisconnectComponent);
-        }, 500);
       }
     });
     this.pageLoaded = 'shown';

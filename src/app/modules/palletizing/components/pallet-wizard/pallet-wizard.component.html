@@ -32,7 +32,7 @@
 									[(ngModel)]="dataService.selectedPallet.order"
 									formControlName="order"
 									required
-									(selectionChange)="onWindowResize()"
+									(selectionChange)="dataService.selectedPallet.order = $event.value; onWindowResize()"
 								>
 									<mat-option *ngFor="let o of dataService.selectedPallet.orderList" value="{{ o }}">{{
 										o
@@ -174,9 +174,8 @@
 									color="primary"
 									[(ngModel)]="dataService.selectedPallet.diffOddEven"
 									formControlName="diffOddEven"
-									(change)="refreshDesigners()"
-									>{{ 'pallets.wizard.odd_even' | translate }}</mat-checkbox
-								>
+									(change)="blurActive(); refreshDesigners()"
+									>{{ 'pallets.wizard.odd_even' | translate }}</mat-checkbox>
 							</div>
 						</div>
 						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile">
@@ -197,20 +196,22 @@
 									>{{ 'pallets.wizard.index_empty' | translate }} (0)</mat-radio-button
 								>
 								<mat-radio-button value="custom" color="primary">
-									<mat-form-field class="input-normal">
-										<input
-											matInput
-											placeholder="{{ 'pallets.wizard.index_custom' | translate }}"
-											[(ngModel)]="dataService.selectedPallet.index"
-											[disabled]="step1.controls['index'].value !== 'custom'"
-											[ngModelOptions]="{ standalone: true }"
-											(ngModelChange)="onIndexChange()"
-											virtualKeyboard
-											ktype="numeric_int_pos"
-										/>
-									</mat-form-field>
+									{{ 'pallets.wizard.index_custom' | translate }}
 								</mat-radio-button>
+								<mat-form-field class="input-normal" appearance="outline" style="margin-left: 8px;">
+									<input
+										matInput
+										[(ngModel)]="dataService.selectedPallet.index"
+										[disabled]="step1.controls['index'].value !== 'custom'"
+										[ngModelOptions]="{ standalone: true }"
+										(change)="onIndexChange()"
+										(onKeyboardClose)="onIndexChange()"
+										virtualKeyboard
+										ktype="numeric_int_pos"
+									/>
+								</mat-form-field>
 							</mat-radio-group>
+
 						</div>
 					</div>
 					<div
@@ -274,19 +275,14 @@
 					<div class="step-content">
 						<div class="origin-status">
 							<div>{{ 'pallets.wizard.origin_status' | translate }}:</div>
-							<div
-								class="red"
-								[ngClass]="{
-									green: this.dataService.selectedPallet.isFrameCalibrated
-								}"
-							>
+							<div class="red" [ngClass]="{green: this.dataService.selectedPallet.isFrameCalibrated}">
 								{{
 									(this.dataService.selectedPallet.isFrameCalibrated
 										? 'pallets.wizard.calibrated'
 										: 'pallets.wizard.calibrated_not') | translate
 								}}
 							</div>
-							<button mat-raised-button color="primary" (click)="calibrate()" [disabled]="invalidOrigin">
+							<button type="button" mat-raised-button color="primary" (click)="calibrate($event)" [disabled]="invalidOrigin">
 								{{ 'button.calibrate' | translate }}
 							</button>
 						</div>
@@ -302,6 +298,7 @@
 									[matTooltipDisabled]="isCurrentRobotCompatible"
 								>
 									<button
+										type="button" 
 										mat-raised-button
 										color="primary"
 										[disabled]="!isCurrentRobotCompatible"
@@ -352,6 +349,7 @@
 									[matTooltipDisabled]="isCurrentRobotCompatible"
 								>
 									<button
+										type="button" 
 										mat-raised-button
 										color="primary"
 										[disabled]="!isCurrentRobotCompatible"
@@ -402,6 +400,7 @@
 									[matTooltipDisabled]="isCurrentRobotCompatible"
 								>
 									<button
+										type="button" 
 										mat-raised-button
 										color="primary"
 										[disabled]="!isCurrentRobotCompatible"
@@ -482,92 +481,98 @@
 								{{ 'pallets.wizard.button.teach_entry' | translate }}
 							</button>
 						</span>
-						<h3>{{ 'pallets.wizard.curr_pos' | translate }}:</h3>
-						<div style="display: flex;">
-							<mat-form-field class="input-small"
-								><input
-									matInput
-									placeholder="X"
-									[(ngModel)]="dataService.selectedPallet.entry.x"
-									formControlName="x"
-									required
-									virtualKeyboard
-									ktype="numeric"
-							/></mat-form-field>
-							<mat-form-field class="input-small"
-								><input
-									matInput
-									placeholder="Y"
-									[(ngModel)]="dataService.selectedPallet.entry.y"
-									formControlName="y"
-									required
-									virtualKeyboard
-									ktype="numeric"
-							/></mat-form-field>
-							<mat-form-field class="input-small"
-								><input
-									matInput
-									placeholder="Z"
-									[(ngModel)]="dataService.selectedPallet.entry.z"
-									formControlName="z"
-									required
-									virtualKeyboard
-									ktype="numeric"
-							/></mat-form-field>
-							<mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"
-								><input
-									matInput
-									placeholder="Yaw"
-									[(ngModel)]="dataService.selectedPallet.entry.yaw"
-									formControlName="yaw"
-									required
-									virtualKeyboard
-									ktype="numeric"
-							/></mat-form-field>
-							<mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"
-								><input
-									matInput
-									placeholder="Pitch"
-									[(ngModel)]="dataService.selectedPallet.entry.pitch"
-									formControlName="pitch"
-									required
-									virtualKeyboard
-									ktype="numeric"
-							/></mat-form-field>
-							<mat-form-field class="input-small"
-								><input
-									matInput
-									placeholder="Roll"
-									[(ngModel)]="dataService.selectedPallet.entry.roll"
-									formControlName="roll"
-									required
-									virtualKeyboard
-									ktype="numeric"
-							/></mat-form-field>
-						</div>
-					</div>
-					<div class="step-content">
-						<h2>{{ 'pallets.wizard.conf' | translate }}:</h2>
-						<mat-form-field
-							*ngFor="let f of dataService.robotCoordinateType.flags; let i = index"
-							style="max-width:250px;"
-						>
-							<mat-label>{{ f }}</mat-label>
-							<mat-select [formControlName]="'flag' + i" [(ngModel)]="dataService.selectedPallet.flags[i]">
-								<div *ngIf="f === 'Arm'">
-									<mat-option [value]="1">LEFTY</mat-option>
-									<mat-option [value]="2">RIGHTY</mat-option>
-								</div>
-								<div *ngIf="f === 'Elbow'">
-									<mat-option [value]="1">BELOW</mat-option>
-									<mat-option [value]="2">ABOVE</mat-option>
-								</div>
-								<div *ngIf="f === 'Wrist'">
-									<mat-option [value]="1">NOFLIP</mat-option>
-									<mat-option [value]="2">FLIP</mat-option>
-								</div>
-							</mat-select>
-						</mat-form-field>
+						<table class="entry-table">
+							<tr>
+								<td>
+									<h3>{{ 'pallets.wizard.curr_pos' | translate }}:</h3>
+									<div style="display: flex;">
+										<mat-form-field class="input-small"
+											><input
+												matInput
+												placeholder="X"
+												[(ngModel)]="dataService.selectedPallet.entry.x"
+												formControlName="x"
+												required
+												virtualKeyboard
+												ktype="numeric"
+										/></mat-form-field>
+										<mat-form-field class="input-small"
+											><input
+												matInput
+												placeholder="Y"
+												[(ngModel)]="dataService.selectedPallet.entry.y"
+												formControlName="y"
+												required
+												virtualKeyboard
+												ktype="numeric"
+										/></mat-form-field>
+										<mat-form-field class="input-small"
+											><input
+												matInput
+												placeholder="Z"
+												[(ngModel)]="dataService.selectedPallet.entry.z"
+												formControlName="z"
+												required
+												virtualKeyboard
+												ktype="numeric"
+										/></mat-form-field>
+										<mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"
+											><input
+												matInput
+												placeholder="Yaw"
+												[(ngModel)]="dataService.selectedPallet.entry.yaw"
+												formControlName="yaw"
+												required
+												virtualKeyboard
+												ktype="numeric"
+										/></mat-form-field>
+										<mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"
+											><input
+												matInput
+												placeholder="Pitch"
+												[(ngModel)]="dataService.selectedPallet.entry.pitch"
+												formControlName="pitch"
+												required
+												virtualKeyboard
+												ktype="numeric"
+										/></mat-form-field>
+										<mat-form-field class="input-small"
+											><input
+												matInput
+												placeholder="Roll"
+												[(ngModel)]="dataService.selectedPallet.entry.roll"
+												formControlName="roll"
+												required
+												virtualKeyboard
+												ktype="numeric"
+										/></mat-form-field>
+									</div>
+								</td>
+								<td class="flag-wrapper">
+									<h3>{{ 'pallets.wizard.conf' | translate }}:</h3>
+									<mat-form-field
+										*ngFor="let f of dataService.robotCoordinateType.flags; let i = index"
+										style="max-width:250px;"
+									>
+										<mat-label>{{ f }}</mat-label>
+										<mat-select [formControlName]="'flag' + i" [(ngModel)]="dataService.selectedPallet.flags[i]">
+											<div *ngIf="f === 'Arm'">
+												<mat-option [value]="1">LEFTY</mat-option>
+												<mat-option [value]="2">RIGHTY</mat-option>
+											</div>
+											<div *ngIf="f === 'Elbow'">
+												<mat-option [value]="1">BELOW</mat-option>
+												<mat-option [value]="2">ABOVE</mat-option>
+											</div>
+											<div *ngIf="f === 'Wrist'">
+												<mat-option [value]="1">NOFLIP</mat-option>
+												<mat-option [value]="2">FLIP</mat-option>
+											</div>
+										</mat-select>
+									</mat-form-field>
+								</td>
+							</tr>
+						</table>
 					</div>
 					<img src="assets/pics/pallet/entry.png" />
 				</div>
@@ -596,7 +601,7 @@
 									[(ngModel)]="dataService.selectedPallet.approachOffsetVertical"
 									formControlName="app_off_v"
 									virtualKeyboard
-									ktype="numeric"
+									ktype="numeric_pos"
 							/></mat-form-field>
 							<mat-form-field class="input-normal"
 								><input
@@ -605,7 +610,7 @@
 									[(ngModel)]="dataService.selectedPallet.approachOffsetHorizontal"
 									formControlName="app_off_h"
 									virtualKeyboard
-									ktype="numeric"
+									ktype="numeric_pos"
 							/></mat-form-field>
 						</div>
 						<mat-checkbox
@@ -617,7 +622,7 @@
 						>
 						<h3>{{ 'pallets.wizard.app_dir' | translate }}:</h3>
 						<div class="direction-picker">
-							<mat-radio-group [(ngModel)]="dataService.selectedPallet.approachDirection" formControlName="app_dir">
+							<mat-radio-group [(ngModel)]="dataService.selectedPallet.approachDirection" formControlName="app_dir" (change)="blurActive()">
 								<mat-radio-button value="-X+Y+Z" style="left: 0; top: 0;" color="primary"></mat-radio-button>
 								<mat-radio-button value="+Y+Z" style="left: 85px; top: 0;" color="primary"></mat-radio-button>
 								<mat-radio-button value="+X+Y+Z" style="left: 180px; top: 0;" color="primary"></mat-radio-button>
@@ -649,7 +654,7 @@
 									[(ngModel)]="dataService.selectedPallet.retractOffsetVertical"
 									formControlName="ret_off_v"
 									virtualKeyboard
-									ktype="numeric"
+									ktype="numeric_pos"
 							/></mat-form-field>
 							<mat-form-field class="input-normal"
 								><input
@@ -658,7 +663,7 @@
 									[(ngModel)]="dataService.selectedPallet.retractOffsetHorizontal"
 									formControlName="ret_off_h"
 									virtualKeyboard
-									ktype="numeric"
+									ktype="numeric_pos"
 							/></mat-form-field>
 						</div>
 						<mat-checkbox
@@ -670,7 +675,7 @@
 						>
 						<h3>{{ 'pallets.wizard.ret_dir' | translate }}:</h3>
 						<div class="direction-picker">
-							<mat-radio-group [(ngModel)]="dataService.selectedPallet.retractDirection" formControlName="ret_dir">
+							<mat-radio-group [(ngModel)]="dataService.selectedPallet.retractDirection" formControlName="ret_dir" (change)="blurActive()">
 								<mat-radio-button value="-X+Y+Z" style="left: 0; top: 0;" color="primary"></mat-radio-button>
 								<mat-radio-button value="+Y+Z" style="left: 85px; top: 0;" color="primary"></mat-radio-button>
 								<mat-radio-button value="+X+Y+Z" style="left: 180px; top: 0;" color="primary"></mat-radio-button>

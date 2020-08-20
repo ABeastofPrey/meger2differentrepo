@@ -42,10 +42,12 @@ export class DashboardService {
 
   add(params: DashboardInitParams) {
     for (const w of this.windows) {
-      if (w.name === params.name) return;
+      if (w.name === params.name) return false;
     }
-    this.windows.push(new DashboardWindow(params));
+    const newDash = new DashboardWindow(params);
+    this.windows.push(newDash);
     this.save();
+    return true;
   }
 
   close(name: string) {
@@ -147,6 +149,7 @@ export class DashboardService {
           }
         });
       }
+      this._busy = false;
     }, 500);
   }
 

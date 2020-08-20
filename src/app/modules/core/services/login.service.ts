@@ -1,3 +1,4 @@
+import { ServerDisconnectComponent } from './../../../components/server-disconnect/server-disconnect.component';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
@@ -143,6 +144,9 @@ export class LoginService {
     setTimeout(()=>{
       if (!serverDisconnected && this.ws.connected) {
         this.ws.reset();
+      }
+      if (serverDisconnected) {
+        this.dialog.open(ServerDisconnectComponent);
       }
     },200);
     return true;

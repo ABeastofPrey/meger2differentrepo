@@ -38,7 +38,7 @@ export class Pallet {
     this.retExceed = false;
     this.appExceed = false;
     this.dataFile = null;
-    this.flags = [0, 0, 0];
+    this.flags = [-1, -1, -1];
     this.isNew = true;
   }
 

@@ -95,8 +95,8 @@
 					</mat-form-field>
 					<mat-checkbox
 						color="primary"
-						[disabled]="login.isOperator"
-						[value]="selectedNode.cmd1_invert"
+						[disabled]="login.isOperator || !selectedNode.cmd1"
+						[checked]="selectedNode.cmd1_invert"
 						(change)="updateGripperCmd(1,'cmd1_invert',$event)"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
@@ -147,12 +147,12 @@
 					</mat-form-field>
 					<mat-checkbox
 						color="primary"
-						[value]="selectedNode.cmd2_invert"
+						[checked]="selectedNode.cmd2_invert"
 						(change)="updateGripperCmd(2,'cmd2_invert',$event)"
-						[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
+						[disabled]="login.isOperator || !selectedNode.cmd2_enabled || !selectedNode.cmd2"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.cmd2_enabled">{{
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.cmd2_enabled" (change)="onToggle(1)">{{
 						'enable' | translate
 					}}</mat-slide-toggle>
 				</div>
@@ -171,11 +171,11 @@
 					<mat-checkbox
 						color="primary"
 						[(ngModel)]="selectedNode.fb1_invert"
-						[disabled]="login.isOperator || !selectedNode.fb1_enabled"
+						[disabled]="login.isOperator || !selectedNode.fb1_enabled || !selectedNode.fb1"
 						(change)="updateGripperFb(1)"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb1_enabled">{{
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb1_enabled" (change)="onToggle(2)">{{
 						'enable' | translate
 					}}</mat-slide-toggle>
 				</div>
@@ -194,11 +194,11 @@
 					<mat-checkbox
 						color="primary"
 						[(ngModel)]="selectedNode.fb2_invert"
-						[disabled]="login.isOperator || !selectedNode.fb2_enabled"
+						[disabled]="login.isOperator || !selectedNode.fb2_enabled || !selectedNode.fb2"
 						(change)="updateGripperFb(2)"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb2_enabled">{{
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb2_enabled" (change)="onToggle(3)">{{
 						'enable' | translate
 					}}</mat-slide-toggle>
 				</div>

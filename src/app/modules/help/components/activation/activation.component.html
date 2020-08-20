@@ -26,7 +26,7 @@
 		<button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" [disabled]="hasError" (click)="verify()">
+		<button mat-raised-button color="primary" [disabled]="hasError" (click)="verify()">
 			{{ 'button.verify' | translate }}
 		</button>
 	</div>

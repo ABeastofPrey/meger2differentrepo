@@ -83,7 +83,11 @@ export class SimulatorService {
         for (let i = 0; i < calibratedIndexes.length; i++) {
           const j = calibratedIndexes[i];
           const p = this.dataService.pallets[j];
-          promises.push(this.ws.query('?plt_get_origin("' + p.name + '")'));
+          if (p.type === 'CUSTOM') {
+            promises.push(this.ws.query('?plt_get_origin("' + p.name + '")'));
+          } else {
+            promises.push(this.ws.query('?plt_offset_custom_origin("' + p.name + '")'));
+          }
         }
         return Promise.all(promises);
       }).then((rets: MCQueryResponse[]) => {

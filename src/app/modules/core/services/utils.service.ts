@@ -104,7 +104,7 @@ export class UtilsService {
         dialog.close();
       }
     }).catch(err=>{
-      console.log('ERROR IN RESET ALL DIALOG:',err);
+      console.warn('ERROR IN RESET ALL DIALOG:',err);
     });
   }
 

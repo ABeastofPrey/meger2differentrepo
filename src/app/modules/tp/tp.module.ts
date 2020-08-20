@@ -1,3 +1,4 @@
+import { JogScreenCanDeactivateGuard } from './jog-screen-can-deactivate.guard';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TpComponent } from './tp.component';
@@ -15,5 +16,6 @@ import { HandGuidingComponent } from './components/hand-guiding/hand-guiding.com
     LeadByNoseScreenComponent,
     HandGuidingComponent,
   ],
+  providers: [JogScreenCanDeactivateGuard]
 })
 export class TpModule {}

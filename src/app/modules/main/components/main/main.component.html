@@ -33,10 +33,10 @@
       </button>
     </div>
     <div class="toolbar-wrapper">
-      <button mat-icon-button (click)="toggleMenu()" tourAnchor="menuToggle" matTooltip="{{'app_bar.menu_toggle' | translate}}">
+      <button mat-icon-button class="btn-big" (click)="toggleMenu()" tourAnchor="menuToggle" matTooltip="{{'app_bar.menu_toggle' | translate}}">
         <mat-icon>menu</mat-icon>
 			</button>
-			<button mat-icon-button (click)="toggleToolbar()" *ngIf="!cmn.isTablet" matTooltip="{{'app_bar.toolbar_contract' | translate}}">
+			<button mat-icon-button class="btn-big" (click)="toggleToolbar()" *ngIf="!cmn.isTablet" matTooltip="{{'app_bar.toolbar_contract' | translate}}">
         <mat-icon>expand_less</mat-icon>
       </button>
       <div class="center-vertical main-header">

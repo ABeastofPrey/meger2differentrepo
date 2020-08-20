@@ -69,6 +69,8 @@ export class ProgramEditorAceComponent implements OnInit {
 
   env = environment;
 
+  private TokenIterator = ace.require('ace/token_iterator').TokenIterator;
+
   constructor(
     public service: ProgramEditorService,
     private api: ApiService,
@@ -348,7 +350,7 @@ export class ProgramEditorAceComponent implements OnInit {
       enableLiveAutocompletion: true,
       enableSnippets: true,
       readOnly: this.cmn.isTablet,
-      tabSize: 2,
+      tabSize: this.cmn.isTablet ? 2 : 4,
       fontFamily: 'cs-monospace',
       enableLinking: true,
       fixedWidthGutter: true
@@ -615,15 +617,26 @@ export class ProgramEditorAceComponent implements OnInit {
         this.hideTooltip();
         return;
       }
-      const token = this.editor.session.getTokenAt(
-        position.row,
-        position.column
-      );
-      if (token === null) {
+      const stream = new this.TokenIterator(this.editor.session, position.row, position.column);
+      const stream2 = new this.TokenIterator(this.editor.session, position.row, position.column);
+      const token = stream.getCurrentToken();
+      if (!token) {
         this.hideTooltip();
         return;
       }
       let tokenNoSpaces = token.value.replace(/\s/g, '');
+      let prevToken = stream.stepBackward();
+      let nextToken = stream2.stepForward();
+      while (prevToken && prevToken.value === '.') {
+        prevToken = stream.stepBackward();
+        tokenNoSpaces = prevToken.value.replace(/\s/g, '') + '.' + tokenNoSpaces;
+        prevToken = stream.stepBackward();
+      }
+      while (nextToken && nextToken.value === '.') {
+        nextToken = stream2.stepForward();
+        tokenNoSpaces = tokenNoSpaces + '.' + nextToken.value.replace(/\s/g, '');
+        nextToken = stream2.stepForward();
+      }
       if (tokenNoSpaces.length === 0) return;
       if (tokenNoSpaces === ']') {
         const tokens = this.editor.session.getTokens(position.row);

@@ -35,6 +35,10 @@ export class DraggableItemDirective {
     this.draggableItem.element = this.el.nativeElement;
   }
 
+  ngOnChanges() {
+    this.el.nativeElement.style.zIndex = this.draggableItem.order;
+  }
+
   @HostListener('mousedown')
   onMouseDown() {
     this._time = new Date().getTime();

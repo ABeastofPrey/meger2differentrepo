@@ -47,7 +47,8 @@ const DEFAULT_MC_NAME = 'MC';
   ],
 })
 export class RobotsComponent implements OnInit {
-  
+
+  // DH AND DISP  
   disp: number[] = [];
   units: string[] = [];
   dh: DH[] = [];
@@ -56,6 +57,12 @@ export class RobotsComponent implements OnInit {
   busy = false;
   sysDate = new FormControl(new Date());
   sysTime = new FormControl('',[Validators.pattern(/^(?:\d\d:\d\d)$/)]);
+
+  private _rarmDH: {L1: number, L2: number} = null;
+  get rarmDH() { return this._rarmDH; }
+
+  private _rarmDisp: {A1: number, A2: number, A3: number, A4: number};
+  get rarmDisp() { return this._rarmDisp; }
 
   // BATTERY
   private _batteryInterval: number;
@@ -260,6 +267,17 @@ export class RobotsComponent implements OnInit {
       units.push(result.result === '0' ? 'mm' : 'deg');
     }
     this.units = units;
+    this.ws.query('?RARM_SHOW_OFFSETS').then(ret=>{
+      if (ret.err || ret.result.length === 0) {
+        this._rarmDisp = null;
+        return;
+      }
+      try {
+        this._rarmDisp = JSON.parse(ret.result);
+      } catch (err) {
+        this._rarmDisp = null;
+      }
+    });
   }
 
   private refreshDH() {
@@ -287,6 +305,17 @@ export class RobotsComponent implements OnInit {
       }
       this.dh = dh;
     });
+    this.ws.query('?RARM_SHOW_DH').then(ret=>{
+      if (ret.err || ret.result.length === 0) {
+        this._rarmDH = null;
+        return;
+      }
+      try {
+        this._rarmDH = JSON.parse(ret.result);
+      } catch (err) {
+        this._rarmDH = null;
+      }
+    });
   }
 
   trackByFn(index: number, item: number) {
@@ -308,34 +337,29 @@ export class RobotsComponent implements OnInit {
     }
     const values = this.disp.join(',');
     const robot = this.data.selectedRobot;
-    const cmd = `?TP_SET_ROBOT_DISPLACEMENTS(${robot},"${values}")`;
-    this.ws.query(cmd).then(ret => {
-      if (index === -1) {
+    if (index === -1) {
+      const cmd = `?TP_SET_ROBOT_DISPLACEMENTS(${robot},"${values}")`;
+      this.ws.query(cmd).then(ret => {
         if (ret.result !== '0') {
           this.refreshDisp();
-          return;
-        }
-        if(ret.result === '0') {
+        } else {
           this.snackbarService.openTipSnackBar(this.wordOk);
         }
-      } else {
-        this.ws
-          .query(
-            '?tp_set_robot_dh(' +
-              this.data.selectedRobot +
-              ',"' +
-              this.dh[index].name +
-              '",' +
-              this.dh[index].value +
-              ')'
-          )
-          .then((ret: MCQueryResponse) => {
-            if (ret.result === '0') {
-              this.snackbarService.openTipSnackBar(this.wordOk);
-            }
-          });
-      }
-    });
+      });
+    } else {
+      this.ws.query('?tp_set_robot_dh(' +
+        this.data.selectedRobot +
+        ',"' +
+        this.dh[index].name +
+        '",' +
+        this.dh[index].value +
+        ')'
+      ).then((ret: MCQueryResponse) => {
+        if (ret.result === '0') {
+          this.snackbarService.openTipSnackBar(this.wordOk);
+        }
+      });
+    }
   }
 
   openRobotSelectionDialog() {
@@ -423,4 +447,11 @@ export class RobotsComponent implements OnInit {
 interface DH {
   name: string;
   value: number;
+}
+
+interface RarmDH {
+
+  L1: number;
+  L2: number;
+
 }

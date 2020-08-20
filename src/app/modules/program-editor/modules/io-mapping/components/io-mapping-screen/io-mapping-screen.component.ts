@@ -1,3 +1,4 @@
+import { SysLogSnackBarService } from './../../../../../sys-log/services/sys-log-snack-bar.service';
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {
@@ -71,7 +72,8 @@ export class IoMappingScreenComponent implements OnInit {
     private trn: TranslateService,
     private dialog: MatDialog,
     private api: ApiService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private snackbarService: SysLogSnackBarService
   ) {
     this.treeControl = new NestedTreeControl<TreeNode>(this._getChildren);
     this.dataSource = new MatTreeNestedDataSource();
@@ -83,7 +85,9 @@ export class IoMappingScreenComponent implements OnInit {
   ngOnInit() {
     this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(stat=>{
       if (!stat) return;
-      this.dataSource.data = this.buildTree();
+      this.zone.run(()=>{
+        this.dataSource.data = this.buildTree();
+      });
     });
   }
 
@@ -166,7 +170,7 @@ export class IoMappingScreenComponent implements OnInit {
           
         } else {
           io.name = newVal;
-          // this.snack.open(this.words['changeOK'], '', { duration: 1000 });
+          this.snackbarService.openTipSnackBar('changeOK');
           if(!this.utils.IsKuka)
           {
             console.log('Replace snack: ' + this.words['changeOK']);
@@ -193,7 +197,7 @@ export class IoMappingScreenComponent implements OnInit {
           }
         } else {
           io.description = newVal;
-          // this.snack.open(this.words['changeOK'], '', { duration: 1000 });
+          this.snackbarService.openTipSnackBar('changeOK');
           if(!this.utils.IsKuka)
           {
             console.log('Replace snack: ' + this.words['changeError']);

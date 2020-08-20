@@ -320,3 +320,29 @@ input[type=number] {
     overflow: auto;
   }
 }
+
+.tablet-ui {
+  .ng-resizable-diagonal {
+    width: 40px!important;
+    height: 40px!important;
+    border-left-width: 40px;
+    border-bottom-width: 40px;
+  }
+  .ng-resizable-diagonal::after {
+    content: "<->";
+    position: absolute;
+    font-weight: bold;
+    width: 40px;
+    right: 0;
+    font-size: 24px;
+    text-align: center;
+    transform: rotate(45deg);
+    bottom: -30px;
+    color: #666;
+  }
+}
+
+// FIX ANGULAR MATERIAL RADIO VALIDATION ISSUES
+mat-radio-group.ng-invalid mat-radio-button .mat-radio-outer-circle {
+  border-color: #f44336;
+} 

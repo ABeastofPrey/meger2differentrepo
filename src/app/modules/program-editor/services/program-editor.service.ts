@@ -212,6 +212,13 @@ export class ProgramEditorService {
       this.router.navigateByUrl('/projects');
     }
   }
+  refreshModeToggle() {
+    const old = this._modeToggle;
+    this._modeToggle = null;
+    setTimeout(()=>{
+      this._modeToggle = old;
+    });
+  }
 
   async setModeToggle(val: string) {
     if (this._modeToggle === val) return;

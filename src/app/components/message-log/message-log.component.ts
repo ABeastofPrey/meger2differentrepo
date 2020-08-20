@@ -65,6 +65,7 @@ export class MessageLogComponent implements OnInit {
         .subscribe(() => {
           clearTimeout(this._timeout);
           this._timeout = setTimeout(()=>{
+            if (this.notifier.closed) return;
             this.cd.detectChanges();
             this.msgContainer.scrollToIndex(this.msgContainer.getDataLength());
           },MIN_REFRESH_RATE);

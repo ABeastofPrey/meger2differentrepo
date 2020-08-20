@@ -91,7 +91,7 @@ export class TpLoadingComponent implements OnInit {
       this._zone.run(()=>{
         const notDone = this.steps.some(s=>!s.done);
         if (notDone) {
-          console.log(this.steps);
+          console.warn(this.steps);
           console.log(this.stat);
           console.log(this.data.dataLoaded.value);
           console.log(this.prj.currProject.value);

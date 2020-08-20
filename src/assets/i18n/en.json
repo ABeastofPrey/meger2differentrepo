@@ -29,7 +29,9 @@
     "toolbar_expand": "Expand App Toolbar"
   },
   "apps": {
-    "cabinet_update": "Cabinet Update Tool",
+    "cabinet_update": "KR CS Box Update Tool",
+    "cabinet_update_open": "OPEN UPDATE TOOL",
+    "cabinet_update_disabled": "Update tool requires the robot to be DISABLED. Disable the robot to proceed.",
     "err_mcu": "Error: could not update MCU firmware",
     "firmware": "Update System Software",
     "firmware_confirm": {
@@ -48,6 +50,7 @@
     },
     "rebooting": "Rebooting Controller...",
     "title": "Controller Tools",
+    "update_warning": "KR CS Box Update Tool requires you to exit ControlStudio+ and DISABLE all motion tasks. Any unsaved data will be lost. Are you sure you want to leave ControlStudio+ and open the Cabinet Update Tool?",
     "updating": "Updating System Software",
     "restore": {
       "default": "Default",
@@ -71,7 +74,8 @@
     "title": "Changes not saved",
     "msg": "This screen contains unsaved data. If you leave now, the changes will not be saved. Are you sure you want to leave?",
     "yes": "DISCARD CHANGES",
-    "no": "CANCEL"
+    "no": "CANCEL",
+    "third": "SAVE CHANGES"
   },
   "binary": "Binary",
   "blending": {
@@ -590,6 +594,14 @@
   },
   "jogScreen": {
     "menu": ["Tool Align", "Teach"],
+    "non_robot": {
+      "title": "Non-robot motion element",
+      "msg": "You are about to leave this screen with a non-robot motion element selected. All robot operations will be disrupted. Are you sure you want to keep using this selected motion element?",
+      "yes": "KEEP SELECTED ELEMENT",
+      "no": "CANCEL",
+      "warnBtn": true,
+      "caution": true
+    },
     "percision": "Precision",
     "settings": "Jog Settings",
     "speed": "Speed",
@@ -602,14 +614,14 @@
     "tabs": {
       "jog": "Jog",
       "lbn": "Lead By Nose",
-      "handguiding": "Hand Guiding"
+      "handguiding": "Servo Free"
     },
     "tool_align": "Tool Align",
     "var": "Variable",
     "var_none": "No variables"
   },
   "handGuiding": {
-    "toggleMode": "Enable S-FREE Mode",
+    "toggleMode": "Enable Servo Free mode",
     "toggleJ3J4": "Release brakes J1 + J2"
   },
   "joint": "Joint",
@@ -699,6 +711,7 @@
       "msg": "This cannot be undone."
     },
     "err_item_count": "Invalid item count",
+    "err_invalid_file": "Invalid data file",
     "name": "Pallet Name",
     "selected": "Selected Pallet",
     "type": "Pallet Type",
@@ -720,7 +733,7 @@
       "calibrated_origin": "Calibrated Origin",
       "conf": "Configuration Flags",
       "curr_index": "Quantity of items on pallet",
-      "curr_pos": "Current Position",
+      "curr_pos": "Coordinates",
       "dimensions_item": "Item Dimensions [mm]",
       "dimensions_pallet": "Pallet Dimensions [mm]",
       "dir": "Direction",
@@ -744,7 +757,7 @@
       "num_of_items": "Number of items",
       "odd_even": "Alternating layers",
       "offH": "Horizontal Offset",
-      "offV": "Vertical Offset",
+      "offV": "Vertical (Z) Offset",
       "order": "Order",
       "origin": "Origin",
       "origin_status": "Origin Status",
@@ -1220,6 +1233,7 @@
     "pPoints": "Project Points",
     "Vision": "Vision"
   },
+  "rarm": "Robot Arm",
   "pluginInstall": {
     "name": "Install Plugin",
     "title": "Installing Plugin",
@@ -1234,7 +1248,7 @@
     "versionCheckEror": "Unexpection error of version detection",
     "nextStep": "NEXT",
     "install": "Install",
-    "unReady": "System is unready",
+    "unReady": "System is not ready",
     "unexception": "Unexpection error",
     "pluginNameError": "A plugin name only can contain the following characters:a-z A-Z 0-9 . _ ",
     "historyCheck": {
@@ -1396,8 +1410,8 @@
     },
     "en_tooltip": "Waiting for acknowledge",
     "password_change": {
-      "btn": "CHANGE SAFETY PASSWORD...",
-      "change": "Change Safety password",
+      "btn": "CHANGE TP MODE PASSWORD...",
+      "change": "Change TP Mode password",
       "err": "Could not change password",
       "err_regex": "Password cannot contain spaces",
       "new": "New Password",
@@ -1490,7 +1504,7 @@
     "warning": "Warning",
     "info": "Information",
     "clear_all_log": "CLEAR ALL LOG HISTORY",
-    "clear_all_drive_fault": "CLEAR ALL DRIVE FAULT",
+    "clear_all_drive_fault": "CLEAR ALL DRIVE FAULTS",
     "mc_task": "Task",
     "mc_file": "File",
     "mc_line": "Line",

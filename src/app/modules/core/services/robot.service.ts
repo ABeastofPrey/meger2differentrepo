@@ -20,6 +20,9 @@ export class RobotService {
     return this._selectedRobot;
   }
 
+  private _rarm: {PN: string, SN: string} = null;
+  get rarm() { return this._rarm; }
+
   private stringToModelMapper: Map<string, RobotModel> = new Map();
 
   constructor(private ws: WebsocketService) {}
@@ -69,6 +72,17 @@ export class RobotService {
         if (ret) {
           this._selectedRobot = this.stringToModelMapper.get(ret.result);
           this.changed.next(this._selectedRobot);
+        }
+      });
+      this.ws.query('?RARM_SHOW_ARM').then(ret=>{
+        if (ret.err || ret.result.length === 0) {
+          this._rarm = null;
+          return;
+        }
+        try {
+          this._rarm = JSON.parse(ret.result);
+        } catch (err) {
+          this._rarm = null;
         }
       });
   }

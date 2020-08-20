@@ -31,7 +31,7 @@
         [(ngModel)]="service.fileRef.desc"
       />
     </mat-form-field>
-    <button *ngIf="service.fileRef" mat-icon-button color="primary" (click)="onAppDescSave()">
+    <button *ngIf="service.fileRef && !login.isViewer && !login.isOperator" mat-icon-button color="primary" (click)="onAppDescSave()">
       <mat-icon>{{ appDescEditMode ? 'save' : 'edit' }}</mat-icon>
     </button>
   </div>

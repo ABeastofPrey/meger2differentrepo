@@ -46,7 +46,7 @@ export class TaskService {
 
   parseTasklist(list: string): MCTask[] {
     if (list.length === 0) {
-      console.log('CYC1 RETURNED BLANK RESULT');
+      console.warn('CYC1 RETURNED BLANK RESULT');
       this.tasklistCommand = '?tasklist';
       if (this.isActive) {
         this.start();

@@ -8,16 +8,18 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class YesNoDialogComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<YesNoDialogComponent, boolean>,
+    public dialogRef: MatDialogRef<YesNoDialogComponent, boolean|number>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      caution: boolean,
+      caution?: boolean,
       title: string,
-      titlePara: string,
+      titlePara?: string,
       msg: string,
       yes: string,
       no: string,
-      warnBtn: boolean,
-      allowClose: boolean
+      warnBtn?: boolean,
+      allowClose?: boolean,
+      third?: string,
+      thirdColor?: string
     }
   ) {}
 
@@ -33,5 +35,9 @@ export class YesNoDialogComponent implements OnInit {
 
   no() {
     this.dialogRef.close(false);
+  }
+
+  third() {
+    this.dialogRef.close(3);
   }
 }

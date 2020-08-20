@@ -48,7 +48,7 @@ export class WatchService {
         }
         this.vars = vars;
       } catch (err) {
-        console.log('ERROR', cachedStr, err);
+        console.warn('ERROR', cachedStr, err);
         this.vars = [new WatchVar('', GLOBAL)];
       }
     } else {

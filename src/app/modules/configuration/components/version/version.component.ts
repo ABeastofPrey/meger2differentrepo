@@ -85,7 +85,10 @@ export class VersionComponent implements OnInit {
         .pipe(
           rxjsMap((res: MCQueryResponse) => JSON.parse(res.result)),
           catchError((err: ErrorFrame[]) => throwError(err[0] ? err[0].errMsg : ''))
-        ).subscribe(res => console.log(res), err => console.warn(err));
+        ).subscribe(res => {
+          if (environment.production) return;
+          console.log(res);
+        }, err => console.warn(err));
     })
   }
 

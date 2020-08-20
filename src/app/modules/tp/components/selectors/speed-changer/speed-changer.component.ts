@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { MatSliderChange, MatSelectChange } from '@angular/material';
 import { WebsocketService, TpStatService, DataService } from '../../../../core';
 import { Input } from '@angular/core';
@@ -12,6 +12,9 @@ export class SpeedChangerComponent implements OnInit {
 
   val = 0;
   @Input('disabled') disabled?: boolean;
+
+  private tmpVal = 0;
+  private isPressed = false;
 
   constructor(
     private stat: TpStatService,
@@ -30,7 +33,19 @@ export class SpeedChangerComponent implements OnInit {
   }
 
   onChange(event: MatSliderChange) {
-    this.ws.query('?tp_set_jog_vrate(' + event.value + ')');
+    this.tmpVal = event.value;
+    console.log(this.tmpVal);
+  }
+
+  @HostListener('window:mouseup')
+  onmouseup() {
+    if (!this.isPressed) return;
+    this.ws.query('?tp_set_jog_vrate(' + this.tmpVal + ')');
+    this.isPressed = false;
+  }
+
+  onMouseDown() {
+    this.isPressed = true;
   }
 
   onIncChange(event: MatSelectChange) {

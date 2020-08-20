@@ -42,6 +42,7 @@ export class PayloadWizardComponent implements OnInit {
       this.ctrlMass.disable();
       this.ctrlInertia.disable();
       this.ctrllx.disable();
+      this.data.refreshPayloadParams();
     } else {
       this.ctrlMass.enable();
       this.ctrlInertia.enable();
@@ -82,6 +83,7 @@ export class PayloadWizardComponent implements OnInit {
   }
 
   private getCurrentValues() {
+    if (!this.data.selectedRobot) return;
     this.ws
       .query('?pay_get_current_values(' + this.data.selectedRobot + ')')
       .then((ret: MCQueryResponse) => {
@@ -117,7 +119,11 @@ export class PayloadWizardComponent implements OnInit {
     );
   }
 
-  showIdentDialog() {
+  async showIdentDialog() {
+    const ret = await this.data.onPayloadRelativeChange(true);
+    if (!ret) {
+      return;
+    }
     const dialogText = this.words['payloads']['ident']['dialog'];
     this.dialog
       .open(YesNoDialogComponent, {
@@ -353,7 +359,6 @@ export class PayloadWizardComponent implements OnInit {
       this.selectedPayload.inertia = Number(results[1].result);
       this.ctrlInertia.setValue(this.selectedPayload.inertia);
       this.selectedPayload.lx = Number(results[2].result);
-      console.log(this.selectedPayload);
       this.ctrllx.setValue(this.selectedPayload.lx);
     });
   }

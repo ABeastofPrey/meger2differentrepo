@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatSnackBar, MatSliderChange } from '@angular/material';
+import { MatDialog, MatSnackBar, MatSliderChange, MatButtonToggleChange } from '@angular/material';
 import { NewProjectDialogComponent } from '../new-project-dialog/new-project-dialog.component';
 import {
   WebsocketService,
@@ -100,6 +100,9 @@ export class ProgramToolbarComponent implements OnInit {
         'files.dir_name',
         'projects.toolbar.new_folder',
         'button.create',
+        'button.save',
+        'button.discard',
+        'projectTree.dirty'
       ])
       .subscribe(words => {
         this.words = words;
@@ -107,6 +110,42 @@ export class ProgramToolbarComponent implements OnInit {
   }
 
   ngOnInit() {}
+
+  onModeToggle(e: MatButtonToggleChange) {
+    this.currMenu = 0;
+    this.onFocus = false;
+    const val = e.value;
+    if (this.prgService.isDirty && this.prgService.activeFile) {
+      this.trn.get('projectTree.dirty_msg', { name: this.prgService.activeFile }).subscribe(word => {
+        this.dialog.open(YesNoDialogComponent, {
+          data: {
+            title: this.words['projectTree.dirty'],
+            msg: word,
+            yes: this.words['button.discard'],
+            no: this.words['button.cancel'],
+            third: this.words['button.save'],
+            thirdColor: 'primary',
+            warnBtn: true
+          },
+          width: '500px',
+        }).afterClosed().subscribe(ret => {
+          if (ret === 3) {
+            this.prgService.save().then(() => {
+              this.prgService.modeToggle = val;
+            });
+          } else if (ret) {
+            this.prgService.isDirty = false;
+            this.prgService.modeToggle = val;
+          } else {
+            this.prgService.refreshModeToggle();
+            return;
+          }
+        });
+      });
+      return;
+    }
+    this.prgService.modeToggle = val;
+  }
 
   new() {
     const ref = this.dialog.open(NewProjectDialogComponent);
@@ -690,6 +729,7 @@ export class ProgramToolbarComponent implements OnInit {
   }
   
   toggleDependencies() {
+    if (this.prj.activeProject) return;
     const prj = this.prj.currProject.value;
     const loaded = prj.dependenciesLoaded;
     const name = prj.name;

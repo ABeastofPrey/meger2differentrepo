@@ -6,7 +6,7 @@
 			<button mat-mini-fab color="accent" (click)="refresh()" style="margin: 0 16px;">
 				<mat-icon>refresh</mat-icon>
 			</button>
-			<button mat-raised-button color="accent" (click)="clearAllDriveFaults()">
+			<button mat-raised-button color="accent" (click)="clearAllDriveFaults()" *ngIf="state === '1' || state === '2'">
 				{{ 'sys_log.clear_all_drive_fault' | translate }}
 			</button>
 			<mat-radio-group class="options" [(ngModel)]="state" (change)="refresh()">
@@ -27,7 +27,7 @@
 			<div *ngIf="state === '3'" class="mcu-container">
 				<div #mcu id="mcu"></div>
 			</div>
-			<app-topology *ngIf="state === '4'"></app-topology>
+			<app-topology *ngIf="state === '4'" #topology></app-topology>
 		</div>
 	</div>
 </div>

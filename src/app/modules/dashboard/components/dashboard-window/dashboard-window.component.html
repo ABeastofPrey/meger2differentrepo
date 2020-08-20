@@ -16,7 +16,7 @@
 			*ngIf="params.name === 'SCARA (Tour)'"
 			(click)="record()"
 			matTooltip="{{ 'record' | translate }}"
-			[disabled]="params.params.length === 0 && !params.isGroup"
+			[disabled]="params.params.length === 0"
 			tourAnchor="dashboard-rec"
 		>
 			<mat-icon>{{ params.isRecording ? 'stop' : 'fiber_manual_record' }}</mat-icon>

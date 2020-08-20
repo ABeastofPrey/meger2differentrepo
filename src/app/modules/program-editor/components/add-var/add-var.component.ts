@@ -116,16 +116,10 @@ export class AddVarComponent implements OnInit {
     });
     // Open jog panel
     this.stat.onlineStatus.pipe(takeUntil(this.notifier)).subscribe(stat => {
-      const canNotOpen = !stat ||
-        this.prj.activeProject ||
-        !this.coos.coosLoaded.value ||
-        (this.cmn.isTablet && this.stat.mode !== 'T1' && this.stat.mode !== 'T2');
-
+      const canNotOpen = !stat || this.prj.activeProject || !this.coos.coosLoaded.value ||
+                        (this.cmn.isTablet && this.stat.mode !== 'T1' && this.stat.mode !== 'T2');
       if (!canNotOpen) {
         this.changeOverlayAndToggleJog();
-      } else {
-        //   this.snackbar.open(this.words['variables.cannot_use_jog_tip'], '', { duration: 2000 });
-          this.snackbarService.openTipSnackBar("variables.cannot_use_jog_tip");
       }
     });
 
@@ -231,17 +225,9 @@ export class AddVarComponent implements OnInit {
         console.log(ret);
         this._busy = false;
       } else {
-        const queries = [
-          this.data.refreshBases(),
-          this.data.refreshTools(),
-          this.data.refreshMachineTables(),
-          this.data.refreshWorkPieces(),
-        ];
-        return Promise.all(queries).then(() => {
-          return this.data.refreshVariables().then(() => {
-            this._busy = false;
-            this.closeDialog();
-          });
+        return this.data.refreshVariables().then(() => {
+          this._busy = false;
+          this.closeDialog();
         });
       }
     });

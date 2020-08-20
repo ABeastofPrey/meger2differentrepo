@@ -27,6 +27,14 @@ mat-form-field {
   margin-top: 8px;
   margin-bottom: -10px;
 }
+.flag-wrapper {
+  padding-left: 16px;
+  border-left: 1px solid #ccc;
+}
+.flag-wrapper mat-form-field {
+  margin-top: 8px;
+  margin-bottom: -10px;
+}
 .input-large {
   font-size: 24px;
 }
@@ -138,4 +146,8 @@ pallet-level-designer {
   max-height: 285px;
   margin: 2px;
   position: relative;
+}
+.entry-table {
+  width: fit-content;
+  margin-top: 10px;
 }

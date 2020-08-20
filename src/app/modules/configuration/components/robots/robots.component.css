@@ -48,8 +48,7 @@ mat-card {
 }
 .disp {
   display: block;
-  width: 150px;
-  margin-bottom: -16px;
+  width: 200px;
 }
 .btn-home {
   margin-left: 8px;

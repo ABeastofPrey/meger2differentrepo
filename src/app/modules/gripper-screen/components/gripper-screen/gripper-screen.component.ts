@@ -1,3 +1,4 @@
+import { SysLogSnackBarService } from './../../../sys-log/services/sys-log-snack-bar.service';
 import { Component, OnInit, Injectable, NgZone } from '@angular/core';
 import {
   MatTreeFlatDataSource,
@@ -171,6 +172,7 @@ export class GripperScreenComponent implements OnInit {
     private trn: TranslateService,
     public login: LoginService,
     public mgr: ScreenManagerService,
+    private sb: SysLogSnackBarService,
     private _zone: NgZone
   ) {}
 
@@ -349,6 +351,9 @@ export class GripperScreenComponent implements OnInit {
       this.ws.query('?GRP_GRIPPER_COMMAND_INVERT_GET(' + efAndGrp + ',2)'),
       this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + efAndGrp + ',1)'),
       this.ws.query('?GRP_GRIPPER_FEEDBACK_INVERT_GET(' + efAndGrp + ',2)'),
+      this.ws.query('?GRP_DIN_FEEDBACK_GET_ENABLE(' + efAndGrp + ',1)'),
+      this.ws.query('?GRP_DIN_FEEDBACK_GET_ENABLE(' + efAndGrp + ',2)'),
+      this.ws.query('?GRP_DOUT_COMMAND_GET_ENABLE(' + efAndGrp + ',2)'),
     ];
     Promise.all(promises).then((ret: MCQueryResponse[]) => {
       grp.useTool = ret[0].result === '1';
@@ -361,11 +366,32 @@ export class GripperScreenComponent implements OnInit {
       grp.cmd2_invert = ret[7].result === '1';
       grp.fb1_invert = ret[8].result === '1';
       grp.fb2_invert = ret[9].result === '1';
-      grp.cmd2_enabled = grp.cmd2.length > 0;
-      grp.fb1_enabled = grp.fb1.length > 0;
-      grp.fb2_enabled = grp.fb2.length > 0;
+      grp.fb1_enabled = ret[10].result === '1';
+      grp.fb2_enabled = ret[11].result === '1';
+      grp.cmd2_enabled = ret[12].result === '1';
       this.refreshSleepTimes(grp);
     });
+  }
+
+  onToggle(i: number) {
+    const grp = this.selectedNode as Gripper;
+    const efAndGrp = '"' + grp.parent.item + '","' + grp.item + '"';
+    let cmd;
+    switch (i) {
+      case 1: // dout secondary
+        cmd = `?GRP_DOUT_COMMAND_SET_ENABLE(${efAndGrp},2,${grp.cmd2_enabled ? 1 : 0})`;
+        break;
+      case 2: // fb1
+        cmd = `?GRP_DIN_FEEDBACK_SET_ENABLE(${efAndGrp},1,${grp.fb1_enabled ? 1 : 0})`;
+        break;
+      case 3: //fb2
+        cmd = `?GRP_DIN_FEEDBACK_SET_ENABLE(${efAndGrp},2,${grp.fb2_enabled ? 1 : 0})`;
+        break;
+      default:
+        break;
+    }
+    if (!cmd) return;
+    this.ws.query(cmd);
   }
 
   updatePayload() {
@@ -493,6 +519,8 @@ export class GripperScreenComponent implements OnInit {
     const ret = await this.ws.query(cmd + '("' + ef + '","' + grp + '","' + openClose + '",' + val + ')');
     if (ret.result !== '0') {
       this.refreshSleepTimes(gripper);
+    } else {
+      this.sb.openTipSnackBar('changeOK');
     }
   }
 

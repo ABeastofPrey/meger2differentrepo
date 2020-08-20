@@ -13,6 +13,7 @@ import { GraphComponent, GraphData } from '../graph/graph.component';
 import { Subscription, Subject } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { TopologyComponent } from '../topology/topology.component';
 
 declare var Plotly;
 const MAXVAL = 3000;
@@ -39,6 +40,8 @@ export class DiagnosticsComponent implements OnInit {
   private mcuThreshold = 0;
   private mcuInterval: number | undefined;
   mcuConnected = false;
+
+  @ViewChild('topology', {static: false}) topology: TopologyComponent;
 
   constructor(
     private ws: WebsocketService,
@@ -115,7 +118,6 @@ export class DiagnosticsComponent implements OnInit {
         index = text.indexOf('<GRAPH');
       }
       if (this.env.useDarkTheme) {
-        console.log(text);
         text = text.replace(/<table/g,'<table bgcolor="#424242" ');
         text = text.replace(/#eee/g,'#333');
       }
@@ -127,7 +129,7 @@ export class DiagnosticsComponent implements OnInit {
         ref.instance.setData(graph);
       }
     } catch (err) {
-      console.log(err);
+      console.warn(err);
     }
   }
 
@@ -135,6 +137,12 @@ export class DiagnosticsComponent implements OnInit {
     this.ws.query('?MCU_GET_CONNECTION_STATUS').then((ret: MCQueryResponse)=>{
       this.mcuConnected = ret.result === '1';
     }).then(()=>{
+      if (!this.mcuConnected) {
+        this.mcuThreshold = 0;
+        this.generateMcuChart(0);
+        this.isRefreshing = false;
+        return;
+      }
       this.ws.query('?MCU_GET_FAN_THRESHOLD').then((ret: MCQueryResponse) => {
         this.mcuThreshold = Number(ret.result);
         this.mcuInterval = window.setInterval(()=>{
@@ -217,7 +225,12 @@ export class DiagnosticsComponent implements OnInit {
     if (this.interval) clearInterval(this.interval);
     if (this.mcuInterval) clearInterval(this.mcuInterval);
     if (this.ref) this.ref.clear();
-    if (this.state === '4') return;
+    if (this.state === '4') {
+      if (this.topology) {
+        this.topology.refresh();
+      }
+      return;
+    }
     this.isRefreshing = true;
     this.content = null;
     if (this.state === '3') {

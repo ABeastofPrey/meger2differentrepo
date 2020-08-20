@@ -20,5 +20,8 @@
 		<button mat-raised-button [color]="data.warnBtn ? 'warn' : 'primary'" (click)="yes()">
 			{{ data.yes  | translate }}
 		</button>
+		<button mat-raised-button color="{{data.thirdColor}}" (click)="third()">
+			{{ data.third  | translate }}
+		</button>
 	</div>
 </div>

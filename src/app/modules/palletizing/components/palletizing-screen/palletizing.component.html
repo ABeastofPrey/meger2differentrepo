@@ -1,4 +1,4 @@
-<pallet-wizard *ngIf="prg.wizardMode" (closed)="onWizardClose()"></pallet-wizard>
+<pallet-wizard *ngIf="prg.wizardMode" (closed)="onWizardClose()" #wizard></pallet-wizard>
 <div class="wrapper" *ngIf="!prg.wizardMode">
 	<div class="side-menu mat-elevation-z3">
 		<button mat-raised-button color="primary" (click)="addPallet()" class="btn-add">

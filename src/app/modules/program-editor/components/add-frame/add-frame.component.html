@@ -48,7 +48,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="add()" [disabled]="name.invalid || (isArray && arrSize < 1) || !validateValues" style="text-transform: uppercase;">
+		<button mat-raised-button color="primary" (click)="add()" [disabled]="name.invalid || (isArray && arrSize < 1) || !validateValues" style="text-transform: uppercase;">
 			{{ 'frames.create.' + data | translate }}
 		</button>
 	</div>

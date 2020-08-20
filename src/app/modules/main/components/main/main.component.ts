@@ -237,7 +237,10 @@ export class MainComponent implements OnInit {
         this.isRouterLoading = true;
       } else if (event instanceof RouteConfigLoadEnd) {
         this.isRouterLoading = false;
-      } else if (event instanceof NavigationEnd) {
+      }
+    });
+    this.screenManager.screenChange.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      if (e.old && e.old.url === 'simulator') {
         const conf = localStorage.getItem('floatingSim');
         if (conf) {
           const json: WindowConfiguration = JSON.parse(conf);
@@ -407,8 +410,12 @@ export class MainComponent implements OnInit {
     this.utils.stretchOverlay();
   }
 
-  toggleSimulator() {
-    this.simOpen = !this.simOpen;
+  toggleSimulator(force?: boolean) {
+    if (force) {
+      this.simOpen = true;
+    } else {
+      this.simOpen = !this.simOpen;
+    }
     if (!this.simOpen) {
       // closed
       this.simLoaded = false;

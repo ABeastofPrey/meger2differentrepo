@@ -1,3 +1,4 @@
+import { SysLogSnackBarService } from './../../../sys-log/services/sys-log-snack-bar.service';
 import { UtilsService } from './../../../core/services/utils.service';
 import {
   Component,
@@ -41,19 +42,30 @@ export class PalletLevelDesignerComponent implements OnInit {
   }
 
   get errorList() {
-    if (!this.errors) return [];
-    return this.errors.invalidDataFile || [];
+    let result = [];
+    if (!this.errors) {
+      return result;
+    }
+    const data = this.errors.invalidDataFile || [];
+    const internalErrors = this._items.filter(item=>item.error).map(item=>item.order.toString());
+    result = data.concat(internalErrors);
+    return result;
   }
 
   private _items: CustomPalletItem[] = [];
   private _order = 1;
+  private _initDone = false;
+
+  get initDone() {
+    return this._initDone;
+  }
 
   constructor(
     private dialog: MatDialog,
     private api: ApiService,
     private utils: UtilsService,
     private cd: ChangeDetectorRef,
-    private zone: NgZone
+    private snackbarService: SysLogSnackBarService
   ) {}
 
   showMenu(item: CustomPalletItem) {
@@ -154,9 +166,9 @@ export class PalletLevelDesignerComponent implements OnInit {
       }
     }
     item.error = error;
-    // TODO: ADD ITEM TO INVALID ITEMS LIST
     this.changed.emit(this._items.length);
     setTimeout(()=>{
+      (this.container.nativeElement as HTMLElement).click();
       this.cd.detectChanges();
     },200);
   }
@@ -165,10 +177,17 @@ export class PalletLevelDesignerComponent implements OnInit {
     this.refresh();
   }
 
+  validateAll() {
+    for (const item of this._items) {
+      this.validate(item);
+    }
+  }
+
   onPalletInfoLoaded() : Promise<number> {
     if (this.pallet.dataFile) {
       return this.api.getPathFile(this.pallet.dataFile).then(content => {
         this.setDataFromString(content);
+        this._initDone = true;
         return this.items.length;
       });
     }
@@ -210,27 +229,29 @@ export class PalletLevelDesignerComponent implements OnInit {
   getDataAsString(): string {
     let result = '';
     for (const item of this._items) {
-      result +=
-        Math.round(item.x) + ',' + Math.round(item.y) + ',' + item.r + '\n';
+      result += Math.round(item.x) + ',' + Math.round(item.y) + ',' + item.r + '\n';
     }
     return result;
   }
 
-  private setDataFromString(str: string) {
+  private setDataFromString(str: string, setOnlyThisLevel?: boolean) {
     const lines = str.split('\n');
     const items: CustomPalletItem[] = [];
     let inFirstLevel = true;
     let itemsOnFirstLevel = 0;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
+      if (line.trim().length === 0) continue;
       if (line.indexOf('---') >= 0) {
         inFirstLevel = false;
         continue;
       }
-      if (inFirstLevel) {
+      if (!setOnlyThisLevel && inFirstLevel) {
         itemsOnFirstLevel++;
-        if (this.level === 2) continue;
-      } else if (this.level === 1) {
+        if (this.level === 2) {
+          continue;
+        }
+      } else if (this.level === 1 && !setOnlyThisLevel) {
         break;
       }
       const parts = line.split(',');
@@ -239,27 +260,25 @@ export class PalletLevelDesignerComponent implements OnInit {
       const y = Number(parts[1]);
       const r = Number(parts[2]);
       if (!isNaN(x) && !isNaN(y) && !isNaN(r)) {
-        items.push({
+        const item = {
           x,
           y,
           r,
-          order: this.level === 1 ? i + 1 : i - itemsOnFirstLevel,
+          order: this.level === 1 || setOnlyThisLevel ? i + 1 : i - itemsOnFirstLevel,
           error: false,
           element: null,
           untouched: false,
-        });
+        };
+        items.push(item);
       }
     }
     this._items = items;
     this._order = items.length + 1;
     this.changed.emit(this._items.length);
-    this.setPositions();
     setTimeout(()=>{
-      for (const item of this._items) {
-        this.validate(item);
-      }
-      this.cd.detectChanges();
-    },500);
+      this.setPositions();
+      this.validateAll();
+    });
   }
 
   setPositions() {
@@ -287,13 +306,18 @@ export class PalletLevelDesignerComponent implements OnInit {
   onUploadFilesChange(e: { target: {value: File, files: File[]}}) {
     const reader = new FileReader();
     for (const f of e.target.files) {
+      if (!f.name.toUpperCase().endsWith('.DAT')) {
+        this.snackbarService.openTipSnackBar('pallets.err_invalid_file');
+        break;
+      }
       reader.readAsText(f, 'UTF-8');
       reader.onload = evt => {
-        this.setDataFromString(reader.result as string);
+        this.setDataFromString(reader.result as string, true);
       };
       reader.onerror = evt => {
         console.log('error:');
         console.log(evt);
+        this.snackbarService.openTipSnackBar('pallets.err_invalid_file');
       };
     }
     e.target.value = null;

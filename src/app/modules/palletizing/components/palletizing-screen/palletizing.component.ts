@@ -1,3 +1,4 @@
+import { PalletWizardComponent } from './../pallet-wizard/pallet-wizard.component';
 import { ProgramEditorService } from './../../../program-editor/services/program-editor.service';
 import { Router } from '@angular/router';
 import {
@@ -41,8 +42,11 @@ const kukaColor = new Color(255, 115, 0);
   styleUrls: ['./palletizing.component.css'],
 })
 export class PalletizingComponent implements OnInit {
+
   @ViewChild('palletPreview', { static: false }) preview: ElementRef;
   @ViewChild('palletContainer', { static: false }) container: ElementRef;
+
+  @ViewChild('wizard', { static: false }) wizard: PalletWizardComponent;
 
   // tslint:disable-next-line: no-any
   private iso: any = null;
@@ -193,13 +197,15 @@ export class PalletizingComponent implements OnInit {
   warnUserBeforeLeave() : MatDialogRef<YesNoDialogComponent> {
     if (this.dialog.openDialogs.length > 0) return;
     return this.dialog.open(YesNoDialogComponent, {
-      maxWidth: '400px',
+      maxWidth: '500px',
       data: {
-        title: this.words['before_nav_dialog']['title'],
-        msg: this.words['before_nav_dialog']['msg'],
-        yes: this.words['before_nav_dialog']['yes'],
-        no: this.words['before_nav_dialog']['no'],
-        warnBtn: true
+        title: 'before_nav_dialog.title',
+        msg: 'before_nav_dialog.msg',
+        yes: 'before_nav_dialog.yes',
+        no: 'before_nav_dialog.no',
+        third: 'before_nav_dialog.third',
+        warnBtn: true,
+        thirdColor: "primary"
       },
     });
   }

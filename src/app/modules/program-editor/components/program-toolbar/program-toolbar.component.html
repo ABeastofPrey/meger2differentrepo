@@ -1,6 +1,6 @@
 <div class="wrapper mat-typography">
 	<ul class="menu menu-big mat-elevation-z1" *ngIf="prgService.modeToggle === 'prj'" (click)="toggleFocus($event)">
-		<li *ngIf="!cmn.isTablet && !utl.IsKuka">
+		<li *ngIf="!cmn.isTablet && !utl.IsKuka && !cmn.isCloud">
 			<button mat-icon-button (click)="toggleFullScreen($event)"><mat-icon>aspect_ratio</mat-icon></button>
 		</li>
 		<li
@@ -42,7 +42,7 @@
 		</li>
 	</ul>
 	<ul class="mat-elevation-z1 prj-buttons" *ngIf="cmn.isTablet && prj.currProject.value && prgService.modeToggle === 'prj'">
-    <button (click)="toggleDependencies()" mat-raised-button color="accent" style="margin-right: 8px;">
+    <button (click)="toggleDependencies()" mat-raised-button color="accent" style="margin-right: 8px;" [disabled]="prj.activeProject">
 			<mat-icon>public</mat-icon>
       <mat-icon class="secondary-icon">
         {{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}
@@ -82,7 +82,7 @@
 		</button>
 	</ul>
 	<ul class="mat-elevation-z1" *ngIf="login.isAdmin">
-		<mat-button-toggle-group [(ngModel)]="prgService.modeToggle" (change)="currMenu = 0; onFocus = false" [disabled]="prgService.wizardMode">
+		<mat-button-toggle-group [value]="prgService.modeToggle" (change)="onModeToggle($event)" [disabled]="prgService.wizardMode">
 			<mat-button-toggle value="prj">{{ 'projectTree.prj' | translate }}</mat-button-toggle>
 			<mat-button-toggle value="mc">{{ 'projectTree.cnt' | translate }}</mat-button-toggle>
 		</mat-button-toggle-group>
@@ -139,7 +139,7 @@
 			{{ (prj.currProject.value.projectPaused ? 'projects.toolbar.continue_prj' : 'projects.toolbar.pause_prj') | translate }}
 		</li>
 		<li (click)="stop()"><mat-icon>stop</mat-icon>{{ 'projects.toolbar.stop_prj' | translate }}</li>
-    <li (click)="toggleDependencies()">
+    <li (click)="toggleDependencies()" [class.disabled]="prj.activeProject">
       <mat-icon>public</mat-icon>
       <mat-icon class="secondary-icon">
         {{ prj.currProject.value.dependenciesLoaded ? 'stop' : 'play_arrow' }}
@@ -178,7 +178,7 @@
 		<li (click)="doImport(true)"><mat-icon>restore</mat-icon>{{ 'projects.toolbar.restore' | translate }}...</li>
 	</ul>
 </div>
-<input type="file" accept=".zip, .ZIP" #upload (change)="onUploadProjectFile($event)" class="file-input" />
+<input type="file" accept=".zip, .ZIP, .tar.gz, .TAR.GZ" #upload (change)="onUploadProjectFile($event)" class="file-input" />
 <input
 	type="file"
 	accept=".UPG, .PRG, .ULB, .LIB, .DAT, .TXT, .VAR, .DEF, .BLK, .TPS, .OBJ, .LOG"

@@ -17,7 +17,7 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || submitting">
+		<button mat-raised-button color="primary" (click)="create()" [disabled]="!name || name.length === 0 || submitting">
 			{{ 'button.create' | translate }}
 		</button>
 	</div>

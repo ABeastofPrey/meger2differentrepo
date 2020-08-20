@@ -19,7 +19,11 @@ export class CanDeactivateGuard implements CanDeactivate<PalletizingComponent> {
     if (this.prg.wizardMode && this.ws.connected) {
       return new Promise(resolve=>{
         component.warnUserBeforeLeave().afterClosed().subscribe(ret=>{
-          if (ret) {
+          if (ret === 3) { // third option = save
+            component.wizard.save().then(()=>{
+              resolve(true);
+            });
+          } else if (ret) {
             resolve(true);
           } else {
             resolve(false);

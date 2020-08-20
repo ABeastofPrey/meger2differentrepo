@@ -6,6 +6,7 @@
 	tickInterval="auto"
 	value="{{ val }}"
 	(change)="onChange($event)"
+	(mousedown)="onMouseDown()"
 	[disabled]="disabled"
   [displayWith]="getDisplayVal">
 </mat-slider>

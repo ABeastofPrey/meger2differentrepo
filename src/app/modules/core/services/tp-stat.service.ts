@@ -77,7 +77,6 @@ export class TpStatService {
     return this._deadman;
   }
   set deadman(active: boolean) {
-    console.log('set deadman to ' + active);
     const oldStat = this._deadman;
     const dm = active ? 1 : 0;
     this._virtualDeadman = active;
@@ -140,8 +139,6 @@ export class TpStatService {
       .then((ret: MCQueryResponse) => {
         //if (!environment.production) console.log(ret);
         if (ret.result !== '0') {
-          console.log(ret);
-          console.log('oldStat:' + oldStat);
           this._virtualModeSelector = oldStat;
           this._switch = this._virtualModeSelector;
           if (this._switch == null) {
@@ -312,6 +309,7 @@ export class TpStatService {
     this._switch = null;
     this.modeChanged.next(null);
     this.lastStatString = null;
+    this._virtualModeSelector = 'A';
   }
 
   resetAll() {
@@ -321,7 +319,6 @@ export class TpStatService {
       .then(() => {
         return this.ws.query('?TP_setKeepAliveBreakable(1)');
       }).then((ret: MCQueryResponse) => {
-        console.log(ret);
         if (ret.result === '0' || !this.onlineStatus.value) {
           this.onlineStatus.next(false);
           this._online = false;
