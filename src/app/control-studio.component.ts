@@ -224,8 +224,19 @@ export class ControlStudioComponent {
 
 
   ngOnInit() {
-    this.ps.getInstalledPluginScripts().subscribe(this.ps.appendScriptsToBody.bind(this));
-
+    this.ws.isConnected.subscribe(stat=>{
+        if(stat) {
+            this.ps.getInstalledPluginScripts().subscribe(this.ps.appendScriptsToBody.bind(this));
+            const interval = setInterval(() => {
+                this.ws.simpleQuery('?taskstate("PLUG_MNG.LIB")').subscribe(loadState=> {
+                    if(loadState === "7") {
+                        clearInterval(interval);
+                        this.ps.getInstalledPluginScripts().subscribe(this.ps.appendScriptsToBody.bind(this));
+                    }
+                })
+            },1000)
+        }    
+    });
     // if (!this.env.production) {
     //   this.printpath('', this.router.config);
     // }

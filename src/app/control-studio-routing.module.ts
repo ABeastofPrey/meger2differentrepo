@@ -8,7 +8,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { from, Observable, combineLatest } from 'rxjs';
 import { map as rxjsMap } from 'rxjs/operators';
 import { ApiService } from './modules/core/services/api.service';
-
+import { parsePluginI18n } from './modules/plugins/plugins.service';
+import { mergeDeepRight } from 'ramda';
 export class CsTranslateLoader implements TranslateLoader {
 
   constructor(private apiService: ApiService) { }
@@ -17,11 +18,15 @@ export class CsTranslateLoader implements TranslateLoader {
     const fromI18n = from(import(`../assets/i18n/${lang}.json`));
     const fromECodeI18n = from(import(`../assets/i18n-causes-effects/causes-effects-${lang}.json`));
     const fromLibI18n = from(this.apiService.getFile(`LIB_${lang.toUpperCase()}.JSON`));
-    const combinedI18n = combineLatest([fromI18n, fromECodeI18n, fromLibI18n])
-      .pipe(rxjsMap(([resI18n, resECI18n, resLibI18n]) => {
+    const fromPluginI18n = from(this.apiService.getFile('PLUG_TRANS.DAT'));
+    const combinedI18n = combineLatest([fromI18n, fromECodeI18n, fromLibI18n, fromPluginI18n])
+      .pipe(rxjsMap(([resI18n, resECI18n, resLibI18n, resPluginI18n]) => {
         resI18n['err_code'] = resECI18n['err_code'];
         try {
           resI18n['lib_code'] = JSON.parse(resLibI18n)['lib_code'];
+          //merge plugin translate file
+          resI18n['lib_code'] = mergeDeepRight(resI18n['lib_code'], parsePluginI18n(resPluginI18n, lang));
+
         } catch (err) {
           console.log('Get lib code translation file failed.');
         }
@@ -29,6 +34,10 @@ export class CsTranslateLoader implements TranslateLoader {
       }));
     return combinedI18n;
   }
+
+
+
+
 }
 
 export function csLoaderFactory(apiService: ApiService) {

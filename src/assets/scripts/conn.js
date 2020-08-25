@@ -58,15 +58,15 @@ function timer(id, interval, msg, force) {
 function getWebsocketPort(ip) {
   //const PORT  = '32323';
   const PORT = self.location.port === '4200' ? '1207' : self.location.port;
-  return new Promise((resolve,reject)=>{
+  return new Promise((resolve, reject) => {
     const http = new XMLHttpRequest();
     const url = 'http://' + ip + ':' + PORT + '/cs/api/ports';
-    const timeout = setTimeout(()=>{
+    const timeout = setTimeout(() => {
       reject();
-    },2000);
-    http.open('get',url);
+    }, 2000);
+    http.open('get', url);
     http.send();
-    http.onreadystatechange=(e)=>{
+    http.onreadystatechange = e => {
       if (http.readyState === 4 && http.status === 200) {
         clearTimeout(timeout);
         try {
@@ -84,7 +84,7 @@ function MCConnection() {
 
   // Private Variables
   var ws = null;
-  var MCPORT = 3010;  
+  var MCPORT = 3010;
   var IP = self.location.hostname;
   //var IP = '10.4.20.86';
   var reset = true;
@@ -92,10 +92,10 @@ function MCConnection() {
   var pingPongInterval = null;
   var lastPong = 0;
   var PING_INTERVAL = 500;
-  
+
   this.pingPong = function() {
     clearInterval(this.pingPongInterval);
-    this.pingPongInterval = setInterval(function(){
+    this.pingPongInterval = setInterval(function() {
       if (ws && ws.readyState !== ws.OPEN) {
         clearInterval(this.pingPongInterval);
         return;
@@ -106,20 +106,25 @@ function MCConnection() {
         var diff = now - lastPong;
         if (diff > 1000) {
           lastPong = 0;
-          worker.postMessage({ serverMsg: true, msg: 2, clean: false, code: 1000 }); // ONCLOSE MESSAGE
-          console.log('PONG DIFF TOO LONG',diff);
+          worker.postMessage({
+            serverMsg: true,
+            msg: 2,
+            clean: false,
+            code: 1000,
+          }); // ONCLOSE MESSAGE
+          console.log('PONG DIFF TOO LONG', diff);
           isConnected = false;
           clearInterval(this.pingPongInterval);
           ws.close();
           return;
         }
       }
-    },PING_INTERVAL);
+    }, PING_INTERVAL);
   };
 
   this.connect = async function() {
     //Initiate a websocket connection
-    const port = await getWebsocketPort(IP) || MCPORT;
+    const port = (await getWebsocketPort(IP)) || MCPORT;
     try {
       ws = new WebSocket('ws://' + IP + ':' + port);
       ws.onopen = function() {
@@ -138,8 +143,13 @@ function MCConnection() {
         console.log(e);
       };
       ws.onclose = function(event) {
-        worker.postMessage({ serverMsg: true, msg: 2, clean: event.wasClean, code: event.code }); // ONCLOSE MESSAGE
-        console.log('WEBSOCKET CLOSED',event);
+        worker.postMessage({
+          serverMsg: true,
+          msg: 2,
+          clean: event.wasClean,
+          code: event.code,
+        }); // ONCLOSE MESSAGE
+        console.log('WEBSOCKET CLOSED', event);
         isConnected = false;
         lastPong = 0;
         clearInterval(this.pingPongInterval);
@@ -169,7 +179,9 @@ function MCConnection() {
         }
       }, 5000);
     } catch (err) {
-      console.log(err ? err.message : 'Websocket could not connect to port ' + port);
+      console.log(
+        err ? err.message : 'Websocket could not connect to port ' + port
+      );
     }
   };
 
@@ -180,7 +192,9 @@ function MCConnection() {
         //if (jsonData.indexOf('cyc0') !== -1) console.log('cyc0');
       } catch (err) {
         console.log(err);
-        console.log('MC Connection terminated unexpectedly, trying to reconnect...');
+        console.log(
+          'MC Connection terminated unexpectedly, trying to reconnect...'
+        );
         conn.connect();
       }
     }

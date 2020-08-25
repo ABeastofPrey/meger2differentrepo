@@ -1233,22 +1233,22 @@
     "pPoints": "Project Points",
     "Vision": "Vision"
   },
-  "rarm": "Robot Arm",
   "pluginInstall": {
     "name": "Install Plugin",
     "title": "Installing Plugin",
     "fileLoading": "Loading File",
     "rollback": "Rollbacking Plugin",
-    "noConfiFile": "Hasn't get plugin config file",
+    "noConfiFile": "The config file is not found",
     "fileFormatError": "File format error,need .zip file",
     "chooseFileError": "Choose file error",
-    "exceedSize": "File size exceed, need <100M",
+    "exceedSize": "File size exceed, need < 100M",
     "unzipError": "File unzip error",
+    "createFoldError": "Create fold error",
     "uploadError": "File upload error",
     "versionCheckEror": "Unexpection error of version detection",
     "nextStep": "NEXT",
     "install": "Install",
-    "unReady": "System is not ready",
+    "unReady": "System is unready",
     "unexception": "Unexpection error",
     "pluginNameError": "A plugin name only can contain the following characters:a-z A-Z 0-9 . _ ",
     "historyCheck": {
@@ -1282,6 +1282,7 @@
       "installSuccess": "Plugin Install Success"
     }
   },
+  "rarm": "Robot Arm",
   "record": "Record",
   "record_done": "Motion recording is finished",
   "restore": {

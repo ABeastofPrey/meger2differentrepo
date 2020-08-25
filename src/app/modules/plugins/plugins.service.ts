@@ -14,7 +14,6 @@ import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import * as JSZip from 'jszip';
 import { mergeDeepRight } from 'ramda';
-import { resolve } from 'dns';
 
 export enum LibResponseRes {
   Success = 1,
@@ -70,6 +69,7 @@ export interface DuplicationCheck {
 export enum UnexpectionError {
   fileLoading = 'pluginInstall.fileLoading',
   noConfiFile = 'pluginInstall.noConfiFile',
+  createFoldError = 'pluginInstall.createFoldError',
   uploadFile = 'pluginInstall.uploadError',
   versionCheck = 'pluginInstall.versionCheckEror',
   dependenciesCheck = 'pluginInstall.dependenciesCheck.dependenciesCheckError',
@@ -77,6 +77,11 @@ export enum UnexpectionError {
   installFailed = 'pluginInstall.installing.installFailed',
   unzipError = 'pluginInstall.unzipError',
   pluginNameError = 'pluginInstall.pluginNameError',
+}
+
+export interface IPluginI18n {
+  plugin_name: string;
+  [key: string]: any;// 'lib_code_' + environment.langs.en or cmn
 }
 
 @Injectable()
@@ -96,7 +101,7 @@ export class PluginsService implements OnDestroy {
     private utilsService: UtilsService,
     private dialog: MatDialog,
     private apiService: ApiService
-  ) {}
+  ) { }
 
   ngOnDestroy() {
     this.noticer.next(true);
@@ -243,7 +248,7 @@ export class PluginsService implements OnDestroy {
               let key: string = lang.toUpperCase();
               configFileMap.set(key, {
                 //not necessary
-                name: `PLUGIN_${key}.JSON`,
+                name: `PLUGIN_${key}.DAT`,
                 key: key,
                 i18n: true,
                 state: false, //has not get file
@@ -269,28 +274,26 @@ export class PluginsService implements OnDestroy {
 
             //merge local translate with remote I18 translatw file
             try {
-              let allConfigFiles: File[] = [];
+              // let allConfigFiles: File[] = [];
               for (let valueNode of configFileMap.values()) {
                 if (valueNode.state && valueNode.i18n) {
                   //exist lib lang json
                   const localStr = await zip
                     .file(valueNode.name)
                     .async('string');
-                  const remotestr = await this.apiService.getFile(
-                    `LIB_${valueNode.key}.JSON`
-                  );
+
                   this.libTranslations.set(
                     valueNode.key,
-                    mergeDeepRight(JSON.parse(remotestr), JSON.parse(localStr))
+                    JSON.parse(localStr)
                   );
-                  const merged = JSON.stringify(
-                    this.libTranslations.get(valueNode.key)
-                  );
-                  let cmnFile = this.stringToJSONFile(
-                    merged,
-                    `LIB_${valueNode.key}.JSON`
-                  );
-                  allConfigFiles.push(cmnFile);
+                  // const merged = JSON.stringify(
+                  //   this.libTranslations.get(valueNode.key)
+                  // );
+                  // let cmnFile = this.stringToJSONFile(
+                  //   merged,
+                  //   `LIB_${valueNode.key}.JSON`
+                  // );
+                  // allConfigFiles.push(cmnFile);
                 }
               }
 
@@ -304,8 +307,8 @@ export class PluginsService implements OnDestroy {
                     }
                     //upload config file to specific folder
                     this.createPluginFolder().then(createFolderRes => {
-                      if (!configData) {
-                        return resolve({ error: UnexpectionError.noConfiFile });
+                      if (!createFolderRes) {
+                        return resolve({ error: UnexpectionError.createFoldError });
                       }
 
                       this.configFileData = JSON.parse(configData);
@@ -323,14 +326,13 @@ export class PluginsService implements OnDestroy {
                         configData,
                         'PLUGIN_CONFIG.DAT'
                       );
-                      allConfigFiles.push(configFile);
 
-                      this.uploadPluginConfigFile(allConfigFiles).then(
+                      this.uploadPluginConfigFile([configFile]).then(
                         uploadFileRes => {
                           //upload config file
                           if (!uploadFileRes) {
                             return resolve({
-                              error: UnexpectionError.noConfiFile,
+                              error: UnexpectionError.uploadFile,
                             });
                           }
 
@@ -341,17 +343,17 @@ export class PluginsService implements OnDestroy {
                   },
                   error => {
                     console.error(error);
-                    return resolve({ error: UnexpectionError.noConfiFile });
+                    return resolve({ error: UnexpectionError.unzipError });
                   }
                 );
             } catch (error) {
               console.error(error);
-              return resolve({ error: UnexpectionError.noConfiFile });
+              return resolve({ error: UnexpectionError.unzipError });
             }
           },
           e => {
             console.error(e);
-            return resolve({ error: UnexpectionError.noConfiFile });
+            return resolve({ error: UnexpectionError.unzipError });
           }
         );
     });
@@ -401,7 +403,7 @@ export class PluginsService implements OnDestroy {
           return;
         }
 
-        this.processDialogRef.componentInstance.value = this.progressValue = 80;
+        this.processDialogRef.componentInstance.value = this.progressValue = 82;
         this.processDialogRef.componentInstance.bufferValue = 10;
 
         this.reloadSys(); //reload system
@@ -416,6 +418,9 @@ export class PluginsService implements OnDestroy {
       .observableQuery(`?PLUG_PRG_PRE_KILL`) //kill a task will effect the systemp reload
       .pipe(takeUntil(this.noticer))
       .subscribe(killTaskRes => {
+        this.processDialogRef.componentInstance.value = this.progressValue = 85;
+        this.processDialogRef.componentInstance.bufferValue = 10;
+
         this.utilsService.resetAll(true).then(resetRes => {
           this.processDialogRef.componentInstance.value = this.progressValue = 92;
           this.processDialogRef.componentInstance.bufferValue = 8;
@@ -462,7 +467,9 @@ export class PluginsService implements OnDestroy {
       ) {
         this.translateService.translations[lang][
           'lib_code'
-        ] = this.libTranslations.get(lang.toUpperCase())['lib_code'];
+        ] = mergeDeepRight(this.translateService.translations[lang][
+          'lib_code'
+        ], this.libTranslations.get(lang.toUpperCase())['lib_code']);
       }
     }
   }
@@ -534,4 +541,14 @@ export class PluginsService implements OnDestroy {
     this.statusSub && this.statusSub.unsubscribe();
     this.kiiTaskSub && this.kiiTaskSub.unsubscribe();
   }
+
+}
+
+export function parsePluginI18n(pluginTranslateData: string, lang: string): { [key: string]: string } {
+  const pluginJSON: IPluginI18n[] = JSON.parse(pluginTranslateData);
+  if (!pluginJSON || pluginJSON.length < 0) return {};
+  const key = `lib_code_${lang.toLocaleLowerCase()}`;
+  let i18nData = {};
+  pluginJSON.forEach((item) => i18nData = mergeDeepRight(i18nData, item[key] || {}));
+  return i18nData;
 }
