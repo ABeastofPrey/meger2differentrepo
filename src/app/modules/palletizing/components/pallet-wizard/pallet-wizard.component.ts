@@ -75,10 +75,8 @@ export class PalletWizardComponent implements OnInit {
 
   @ViewChild('palletPreviewStep1', { static: false }) preview1: ElementRef;
   @ViewChild('palletContainer1', { static: false }) container: ElementRef;
-  @ViewChild('designer', { static: false })
-  designer: PalletLevelDesignerComponent;
-  @ViewChild('designer2', { static: false })
-  designer2: PalletLevelDesignerComponent;
+  @ViewChild('designer', { static: false }) designer: PalletLevelDesignerComponent;
+  @ViewChild('designer2', { static: false }) designer2: PalletLevelDesignerComponent;
   @ViewChild('stepper', { static: false }) stepper: MatHorizontalStepper;
 
   // tslint:disable-next-line: no-any
@@ -296,7 +294,7 @@ export class PalletWizardComponent implements OnInit {
             indexType = 'empty';
             break;
           case 'FULL':
-            indexType = 'full';
+            indexType = this.dataService.selectedPallet.type === 'GRID' ? 'full' : 'custom';
             break;
           default:
             indexType = 'custom';
@@ -1818,6 +1816,7 @@ export class PalletWizardComponent implements OnInit {
   }
   
   save() {
+    const name = this.dataService.selectedPallet.name;
     return this.ws.query('?PLT_STORE_PALLET_DATA("' + name + '")');
   }
 

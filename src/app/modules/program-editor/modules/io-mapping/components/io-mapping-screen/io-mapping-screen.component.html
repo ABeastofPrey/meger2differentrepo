@@ -64,7 +64,7 @@
 											[value]="io.name"
 											(change)="updateName($event, io)"
 											maxlength="32"
-											[disabled]="prj.activeProject"
+											[disabled]="prj.activeProject || !io.editable"
 											ktype="text"
 											virtualKeyboard
 											(onKeyboardClose)="updateName($event, io)"
@@ -116,7 +116,7 @@
 											[value]="io.name"
 											(change)="updateName($event, io)"
 											maxlength="32"
-											[disabled]="prj.activeProject"
+											[disabled]="prj.activeProject || !io.editable"
 											virtualKeyboard
 											ktype="text"
 											(onKeyboardClose)="updateName($event, io)"

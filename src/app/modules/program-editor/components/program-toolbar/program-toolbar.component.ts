@@ -157,10 +157,7 @@ export class ProgramToolbarComponent implements OnInit {
           .query('?prj_new_project("' + projectName + '")')
           .then((ret: MCQueryResponse) => {
             if (ret.result === '0') {
-              this.prj.currProject.next(null);
-              this.utl.resetAllDialog(
-                this.words['projects.toolbar']['changing']
-              );
+             this.afterProjectChange();
             }
           });
       }
@@ -176,18 +173,22 @@ export class ProgramToolbarComponent implements OnInit {
           .query('?prj_set_current_project("' + projectName + '")')
           .then((ret: MCQueryResponse) => {
             if (ret.result === '0') {
-              this.prgService.close();
-              this.ws.updateFirmwareMode = true;
-              this.prj.currProject.next(null);
-              this.utl.resetAllDialog(
-                this.words['projects.toolbar']['changing']
-              );
+              this.afterProjectChange();
             } else {
               this.snackbarService.openTipSnackBar("error.err");
             }
           });
       }
     });
+  }
+
+  private afterProjectChange() {
+    this.prgService.close();
+    this.ws.updateFirmwareMode = true;
+    this.prj.currProject.next(null);
+    this.utl.resetAllDialog(
+      this.words['projects.toolbar']['changing']
+    );
   }
 
   togglePause() {
@@ -279,7 +280,7 @@ export class ProgramToolbarComponent implements OnInit {
                   if (ret.result === '0') {
                     this.prgService.mode = 'editor';
                     this.router.navigateByUrl('/projects');
-                    this.prj.getCurrentProject();
+                    this.afterProjectChange();
                   }
                 });
             }
@@ -307,16 +308,13 @@ export class ProgramToolbarComponent implements OnInit {
               if (isCurrent) {
                 this.prgService.mode = 'editor';
                 this.router.navigateByUrl('/projects');
-                this.prj.getCurrentProject();
+                this.afterProjectChange();
               } else {
                 this.prj.isLoading = false;
               }
             })
-            .then(() => {
-                // this.snack.open(this.words['success'], this.words['dismiss'], {
-                //   duration: 1500,
-                // });          
-                this.snackbarService.openTipSnackBar("success");   
+            .then(() => {       
+              this.snackbarService.openTipSnackBar("success");   
             });
         }
       });

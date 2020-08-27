@@ -564,13 +564,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           const prj = this.prj.currProject.value;
           const cmd = isBG ? `BKG_renameBgTask("${prj.name}", "${app}", "${name}")`
           : `?prj_rename_application("${prj.name}","${app}","${name}")`;
-          this.ws.query(cmd).then((ret: MCQueryResponse) => {
+          this.ws.query(cmd).then(async (ret: MCQueryResponse) => {
             if (!isBG && (ret.err || ret.result !== '0') || (isBG && ret.err)) {
               return;
             }
             this.service.close();
             this.service.mode = null;
-            this.prj.refreshAppList(prj, true);
+            await this.prj.refreshAppList(prj, true);
+            this.prj.onExpand.emit(0);
           });
         }
       });

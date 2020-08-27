@@ -1,3 +1,4 @@
+import { ApiService } from './api.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { BehaviorSubject, Subject, Observable, Observer } from 'rxjs';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
@@ -13,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar, MatSlideToggleChange } from '@angular/material';
 import { RobotCoordinateType } from '../models/robot-coordinate-type.model';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
+import { environment } from '../../../../../src/environments/environment';
 
 //declare var Blockly:any;
 
@@ -882,7 +884,7 @@ export class DataService {
     private stat: TpStatService,
     private login: LoginService,
     private trn: TranslateService,
-    private snack: MatSnackBar,
+    private api: ApiService,
     private snackbarService: SysLogSnackBarService
   ) {
     this.trn
@@ -932,7 +934,8 @@ export class DataService {
     const TP_TYPE = this.cmn.isTablet ? 'TP' : 'CS+';
     const promises = [
       this.ws.query('?TP_ENTER("' + TP_TYPE + '")'),
-      this.ws.query('?TP_SET_STAT_FORMAT(2)')
+      this.ws.query('?TP_SET_STAT_FORMAT(2)'),
+      this.ws.query(`?TVER("${environment.gui_ver}","${environment.compatible_webserver_ver}")`)
     ];
     this.teachServiceNeedsReset.next();
     this.reset();

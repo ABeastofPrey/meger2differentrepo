@@ -30,6 +30,7 @@ export class PalletLevelDesignerComponent implements OnInit {
   @Output('change') changed = new EventEmitter<number>();
   @Input('level') level: number;
   @Input('errors') errors: {invalidDataFile: string[]};
+  @Input('static') static: boolean;
   rotation = 0;
   normalizePreview = 1;
   normalizeItem = 1;

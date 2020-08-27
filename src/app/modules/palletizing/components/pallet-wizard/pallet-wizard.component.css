@@ -16,7 +16,7 @@ mat-form-field {
   margin-right: 8px;
   width: auto;
 }
-.input-large {
+.input-medium, .input-large {
   max-width: 135px;
 }
 .input-normal {
@@ -150,4 +150,9 @@ pallet-level-designer {
 .entry-table {
   width: fit-content;
   margin-top: 10px;
+}
+.title-disabled {
+  opacity: 0.4;
+  -moz-opacity: 0.4;
+  filter: alpha(opacity=40);
 }

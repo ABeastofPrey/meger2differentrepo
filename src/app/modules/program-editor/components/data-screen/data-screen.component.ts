@@ -461,7 +461,7 @@ export class DataScreenComponent implements OnInit {
           .afterClosed()
           .subscribe(async ret => {
             if (ret) {
-              const delCmd = this.useAsProjectPoints ? '?TP_DELETE_PROJECT_POINTS' : '?TP_DELETE_VAR';
+              const delCmd = this.useAsProjectPoints ? '?TP_DELETE_PROJECT_POINTS' : '?TP_DELETEVAR';
               this._varRefreshing = true;
               const queries = [];
               // divide into 80-char queries...

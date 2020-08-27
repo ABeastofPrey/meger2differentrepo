@@ -1,3 +1,4 @@
+import { TpStatService } from './tp-stat.service';
 import { Injectable } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { RobotTypes, RobotModel, RobotAxesType } from '../models/robot.model';
@@ -25,7 +26,7 @@ export class RobotService {
 
   private stringToModelMapper: Map<string, RobotModel> = new Map();
 
-  constructor(private ws: WebsocketService) {}
+  constructor(private ws: WebsocketService, private stat: TpStatService) {}
 
   init() {
     this.ws.isConnected.subscribe(stat => {
@@ -34,14 +35,28 @@ export class RobotService {
         return;
       }
       if (this.interval) clearInterval(this.interval);
-      this.interval = window.setInterval(() => {
-        this.ws.query('?rob_ver').then((ret: MCQueryResponse) => {
-          if (ret.err) return;
-          this.getRobots();
-          clearInterval(this.interval);
-        });
-      }, 2000);
+      this.refresh();
     });
+    this.stat.onlineStatus.subscribe(stat=>{
+      if (!stat) {
+        this.reset();
+        return;
+      } else {
+        if (this.interval) window.clearInterval(this.interval);
+        this.refresh();
+      }
+    });
+  }
+
+  private refresh() {
+    this.interval = window.setInterval(() => {
+      this.ws.query('?rob_ver').then((ret: MCQueryResponse) => {
+        if (ret.err) return;
+        this.getRobots();
+        window.clearInterval(this.interval);
+        this.interval = null;
+      });
+    }, 2000);
   }
 
   updateMap(rType: RobotAxesType[]) {

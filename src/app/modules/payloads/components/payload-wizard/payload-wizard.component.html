@@ -38,7 +38,6 @@
 			<mat-form-field>
 				<input
 					matInput
-					[disabled]="login.isOperator"
 					min="0"
 					placeholder="{{ 'payloads.mass' | translate }}"
 					(change)="onMassChange($event)"
@@ -52,7 +51,6 @@
 			<mat-form-field>
 				<input
 					matInput
-					[disabled]="login.isOperator"
 					min="0"
 					placeholder="{{ 'payloads.inertia' | translate }}"
 					(change)="onInertiaChange($event)"
@@ -66,7 +64,6 @@
 			<mat-form-field>
 				<input
 					matInput
-					[disabled]="login.isOperator"
 					min="0"
 					placeholder="{{ 'payloads.offX' | translate }}"
 					(change)="onXOffsetChange($event)"

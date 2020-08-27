@@ -6,8 +6,11 @@
       [(ngModel)]="b.val"
       (change)="onBitmapChange()">{{b.name}}</mat-checkbox>
   </div>
-  <button mat-raised-button color="primary" (click)="start()" class="btn-start" [disabled]="busy">
+  <button mat-raised-button color="primary" (click)="start()" class="btn-start" [disabled]="busy || noneSelected">
     {{ 'robots.brakes.btnStart' | translate }}...
   </button>
   <mat-spinner *ngIf="busy" color="primary"></mat-spinner>
+  <div class="result" *ngIf="btResult">
+    <textarea disabled>{{btResult}}</textarea>
+  </div>
 </div>

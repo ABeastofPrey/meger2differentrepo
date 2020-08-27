@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { PayloadResultsComponent } from './../payload-results/payload-results.component';
 import { CommonService } from './../../../core/services/common.service';
 import { Component, OnInit } from '@angular/core';
@@ -17,6 +18,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { IdentDialogComponent } from '../ident-dialog/ident-dialog.component';
 import { UtilsService } from '../../../core/services/utils.service';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-payload-wizard',
@@ -32,6 +34,7 @@ export class PayloadWizardComponent implements OnInit {
   ctrllx = this.initCtrl();
 
   private currValuesInterval: number;
+  private notifier: Subject<boolean> = new Subject();
 
   get advanced() {
     return this._advanced;
@@ -43,7 +46,7 @@ export class PayloadWizardComponent implements OnInit {
       this.ctrlInertia.disable();
       this.ctrllx.disable();
       this.data.refreshPayloadParams();
-    } else {
+    } else if (!this.login.isOperator) {
       this.ctrlMass.enable();
       this.ctrlInertia.enable();
       this.ctrllx.enable();
@@ -80,6 +83,8 @@ export class PayloadWizardComponent implements OnInit {
 
   ngOnDestroy() {
     clearInterval(this.currValuesInterval);
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   private getCurrentValues() {
@@ -111,12 +116,13 @@ export class PayloadWizardComponent implements OnInit {
   }
 
   private initCtrl(): FormControl {
-    return new FormControl(
+    const ctrl = new FormControl(
       {
         disabled: this.login.isOperator,
       },
       [Validators.min(0)]
     );
+    return ctrl;
   }
 
   async showIdentDialog() {
@@ -308,7 +314,7 @@ export class PayloadWizardComponent implements OnInit {
       this.ctrlMass.disable();
       this.ctrlInertia.disable();
       this.ctrllx.disable();
-    } else {
+    } else if (!this.login.isOperator) {
       this.ctrlMass.enable();
       this.ctrlInertia.enable();
       this.ctrllx.enable();

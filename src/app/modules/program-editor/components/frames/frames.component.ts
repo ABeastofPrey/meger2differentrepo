@@ -145,12 +145,11 @@ export class FramesComponent implements OnInit {
       value +
       '")';
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      this.rowClick(this.selectedVar, true); // REFRESH DATA
-      if (ret.result === '0') {
-        // this.snack.open(this.words['changeOK'], null, { duration: 2000 });
+      if (ret.result !== '0') {
+        this.rowClick(this.selectedVar, true); // REFRESH DATA
+      } else {
         this.snackbarService.openTipSnackBar("changeOK");
       }
-      else console.log(ret.cmd + '>>>' + ret.result);
     });
   }
 

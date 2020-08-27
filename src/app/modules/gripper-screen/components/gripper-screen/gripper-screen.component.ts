@@ -1,3 +1,4 @@
+import { ProjectManagerService } from './../../../core/services/project-manager.service';
 import { SysLogSnackBarService } from './../../../sys-log/services/sys-log-snack-bar.service';
 import { Component, OnInit, Injectable, NgZone } from '@angular/core';
 import {
@@ -173,7 +174,8 @@ export class GripperScreenComponent implements OnInit {
     public login: LoginService,
     public mgr: ScreenManagerService,
     private sb: SysLogSnackBarService,
-    private _zone: NgZone
+    private _zone: NgZone,
+    private prj: ProjectManagerService
   ) {}
 
   getLevel = (node: GripperTableFlatNode) => {
@@ -579,17 +581,32 @@ export class GripperScreenComponent implements OnInit {
     });
     this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(async stat => {
       if (!stat) return;
-      this._zone.run(async()=>{
-        await this.database.initialize();
-        if (!this._initDone) {
-          for (const node of this.dataSource.data) {
-            if (node.nodeType === 'ef') {
-              await this.getEndEffectorData(node as EndEffector);
-            }
+      this.init();
+    });
+    this.prj.currProject.subscribe(prj=>{
+      if (prj === null) {
+        this.reset();
+      } else if (!this._initDone) {
+        this.init();
+      }
+    });
+  }
+
+  private reset() {
+    this._initDone = false;
+  }
+
+  private init() {
+    this._zone.run(async()=>{
+      await this.database.initialize();
+      if (!this._initDone) {
+        for (const node of this.dataSource.data) {
+          if (node.nodeType === 'ef') {
+            await this.getEndEffectorData(node as EndEffector);
           }
-          this._initDone = true;
         }
-      });
+        this._initDone = true;
+      }
     });
   }
 

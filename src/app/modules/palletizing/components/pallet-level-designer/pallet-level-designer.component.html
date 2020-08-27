@@ -1,5 +1,5 @@
 <div class="wrapper">
-	<div class="toolbar">
+	<div class="toolbar" *ngIf="!static">
 		<h2>{{ 'pallets.wizard.item' | translate}}</h2>
 		<div class="item-wrapper" [style.height]="(pallet.itemSizeY > pallet.itemSizeX ? pallet.itemSizeY / normalizePreview : pallet.itemSizeX / normalizePreview) + 'px'">
 			<div
@@ -45,6 +45,7 @@
 			[style.width]="
 				(item.r % 180 === 0 ? pallet.itemSizeX / normalizeItem : pallet.itemSizeY / normalizeItem) + 'px'
 			"
+			[style.z-index]="item.order"
 			[draggableItem]="item"
 			(shortclick)="showMenu(item)"
 			(dragEnd)="validate(item)"
@@ -54,7 +55,7 @@
 			{{ item.order }}
 		</div>
 	</div>
-	<div class="errors warn" *ngIf="errorList.length > 0">
+	<div class="errors warn" *ngIf="!static && errorList.length > 0">
 		<h2>{{ 'projectTree.Errors' | translate }}:</h2>
 		<mat-chip-list>
 			<mat-chip *ngFor="let e of errorList" [removable]="true" (removed)="onChipRemoved(e)" color="warn">

@@ -110,10 +110,10 @@ export class AppsComponent implements OnInit {
 
   cabinetUpdate() {
     if (this.cmn.isCloud) return;
-    this.dialog.open(CabinetUpdateDialogComponent, {
+    this.dialog.open(CabinetUpdateDialogComponent,{
       maxWidth: '600px',
       hasBackdrop: false
-    }).afterClosed().subscribe(async ret => {
+    }).afterClosed().subscribe(async ret=>{
       if (ret) {
         await this.ws.query('sys.en = 0');
         window.location.href = '/cabinet-update/';
@@ -161,7 +161,7 @@ export class AppsComponent implements OnInit {
                 clearInterval(interval);
                 location.reload();
               })
-              .catch(err => { });
+              .catch(err => {});
           }, 2000);
         }, 10000);
       }
@@ -204,7 +204,7 @@ export class AppsComponent implements OnInit {
         if (ret.success) {
           this.ws.query('?UTL_UPDATE_MCU_FW').then((ret: MCQueryResponse) => {
             if (ret.result !== '0') {
-              // this.snack.open(this.words['err_mcu'], '', { duration: 1500 });
+                // this.snack.open(this.words['err_mcu'], '', { duration: 1500 });
               this.snackbarService.openTipSnackBar('err_mcu');
             }
             dialog.close();
@@ -262,9 +262,9 @@ export class AppsComponent implements OnInit {
                 this.trn
                   .get(['files.err_upload', 'dismiss'], { name: f.name })
                   .subscribe(words => {
-                    //   this.snack.open(
-                    //         words['files.err_upload'],
-                    //         words['dismiss']
+                //   this.snack.open(
+                //         words['files.err_upload'],
+                //         words['dismiss']
                     //       );
                     this.snackbarService.openTipSnackBar('files.err_upload');
                   });
@@ -281,10 +281,10 @@ export class AppsComponent implements OnInit {
                 this.trn
                   .get(['files.err_permission', 'dismiss'])
                   .subscribe(words => {
-                    //   this.snack.open(
-                    //         words['files.err_upload'],
-                    //         words['dismiss']
-                    //       );
+                //   this.snack.open(
+                //         words['files.err_upload'],
+                //         words['dismiss']
+                //       );
                     this.snackbarService.openTipSnackBar('files.err_upload');
                   });
                 break;
@@ -354,7 +354,7 @@ export class AppsComponent implements OnInit {
                 hasBackdrop: true,
               })
               .afterClosed()
-              .subscribe(res => { });
+              .subscribe(res => {});
           });
       });
   }

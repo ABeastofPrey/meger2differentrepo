@@ -66,14 +66,13 @@ export class FrameCalibrationDialogComponent implements OnInit {
     this.positionOK[i] = false;
   }
 
-  teach(pos: number) {
-    const cmd =
-      '?TP_FRAME_CALIBRATION_TEACH("' + this.data.frameType + '",' + pos + ')';
-    this.ws.query(cmd).then((ret: MCQueryResponse) => {
-      if (pos === 4) pos = 3;
-      this.positionOK[pos - 1] = ret.result === '0';
-      this.teachVal[pos - 1] = '#{' + this.coos.locations.map(l=>l.value).join() + '}';
-    });
+  async teach(pos: number) {
+    const cmd = '?TP_FRAME_CALIBRATION_TEACH("' + this.data.frameType + '",' + pos + ')';
+    const ret = await this.ws.query(cmd);
+    const resultPosition = await this.ws.query(`?TP_GET_CALIBRATION_TEACH_POINT("${this.data.frameType}",${pos})`);
+    if (pos === 4) pos = 3;
+    this.positionOK[pos - 1] = ret.result === '0';
+    this.teachVal[pos - 1] = resultPosition.result;
   }
 
   calibrate() {

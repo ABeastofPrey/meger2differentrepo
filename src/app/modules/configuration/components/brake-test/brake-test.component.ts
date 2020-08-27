@@ -1,3 +1,4 @@
+import { ApiService } from './../../../core/services/api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { YesNoDialogComponent } from './../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { MatDialog, MatSnackBar } from '@angular/material';
@@ -19,6 +20,11 @@ export class BrakeTestComponent implements OnInit {
 
   private notifier: Subject<boolean> = new Subject();
   private words: {};
+  private _btResult = null;
+
+  get btResult() {
+    return this._btResult;
+  }
 
   brakes: Brake[] = [];
   busy = false;
@@ -29,9 +35,8 @@ export class BrakeTestComponent implements OnInit {
     private dialog: MatDialog,
     private cd: ChangeDetectorRef,
     private trn: TranslateService,
-    private snack: MatSnackBar,
-    private snackbarService: SysLogSnackBarService,
-    private utils: UtilsService,
+    private api: ApiService,
+    private snackbarService: SysLogSnackBarService
   ) { }
 
   private checkBit = (target: number, position: number) => {
@@ -81,8 +86,12 @@ export class BrakeTestComponent implements OnInit {
   }
 
   async onBitmapChange() {
-    console.log(await this.ws.query(`call BT_SET_AXES_BITMAP(${this.bitmap})`));
-    this.cd.detectChanges();
+    await this.ws.query(`call BT_SET_AXES_BITMAP(${this.bitmap})`);
+    await this.refresh();
+  }
+
+  get noneSelected() {
+    return !this.brakes.some(b=>b.val);
   }
 
   start() {
@@ -93,6 +102,7 @@ export class BrakeTestComponent implements OnInit {
       data
     }).afterClosed().subscribe(async ret=>{
       if (!ret) return;
+      this._btResult = null;
       this.busy = true;
       this.cd.detectChanges();
       const result = (await this.ws.query('?BT_EXECUTE_BRAKE_TEST')).result;
@@ -106,9 +116,19 @@ export class BrakeTestComponent implements OnInit {
           this.snackbarService.openTipSnackBar("success");
         }
         this.cd.detectChanges();
+        this.showResult();
       }
       this.refresh();
     });
+  }
+
+  private async showResult() {
+    try {
+      this._btResult = await this.api.getFile('BRK_LOG.DAT');
+    } catch (err) {
+      this._btResult = null;
+    }
+    this.cd.detectChanges();
   }
 
   private waitForBt() {

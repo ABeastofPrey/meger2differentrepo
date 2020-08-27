@@ -31,12 +31,7 @@ export class DraggableItemDirective {
       },
       stack: '.container div',
     });
-    this.el.nativeElement.style.zIndex = this.draggableItem.order;
     this.draggableItem.element = this.el.nativeElement;
-  }
-
-  ngOnChanges() {
-    this.el.nativeElement.style.zIndex = this.draggableItem.order;
   }
 
   @HostListener('mousedown')

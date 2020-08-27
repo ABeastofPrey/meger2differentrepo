@@ -5,6 +5,7 @@ export class Io {
   description: string;
   valid: boolean;
   value: boolean;
+  editable: boolean;
 
   constructor(ioString: string) {
     const innerParts = ioString.split(',');
@@ -13,5 +14,6 @@ export class Io {
     this.name = innerParts[2];
     this.description = innerParts[3];
     this.valid = innerParts[4] === '1';
+    this.editable = innerParts[5] === '1';
   }
 }

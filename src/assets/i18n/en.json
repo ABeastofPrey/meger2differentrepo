@@ -9,8 +9,8 @@
     "grippers": "Grippers Library",
     "io": "I/O Mapping Library",
     "lbn": "Lead By Nose Library",
-    "mcu": "MCU Version",
-    "mcuDev": "MCU S/N",
+    "mcu": "Front Panel Version",
+    "mcuDev": "Front Panel S/N",
     "pallet": "Pallets Library",
     "payloads": "Payloads Library",
     "safetyVer": "Safety Card",
@@ -32,7 +32,7 @@
     "cabinet_update": "KR CS Box Update Tool",
     "cabinet_update_open": "OPEN UPDATE TOOL",
     "cabinet_update_disabled": "Update tool requires the robot to be DISABLED. Disable the robot to proceed.",
-    "err_mcu": "Error: could not update MCU firmware",
+    "err_mcu": "Error: could not update Front Panel Controller firmware",
     "firmware": "Update System Software",
     "firmware_confirm": {
       "title": "Update System Software",
@@ -258,7 +258,7 @@
   "diagnostics": {
     "devices": "Devices State",
     "master": "Master State",
-    "mcu": "MCU",
+    "mcu": "Front Panel",
     "no-data": "Data not available. Load TP libraries and try again.",
     "title": "Diagnostics"
   },
@@ -740,6 +740,7 @@
       "done_title": "Pallet setup completed",
       "entry": "Entry",
       "entry_pos": "Entry Position",
+      "err_flag": "Robot configuration must be selected",
       "err_incomp_robot": "Incompatible Robot",
       "exceed": "Can exceed pallet bounds",
       "export": "EXPORT...",
@@ -756,7 +757,7 @@
       "levels_in_pallet": "Pallet layers",
       "num_of_items": "Number of items",
       "odd_even": "Alternating layers",
-      "offH": "Horizontal Offset",
+      "offH": "Horizontal (XY) Offset",
       "offV": "Vertical (Z) Offset",
       "order": "Order",
       "origin": "Origin",
@@ -1248,7 +1249,7 @@
     "versionCheckEror": "Unexpection error of version detection",
     "nextStep": "NEXT",
     "install": "Install",
-    "unReady": "System is unready",
+    "unReady": "System is not ready",
     "unexception": "Unexpection error",
     "pluginNameError": "A plugin name only can contain the following characters:a-z A-Z 0-9 . _ ",
     "historyCheck": {
@@ -1315,6 +1316,7 @@
         "yes": "START TEST NOW",
         "no": "CANCEL"
       },
+      "result": "Brake Test Result:",
       "title": "Brake Test"
     },
     "btnChange": "CHANGE ROBOT",
@@ -1323,8 +1325,8 @@
     "disp": "Mastering",
     "max-payload": "Max Payload",
     "mcu": {
-      "fan": "MCU Fan",
-      "fan-threshold": "MCU Fan Threshold",
+      "fan": "Fan",
+      "fan-threshold": "Fan Threshold",
       "threshold": "Threshold"
     },
     "model": "Model",
@@ -1703,9 +1705,9 @@
   "version": {
     "releaseNote": "Release Notes",
     "userLicense": "User License",
-    "softMCDes": "This is Controller",
-    "GUIDes": "This is GUI",
-    "webServerDes": "This is web server",
+    "softMCDes": "This is the Controller firmware version",
+    "GUIDes": "This is the version of the ControlStudio+ web application.",
+    "webServerDes": "This component is responsible for the communication between the web application and the controller.",
     "successDialogTitle": "Success!",
     "successDialogMsg": "OS update successful. The new version is: ",
     "errorDialogTitle": "Failed!",
