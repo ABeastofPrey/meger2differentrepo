@@ -63,6 +63,9 @@ export class ProgramEditMenuComponent implements OnInit {
     });
     document.onclick = ($event) => {
         const targetEle = $event.target['parentNode'];
+        if($event.target['parentNode'] && $event.target['parentNode']['parentNode'].classList.contains('disable')) {
+            return;
+        }
         if(targetEle && (targetEle['parentNode']['className'] !== "pluginCommandBox") && (targetEle['className'] !== "pluginCommandBox")){
             document.getElementById("command") && (document.getElementById("command").style.display = 'none');
         }
@@ -75,7 +78,7 @@ export class ProgramEditMenuComponent implements OnInit {
   }
 
   showCommand() {
-      if(!document.getElementById("command").innerHTML) {
+      if(!document.getElementById("command").innerHTML || this.prg.activeFile == null || this.prg.status.statusCode !== -1) {
           return;
       }
       this.ps.sendCustomEvent("ws",{ws:this.ws});

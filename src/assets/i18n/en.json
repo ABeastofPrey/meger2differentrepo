@@ -822,6 +822,26 @@
     "start_pos": "Start Position",
     "time": "Duration"
   },
+  "pluginManage": {
+    "title": "Plugin Management",
+    "name": "Name",
+    "version": "Version",
+    "date": "Date",
+    "state": "State",
+    "manipulate": "Manipulate",
+    "uninstall": "UNINSTALL",
+    "progress": {
+        "title": "Uninstalling Plugin - Dependency Check",
+        "uninstallPlugin": "Uninstalling Plugin"
+    },
+    "confirm": "UNINSTALL",
+    "dependList": "Some plugins are depend on the selected plugin, click 'UNINSTALL' to continue or click 'CANCLE' to end the uninstallation process.",
+    "noDependList": "There is no plugin depends on the selected plugin, click 'UNINSTALL' to continue the uninstallation process.",
+    "success": "Uninstall Plugin Success",
+    "fail": "Uninstall Plugin Failed",
+    "pluginStateTrue": "Normal",
+    "pluginStateFail": "Unnormal"
+  },
   "projectCommands": {
     "call": {
       "title": "Insert Call Command",

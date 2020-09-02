@@ -65,3 +65,9 @@ syslogContext.keys().map(syslogContext);
 
 const pluginInstallContext = require.context('./app/modules/plugins/install-plugin/', true, /\.spec\.ts$/);
 pluginInstallContext.keys().map(pluginInstallContext);
+
+const pluginManageContext = require.context('./app/modules/configuration/components/plugin-manage', true, /\.spec\.ts$/);
+pluginManageContext.keys().map(pluginManageContext);
+
+const pluginManagePopContext = require.context('./app/modules/configuration/components/plugin-manage-pop', true, /\.spec\.ts$/);
+pluginManagePopContext.keys().map(pluginManagePopContext);

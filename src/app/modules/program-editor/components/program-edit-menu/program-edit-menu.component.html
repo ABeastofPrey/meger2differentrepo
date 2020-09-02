@@ -131,7 +131,7 @@
 </div>
 <div [class.sideDisplay]="!prg.status || !hasCommand">
     <div class="pluginCommandBox" (click)="showCommand()">
-        <button class="commandBtn"  mat-raised-button color="primary" style="width: 100%;">
+        <button class="commandBtn"  mat-raised-button color="primary" [disabled]="prg.activeFile == null || prg.status.statusCode !== -1" style="width: 100%;">
             {{ 'projectCommands.menu.pluginCommand' | translate }}
         </button>
         <div class="pluginCommand" id="command" style="display: none;">

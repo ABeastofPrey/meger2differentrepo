@@ -30,6 +30,10 @@ import { MaintenanceInputComponent } from './components/maintenance-input/mainte
 import { MaintenanceHistoryComponent } from './components/maintenance-history/maintenance-history.component';
 import { MaintenanceInformationComponent } from './components/maintenance-information/maintenance-information.component';
 import { MaintenanceService } from './services/maintenance.service';
+import { PluginManageComponent } from './components/plugin-manage/plugin-manage.component';
+import { PluginManageService } from './services/plugin.manage.service';
+import { PluginManagePopComponent } from './components/plugin-manage-pop/plugin-manage-pop.component';
+import { PluginManagePopService } from './services/plugin.manage.pop.service';
 
 @NgModule({
   imports: [
@@ -61,6 +65,8 @@ import { MaintenanceService } from './services/maintenance.service';
     MaintenanceInputComponent,
     MaintenanceHistoryComponent,
     MaintenanceInformationComponent,
+    PluginManageComponent,
+    PluginManagePopComponent,
   ],
   providers: [
     IoService,
@@ -68,11 +74,14 @@ import { MaintenanceService } from './services/maintenance.service';
     ReferenceMasteringService,
     PermissionGuardService,
     MaintenanceService,
+    PluginManageService,
+    PluginManagePopService
   ],
   entryComponents: [
     NewUserDialogComponent,
     GraphComponent,
     ReleaseNoteComponent,
+    PluginManagePopComponent,
   ],
 })
 export class ConfigurationModule {}

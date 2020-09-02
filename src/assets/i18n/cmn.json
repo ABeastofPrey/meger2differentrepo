@@ -788,6 +788,26 @@
     "start_pos": "初始位置",
     "time": "持续时间"
   },
+  "pluginManage": {
+    "title": "插件管理",
+    "name": "名称",
+    "version": "版本",
+    "date": "日期",
+    "state": "状态",
+    "manipulate": "操作",
+    "uninstall": "卸载",
+    "progress": {
+        "title": "卸载插件 - 依赖检查",
+        "uninstallPlugin": "卸载插件"
+    },
+    "confirm": "卸载",
+    "dependList": "部分插件依赖所选中的插件，点击“卸载”继续，或点击“取消”结束卸载过程",
+    "noDependList": "没有插件依赖所选中的插件，点击“卸载”继续卸载过程。",
+    "success": "卸载插件成功",
+    "fail": "卸载插件失败",
+    "pluginStateTrue": "正常",
+    "pluginStateFail": "不正常"
+  },
   "projectCommands": {
     "call": {
       "title": "插入Call命令",

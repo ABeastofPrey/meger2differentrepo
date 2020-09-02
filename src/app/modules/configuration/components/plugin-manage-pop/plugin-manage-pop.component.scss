@@ -1,0 +1,38 @@
+$marginGap: 24px;
+.mat-dialog-content {
+    display: flex;
+    align-items: center;
+}
+.mat-dialog-title {
+    margin: -24px -24px 0px -24px;
+    display: flex;
+    align-items: center;
+    height: 64px;
+    padding: 0 $marginGap;
+    justify-content: space-between;
+}
+.hasDepend {
+    padding-bottom: 5px;
+}
+h2.tip {
+    display: flex;
+    align-items: center;
+    line-height: 1.5em;
+    mat-icon {
+        margin-right: 0.5em;
+    }
+}
+.mat-dialog-content {
+    margin-top: 20px;
+    height: calc(100% - 110px);
+    div.plugin {
+        margin-top: 10px;
+    }
+    div.version {
+        margin-left: 19px;
+        padding-top: 5px;
+    }
+}
+.plugin {
+    width: 100%;
+}

@@ -42,6 +42,12 @@ export class ConfigurationComponent implements OnInit {
         icon: 'group_work',
         permission: 0,
       },
+      {
+        path: 'plugin-manage',
+        label: 'pluginManage.title',
+        icon: 'extension',
+        permission: 99,
+      },
       // {
       //   path: 'safety',
       //   label: 'safety.title',

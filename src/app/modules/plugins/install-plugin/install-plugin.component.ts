@@ -217,24 +217,26 @@ export class InstallPluginComponent implements OnDestroy, OnInit {
   }
 
   //upload .zip file
-  private uploadInstallFile(): void {
-    this.apiService
-      .uploadIPK(this.fileData)
-      .then(uploadRes => {
-        this.isBusy = false;
-        if (!uploadRes || !uploadRes['success']) {
-          this.displayErrorInfo(UnexpectionError.uploadFile);
-          return;
-        }
-        this.pluginService.startInstallPlugin(this.fileData.name);
-        this.dialogRef.close(false);
-      })
-      .catch(error => {
-        this.isBusy = false;
-        console.log(error);
-      });
-  }
-
+  private uploadInstallFile(): void {
+    this.stepInfo.cancelBtnDisabled = true;
+    this.apiService
+      .uploadIPK(this.fileData)
+      .then(uploadRes => {
+        this.isBusy = false;
+        this.stepInfo.cancelBtnDisabled = false;
+        if (!uploadRes || !uploadRes['success']) {
+          this.displayErrorInfo(UnexpectionError.uploadFile);
+          this.onCancel();
+          return;
+        }
+        this.pluginService.startInstallPlugin(this.fileData.name);
+        this.dialogRef.close(false);
+      })
+      .catch(error => {
+        this.isBusy = false;
+        console.log(error);
+      });
+  }
   //display error info
   private displayErrorInfo(errorInfo: any) {
     this.stepInfo.disabled = true;

@@ -98,12 +98,16 @@ export class PluginService {
                             const pluginPos = document.getElementById(id);
                             const plugin = document.createElement(component.componentName);
                             pluginPos.appendChild(plugin);
+                            element.pluginState === "1" ? (plugin.classList.remove("disable")) : (plugin.classList.add("disable"))
                             if (id === "plugin") {
-                                plugin.onclick = () => {
-                                    callback && callback(component.routerPlugin);
-                                }
-                            }else if (id === "command") {
+                                if (element.pluginState === "1") {
+                                    plugin.onclick = () => {
+                                        callback && callback(component.routerPlugin);
+                                    }
+                                } 
+                            } else if (id === "command") {
                                 callback();
+
                             }
                         }
                     })

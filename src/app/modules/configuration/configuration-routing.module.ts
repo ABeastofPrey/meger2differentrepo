@@ -11,6 +11,7 @@ import { AboutComponent } from './components/about/about.component';
 import { PermissionGuardService as PermissionGuard } from './permission-guard.service';
 import { ThirdPartyComponent } from './components/third-party/third-party.component';
 import { MaintenanceComponent } from './components/maintenance/maintenance.component';
+import { PluginManageComponent } from './components/plugin-manage/plugin-manage.component';
 
 const routes: Routes = [
   {
@@ -72,6 +73,14 @@ const routes: Routes = [
       {
         path: 'users',
         component: UserMngrComponent,
+        canActivate: [PermissionGuard],
+        data: {
+          permission: 99,
+        },
+      },
+      {
+        path: 'plugin-manage',
+        component: PluginManageComponent,
         canActivate: [PermissionGuard],
         data: {
           permission: 99,

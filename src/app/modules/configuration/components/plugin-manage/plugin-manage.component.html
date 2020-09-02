@@ -1,0 +1,58 @@
+<mat-card>
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" #pluginManageTable
+        style="table-layout: fixed;">
+        <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header [ngStyle]="{'width': (isAdmin?'20%':'25%')}" class="btc">
+                {{ 'pluginManage.name' | translate }}</th>
+        </ng-container>
+        <ng-container matColumnDef="Version">
+            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width': (isAdmin?'20%':'25%'),'paddingLeft':'0.5%'}" class="btc">
+                {{ 'pluginManage.version' | translate }}</th>
+        </ng-container>
+        <ng-container matColumnDef="Date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header [ngStyle]="{'width': (isAdmin?'20%':'25%')}" class="btc">
+                {{ 'pluginManage.date' | translate }}</th>
+        </ng-container>
+        <ng-container matColumnDef="State">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header [ngStyle]="{'width': (isAdmin?'20%':'25%')}" class="btc">
+                {{ 'pluginManage.state' | translate }}</th>
+        </ng-container>
+        <ng-container matColumnDef="manipulate">
+            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width': (isAdmin?'20%':'25%')}" class="btc">
+                {{ 'pluginManage.manipulate' | translate }}</th>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-accordion>
+        <ng-container *ngFor="let item of tableData">
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-description [ngStyle]="{'width': (isAdmin?'20%':'25%')}" [matTooltip]="item.Name">
+                        {{item.Name}}
+                    </mat-panel-description>
+                    <mat-panel-description [ngStyle]="{'width': (isAdmin?'20%':'25%')}">
+                        {{item.Version}}
+                    </mat-panel-description>
+                    <mat-panel-description [ngStyle]="{'width': (isAdmin?'20%':'25%')}">
+                        {{item.Date}}
+                    </mat-panel-description>
+                    <mat-panel-description [ngStyle]="{'width': (isAdmin?'20%':'25%')}" style="padding-left: 2%;">
+                        <span *ngIf="item.State === 1" class="stateTrue">{{ 'pluginManage.pluginStateTrue' | translate }}</span>
+                        <span *ngIf="item.State === 0" class="stateFail">{{ 'pluginManage.pluginStateFail' | translate }}</span>
+                    </mat-panel-description>
+                    <mat-panel-description *ngIf="isAdmin" [ngStyle]="{'width': (isAdmin?'20%':'25%')}">
+                        <button mat-raised-button color="primary" (click)="uninstall($event,item.Name)">
+                            {{ 'pluginManage.uninstall' | translate }}
+                        </button>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                {{langType==="en"?item.EnglishDes:item.ChineseDes}}
+            </mat-expansion-panel>
+        </ng-container>
+    </mat-accordion>
+    <mat-paginator [length]="allTableData.length" [pageSize]="10" (page)="changePage($event)">
+    </mat-paginator>
+</mat-card>
+<div (click)="unInstallPop(uninstallPluginName)" #selectPlugin></div>
+<div (click)="refreshTable()" #refreshData></div>
