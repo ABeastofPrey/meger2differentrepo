@@ -1,0 +1,11 @@
+Priority:    optional"
+Version:       1.0"
+Section:      base"
+Architecture: solidrun_imx6
+Package:      cs
+Architecture: i386
+
+Maintainer:    <Omri Soudry>
+Depends:
+Source:     http://www.servotronix.com/
+Description:    ControlStudio+

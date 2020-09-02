@@ -1,0 +1,9 @@
+Priority:    optional
+Version:       1.0
+Section:      base
+Package:      cs
+Architecture: i386
+Maintainer:    <Omri Soudry>
+Depends:
+Source:     http://www.servotronix.com/
+Description:    ControlStudio+

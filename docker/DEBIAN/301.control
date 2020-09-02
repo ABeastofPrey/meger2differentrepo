@@ -1,0 +1,9 @@
+Priority:    optional
+Version:       1.0
+Section:      base
+Architecture: cortexa9hf_vfp_neon
+Package:      cs-301
+Maintainer:    <Omri Soudry>
+Depends:
+Source:     http://www.servotronix.com/
+Description:    ControlStudio+

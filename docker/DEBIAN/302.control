@@ -1,0 +1,9 @@
+Priority:    optional
+Version:       1.0
+Section:      base
+Architecture: solidrun_imx6
+Package:      cs-302
+Maintainer:    <Omri Soudry>
+Depends:
+Source:     http://www.servotronix.com/
+Description:    ControlStudio+
