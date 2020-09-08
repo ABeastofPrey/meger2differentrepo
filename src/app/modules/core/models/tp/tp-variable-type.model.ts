@@ -1,7 +1,7 @@
 export enum TPVariableType {
-  JOINT,
-  LOCATION,
-  DOUBLE,
-  LONG,
-  STRING,
+  JOINT = 'joint',
+  LOCATION = 'location',
+  DOUBLE = 'double',
+  LONG = 'long',
+  STRING = 'string',
 }

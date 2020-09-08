@@ -1,6 +1,7 @@
 import { UtilsService } from './../../../core/services/utils.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { CommonService } from '../../../core/services/common.service';
 
 const GOOGLE_MIT = `The MIT License
 
@@ -937,7 +938,7 @@ export class ThirdPartyComponent implements OnInit {
     return result;
   }
 
-  constructor(private http: HttpClient, private utils: UtilsService) {}
+  constructor(private http: HttpClient, public utils: UtilsService,public common: CommonService) {}
 
   ngOnInit() {
     // GET CS+ LICENSE

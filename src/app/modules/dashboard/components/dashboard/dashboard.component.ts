@@ -26,7 +26,8 @@ export class DashboardComponent implements OnInit {
     if (this.login.isAdmin) {
       this.tabs.push({ path: DashboardRoutes.Dashboard, label: 'dashboard.tab1', icon: 'assessment' });
     }
-    this.tabs.push({ path: DashboardRoutes.Trace, label: 'dashboard.tab3', icon: 'gps_fixed' });
+    // this.tabs.push({ path: DashboardRoutes.Trace, label: 'dashboard.tab3', icon: 'gps_fixed' });
+    this.login.isViewer ? "" : this.tabs.push({ path: DashboardRoutes.Trace, label: 'dashboard.tab3', icon: 'gps_fixed' });
   }
 
   ngOnInit() {

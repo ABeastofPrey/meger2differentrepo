@@ -206,7 +206,7 @@ export class CircleDialogComponent implements OnInit {
     this.jumpxService.retrieveVtranMax().subscribe(max => {
       this.vtranMax = max;
       this.ctrl.controls['vtran'].setValidators(
-        this.utilsService.limitValidator(0, max, false, false)
+        this.utilsService.limitValidator(0, max, false, true)
       );
     });
   }

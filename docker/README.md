@@ -10,7 +10,7 @@
 
 > Please mount /artifacts to get the rpm packages
 
-`docker run --rm -v $PWD/temp:/artifacts`
+`docker run --rm -v $PWD/temp:/artifacts scara_app_gui:version`
 
 ## Rpm Package
 

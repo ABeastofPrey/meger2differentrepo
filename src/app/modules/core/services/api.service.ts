@@ -29,16 +29,16 @@ export class ApiService {
     private http: HttpClient,
     private router: Router
   ) {
-    this.router.events.subscribe(e=>{
+    this.router.events.subscribe(e => {
       if (this.ready.value) return;
       const fullURL = e['url'] as string;
       const url = this.router.parseUrl(fullURL);
       this._cloudToken = url.queryParamMap.get('t');
       this.ready.next(true);
       const i = fullURL.indexOf('?');
-      if (i>0) {
+      if (i > 0) {
         const from = url.queryParamMap.get('from');
-        const redirect = fullURL.substring(0,i) + (from ? '?from=' + from : '');
+        const redirect = fullURL.substring(0, i) + (from ? '?from=' + from : '');
         this.router.navigateByUrl(redirect);
       }
     });
@@ -52,7 +52,7 @@ export class ApiService {
     if (!environment.production) {
       return environment.api_url;
     }
-    return location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+    return location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
   }
 
   get(path: string, params: HttpParams = new HttpParams()): Observable<{}> {
@@ -79,7 +79,7 @@ export class ApiService {
       .pipe(catchError(this.formatErrors));
   }
 
-   get token() {
+  get token() {
     return window.localStorage['jwtToken'];
   }
 
@@ -110,7 +110,7 @@ export class ApiService {
   }
 
   changeSafetyPass(newPass: string) {
-    return this.post('/cs/api/safety/reset', {newPass}).toPromise().then(ret=>{
+    return this.post('/cs/api/safety/reset', { newPass }).toPromise().then(ret => {
       return ret;
     }, err => {
       return false;
@@ -126,7 +126,7 @@ export class ApiService {
     // check for size
     const enoughSpace = await this.checkSpaceFor(file);
     if (!enoughSpace) {
-      return Promise.reject({error: {err: -99}});
+      return Promise.reject({ error: { err: -99 } });
     }
     let url = this.api_url + '/cs/upload';
     if (overwrite) url += '/overwrite';
@@ -140,7 +140,7 @@ export class ApiService {
     // check for size
     const enoughSpace = await this.checkSpaceFor(file);
     if (!enoughSpace) {
-      return Promise.reject({error: {err: -99}});
+      return Promise.reject({ error: { err: -99 } });
     }
     const url = this.api_url + '/drive/api/upload';
     const formData = new FormData();
@@ -163,7 +163,7 @@ export class ApiService {
     // check for size
     const enoughSpace = await this.checkSpaceFor(file);
     if (!enoughSpace) {
-      return Promise.reject({error: {err: -99}});
+      return Promise.reject({ error: { err: -99 } });
     }
     const url = this.api_url + '/cs/api/upload';
     const formData = new FormData();
@@ -189,7 +189,7 @@ export class ApiService {
     // check for size
     const enoughSpace = await this.checkSpaceFor(file);
     if (!enoughSpace) {
-      return Promise.reject({error: {err: -99}});
+      return Promise.reject({ error: { err: -99 } });
     }
     const url = this.api_url + '/cs/firmware';
     const formData = new FormData();
@@ -203,7 +203,7 @@ export class ApiService {
     // check for size
     const enoughSpace = await this.checkSpaceFor(file);
     if (!enoughSpace) {
-      return Promise.reject({error: {err: -99}});
+      return Promise.reject({ error: { err: -99 } });
     }
     const url = this.api_url + '/cs/api/verifyProject';
     const formData = new FormData();
@@ -280,7 +280,7 @@ export class ApiService {
   }
 
   getKukaReleaseNotes() {
-    return this.http.get(this.api_url + '/cs/file/RELEASENOTE.DAT',{
+    return this.http.get(this.api_url + '/cs/file/RELEASENOTE.DAT', {
       responseType: 'text'
     });
   }
@@ -322,7 +322,7 @@ export class ApiService {
   /*
   path should be used relative to SSMC (i.e: DEMO/ refers to "/FFS0/SSMC/DEMO/");
   */
-  downloadSubfolderZip(path: string) {
+  public downloadSubfolderZip(path: string): Promise<void> {
     let body = new HttpParams();
     body = body.set('token', this.token);
     body = body.set('files', path);
@@ -331,7 +331,21 @@ export class ApiService {
       .post(this.api_url + '/cs/mczip', body)
       .toPromise()
       .then(ret => {
-        if (ret) window.location.href = this.api_url + '/cs/api/zipFile';
+        if (!ret) return;
+        const zipUrl = this.api_url + '/cs/api/zipFile';
+        const zipGenerator = (buffer: ArrayBuffer) => {
+          const blob = new Blob([buffer], { type: 'application/zip' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          document.body.appendChild(a);
+          a.setAttribute('style', 'display: none');
+          a.href = url;
+          a.download = path.toUpperCase() + '.ZIP';
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        };
+        this.http.get(zipUrl, { responseType: 'arraybuffer' }).subscribe(zipGenerator);
       });
   }
 
@@ -503,7 +517,7 @@ export class ApiService {
         });
       });
   }
-  
+
   getRecordingFile(recName: string) {
     const url = this.api_url + '/cs/api/dashboard/recFile/' + recName;
     return this.http
@@ -521,7 +535,7 @@ export class ApiService {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       });
-    
+
   }
 
   getRecordingCSV(recName: string) {
@@ -541,12 +555,12 @@ export class ApiService {
       });
   }
 
-  iniToCDC(fileName: string) : Promise<boolean>{
-    return this.get('/cs/api/ini/ini2cdc?fileName='+fileName).toPromise() as Promise<boolean>;
+  iniToCDC(fileName: string): Promise<boolean> {
+    return this.get('/cs/api/ini/ini2cdc?fileName=' + fileName).toPromise() as Promise<boolean>;
   }
 
-  cdcToIni(fileName: string) : Promise<boolean>{
-    return this.get('/cs/api/ini/cdc2ini?fileName='+fileName).toPromise() as Promise<boolean>;
+  cdcToIni(fileName: string): Promise<boolean> {
+    return this.get('/cs/api/ini/cdc2ini?fileName=' + fileName).toPromise() as Promise<boolean>;
   }
 
   createPalletFile(data: string, fileName: string) {
@@ -600,7 +614,7 @@ export class ApiService {
       .toPromise() as Promise<boolean>;
   }
 
-  public getFileFromDrive(file: string): Observable<any>  {
+  public getFileFromDrive(file: string): Observable<any> {
     const url = this.api_url + '/drive/api/file/' + file + '?ip=192.168.57.100';
     return this.http.get(url, { responseType: 'text' });
   }
@@ -631,8 +645,8 @@ export interface ProjectVerificationResult {
   project: string;
   file: string;
 }
- export interface MCFileSearchResult {
-   name: string;
-   path: string;
-   lines: Array<{index: number, line: string}>;
- }
+export interface MCFileSearchResult {
+  name: string;
+  path: string;
+  lines: Array<{ index: number, line: string }>;
+}

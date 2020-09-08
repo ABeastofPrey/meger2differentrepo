@@ -1,6 +1,6 @@
 <div class="log-book-warpper">
     <div class="clear-actions">
-        <button mat-raised-button color="primary" (click)="clearAllLogHistory()" [disabled]="allLogs.length === 0">
+        <button mat-raised-button color="primary" (click)="clearAllLogHistory()" [disabled]="allLogs.length === 0 ||login.isViewer">
             {{ 'sys_log.clear_all_log' | translate }}
         </button>
     </div>
@@ -17,40 +17,40 @@
                 </div>
                 <div class="filter-box">
                     <div class="box">
-                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showFirm"></mat-checkbox>
+                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showFirm" [disabled]="login.isViewer"></mat-checkbox>
                         <span>{{ 'sys_log.firmware' | translate }}</span>
                     </div>
                     <div class="box">
-                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showError"></mat-checkbox>
+                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showError" [disabled]="login.isViewer"></mat-checkbox>
                         <mat-icon aria-hidden="false" class="warn" aria-label="Example home icon">cancel</mat-icon>
                         <span>{{ 'sys_log.error' | translate }}</span>
                     </div>
                 </div>
                 <div class="filter-box">
                     <div class="box">
-                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showDrive"></mat-checkbox>
+                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showDrive" [disabled]="login.isViewer"></mat-checkbox>
                         <span>{{ 'sys_log.drive' | translate }}</span>
                     </div>
                     <div class="box">
-                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showWarn"></mat-checkbox>
+                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showWarn" [disabled]="login.isViewer"></mat-checkbox>
                         <mat-icon aria-hidden="false" color="primary" aria-label="Example home icon">warning</mat-icon>
                         <span>{{ 'sys_log.warning' | translate }}</span>
                     </div>
                 </div>
                 <div class="filter-box">
                     <div class="box">
-                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showLib"></mat-checkbox>
+                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showLib" [disabled]="login.isViewer"></mat-checkbox>
                         <span>{{ 'sys_log.library' | translate }}</span>
                     </div>
                     <div class="box">
-                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showInfo"></mat-checkbox>
+                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showInfo" [disabled]="login.isViewer"></mat-checkbox>
                         <mat-icon aria-hidden="false" color="accent" aria-label="Example home icon">info</mat-icon>
                         <span>{{ 'sys_log.info' | translate }}</span>
                     </div>
                 </div>
                 <div class="filter-box">
                     <div class="box">
-                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showServe"></mat-checkbox>
+                        <mat-checkbox color="primary" (change)="onFilter()" [(ngModel)]="showServe" [disabled]="login.isViewer"></mat-checkbox>
                         <span>{{ 'sys_log.web_server' | translate }}</span>
                     </div>
                     <div class="box">

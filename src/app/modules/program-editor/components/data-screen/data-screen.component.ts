@@ -1,6 +1,6 @@
 import { CommonService } from './../../../core/services/common.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import {
   MatTableDataSource,
   MatSort,
@@ -14,29 +14,39 @@ import {
   WebsocketService,
   LoginService,
   MCQueryResponse,
+  ErrorFrame,
 } from '../../../core';
 import { TPVariableType } from '../../../core/models/tp/tp-variable-type.model';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { AddVarComponent } from '../add-var/add-var.component';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { Subject } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
 import { UtilsService } from '../../../core/services/utils.service';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
+import { catchError } from 'rxjs/internal/operators/catchError';
+import { resolve } from 'dns';
+// import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 
 const BASE_COLS = ['select', 'name', 'arrIndex'];
 const SUFFIX_COLS = ['actions'];
+
+const commanddLen: number = 80;//every command need in "" should less than 80, and total should less 80 * 20
+const totalCommandLen: number = 80 * 20;
+
+
 
 @Component({
   selector: 'data-screen',
   templateUrl: './data-screen.component.html',
   styleUrls: ['./data-screen.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataScreenComponent implements OnInit {
   // To sort the table
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  displayVarType: string;
+  displayVarType: TPVariableType;
 
   selectedVar: TPVariable = null;
   dataSource: MatTableDataSource<TPVariable> = new MatTableDataSource();
@@ -44,7 +54,9 @@ export class DataScreenComponent implements OnInit {
     true,
     []
   );
-  varTypes = ['joints', 'locations', 'longs', 'doubles', 'strings'];
+
+  private originalData: TPVariable[] = [];
+  varTypes: TPVariableType[] = [TPVariableType.JOINT, TPVariableType.LOCATION, TPVariableType.LONG, TPVariableType.DOUBLE, TPVariableType.STRING];
   colsToDisplay: string[] = BASE_COLS;
 
   private _legend: string[] = [];
@@ -58,7 +70,7 @@ export class DataScreenComponent implements OnInit {
     weather or not to display the mat-table element
   */
   get shouldDisplayTable() {
-    return this.useAsProjectPoints || 
+    return this.useAsProjectPoints ||
       (
         !!this.displayVarType &&
         !!this.dataSource.data &&
@@ -96,9 +108,10 @@ export class DataScreenComponent implements OnInit {
     public login: LoginService,
     private trn: TranslateService,
     private route: ActivatedRoute,
-    public cmn: CommonService
+    public cmn: CommonService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
-    this.route.data.subscribe(data=>{
+    this.route.data.subscribe(data => {
       if (data) {
         this._useAsProjectPoints = data.useAsProjectPoints;
       }
@@ -120,15 +133,9 @@ export class DataScreenComponent implements OnInit {
   teach(element: TPVariable) {
     let fullname = element.name;
     if (element.isArr) fullname += '[' + element.selectedIndex + ']';
-    let cmdTeach = '?tp_teach("' + fullname + '","' + element.typeStr + '")';
-    if (this.useAsProjectPoints) {
-      cmdTeach =
-        '?tp_teach_project_points("' +
-        fullname +
-        '","' +
-        element.typeStr +
-        '")';
-    }
+
+    let cmdTeach = this.useAsProjectPoints ? `?tp_teach_project_points("${fullname}","${element.typeStr}")` : `?tp_teach("${fullname}","${element.typeStr}")`;
+
     this.ws.query(cmdTeach).then((ret: MCQueryResponse) => {
       if (ret.result === '0') {
         this.refreshVariable(element);
@@ -136,27 +143,16 @@ export class DataScreenComponent implements OnInit {
     });
   }
 
-  filterData() {
-    if (this.data.domainIsFrame) {
-      this.dataSource.data = this.data.locations;
-      this.selection.clear();
-      return;
-    }
-    let data = [];
-    if (this.useAsProjectPoints) {
-      data = data.concat(this.data.pJoints);
-    }
-    this.dataSource.data = data;
-    this.selection.clear();
-  }
 
   ngOnInit() {
     if (this.useAsProjectPoints) {
-      this.varTypes = ['joints'];
+      this.varTypes = [TPVariableType.JOINT];
     }
-    this.displayVarType = this.data.isRobotType ? 'joints' : 'longs';
+    this.displayVarType = this.data.isRobotType ? TPVariableType.JOINT : TPVariableType.LONG;
     this.data.dataRefreshed.pipe(takeUntil(this.notifier)).subscribe(stat => {
-      if (stat && !this.data.varRefreshInProgress) this.updateDataType();
+      if (stat && !this.data.varRefreshInProgress) {
+        this.updateDataType();
+      }
     });
   }
 
@@ -169,38 +165,44 @@ export class DataScreenComponent implements OnInit {
   /*
    * called after the data type has changed, and also on data screen init.
    */
+
   updateDataType() {
+    let data = [];
     switch (this.displayVarType) {
       default:
         break;
-      case 'joints':
+      case TPVariableType.JOINT:
         this._legend = this.data.robotCoordinateType.legends.map((l, i) => {
           return 'J' + (i + 1);
         });
-        this.dataSource.data = this.useAsProjectPoints ? this.data.pJoints : this.data.joints;
+        data = this.useAsProjectPoints ? this.data.pJoints : this.data.joints;
         break;
-      case 'locations':
+      case TPVariableType.LOCATION:
         this._legend = this.data.robotCoordinateType.all;
-        this.dataSource.data = this.data.locations;
+        data = this.data.locations;
         break;
-      case 'strings':
+      case TPVariableType.STRING:
         this._legend = [this.words['value']];
-        this.dataSource.data = this.data.strings;
+        data = this.data.strings;
         break;
-      case 'doubles':
+      case TPVariableType.DOUBLE:
         this._legend = [this.words['value']];
-        this.dataSource.data = this.data.doubles;
+        data = this.data.doubles;
         break;
-      case 'longs':
+      case TPVariableType.LONG:
         this._legend = [this.words['value']];
-        this.dataSource.data = this.data.longs;
+        data = this.data.longs;
         break;
     }
+
+    this.dataSource.data = data;
+
     this.colsToDisplay = BASE_COLS.concat(this._legend).concat(SUFFIX_COLS);
     this.refreshValues();
     this.selection.clear();
+    this.changeDetectorRef.detectChanges();
   }
-  
+
   getValue(element: TPVariable, i: number) {
     if (element.isArr) {
       const idx = element.selectedIndex - 1;
@@ -209,14 +211,8 @@ export class DataScreenComponent implements OnInit {
     return element.value[i].value;
   }
 
-  private refreshVariable(v: TPVariable) {
-    let fullname = v.name;
-    if (v.isArr) { 
-      fullname += '[' + v.selectedIndex + ']';
-    }
-    if (v.isTwoDimension) {
-        fullname += '[' + v.selectedSecondIndex + ']';
-      }
+  public refreshVariable(v: TPVariable) {
+    const fullname = this.data.buildFullName(v);
     let api: string;
     if (this.useAsProjectPoints) {
       api = `?tp_get_project_value_namespace("${fullname}")`;
@@ -224,84 +220,126 @@ export class DataScreenComponent implements OnInit {
     else api = `?tp_get_value_namespace("${fullname}")`;
     return this.ws.query(api).then((ret: MCQueryResponse) => {
       if (ret.err) return;
-      let valuesString = ret.result;
-      if (valuesString.indexOf('#') === 0) {
-        valuesString = valuesString.substr(1);
-      }
-      if (valuesString.indexOf(',') === -1) {
-        const val = [{ value: valuesString.trim() }];
-        if (v.isArr) {
-          let selected = null;
-          if(v.isTwoDimension)
-          {
-            selected = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1] as TPVariable;
-          }
-          else
-          {
-            selected = v.value[v.selectedIndex-1] as TPVariable;
-          }
-          if (!selected.dataLoaded) {
-            selected.value = val;
-            selected.dataLoaded = true;
-          } else {
-            selected.value[0].value = val[0].value;
-          }
-        } else if (!v.dataLoaded) {
-          v.value = val;
-          v.dataLoaded = true;
-        } else {
-          v.value[0].value = val[0].value;
-        }
-        return;
-      }
-      const val = [];
-      const parts: string[] = valuesString
-        .substr(1, valuesString.length - 2)
-        .split(';');
-      const values = parts[0].split(',');
-      const flags = parts[1] ? parts[1].split(',') : [];
-      if (v.varType === TPVariableType.LOCATION) {
-        const len = this.data.robotCoordinateType.flags.length;
-        // SET ALL OTHER FLAGS TO ZERO
-        for (let i = flags.length; i < len; i++) {
-          flags[i] = '0';
-        }
-      }
-      const total = values.concat(flags);
-      for (let i = 0; i < total.length; i++) {
-        val[i] = { value: total[i].trim() };
-      }
+      this.buildVariable(v, ret.result);
+    });
+  }
+
+  private buildVariable(v: TPVariable, valuesString: string): void {
+    if (valuesString.indexOf('#') === 0) {
+      valuesString = valuesString.substr(1);
+    }
+    if (valuesString.indexOf(',') === -1) {
+      const val = [{ value: valuesString.trim() }];
       if (v.isArr) {
-        const selected = v.value[v.selectedIndex-1] as TPVariable;
+        let selected = null;
+        if (v.isTwoDimension) {
+          selected = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1] as TPVariable;
+        }
+        else {
+          selected = v.value[v.selectedIndex - 1] as TPVariable;
+        }
         if (!selected.dataLoaded) {
           selected.value = val;
           selected.dataLoaded = true;
         } else {
-          for (let i = 0; i < val.length; i++) {
-            selected.value[i].value = val[i].value;
-          }
+          selected.value[0].value = val[0].value;
         }
-      }
-      else if (!v.dataLoaded) {
+      } else if (!v.dataLoaded) {
         v.value = val;
         v.dataLoaded = true;
       } else {
+        v.value[0].value = val[0].value;
+      }
+      return;
+    }
+    const val = [];
+    const parts: string[] = valuesString
+      .substr(1, valuesString.length - 2)
+      .split(';');
+    const values = parts[0].split(',');
+    const flags = parts[1] ? parts[1].split(',') : [];
+    if (v.varType === TPVariableType.LOCATION) {
+      const len = this.data.robotCoordinateType.flags.length;
+      // SET ALL OTHER FLAGS TO ZERO
+      for (let i = flags.length; i < len; i++) {
+        flags[i] = '0';
+      }
+    }
+    const total = values.concat(flags);
+    for (let i = 0; i < total.length; i++) {
+      val[i] = { value: total[i].trim() };
+    }
+    if (v.isArr) {
+      const selected = v.value[v.selectedIndex - 1] as TPVariable;
+      if (!selected.dataLoaded) {
+        selected.value = val;
+        selected.dataLoaded = true;
+      } else {
         for (let i = 0; i < val.length; i++) {
-          v.value[i].value = val[i].value;
+          selected.value[i].value = val[i].value;
         }
       }
-    });
+    }
+    else if (!v.dataLoaded) {
+      v.value = val;
+      v.dataLoaded = true;
+    } else {
+      for (let i = 0; i < val.length; i++) {
+        v.value[i].value = val[i].value;
+      }
+    }
+
   }
 
-  private refreshValues() {
-    this._varRefreshing = true;
-    const queries: Array<Promise<void>> = [];
-    for (const v of this.dataSource.data) {
-      queries.push(this.refreshVariable(v));
-    }
-    return Promise.all(queries).then(results => {
+  private async refreshValues() {
+
+    if (!this.dataSource.data || this.dataSource.data.length < 1) {
       this._varRefreshing = false;
-    });
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    this._varRefreshing = true;
+    let displayVarType = this.displayVarType;
+
+    let cmd;
+    if (this.useAsProjectPoints) {
+      cmd = '?VAR_GET_PROJECT_POINTS';
+    } else {
+      await this.ws.query("CALl VAR_CLEAR_NAMES");
+      let res = await this.postNameInfoTolib(this.dataSource.data);//should store names for lib use
+      if (!res) {
+        return;
+      }
+      cmd = `?VAR_GET_APP_POINTS("${displayVarType}")`;
+    }
+
+    this.ws.simpleQuery(cmd)
+      .pipe(takeUntil(this.notifier), catchError(() => throwError('get values error')))
+      .subscribe((res: string | ErrorFrame) => {
+        this._varRefreshing = false;
+        if (!res || typeof res !== 'string') {
+          this.dataSource.data = [];
+          this.changeDetectorRef.detectChanges();
+          return;
+        }
+
+        let dataNameMap: Map<string, any> = new Map();
+
+        const newData = JSON.parse(res);
+        for (let node of newData) {
+          dataNameMap.set(node.name, node.value);
+        }
+        for (const v of this.dataSource.data) {
+          const key = this.data.buildFullName(v);
+          if (dataNameMap.has(key)) {
+            this.buildVariable(v, dataNameMap.get(key))
+          }
+        }
+
+        this.changeDetectorRef.detectChanges();
+
+      });
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -316,8 +354,8 @@ export class DataScreenComponent implements OnInit {
     this.isAllSelected()
       ? this.selection.clear()
       : this.dataSource.data.forEach((row: TPVariable) =>
-          this.selection.select(row)
-        );
+        this.selection.select(row)
+      );
   }
 
   rowClick(element: TPVariable, forceRefresh) {
@@ -397,15 +435,15 @@ export class DataScreenComponent implements OnInit {
       data: {
         useAsProjectPoints: this.useAsProjectPoints,
         canUseArray: this.useAsProjectPoints ? false : true,
-        varType: this.displayVarType.slice(0, -1).toUpperCase(),
+        varType: this.displayVarType.toUpperCase(),
       }
     });
   }
 
-  onDomainChange() {
-    this.selectedVar = null;
-    this.filterData();
-  }
+  // onDomainChange() {
+  //   this.selectedVar = null;
+  //   this.filterData();
+  // }
 
   deleteSelected(element: TPVariable) {
     this.trn
@@ -423,17 +461,14 @@ export class DataScreenComponent implements OnInit {
           .afterClosed()
           .subscribe(ret => {
             if (ret) {
-              let cmd = '?TP_DELETEVAR("' + element.name + '")';
-              if (this.useAsProjectPoints) {
-                cmd = '?TP_DELETE_Project_points("' + element.name + '")';
-              }
+              let cmd = this.useAsProjectPoints ? `?TP_DELETE_Project_points("${element.name}")` : `?TP_DELETEVAR("${element.name}")`;
+
               this.ws.query(cmd).then((ret: MCQueryResponse) => {
                 if (ret.result === '0') {
                   this.data.refreshVariables();
-                  if (this.selectedVar === element) this.selectedVar = null;
-                    // this.snackBar.open(this.words['success'], '', {
-                    //   duration: 2000,
-                    // });
+                  if (this.selectedVar === element) {
+                    this.selectedVar = null;
+                  }
                   this.snackbarService.openTipSnackBar("success");
                   this.selection.clear();
                 }
@@ -463,30 +498,29 @@ export class DataScreenComponent implements OnInit {
             if (ret) {
               const delCmd = this.useAsProjectPoints ? '?TP_DELETE_PROJECT_POINTS' : '?TP_DELETEVAR';
               this._varRefreshing = true;
-              const queries = [];
               // divide into 80-char queries...
-              const list = this.selection.selected.map(s=>s.name);
+              const list = this.selection.selected.map(s => s.name);
               let tmpArr = [];
               let count = 0;
               let ret1, ret2;
               while (list.length) {
                 const str = list.pop();
                 const len = str.length + 1;
-                if (count + len < 80) {
+                if (count + len < commanddLen) {
                   tmpArr.push(str);
                   count += len;
                 } else {
-                  ret1 = await this.ws.query(delCmd + '("' + tmpArr.join() + ',")');
+                  const delComdOfNames = `${delCmd}("${tmpArr.join()},")`;
+                  ret1 = await this.ws.query(delComdOfNames);
                   ret2 = await this.waitForDeletionToFinish();
                   count = len;
                   tmpArr = [str];
                 }
               }
-              ret1 = await this.ws.query(delCmd + '("' + tmpArr.join() + ',")');
+              const delComdOfNames = `${delCmd}("${tmpArr.join()},")`;
+              ret1 = await this.ws.query(delComdOfNames);
               ret2 = await this.waitForDeletionToFinish();
-              if (queries.length > 0) {
-                await Promise.all(queries);
-              }
+
               if (this.useAsProjectPoints) {
                 this.selectedVar = null;
               }
@@ -497,9 +531,9 @@ export class DataScreenComponent implements OnInit {
   }
 
   private waitForDeletionToFinish() {
-    return new Promise(resolve=>{
+    return new Promise(resolve => {
       let done = false;
-      this._deleteInterval = window.setInterval(async()=>{
+      this._deleteInterval = window.setInterval(async () => {
         if (done) {
           window.clearInterval(this._deleteInterval);
           resolve(true);
@@ -518,16 +552,13 @@ export class DataScreenComponent implements OnInit {
   }
 
   onKeyboardClose(v: TPVariable) {
-    let fullname = v.name;
+    const fullname = this.data.buildFullName(v);
     let parent = null;
     if (v.isArr) {
-      fullname += '[' + v.selectedIndex + ']';
       parent = v;
-
       if (v.isTwoDimension) {
-        fullname += '[' + v.selectedSecondIndex + ']';
         v = v.value[v.selectedIndex - 1][v.selectedSecondIndex - 1];
-    }
+      }
       else {
         v = v.value[v.selectedIndex - 1];
       }
@@ -554,10 +585,8 @@ export class DataScreenComponent implements OnInit {
           })
           .join();
     }
-    let cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
-    if (this.useAsProjectPoints) {
-      cmd = '?TP_EDIT_project_points("' + fullname + '","' + value + '")';
-    }
+    let cmd = this.useAsProjectPoints ? `?TP_EDIT_project_points("${fullname}","${value}")` : `?TP_EDITVAR("${fullname}","${value}")`;
+
     this.ws.query(cmd).then((ret: MCQueryResponse) => {
       this.refreshVariable(parent || v);
       if (ret.result === '0') {
@@ -567,4 +596,51 @@ export class DataScreenComponent implements OnInit {
       else console.log(ret.cmd + '>>>' + ret.result);
     });
   }
+
+
+  private async postNameInfoTolib(data: TPVariable[]): Promise<any> {
+    return new Promise<any>(async (resolve, reject) => {
+      if (!data || data.length < 1) {
+        return resolve(true);
+      }
+      try {
+
+        let charts: string[] = [];
+        let comdStr: string = '';
+
+        for (let i = 0; i < data.length; i++) {
+          const fullName = this.data.buildFullName(data[i]);
+          const nextComd = comdStr ? `${comdStr}${fullName},` : `${comdStr}${fullName},`;
+          if (nextComd.length < commanddLen) {
+            comdStr = nextComd;
+          } else {
+            charts.push(comdStr);
+            comdStr = `${fullName},`;
+          }
+        }
+
+        charts.push(comdStr);
+        // 80 * 19 approximately equal to < 80 * 20
+        for (let j = 0; j < charts.length;) {
+          let command = '';
+          for (let k = 0; k < 19; k++) {
+            if (j < charts.length) {
+              command = command ? `${command}+"${charts[j]}"` : `"${charts[j]}"`;
+              j++;
+            } else {
+              break;
+            }
+          }
+          await this.ws.query(`CALL VAR_STORE_NAMES(${command})`);
+        }
+        resolve(true);
+      } catch{
+        reject(false)
+      }
+    });
+
+  }
+
+
+
 }

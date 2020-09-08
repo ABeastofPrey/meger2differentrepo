@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
 import {
   WebsocketService,
@@ -50,6 +50,9 @@ export interface CustomIOPort {
  */
 @Injectable()
 export class IoService {
+
+  public refreshCustomIO: EventEmitter<number> = new EventEmitter<number>();
+
   /**
    * The result of the query command.
    */

@@ -212,7 +212,7 @@ export class TraceService {
     }
 
     public traceOnOff(trace: string, isOn: boolean): Observable<boolean> {
-        const api = isOn ? `traceON_UI("${trace}")` : `?traceOff`;
+        const api = isOn ? `traceON_UI("${trace}")` : `CALL traceOff`;
         return this.ws.observableQuery(api).pipe(
             rxjsMap((res: MCQueryResponse) => hasNoError(res)),
             catchError((err: ErrorFrame) => {
@@ -223,7 +223,7 @@ export class TraceService {
     }
 
     public startTrigger(): Observable<boolean> {
-        const api = '?TRACE_pressTrigger';
+        const api = 'CALL TRACE_pressTrigger';
         return this.ws.observableQuery(api).pipe(
             rxjsMap((res: MCQueryResponse) => hasNoError(res)),
             catchError((err: ErrorFrame) => {

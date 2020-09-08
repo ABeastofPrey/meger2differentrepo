@@ -1,196 +1,313 @@
 <div class="wrapper">
-	<img *ngIf="!shouldDisplayTable" src="assets/pics/Curved_Arrow.svg" class="arrow invert">
-	<div class="filter-menu mat-elevation-z1">
-		<button mat-raised-button color="primary" (click)="showAddDialog()" class="btn-add" [disabled]="isRefreshing">
-			<mat-icon>add</mat-icon>
-			<span>{{ 'button.create' | translate }}</span>
-		</button>
-		<mat-button-toggle-group *ngIf="!useAsProjectPoints" #group="matButtonToggleGroup" [(ngModel)]="displayVarType" (change)="updateDataType()" [disabled]="isRefreshing">
-			<mat-button-toggle *ngFor="let t of varTypes" [value]="t">
-				{{ t | translate }}
-			</mat-button-toggle>
-		</mat-button-toggle-group>
-		<button
-			*ngIf="selection.selected.length > 0"
-			mat-raised-button
-			color="warn"
-			style="flex: 1 0 50px!important;"
-			[disabled]="isRefreshing"
-			(click)="deleteChecked()">
-			<span *ngIf="!cmn.isTablet">{{ 'button.delete_selected' | translate }}</span>
-			<mat-icon *ngIf="cmn.isTablet">delete_sweep</mat-icon>
-		</button>
-	</div>
-	<div class="behind" *ngIf="!shouldDisplayTable">
-		<img src="assets/pics/{{displayVarType}}.svg">
-		<h3>{{'variables.none_exist' | translate }}</h3>
-	</div>
-	<div class="table-wrapper" *ngIf="shouldDisplayTable">
-		<table mat-table #table [dataSource]="dataSource" matSort class="data-table" [class.busy]="isRefreshing">
-			<ng-container matColumnDef="select">
-				<th mat-header-cell *matHeaderCellDef>
-					<mat-checkbox
-						color="primary"
-						(change)="$event ? masterToggle() : null"
-						[checked]="selection.hasValue() && isAllSelected()"
-						[indeterminate]="selection.hasValue() && !isAllSelected()"
-						[disabled]="isRefreshing"
-						style="margin-right: 16px;"
-					>
-					</mat-checkbox>
-				</th>
-				<td mat-cell *matCellDef="let row">
-					<mat-checkbox
-						color="primary"
-						(click)="$event.stopPropagation()"
-						(change)="$event ? selection.toggle(row) : null"
-						[checked]="selection.isSelected(row)"
-						[disabled]="isRefreshing"
-						style="margin-right: 16px;"
-					>
-					</mat-checkbox>
-				</td>
-			</ng-container>
-			<ng-container matColumnDef="name">
-				<th mat-header-cell *matHeaderCellDef mat-sort-header="name">
-					{{ 'name' | translate }}
-				</th>
-				>
-				<td mat-cell *matCellDef="let element">
-					<div class="name-wrap" [matTooltip]="element.name">
-						{{ element.name }}
-						<span *ngIf="element.isArr"> [...]</span>
-						<span *ngIf="element.isTwoDimension"> [...]</span>
-					</div>
-				</td>
-			</ng-container>
-			<ng-container matColumnDef="arrIndex">
-				<th mat-header-cell *matHeaderCellDef>{{ 'index' | translate }}</th>
-				>
-				<td mat-cell *matCellDef="let element">
-					<mat-form-field *ngIf="element.isArr" class="index-field" appearance="outline">
-						<mat-select
-							placeholder="{{ 'index' | translate }}"
-							[(ngModel)]="element.selectedIndex"
-							(selectionChange)="refreshVariable(element)"
-							panelClass="virtual-select"
-						>
-							<cdk-virtual-scroll-viewport [itemSize]="24" style="width: 84px; height: 210px;">
-								<mat-option *cdkVirtualFor="let data of element.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
-							</cdk-virtual-scroll-viewport>
-						</mat-select>
-					</mat-form-field>
-					<mat-form-field *ngIf="element.isArr && element.isTwoDimension" class="index-field" appearance="outline">
-						<mat-select
-							placeholder="{{ 'index' | translate }}"
-							[(ngModel)]="element.selectedSecondIndex"
-							(selectionChange)="refreshVariable(element)"
-						>
-							<mat-option *ngFor="let data of element.value[element.selectedIndex - 1]; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
-						</mat-select>				
-					</mat-form-field>
-					<span *ngIf="!element.isArr">-</span>
-				</td>
-			</ng-container>
-			<ng-container *ngFor="let leg of legend; let i = index" [matColumnDef]="leg">
-				<th mat-header-cell *matHeaderCellDef>{{ leg }}</th>
-				>
-				<td mat-cell *matCellDef="let element">
-					<mat-form-field
-						appearance="outline"
-						floatLabel="never"
-						class="value-field"
-						*ngIf="(!element.isArr && element.dataLoaded) || 
-							   (element.isArr && (!element.isTwoDimension) && element.value[element.selectedIndex-1].dataLoaded) ||
-							   (element.isArr && element.isTwoDimension && element.value[element.selectedIndex-1][element.selectedSecondIndex - 1].dataLoaded)"
-						[class.text-field]="element.typeStr === 'STRING'"
-					>
-						<mat-select
-							*ngIf="element.typeStr === 'LOCATION' && i >= data.robotCoordinateType.legends.length"
-							[(ngModel)]="element.isArr ? element.value[element.selectedIndex-1].value[i].value : element.value[i].value"
-							(selectionChange)="onKeyboardClose(element)"
-						>
-							<mat-option disabled>{{ leg }}</mat-option>
-							<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Arm'">
-								<mat-option value="0">AUTO</mat-option>
-								<mat-option value="1">LEFTY</mat-option>
-								<mat-option value="2">RIGHTY</mat-option>
-							</div>
-							<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Elbow'">
-								<mat-option value="0">AUTO</mat-option>
-								<mat-option value="1">BELOW</mat-option>
-								<mat-option value="2">ABOVE</mat-option>
-							</div>
-							<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Wrist'">
-								<mat-option value="0">AUTO</mat-option>
-								<mat-option value="1">NOFLIP</mat-option>
-								<mat-option value="2">FLIP</mat-option>
-							</div>
-						</mat-select>
-						<input
-							*ngIf="
-								element.typeStr !== 'STRING' &&
-								(element.typeStr !== 'LOCATION' || i < data.robotCoordinateType.legends.length)
-							"
-							matInput
-							[placeholder]="leg"
-							[(ngModel)]="element.isArr ? element.value[element.selectedIndex-1].value[i].value : element.value[i].value"
-                            (ngModelChange) = "element.isArr ? element.value[element.selectedIndex-1].value[i].value = $event : element.value[i].value = $event"
-							(change)="onKeyboardClose(element)"
-							virtualKeyboard
-							ktype="numeric"
-							(onKeyboardClose)="onKeyboardClose(element)"
-						/>
-						<textarea
-							matInput
-							*ngIf="element.typeStr === 'STRING'"
-							[placeholder]="legend[i]"
-							[(ngModel)]="element.isArr ? (element.isTwoDimension ? 
-							                              element.value[element.selectedIndex - 1][element.selectedSecondIndex - 1].value[i].value
-														: element.value[element.selectedIndex - 1].value[i].value) : element.value[i].value"
-							(ngModelChange) = "element.isArr ? (element.isTwoDimension ? 
-							                              element.value[element.selectedIndex - 1][element.selectedSecondIndex - 1].value[i].value = $event
-							                            : element.value[element.selectedIndex-1].value[i].value = $event) : element.value[i].value = $event"
-							virtualKeyboard
-							ktype="text"
-							cdkTextareaAutosize
-							#autosize="cdkTextareaAutosize"
-							(change)="onKeyboardClose(element)"
-							(onKeyboardClose)="onKeyboardClose(element)"
-							maxlength="80"
-							cdkAutosizeMinRows="1"
-						></textarea>
-					</mat-form-field>
-				</td>
-			</ng-container>
-			<ng-container matColumnDef="actions">
-				<th mat-header-cell *matHeaderCellDef style="width: 200px;">
-					{{ 'actions' | translate }}
-				</th>
-				>
-				<td mat-cell *matCellDef="let element">
-					<button
-						*ngIf="element.isPosition"
-						mat-raised-button
-						color="primary"
-						style="margin-right: 24px;"
-						(click)="teach(element)"
-						[disabled]="isRefreshing"
-					>
-						{{ 'button.teach' | translate }}
-					</button>
-					<button mat-raised-button color="warn" (click)="deleteSelected(element)" [disabled]="isRefreshing">
-						<mat-icon>delete</mat-icon>
-					</button>
-				</td>
-			</ng-container>
-			<tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
-			<tr
-				mat-row
-				*matRowDef="let row; columns: colsToDisplay; let element"
-				(click)="rowClick(element)"
-				[class.highlighted]="selectedVar && element.name === selectedVar.name"
-			></tr>
-		</table>
-	</div>
+  <img
+    *ngIf="!shouldDisplayTable"
+    src="assets/pics/Curved_Arrow.svg"
+    class="arrow invert"
+  />
+  <div class="filter-menu mat-elevation-z1">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="showAddDialog()"
+      class="btn-add"
+      [disabled]="isRefreshing"
+    >
+      <mat-icon>add</mat-icon>
+      <span>{{ 'button.create' | translate }}</span>
+    </button>
+    <mat-button-toggle-group
+      *ngIf="!useAsProjectPoints"
+      #group="matButtonToggleGroup"
+      [(ngModel)]="displayVarType"
+      (change)="updateDataType()"
+      [disabled]="isRefreshing"
+    >
+      <mat-button-toggle *ngFor="let t of varTypes" [value]="t">
+        {{ t | translate }}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+    <button
+      *ngIf="selection.selected.length > 0"
+      mat-raised-button
+      color="warn"
+      style="flex: 1 0 50px!important;"
+      [disabled]="isRefreshing"
+      (click)="deleteChecked()"
+    >
+      <span *ngIf="!cmn.isTablet">{{
+        'button.delete_selected' | translate
+      }}</span>
+      <mat-icon *ngIf="cmn.isTablet">delete_sweep</mat-icon>
+    </button>
+  </div>
+  <div class="behind" *ngIf="!shouldDisplayTable">
+    <img src="assets/pics/{{ displayVarType }}.svg" />
+    <h3>{{ 'variables.none_exist' | translate }}</h3>
+  </div>
+  <div class="table-wrapper" *ngIf="shouldDisplayTable">
+    <!-- <cdk-virtual-scroll-viewport tvsItemSize class="table-virtual-wrapper"> -->
+    <table
+      mat-table
+      #table
+      [dataSource]="dataSource"
+      matSort
+      class="data-table"
+      [class.busy]="isRefreshing"
+    >
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            color="primary"
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection?.hasValue() && isAllSelected()"
+            [indeterminate]="selection?.hasValue() && !isAllSelected()"
+            [disabled]="isRefreshing"
+            style="margin-right: 16px;"
+          >
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox
+            color="primary"
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection?.toggle(row) : null"
+            [checked]="selection?.isSelected(row)"
+            [disabled]="isRefreshing"
+            style="margin-right: 16px;"
+          >
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="name">
+          {{ 'name' | translate }}
+        </th>
+        >
+        <td mat-cell *matCellDef="let element">
+          <div class="name-wrap" [matTooltip]="element.name">
+            {{ element.name }}
+            <span *ngIf="element.isArr"> [...]</span>
+            <span *ngIf="element.isTwoDimension"> [...]</span>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="arrIndex">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index' | translate }}</th>
+        >
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field
+            *ngIf="element?.isArr"
+            class="index-field"
+            appearance="outline"
+          >
+            <mat-select
+              placeholder="{{ 'index' | translate }}"
+              [(ngModel)]="element.selectedIndex"
+              (selectionChange)="refreshVariable(element)"
+              panelClass="virtual-select"
+            >
+              <cdk-virtual-scroll-viewport
+                [itemSize]="24"
+                style="width: 84px; height: 210px;"
+              >
+                <mat-option
+                  *cdkVirtualFor="let data of element?.value; let i = index"
+                  [value]="i + 1"
+                  >{{ i + 1 }}</mat-option
+                >
+              </cdk-virtual-scroll-viewport>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field
+            *ngIf="element?.isArr && element?.isTwoDimension"
+            class="index-field"
+            appearance="outline"
+          >
+            <mat-select
+              placeholder="{{ 'index' | translate }}"
+              [(ngModel)]="element.selectedSecondIndex"
+              (selectionChange)="refreshVariable(element)"
+            >
+              <mat-option
+                *ngFor="
+                  let data of (element?.value)[element.selectedIndex - 1];
+                  let i = index
+                "
+                [value]="i + 1"
+                >{{ i + 1 }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+          <span *ngIf="!element?.isArr">-</span>
+        </td>
+      </ng-container>
+      <ng-container
+        *ngFor="let leg of legend; let i = index"
+        [matColumnDef]="leg"
+      >
+        <th mat-header-cell *matHeaderCellDef>{{ leg }}</th>
+        >
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field
+            appearance="outline"
+            floatLabel="never"
+            class="value-field"
+            *ngIf="
+              (!element?.isArr && element?.dataLoaded) ||
+              (element?.isArr &&
+                !element?.isTwoDimension &&
+                (element?.value)[element.selectedIndex - 1].dataLoaded) ||
+              (element?.isArr &&
+                element?.isTwoDimension &&
+                (element?.value)[element.selectedIndex - 1][
+                  element.selectedSecondIndex - 1
+                ].dataLoaded)
+            "
+            [class.text-field]="element.typeStr === 'STRING'"
+          >
+            <mat-select
+              *ngIf="
+                element?.typeStr === 'LOCATION' &&
+                i >= data?.robotCoordinateType?.legends?.length
+              "
+              [(ngModel)]="
+                element.isArr
+                  ? element.value[element.selectedIndex - 1].value[i].value
+                  : element.value[i].value
+              "
+              (selectionChange)="onKeyboardClose(element)"
+            >
+              <mat-option disabled>{{ leg }}</mat-option>
+              <div
+                *ngIf="
+                  (data?.robotCoordinateType?.flags)[
+                    i - data.robotCoordinateType.legends.length
+                  ] === 'Arm'
+                "
+              >
+                <mat-option value="0">AUTO</mat-option>
+                <mat-option value="1">LEFTY</mat-option>
+                <mat-option value="2">RIGHTY</mat-option>
+              </div>
+              <div
+                *ngIf="
+                  (data?.robotCoordinateType?.flags)[
+                    i - data.robotCoordinateType.legends.length
+                  ] === 'Elbow'
+                "
+              >
+                <mat-option value="0">AUTO</mat-option>
+                <mat-option value="1">BELOW</mat-option>
+                <mat-option value="2">ABOVE</mat-option>
+              </div>
+              <div
+                *ngIf="
+                  (data?.robotCoordinateType?.flags)[
+                    i - data.robotCoordinateType.legends.length
+                  ] === 'Wrist'
+                "
+              >
+                <mat-option value="0">AUTO</mat-option>
+                <mat-option value="1">NOFLIP</mat-option>
+                <mat-option value="2">FLIP</mat-option>
+              </div>
+            </mat-select>
+            <input
+              *ngIf="
+                element?.typeStr !== 'STRING' &&
+                (element?.typeStr !== 'LOCATION' ||
+                  i < data?.robotCoordinateType?.legends?.length)
+              "
+              matInput
+              [placeholder]="leg"
+              [(ngModel)]="
+                element.isArr
+                  ? element.value[element.selectedIndex - 1].value[i].value
+                  : element.value[i].value
+              "
+              (ngModelChange)="
+                element?.isArr
+                  ? ((element?.value)[element.selectedIndex - 1].value[
+                      i
+                    ].value = $event)
+                  : (element.value[i].value = $event)
+              "
+              (change)="onKeyboardClose(element)"
+              virtualKeyboard
+              ktype="numeric"
+              (onKeyboardClose)="onKeyboardClose(element)"
+            />
+            <textarea
+              matInput
+              *ngIf="element?.typeStr === 'STRING'"
+              [placeholder]="legend[i]"
+              [(ngModel)]="
+                element.isArr
+                  ? element.isTwoDimension
+                    ? element.value[element.selectedIndex - 1][
+                        element.selectedSecondIndex - 1
+                      ].value[i].value
+                    : element.value[element.selectedIndex - 1].value[i].value
+                  : element.value[i].value
+              "
+              (ngModelChange)="
+                element?.isArr
+                  ? element?.isTwoDimension
+                    ? ((element?.value)[element.selectedIndex - 1][
+                        element.selectedSecondIndex - 1
+                      ].value[i].value = $event)
+                    : ((element?.value)[element.selectedIndex - 1].value[
+                        i
+                      ].value = $event)
+                  : ((element?.value)[i].value = $event)
+              "
+              virtualKeyboard
+              ktype="text"
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              (change)="onKeyboardClose(element)"
+              (onKeyboardClose)="onKeyboardClose(element)"
+              maxlength="80"
+              cdkAutosizeMinRows="1"
+            ></textarea>
+          </mat-form-field>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 200px;">
+          {{ 'actions' | translate }}
+        </th>
+        >
+        <td mat-cell *matCellDef="let element">
+          <button
+            *ngIf="element.isPosition"
+            mat-raised-button
+            color="primary"
+            style="margin-right: 24px;"
+            (click)="teach(element)"
+            [disabled]="isRefreshing"
+          >
+            {{ 'button.teach' | translate }}
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="deleteSelected(element)"
+            [disabled]="isRefreshing"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: colsToDisplay; let element"
+        (click)="rowClick(element)"
+        [class.highlighted]="selectedVar && element?.name === selectedVar?.name"
+      ></tr>
+    </table>
+
+    <!-- </cdk-virtual-scroll-viewport> -->
+  </div>
 </div>

@@ -7,6 +7,7 @@ import { slice, filter } from 'ramda';
 import { WebsocketService } from '../../../core/services/websocket.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { LoginService } from '../../../../modules/core';
 
 @Component({
     selector: 'app-logbook',
@@ -36,6 +37,7 @@ export class LogBookComponent implements OnInit {
         private sysLogWatcher: SysLogWatcherService,
         private ws: WebsocketService,
         private cdRef: ChangeDetectorRef,
+        public login: LoginService
     ) { }
 
     ngOnInit(): void {

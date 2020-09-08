@@ -110,7 +110,7 @@ export class DataService {
         this._robotCoordinateType = new RobotCoordinateType(ret[2].result);
         this.refreshData();
       })
-      .catch(() => {});
+      .catch(() => { });
   }
 
   // Frames
@@ -286,7 +286,7 @@ export class DataService {
     return this._payloadStart;
   }
   onPayloadStartChange() {
-    const err = this.payloadStart.some(p=>{
+    const err = this.payloadStart.some(p => {
       return p === null;
     });
     if (err) {
@@ -308,7 +308,7 @@ export class DataService {
     return this._payloadRelative;
   }
   async onPayloadRelativeChange(hideSuccess?: boolean) {
-    const err = this.payloadRelative.some(p=>{
+    const err = this.payloadRelative.some(p => {
       return p === null;
     });
     if (err) {
@@ -335,7 +335,7 @@ export class DataService {
     return this._payloadFreq;
   }
   onPayloadFreqChange() {
-    const err = this.payloadFreq.some(p=>{
+    const err = this.payloadFreq.some(p => {
       return p === null;
     });
     if (err) {
@@ -607,9 +607,9 @@ export class DataService {
   }
 
   refreshVision() {
-      return new Observable((obser)=>{
-        this.refreshVisionObser = obser;
-      })
+    return new Observable((obser) => {
+      this.refreshVisionObser = obser;
+    })
   }
 
   private refreshPayloadStart() {
@@ -771,7 +771,7 @@ export class DataService {
             this._robotType = ret[1].result;
             this._robotCoordinateType = new RobotCoordinateType(ret[2].result);
           })
-          .catch(() => {});
+          .catch(() => { });
       });
   }
 
@@ -810,9 +810,9 @@ export class DataService {
             this._locationDescriptions =
               result[1].result.length > 0
                 ? result[1].result
-                    .substr(1)
-                    .slice(0, -1)
-                    .split(',')
+                  .substr(1)
+                  .slice(0, -1)
+                  .split(',')
                 : [];
 
             // SET DEFAULT VALUES, ON FIRST INIT
@@ -863,13 +863,13 @@ export class DataService {
               });
             }
           })
-          .catch(() => {});
+          .catch(() => { });
       })
       .then(() => {
         if (this._payloadLibVer) {
-            if(this.refreshVisionObser){
-                this.refreshVisionObser.next("refreshVision");
-            }
+          if (this.refreshVisionObser) {
+            this.refreshVisionObser.next("refreshVision");
+          }
           return this.refreshPayloads();
         }
       })
@@ -900,7 +900,7 @@ export class DataService {
       }
     });
     this.ws.isConnected.subscribe(stat => {
-      if (!stat) { 
+      if (!stat) {
         this.dataLoaded.next(false);
       } else {
         this.getMinimumVersions();
@@ -911,14 +911,14 @@ export class DataService {
   reset() {
     //this._selectedPallet = null;
   }
-  
+
   getMinimumVersions() {
     const promises = [
       this.ws.query('?ver'),
       this.ws.query('java_ver'),
       this.ws.query('?sys.serialNumber')
     ];
-    return Promise.all(promises).then((ret: MCQueryResponse[])=>{
+    return Promise.all(promises).then((ret: MCQueryResponse[]) => {
       this._MCVersion = ret[0].result;
       this._JavaVersion = ret[1].result;
       const mcChange = this._serialNumber && this._serialNumber !== ret[2].result;
@@ -947,7 +947,7 @@ export class DataService {
           }
         });
       }
-    }).then(()=>{
+    }).then(() => {
       return Promise.all(promises);
     })
       .then(() => {
@@ -965,7 +965,7 @@ export class DataService {
       .then(() => {
         return this.getSettings();
       }).then(() => {
-        return this.ws.query('?SC_IS_SAFETY_CARD_RUNNING').then(ret=>{
+        return this.ws.query('?SC_IS_SAFETY_CARD_RUNNING').then(ret => {
           this._safetyCardRunning = ret.result === '1';
         });
       }).then(() => {
@@ -1145,10 +1145,21 @@ export class DataService {
       this.dataRefreshed.next(true);
     });
   }
-  
+
   setDebugMode(on: boolean) {
     if (on) {
       this.dataLoaded.next(false);
     }
+  }
+
+  public buildFullName(v: TPVariable): string {
+    let fullname = v.name;
+    if (v.isArr) {
+      fullname = `${fullname}[${v.selectedIndex}]`;
+    }
+    if (v.isTwoDimension) {
+      fullname = `${fullname}[${v.selectedSecondIndex}]`;
+    }
+    return fullname;
   }
 }

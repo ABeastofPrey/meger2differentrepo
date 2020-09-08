@@ -9,7 +9,10 @@
 					<mat-panel-title>ControlStudio+</mat-panel-title>
 					<mat-panel-description>{{ 'legal.terms' | translate }}</mat-panel-description>
 				</mat-expansion-panel-header>
-				<div class="license-cs" [innerHTML]="license"></div>
+                <div class="license-cs" [innerHTML]="license"></div>
+                <P class="bold" *ngIf="!common.isTablet && this.utils.IsKuka">
+                    <a href="http://www.kuka.com" target="_blank">http://www.kuka.com</a>
+                </P>
 			</mat-expansion-panel>
 		</mat-accordion>
 	</div>

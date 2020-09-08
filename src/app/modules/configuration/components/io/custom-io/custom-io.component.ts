@@ -26,8 +26,6 @@ import {
 import { fromEvent } from 'rxjs';
 import { takeUntil, throttleTime } from 'rxjs/operators';
 
-let refreshInterval: number;
-
 @Component({
   selector: 'app-custom-io',
   templateUrl: './custom-io.component.html',
@@ -120,14 +118,14 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private stopNoticer: EventEmitter<any> = new EventEmitter<any>();
 
-  @ViewChild('addRow',{static: true}) private addRowViewRef:  any;
-  @ViewChild('deleteRow',{static: true}) private deleteRowViewRef:any;
+  @ViewChild('addRow', { static: true }) private addRowViewRef: any;
+  @ViewChild('deleteRow', { static: true }) private deleteRowViewRef: any;
 
   /**
    * Constructor.
    * @param ioService The ioService instance.
    */
-  constructor(private ioService: IoService, 
+  constructor(private ioService: IoService,
     private _elementRef: ElementRef,
     private trn: TranslateService,
     private changeDetectorRef: ChangeDetectorRef) {
@@ -153,46 +151,46 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() { }
 
   ngOnDestroy() {
-    refreshInterval && clearInterval(refreshInterval);
-    refreshInterval = null;
-     this.stopNoticer.emit(false);
+    this.stopNoticer.emit(false);
   }
 
   ngAfterViewInit() {
     this.queryCustomIOPorts();
 
-    fromEvent(this.addRowViewRef._elementRef.nativeElement,'click')
-    .pipe(takeUntil(this.stopNoticer),throttleTime(200))
-    .subscribe(()=>{
+    fromEvent(this.addRowViewRef._elementRef.nativeElement, 'click')
+      .pipe(takeUntil(this.stopNoticer), throttleTime(200))
+      .subscribe(() => {
         this.addRowInCustomTable();
-    });
+      });
 
-    fromEvent(this.deleteRowViewRef._elementRef.nativeElement,'click')
-    .pipe(takeUntil(this.stopNoticer),throttleTime(200))
-    .subscribe(()=>{
-      this.deleteRowInCustomTable();
-  });
-
-  }
-
-/**
- * query custom ports
- */
-  public queryCustomIOPorts(){
-    this.ioService
-    .queryCustomIoPorts()
-    .then(() => {
-      this.customIoPorts = this.ioService.getCustomIoPorts();
-      this.checkCustomIoTypes();
-    })
-    .then(() => {
+    fromEvent(this.deleteRowViewRef._elementRef.nativeElement, 'click')
+      .pipe(takeUntil(this.stopNoticer), throttleTime(200))
+      .subscribe(() => {
+        this.deleteRowInCustomTable();
+      });
+    this.ioService.refreshCustomIO.pipe(
+      takeUntil(this.stopNoticer)
+    ).subscribe((selectedTableIndex) => {
+      if (selectedTableIndex !== this.tableIndex) return;
       this.refreshTable();
-      !refreshInterval && (refreshInterval = setInterval(() => {
-        this.refreshTable();
-      }, 1000) as any);
     });
   }
-  
+
+  /**
+   * query custom ports
+   */
+  public queryCustomIOPorts() {
+    this.ioService
+      .queryCustomIoPorts()
+      .then(() => {
+        this.customIoPorts = this.ioService.getCustomIoPorts();
+        this.checkCustomIoTypes();
+      })
+      .then(() => {
+        this.refreshTable();
+      });
+  }
+
 
   /**
    * Select one row in the custom IO table.
@@ -262,7 +260,7 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
    * Delete one row in the custom IO table.
    */
   deleteRowInCustomTable() {
-    if (this.selectedIndexInCustomTable === -1 ) return;
+    if (this.selectedIndexInCustomTable === -1) return;
     const isSelectBottomLine = (this.selectedIndexInCustomTable !== this.customDataSource.data.length - 1) ? false : true;
     this.ioService
       .removeCustomIo(this.tableIndex, this.selectedIndexInCustomTable + 1)
@@ -355,11 +353,11 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
         this.customHex
       )
       .then(() => {
-         let rowData = this.ioService.getCustomIo(
+        let rowData = this.ioService.getCustomIo(
           this.customIOTypes,
           this.customIoPorts
         );
-        if(rowData){
+        if (rowData) {
           this.customDataSource.data[index] = rowData;
           this.customTable.renderRows();
         }
@@ -494,10 +492,10 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
               this.customDataSource.data[i].selectedPort = x.selectedPort;
               this.customDataSource.data[i].label = x.label;
               this.customDataSource.data[i].value = x.value;
-              (this.customDataSource.data[i].type.length !== x.type.length) && 
-              (this.customDataSource.data[i].type = x.type);
-              (this.customDataSource.data[i].port.length = x.port.length) && 
-              (this.customDataSource.data[i].port = x.port);
+              (this.customDataSource.data[i].type.length !== x.type.length) &&
+                (this.customDataSource.data[i].type = x.type);
+              (this.customDataSource.data[i].port.length = x.port.length) &&
+                (this.customDataSource.data[i].port = x.port);
             });
           }
 

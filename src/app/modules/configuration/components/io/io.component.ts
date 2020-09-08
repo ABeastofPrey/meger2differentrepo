@@ -13,7 +13,7 @@ import {
   MatSort,
   MatTableDataSource,
   MatTabChangeEvent,
-  MatDialog, MatTab
+  MatDialog, MatTab, MatButton
 } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 import { IO, IoService } from '../../services/io.service';
@@ -28,6 +28,9 @@ import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-n
 import { TranslateService } from '@ngx-translate/core';
 import { CustomIOComponent } from './custom-io/custom-io.component';
 import { LoginService } from '../../../core';
+import { WebsocketService } from '../../../core/services/websocket.service';
+import { fromEvent, Subject } from 'rxjs';
+import { takeUntil, throttleTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-io',
@@ -154,9 +157,11 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('standardIOTab', { static: true }) standardIOTab: MatTab;
 
-  private words: {};
+  @ViewChild('refreshBtn', { static: true }) refreshBtn: MatButton;
 
-  private refreshInterval: any;
+  private stopLinstener: Subject<void> = new Subject<void>();
+
+  private words: {};
 
   /**
    * Constructor.
@@ -168,6 +173,7 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
     public login: LoginService,
     private trn: TranslateService,
     private changeDetectorRef: ChangeDetectorRef,
+    private ws: WebsocketService
   ) {
     this.trn.get(['io']).subscribe(words => {
       this.words = words['io'];
@@ -217,18 +223,26 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.refreshInterval && clearInterval(this.refreshInterval);
+    this.stopLinstener.next();
+    this.stopLinstener.unsubscribe();
   }
 
   ngAfterViewInit() {
-    this.onViewSelectionChange('all');
     this.customTabDeleteIndex = 0;
-    this.refreshInterval && clearInterval(this.refreshInterval);
-    this.refreshInterval = setInterval(() => {
+    this.ws.isConnected.subscribe(connected => {
+      connected && this.onViewSelectionChange('all');
+    });
+
+    fromEvent(this.refreshBtn._elementRef.nativeElement, 'click').pipe(
+      takeUntil(this.stopLinstener),
+      throttleTime(500)
+    ).subscribe(() => {
       if (this.standardIOTab.isActive) {
         this.onViewSelectionChange('all');
-  }
-    }, 1000);
+      } else {
+        this.ioService.refreshCustomIO.emit(this.selected.value);
+      }
+    });
   }
 
   /**
@@ -459,7 +473,7 @@ export class IoComponent implements OnInit, OnDestroy, AfterViewInit {
       dataSource.data = this.ioService.getIos();
       dataSource.sort = sort;
       this.changeDetectorRef.markForCheck();
-      
+
     });
   }
 

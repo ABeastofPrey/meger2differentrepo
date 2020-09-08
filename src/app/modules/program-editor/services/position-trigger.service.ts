@@ -97,7 +97,7 @@ export class PositionTriggerService {
    * @memberof MotionTriggerService
    */
   private async retrieveIos(io = 0) {
-    const api = `?IOMAP_GET_IOS_NUMBERS_STRING(${io})`;
+    const api = `?IOMAP_GET_USER_IOS_NUMBERS(${io})`;
     const parseIos = compose(
       map(Number),
       dropLast(1),

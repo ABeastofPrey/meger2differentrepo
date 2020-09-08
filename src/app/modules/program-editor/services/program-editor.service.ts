@@ -518,7 +518,9 @@ export class ProgramEditorService {
           }
           const isUserTask = this.activeFile.endsWith('UPG');
           const priorityStr = isUserTask ? ' priority=15' : '';
-          const cmd = `Load$ "/FFS0/SSMC/${path}${this.activeFile}"` + priorityStr;
+        //   const cmd = `Load$ "/FFS0/SSMC/${path}${this.activeFile}"` + priorityStr;
+          const pathCmd = `/FFS0/SSMC/${path}${this.activeFile}`
+          const cmd = `BKG_load("${pathCmd}")`
           this.ws.query(cmd).then((ret: MCQueryResponse) => {
             const err = ret.err ? ret.err.find(e=>e.errType === 'ERROR') : null;
             if (err) {
@@ -613,8 +615,8 @@ export class ProgramEditorService {
       return;
     }
     if (endsWithBKG(this.activeFile)) {
-      this.ws.query('KillTask ' + this.activeFile).then(() => {
-        this.ws.query('Unload ' + this.activeFile).then((ret: MCQueryResponse) => {
+      this.ws.query(`BKG_ktas("${this.activeFile}")`).then(() => {
+        this.ws.query(`BKG_unload("${this.activeFile}")`).then((ret: MCQueryResponse) => {
           if (ret.result.length > 0) {
             this.snackbarService.openTipSnackBar(ret.result); 
           }
@@ -639,7 +641,7 @@ export class ProgramEditorService {
       });
       return;
     }
-    this.ws.query('IdleTask ' + this.activeFile).then(() => {
+    this.ws.query(`BKG_idletask("${this.activeFile}")`).then(() => {
       this.busy = false;
     });
   }
@@ -673,9 +675,16 @@ export class ProgramEditorService {
         });
       return;
     }
+    
+    if (endsWithBKG(this.activeFile)) {
+        this.ws.query(`BKG_stepover("${this.activeFile}")`).then((ret: MCQueryResponse) => {
+            this.busy = false;
+        });
+    } else {
     this.ws.query('StepOver ' + this.activeFile).then(() => {
-      this.busy = false;
-    });
+        this.busy = false;
+        });
+    }
   }
 
   stepInto() {
@@ -692,9 +701,16 @@ export class ProgramEditorService {
         });
       return;
     }
-    this.ws.query('StepIn ' + this.activeFile).then(() => {
-      this.busy = false;
-    });
+    if (endsWithBKG(this.activeFile)) {
+        this.ws.query(`BKG_stepin("${this.activeFile}")`).then((ret: MCQueryResponse) => {
+            this.busy = false;
+        });
+    } else {
+        this.ws.query('StepIn ' + this.activeFile).then(() => {
+            this.busy = false;
+        });
+    }
+    
   }
 
   stepOut() {
@@ -711,9 +727,15 @@ export class ProgramEditorService {
         });
       return;
     }
-    this.ws.query('StepOut ' + this.activeFile).then(() => {
-      this.busy = false;
-    });
+    if (endsWithBKG(this.activeFile)) {
+        this.ws.query(`BKG_stepout("${this.activeFile}")`).then((ret: MCQueryResponse) => {
+            this.busy = false;
+        });
+    } else {
+        this.ws.query('StepOut ' + this.activeFile).then(() => {
+            this.busy = false;
+        });
+    }
   }
 
   download() {
