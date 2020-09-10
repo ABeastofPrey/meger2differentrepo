@@ -32,7 +32,6 @@ const BASE_COLS = ['select', 'name', 'arrIndex'];
 const SUFFIX_COLS = ['actions'];
 
 const commanddLen: number = 80;//every command need in "" should less than 80, and total should less 80 * 20
-const totalCommandLen: number = 80 * 20;
 
 
 
@@ -55,7 +54,6 @@ export class DataScreenComponent implements OnInit {
     []
   );
 
-  private originalData: TPVariable[] = [];
   varTypes: TPVariableType[] = [TPVariableType.JOINT, TPVariableType.LOCATION, TPVariableType.LONG, TPVariableType.DOUBLE, TPVariableType.STRING];
   colsToDisplay: string[] = BASE_COLS;
 
@@ -221,6 +219,7 @@ export class DataScreenComponent implements OnInit {
     return this.ws.query(api).then((ret: MCQueryResponse) => {
       if (ret.err) return;
       this.buildVariable(v, ret.result);
+      this.changeDetectorRef.detectChanges();
     });
   }
 

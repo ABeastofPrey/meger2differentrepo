@@ -19,6 +19,7 @@ export const splitLibMsg = (oriMsg: string): string[] => {
 }
 
 export const getLogCode = (msg: string) => {
+  if (msg.indexOf(':') === -1) return NaN;
   const strIdx = msg.indexOf(':') + 1;
   const endIdx = msg.indexOf(',');
   const logCode = parseInt(msg.slice(strIdx, endIdx).trim());
@@ -29,7 +30,7 @@ export const isLibLog = (errCode: number) => errCode >= 20000 && errCode <= 2099
 
 @Injectable()
 export class TerminalService {
-  
+
   cmds: TerminalCommand[] = [];
   history: string[] = [];
   sentCommandEmitter: EventEmitter<string> = new EventEmitter<string>();
@@ -37,9 +38,9 @@ export class TerminalService {
   onNewCommand: EventEmitter<TerminalCommand> = new EventEmitter<TerminalCommand>();
 
   send(cmd: string) {
-    return this.ws.query(cmd).then(async(ret: MCQueryResponse) => {
+    return this.ws.query(cmd).then(async (ret: MCQueryResponse) => {
       const errCode = getLogCode(ret.result);
-      const [firstPortion, secondPortion, thirdPortion] = isLibLog(errCode) ? splitLibMsg(ret.result) : ['', '', ''];
+      const [firstPortion, secondPortion, thirdPortion] = (!isNaN(errCode) && isLibLog(errCode)) ? splitLibMsg(ret.result) : ['', '', ''];
       const terminalCommand = { cmd, result: ret.result.replace(/[\r]+/g, ''), para: secondPortion, firstPortion, thirdPortion };
       const [newCommand] = await this.getTranslationOfLibLogCmd([terminalCommand]);
       this.cmds.push(newCommand);
@@ -81,7 +82,7 @@ export class TerminalService {
     private trn: TranslateService,
     private data: DataService
   ) {
-    this.data.mcChange.subscribe(sn=>{
+    this.data.mcChange.subscribe(sn => {
       this.clear();
     });
   }
