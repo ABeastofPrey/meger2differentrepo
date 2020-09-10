@@ -61,18 +61,25 @@
 						<mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{ e }}</mat-option>
 					</mat-select>
 				</mat-form-field>
-				<mat-form-field>
-					<input
-						matInput
-						[placeholder]="data.moveS ? 'VTran [mm/s]' : 'VScale [%]'"
-						formControlName="vscale"
-						virtualKeyboard
-						ktype="numeric_pos"
-					/>
+
+				<mat-form-field *ngIf="!data.moveS else VTranTemp">
+					<input matInput [placeholder]="'VScale [%]'" formControlName="vscale" virtualKeyboard
+						ktype="numeric_pos" />
 					<mat-error *ngIf="ctrl.get('vscale').invalid">
-            {{ 'form_validation.percent' | translate }}
-          </mat-error>
+						{{ 'form_validation.percent' | translate }}
+					</mat-error>
 				</mat-form-field>
+
+				<ng-template #VTranTemp>
+					<mat-form-field>
+						<input matInput [placeholder]="'VTran [mm/s]'" formControlName="vscale" virtualKeyboard
+							ktype="numeric_pos" />
+						<mat-error *ngIf="ctrl.get('vscale').invalid">
+							{{'projectCommands.jumpx.numRange' | translate: {range: '(0, '+vtranMax+']'} }}
+						</mat-error>
+					</mat-form-field>
+				</ng-template>
+
 				<mat-form-field>
 					<input 
         matInput

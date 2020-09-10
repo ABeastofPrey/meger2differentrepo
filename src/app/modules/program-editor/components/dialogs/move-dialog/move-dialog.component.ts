@@ -6,6 +6,8 @@ import { ProgramEditorService } from '../../../services/program-editor.service';
 import { PositionTriggerService } from '../../../services/position-trigger.service';
 import { reduce, isEmpty, complement } from 'ramda';
 import { AddVarComponent } from '../../add-var/add-var.component';
+import { JumpxCommandService } from '../../combined-dialogs/services/jumpx-command.service';
+import { UtilsService } from '../../../../core/services/utils.service';
 import {FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors} from '@angular/forms';
 
 const rangeValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
@@ -137,7 +139,9 @@ export class MoveDialogComponent implements OnInit {
     private prg: ProgramEditorService,
     private dialog: MatDialog,
     private cd: ChangeDetectorRef,
-    private mtService: PositionTriggerService
+    private mtService: PositionTriggerService,
+    private jumpxService: JumpxCommandService,
+    private utilsService: UtilsService,
   ) {
     this.withParams = typeof this.data.params !== 'undefined';
     if (this.prg.lastVar && !this.withParams) {
@@ -155,6 +159,7 @@ export class MoveDialogComponent implements OnInit {
     }
   }
 
+  public vtranMax: number;
   ngOnInit() {
     this.mtService.plsNameList().then(nameList => {
       this.ptList = nameList;
@@ -167,6 +172,12 @@ export class MoveDialogComponent implements OnInit {
       ctrl.clearValidators();
       ctrl.setValidators([Validators.min(0)]);
     }
+    this.data.moveS && this.jumpxService.retrieveVtranMax().subscribe(max => {
+      this.vtranMax = max;
+      this.ctrl.controls['vscale'].setValidators(
+        this.utilsService.limitValidator(0, max, false, true)
+      );
+    });
   }
 
   ngAfterContentInit() {

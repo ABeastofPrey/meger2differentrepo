@@ -519,17 +519,33 @@ export class ProgramEditorService {
           const isUserTask = this.activeFile.endsWith('UPG');
           const priorityStr = isUserTask ? ' priority=15' : '';
         //   const cmd = `Load$ "/FFS0/SSMC/${path}${this.activeFile}"` + priorityStr;
-          const pathCmd = `/FFS0/SSMC/${path}${this.activeFile}`
-          const cmd = `BKG_load("${pathCmd}")`
-          this.ws.query(cmd).then((ret: MCQueryResponse) => {
-            const err = ret.err ? ret.err.find(e=>e.errType === 'ERROR') : null;
-            if (err) {
-              this.getTRNERR(err.errMsg);
-            } else {
-              this.errors = [];
-            }
-            this.busy = false;
-          });
+          if (endsWithBKG(this.activeFile)) {
+            const pathCmd = `/FFS0/SSMC/${path}${this.activeFile}`
+            const cmd = `BKG_load("${pathCmd}")`
+            this.ws.query(cmd).then((ret: MCQueryResponse) => {
+                const err = ret.err ? ret.err.find(e=>e.errType === 'ERROR') : null;
+                if (err) {
+                this.getTRNERR(err.errMsg);
+                } else {
+                this.errors = [];
+                }
+                this.busy = false;
+            });
+          }else {
+            const cmd = `Load$ "/FFS0/SSMC/${path}${this.activeFile}"` + priorityStr;
+            this.ws
+              .query(cmd)
+              .then((ret: MCQueryResponse) => {
+                // if (ret.result !== '0') this.getTRNERR(null);
+                // else this.errors = [];
+                if (ret.result !== '0') {
+                    this.getTRNERR(null);
+                }else {
+                    this.errors = [];
+                }
+                this.busy = false;
+              });
+          }
         } else {
           const words = [
             'files.err_upload',
@@ -641,9 +657,16 @@ export class ProgramEditorService {
       });
       return;
     }
-    this.ws.query(`BKG_idletask("${this.activeFile}")`).then(() => {
-      this.busy = false;
-    });
+
+    if (endsWithBKG(this.activeFile)) {
+        this.ws.query(`BKG_idletask("${this.activeFile}")`).then(() => {
+            this.busy = false;
+        });
+    }else {
+        this.ws.query('IdleTask ' + this.activeFile).then(() => {
+            this.busy = false;
+        });
+    }
   }
 
   unload(force?: boolean) {
