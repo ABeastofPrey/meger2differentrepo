@@ -175,14 +175,14 @@ export class DiagnosticsComponent implements OnInit {
     const mcuStatus = 
         this.mcuConnected ? this.words['connected'] : this.words['disconnected'];
     const trace1 = {
-      x: ['MCU Fan'],
+      x: ['Fan'],
       y: [val],
-      name: 'MCU Fan Level',
+      name: 'Fan Level',
       type: 'bar',
       marker: { color: [color] },
     };
     const trace2 = {
-      x: ['MCU Fan'],
+      x: ['Fan'],
       y: [MAXVAL - val],
       hoverinfo: 'skip',
       type: 'bar',
@@ -192,7 +192,7 @@ export class DiagnosticsComponent implements OnInit {
     const layout = {
       barmode: 'stack',
       showlegend: false,
-      title: 'MCU Fan (' + mcuStatus + ')',
+      title: 'Fan (' + mcuStatus + ')',
       yaxis: {fixedrange: true},
       xaxis : {fixedrange: true},
       annotations: [

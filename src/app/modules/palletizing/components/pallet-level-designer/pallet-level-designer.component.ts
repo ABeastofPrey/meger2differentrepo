@@ -154,8 +154,8 @@ export class PalletLevelDesignerComponent implements OnInit {
       const otherWidth = other.element.getBoundingClientRect().width;
       const otherHeight = other.element.getBoundingClientRect().height;
       if (
-        (otherTop + otherHeight > top && otherTop <= top) ||
-        (top + height > otherTop && top <= otherTop)
+        (otherTop + otherHeight > top + epsilon && otherTop <= top) ||
+        (top + height > otherTop + epsilon && top <= otherTop)
       ) {
         if (
           otherLeft === left ||

@@ -31,7 +31,8 @@ export class FwTranslatorService {
     const data = (trn[this.trn.currentLang] || trn['msg']) as string;
     // HANDLE SPECIAL CASES
     if (code >= 19000 && code <= 19999) {
-      const match = msg.match(new RegExp('(?:Axis |轴)(A\d+)'));
+      const reg = new RegExp('(?:Axis |轴)(A\\d+)');
+      const match = msg.match(reg);
       if (!match) return data;
       return data.replace('0',match[1]);
     }

@@ -406,7 +406,7 @@ export class MainComponent implements OnInit {
   }
 
   closeJog(): void {
-    this.screenManager.toggleControls();
+    this.screenManager.closeControls();
     this.utils.stretchOverlay();
   }
 

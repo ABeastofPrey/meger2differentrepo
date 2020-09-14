@@ -29,7 +29,7 @@
     "toolbar_expand": "Expand App Toolbar"
   },
   "apps": {
-    "cabinet_update": "KR CS Box Update Tool",
+    "cabinet_update": "KR CS Update Tool",
     "cabinet_update_open": "OPEN UPDATE TOOL",
     "cabinet_update_disabled": "Update tool requires the robot to be DISABLED. Disable the robot to proceed.",
     "err_mcu": "Error: could not update Front Panel Controller firmware",
@@ -50,7 +50,7 @@
     },
     "rebooting": "Rebooting Controller...",
     "title": "Controller Tools",
-    "update_warning": "KR CS Box Update Tool requires you to exit ControlStudio+ and DISABLE all motion tasks. Any unsaved data will be lost. Are you sure you want to leave ControlStudio+ and open the Cabinet Update Tool?",
+    "update_warning": "KR CS Update Tool requires you to exit ControlStudio+ and DISABLE all motion tasks. Any unsaved data will be lost. Are you sure you want to leave ControlStudio+ and open the Cabinet Update Tool?",
     "updating": "Updating System Software",
     "restore": {
       "default": "Default",
@@ -1010,10 +1010,15 @@
     },
     "btnCreate": "CREATE PROJECT",
     "delete-dialog": {
-      "btn-delete": "DELETE SELECTED PROJECTS",
+      "btn-delete1": "DELETE SELECTED PROJECTS",
+      "btn-delete2": "DELETE CURRENT PROJECT",
+      "err_current": "Can't delete the current project",
+      "err_exists": "This project is already on the list",
       "input": "Select Projects to Delete",
-      "message": "The following projects will be removed from the system. This operation cannot be undone.",
-      "title": "Delete Projects"
+      "message1": "The following projects and all of their files will be removed from the system. This operation cannot be undone.",
+      "message2": "All the project files will be removed permanently. Please select the project to switch to after the deletion:",
+      "title1": "Delete Projects",
+      "title2": "Delete current project"
     },
     "loaded": "Loaded",
     "name": "Project Name",
@@ -1367,7 +1372,8 @@
     },
     "vord": {
       "title": "Velocity Override",
-      "vmax": "Vmax Override"
+      "vmax": "Motor Max Velocity",
+      "vmax_vord": "Motor Max Velocity Override"
     },
     "mastering": {
       "cancelTitle": "Cancel mastering process?",

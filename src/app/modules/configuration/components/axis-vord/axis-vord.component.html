@@ -1,12 +1,12 @@
 <div *ngIf="initDone">
   <div class="vords title">
     <div>{{ 'robots.mastering.axis' | translate }}</div>
-    <div>Vmax</div>
+    <div>{{ 'robots.vord.vmax' | translate }}</div>
     <mat-slide-toggle
       color="primary"
       [(ngModel)]="enabled"
       (change)="onEnableToggle($event.checked)"
-    >{{ 'robots.vord.vmax' | translate }}</mat-slide-toggle>
+    >{{ 'robots.vord.vmax_vord' | translate }}</mat-slide-toggle>
   </div>
   <div *ngFor="let ax of vords; let i=index;" class="vords">
     <div>{{ax.name}}</div>

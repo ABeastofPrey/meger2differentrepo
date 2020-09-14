@@ -355,17 +355,10 @@ export class ProgramEditorAceComponent implements OnInit {
       enableLinking: true,
       fixedWidthGutter: true
     });
-    this.api
-      .getDocs()
-      .then((result : Command[]) => {
-        this.commands = result;
-      })
-      .then(() => {
-        this.keywords.initDone.subscribe(done => {
-          if (!done) return;
-          this.editor.completers = [this.keywords.getNewWordCompleter(false)];
-        });
-      });
+    this.keywords.initDone.subscribe(done => {
+      if (!done) return;
+      this.editor.completers = [this.keywords.getNewWordCompleter(false)];
+    });
     this.editor.$blockScrolling = Infinity;
     if (this.service.editorText) {
       this.editor.setValue(this.service.editorText, -1);

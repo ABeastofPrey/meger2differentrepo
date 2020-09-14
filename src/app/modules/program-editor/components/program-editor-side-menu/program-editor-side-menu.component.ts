@@ -571,7 +571,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
             this.service.close();
             this.service.mode = null;
             await this.prj.refreshAppList(prj, true);
-            this.prj.onExpand.emit(0);
+            this.prj.onExpand.emit(isBG ? 1 : 0);
           });
         }
       });
@@ -644,13 +644,14 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           name = name.toUpperCase();
           const prj = this.prj.currProject.value;
           const cmd = `?PRJ_RENAME_DEPENDENCY("${prj.name}","USER","${dep}","${name}.ULB")`;
-          this.ws.query(cmd).then((ret: MCQueryResponse) => {
+          this.ws.query(cmd).then(async (ret: MCQueryResponse) => {
             if ((ret.err || ret.result !== '0')) {
               return;
             }
             this.service.close();
             this.service.mode = null;
-            this.prj.refreshDependencies(prj);
+            await this.prj.refreshDependencies(prj);
+            this.prj.onExpandDep.emit(name);
           });
         }
       });

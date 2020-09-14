@@ -86,7 +86,7 @@ export class SimulatorService {
           if (p.type === 'CUSTOM') {
             promises.push(this.ws.query('?plt_get_origin("' + p.name + '")'));
           } else {
-            promises.push(this.ws.query('?plt_offset_custom_origin("' + p.name + '")'));
+            promises.push(this.ws.query('?PLT_OFFSET_GRID_ORIGIN("' + p.name + '")'));
           }
         }
         return Promise.all(promises);
@@ -151,7 +151,14 @@ export class SimulatorService {
         box.eulerXYZ.set(0, 0, THETA);
         box.scale.set(sizes[0], sizes[1], 0.0001);
         box.name = 'Pallet_' + i + '_' + this.dataService.pallets[i].name;
+        const cachedColor = localStorage.getItem('color_'+box.name);
+        if (cachedColor) {
+          box.color = cachedColor;
+        }
         this.scene.addChild(box);
+        if (!cachedColor) {
+          localStorage.setItem('color_'+box.name, box.color);
+        }
       });
   }
 

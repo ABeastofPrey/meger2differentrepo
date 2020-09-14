@@ -12,10 +12,10 @@
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="./meshes/visual/body4.stl"/>
+                <mesh filename="./meshes/visual/body.dae"/>
             </geometry>
             <material name="">
-                <color rgba="0 0 0 0.2"/>
+                <color rgba="1 0 0 0.2"/>
             </material>
         </visual>
     </link>

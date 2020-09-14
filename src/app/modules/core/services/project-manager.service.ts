@@ -510,8 +510,7 @@ export class ProjectManagerService {
       let ok = false;
       if (ret.result === '0') {
         ok = true;
-        //   this.snack.open(this.words, '', { duration: 1500 });
-          this.snackbarService.openTipSnackBar(this.words);
+        this.snackbarService.openTipSnackBar(this.words);
       }
       switch (setting) {
         case 'tool':

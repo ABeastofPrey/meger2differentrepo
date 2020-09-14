@@ -118,10 +118,12 @@ export class PayloadWizardComponent implements OnInit {
   private initCtrl(): FormControl {
     const ctrl = new FormControl(
       {
+        value: 0,
         disabled: this.login.isOperator,
       },
       [Validators.min(0)]
     );
+    console.log(ctrl);
     return ctrl;
   }
 

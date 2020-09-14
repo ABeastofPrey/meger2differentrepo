@@ -283,6 +283,9 @@ export class LoginScreenComponent implements OnInit {
         });
       }
     });
+    this.api.getFile('VERSION.DAT').then(ver=>{
+      this.ver = ver;
+    });
   }
 
   ngOnInit() {
@@ -293,7 +296,6 @@ export class LoginScreenComponent implements OnInit {
       this.startConnectionCheck();
       this.refreshInfo();
     });
-    this.ver = environment.gui_ver.split(' ')[0];
     this.authForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],

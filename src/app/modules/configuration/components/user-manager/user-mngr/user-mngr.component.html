@@ -16,6 +16,7 @@
 					(change)="$event ? masterToggle() : null"
 					[checked]="selection.hasValue() && isAllSelected()"
 					[indeterminate]="selection.hasValue() && !isAllSelected()"
+					[disabled]="dataSource.data?.length === 1"
 				>
 				</mat-checkbox>
 			</mat-header-cell>
@@ -26,6 +27,7 @@
 					(click)="$event.stopPropagation()"
 					(change)="$event ? selection.toggle(row) : null"
 					[checked]="selection.isSelected(row)"
+					[disabled]="login.getCurrentUser().user.username === row.username"
 				>
 				</mat-checkbox>
 			</mat-cell>

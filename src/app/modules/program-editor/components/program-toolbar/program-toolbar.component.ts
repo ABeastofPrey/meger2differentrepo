@@ -254,38 +254,59 @@ export class ProgramToolbarComponent implements OnInit {
   rename() {
     this.dialog.open(RenameDialogComponent);
   }
+
+  /* Deletes the current project */
   async delete() {
     this.prj.stopStatusRefresh();
     await new Promise(resolve=>{setTimeout(resolve,300)});
     const project = this.prj.currProject.value;
-    this.trn
-      .get('projects.toolbar.del_prj_title', { name: project.name })
-      .subscribe(word => {
-        this.dialog
-          .open(YesNoDialogComponent, {
-            data: {
-              title: word,
-              msg: this.words['projects.toolbar']['del_prj_msg'],
-              yes: this.words['button.delete'],
-              no: this.words['button.cancel'],
-            },
-          })
-          .afterClosed()
-          .subscribe(ret => {
-            if (ret) {
-              this.prgService.close();
-              this.ws
-                .query('?prj_delete_project("' + project.name + '")')
-                .then((ret: MCQueryResponse) => {
-                  if (ret.result === '0') {
-                    this.prgService.mode = 'editor';
-                    this.router.navigateByUrl('/projects');
-                    this.afterProjectChange();
-                  }
-                });
-            }
-          });
+    // check if there are other projects
+    const hasOthers = (await this.ws.query('?prj_get_list_of_projects')).result.split(',').length > 1;
+    if (!hasOthers) {
+      this.trn
+        .get('projects.toolbar.del_prj_title', { name: project.name })
+        .subscribe(word => {
+          this.dialog
+            .open(YesNoDialogComponent, {
+              data: {
+                title: word,
+                msg: this.words['projects.toolbar']['del_prj_msg'],
+                yes: this.words['button.delete'],
+                no: this.words['button.cancel'],
+              },
+            })
+            .afterClosed()
+            .subscribe(ret => {
+              if (ret) {
+                this.prgService.close();
+                this.ws
+                  .query('?prj_delete_project("' + project.name + '")')
+                  .then((ret: MCQueryResponse) => {
+                    if (ret.result === '0') {
+                      this.prgService.mode = 'editor';
+                      this.router.navigateByUrl('/projects');
+                      this.afterProjectChange();
+                    }
+                  });
+              }
+            });
       });
+    } else { // has other projects
+      this.dialog.open(ProjectDeleteDialogComponent,{
+        maxWidth: '500px',
+        data: { current: true}
+      }).afterClosed().subscribe(async (ret: string[]) => {
+        if (ret && ret.length > 0) {
+          const switchTo = ret[0];
+          this.prgService.close();
+          await this.ws.query('?prj_set_current_project("' + switchTo + '")');
+          await this.ws.query('?prj_delete_project("' + project.name + '")');
+          this.prgService.mode = 'editor';
+          this.router.navigateByUrl('/projects');
+          this.afterProjectChange();
+        }
+      });
+    }
   }
   async deleteOthers() {
     this.prj.stopStatusRefresh();

@@ -32,6 +32,8 @@ import { EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 // tslint:disable-next-line: no-any
 declare let Isomer: any;
@@ -56,6 +58,9 @@ const kukaColor = new Color(255, 115, 0);
   styleUrls: ['./pallet-wizard.component.css'],
 })
 export class PalletWizardComponent implements OnInit {
+
+  private notifier: Subject<boolean> = new Subject();
+  
   @Output() closed = new EventEmitter();
 
   step1: FormGroup;
@@ -86,6 +91,7 @@ export class PalletWizardComponent implements OnInit {
   private _originResult: string = null;
   private _doubleCheck = false; // TRUE WHEN TRYING TO CROSS-CHECK A FIELD, USED TO PREVENT LOOP CALLS
   private _busy = true;
+  private _destroyed = false;
 
   get busy() {
     return this._busy;
@@ -93,6 +99,7 @@ export class PalletWizardComponent implements OnInit {
 
   set busy(val) {
     this._busy = val;
+    if (this._destroyed) return;
     if (val) {
       this.step1.disable();
     } else {
@@ -348,7 +355,7 @@ export class PalletWizardComponent implements OnInit {
 
       // SET ODD EVEN
       this.dataService.selectedPallet.diffOddEven = ret[29].result === '1';
-
+      
       this.dataService.selectedPallet.flags = flags.map(val => {
         return Number(val);
       });
@@ -442,21 +449,11 @@ export class PalletWizardComponent implements OnInit {
   teachOrigin() {
     const pallet = this.dataService.selectedPallet;
     const robot = this.dataService.selectedRobot;
-    this.ws
-      .query(
-        '?PLT_FRAME_CALIBRATION_TEACH("' + pallet.name + '","o",' + robot + ')'
-      )
-      .then((ret: MCQueryResponse) => {
+    this.ws.query('?PLT_FRAME_CALIBRATION_TEACH("' + pallet.name + '","o",' + robot + ')').then(ret => {
         if (ret.result === '0') {
-          this.ws
-            .query(
-              'Printpoint PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","o")'
-            )
-            .then((ret: MCQueryResponse) => {
-              this.dataService.selectedPallet.origin = this.parseLocation(
-                ret.result
-              );
-            });
+          this.ws.query('Printpoint PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","o")').then(ret => {
+            this.dataService.selectedPallet.origin = this.parseLocation(ret.result);
+          });
         }
       });
   }
@@ -508,13 +505,33 @@ export class PalletWizardComponent implements OnInit {
       .query('?PLT_TEACH_ENTRY_POSITION("' + pallet.name + '",' + robot + ')')
       .then((ret: MCQueryResponse) => {
         if (ret.result === '0') {
-          this.ws
-            .query('printPoint PLT_GET_ENTRY_POSITION("' + pallet.name + '")')
+          this.ws.query('printPoint PLT_GET_ENTRY_POSITION("' + pallet.name + '")')
             .then((ret: MCQueryResponse) => {
               this.dataService.selectedPallet.entry = this.parseLocation(
                 ret.result
               );
             });
+          this.ws.query('?PLT_GET_CONFIGURATION_FLAGS("' +  pallet.name + '")').then(ret=>{
+            const flags = ret.result.split(',');
+            this.dataService.selectedPallet.flags = flags.map(val => {
+              return Number(val);
+            });
+            if (
+              this.dataService.selectedPallet.flags.some(f => {
+                return isNaN(f);
+              })
+            ) {
+              return Promise.all(
+                flags.map(f => {
+                  return this.ws.query('?' + f);
+                })
+              ).then((ret: MCQueryResponse[]) => {
+                this.dataService.selectedPallet.flags = ret.map(r => {
+                  return Number(r.result);
+                });
+              });
+            }
+          });
         }
       });
   }
@@ -1310,6 +1327,12 @@ export class PalletWizardComponent implements OnInit {
     this.setOriginPic(0);
   }
 
+  ngOnDestroy() {
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
+    this._destroyed = true;
+  }
+
   private initControls() {
     const pallet = this.dataService.selectedPallet;
     this.step1 = this._formBuilder.group({
@@ -1380,8 +1403,9 @@ export class PalletWizardComponent implements OnInit {
       updateOn: 'blur'
     });
     // listen to pallet and item change events
-    this.step1.get('itemSizeX').valueChanges.subscribe(e=>{
-      if (this._doubleCheck) return;
+    this.step1.get('itemSizeX').valueChanges.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      const ctrl = this.step1.get('itemSizeX');
+      if (this._doubleCheck || !ctrl.dirty) return;
       this._doubleCheck = true;
       this.step1.get('itemsX').updateValueAndValidity();
       this.step1.get('palletSizeX').updateValueAndValidity();
@@ -1393,15 +1417,17 @@ export class PalletWizardComponent implements OnInit {
       }
       this._doubleCheck = false;
     });
-    this.step1.get('itemsX').valueChanges.subscribe(e=>{
-      if (this._doubleCheck) return;
+    this.step1.get('itemsX').valueChanges.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      const ctrl = this.step1.get('itemsX');
+      if (this._doubleCheck || !ctrl.dirty) return;
       this._doubleCheck = true;
       this.step1.get('itemSizeX').updateValueAndValidity();
       this.step1.get('palletSizeX').updateValueAndValidity();
       this._doubleCheck = false;
     });
-    this.step1.get('palletSizeX').valueChanges.subscribe(e=>{
-      if (this._doubleCheck) return;
+    this.step1.get('palletSizeX').valueChanges.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      const ctrl = this.step1.get('palletSizeX');
+      if (this._doubleCheck || !ctrl.dirty) return;
       this._doubleCheck = true;
       this.step1.get('itemSizeX').updateValueAndValidity();
       this.step1.get('itemsX').updateValueAndValidity();
@@ -1414,8 +1440,9 @@ export class PalletWizardComponent implements OnInit {
       this._doubleCheck = false;
     });
 
-    this.step1.get('itemSizeY').valueChanges.subscribe(e=>{
-      if (this._doubleCheck) return;
+    this.step1.get('itemSizeY').valueChanges.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      const ctrl = this.step1.get('itemSizeY');
+      if (this._doubleCheck || !ctrl.dirty) return;
       this._doubleCheck = true;
       this.step1.get('itemsY').updateValueAndValidity();
       this.step1.get('palletSizeY').updateValueAndValidity();
@@ -1427,15 +1454,17 @@ export class PalletWizardComponent implements OnInit {
       }
       this._doubleCheck = false;
     });
-    this.step1.get('itemsY').valueChanges.subscribe(e=>{
-      if (this._doubleCheck) return;
+    this.step1.get('itemsY').valueChanges.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      const ctrl = this.step1.get('itemsY');
+      if (this._doubleCheck || !ctrl.dirty) return;
       this._doubleCheck = true;
       this.step1.get('itemSizeY').updateValueAndValidity();
       this.step1.get('palletSizeY').updateValueAndValidity();
       this._doubleCheck = false;
     });
-    this.step1.get('palletSizeY').valueChanges.subscribe(e=>{
-      if (this._doubleCheck) return;
+    this.step1.get('palletSizeY').valueChanges.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      const ctrl = this.step1.get('palletSizeY');
+      if (this._doubleCheck || !ctrl.dirty) return;
       this._doubleCheck = true;
       this.step1.get('itemSizeY').updateValueAndValidity();
       this.step1.get('itemsY').updateValueAndValidity();
@@ -1448,8 +1477,9 @@ export class PalletWizardComponent implements OnInit {
       this._doubleCheck = false;
     });
 
-    this.step1.get('itemSizeZ').valueChanges.subscribe(e=>{
-      if (this._doubleCheck) return;
+    this.step1.get('itemSizeZ').valueChanges.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      const ctrl = this.step1.get('itemSizeZ');
+      if (this._doubleCheck || !ctrl.dirty) return;
       this._doubleCheck = true;
       this.step1.get('itemsZ').updateValueAndValidity();
       if (pallet.type === 'CUSTOM') {
@@ -1460,8 +1490,9 @@ export class PalletWizardComponent implements OnInit {
       }
       this._doubleCheck = false;
     });
-    this.step1.get('itemsZ').valueChanges.subscribe(e=>{
-      if (this._doubleCheck) return;
+    this.step1.get('itemsZ').valueChanges.pipe(takeUntil(this.notifier)).subscribe(e=>{
+      const ctrl = this.step1.get('itemsZ');
+      if (this._doubleCheck || !ctrl.dirty) return;
       this._doubleCheck = true;
       this.step1.get('itemSizeZ').updateValueAndValidity();
       this._doubleCheck = false;
@@ -1497,9 +1528,9 @@ export class PalletWizardComponent implements OnInit {
       ],
       roll: ['', [Validators.required], this.validateEntry.bind(this, 'roll')],
       entryEnable: ['', []],
-      flag0: [-1, [Validators.required, Validators.min(0)], this.validateFlag.bind(this, 0)],
-      flag1: [-1, [Validators.required, Validators.min(0)], this.validateFlag.bind(this, 1)],
-      flag2: [-1, [Validators.required, Validators.min(0)], this.validateFlag.bind(this, 2)],
+      flag0: [-1, [Validators.required, Validators.min(1)], this.validateFlag.bind(this, 0)],
+      flag1: [-1, [Validators.required, Validators.min(1)], this.validateFlag.bind(this, 1)],
+      flag2: [-1, [Validators.required, Validators.min(1)], this.validateFlag.bind(this, 2)],
     }, {
       updateOn: 'blur'
     });
@@ -1706,6 +1737,7 @@ export class PalletWizardComponent implements OnInit {
       .then((ret: MCQueryResponse) => {
         if (ret.result !== '0' || ret.err) {
           this.dataService.selectedPallet.entryEnabled = !e.checked;
+          this.step3.controls['entryEnable'].setValue(!e.checked);
           return;
         }
         this.dataService.selectedPallet.entryEnabled = e.checked;
@@ -1839,7 +1871,9 @@ export class PalletWizardComponent implements OnInit {
             this.save();
           } else {
             this.ws.query('?PLT_RESTORE_PALLET("' + name + '")').then(ret=>{
-              this.getPalletInfo();
+              setTimeout(()=>{
+                this.getPalletInfo();
+              }, 200);
             });
           }
           this.closed.emit();

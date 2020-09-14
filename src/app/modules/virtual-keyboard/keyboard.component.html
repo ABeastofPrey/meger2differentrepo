@@ -40,7 +40,8 @@
 			<button
 				mat-raised-button
 				*ngFor="let btn of row"
-				[innerHTML]="btnToHtml(btn)"
+        [innerHTML]="btnToHtml(btn)"
+        [disabled]="isBtnDisabled(btn)"
 				[ngClass]="{
 					space: btn === ' ',
 					'key-down': (btn === 'arrow_upward' && _shiftMode) || (btn === 'more' && _moreMode)

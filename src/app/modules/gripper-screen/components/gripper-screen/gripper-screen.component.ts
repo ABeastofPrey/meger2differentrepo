@@ -78,7 +78,10 @@ export class ChecklistDatabase {
       return this.ws
         .query('?grp_end_effector_get_list')
         .then((ret: MCQueryResponse) => {
-          if (ret.err || ret.result.length === 0) return;
+          if (ret.err || ret.result.length === 0) {
+            this.dataChange.next([]);
+            return;
+          }
           const data: GripperTableNode[] = [];
           const promises = [];
           const efs = ret.result.split(',');
@@ -583,7 +586,7 @@ export class GripperScreenComponent implements OnInit {
       if (!stat) return;
       this.init();
     });
-    this.prj.currProject.subscribe(prj=>{
+    this.prj.currProject.pipe(takeUntil(this.notifier)).subscribe(prj=>{
       if (prj === null) {
         this.reset();
       } else if (!this._initDone) {

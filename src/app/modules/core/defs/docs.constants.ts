@@ -1637,6 +1637,11 @@ export const DOCS = {
       desc: `Open the currently active gripper`,
       meta: 'Subroutine'
     },
+    "grp_reset": {
+      syntax: `GRP_RESET_ACTIVE_GRIPPER()`,
+      desc: `Resets the end effector's properties to default values`,
+      meta: 'Subroutine'
+    },
     "grp_set": {
       syntax: `GRP_SET_ACTIVE_GRIPPER("[end effector]","[gripper]")`,
       desc: `Select the specified gripper as the current gripper`,

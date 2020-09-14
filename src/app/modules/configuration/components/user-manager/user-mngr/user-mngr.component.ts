@@ -69,16 +69,17 @@ export class UserMngrComponent implements OnInit {
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+    return numSelected === numRows - 1;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
-      : this.dataSource.data.forEach((row: UserWithPic) =>
-          this.selection.select(row)
-        );
+      : this.dataSource.data.forEach((row: UserWithPic) => {
+        if (row.username === this.login.getCurrentUser().user.username) return;
+        this.selection.select(row)
+      });
   }
 
   deleteSelected() {

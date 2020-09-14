@@ -1,8 +1,6 @@
 import { ProgramEditorService } from './../../program-editor/services/program-editor.service';
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
 import { BehaviorSubject } from 'rxjs';
-import { MCKeyword } from '../models/mc-keyword.model';
 import { GroupManagerService } from './group-manager.service';
 import { DOCS } from '../defs/docs.constants';
 import { DataService } from './data.service';
@@ -28,40 +26,13 @@ export class KeywordService {
     type: string
   }>;
 
-  get wordList() {
-    return this._wordList;
-  }
-
-  get keywords() {
-    return this._keywords;
-  }
-
-  private _wordList: string[];
-  private _keywords: string[];
-
   constructor(
-    private api: ApiService,
     private data: DataService,
     private prg: ProgramEditorService,
     private groups: GroupManagerService) {
 
     this.defineFolding();
-    //this.defineWorker();
-
-    this.api
-      .getMCKeywords()
-      .then(keywords => {
-        this._keywords = keywords.split('|');
-        return this.api.getMCProperties();
-      })
-      .then((cmds: MCKeyword[]) => {
-        const wordList: string[] = [];
-        for (const cmd of cmds) {
-          wordList.push(cmd.text);
-        }
-        this._wordList = wordList;
-        this.initDone.next(true);
-      });
+    this.initDone.next(true);
   }
 
   /*

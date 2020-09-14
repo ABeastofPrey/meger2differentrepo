@@ -34,11 +34,17 @@ export class SpeedChangerComponent implements OnInit {
 
   onChange(event: MatSliderChange) {
     this.tmpVal = event.value;
-    console.log(this.tmpVal);
   }
 
   @HostListener('window:mouseup')
   onmouseup() {
+    if (!this.isPressed) return;
+    this.ws.query('?tp_set_jog_vrate(' + this.tmpVal + ')');
+    this.isPressed = false;
+  }
+
+  @HostListener('window:touchend')
+  onTouchEnd() {
     if (!this.isPressed) return;
     this.ws.query('?tp_set_jog_vrate(' + this.tmpVal + ')');
     this.isPressed = false;

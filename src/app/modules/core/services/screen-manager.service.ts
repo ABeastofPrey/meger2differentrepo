@@ -1,3 +1,5 @@
+import { YesNoDialogComponent } from './../../../components/yes-no-dialog/yes-no-dialog.component';
+import { DataService } from './data.service';
 import { ControlStudioScreen } from './screen-manager.service';
 import { TourService } from 'ngx-tour-md-menu';
 import { CoordinatesService } from './coordinates.service';
@@ -201,21 +203,16 @@ export class ScreenManagerService {
     if (!isToggleByAddVar) {
       this.utils.removeShrinkStretchOverlay();
     }
-    this.openedControls.next(!this.openedControls.value);
-    if (!this.cmn.isTablet) {
-      const newMode = this.openedControls.value ? 'T1' : 'A';
-      const result = await this.stat.setMode(newMode);
-    }
-    if (
-      this.stat.mode !== 'T1' &&
-      this.stat.mode !== 'T2' &&
-      this.openedControls) {
-      this.closeControls();
+    const newVal = !this.openedControls.value;
+    if (newVal) {
+      await this.showControls();
+    } else {
+      await this.closeControls();
     }
   }
 
   async showControls() {
-    if (this.openedControls) return;
+    if (this.openedControls.value) return;
     this.openedControls.next(true);
     if (!this.cmn.isTablet) {
       await this.stat.setMode('T1');
@@ -223,7 +220,7 @@ export class ScreenManagerService {
     if (
       this.stat.mode !== 'T1' &&
       this.stat.mode !== 'T2' &&
-      this.openedControls) {
+      this.openedControls.value) {
       this.closeControls();
     }
   }
@@ -250,12 +247,30 @@ export class ScreenManagerService {
 
   async closeControls() {
     if (!this.openedControls.value) return;
-    this.openedControls.next(false);
     if (!this.cmn.isTablet) {
-      const ret = await this.stat.setMode('A');
-      if (!ret) {
-        this.openedControls.next(true);
+      if (this.data.isRobotType || this.screen.url !== 'teach' || (!this.login.isAdmin && !this.login.isSuper)) {
+        this.openedControls.next(false);
+        const ret = await this.stat.setMode('A');
+        if (!ret) {
+          this.openedControls.next(true);
+        }
+      } else {
+        this.trn.get('jogScreen.non_robot').subscribe(data=>{
+          this.dialog.open(YesNoDialogComponent,{maxWidth: '400px', data}).afterClosed().subscribe(async ret=>{
+            if (ret) { // user is sure he wants to close it
+              this.openedControls.next(false);
+              const ret = await this.stat.setMode('A');
+              if (!ret) {
+                this.openedControls.next(true);
+              }
+            } else {
+              return;
+            }
+          });
+        });
       }
+    } else {
+      this.openedControls.next(false);
     }
   }
 
@@ -323,7 +338,8 @@ export class ScreenManagerService {
     private webSocketService: WebsocketService,
     private container: OverlayContainer,
     private coos: CoordinatesService,
-    private tour: TourService
+    private tour: TourService,
+    private data: DataService
   ) {
     this.webSocketService.isConnected.subscribe(conn=>{
       if (!conn) {

@@ -1,10 +1,17 @@
 <div class="wrapper mat-typography">
-	<mat-toolbar color="primary">
-		{{ 'projects.delete-dialog.title' | translate }}
+	<mat-toolbar color="warn">
+		{{ (current ? 'projects.delete-dialog.title2' : 'projects.delete-dialog.title1') | translate }}
 	</mat-toolbar>
 	<div class="content">
-		{{ 'projects.delete-dialog.message' | translate }}
-		<mat-form-field class="chip-field">
+		{{ (current ? 'projects.delete-dialog.message2' : 'projects.delete-dialog.message1') | translate }}
+		<mat-form-field class="chip-field" *ngIf="current">
+			<mat-select placeholder="{{ 'projects.select' | translate }}" [formControl]="openProjectCtrl">
+				<mat-option *ngFor="let p of projects" [value]="p">
+					{{ p }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field class="chip-field" *ngIf="!current">
 			<mat-chip-list #chipList>
 				<mat-chip *ngFor="let project of selected" selectable="false" removable="true" (removed)="remove(project)">
 					{{ project }}
@@ -32,8 +39,8 @@
 		<button mat-button mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-raised-button color="warn" (click)="delete()" [disabled]="selected.length === 0">
-			{{ 'projects.delete-dialog.btn-delete' | translate }}
+		<button mat-raised-button color="warn" (click)="delete()" [disabled]="current ? openProjectCtrl.invalid : selected.length === 0">
+			{{ (current ? 'projects.delete-dialog.btn-delete2' : 'projects.delete-dialog.btn-delete1') | translate }}
 		</button>
 	</div>
 </div>

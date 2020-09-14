@@ -45,16 +45,10 @@ export class KeyboardDirective implements OnInit {
     let selectedLayout: string[][] = null;
     switch (this.ktype) {
       case 'numeric':
-        selectedLayout = LAYOUT_NUMERIC;
-        break;
       case 'numeric_pos':
-        selectedLayout = LAYOUT_NUMERIC_POS;
-        break;
       case 'numeric_int':
-        selectedLayout = LAYOUT_NUMERIC_INT;
-        break;
       case 'numeric_int_pos':
-        selectedLayout = LAYOUT_NUMERIC_INT_POS;
+        selectedLayout = LAYOUT_NUMERIC;
         break;
       default:
         selectedLayout = LAYOUT_STRING;
@@ -183,6 +177,7 @@ export class KeyboardDialog implements OnInit {
   private _cursorPos = 0; // index of the letter the cursor is at
   private panLeft = 0;
   private deleteTimeout: number;
+  private originalVal;
 
   @ViewChild('displayInput', { static: true }) displayInput?: ElementRef;
 
@@ -287,6 +282,7 @@ export class KeyboardDialog implements OnInit {
         });
       }
     }
+    this.originalVal = this.val;
     setTimeout(()=>{
       const col = this.data.el.getAttribute('column');
       if (col && col.length > 0) {
@@ -379,6 +375,7 @@ export class KeyboardDialog implements OnInit {
   }
 
   onKeyUp(key: string, e: MouseEvent) {
+    if (this.isBtnDisabled(key)) return;
     if (key === 'backspace') {
       this.backKeyDown = false;
     }
@@ -391,6 +388,7 @@ export class KeyboardDialog implements OnInit {
   }
 
   onInput(key: string, e: MouseEvent) {
+    if (this.isBtnDisabled(key)) return;
     e.preventDefault();
     const target = e.target as HTMLElement;
     const parent = target.parentElement;
@@ -585,6 +583,12 @@ export class KeyboardDialog implements OnInit {
     if (btn.length === 1) return btn;
     return '<i class="material-icons">' + btn + '</i>';
   }
+
+  isBtnDisabled(btn: string) {
+    if (btn === '-' && this.data.keyboardType.includes('pos')) return true;
+    if (btn === '.' && this.data.keyboardType.includes('int')) return true;
+    return false;
+  }
 }
 
 const LAYOUT_STRING: string[][] = [
@@ -617,27 +621,6 @@ const LAYOUT_NUMERIC: string[][] = [
   ['7', '8', '9'],
   ['.', '0', '-'],
   ['backspace'],
-];
-
-const LAYOUT_NUMERIC_POS: string[][] = [
-  ['1', '2', '3'],
-  ['4', '5', '6'],
-  ['7', '8', '9'],
-  ['.', '0', 'backspace']
-];
-
-const LAYOUT_NUMERIC_INT: string[][] = [
-  ['1', '2', '3'],
-  ['4', '5', '6'],
-  ['7', '8', '9'],
-  ['backspace', '0', '-']
-];
-
-const LAYOUT_NUMERIC_INT_POS: string[][] = [
-  ['1', '2', '3'],
-  ['4', '5', '6'],
-  ['7', '8', '9'],
-  ['backspace', '0']
 ];
 
 interface KeyboardData {

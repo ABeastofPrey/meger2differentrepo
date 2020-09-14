@@ -37,10 +37,7 @@ export class TeachService {
   }
   set selectedTeachVariable(val) {
     if (val) {
-      if (
-        this._selectedTeachVariable &&
-        val.name !== this._selectedTeachVariable.name
-      ) {
+      if (this._selectedTeachVariable && val.name !== this._selectedTeachVariable.name) {
         this._selectedTeachVariableIndex = null;
       }
       this._selectedTeachVariable = val;
@@ -61,8 +58,7 @@ export class TeachService {
         this._fullName = name;
       }
       this.ws
-        .query('?tp_get_value_namespace("' + this._fullName + '")')
-        .then((ret: MCQueryResponse) => {
+        .query('?tp_get_value_namespace("' + this._fullName + '")').then(ret => {
           if (ret.err) {
             return;
           }
@@ -75,9 +71,7 @@ export class TeachService {
             this._value = [{ value: valuesString.trim() }];
             return;
           }
-          const parts: string[] = valuesString
-            .substr(1, valuesString.length - 2)
-            .split(';');
+          const parts: string[] = valuesString.substr(1, valuesString.length - 2).split(';');
           const values = parts[0].split(',');
           const flags = parts[1] ? parts[1].split(',') : [];
           if (this.selectedTeachVariable.varType === TPVariableType.LOCATION) {
@@ -89,7 +83,9 @@ export class TeachService {
           const total = values.concat(flags);
           let newLegend: string[] = [];
           for (let i = 0; i < total.length; i++) {
-            this._value[i] = { value: total[i].trim() };
+            if (typeof this._value[i] === 'undefined' || this._value[i].value !== total[i].trim()){
+              this._value[i] = { value: total[i].trim() };
+            }
             if (this.selectedTeachVariable.varType === TPVariableType.JOINT) {
               newLegend.push('J' + (i + 1));
             }
@@ -158,35 +154,17 @@ export class TeachService {
     try {
       const fullname = this._fullName;
       const val = this._value as Array<{ value: number }>;
-      const size = Math.min(
-        val.length,
-        this.data.robotCoordinateType.legends.length
-      );
-      let value = val
-        .slice(0, size)
-        .map(v => {
-          return v.value;
-        })
-        .join();
+      const size = Math.min(val.length, this.data.robotCoordinateType.legends.length);
+      let value = val.slice(0, size).map(v=>v.value).join();
       if (this._selectedTeachVariable.varType === TPVariableType.LOCATION) {
-        value +=
-          ';' +
-          val
-            .slice(size)
-            .map(v => {
-              return v.value;
-            })
-            .join();
+        value += ';' + val.slice(size).map(v=>v.value).join();
       }
       const cmd = '?TP_EDITVAR("' + fullname + '","' + value + '")';
       this.ws.query(cmd).then((ret: MCQueryResponse) => {
-        console.log(cmd);
-        this.selectedTeachVariable = this.selectedTeachVariable;
+        this.selectedTeachVariable = this.selectedTeachVariable; // update value
         if (ret.result === '0') {
-            // this.snackBar.open(this.words['changeOK'], null, { duration: 2000 });
-            this.snackbarService.openTipSnackBar("changeOK");
+          this.snackbarService.openTipSnackBar("changeOK");
         }
-        else console.log(ret.cmd + '>>>' + ret.result);
       });
     } catch (err) {
       console.log(err);

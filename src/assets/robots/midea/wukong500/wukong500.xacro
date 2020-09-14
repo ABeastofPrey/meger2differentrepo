@@ -60,8 +60,8 @@
     <xacro:def_revolute_joint joint_name="joint2" axis="0 0 1" effort="1000.0" lower="-150" upper="150" velocity="1.0"
                               origin="0.225 0 0.075" parent="link1" child="link2"/>
     <xacro:def_link link_name="link2" mesh_name="link2.dae"/>
-    <xacro:def_prismatic_joint joint_name="joint3" axis="0 0 1" effort="1000.0" lower="-0.1315" upper="0.01"
-                               velocity="1.0" origin="0.274 0 0.015" parent="link2" child="link_empty_1"/>
+    <xacro:def_prismatic_joint joint_name="joint3" axis="0 0 1" effort="1000.0" lower="-14" upper="0.1"
+                               velocity="1.0" origin="0.274 0 0.02" parent="link2" child="link_empty_1"/>
     <xacro:def_empty_link link_name="link_empty_1"/>
     <xacro:def_revolute_joint joint_name="joint4" axis="0 0 1" effort="1000.0" lower="-360" upper="360" velocity="1.0"
                               origin="0 0 0" parent="link_empty_1" child="link3"/>

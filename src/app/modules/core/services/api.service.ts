@@ -428,20 +428,6 @@ export class ApiService {
     return this.put('/cs/api/theme/' + theme).toPromise();
   }
 
-  getMCKeywords() {
-    return this.http
-      .get(this.api_url + '/cs/MCCommands/all', { responseType: 'text' })
-      .toPromise();
-  }
-
-  getMCProperties() {
-    return this.http.get(this.api_url + '/cs/MCCommands').toPromise();
-  }
-
-  getDocs() {
-    return this.get('/cs/docs').toPromise();
-  }
-
   signup(
     username: string,
     password: string,

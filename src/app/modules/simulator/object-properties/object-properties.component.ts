@@ -24,7 +24,11 @@ export class ObjectPropertiesComponent implements OnInit {
 
   onColorChange(e: string) {
     const color = e.substring(1);
-    (this.lastSelectedNode as PrimitiveObject).color = color;
+    const el = this.lastSelectedNode as PrimitiveObject;
+    el.color = color;
+    if (el.name.startsWith('Pallet_')) {
+      localStorage.setItem('color_' + el.name, color);
+    }
   }
   
   get pallet() {

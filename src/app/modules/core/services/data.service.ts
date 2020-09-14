@@ -897,6 +897,7 @@ export class DataService {
         this.init();
       } else {
         this.dataLoaded.next(false);
+        this.reset();
       }
     });
     this.ws.isConnected.subscribe(stat => {
@@ -909,7 +910,7 @@ export class DataService {
   }
 
   reset() {
-    //this._selectedPallet = null;
+    this._selectedPallet = null;
   }
 
   getMinimumVersions() {

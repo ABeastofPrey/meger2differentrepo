@@ -123,6 +123,11 @@ export class ProgramEditMenuComponent implements OnInit {
     });
   }
 
+  menu_grp_reset() {
+    const cmd = 'GRP_RESET_ACTIVE_GRIPPER()';
+    this.prg.insertAndJump(cmd, 0);
+  }
+
   menu_pay_use() {
     this.dialog
       .open(PayloadSelectorComponent, {
