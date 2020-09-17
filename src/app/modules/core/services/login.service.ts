@@ -1,14 +1,15 @@
 import { ServerDisconnectComponent } from './../../../components/server-disconnect/server-disconnect.component';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { WebsocketService, MCQueryResponse } from './websocket.service';
+import { WebsocketService } from './websocket.service';
 import { ReplaySubject, BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { JwtService } from './jwt.service';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { User } from '../models/user.model';
+import { User, PermissionCode } from '../models/user.model';
 import { LicenseDialogComponent } from '../../../components/license-dialog/license-dialog.component';
 import { MatDialog, MatSnackBar } from '@angular/material';
+
 
 @Injectable()
 export class LoginService {
@@ -42,23 +43,23 @@ export class LoginService {
   }
 
   get isAdmin(): boolean {
-    return this.permissionCode === 0 || this.permissionCode === 99;
+    return this.permissionCode === PermissionCode.Admin || this.permissionCode === PermissionCode.Super;
   }
 
   get isViewer(): boolean {
-    return this.permissionCode === 3;
+    return this.permissionCode === PermissionCode.Viewer;
   }
 
   get isOperator(): boolean {
-    return this.permissionCode === 2;
+    return this.permissionCode === PermissionCode.Operator;
   }
 
   get isSuper(): boolean {
-    return this.permissionCode === 99;
+    return this.permissionCode === PermissionCode.Super;
   }
 
   get isProgrammer(): boolean {
-    return this.permissionCode === 1;
+    return this.permissionCode === PermissionCode.Programmer;
   }
 
   populate() {
@@ -119,7 +120,6 @@ export class LoginService {
     // Set auth status to false
     this.isAuthenticatedSubject.next(false);
   }
-
   attemptAuth(credentials): Observable<User> {
     return this.api.post('/cs/api/users', { user: credentials }).pipe(
       map((data: User) => {
@@ -141,14 +141,14 @@ export class LoginService {
     const ref = this.snack._openedSnackBarRef;
     if (ref) ref.dismiss();
     this.purgeAuth();
-    setTimeout(()=>{
+    setTimeout(() => {
       if (!serverDisconnected && this.ws.connected) {
         this.ws.reset();
       }
       if (serverDisconnected) {
         this.dialog.open(ServerDisconnectComponent);
       }
-    },200);
+    }, 200);
     return true;
   }
 

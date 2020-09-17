@@ -1,0 +1,128 @@
+<h2 mat-dialog-title class="mat-toolbar mat-primary mat-elevation-z3">
+  <div class="mat-inner-title" title="{{ stepInfo.title | translate }}">
+    {{ stepInfo?.title | translate }}
+  </div>
+</h2>
+<mat-dialog-content *ngIf="stepInfo.id">
+  <ng-container *ngIf="stepInfo?.id === Steps?.ERROR">
+    <div class="tips">
+      <mat-icon aria-hidden="false" color="warn">info</mat-icon>
+      <span>{{ tips | translate }}</span>
+    </div>
+  </ng-container>
+
+  <div *ngIf="stepInfo?.id === Steps?.USERSWITCH" class="user-switch">
+    <div class="tips">
+      <mat-icon aria-hidden="false" color="warn">info</mat-icon>
+      <span>{{ 'maintenance_arm.user_switcher.tips' | translate }}</span>
+    </div>
+  </div>
+  <ng-container *ngIf="stepInfo?.id === Steps?.PARAMETERSELECTION">
+    <div class="params-selecttion">
+      <div class="tips" *ngIf="tips">
+        <mat-icon aria-hidden="false" color="warn">info</mat-icon>
+        <span>{{ tips | translate }}</span>
+      </div>
+      <!-- controler to robot -->
+      <div
+        class="controler-params"
+        *ngIf="
+          paramsType === ParamsTypes.Controller ||
+          avalibleParams === ParamsTypes.Both
+        "
+      >
+        <mat-radio-button
+          [checked]="paramsType === ParamsTypes.Controller"
+          (click)="paramsType = ParamsTypes.Controller"
+        ></mat-radio-button>
+        <img src="assets/pics/maintenance-arm/control.png" />
+        <div class="line">
+          {{
+            'maintenance_arm.parameter_selection.controllerToArm' | translate
+          }}
+        </div>
+        <img src="assets/pics/maintenance-arm/robot.png" />
+      </div>
+      <!-- robot to controler -->
+      <div
+        class="arm-params"
+        *ngIf="
+          paramsType === ParamsTypes.Arm || avalibleParams === ParamsTypes.Both
+        "
+      >
+        <mat-radio-button
+          [checked]="paramsType === ParamsTypes.Arm"
+          (click)="paramsType = ParamsTypes.Arm"
+        ></mat-radio-button>
+        <img src="assets/pics/maintenance-arm/robot.png" />
+        <div class="line">
+          {{
+            'maintenance_arm.parameter_selection.ArmToController' | translate
+          }}
+        </div>
+        <img src="assets/pics/maintenance-arm/control.png" />
+      </div>
+      <div *ngIf="!avalibleParams" class="tips">
+        <mat-icon aria-hidden="false" color="warn">info</mat-icon>
+        {{ 'maintenance_arm.parameter_selection.params_invalid' | translate }}
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="stepInfo?.id === Steps?.CHOICECONFIRM">
+    <div class="tips">
+      <mat-icon aria-hidden="false" color="warn">info</mat-icon
+      >{{
+        (paramsType === ParamsTypes.Controller
+          ? 'maintenance_arm.choice_confirm.tip_controller'
+          : 'maintenance_arm.choice_confirm.tip_arm') | translate
+      }}
+    </div>
+  </ng-container>
+  <mat-spinner *ngIf="stepInfo?.id === Steps?.RESTORATION"></mat-spinner>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <!-- btnCancel btnBack  btnNext for spec test -->
+  <!-- unexception error -->
+  <button
+    *ngIf="
+      !avalibleParams &&
+      (stepInfo?.id !== Steps?.USERSWITCH && stepInfo?.id !== Steps?.ERROR)
+    "
+    mat-button
+    mat-raised-button
+    color="primary"
+    mat-button
+    cdkFocusInitial
+    (click)="dialogRef.close()"
+  >
+    {{ 'button.confirm' | translate }}
+  </button>
+  <button
+    *ngIf="stepInfo?.id === Steps?.CHOICECONFIRM"
+    mat-button
+    mat-raised-button
+    color="primary"
+    mat-button
+    cdkFocusInitial
+    class="btnBack"
+    (click)="onBack()"
+  >
+    {{ 'maintenance_arm.choice_confirm.btnBack' | translate }}
+  </button>
+  <button
+    *ngIf="stepInfo?.id !== Steps?.RESTORATION"
+    mat-button
+    mat-raised-button
+    color="primary"
+    mat-button
+    [disabled]="
+      stepInfo?.disabled ||
+      (stepInfo?.id === Steps?.PARAMETERSELECTION && !avalibleParams)
+    "
+    class="btnNext"
+    (click)="onNext()"
+  >
+    {{ stepInfo?.btnName | translate }}
+  </button>
+</mat-dialog-actions>

@@ -15,6 +15,7 @@ import { FileSelectorDialogComponent } from '../../components/file-selector-dial
 import { StxsimNgModule } from 'stxsim-ng';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TourMatMenuModule } from 'ngx-tour-md-menu';
+import { MaintenanceArmModule } from '../maintenance-arm/maintenance-arm.module';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { TourMatMenuModule } from 'ngx-tour-md-menu';
     StxsimNgModule,
     ScrollingModule,
     TourModule,
-    TourMatMenuModule
+    TourMatMenuModule,
+    MaintenanceArmModule
   ],
   declarations: [
     MainComponent,
@@ -41,4 +43,4 @@ import { TourMatMenuModule } from 'ngx-tour-md-menu';
     FileSelectorDialogComponent,
   ],
 })
-export class MainModule {}
+export class MainModule { }

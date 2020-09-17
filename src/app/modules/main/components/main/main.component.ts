@@ -49,6 +49,7 @@ import { TpLoadingComponent } from '../../../../components/tp-loading/tp-loading
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { SimulatorService } from '../../../core/services/simulator.service';
+import { MaintenanceArmCommonService } from '../../../maintenance-arm/maintenance-arm-common.service';
 
 @Component({
   selector: 'app-main',
@@ -144,7 +145,8 @@ export class MainComponent implements OnInit {
     public sim: SimulatorService,
     public terminal: TerminalService,
     private cd: ChangeDetectorRef,
-    private api: ApiService
+    private api: ApiService,
+    private maintenanceArmCommService: MaintenanceArmCommonService
   ) {
     this.trn.onLangChange.pipe(takeUntil(this.notifier)).subscribe(event => {
       this.refreshLang();
@@ -159,13 +161,13 @@ export class MainComponent implements OnInit {
         this.dialog.open(TpLoadingComponent, {
           disableClose: true,
           height: '300px',
-        }).afterClosed().subscribe(ret=>{
+        }).afterClosed().subscribe(ret => {
           if (!ret || this.utils.IsKuka) return;
           this.cmn.showTourDialog(false, this.prj.currProject.value);
         });
       }
     });
-    this.stat.estopChange.pipe(takeUntil(this.notifier)).subscribe(estop=>{
+    this.stat.estopChange.pipe(takeUntil(this.notifier)).subscribe(estop => {
       if (estop) {
         this.motionFlag = false;
         clearInterval(this.jogInterval);
@@ -183,7 +185,7 @@ export class MainComponent implements OnInit {
       this.words = words;
     });
   }
-  
+
   toggleHiddenMenu() {
     this.hiddenMenuVisible = !this.hiddenMenuVisible;
   }
@@ -203,8 +205,8 @@ export class MainComponent implements OnInit {
   ngOnInit() {
     this.api.ready.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) {
-        this.api.get('/cs/api/free-space').toPromise().then(free=>{
-          if (free < 50 * 1024 * 1024 ) { // < 50MB
+        this.api.get('/cs/api/free-space').toPromise().then(free => {
+          if (free < 50 * 1024 * 1024) { // < 50MB
             this.dialog.open(ErrorDialogComponent, {
               maxWidth: '400px',
               data: {
@@ -239,18 +241,18 @@ export class MainComponent implements OnInit {
         this.isRouterLoading = false;
       }
     });
-    this.screenManager.screenChange.pipe(takeUntil(this.notifier)).subscribe(e=>{
+    this.screenManager.screenChange.pipe(takeUntil(this.notifier)).subscribe(e => {
       if (e.old && e.old.url === 'simulator') {
         const conf = localStorage.getItem('floatingSim');
         if (conf) {
           const json: WindowConfiguration = JSON.parse(conf);
-          setTimeout(()=>{
+          setTimeout(() => {
             try {
               const el = this.simWindow.nativeElement as HTMLElement;
               this.restoreFloatingWindow(el, json);
             } catch (err) {
             }
-          },0);
+          }, 0);
         }
       }
     });
@@ -269,11 +271,14 @@ export class MainComponent implements OnInit {
     setTimeout(() => {
       if (!this.ws.connected) return this.router.navigateByUrl('/login');
       if (this.cmn.isTablet) {
-        this.ws.query('?tp_ver').then((ret:MCQueryResponse)=>{
+        this.ws.query('?tp_ver').then((ret: MCQueryResponse) => {
           if (ret.err) return this.login.logout();
         });
       }
     }, 2000);
+
+    this.maintenanceArmCommService.getMaitenanceRestorationStatus();
+
   }
 
   @HostListener('window:mousemove.out-zone', ['$event'])
@@ -286,7 +291,7 @@ export class MainComponent implements OnInit {
       this.mouseUp(null);
       return;
     }
-    if  (this.jogButtonPressed) {
+    if (this.jogButtonPressed) {
       const el = e.target as HTMLElement;
       const td = el.closest('td');
       if (td && td.closest('.jog-table')) {
@@ -309,9 +314,9 @@ export class MainComponent implements OnInit {
   toggleMenu() {
     if (!this.cmn.isTablet) this.screenManager.toggleMenu();
     else this.drawer.toggle();
-    setTimeout(()=>{
+    setTimeout(() => {
       this.cd.detectChanges();
-    },200);
+    }, 200);
   }
 
   mouseDown(i: number, e?: Event) {
@@ -374,10 +379,10 @@ export class MainComponent implements OnInit {
     const conf = localStorage.getItem('floatingTerminal');
     if (conf) {
       const json: WindowConfiguration = JSON.parse(conf);
-      setTimeout(()=>{
+      setTimeout(() => {
         const el = this.terminalWindow.nativeElement as HTMLElement;
         this.restoreFloatingWindow(el, json);
-      },0);
+      }, 0);
     }
   }
 
@@ -386,10 +391,10 @@ export class MainComponent implements OnInit {
     const conf = localStorage.getItem('floatingNotifications');
     if (conf) {
       const json: WindowConfiguration = JSON.parse(conf);
-      setTimeout(()=>{
+      setTimeout(() => {
         const el = this.notificationWindow.nativeElement as HTMLElement;
         this.restoreFloatingWindow(el, json);
-      },0);
+      }, 0);
     }
   }
 
@@ -398,10 +403,10 @@ export class MainComponent implements OnInit {
     const conf = localStorage.getItem('floatingWatch');
     if (conf) {
       const json: WindowConfiguration = JSON.parse(conf);
-      setTimeout(()=>{
+      setTimeout(() => {
         const el = this.watchWindow.nativeElement as HTMLElement;
         this.restoreFloatingWindow(el, json);
-      },0);
+      }, 0);
     }
   }
 
@@ -423,10 +428,10 @@ export class MainComponent implements OnInit {
       const conf = localStorage.getItem('floatingSim');
       if (conf) {
         const json: WindowConfiguration = JSON.parse(conf);
-        setTimeout(()=>{
+        setTimeout(() => {
           const el = this.simWindow.nativeElement as HTMLElement;
           this.restoreFloatingWindow(el, json);
-        },0);
+        }, 0);
       }
     }
   }
@@ -440,7 +445,7 @@ export class MainComponent implements OnInit {
     }
     return this.words['main.jogControlsToggle'];
   }
-  
+
   quitDebugMode() {
     location.reload();
   }
@@ -448,19 +453,19 @@ export class MainComponent implements OnInit {
   saveFloatingWindowsConfiguration() {
     if (this.terminalWindow) {
       const el = (this.terminalWindow.nativeElement as HTMLElement).getBoundingClientRect();
-      localStorage.setItem('floatingTerminal',JSON.stringify(this.getConfiguration(el)));
+      localStorage.setItem('floatingTerminal', JSON.stringify(this.getConfiguration(el)));
     }
     if (this.notificationWindow) {
       const el = (this.notificationWindow.nativeElement as HTMLElement).getBoundingClientRect();
-      localStorage.setItem('floatingNotifications',JSON.stringify(this.getConfiguration(el)));
+      localStorage.setItem('floatingNotifications', JSON.stringify(this.getConfiguration(el)));
     }
     if (this.simWindow) {
       const el = (this.simWindow.nativeElement as HTMLElement).getBoundingClientRect();
-      localStorage.setItem('floatingSim',JSON.stringify(this.getConfiguration(el)));
+      localStorage.setItem('floatingSim', JSON.stringify(this.getConfiguration(el)));
     }
     if (this.watchWindow) {
       const el = (this.watchWindow.nativeElement as HTMLElement).getBoundingClientRect();
-      localStorage.setItem('floatingWatch',JSON.stringify(this.getConfiguration(el)));
+      localStorage.setItem('floatingWatch', JSON.stringify(this.getConfiguration(el)));
     }
   }
 
@@ -478,7 +483,7 @@ export class MainComponent implements OnInit {
     el.style.top = json.y + 'px';
     el.style.width = json.w + 'px';
     el.style.height = json.h + 'px';
-    setTimeout(()=>{
+    setTimeout(() => {
       const top = el.getBoundingClientRect().top;
       const transform = el.style.transform;
       let transformY = 0;

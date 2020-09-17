@@ -1,5 +1,5 @@
 
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import {
   DataService,
   ProjectManagerService,
@@ -11,9 +11,9 @@ import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import {TranslateService} from '@ngx-translate/core';
-import {CommonService} from '../../modules/core/services/common.service';
-import {UtilsService} from '../../modules/core/services/utils.service';
+import { TranslateService } from '@ngx-translate/core';
+import { CommonService } from '../../modules/core/services/common.service';
+import { UtilsService } from '../../modules/core/services/utils.service';
 import { SysLogSnackBarService } from '../../modules/sys-log/services/sys-log-snack-bar.service';
 
 const TIMEOUT = 30000; // 30 SECONDS
@@ -23,9 +23,10 @@ const TIMEOUT = 30000; // 30 SECONDS
   templateUrl: './tp-loading.component.html',
   styleUrls: ['./tp-loading.component.css'],
 })
-export class TpLoadingComponent implements OnInit {
-  
+export class TpLoadingComponent implements OnInit, OnDestroy {
+
   env = environment;
+
 
   steps: LoadingStep[] = [
     {
@@ -61,10 +62,13 @@ export class TpLoadingComponent implements OnInit {
     private _zone: NgZone,
     public utils: UtilsService,
     private ws: WebsocketService,
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.trn.get(['dismiss', 'error.tp', 'error.tp_tablet']).subscribe(words=>{
+
+    this.stat.onloadingStatus.next(false);
+
+    this.trn.get(['dismiss', 'error.tp', 'error.tp_tablet']).subscribe(words => {
       this.words = words;
     });
     this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(stat => {
@@ -81,15 +85,15 @@ export class TpLoadingComponent implements OnInit {
         this.checkStatus();
       }
     });
-    this.ws.isConnected.subscribe(stat=>{
+    this.ws.isConnected.subscribe(stat => {
       if (!stat) {
         window.clearTimeout(this.timeout);
       }
     });
     window.clearTimeout(this.timeout);
-    this.timeout = window.setTimeout(()=>{
-      this._zone.run(()=>{
-        const notDone = this.steps.some(s=>!s.done);
+    this.timeout = window.setTimeout(() => {
+      this._zone.run(() => {
+        const notDone = this.steps.some(s => !s.done);
         if (notDone) {
           console.warn(this.steps);
           console.log(this.stat);
@@ -97,13 +101,13 @@ export class TpLoadingComponent implements OnInit {
           console.log(this.prj.currProject.value);
           this.ref.close();
           const word = this.cmn.isTablet ? 'error.tp_tablet' : 'error.tp';
-          this.snackbarService.openTipSnackBar(word);       
+          this.snackbarService.openTipSnackBar(word);
           if (this.cmn.isTablet) {
             this.login.logout();
           }
         }
       });
-    },TIMEOUT);
+    }, TIMEOUT);
   }
 
   get firstUnloadedStep(): string {
@@ -124,12 +128,14 @@ export class TpLoadingComponent implements OnInit {
       })
     ) {
       this.ref.close(true);
+      this.stat.onloadingStatus.next(true);
     }
   }
 
   ngOnDestroy() {
     this.notifier.next(true);
     this.notifier.unsubscribe();
+    this.stat.onloadingStatus.next(false);
   }
 }
 

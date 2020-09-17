@@ -37,6 +37,9 @@ export class TpStatService {
   wackChange: Subject<boolean> = new Subject();
   onProjectLoaded: EventEmitter<boolean> = new EventEmitter();
   onlineStatus: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+  onloadingStatus: BehaviorSubject<boolean> = new BehaviorSubject(false);//false is no
+
   get jogEnabled() {
     return this.mode !== 'A';
   }
@@ -68,7 +71,7 @@ export class TpStatService {
   get systemErrorCode() {
     return this._systemErrorCode;
   }
-  
+
   get estop(): boolean {
     return this._estop;
   }
@@ -106,7 +109,7 @@ export class TpStatService {
   }
 
 
-  // SET MODE SYNC 
+  // SET MODE SYNC
   async setMode(mode: string, pass?: string): Promise<boolean> {
     console.log(this.mode + ' --> ' + mode);
     const oldStat = this.mode;
@@ -190,7 +193,7 @@ export class TpStatService {
 
   updateState(statString: string) {
     if (this.lastStatString === statString) return;
-    this.zone.run(()=>{
+    this.zone.run(() => {
       this.lastStatString = statString;
       if (statString.length === 0) {
         console.log('ERROR: CYCLIC FUNCTION 0 (TP_STAT) RETURNS A BLANK RESULT');
@@ -280,6 +283,7 @@ export class TpStatService {
                   result,
                 })
                 .subscribe(words => {
+                  this.dialog.closeAll();//close opend dialog
                   this.dialog.open(ErrorDialogComponent, {
                     data: {
                       title: words['stat.err_init.title'],
@@ -296,7 +300,7 @@ export class TpStatService {
       refreshRate
     );
   }
-  
+
   resetStat() {
     console.log('reset stat');
     this._enabled = false;
@@ -328,7 +332,7 @@ export class TpStatService {
         }
       });
   }
-  
+
   setDebugMode(on: boolean) {
     if (on) {
       // STOP TP_STAT
@@ -356,7 +360,7 @@ export class TpStatService {
     this.trn
       .get([
         'acknowledge', 'offline', 'online',
-        'stat.err_critical.title', 'stat.err_critical.message'],{
+        'stat.err_critical.title', 'stat.err_critical.message'], {
         appName: environment.appName,
       }).subscribe(words => {
         this.words = words;

@@ -669,6 +669,40 @@
       "yes": "是, 开始吧!"
     }
   },
+  "maintenance_arm": {
+    "error": {
+      "title": "机械臂与控制柜不匹配",
+      "tips": "机械臂中的序列号和类型号与控制柜不一致，请检查"
+    },
+    "not_match": {
+      "title": "恢复参数",
+      "SN_not_match": "机械臂中的序列号不一致，数据恢复完成后请检查机器人参数（DH、零点等）",
+      "SN_PN_not_match": "机械臂中的序列号、类型号不一致，数据恢复完成后请检查机器人参数（DH、零点等）"
+    },
+    "user_switcher": {
+      "title": "切换账号",
+      "tips": "控制柜或机械臂已更换，请登录管理员账号处理"
+    },
+    "parameter_selection": {
+      "title": "恢复参数",
+      "controllerToArm": "控制柜到机械臂",
+      "ArmToController": "机械臂到控制柜",
+      "btnName": "恢复",
+      "params_invalid": "机械臂和控制柜中参数无效"
+    },
+    "choice_confirm": {
+      "title": "恢复参数",
+      "btnName": "确认",
+      "btnBack": "返回",
+      "tip_controller": "将控制柜的参数恢复到机械臂中",
+      "tip_arm": "将机械臂的参数恢复到控制柜中"
+    },
+    "restoration": {
+      "title": "恢复参数中...",
+      "btnName": "确认",
+      "error": "恢复数据失败"
+    }
+  },
   "message_log": "消息日志",
   "mode_debug": "调试模式",
   "mode_remote": "远程模式",
@@ -797,8 +831,8 @@
     "manipulate": "操作",
     "uninstall": "卸载",
     "progress": {
-        "title": "卸载插件 - 依赖检查",
-        "uninstallPlugin": "卸载插件"
+      "title": "卸载插件 - 依赖检查",
+      "uninstallPlugin": "卸载插件"
     },
     "confirm": "卸载",
     "dependList": "部分插件依赖所选中的插件，点击“卸载”继续，或点击“取消”结束卸载过程",

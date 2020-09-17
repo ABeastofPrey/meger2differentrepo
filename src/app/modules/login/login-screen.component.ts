@@ -5,7 +5,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Errors } from '../core/models/errors.model';
 import { MatDialog } from '@angular/material';
-import { ServerDisconnectComponent } from '../../components/server-disconnect/server-disconnect.component';
 import { ApiService, WebsocketService, MCQueryResponse } from '../core';
 import { environment } from '../../../environments/environment';
 import {
@@ -20,6 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../core/services/utils.service';
 import { CommonService } from '../core/services/common.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { MaintenanceArmCommonService } from '../maintenance-arm/maintenance-arm-common.service';
 
 @Component({
   selector: 'login-screen',
@@ -62,17 +62,17 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
     ]),
     trigger('robot1', [
       state('none, void', style({
-          right: '-400px'
+        right: '-400px'
       })),
       state('shown', style({
-          right: '24px'
+        right: '24px'
       })),
       transition('none => shown', animate('1s 0.4s ease-out')),
       transition('shown => none', animate('1s ease-in'))
     ]),
     trigger('robot2', [
       state('none, void', style({
-          left: '-400px'
+        left: '-400px'
       })),
       state('shown', style({
         left: '0px'
@@ -82,30 +82,30 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
     ]),
     trigger('conveyor', [
       state('none, void', style({
-          left: '-1000px'
+        left: '-1000px'
       })),
       state('shown', style({
-          left: '-300px'
+        left: '-300px'
       })),
       transition('none => shown', animate('1s 0.2s ease-out')),
       transition('shown => none', animate('0.6s ease-in'))
     ]),
     trigger('cabinet', [
       state('none, void', style({
-          left: '-400px'
+        left: '-400px'
       })),
       state('shown', style({
-          left: '24px'
+        left: '24px'
       })),
       transition('none => shown', animate('1s 0.2s ease-out')),
       transition('shown => none', animate('0.6s ease-in'))
     ]),
     trigger('floor', [
       state('none, void', style({
-          bottom: '-300px'
+        bottom: '-300px'
       })),
       state('shown', style({
-          bottom: '0px'
+        bottom: '0px'
       })),
       transition('* => shown', animate('0.4s ease-out')),
       transition('shown => *', animate('0.4s 0.6s ease-in'))
@@ -113,7 +113,7 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
   ],
 })
 export class LoginScreenComponent implements OnInit {
-  
+
   ver: string;
   username = '';
   password = '';
@@ -159,6 +159,7 @@ export class LoginScreenComponent implements OnInit {
     private trn: TranslateService,
     public utils: UtilsService,
     public cmn: CommonService,
+    private maintenanceArmCommonService: MaintenanceArmCommonService,
   ) {
     this.appName = utils.IsKuka
       ? environment.appName_Kuka
@@ -215,9 +216,13 @@ export class LoginScreenComponent implements OnInit {
         this.isSubmitting = false;
       }
     );
+
+    //maintenance of arm and cabinet
+    this.maintenanceArmCommonService.resoreParamsAfterLogin();
+
   }
-  
-  private getEtag() : string {
+
+  private getEtag(): string {
     if (!this.env.production) return '';
     const req = new XMLHttpRequest();
     req.open('GET', this.api.api_url + '/rs/assets/scripts/conn.js?t=' + new Date().getTime(), false);
@@ -240,9 +245,9 @@ export class LoginScreenComponent implements OnInit {
         this.refreshInfo();
       }
       this.isMcAvailable = true;
-    }, err=> {
+    }, err => {
       this.isMcAvailable = false;
-    }).catch(err=>{
+    }).catch(err => {
       this.isMcAvailable = false;
     });
   }
@@ -256,7 +261,7 @@ export class LoginScreenComponent implements OnInit {
     const compWs = environment.compatible_webserver_ver;
     this.api.getSysBasicInfo().then((ret: SysInfo) => {
       this.info = ret;
-      this.info.ip = this.info.ip.substring(0,this.info.ip.indexOf(':'));
+      this.info.ip = this.info.ip.substring(0, this.info.ip.indexOf(':'));
       if (this.info.ip === '0.0.0.0') this.info.ip = 'N/A';
     });
     this.api.get('/cs/api/java-version').subscribe((ret: { ver: string }) => {
@@ -291,7 +296,7 @@ export class LoginScreenComponent implements OnInit {
   ngOnInit() {
     // this.login.purgeAuth();
     this.platform = navigator.platform;
-    this.api.ready.pipe(takeUntil(this.notifier)).subscribe(stat=>{
+    this.api.ready.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (!stat) return;
       this.startConnectionCheck();
       this.refreshInfo();
@@ -329,8 +334,8 @@ export class LoginScreenComponent implements OnInit {
       this.compInit = true;
     }, 200);
   }
-  
-  
+
+
   /*
    * CALLED WHEN USER IS AUTHENTICATED FROM LOCALSTORAGE AND WEBSOCKET IS OPENED
    */
@@ -338,7 +343,7 @@ export class LoginScreenComponent implements OnInit {
     if (!this.cmn.isTablet) {
       return this.router.navigateByUrl('/');
     }
-    this.ws.query('?tp_ver').then((ret:MCQueryResponse)=>{
+    this.ws.query('?tp_ver').then((ret: MCQueryResponse) => {
       if (ret.err) {
         // DISCONNECT FROM WEBSOCKET
         clearTimeout(this.wsTimeout);
@@ -361,11 +366,11 @@ export class LoginScreenComponent implements OnInit {
 
   ngAfterViewInit() {
     (document.activeElement as HTMLElement).blur();
-    setTimeout(()=>{
+    setTimeout(() => {
       if (!this._incompatibility) {
         this.authForm.enable();
       }
-    },1000);
+    }, 1000);
     this.route.queryParams.pipe(takeUntil(this.notifier)).subscribe(params => {
       if (params['serverDisconnected']) {
         this.router.navigate(this.route.snapshot.url, { queryParams: {} });
@@ -373,4 +378,5 @@ export class LoginScreenComponent implements OnInit {
     });
     this.pageLoaded = 'shown';
   }
+
 }

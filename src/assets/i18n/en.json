@@ -687,6 +687,40 @@
       "yes": "YES, LET'S GO!"
     }
   },
+  "maintenance_arm": {
+    "error": {
+      "title": "Robot Does Not Match With Controller",
+      "tips": "Serial Numbers and Part Numbers stored in robot arm are incompatible to controller, please check it"
+    },
+    "not_match": {
+      "title": "Parameters Restoration",
+      "SN_not_match": "Serial numbers stored in robot arm are inconsistent, please check robot parameters (DH, offset etc) after restoration",
+      "SN_PN_not_match": "Serial numbers and part numbers stored in robot arm are inconsistent, please check robot parameters (DH, offset etc) after restoration "
+    },
+    "user_switcher": {
+      "title": "Switch Account",
+      "tips": "The controller or the arm is replaced. An administrator is required to deal with it"
+    },
+    "parameter_selection": {
+      "title": "Parameters Restoration",
+      "controllerToArm": "Controller to arm",
+      "ArmToController": "Arm to controller",
+      "btnName": "RESTORE ",
+      "params_invalid": "Controller and arm parameters are invalid"
+    },
+    "choice_confirm": {
+      "title": "Parameters Restoration",
+      "btnName": "CONFIRM",
+      "btnBack": "BACK",
+      "tip_controller": "Will restore parameters from controller to arm",
+      "tip_arm": "Will restore parameters from arm to controller"
+    },
+    "restoration": {
+      "title": "Parameter Restoration In Progress",
+      "btnName": "CONFIRM",
+      "error": "Restore parameters failed"
+    }
+  },
   "message_log": "Message Log",
   "mode_debug": "DEBUG MODE",
   "mode_remote": "REMOTE MODE",
@@ -831,8 +865,8 @@
     "manipulate": "Manipulate",
     "uninstall": "UNINSTALL",
     "progress": {
-        "title": "Uninstalling Plugin - Dependency Check",
-        "uninstallPlugin": "Uninstalling Plugin"
+      "title": "Uninstalling Plugin - Dependency Check",
+      "uninstallPlugin": "Uninstalling Plugin"
     },
     "confirm": "UNINSTALL",
     "dependList": "Some plugins are depend on the selected plugin, click 'UNINSTALL' to continue or click 'CANCLE' to end the uninstallation process.",
