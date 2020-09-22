@@ -1,0 +1,61 @@
+.main {
+    height: 100%;
+}
+
+.wrapper {
+    height: calc(100% - 36px);
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    margin: -24px -24px 24px -24px;
+    padding: 16px;
+    background-color: #00897b;
+    color: #fff;
+    font-size: 18px;
+}
+header {
+    mat-form-field {
+        width: 260px;
+    }
+}
+mat-dialog-content {
+    width: 100%;
+    max-height: 230px;
+    table {
+        width: 100%;
+        max-height: 255px;
+        overflow: auto;
+        box-shadow: none;
+        .VariableNameHeader {
+            width: 50%;
+        }
+        .VariableTypeHeader {
+            width: 40%;
+        }
+    }
+}
+.returnType {
+    width: 260px;
+    margin-top: 20px;
+}
+.actions {
+    footer {
+        margin-top: 10px;
+        text-align: right;
+    }
+}
+td.mat-cell:first-of-type,
+td.mat-footer-cell:first-of-type,
+th.mat-header-cell:first-of-type {
+    padding-left: 0;
+}
+.tip {
+    color: gray;
+}
+.mat-input-element {
+    height: 19px !important;
+}

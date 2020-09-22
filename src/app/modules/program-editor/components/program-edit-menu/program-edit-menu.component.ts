@@ -30,6 +30,7 @@ import { JumpxCommandComponent } from '../combined-dialogs/components/jumpx-comm
 import { TraceSelectorComponent } from '../dialogs/trace-selector/trace-selector.component';
 import { ProceedDialogComponent } from '../dialogs/proceed-dialog/proceed-dialog.component';
 import { PluginService } from '../../services/plugin.service';
+import { FunctionProgramComponent } from '../dialogs/function-program/function-program.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -343,8 +344,19 @@ export class ProgramEditMenuComponent implements OnInit {
       if (!robot) return;
       if (robot !== 'NULL') cmd += ' ' + robot + '\n\nDetach ' + robot;
       else cmd += '\n\nDetach';
-      this.prg.insertAndJump(cmd, 2);
+      this.prg.insertAndJump(cmd, 0);
     });
+  }
+  menu_function(): void {
+    const ref = this.dialog.open(FunctionProgramComponent, {
+        width: '600px',
+        data: {
+            title: 'projectCommands.other.title_function',
+        },
+    })
+    ref.afterClosed().subscribe((cmd: string) => {
+        cmd ? this.prg.insertAndJump(cmd,3) : "";
+    })
   }
   menu_gohome() {
     this.dialog

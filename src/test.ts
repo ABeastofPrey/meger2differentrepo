@@ -72,6 +72,8 @@ pluginManageContext.keys().map(pluginManageContext);
 const pluginManagePopContext = require.context('./app/modules/configuration/components/plugin-manage-pop', true, /\.spec\.ts$/);
 pluginManagePopContext.keys().map(pluginManagePopContext);
 
+const programFunctionContext = require.context('./app/modules/program-editor/components/dialogs/function-program', true, /\.spec\.ts$/);
+programFunctionContext.keys().map(programFunctionContext);
 const maintenanceArmContext = require.context('./app/modules/maintenance-arm/maintenance-dialog/', true, /\.spec\.ts$/);
 maintenanceArmContext.keys().map(maintenanceArmContext);
 
