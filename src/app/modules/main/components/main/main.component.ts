@@ -277,7 +277,7 @@ export class MainComponent implements OnInit {
       }
     }, 2000);
 
-    this.maintenanceArmCommService.getMaitenanceRestorationStatus();
+    this.maintenanceArmCommService.watchLoadinStatus();
 
   }
 

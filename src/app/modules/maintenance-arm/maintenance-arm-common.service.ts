@@ -1,16 +1,15 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { WebsocketService, TpStatService } from '../core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MaintenanceDialogComponent } from './maintenance-dialog/maintenance-dialog.component';
-import { ParamsType, CompareResult, MAINTENANCEARMSTATUS, MaintenanceProgressStaus, RARM_ROBOT_STATUS } from './maintenance-arm.model';
-
+import { ParamsType, CompareResult, RARM_ROBOT_STATUS } from './maintenance-arm.model';
 
 
 @Injectable({ providedIn: 'root' })
 export class MaintenanceArmCommonService implements OnDestroy {
 
-  private static maintanenceDialogRef: MatDialogRef<MaintenanceDialogComponent>;
+  private static loadingStarted: boolean = false;
 
   private isLoadingDoneSub: Subscription;
 
@@ -25,14 +24,6 @@ export class MaintenanceArmCommonService implements OnDestroy {
   }
 
 
-  //after login restore parameters
-  public resoreParamsAfterLogin() {
-    const value = window.sessionStorage.getItem(MAINTENANCEARMSTATUS);//is unfineshed should show the dialog
-    if (value === MaintenanceProgressStaus.unFindeshed) return;
-    this.watchLoadinStatus();
-  }
-
-
   //maintenance arm and cabinet
   private resorationArmOrCabinetParams() {
     this.statusSub && this.statusSub.unsubscribe();
@@ -40,17 +31,16 @@ export class MaintenanceArmCommonService implements OnDestroy {
       .subscribe(async status => {
         if (!status) return;
         this.statusSub && this.statusSub.unsubscribe();
-
-        let robotType = await this.checkRobotType().then();
+        let robotType = await this.checkRobotType();
         if (robotType !== RARM_ROBOT_STATUS.Match) {
           this.openMaintenanceDialog(robotType)
           return;
         }
 
-        let checkRes = await this.compareArmParamatersWithController().then();
+        let checkRes = await this.compareArmParamatersWithController();
         if (checkRes === CompareResult.Same) {
-          this.isLoadingDoneSub && this.isLoadingDoneSub.unsubscribe();
           this.statusSub && this.statusSub.unsubscribe();
+          MaintenanceArmCommonService.loadingStarted = false;
         } else {
           this.openMaintenanceDialog(robotType);
         }
@@ -74,10 +64,8 @@ export class MaintenanceArmCommonService implements OnDestroy {
 
 
   private async openMaintenanceDialog(robotType: RARM_ROBOT_STATUS) {
-    if (MaintenanceArmCommonService.maintanenceDialogRef) return;
-    this.setMaintenanceStatus(MaintenanceProgressStaus.unFindeshed);
     const paramsType = await this.getResoreParametersType();
-    MaintenanceArmCommonService.maintanenceDialogRef = this.dialog
+    const win = this.dialog
       .open(MaintenanceDialogComponent, {
         data: {
           robotType: robotType,
@@ -87,43 +75,23 @@ export class MaintenanceArmCommonService implements OnDestroy {
         height: "306px",
         hasBackdrop: true,
       });
-    MaintenanceArmCommonService.maintanenceDialogRef.afterClosed()
+    win && win.afterClosed()
       .subscribe(res => {
         this.statusSub && this.statusSub.unsubscribe();
-        this.isLoadingDoneSub && this.isLoadingDoneSub.unsubscribe();
-        this.setMaintenanceStatus(MaintenanceProgressStaus.finished);
-        MaintenanceArmCommonService.maintanenceDialogRef = null;
+        MaintenanceArmCommonService.loadingStarted = false;
       });
 
-  }
-
-  //set maintenance statsu
-  /**
-   *
-   * @param value 0 not on the progress after reload window 1is on the maintinenance progress
-   */
-  private setMaintenanceStatus(value: MaintenanceProgressStaus) {
-    window.sessionStorage.setItem(MAINTENANCEARMSTATUS, value);
-  }
-
-  //watch system refresh
-  public getMaitenanceRestorationStatus() {
-    this.isLoadingDoneSub && this.isLoadingDoneSub.unsubscribe();
-    const value = window.sessionStorage.getItem(MAINTENANCEARMSTATUS);
-    if (!value || value === MaintenanceProgressStaus.finished) return;
-    this.watchLoadinStatus();
   }
 
   /**
    * if Loading done open maintenance dialog
    */
-  private watchLoadinStatus() {
+  public watchLoadinStatus() {
     this.isLoadingDoneSub && this.isLoadingDoneSub.unsubscribe();
     this.isLoadingDoneSub = this.tpStatService.onloadingStatus.subscribe((res) => {
-      if (!res) return;
-      this.isLoadingDoneSub && this.isLoadingDoneSub.unsubscribe();
+      if (!res || MaintenanceArmCommonService.loadingStarted) return;
+      MaintenanceArmCommonService.loadingStarted = true;
       this.resorationArmOrCabinetParams();
-
     });
   }
 
@@ -133,9 +101,6 @@ export class MaintenanceArmCommonService implements OnDestroy {
       this.ws.simpleQuery("?RARM_VALID_STATUS").subscribe((res) => resolve(+res));
     });
   }
-
-
-
 
 
 }

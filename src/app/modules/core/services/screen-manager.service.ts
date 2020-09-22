@@ -88,7 +88,7 @@ export class ScreenManagerService {
    * The query to get library version.
    */
   private readonly LIB_VERSION_QUERY = '?system_version';
-  
+
   private _debugMode = false;
   get debugMode() {
     return this._debugMode;
@@ -108,7 +108,7 @@ export class ScreenManagerService {
     false
   );
 
-  screenChange = new EventEmitter<{old: ControlStudioScreen, new: ControlStudioScreen}>();
+  screenChange = new EventEmitter<{ old: ControlStudioScreen, new: ControlStudioScreen }>();
 
   private tpOnline = false;
   private words: {};
@@ -195,7 +195,7 @@ export class ScreenManagerService {
       this.router.navigateByUrl('/');
     } else {
       this._screen = s;
-      this.screenChange.emit({old, new: this._screen});
+      this.screenChange.emit({ old, new: this._screen });
     }
   }
 
@@ -255,8 +255,8 @@ export class ScreenManagerService {
           this.openedControls.next(true);
         }
       } else {
-        this.trn.get('jogScreen.non_robot').subscribe(data=>{
-          this.dialog.open(YesNoDialogComponent,{maxWidth: '400px', data}).afterClosed().subscribe(async ret=>{
+        this.trn.get('jogScreen.non_robot').subscribe(data => {
+          this.dialog.open(YesNoDialogComponent, { maxWidth: '400px', data }).afterClosed().subscribe(async ret => {
             if (ret) { // user is sure he wants to close it
               this.openedControls.next(false);
               const ret = await this.stat.setMode('A');
@@ -280,13 +280,13 @@ export class ScreenManagerService {
       let msg = '';
       switch (fromPath) {
         case 'firmware':
-          msg = 'Firmware update was done succesfully!';
+          msg = this.words['firmware.updata_successful'];
           break;
         case 'io':
           msg = this.words['ios.updating_succuss'];
           break;
         case 'robot':
-          msg = 'Robot configuration was changed succesfully!';
+          msg = this.words['robots.change_successful'];
           break;
         case 'restore':
           msg = this.words['restore.success'];
@@ -341,19 +341,19 @@ export class ScreenManagerService {
     private tour: TourService,
     private data: DataService
   ) {
-    this.webSocketService.isConnected.subscribe(conn=>{
+    this.webSocketService.isConnected.subscribe(conn => {
       if (!conn) {
         this.debugMode = false;
       }
     });
-    this.tour.start$.subscribe(()=>{
-        if (!this._menuExpanded) {
-          this.tour.end();
-          this.toggleMenu();
-          setTimeout(()=>{
-            this.tour.start();
-          },600);
-        }
+    this.tour.start$.subscribe(() => {
+      if (!this._menuExpanded) {
+        this.tour.end();
+        this.toggleMenu();
+        setTimeout(() => {
+          this.tour.start();
+        }, 600);
+      }
     });
     // HANDLE CDK CONTAINER WHEN JOG PANEL IS OPENED
     this.dialog.afterOpened.subscribe(dialog => {
@@ -361,14 +361,14 @@ export class ScreenManagerService {
       // HANDLE FOCUS JUST ON INPUTS
       if (!this.cmn.isTablet) {
         const id = dialog.id;
-        setTimeout(()=>{
+        setTimeout(() => {
           try {
             const container = (document.getElementById(id) as HTMLElement);
             const first = container.querySelector('input.mat-input-element') as HTMLElement;
             first.focus();
           } catch (err) {
           }
-        },0);
+        }, 0);
       }
       if (data && data.enableJog && this.openedControls.value) {
         const { classList } = this.container.getContainerElement();
@@ -395,6 +395,8 @@ export class ScreenManagerService {
         'home.addFeature.success',
         'error.firmware_update',
         'ios.updating_succuss',
+        'firmware.updata_successful',
+        'robots.change_successful',
         this.VERSION,
       ])
       .subscribe(words => {
@@ -463,7 +465,7 @@ export class ScreenManagerService {
           }
           return false;
         });
-        this.screenChange.emit({old, new: this._screen});
+        this.screenChange.emit({ old, new: this._screen });
       }
     });
   }
@@ -564,7 +566,7 @@ export interface ControlStudioScreen {
   permission: number;
   url: string;
   requiresTpLib?: boolean;
-  requiresCoos? :boolean; // TRUE when the screen requires the coordinates service to work
+  requiresCoos?: boolean; // TRUE when the screen requires the coordinates service to work
   autoModeOnly?: boolean;
   requiresInactiveProject?: boolean;
   stxOnly?: boolean;

@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../core/services/utils.service';
 import { CommonService } from '../core/services/common.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { MaintenanceArmCommonService } from '../maintenance-arm/maintenance-arm-common.service';
+
 
 @Component({
   selector: 'login-screen',
@@ -158,8 +158,7 @@ export class LoginScreenComponent implements OnInit {
     public ws: WebsocketService,
     private trn: TranslateService,
     public utils: UtilsService,
-    public cmn: CommonService,
-    private maintenanceArmCommonService: MaintenanceArmCommonService,
+    public cmn: CommonService
   ) {
     this.appName = utils.IsKuka
       ? environment.appName_Kuka
@@ -217,8 +216,6 @@ export class LoginScreenComponent implements OnInit {
       }
     );
 
-    //maintenance of arm and cabinet
-    this.maintenanceArmCommonService.resoreParamsAfterLogin();
 
   }
 
@@ -288,7 +285,7 @@ export class LoginScreenComponent implements OnInit {
         });
       }
     });
-    this.api.getFile('VERSION.DAT').then(ver=>{
+    this.api.getFile('VERSION.DAT').then(ver => {
       this.ver = ver;
     });
   }

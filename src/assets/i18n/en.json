@@ -386,6 +386,9 @@
     "upload": "UPLOAD TO MC..."
   },
   "filter": "Filter",
+  "firmware": {
+    "updata_successful": "Firmware update was done succesfully!"
+  },
   "form_validation": {
     "percent": "Value must be between [0, 100]",
     "range": "Invalid Range"
@@ -1398,6 +1401,7 @@
     "select": "Select a Robot",
     "selected": "Selected Robot",
     "series": "Series",
+    "change_successful": "Robot configuration was changed succesfully!",
     "title": "System",
     "type": "Robot Type",
     "updating": "Updating Robot Configuration",

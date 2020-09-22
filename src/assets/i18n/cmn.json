@@ -381,6 +381,9 @@
     "upload": "上传到MC..."
   },
   "filter": "过滤器",
+  "firmware": {
+    "updata_successful": "固件更新成功！"
+  },
   "form_validation": {
     "percent": "数值必须在0到100之间",
     "range": "数据超限"
@@ -1355,6 +1358,7 @@
     "select": "选择一个机器人",
     "selected": "已选中的机器人",
     "series": "序列号",
+    "change_successful": "更换机器人成功",
     "title": "机器人",
     "type": "机器人类型",
     "updating": "更新机器人配置",

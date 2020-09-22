@@ -12,9 +12,6 @@ export enum ParamsType {
   Both = 3,
 }
 
-
-export const MAINTENANCEARMSTATUS = 'maintenanceArmStatus';
-
 export enum CompareResult {
   diff = 0,//arm and controller parameters are different
   Same = 1,
