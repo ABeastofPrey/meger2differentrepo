@@ -31,6 +31,7 @@ import { TraceSelectorComponent } from '../dialogs/trace-selector/trace-selector
 import { ProceedDialogComponent } from '../dialogs/proceed-dialog/proceed-dialog.component';
 import { PluginService } from '../../services/plugin.service';
 import { FunctionProgramComponent } from '../dialogs/function-program/function-program.component';
+import { SubProgramComponent } from '../dialogs/sub-program/sub-program.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -352,6 +353,17 @@ export class ProgramEditMenuComponent implements OnInit {
         width: '600px',
         data: {
             title: 'projectCommands.other.title_function',
+        },
+    })
+    ref.afterClosed().subscribe((cmd: string) => {
+        cmd ? this.prg.insertAndJump(cmd,3) : "";
+    })
+  }
+  menu_sub(): void {
+    const ref = this.dialog.open(SubProgramComponent, {
+        width: '600px',
+        data: {
+            title: 'projectCommands.other.title_sub',
         },
     })
     ref.afterClosed().subscribe((cmd: string) => {

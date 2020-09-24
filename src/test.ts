@@ -77,5 +77,8 @@ programFunctionContext.keys().map(programFunctionContext);
 const maintenanceArmContext = require.context('./app/modules/maintenance-arm/maintenance-dialog/', true, /\.spec\.ts$/);
 maintenanceArmContext.keys().map(maintenanceArmContext);
 
+const subFunctionContext = require.context('./app/modules/program-editor/components/dialogs/sub-program', true, /\.spec\.ts$/);
+subFunctionContext.keys().map(subFunctionContext);
+
 
 

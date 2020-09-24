@@ -892,6 +892,17 @@
         "nameExist": "Name already exists.",
         "returnType": "Return Type"
     },
+    "subs": {
+        "tip":"Tip: Sub names and parameter names are not case sensitive.",
+        "name": "Sub Name",
+        "para_name": "Parameter Name",
+        "para_type": "Parameter Type",
+        "manipulate": "Manipulate",
+        "parameter": "Add a parameter",
+        "required": "Name is required",
+        "beginWithLetter": "Must start with an letter",
+        "nameExist": "Name already exists."
+    },
     "call": {
       "title": "Insert Call Command",
       "name": "Sub Name"
@@ -935,6 +946,7 @@
     "other": {
       "title_attach": "Insert Attach/Detach command",
       "title_function": "Insert Function command",
+      "title_sub": "Insert Sub command",
       "title_disable": "Insert Disable command",
       "title_doPass": "Insert DoPass command",
       "title_en": "Insert Enable command",

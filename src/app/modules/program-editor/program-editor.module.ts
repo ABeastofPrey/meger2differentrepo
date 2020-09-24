@@ -76,6 +76,7 @@ import { VisionService } from './services/vision.service';
 import { CanDeactivateDataGuard } from './can-deactivate-data';
 import { PluginComponent } from './components/plugins/plugin.component';
 import { FunctionProgramComponent } from './components/dialogs/function-program/function-program.component';
+import { SubProgramComponent } from './components/dialogs/sub-program/sub-program.component';
 
 @NgModule({
   imports: [
@@ -147,6 +148,7 @@ import { FunctionProgramComponent } from './components/dialogs/function-program/
     NewDialogTemplateComponent,
     PluginComponent,
     FunctionProgramComponent,
+    SubProgramComponent
   ],
   entryComponents: [
     NewProjectDialogComponent,
@@ -192,6 +194,7 @@ import { FunctionProgramComponent } from './components/dialogs/function-program/
     NewDialogTemplateComponent,
     PluginComponent,
     FunctionProgramComponent,
+    SubProgramComponent
 
   ],
   exports: [

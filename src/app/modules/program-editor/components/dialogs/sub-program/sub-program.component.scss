@@ -38,10 +38,6 @@ mat-dialog-content {
         }
     }
 }
-.returnType {
-    width: 260px;
-    margin-top: 20px;
-}
 .actions {
     footer {
         margin-top: 10px;
@@ -55,6 +51,7 @@ th.mat-header-cell:first-of-type {
 }
 .tip {
     color: gray;
+    margin-top: 20px;
 }
 .mat-input-element {
     height: 19px !important;

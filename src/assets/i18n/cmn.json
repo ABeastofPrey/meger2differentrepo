@@ -858,6 +858,17 @@
         "nameExist": "名称已存在.",
         "returnType": "返回值类型"
     },
+    "subs": {
+        "tip":"提示：子程序名和参数名不区分大小写。",
+        "name": "子程序名",
+        "para_name": "参数名",
+        "para_type": "参数类型",
+        "manipulate": "操作",
+        "parameter": "添加参数",
+        "required": "名称必填",
+        "beginWithLetter": "必须以字母开头",
+        "nameExist": "名称已存在."
+    },
     "call": {
       "title": "插入Call命令",
       "name": "子程序名"
@@ -901,6 +912,7 @@
     "other": {
       "title_attach": "插入Attach/Detach命令",
       "title_function": "插入Function命令",
+      "title_sub": "插入Sub命令",
       "title_disable": "插入Disable命令",
       "title_doPass": "插入DoPass命令",
       "title_en": "插入Enable命令",

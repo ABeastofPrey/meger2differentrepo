@@ -1,0 +1,80 @@
+<div class="main mat-typography">
+    <div class="wrapper">
+        <div class="title">{{ this.data.title | translate }}</div>
+    </div>
+    <div class="actions">
+        <header>
+            <mat-form-field>
+                <mat-label>{{ "projectCommands.subs.name" | translate }}</mat-label>
+                <input autocomplete="off" maxlength="32" matInput
+                    placeholder="{{  'projectCommands.subs.name' | translate}}" [formControl]="subName"
+                    (input)="changeInput($event)" />
+                <mat-error *ngIf="subName.hasError('required')">
+                    {{ 'projectCommands.subs.required' | translate }}
+                </mat-error>
+                <mat-error *ngIf="subName.hasError('letter') && !subName.hasError('required')">
+                    {{ 'projectCommands.subs.beginWithLetter' | translate }}</mat-error>
+            </mat-form-field>
+        </header>
+        <mat-dialog-content>
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" #parameterTable>
+                <ng-container matColumnDef="VariableName">
+                    <th mat-header-cell *matHeaderCellDef class="VariableNameHeader">
+                        {{ "projectCommands.subs.para_name" | translate }}</th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                        <mat-form-field>
+                            <input matInput autocomplete="off" (input)="changeParameter($event,i)"
+                                class="inputElementParameter" maxlength="32" (blur)="blurParameter(i)"
+                                [formControl]="element.VariableName">
+                            <mat-error *ngIf="element.VariableName.hasError('required')">
+                                {{ 'projectCommands.subs.required' | translate }}</mat-error>
+                            <mat-error
+                                *ngIf="element.VariableName.hasError('letter') && !element.VariableName.hasError('required') && !element.VariableName.hasError('exist')">
+                                {{ 'projectCommands.subs.beginWithLetter' | translate }}</mat-error>
+                            <mat-error
+                                *ngIf="element.VariableName.hasError('exist') && !element.VariableName.hasError('required') && !element.VariableName.hasError('letter')">
+                                {{ 'projectCommands.subs.nameExist' | translate }}</mat-error>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="VariableType">
+                    <th mat-header-cell *matHeaderCellDef class="VariableTypeHeader">
+                        {{ "projectCommands.subs.para_type" | translate }} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <mat-select [(value)]="element.VariableType">
+                                <mat-option *ngFor="let item of dataType" [value]="item.value">
+                                    {{item.text}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="delete">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <button mat-icon-button color="primary" (click)="addParameter()"
+                            [disabled]="dataSource.length >= 20">
+                            <mat-icon>add</mat-icon>
+                        </button> </th>
+                    <td mat-cell *matCellDef="let element;let i=index">
+                        <button mat-icon-button color="primary" (click)="deleteParameter(i)">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </mat-dialog-content>
+        <div class="tip">{{  'projectCommands.subs.tip' | translate}}</div>
+        <footer>
+            <button mat-button (click)="cancel()">
+                {{ 'button.cancel' | translate }}
+            </button>
+            <button mat-button color="primary" (click)="insert()"
+                [disabled]="!subName.value || !subName.valid || !parameterValid">
+                {{ 'button.insert' | translate }}
+            </button>
+        </footer>
+    </div>
+</div>
