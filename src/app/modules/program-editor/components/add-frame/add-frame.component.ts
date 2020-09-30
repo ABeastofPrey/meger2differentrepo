@@ -7,6 +7,7 @@ import {
   MCQueryResponse,
 } from '../../../core';
 import { FormControl, Validators } from '@angular/forms';
+import { FrameTypes } from '../../../../modules/core/models/frames';
 
 @Component({
   selector: 'app-add-frame',
@@ -25,19 +26,19 @@ export class AddFrameComponent implements OnInit {
     private ws: WebsocketService,
     public dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: number
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.values = [0,0,0,0,0,0];
+    this.values = [0, 0, 0, 0, 0, 0];
   }
 
-  closeDialog(result?: boolean) {
+  closeDialog(result?: { name: string }) {
     this.dialogRef.close(result);
   }
 
-  get validateValues() : boolean {
+  get validateValues(): boolean {
     if (this.isArray) return true;
-    const ret = this.values.some(v=>v === null || v.toString().trim().length === 0);
+    const ret = this.values.some(v => v === null || v.toString().trim().length === 0);
     return !ret;
   }
 
@@ -51,16 +52,16 @@ export class AddFrameComponent implements OnInit {
     }
     let cmd = '?TP_ADD_FRAME("';
     switch (this.data) {
-      case 0:
+      case FrameTypes.TOOL:
         cmd += 'TOOL';
         break;
-      case 1:
+      case FrameTypes.BASE:
         cmd += 'BASE';
         break;
-      case 2:
+      case FrameTypes.MT:
         cmd += 'MT';
         break;
-      case 3:
+      case FrameTypes.WP:
         cmd += 'WP';
         break;
       default:
@@ -78,7 +79,7 @@ export class AddFrameComponent implements OnInit {
       if (ret.err || ret.result !== '0') {
         console.log(ret);
       } else {
-        this.closeDialog(true);
+        this.closeDialog({ name: name });
       }
     });
   }

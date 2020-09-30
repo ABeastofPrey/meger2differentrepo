@@ -1,0 +1,42 @@
+<h2 mat-dialog-title class="mat-toolbar mat-primary mat-elevation-z3">
+  <div class="mat-inner-title" title="{{ title | translate }}">
+    {{ title | translate }}
+  </div>
+</h2>
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-select [(value)]="selectedFrame" placeholder="{{ label | translate }}">
+      <mat-option
+        *ngFor="let item of frames"
+        [selected]="selectedFrame === item.name"
+        [value]="item.name"
+      >
+        {{ item.name }}
+      </mat-option>
+      <mat-option
+        class="create-frame-option"
+        color="primary"
+        [value]="null"
+        (click)="createFrame()"
+      >
+        {{ addBtnName | translate }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button class="cancelBtn" mat-button (click)="dialogRef.close()">
+    {{ 'button.cancel' | translate }}
+  </button>
+  <button
+    class="nextBtn"
+    mat-button
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!selectedFrame"
+    (click)="onInsert()"
+  >
+    {{ 'button.insert' | translate }}
+  </button>
+</mat-dialog-actions>

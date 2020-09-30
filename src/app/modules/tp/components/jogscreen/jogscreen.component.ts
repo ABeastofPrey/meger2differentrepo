@@ -56,6 +56,8 @@ export class JogScreenComponent implements OnInit {
     private utils: UtilsService,
     public login: LoginService
   ) {
+    data.refreshBases();
+    data.refreshTools();
   }
 
   ngOnInit() {

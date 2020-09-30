@@ -32,6 +32,8 @@ import { ProceedDialogComponent } from '../dialogs/proceed-dialog/proceed-dialog
 import { PluginService } from '../../services/plugin.service';
 import { FunctionProgramComponent } from '../dialogs/function-program/function-program.component';
 import { SubProgramComponent } from '../dialogs/sub-program/sub-program.component';
+import { FrameTypes } from '../../../../modules/core/models/frames';
+import { SelectFrameDialogComponent } from '../dialogs/select-frame-dialog/select-frame-dialog.component';
 
 @Component({
   selector: 'program-edit-menu',
@@ -45,47 +47,49 @@ export class ProgramEditMenuComponent implements OnInit {
   jumpxCommandType = JumpxCommandType;
   hasCommand = false;
 
+  public FrameTypes = FrameTypes;
+
   constructor(
     public prg: ProgramEditorService,
     public data: DataService,
     private dialog: MatDialog,
     private ws: WebsocketService,
     private ps: PluginService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.ws.isConnected.subscribe(stat => {
-        if (stat) { 
-            this.ps.pluginPlace("command", () => {
-                document.getElementById("command").innerHTML? (this.hasCommand = true) : (this.hasCommand = false);
-            });
-        } else { 
-         
-        }
+      if (stat) {
+        this.ps.pluginPlace("command", () => {
+          document.getElementById("command").innerHTML ? (this.hasCommand = true) : (this.hasCommand = false);
+        });
+      } else {
+
+      }
     });
     document.onclick = ($event) => {
-        const targetEle = $event.target['parentNode'];
-        if($event.target['parentNode'] && $event.target['parentNode']['parentNode'].classList.contains('disable')) {
-            return;
-        }
-        if(targetEle && (targetEle['parentNode']['className'] !== "pluginCommandBox") && (targetEle['className'] !== "pluginCommandBox")){
-            document.getElementById("command") && (document.getElementById("command").style.display = 'none');
-        }
+      const targetEle = $event.target['parentNode'];
+      if ($event.target['parentNode'] && $event.target['parentNode']['parentNode'].classList.contains('disable')) {
+        return;
+      }
+      if (targetEle && (targetEle['parentNode']['className'] !== "pluginCommandBox") && (targetEle['className'] !== "pluginCommandBox")) {
+        document.getElementById("command") && (document.getElementById("command").style.display = 'none');
+      }
     }
     this.parser = this.prg.parser;
-    this.data.dataLoaded.subscribe(stat=>{
+    this.data.dataLoaded.subscribe(stat => {
       if (!stat) return;
       this.isScara = this.data.robotType === 'SCARA';
     });
   }
 
   showCommand() {
-      if(!document.getElementById("command").innerHTML || this.prg.activeFile == null || this.prg.status.statusCode !== -1) {
-          return;
-      }
-      this.ps.sendCustomEvent("ws",{ws:this.ws});
-      document.getElementById("command").style.display = 'block';
-      this.ps.sendCustomEvent("addCommand",{"addCommand": this.prg})
+    if (!document.getElementById("command").innerHTML || this.prg.activeFile == null || this.prg.status.statusCode !== -1) {
+      return;
+    }
+    this.ps.sendCustomEvent("ws", { ws: this.ws });
+    document.getElementById("command").style.display = 'block';
+    this.ps.sendCustomEvent("addCommand", { "addCommand": this.prg })
   }
 
   menu_grp_use() {
@@ -350,24 +354,24 @@ export class ProgramEditMenuComponent implements OnInit {
   }
   menu_function(): void {
     const ref = this.dialog.open(FunctionProgramComponent, {
-        width: '600px',
-        data: {
-            title: 'projectCommands.other.title_function',
-        },
+      width: '600px',
+      data: {
+        title: 'projectCommands.other.title_function',
+      },
     })
     ref.afterClosed().subscribe((cmd: string) => {
-        cmd ? this.prg.insertAndJump(cmd,3) : "";
+      cmd ? this.prg.insertAndJump(cmd, 3) : "";
     })
   }
   menu_sub(): void {
     const ref = this.dialog.open(SubProgramComponent, {
-        width: '600px',
-        data: {
-            title: 'projectCommands.other.title_sub',
-        },
+      width: '600px',
+      data: {
+        title: 'projectCommands.other.title_sub',
+      },
     })
     ref.afterClosed().subscribe((cmd: string) => {
-        cmd ? this.prg.insertAndJump(cmd,3) : "";
+      cmd ? this.prg.insertAndJump(cmd, 3) : "";
     })
   }
   menu_gohome() {
@@ -433,8 +437,7 @@ export class ProgramEditMenuComponent implements OnInit {
       })
       .afterClosed()
       .subscribe((traceName: string) => {
-        if(traceName)
-        {
+        if (traceName) {
           const cmd = 'TraceOn("' + traceName + '")';
           this.prg.insertAndJump(cmd, 0);
         }
@@ -495,7 +498,7 @@ export class ProgramEditMenuComponent implements OnInit {
       }
     });
   }
-  
+
   vCommand(type: VisionCommandType): void {
     this.dialog.open(VisionCommandComponent, {
       width: '400px',
@@ -536,6 +539,20 @@ export class ProgramEditMenuComponent implements OnInit {
       if (cmd) {
         this.prg.insertAndJump(cmd, 0);
       }
-    });    
+    });
+  }
+
+  menu_insert_frame(type: FrameTypes): void {
+    this.dialog.open(SelectFrameDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        type: type
+      }
+    }).afterClosed().subscribe((cmd: string) => {
+      if (cmd) {
+        this.prg.insertAndJump(cmd, 0);
+      }
+    });
   }
 }

@@ -881,27 +881,27 @@
   },
   "projectCommands": {
     "functions": {
-        "tip":"Tip: Function names and parameter names are not case sensitive.",
-        "name": "Function Name",
-        "para_name": "Parameter Name",
-        "para_type": "Parameter Type",
-        "manipulate": "Manipulate",
-        "parameter": "Add a parameter",
-        "required": "Name is required",
-        "beginWithLetter": "Must start with an letter",
-        "nameExist": "Name already exists.",
-        "returnType": "Return Type"
+      "tip": "Tip: Function names and parameter names are not case sensitive.",
+      "name": "Function Name",
+      "para_name": "Parameter Name",
+      "para_type": "Parameter Type",
+      "manipulate": "Manipulate",
+      "parameter": "Add a parameter",
+      "required": "Name is required",
+      "beginWithLetter": "Must start with an letter",
+      "nameExist": "Name already exists.",
+      "returnType": "Return Type"
     },
     "subs": {
-        "tip":"Tip: Sub names and parameter names are not case sensitive.",
-        "name": "Sub Name",
-        "para_name": "Parameter Name",
-        "para_type": "Parameter Type",
-        "manipulate": "Manipulate",
-        "parameter": "Add a parameter",
-        "required": "Name is required",
-        "beginWithLetter": "Must start with an letter",
-        "nameExist": "Name already exists."
+      "tip": "Tip: Sub names and parameter names are not case sensitive.",
+      "name": "Sub Name",
+      "para_name": "Parameter Name",
+      "para_type": "Parameter Type",
+      "manipulate": "Manipulate",
+      "parameter": "Add a parameter",
+      "required": "Name is required",
+      "beginWithLetter": "Must start with an letter",
+      "nameExist": "Name already exists."
     },
     "call": {
       "title": "Insert Call Command",
@@ -970,6 +970,18 @@
     "sleep": {
       "time": "Sleep Time",
       "title": "Insert Sleep Command"
+    },
+    "selectFrame": {
+      "tool": {
+        "title": "Insert SelectTool Command",
+        "label": "Tool",
+        "add": "+ Add Tool"
+      },
+      "base": {
+        "title": "Insert SelectBase Command",
+        "label": "Base",
+        "add": "+ Add Base"
+      }
     },
     "stop": {
       "title": "Insert Stop Command",

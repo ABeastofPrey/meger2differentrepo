@@ -10,10 +10,11 @@ import { ComponentType } from '@angular/cdk/portal';
 import { ToolCalibrationDialogComponent } from '../tool-calibration-dialog/tool-calibration-dialog.component';
 import { FrameCalibrationDialogComponent } from '../frame-calibration-dialog/frame-calibration-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
-import { UtilsService } from '../../../core/services/utils.service';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { FrameTypes } from '../../../../modules/core/models/frames';
+
 
 @Component({
   selector: 'frames',
@@ -21,7 +22,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./frames.component.css'],
 })
 export class FramesComponent implements OnInit {
-  currTabIndex = 0;
+  currTabIndex = FrameTypes.TOOL;
   selectedVar: TPVariable = null;
   dataSource: MatTableDataSource<TPVariable> = new MatTableDataSource();
   selection: SelectionModel<TPVariable> = new SelectionModel<TPVariable>(
@@ -47,7 +48,7 @@ export class FramesComponent implements OnInit {
     private ws: WebsocketService,
     private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
   ) {
     this.trn
       .get([
@@ -67,11 +68,14 @@ export class FramesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(data=>{
+    this.data.dataLoaded.pipe(takeUntil(this.notifier)).subscribe(data => {
       if (data) {
         this.dataSource.data = this.getData();
+        this.data.refreshTools();
+        this.data.refreshBases();
       }
     });
+
   }
 
   ngOnDestroy() {
@@ -95,19 +99,19 @@ export class FramesComponent implements OnInit {
     switch (this.currTabIndex) {
       default:
         break;
-      case 0: // Tools
+      case FrameTypes.TOOL: // Tools
         data = this.data.tools;
         this.currFrameType = 'tool';
         break;
-      case 1: // Bases
+      case FrameTypes.BASE: // Bases
         data = this.data.bases;
         this.currFrameType = 'base';
         break;
-      case 2: // Machine Tables
+      case FrameTypes.MT: // Machine Tables
         data = this.data.machineTables;
         this.currFrameType = 'mt';
         break;
-      case 3: // Workpieces
+      case FrameTypes.WP: // Workpieces
         data = this.data.workPieces;
         this.currFrameType = 'wp';
         break;
@@ -158,16 +162,16 @@ export class FramesComponent implements OnInit {
     switch (this.currTabIndex) {
       default:
         break;
-      case 0:
+      case FrameTypes.TOOL:
         currElement = this.data.selectedTool;
         break;
-      case 1:
+      case FrameTypes.BASE:
         currElement = this.data.selectedBase;
         break;
-      case 2:
+      case FrameTypes.MT:
         currElement = this.data.selectedMachineTable;
         break;
-      case 3:
+      case FrameTypes.WP:
         currElement = this.data.selectedWorkPiece;
         break;
     }
@@ -238,11 +242,11 @@ export class FramesComponent implements OnInit {
         }
       }
       this._legend = newLegend;
-    }).then(()=>{
+    }).then(() => {
       this.cd.detectChanges();
-      setTimeout(()=>{
+      setTimeout(() => {
         this.cd.detectChanges();
-      },0);
+      }, 0);
     });
   }
 
@@ -252,17 +256,9 @@ export class FramesComponent implements OnInit {
         data: this.currTabIndex,
       })
       .afterClosed()
-      .subscribe(ret => {
+      .subscribe(async ret => {
         if (ret) {
-          const queries = [
-            this.data.refreshBases(),
-            this.data.refreshTools(),
-            this.data.refreshMachineTables(),
-            this.data.refreshWorkPieces(),
-          ];
-          Promise.all(queries).then(() => {
-            this.dataSource.data = this.getData();
-          });
+          await this.refreshData();
         }
       });
   }
@@ -277,22 +273,22 @@ export class FramesComponent implements OnInit {
     switch (this.currTabIndex) {
       default:
         break;
-      case 0:
+      case FrameTypes.TOOL:
         this.data.selectedTool = fullname;
         break;
-      case 1:
+      case FrameTypes.BASE:
         this.data.selectedBase = fullname;
         break;
-      case 2:
+      case FrameTypes.MT:
         this.data.selectedMachineTable = fullname;
         break;
-      case 3:
+      case FrameTypes.WP:
         this.data.selectedWorkPiece = fullname;
         break;
     }
-    setTimeout(()=>{
+    setTimeout(() => {
       this.busy = false;
-    },400);
+    }, 400);
   }
 
   deleteSelected() {
@@ -311,20 +307,13 @@ export class FramesComponent implements OnInit {
           if (ret) {
             this.busy = true;
             const cmd = '?TP_REMOVE_FRAME("' + this.currFrameType + '","' + this.selectedVar.name + '")';
-            this.ws.query(cmd).then((ret: MCQueryResponse) => {
+            this.ws.query(cmd).then(async (ret: MCQueryResponse) => {
               if (ret.result === '0') {
                 this.selectedVar = null;
-                const queries = [
-                  this.data.refreshBases(),
-                  this.data.refreshTools(),
-                  this.data.refreshMachineTables(),
-                  this.data.refreshWorkPieces(),
-                ];
-                Promise.all(queries).then(() => {
-                  this.dataSource.data = this.getData();
-                  this.selection.clear();
-                  this.busy = false;
-                });
+                await this.refreshData();
+                this.selection.clear();
+                this.busy = false;
+
               }
               this.busy = false;
             });
@@ -362,21 +351,11 @@ export class FramesComponent implements OnInit {
                   '")';
                 queries.push(this.ws.query(cmd));
               }
-              Promise.all(queries).then(() => {
+              Promise.all(queries).then(async () => {
                 this.selectedVar = null;
-                const dataQueries = [
-                  this.data.refreshBases(),
-                  this.data.refreshTools(),
-                  this.data.refreshMachineTables(),
-                  this.data.refreshWorkPieces()
-                ];
-                Promise.all(dataQueries).then(() => {
-                  this.data.refreshVariables().then(()=>{
-                    this.dataSource.data = this.getData();
-                    this.selection.clear();
-                    this.busy = false;
-                  });
-                });
+                await this.refreshData();
+                this.selection.clear();
+                this.busy = false;
               });
             }
           });
@@ -402,5 +381,20 @@ export class FramesComponent implements OnInit {
       this._calibrationDialogShowing = false;
       this.rowClick(this.selectedVar, true); // REFRESH SELECTED VAR DATA
     });
+  }
+
+  private async refreshData() {
+    const dataQueries = [
+      this.data.refreshBases(),
+      this.data.refreshTools(),
+      this.data.refreshMachineTables(),
+      this.data.refreshWorkPieces()
+    ];
+    await Promise.all(dataQueries).then(async () => {
+      await this.data.refreshVariables().then(() => {
+        this.dataSource.data = this.getData();
+      });
+    });
+
   }
 }

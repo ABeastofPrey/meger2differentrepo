@@ -1,0 +1,32 @@
+$marginGap: 24px;
+.mat-dialog-title {
+  margin: -24px -24px 0px -24px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 $marginGap;
+  justify-content: space-between;
+}
+.mat-dialog-content {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  line-height: 1.5em;
+  min-height: 100px;
+}
+.mat-inner-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: normal;
+  margin-right: 20px;
+}
+.mat-form-field {
+  width: 100%;
+}
+.create-frame-option {
+  text-align: center;
+  background: #ffe6d9 !important;
+}

@@ -847,27 +847,27 @@
   },
   "projectCommands": {
     "functions": {
-        "tip":"提示：函数名和参数名不区分大小写。",
-        "name": "函数名",
-        "para_name": "参数名",
-        "para_type": "参数类型",
-        "manipulate": "操作",
-        "parameter": "添加参数",
-        "required": "名称必填",
-        "beginWithLetter": "必须以字母开头",
-        "nameExist": "名称已存在.",
-        "returnType": "返回值类型"
+      "tip": "提示：函数名和参数名不区分大小写。",
+      "name": "函数名",
+      "para_name": "参数名",
+      "para_type": "参数类型",
+      "manipulate": "操作",
+      "parameter": "添加参数",
+      "required": "名称必填",
+      "beginWithLetter": "必须以字母开头",
+      "nameExist": "名称已存在.",
+      "returnType": "返回值类型"
     },
     "subs": {
-        "tip":"提示：子程序名和参数名不区分大小写。",
-        "name": "子程序名",
-        "para_name": "参数名",
-        "para_type": "参数类型",
-        "manipulate": "操作",
-        "parameter": "添加参数",
-        "required": "名称必填",
-        "beginWithLetter": "必须以字母开头",
-        "nameExist": "名称已存在."
+      "tip": "提示：子程序名和参数名不区分大小写。",
+      "name": "子程序名",
+      "para_name": "参数名",
+      "para_type": "参数类型",
+      "manipulate": "操作",
+      "parameter": "添加参数",
+      "required": "名称必填",
+      "beginWithLetter": "必须以字母开头",
+      "nameExist": "名称已存在."
     },
     "call": {
       "title": "插入Call命令",
@@ -936,6 +936,18 @@
     "sleep": {
       "time": "睡眠时间",
       "title": "插入Sleep命令"
+    },
+    "selectFrame": {
+      "tool": {
+        "title": "插入 SelectTool 指令",
+        "label": "工具名称",
+        "add": "+ 添加工具"
+      },
+      "base": {
+        "title": "插入 SelectBase 指令",
+        "label": "基坐标名称",
+        "add": "+ 添加基坐标"
+      }
     },
     "stop": {
       "title": "插入Stop命令",

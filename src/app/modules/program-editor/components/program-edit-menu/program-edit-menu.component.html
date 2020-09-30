@@ -1,144 +1,260 @@
 <div class="side-menu-content" *ngIf="prg.status">
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="program"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        {{ 'projectCommands.menu.program' | translate }}
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="program"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    {{ 'projectCommands.menu.program' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="flow"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    {{ 'projectCommands.menu.flow' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="interpolation"
+    [disabled]="
+      prg.activeFile == null ||
+      prg.status.statusCode !== -1 ||
+      prg.isSelectedBKG
+    "
+  >
+    {{ 'projectCommands.menu.interpolation' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="motion"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    {{ 'projectCommands.menu.motion' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="io"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    I/O
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="variables"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    {{ 'projectCommands.menu.variables' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="pallets"
+    *ngIf="this.data.palletLibVer !== null"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    {{ 'projectCommands.menu.pallets' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="grippers"
+    *ngIf="this.data.gripperLibVer !== null"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    {{ 'projectCommands.menu.grippers' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="payloads"
+    *ngIf="this.data.payloadLibVer !== null"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    {{ 'projectCommands.menu.payloads' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="vision"
+    *ngIf="this.data.payloadLibVer !== null"
+    [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+  >
+    {{ 'projectCommands.menu.vision' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [matMenuTriggerFor]="teach"
+    [disabled]="
+      prg.variablesInLine.length === 0 || prg.status.statusCode !== -1
+    "
+  >
+    {{ 'button.teach' | translate }}...
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="menu_edit_line()"
+    [disabled]="prg.lineParams === null || prg.status.statusCode !== -1"
+  >
+    <mat-icon>mode_edit</mat-icon> {{ 'button.edit' | translate }}...
+  </button>
+  <mat-menu #teach="matMenu">
+    <button
+      mat-menu-item
+      *ngFor="let v of this.prg.variablesInLine"
+      (click)="prg.teachVariable(v)"
+    >
+      {{ v.name
+      }}<span *ngIf="v.selectedIndex > -1">[{{ v.selectedIndex }}]</span>
     </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="flow"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        {{ 'projectCommands.menu.flow' | translate }}
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="interpolation"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1 || prg.isSelectedBKG">
-        {{ 'projectCommands.menu.interpolation' | translate }}
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="motion"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        {{ 'projectCommands.menu.motion' | translate }}
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="io"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        I/O
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="variables"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        {{ 'projectCommands.menu.variables' | translate }}
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="pallets" *ngIf="this.data.palletLibVer !== null"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        {{ 'projectCommands.menu.pallets' | translate }}
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="grippers" *ngIf="this.data.gripperLibVer !== null"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        {{ 'projectCommands.menu.grippers' | translate }}
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="payloads" *ngIf="this.data.payloadLibVer !== null"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        {{ 'projectCommands.menu.payloads' | translate }}
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="vision" *ngIf="this.data.payloadLibVer !== null"
-        [disabled]="prg.activeFile == null || prg.status.statusCode !== -1">
-        {{ 'projectCommands.menu.vision' | translate }}
-    </button>
-    <button mat-raised-button color="primary" [matMenuTriggerFor]="teach"
-        [disabled]="prg.variablesInLine.length === 0 || prg.status.statusCode !== -1">
-        {{ 'button.teach' | translate }}...
-    </button>
-    <button mat-raised-button color="primary" (click)="menu_edit_line()"
-        [disabled]="prg.lineParams === null || prg.status.statusCode !== -1">
-        <mat-icon>mode_edit</mat-icon> {{ 'button.edit' | translate }}...
-    </button>
-    <mat-menu #teach="matMenu">
-        <button mat-menu-item *ngFor="let v of this.prg.variablesInLine" (click)="prg.teachVariable(v)">
-            {{ v.name }}<span *ngIf="v.selectedIndex > -1">[{{ v.selectedIndex }}]</span>
+  </mat-menu>
+  <mat-menu #program="matMenu">
+    <button mat-menu-item (click)="menu_program()">Program</button>
+    <button mat-menu-item (click)="menu_call()">Call</button>
+    <button mat-menu-item (click)="menu_attach()">Attach/Detach</button>
+    <button mat-menu-item (click)="menu_function()">Function</button>
+    <button mat-menu-item (click)="menu_sub()">Sub</button>
+  </mat-menu>
+  <mat-menu #flow="matMenu">
+    <button mat-menu-item (click)="menu_if_else()">If...Else...</button>
+    <button mat-menu-item (click)="menu_while()">While...</button>
+    <button mat-menu-item (click)="menu_for()">For...</button>
+    <button mat-menu-item (click)="menu_case()">Case</button>
+    <button mat-menu-item (click)="menu_sleep()">Sleep...</button>
+  </mat-menu>
+  <mat-menu #interpolation="matMenu">
+    <button mat-menu-item (click)="menu_move(false)">Move...</button>
+    <button mat-menu-item (click)="menu_move(true)">Moves...</button>
+    <button mat-menu-item [matMenuTriggerFor]="circle">Circle</button>
+    <ng-container *ngIf="isScara">
+      <button mat-menu-item [matMenuTriggerFor]="jumpx">JumpX</button>
+      <mat-menu #jumpx="matMenu">
+        <button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump)">
+          Jump...
         </button>
-    </mat-menu>
-    <mat-menu #program="matMenu">
-        <button mat-menu-item (click)="menu_program()">Program</button>
-        <button mat-menu-item (click)="menu_call()">Call</button>
-        <button mat-menu-item (click)="menu_attach()">Attach/Detach</button>
-        <button mat-menu-item (click)="menu_function()">Function</button>
-        <button mat-menu-item (click)="menu_sub()">Sub</button>
-    </mat-menu>
-    <mat-menu #flow="matMenu">
-        <button mat-menu-item (click)="menu_if_else()">If...Else...</button>
-        <button mat-menu-item (click)="menu_while()">While...</button>
-        <button mat-menu-item (click)="menu_for()">For...</button>
-        <button mat-menu-item (click)="menu_case()">Case</button>
-        <button mat-menu-item (click)="menu_sleep()">Sleep...</button>
-    </mat-menu>
-    <mat-menu #interpolation="matMenu">
-        <button mat-menu-item (click)="menu_move(false)">Move...</button>
-        <button mat-menu-item (click)="menu_move(true)">Moves...</button>
-        <button mat-menu-item [matMenuTriggerFor]="circle">Circle</button>
-        <ng-container *ngIf="isScara">
-            <button mat-menu-item [matMenuTriggerFor]="jumpx">JumpX</button>
-            <mat-menu #jumpx="matMenu">
-                <button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump)">Jump...</button>
-                <button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump3)">Jump3...</button>
-                <button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump3cp)">Jump3cp...</button>
-            </mat-menu>
-        </ng-container>
-        <button mat-menu-item (click)="menu_gohome()">GoHome</button>
-    </mat-menu>
-    <mat-menu #circle="matMenu">
-        <button mat-menu-item (click)="menu_circle(false)">Arc...</button>
-        <button mat-menu-item (click)="menu_circle(true)">Angle...</button>
-    </mat-menu>
-    <mat-menu #motion="matMenu">
-        <button mat-menu-item (click)="menu_stop()">Stop...</button>
-        <button mat-menu-item (click)="menu_proceed()">Proceed...</button>
-        <button mat-menu-item (click)="menu_waitForMotion()">
-            WaitForMotion...
+        <button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump3)">
+          Jump3...
         </button>
-        <button mat-menu-item (click)="menu_delay()">Delay...</button>
-        <button mat-menu-item (click)="menu_enable()">Enable...</button>
-        <button mat-menu-item (click)="menu_disable()">Disable...</button>
-        <button mat-menu-item (click)="menu_traceOn()">TraceOn...</button>
-        <button mat-menu-item (click)="menu_traceOff()">TraceOff...</button>
-        <!-- <button mat-menu-item (click)="menu_pls_source()">SetPTSource...</button> -->
-    </mat-menu>
-    <mat-menu #io="matMenu">
-        <button mat-menu-item (click)="menu_inputs()">INPUTS...</button>
-        <button mat-menu-item (click)="menu_outputs()">OUTPUTS...</button>
-    </mat-menu>
-    <mat-menu #variables="matMenu">
-        <button mat-menu-item (click)="menu_dim()">Dim...</button>
-    </mat-menu>
-    <mat-menu #pallets="matMenu">
-        <button mat-menu-item (click)="menu_plt_pick()" [disabled]="prg.isSelectedBKG">Pick...</button>
-        <button mat-menu-item (click)="menu_plt_place()" [disabled]="prg.isSelectedBKG">Place...</button>
-        <button mat-menu-item (click)="menu_plt_home()" [disabled]="prg.isSelectedBKG">Entry...</button>
-        <button mat-menu-item (click)="menu_plt_index()">Set Index...</button>
-        <button mat-menu-item (click)="menu_plt_get_index()">Get Index...</button>
-        <button mat-menu-item (click)="menu_plt_status()">Get Status...</button>
-    </mat-menu>
-    <mat-menu #grippers="matMenu">
-        <button mat-menu-item (click)="menu_grp_use()">Use Gripper...</button>
-        <button mat-menu-item (click)="menu_grp_open()">Open...</button>
-        <button mat-menu-item (click)="menu_grp_close()">Close...</button>
-        <button mat-menu-item (click)="menu_grp_reset()">Reset</button>
-    </mat-menu>
-    <mat-menu #payloads="matMenu">
-        <button mat-menu-item (click)="menu_pay_use()">Set Payload...</button>
-    </mat-menu>
-    <mat-menu #vision="matMenu">
-        <!-- <button mat-menu-item (click)="vLoadStationBook()">VLoadStationBook...</button> -->
-        <button mat-menu-item (click)="vCommand(visionCommandType.RunJobFull)">VRunJobFull...</button>
-        <button mat-menu-item (click)="vCommand(visionCommandType.RunJob)">VRunJob...</button>
-        <button mat-menu-item (click)="vCommand(visionCommandType.GetJobStatus)">VGetJobStatus...</button>
-        <button mat-menu-item (click)="vCommand(visionCommandType.GetJobData)">VGetJobData...</button>
-        <button mat-menu-item (click)="vCommand(visionCommandType.GetJobError)">VGetJobError...</button>
-        <button mat-menu-item (click)="vCommand(visionCommandType.StopJob)">VStopJob...</button>
-        <button mat-menu-item (click)="vCommand(visionCommandType.PixelToPos)">VPixelToPos...</button>
-    </mat-menu>
+        <button mat-menu-item (click)="jumpxCommand(jumpxCommandType.Jump3cp)">
+          Jump3cp...
+        </button>
+      </mat-menu>
+    </ng-container>
+    <button mat-menu-item (click)="menu_gohome()">GoHome</button>
+  </mat-menu>
+  <mat-menu #circle="matMenu">
+    <button mat-menu-item (click)="menu_circle(false)">Arc...</button>
+    <button mat-menu-item (click)="menu_circle(true)">Angle...</button>
+  </mat-menu>
+  <mat-menu #motion="matMenu">
+    <button mat-menu-item (click)="menu_stop()">Stop...</button>
+    <button mat-menu-item (click)="menu_proceed()">Proceed...</button>
+    <button mat-menu-item (click)="menu_waitForMotion()">
+      WaitForMotion...
+    </button>
+    <button mat-menu-item (click)="menu_delay()">Delay...</button>
+    <button mat-menu-item (click)="menu_enable()">Enable...</button>
+    <button mat-menu-item (click)="menu_disable()">Disable...</button>
+    <button mat-menu-item (click)="menu_traceOn()">TraceOn...</button>
+    <button mat-menu-item (click)="menu_traceOff()">TraceOff...</button>
+    <button mat-menu-item [matMenuTriggerFor]="frame">Frame</button>
+    <!-- <button mat-menu-item (click)="menu_pls_source()">SetPTSource...</button> -->
+  </mat-menu>
+  <mat-menu #io="matMenu">
+    <button mat-menu-item (click)="menu_inputs()">INPUTS...</button>
+    <button mat-menu-item (click)="menu_outputs()">OUTPUTS...</button>
+  </mat-menu>
+  <mat-menu #variables="matMenu">
+    <button mat-menu-item (click)="menu_dim()">Dim...</button>
+  </mat-menu>
+  <mat-menu #pallets="matMenu">
+    <button
+      mat-menu-item
+      (click)="menu_plt_pick()"
+      [disabled]="prg.isSelectedBKG"
+    >
+      Pick...
+    </button>
+    <button
+      mat-menu-item
+      (click)="menu_plt_place()"
+      [disabled]="prg.isSelectedBKG"
+    >
+      Place...
+    </button>
+    <button
+      mat-menu-item
+      (click)="menu_plt_home()"
+      [disabled]="prg.isSelectedBKG"
+    >
+      Entry...
+    </button>
+    <button mat-menu-item (click)="menu_plt_index()">Set Index...</button>
+    <button mat-menu-item (click)="menu_plt_get_index()">Get Index...</button>
+    <button mat-menu-item (click)="menu_plt_status()">Get Status...</button>
+  </mat-menu>
+  <mat-menu #grippers="matMenu">
+    <button mat-menu-item (click)="menu_grp_use()">Use Gripper...</button>
+    <button mat-menu-item (click)="menu_grp_open()">Open...</button>
+    <button mat-menu-item (click)="menu_grp_close()">Close...</button>
+    <button mat-menu-item (click)="menu_grp_reset()">Reset</button>
+  </mat-menu>
+  <mat-menu #payloads="matMenu">
+    <button mat-menu-item (click)="menu_pay_use()">Set Payload...</button>
+  </mat-menu>
+  <mat-menu #vision="matMenu">
+    <!-- <button mat-menu-item (click)="vLoadStationBook()">VLoadStationBook...</button> -->
+    <button mat-menu-item (click)="vCommand(visionCommandType.RunJobFull)">
+      VRunJobFull...
+    </button>
+    <button mat-menu-item (click)="vCommand(visionCommandType.RunJob)">
+      VRunJob...
+    </button>
+    <button mat-menu-item (click)="vCommand(visionCommandType.GetJobStatus)">
+      VGetJobStatus...
+    </button>
+    <button mat-menu-item (click)="vCommand(visionCommandType.GetJobData)">
+      VGetJobData...
+    </button>
+    <button mat-menu-item (click)="vCommand(visionCommandType.GetJobError)">
+      VGetJobError...
+    </button>
+    <button mat-menu-item (click)="vCommand(visionCommandType.StopJob)">
+      VStopJob...
+    </button>
+    <button mat-menu-item (click)="vCommand(visionCommandType.PixelToPos)">
+      VPixelToPos...
+    </button>
+  </mat-menu>
+
+  <!-- second level menu -->
+  <mat-menu #frame="matMenu">
+    <button mat-menu-item (click)="menu_insert_frame(FrameTypes.TOOL)">
+      SelectTool...
+    </button>
+    <button mat-menu-item (click)="menu_insert_frame(FrameTypes.BASE)">
+      SelectBase...
+    </button>
+  </mat-menu>
 </div>
 <div [class.sideDisplay]="!prg.status || !hasCommand">
-    <div class="pluginCommandBox" (click)="showCommand()">
-        <button class="commandBtn"  mat-raised-button color="primary" [disabled]="prg.activeFile == null || prg.status.statusCode !== -1" style="width: 100%;">
-            {{ 'projectCommands.menu.pluginCommand' | translate }}
-        </button>
-        <div class="pluginCommand" id="command" style="display: none;">
-
-        </div>
-    </div>
+  <div class="pluginCommandBox" (click)="showCommand()">
+    <button
+      class="commandBtn"
+      mat-raised-button
+      color="primary"
+      [disabled]="prg.activeFile == null || prg.status.statusCode !== -1"
+      style="width: 100%;"
+    >
+      {{ 'projectCommands.menu.pluginCommand' | translate }}
+    </button>
+    <div class="pluginCommand" id="command" style="display: none;"></div>
+  </div>
 </div>

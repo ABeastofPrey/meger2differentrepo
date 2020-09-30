@@ -80,5 +80,8 @@ maintenanceArmContext.keys().map(maintenanceArmContext);
 const subFunctionContext = require.context('./app/modules/program-editor/components/dialogs/sub-program', true, /\.spec\.ts$/);
 subFunctionContext.keys().map(subFunctionContext);
 
+const selectFrameContext = require.context('./app/modules/program-editor/components/dialogs/select-frame-dialog', true, /\.spec\.ts$/);
+selectFrameContext.keys().map(selectFrameContext);
+
 
 

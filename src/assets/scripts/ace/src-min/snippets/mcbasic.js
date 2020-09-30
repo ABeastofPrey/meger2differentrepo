@@ -165,6 +165,10 @@ snippet Select\n\
 		case ${4:val2}\n\
 			${5:' Do something else...'}\n\
 	end select\n\
+snippet SelectTool\n\
+	SelectTool(\"${1:string}\")\n\
+snippet SelectBase\n\
+	SelectBase(\"${1:string}\")\n\
 snippet SGN\n\
 	SGN(${1:value})\n\
 snippet SIZE\n\
