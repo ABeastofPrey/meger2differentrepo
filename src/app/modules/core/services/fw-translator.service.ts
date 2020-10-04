@@ -4,7 +4,7 @@ import { SystemLog } from '../../sys-log/enums/sys-log.model';
 import DATA from '../../../../assets/i18-fw/trn.json';
 
 const MOTION = {
-  en: ['in group ', 'in axis '],
+  en: ['in group', 'at axis'],
   cmn: ['在组中', '轴中']
 };
 
@@ -46,14 +46,18 @@ export class FwTranslatorService {
       const groupRegex = Object.keys(MOTION).map(key=>MOTION[key][0]).join('|');
       const axisRegex = Object.keys(MOTION).map(key=>MOTION[key][1]).join('|');
       const regex1 = new RegExp(`(?:${groupRegex})` + ':? ?(\\w+)','i');
-      const regex2 = new RegExp(`(?:${axisRegex})` + '(\\w+)','i');
+      const regex2 = new RegExp(`(?:${axisRegex})` + ' ?(\\w+)','i');
       let match = msg.match(regex1);
+      let spaceNeeded = false;
       if (match) {
-        prefix += MOTION[this.trn.currentLang][0] + match[1];
+        prefix += MOTION[this.trn.currentLang][0] + (this.trn.currentLang !== 'cmn' ? ' ' : '') + match[1];
+        if (this.trn.currentLang !== 'cmn') {
+          spaceNeeded = true;
+        }
       }
       match = msg.match(regex2);
       if (match) {
-        prefix += MOTION[this.trn.currentLang][1] + match[1];
+        prefix += (spaceNeeded ? ' ' : '') + MOTION[this.trn.currentLang][1] + (this.trn.currentLang !== 'cmn' ? ' ' : '') + match[1];
       }
       if (this.trn.currentLang !== 'cmn') prefix += ' ';
       return prefix + data;

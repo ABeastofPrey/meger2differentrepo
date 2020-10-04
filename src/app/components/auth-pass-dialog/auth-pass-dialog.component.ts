@@ -37,6 +37,7 @@ export class AuthPassDialogComponent implements OnInit {
   }
 
   async confirm() {
+    this.isError = false;
     if (this.val.length === 0) return;
     if (this.data.withModeSelector) {
       // authenticate with web server
@@ -49,8 +50,6 @@ export class AuthPassDialogComponent implements OnInit {
       const ret = await this.stat.setMode(this.mode);
       if (ret) {
         this.dialogRef.close(this.mode);
-      } else {
-        this.isError = true;
       }
       return;
     }

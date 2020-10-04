@@ -540,10 +540,13 @@ export class DataScreenComponent implements OnInit {
         };
         const cmd = this.useAsProjectPoints ? '?TP_GETDELETEPNTSTATUS' : '?TP_GETDELETEVARSTATUS';
         const ret = await this.ws.query(cmd);
-        if (ret.result === '0') {
+        if (ret.result === '0' || ret.result === '-1') {
           done = true;
           window.clearInterval(this._deleteInterval);
           this.selectedVar = null;
+          if (ret.result === '0') {
+            this.snackbarService.openTipSnackBar("success");
+          }
           resolve(true);
         }
       }, 500);

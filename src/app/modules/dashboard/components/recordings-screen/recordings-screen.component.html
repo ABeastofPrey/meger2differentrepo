@@ -12,19 +12,19 @@
         <mat-form-field>
           <mat-label>X</mat-label>
           <mat-select [(ngModel)]="service.tabs[service.selectedTabIndex].legendX">
-            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legends; let i=index;" [value]="i">{{legend}}</mat-option>
+            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legendsWithoutBreaks; let i=index;" [value]="i">{{legend}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Y</mat-label>
           <mat-select [(ngModel)]="service.tabs[service.selectedTabIndex].legendY">
-            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legends let i=index;" [value]="i">{{legend}}</mat-option>
+            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legendsWithoutBreaks let i=index;" [value]="i">{{legend}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field *ngIf="service.tabs[service.selectedTabIndex].chartType === 2">
           <mat-label>Z</mat-label>
           <mat-select [(ngModel)]="service.tabs[service.selectedTabIndex].legendZ">
-            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legends let i=index;" [value]="i">{{legend}}</mat-option>
+            <mat-option *ngFor="let legend of service.tabs[service.selectedTabIndex].legendsWithoutBreaks let i=index;" [value]="i">{{legend}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

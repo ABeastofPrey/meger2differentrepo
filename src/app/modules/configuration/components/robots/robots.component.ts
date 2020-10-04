@@ -424,8 +424,9 @@ export class RobotsComponent implements OnInit {
         title: this.words['safety.password_change']['change'],
         placeholder: this.words['safety.password_change']['new'],
         accept: this.words['safety.password_change']['change'].toUpperCase(),
-        regex: '\\S+$',
-        maxLength: 32,
+        regex: '^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$',
+        maxLength: 15,
+        minLength: 4,
         error: 'safety.password_change.err_regex'
       }
     }).afterClosed().subscribe(async ret=>{

@@ -203,7 +203,7 @@
 											J{{ i + 1 }}: {{ cooService.joints[i].value }}
 										</div>
 										<div class="{{ cmn.isTablet ? 'coordinate-tab' : 'coordinate' }}">
-											{{ cooService.locations[i].key }}:
+											{{ cooService.locations[i].key }}:<br *ngIf="cooService.locations[i].key.length > 1">
 											{{ cooService.locations[i].value }}
 										</div>
 									</td>

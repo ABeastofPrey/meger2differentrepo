@@ -122,13 +122,11 @@ export class ProgramEditorService {
     private dialog: MatDialog,
     private prj: ProjectManagerService,
     private ws: WebsocketService,
-    private snack: MatSnackBar,
     private snackbarService: SysLogSnackBarService,
     private data: DataService,
     private trn: TranslateService,
     private api: ApiService,
     private tour: TourService,
-    private utils: UtilsService,
     private fw: FwTranslatorService,
     private router: Router
   ) {
@@ -181,6 +179,11 @@ export class ProgramEditorService {
     ];
     this.trn.get(words).subscribe(words => {
       this.words = words;
+    });
+    this.stat.onlineStatus.subscribe(stat=>{
+      if (!stat && this.activeFile && (this.activeFile.endsWith('UPG') || this.activeFile.endsWith('ULB'))) {
+        this.close();
+      }
     });
   }
 
@@ -244,7 +247,30 @@ export class ProgramEditorService {
     }
   }
 
-  closeTab(i: number) {
+  closeTab(i: number, force?: boolean) {
+    if (!force && this.isDirty && this.activeFile) {
+      this.trn.get('projectTree.dirty_msg', { name: this.activeFile }).subscribe(word => {
+        this.dialog.open(YesNoDialogComponent, {
+          data: {
+            title: this.words['projectTree.dirty'],
+            msg: word,
+            yes: this.words['button.save'],
+            no: this.words['button.discard'],
+          },
+          width: '500px',
+        }).afterClosed().subscribe(ret => {
+          if (ret) {
+            this.save().then(() => {
+              this.closeTab(i);
+            });
+          } else {
+            this.isDirty = false;
+            this.closeTab(i);
+          }
+        });
+      });
+      return;
+    }
     this.tabs.splice(i, 1);
     if (this.tabs[i]) {
       this.onTabChange(i);

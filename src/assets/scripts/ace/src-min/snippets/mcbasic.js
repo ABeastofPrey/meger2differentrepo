@@ -132,6 +132,8 @@ snippet plt_pick\n\
 	PLT_PICK_FROM_PALLET(${1:robot},\"${2:pallet_name}\")\n\
 snippet plt_place\n\
 	PLT_PLACE_ON_PALLET(${1:robot},\"${2:pallet_name}\")\n\
+snippet plt_retract\n\
+	PLT_RETRACT_FROM_ITEM(${1:robot},\"${2:pallet_name}\")\n\
 snippet plt_set_index\n\
 	PLT_SET_INDEX_STATUS(\"${1:pallet_name}\",${2:index})\n\
 snippet print\n\
@@ -149,7 +151,7 @@ snippet Program\n\
 snippet record\n\
 	record ${1:MYREC}.REC ${2:samples} Gap=${3:1} RecData=${4:param1, param2, param3} \n\
 snippet record$\n\
-	record \"${1:MYREC}.REC\" ${2:samples} Gap=${3:1} RecData=${4:param1, param2, param3} \n\
+	record$ \"${1:MYREC}.REC\" ${2:samples} Gap=${3:1} RecData=${4:param1, param2, param3} \n\
 snippet RIGHT$\n\
 	RIGHT$(${1:\"string\"},${2:number_of_chars})\n\
 snippet ROUND\n\

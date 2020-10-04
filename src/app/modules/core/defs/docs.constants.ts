@@ -932,11 +932,11 @@ export const DOCS = {
       range: `0.1 - 100`
     },
     {
-      name: 'Limz',
-      desc: 'Limz.',
-      type: 8,
-      range: '[-300,10]'
-    },
+        name: 'Limz',
+        desc: 'Limz.',
+        type: 8,
+        range: '[-300,10]'
+      },
     {
       name: 'Motion',
       desc: `The MOTION value must be 1 (ON) for any motion command to be executed successfully. In addition, the status of MOTION is terminated by the servo interrupt. If MOTION switches to 0 (OFF), any motion currently in progress is aborted and any motion in the motion buffers is flushed. The drive can be enabled if MOTION is off.
@@ -1123,8 +1123,8 @@ export const DOCS = {
       range: `1 - 100`
     },
   ],
-  objects: {
-    sys: [
+	objects: {
+		sys: [
       {
         name: 'ACCELERATIONRATE',
         type: 1,
@@ -1162,141 +1162,141 @@ export const DOCS = {
         desc: `This property sets the name of the controller. The query returns the name of the controller. If the no name was set (or an empty string), the reply is, "no name."`,
       },
     ],
-  },
-  commands: {
+	},
+	commands: {
     attach: [
-      {
-        syntax: 'Attach',
-        desc: 'Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.'
-      },
-      {
-        syntax: 'Attach [element]',
-        desc: 'Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.'
-      },
+			{
+				syntax: 'Attach',
+				desc: 'Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.'
+			},
+			{
+				syntax: 'Attach [element]',
+				desc: 'Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.'
+			},
     ],
     circle: [
-      {
-        syntax: 'Circle [element] Angle=[double] CircleCenter=[position]',
+			{
+				syntax: 'Circle [element] Angle=[double] CircleCenter=[position]',
         optionalType: 1, // will use optionals[1]
-        desc: 'Issues a circular (arc) path trajectory for the specified element, with the given angle and the circle center.'
+				desc: 'Issues a circular (arc) path trajectory for the specified element, with the given angle and the circle center.'
       },
       {
-        syntax: 'Circle Angle=[double] CircleCenter=[position]',
+				syntax: 'Circle Angle=[double] CircleCenter=[position]',
         optionalType: 1, // will use optionals[1]
-        desc: 'Issues a circular (arc) path trajectory, with the given angle and the circle center.'
+				desc: 'Issues a circular (arc) path trajectory, with the given angle and the circle center.'
       },
       {
-        syntax: 'Circle [element] CirclePoint=[position] TargetPoint=[position]',
+				syntax: 'Circle [element] CirclePoint=[position] TargetPoint=[position]',
         optionalType: 2, // will use optionals[2]
-        desc: 'Issues a circular (arc) path trajectory for the specified element, with a circle point and the final point of the arc.'
+				desc: 'Issues a circular (arc) path trajectory for the specified element, with a circle point and the final point of the arc.'
       },
       {
-        syntax: 'Circle CirclePoint=[position] TargetPoint=[position]',
+				syntax: 'Circle CirclePoint=[position] TargetPoint=[position]',
         optionalType: 2, // will use optionals[2]
-        desc: 'Issues a circular (arc) path trajectory, with a circle point and the final point of the arc.'
-      }
+				desc: 'Issues a circular (arc) path trajectory, with a circle point and the final point of the arc.'
+			}
     ],
     jump: [
-      {
-        syntax: 'Jump [element] [position]',
+        {
+            syntax:	'Jump [element] [position]',
         optionalType: 8,
         desc: 'Jump to the target position with specified element'
-      },
-      {
-        syntax: 'Jump [position]',
+        },
+        {
+            syntax:	'Jump [position]',
         optionalType: 8,
-        desc: 'Jump to the target position'
-      }
+            desc: 'Jump to the target position'
+        }
     ],
 
     jump3: [
-      {
-        syntax: 'Jump3 [element] AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
-        optionalType: 9,
-        desc: 'Jump to the target position depends on Ascending Point and Descending Point with specified element'
-      },
-      {
-        syntax: 'Jump3 AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
-        optionalType: 9,
-        desc: 'Jump to the target position depends on Ascending Point and Descending Point'
-      }
+        {
+            syntax: 'Jump3 [element] AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
+            optionalType: 9,
+            desc: 'Jump to the target position depends on Ascending Point and Descending Point with specified element'
+        },
+        {
+            syntax: 'Jump3 AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
+            optionalType: 9,
+            desc: 'Jump to the target position depends on Ascending Point and Descending Point'
+        }
     ],
 
     jump3cp: [
-      {
-        syntax: 'Jump3cp [element] AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
-        optionalType: 10,
-        desc: 'Jump to the target position depends on Ascending Point and Descending Point with specified element'
-      },
-      {
-        syntax: 'Jump3cp AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
-        optionalType: 10,
-        desc: 'Jump to the target position depends on Ascending Point and Descending Point'
-      },
+        {
+            syntax: 'Jump3cp [element] AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
+            optionalType: 10,
+            desc: 'Jump to the target position depends on Ascending Point and Descending Point with specified element'
+        },
+        {
+            syntax: 'Jump3cp AscendingPoint=[position] DescendingPoint=[position] TargetPoint=[position]',
+            optionalType: 10,
+            desc: 'Jump to the target position depends on Ascending Point and Descending Point'
+        },
     ],
     detach: [
-      {
-        syntax: 'Detach',
-        desc: 'This command is used to detach the calling task from a motion element, freeing it for use by another task. Motion element may be axis or group.'
-      },
-      {
-        syntax: 'Detach [element]',
-        desc: 'This command is used to detach the calling task from a motion element, freeing it for use by another task. Motion element may be axis or group.'
-      },
+			{
+				syntax: 'Detach',
+				desc: 'This command is used to detach the calling task from a motion element, freeing it for use by another task. Motion element may be axis or group.'
+			},
+			{
+				syntax: 'Detach [element]',
+				desc: 'This command is used to detach the calling task from a motion element, freeing it for use by another task. Motion element may be axis or group.'
+			},
     ],
     load: [
-      {
-        syntax: 'Load [filename]',
+			{
+				syntax: 'Load [filename]',
         desc: 'Attaches a task to a motion element (group or axis). Attachment is necessary to perform certain operations (such as MOVE or JOG) on a motion element from within a task. The attachment prevents other tasks from accessing the element.',
         optionalType: 4, // will use optionals[4]
-      }
+			}
     ],
     load$: [
-      {
-        syntax: 'Load$ [filename]',
+			{
+				syntax: 'Load$ [filename]',
         desc: `@param [filename] is a <b>string</b> (i.e: "file1.upg")
 
               This command loads programs and libraries from the Flash Disk into RAM, from where it may be executed. In the process, the program or library is checked for syntax errors. Syntax errors are written to the TRN.ERR file, which may be retrieved to see which errors occurred. Only programs without syntax errors may be executed. Programs are executed using the STARTTASK command. The Priority sets the <priority level> at which the task is run within the system. The highest priority is 1, which causes the task to be run after all realtime tasks have run. The lowest priority is 16. Tasks with the same priority level run using a round-robin procedure, which gives equal time to each task. A low priority task cannot interrupt a high priority task.
               The StackSize optional parameter sets the size of local (Dim) variables’ stack. It’s value is a actually a floating point multiplier of an internal basic stack size.  This basic stack size is the lowest size allowed for local data stack (when size multiplier is 1), whereas the highest value depends on the amount of freememory available.
               The <task name> defines the new task name, what the loaded task gets. This option lets user load the same task several times with different names.`,
         optionalType: 5, // will use optionals[5]
-      }
+			}
     ],
-    move: [ // array of overloads
-      {
-        syntax: 'Move [element] [position]',
+		move: [ // array of overloads
+			{
+				syntax: 'Move [element] [position]',
         optionalType: 0, // will use optionals[0]
-        desc: 'Move the specified element to the target position.'
-      },
-      {
-        syntax: 'Move [position]',
+				desc: 'Move the specified element to the target position.'
+			},
+			{
+				syntax: 'Move [position]',
         optionalType: 0, // will use optionals[0]
-        desc: 'Move to the target position.'
-      },
+				desc: 'Move to the target position.'
+			},
     ],
     moves: [ // array of overloads
-      {
-        syntax: 'Moves [element] [position]',
-        optionalType: 0, // will use optionals[0]
-        desc: 'Move the specified element along a straight line in world-space.'
-      },
-      {
-        syntax: 'Moves [position]',
-        optionalType: 0, // will use optionals[0]
-        desc: 'Move along a straight line in world-space.'
-      },
+			{
+				syntax: 'Moves [element] [position]',
+				optionalType: 11, // will use optionals[11] 
+				desc: 'Move the specified element along a straight line in world-space.'
+			},
+			{
+				syntax: 'Moves [position]',
+        optionalType: 11, // will use optionals[11]
+				desc: 'Move along a straight line in world-space.'
+			},
     ],
     moveskd: [ // array of overloads
-      {
-        syntax: 'MoveSKD [element] [position]',
-        optionalType: 0, // will use optionals[0]
-        desc: 'Kino-Dynamic Straight Line move command. Straight line moment that uses maximum available joint capabilities (VNAX,AMAX,JMAX).The path is a straight line from current position to the given target position.'
-      },
-      {
-        syntax: 'MoveSKD [position]',
-        optionalType: 0, // will use optionals[0]
-        desc: 'Kino-Dynamic Straight Line move command. Straight line moment that uses maximum available joint capabilities (VNAX,AMAX,JMAX).The path is a straight line from current position to the given target position.'
-      },
+			{
+				syntax: 'MoveSKD [element] [position]',
+        optionalType: 11, // will use optionals[0]
+				desc: 'Kino-Dynamic Straight Line move command. Straight line moment that uses maximum available joint capabilities (VNAX,AMAX,JMAX).The path is a straight line from current position to the given target position.'
+			},
+			{
+				syntax: 'MoveSKD [position]',
+        optionalType: 11, // will use optionals[0]
+				desc: 'Kino-Dynamic Straight Line move command. Straight line moment that uses maximum available joint capabilities (VNAX,AMAX,JMAX).The path is a straight line from current position to the given target position.'
+			},
     ],
     "power_off()": [
       {
@@ -1342,70 +1342,70 @@ export const DOCS = {
       }
     ],
     proceed: [
-      {
-        syntax: 'Proceed',
+			{
+				syntax: 'Proceed',
         desc: 'This command is required to continue executing motion after that motion had been stopped by a STOP command from a different context. Thus PROCEED is not required when the STOP command appears in the same task as the move commands, but it is required when the STOP command is issued by a task other than the one moving the axis or group.',
         optionalType: 6,
-      },
-      {
-        syntax: 'Proceed [element]',
+			},
+			{
+				syntax: 'Proceed [element]',
         desc: 'This command is required to continue executing motion after that motion had been stopped by a STOP command from a different context. Thus PROCEED is not required when the STOP command appears in the same task as the move commands, but it is required when the STOP command is issued by a task other than the one moving the axis or group.',
         optionalType: 6,
-      },
+			},
     ],
     sinewave: [
-      {
-        syntax: 'SineWave [double] SineWaveFreq=[double]',
+			{
+				syntax: 'SineWave [double] SineWaveFreq=[double]',
         desc: 'Performs endless sine-wave motion on the given axis or group.',
         format: {
           1: '{0 , 0}',
           2: '{0.1 , 0.1}',
         }
-      },
-      {
-        syntax: 'SineWave [element] [location]',
-        desc: 'Performs endless sine-wave motion on the given axis or group.'
-      },
+			},
+			{
+				syntax: 'SineWave [element] [location]',
+				desc: 'Performs endless sine-wave motion on the given axis or group.'
+			},
     ],
     starttask: [
-      {
-        syntax: 'startTask [filename]',
+			{
+				syntax: 'startTask [filename]',
         desc: 'Starts task execution from the beginning of the task. Priority sets the priority level for task execution. The highest priority is 1, which causes the task to run after all realtime tasks have run. The lowest priority is 16. Tasks with the same priority level run via a round-robin procedure, which gives equal time to each task. A low priority task cannot interrupt a high priority task. If a task is killed, it can be restarted with this command. A task can be started and specified to run for a number of execution loops, then stop.',
         optionalType: 7
-      }
+			}
     ],
     starttask$: [
-      {
-        syntax: 'startTask$ [string]',
+			{
+				syntax: 'startTask$ [string]',
         desc: 'Starts task execution from the beginning of the task. Priority sets the priority level for task execution. The highest priority is 1, which causes the task to run after all realtime tasks have run. The lowest priority is 16. Tasks with the same priority level run via a round-robin procedure, which gives equal time to each task. A low priority task cannot interrupt a high priority task. If a task is killed, it can be restarted with this command. A task can be started and specified to run for a number of execution loops, then stop.',
         optionalType: 7,
         format: {
           1: '"MYTASK.PRG"'
         }
-      }
+			}
     ],
     stop: [ // array of overloads
-      {
-        syntax: 'Stop [element]',
-        optionalType: 3,
-        desc: 'Move the specified element along a straight line in world-space.'
-      },
-      {
-        syntax: 'Stop',
-        optionalType: 3,
-        desc: 'Move along a straight line in world-space.'
-      },
+			{
+				syntax: 'Stop [element]',
+				optionalType: 3,
+				desc: 'Move the specified element along a straight line in world-space.'
+			},
+			{
+				syntax: 'Stop',
+				optionalType: 3,
+				desc: 'Move along a straight line in world-space.'
+			},
     ],
     waitformotion: [ // array of overloads
-      {
-        syntax: 'waitForMotion [element]',
-        desc: 'This command causes the program to wait until the currently executing motion is completed, only after that the next line will be executed.'
-      },
-      {
-        syntax: 'waitForMotion',
-        desc: 'This command causes the program to wait until the currently executing motion is completed, only after that the next line will be executed.'
-      },
-    ]
+			{
+				syntax: 'waitForMotion [element]',
+				desc: 'This command causes the program to wait until the currently executing motion is completed, only after that the next line will be executed.'
+			},
+			{
+				syntax: 'waitForMotion',
+				desc: 'This command causes the program to wait until the currently executing motion is completed, only after that the next line will be executed.'
+			},
+		]
   },
   snippets: {
     "abs": {
@@ -1740,6 +1740,11 @@ export const DOCS = {
       desc: `Use the specified robot to place an item for the given pallet`,
       meta: 'Subroutine'
     },
+    "plt_retract": {
+      syntax: `PLT_RETRACT_FROM_ITEM([robot],"[pallet_name]")`,
+      desc: `Move the specified robot to the pallet's retract position`,
+      meta: 'Subroutine'
+    },
     "plt_set_index": {
       syntax: `PLT_SET_INDEX_STATUS("[pallet_name]",index)`,
       desc: `Set the specified pallet's index`,
@@ -1775,7 +1780,7 @@ export const DOCS = {
       meta: 'MC-Basic'
     },
     "record$": {
-      syntax: `RECORD [file_name] [number of points] [Gap = record_gap](optional) RecData = [param1, param2, ...]`,
+      syntax: `RECORD$ [file_name] [number of points] [Gap = record_gap](optional) RecData = [param1, param2, ...]`,
       desc: `<b>@param file_name is a string</b>
               This command is used to arm (not trigger) data recording. Data are recorded into the specified file, which is then retrieved for viewing. The record file must always have the extension REC. The recorded data file is stored on RAM drive, so the file is lost after power off.
               You must specify the <number of points> to be recorded, where one point is a set of data recorded at a given instant in time. The recorder may be stopped before the specified number of points have been recorded (using RECORDOFF).`,
@@ -1974,7 +1979,7 @@ export const DOCS = {
     }
   },
   optionals: [
-    { // used in move
+		{ // used in move
       VScale: { type: 0, desc: 'VScale (1-100)' }
     },
     { // used in circle type 1
@@ -2040,6 +2045,9 @@ export const DOCS = {
       ArchNo: { type: 9, desc: 'interge [1,7] , Select the depart length and approach length.' },
       VTran: { type: 8, desc: 'Defines the translation velocity of the robot.' },
       Ascale: { type: 8, desc: 'Defines the translation acceleration of the robot.' }
-    }
-  ]
+    },
+    { // used in moves
+			VTran: { type: 1, desc: 'VTran'}
+    },
+	]
 };

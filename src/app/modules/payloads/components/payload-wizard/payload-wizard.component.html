@@ -17,7 +17,7 @@
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
-			<button mat-raised-button color="warn" *ngIf="selectedPayload && !login.isOperator" (click)="delete()" [disabled]="selectedPayload.name === 'NONE'">
+			<button mat-raised-button color="warn" *ngIf="selectedPayload && !login.isOperator" (click)="delete()" [disabled]="selectedPayload.name === NONE_PAYLOAD">
 				{{ 'button.delete' | translate }}
 			</button>
 			<div *ngIf="currPayloadString" [innerHTML]="currPayloadString" style="margin-top: 16px;"></div>
@@ -27,13 +27,13 @@
 		</div>
 		<div *ngIf="selectedPayload" class="temp-scara-wizard">
 			<div class="wizard-header" *ngIf="!login.isOperator || data.robotType !== 'SCARA'">
-				<mat-slide-toggle color="primary" [(ngModel)]="advanced" [disabled]="selectedPayload.name === 'NONE'" *ngIf="login.isSuper">{{
+				<mat-slide-toggle color="primary" [(ngModel)]="advanced" [disabled]="selectedPayload.name === NONE_PAYLOAD" *ngIf="login.isSuper">{{
 					'payloads.advanced' | translate
 				}}</mat-slide-toggle>
 			</div>
 			<div class="buttons">
 				<button mat-raised-button color="primary" (click)="setAsCurrent()">{{ 'button.set_current' | translate }}</button>
-				<button mat-raised-button color="warn" *ngIf="!login.isOperator" [disabled]="selectedPayload.name === 'NONE'" (click)="reset()">{{ 'payloads.btn_reset' | translate }}</button>
+				<button mat-raised-button color="warn" *ngIf="!login.isOperator" [disabled]="selectedPayload.name === NONE_PAYLOAD" (click)="reset()">{{ 'payloads.btn_reset' | translate }}</button>
 			</div>
 			<mat-form-field>
 				<input

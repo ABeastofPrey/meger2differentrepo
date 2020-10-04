@@ -53,10 +53,12 @@ export class ProgramEditorMainComponent implements OnInit {
       const app = this.service.fileRef.name;
       const prj = this.prj.currProject.value.name;
       const desc = this.service.fileRef.desc;
-      const cmd =
-        '?PRJ_SET_APP_DESCRIPTION("' + prj + '","' + app + '","' + desc + '")';
+      const cmd = '?PRJ_SET_APP_DESCRIPTION("' + prj + '","' + app + '",`' + desc + '`)';
       this.ws.query(cmd).then(ret => {
         console.log(ret);
+        if (ret.err || ret.result !== '0') {
+          this.service.fileRef.desc = 'N/A';
+        }
       });
     }
   }

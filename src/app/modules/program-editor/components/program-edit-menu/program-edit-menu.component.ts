@@ -216,6 +216,20 @@ export class ProgramEditMenuComponent implements OnInit {
         }
       });
   }
+  menu_plt_retract() {
+    const ref = this.dialog.open(PalletPickerDialogComponent, {
+      data: {
+        title: 'projectCommands.other.title_plt_retract',
+        pickRobot: true
+      },
+    });
+    ref.afterClosed().subscribe(plt => {
+      if (plt) {
+        const cmd = 'PLT_RETRACT_FROM_ITEM(' + plt.robot + ',"' + plt.pallet + '")';
+        this.prg.insertAndJump(cmd, 0);
+      }
+    });
+  }
   menu_plt_status() {
     this.dialog
       .open(PalletPickerDialogComponent, {

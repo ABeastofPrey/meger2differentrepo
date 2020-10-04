@@ -211,7 +211,8 @@ export class DiagnosticsComponent implements OnInit {
     };
     Plotly.newPlot('mcu', data as Array<Partial<Plotly.PlotData>>, layout as Partial<Plotly.Annotations>, {
       responsive: true,
-      displayModeBar: false
+      displayModeBar: false,
+      displaylogo: false
     });
   }
 

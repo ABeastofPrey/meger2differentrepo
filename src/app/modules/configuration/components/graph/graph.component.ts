@@ -80,7 +80,7 @@ export class GraphComponent implements OnInit {
       }
       Plotly.newPlot(this.graph.nativeElement, data, layout, {
         responsive: true,
-        displaylogo: !this.utils.isTablet,
+        displaylogo: false,
         modeBarButtonsToRemove: [this.utils.isTablet && 'sendDataToCloud'].filter(Boolean),
       });
     } catch (err) {

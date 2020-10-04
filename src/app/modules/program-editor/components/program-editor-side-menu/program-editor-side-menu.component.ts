@@ -1,3 +1,4 @@
+import { UtilsService } from './../../../core/services/utils.service';
 import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { TourService } from 'ngx-tour-md-menu';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -122,7 +123,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
     public cmn: CommonService,
     private tour: TourService,
     private router: Router,
-    private ps: PluginService
+    private ps: PluginService,
+    private utils: UtilsService
   ) {
     this.trn
       .get([

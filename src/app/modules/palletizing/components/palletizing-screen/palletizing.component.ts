@@ -190,7 +190,7 @@ export class PalletizingComponent implements OnInit {
   onWizardClose() {
     this.prg.wizardMode = false;
     setTimeout(() => {
-      this.onWindowResize();
+      this.onPalletChange();
     }, 0);
   }
 

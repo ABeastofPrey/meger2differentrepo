@@ -55,6 +55,7 @@
 			<div *ngIf="advancedMode">
 				<mat-form-field>
 					<mat-select placeholder="{{ 'motion_element' | translate }}" formControlName="motionElement">
+						<mat-option [value]="null">{{'options.none' | translate}}</mat-option>
 						<mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{ e }}</mat-option>
 					</mat-select>
 				</mat-form-field>
@@ -94,7 +95,7 @@
 			[disabled]="
 				(!this.data.angle && this.targetPoint == null) ||
 				(this.data.angle && this.angle.length === 0) ||
-				(this.circlePoint.isArr && this.circlePointIndex < 0) ||
+				(this.circlePoint && this.circlePoint.isArr && this.circlePointIndex < 0) ||
 				(this.targetPoint && this.targetPoint.isArr && this.targetPointIndex < 0) ||
 				ctrl.invalid
 			"

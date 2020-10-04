@@ -53,20 +53,6 @@ define('ace/mode/mcbasic_highlight_rules', (e, t, n) => {
         { token: ['meta.ending-space'], regex: '$' },
         { token: ['prompt'], regex: '-->' },
         {
-          token: [
-            'text',
-            'storage.type.function.asp',
-            'text',
-            'entity.name.function.asp',
-            'text',
-            'punctuation.definition.parameters.asp',
-            'variable.parameter.function.asp',
-            'punctuation.definition.parameters.asp',
-          ],
-          regex:
-            '^(\\s*)(Function|Sub)(\\s+)([a-zA-Z_]\\w*)(\\s*)(\\()([^)]*)(\\))',
-        },
-        {
           token: 'punctuation.definition.comment.asp',
           regex: "'$|REM(?=\\s|$)$",
           next: 'start',

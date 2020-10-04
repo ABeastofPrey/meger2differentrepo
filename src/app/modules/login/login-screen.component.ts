@@ -223,9 +223,14 @@ export class LoginScreenComponent implements OnInit {
     if (!this.env.production) return '';
     const req = new XMLHttpRequest();
     req.open('GET', this.api.api_url + '/rs/assets/scripts/conn.js?t=' + new Date().getTime(), false);
-    req.send(null);
-    const etag = req.getResponseHeader('etag');
-    return etag ? etag.trim() : '';
+    try {
+      req.send(null);
+      const etag = req.getResponseHeader('etag');
+      return etag ? etag.trim() : '';
+    } catch (err) {
+      console.warn('could not load etag');
+      return '';
+    }
   }
 
   private startConnectionCheck() {

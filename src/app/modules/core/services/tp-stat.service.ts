@@ -318,19 +318,23 @@ export class TpStatService {
 
   resetAll() {
     this.ws.clearInterval(this.interval);
-    return this.ws
-      .query('?tp_exit')
-      .then(() => {
-        return this.ws.query('?TP_setKeepAliveBreakable(1)');
-      }).then((ret: MCQueryResponse) => {
-        if (ret.result === '0' || !this.onlineStatus.value) {
-          this.onlineStatus.next(false);
-          this._online = false;
-          this.resetStat();
-        } else {
-          return Promise.reject(null);
-        }
-      });
+    return this.ws.query('?tp_exit').then(() => {
+      return this.ws.query('?TP_setKeepAliveBreakable(1)');
+    }).then((ret: MCQueryResponse) => {
+      if (ret.result === '0' || !this.onlineStatus.value) {
+        return this.ws.query('?TP_setCycBreakable(1)').then(ret=>{
+          if (ret.result === '0' || !this.onlineStatus.value) {
+            this.onlineStatus.next(false);
+            this._online = false;
+            this.resetStat();
+          } else {
+            return Promise.reject(null);
+          }
+        });
+      } else {
+        return Promise.reject(null);
+      }
+    });
   }
 
   setDebugMode(on: boolean) {

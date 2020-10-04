@@ -58,6 +58,7 @@
 			<div *ngIf="advancedMode">
 				<mat-form-field>
 					<mat-select placeholder="{{ 'motion_element' | translate }}" formControlName="motionElement">
+						<mat-option [value]="null">{{'options.none' | translate}}</mat-option>
 						<mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{ e }}</mat-option>
 					</mat-select>
 				</mat-form-field>

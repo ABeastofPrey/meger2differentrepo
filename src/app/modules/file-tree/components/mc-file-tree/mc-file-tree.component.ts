@@ -433,7 +433,6 @@ export class McFileTreeComponent implements OnInit {
       this.service.showFwconfigEditor();
       return;
     }
-    console.log(n.parent ? n.parent.decodedPath : '');
     this.service.setFile(
       n.name,
       n.parent ? n.parent.decodedPath : '',
@@ -707,13 +706,12 @@ export class McFileTreeComponent implements OnInit {
     });
     ref.afterClosed().subscribe(ret => {
       if (ret) {
-        if (
-          !n.isFolder &&
-          this.service.tabs.some(t => {
-            return t.file === n.name;
-          })
-        ) {
-          this.service.close();
+        if (!n.isFolder) {
+          this.service.tabs.forEach((t,i) => {
+            if (t.file === n.name) {
+              this.service.closeTab(i);
+            }
+          });
         }
         this.deleteRecursive(n).then(ret => {
           const msg = ret

@@ -755,7 +755,7 @@
     "type_CUSTOM": "Custom",
     "type_GRID": "Grid",
     "wizard": {
-      "3d_disable": "Too many items - 3D Preview is disabled",
+      "3d_disable": "3D Preview is disabled",
       "app": "Approach",
       "app_dir": "Approach Direction",
       "button": {
@@ -957,6 +957,7 @@
       "title_place": "Insert Place command",
       "title_plt_entry": "Insert Move to Entry Position command",
       "title_plt_index": "Insert Get Pallet Index command",
+      "title_plt_retract": "Insert Move to Retract Position command",
       "title_plt_status": "Insert Get Pallet Status command",
       "title_waitForMotion": "Insert WaitForMotion command"
     },
@@ -1517,7 +1518,7 @@
       "btn": "CHANGE TP MODE PASSWORD...",
       "change": "Change TP Mode password",
       "err": "Could not change password",
-      "err_regex": "Password cannot contain spaces",
+      "err_regex": "Password must be 4-15 characters long, and contain at least one letter and one number",
       "new": "New Password",
       "old": "Current Password",
       "title": "Safety Card Admin Password Change"

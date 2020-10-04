@@ -183,6 +183,12 @@ export class RecordTab {
   get legends() {
     return this._legends;
   }
+
+  get legendsWithoutBreaks() {
+    return this._legends.map(l=>{
+      return l.replace(/<br>/g,'');
+    });
+  }
   
   get chartType() {
     return this._chartType;

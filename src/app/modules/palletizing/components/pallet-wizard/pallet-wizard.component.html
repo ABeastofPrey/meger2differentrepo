@@ -286,7 +286,7 @@
 								{{ 'button.calibrate' | translate }}
 							</button>
 						</div>
-						<div *ngIf="originResult">{{ 'pallets.wizard.calibrated_origin' | translate }}:&nbsp; {{ originResult }}</div>
+						<div *ngIf="originResult && dataService.selectedPallet.isFrameCalibrated">{{ 'pallets.wizard.calibrated_origin' | translate }}:&nbsp; {{ originResult }}</div>
 						<img height="260" width="430" src="assets/pics/pallet/{{ originPicName }}" />
 					</div>
 					<div class="step-content" (mouseleave)="setOriginPic(0)">
@@ -454,7 +454,7 @@
 			</form>
 		</mat-step>
 		<mat-step [stepControl]="step3">
-			<form [formGroup]="step3">
+			<form [formGroup]="step3" (keydown.enter)="$event.preventDefault()">
 				<ng-template matStepLabel>{{ 'pallets.wizard.entry' | translate }}</ng-template>
 				<div class="step-wrapper">
 					<div class="step-content">

@@ -33,6 +33,8 @@ export class PayloadWizardComponent implements OnInit {
   ctrlInertia = this.initCtrl();
   ctrllx = this.initCtrl();
 
+  NONE_PAYLOAD = 'NO_PAYLOAD';
+
   private currValuesInterval: number;
   private notifier: Subject<boolean> = new Subject();
 
@@ -312,7 +314,7 @@ export class PayloadWizardComponent implements OnInit {
 
     this._advanced = false;
 
-    if (name === 'NONE') {
+    if (name === this.NONE_PAYLOAD) {
       this.ctrlMass.disable();
       this.ctrlInertia.disable();
       this.ctrllx.disable();
