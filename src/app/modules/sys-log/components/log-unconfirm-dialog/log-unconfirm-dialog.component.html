@@ -1,5 +1,5 @@
 <div class="log-unconfirm-container">
-    <button class="close-button" mat-button [mat-dialog-close]="false" cdkFocusInitial>X</button>
+    <button class="close-button" mat-button cdkFocusInitial (click)="close()">X</button>
     <div class="content-portion">
         <div class="head-portion">
             <div class="counter-container">
@@ -38,7 +38,7 @@
                                     <button class="confirm-btn" 
                                         mat-raised-button color="primary"
                                         matTooltipPosition="left"
-                                        [disabled]="!item.canConfirm"
+                                        [disabled]="!item.isNotMaintenance"
                                         [matTooltip]="'sys_log.confirm' | translate"
                                         (click)="confirm($event, item)">
                                         <mat-icon>done</mat-icon>

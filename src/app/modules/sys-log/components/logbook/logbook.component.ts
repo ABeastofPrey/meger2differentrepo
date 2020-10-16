@@ -52,13 +52,14 @@ export class LogBookComponent implements OnInit {
         this.notifier.unsubscribe();
     }
 
-    private fetchLog(): void {
+    private fetchLog(isClearAll = false): void {
         this.service.getSysLogs().pipe(takeUntil(this.notifier)).subscribe(_logs => {
             this.allLogs = _logs;
             this.filteredLogs = _logs;
             this.dirveLogs = filter((x: SystemLog) => x.source === 'drive')(_logs);
             this.visiableLogs = slice(0, this.pageSize)(_logs);
             this.onFilter();
+            isClearAll && this.sysLogWatcher.clearAllLog(_logs);
             this.cdRef.detectChanges();
         });
     }
@@ -102,8 +103,7 @@ export class LogBookComponent implements OnInit {
 
     clearAllLogHistory(): void {
         this.service.clearAllLogHistory().pipe(takeUntil(this.notifier)).subscribe(() => {
-            this.fetchLog();
-            this.sysLogWatcher.refreshLog.next();
+            this.fetchLog(true);
         });
     }
 }

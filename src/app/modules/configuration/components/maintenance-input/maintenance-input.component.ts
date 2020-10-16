@@ -4,7 +4,7 @@ import { MainTable1List } from '../../services/maintenance.enum';
 import { MatDialog } from '@angular/material';
 import { MaintenanceService } from '../../services/maintenance.service';
 import { LoginService } from '../../../core';
-import { SysLogWatcherService } from '../../../../modules/sys-log/services/sys-log-watcher.service';
+import { SysLogWatcherService, LogChangeSource } from '../../../../modules/sys-log/services/sys-log-watcher.service';
 
 
 @Component({
@@ -84,8 +84,9 @@ export class MaintenanceInputComponent implements OnInit {
                 this.init();
                 this.service.save(saveModule).then(() => {
                     this.service.save(save_person_ordernum).then(() => {
-                        this.service.save(save_comment).then(() => {
-                            this.sys.refreshLog.next();
+                        this.service.save(save_comment).then((res) => {
+                            console.log(res);
+                            this.sys.refreshLog.next(LogChangeSource.Maintenance);
                         })
                     })
                 })

@@ -84,7 +84,7 @@ export class LogSnackBarComponent implements OnInit, OnDestroy {
 
   public clickConform(event: MouseEvent): void {
     event.stopPropagation();
-    this.log.canConfirm && this.confirmEvent.emit(this.log);
+    this.log.isNotMaintenance && this.confirmEvent.emit(this.log);
   }
 
   public clickConformAll(): void {

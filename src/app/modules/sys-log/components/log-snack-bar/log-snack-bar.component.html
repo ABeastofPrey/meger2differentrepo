@@ -39,7 +39,7 @@
                 <mat-icon>help_outline</mat-icon>
             </button>
             <button mat-flat-button color="primary" 
-                [disabled]="!log?.canConfirm || !tpStat.onlineStatus.value"
+                [disabled]="!log?.isNotMaintenance || !tpStat.onlineStatus.value"
                 [matTooltip]="'sys_log.confirm' | translate"
                 (click)="clickConform($event)">
                 <mat-icon>done</mat-icon>

@@ -1,16 +1,30 @@
 import { Injectable, EventEmitter, NgZone } from '@angular/core';
 import { SystemLog } from '../enums/sys-log.model';
-import { Observable, combineLatest, Subscription, Subject, merge } from 'rxjs';
-import { takeUntil, debounceTime, map as rxjsMap, flatMap, filter as rxjsFilter } from 'rxjs/operators';
+import { Observable, combineLatest, Subscription, Subject, merge, of } from 'rxjs';
+import { takeUntil, debounceTime, map as rxjsMap, flatMap, filter as rxjsFilter, tap, mapTo } from 'rxjs/operators';
 import { SysLogSnackBarService } from './sys-log-snack-bar.service';
 import { SysLogFetchService } from './sys-log-fetch.service';
 import { isUndefined, isNotUndefined } from 'ramda-adjunct';
 import { LogUnconfirmDialogComponent } from '../components/log-unconfirm-dialog/log-unconfirm-dialog.component';
 import { MatDialog } from '@angular/material';
-import { filter, map, prop, compose, find, head, length } from 'ramda';
+import { filter, map, prop, compose, find, head, length, descend, sort } from 'ramda';
 import { LogInfoComponent } from '../components/log-info/log-info.component';
 import { NotificationService } from '../../core/services/notification.service';
 import { LibAsyncMessageCode } from '../../core/notification.model';
+
+const filterUnconfirmed = ([allLog, confirmedLogId]): SystemLog[] => {
+    const findLog = log => confirmedLogId.find(x => x === log.id);
+    const isNotConfirmed = compose(isUndefined, findLog);
+    return filter(isNotConfirmed)(allLog);
+};
+
+export enum LogChangeSource {
+    ErrHistory = 'errHistory',
+    ErrHistoryDelta = 'errHistoryDelta',
+    Maintenance = 'maintenance',
+    OnStartListen = 'onInit',
+    Ohter = 'other'
+}
 
 @Injectable({
     providedIn: 'root'
@@ -24,7 +38,9 @@ export class SysLogWatcherService {
     private clickConfirmSubcription: Subscription;
     private clickConfirmAllSubcription: Subscription;
     private stopListen = new Subject<void>();
-    public refreshLog = new EventEmitter<void>();
+    private pauseListen = false;
+    private confirmedLogId: string[] = [];
+    public refreshLog = new EventEmitter<LogChangeSource>();
 
     constructor(
         private snackbarService: SysLogSnackBarService,
@@ -35,22 +51,30 @@ export class SysLogWatcherService {
     ) { }
 
     public startListenSysLog(): void {
+        // this.notify.newMessage.pipe(debounceTime<any>(500), mapTo(LogChangeSource.ErrHistoryDelta)).subscribe(() => {
+        //     console.log('trigger delta');
+        // });
         this.subscribeClicks && this.subscribeEvents();
         const notifier = merge(
-            this.notify.newMessage.pipe(debounceTime<any>(500)),
-            // this.notify.newWebserverMessage.pipe(debounceTime<any>(500)),
+            this.notify.newMessage.pipe(debounceTime<any>(500), mapTo(LogChangeSource.ErrHistoryDelta)),
             this.notify.newLibAsyncMessage.pipe(
                 rxjsFilter(({ code }) => code === LibAsyncMessageCode.MaitenanceNewLog),
-                debounceTime<any>(500)
+                debounceTime<any>(500),
+                mapTo(LogChangeSource.Maintenance)
             ),
-            this.refreshLog.pipe(debounceTime<any>(200))
-        ).pipe(takeUntil(this.stopListen));
-        const getUnconfimredLogs = flatMap(() => this.getUnconfimredLogs());
+            this.refreshLog.pipe(debounceTime<any>(200)),
+        ).pipe(
+            rxjsFilter(() => !this.pauseListen), takeUntil(this.stopListen),
+            tap(x => {
+                console.log(x);
+            })
+        );
+        const getUnconfimredLogs = flatMap((_source: LogChangeSource = LogChangeSource.Ohter) => this.getUnconfimredLogs(_source));
         const runInsideAngular: any = logs => this.promptLatestUnconfirmedLog.bind(this, [...logs]);
         const listener = logs => this.ngZone.run(runInsideAngular(logs));
         const listenOnNotifier = () => notifier.pipe(getUnconfimredLogs).subscribe(listener);
         this.ngZone.runOutsideAngular(listenOnNotifier);
-        this.refreshLog.next();
+        this.refreshLog.emit(LogChangeSource.OnStartListen);
     }
 
     public stopListenSysLog(): void {
@@ -61,25 +85,60 @@ export class SysLogWatcherService {
         this.subscribeClicks = true;
     }
 
-    private pauseListenSysLog(): void {
-        this.stopListen.next();
+    public clearAllLog(unclearedLog: SystemLog[]): void {
+        this.confirmedLogId = [];
+        this.promptLatestUnconfirmedLog(unclearedLog);
     }
 
-    private getUnconfimredLogs(): Observable<SystemLog[]> {
-        const fetchData = [this.fetchLog.fetchErrHistoryAndMaintenaceLogs(), this.fetchLog.fetchConfirmedIds()];
-        const filterUnconfirmed = ([allLog, confirmedLog]): SystemLog[] => {
-            const findLog = log => confirmedLog.find(x => x === log.id);
-            const isNotConfirmed = compose(isUndefined, findLog);
-            return filter(isNotConfirmed)(allLog);
-        };
+    private getUnconfimredLogs(source: LogChangeSource): Observable<SystemLog[]> {
+        console.log('source from: ' + source);
+        if (source === LogChangeSource.OnStartListen) {
+            return this.getFromErrHistoryAndMaintenance();
+        } else if (source === LogChangeSource.Maintenance) {
+            return this.getUnconfirmMaintenaceAndLocal();
+        } else if (source === LogChangeSource.ErrHistoryDelta) {
+            return this.getFromLatestAndLocal();
+        }  else {
+            console.log('Refresh log with unknow source.');
+            return of(this.unconfirmedLog);
+        }
+    }
+
+    private getFromErrHistoryAndMaintenance(): Observable<SystemLog[]> {
+        const fetchData = [
+            this.fetchLog.fetchErrHistoryAndMaintenaceLogs(),
+            this.fetchLog.fetchConfirmedIds().pipe(
+                tap(ids => this.confirmedLogId = ids) // cache confirmed log id
+            )
+        ];
         return combineLatest(fetchData).pipe(rxjsMap(filterUnconfirmed));
+    }
+
+    private getFromLatestAndLocal(): Observable<SystemLog[]> {
+        return this.fetchLog.fetchFromErrHistory('?errorhistorydelta$(1)').pipe(
+            rxjsMap(delta => [...this.unconfirmedLog, ...delta]),
+            rxjsMap(delta => filterUnconfirmed([delta, this.confirmedLogId])),
+            rxjsMap(sort(descend(prop('timestamp'))))
+        );
+    }
+
+    private getUnconfirmMaintenaceAndLocal(): Observable<SystemLog[]> {
+        const fetchData = [
+            this.fetchLog.fetchFromLibMaintenance(),
+            this.fetchLog.fetchMaintenceConfirmedIds()
+        ];
+        return combineLatest(fetchData).pipe(
+            rxjsMap(filterUnconfirmed),
+            rxjsMap(unconfirmMaintenacne => this.unconfirmedLog.filter(x => x.isNotMaintenance).concat(unconfirmMaintenacne)),
+            rxjsMap(sort(descend(prop('timestamp'))))
+        );
     }
 
     private promptLatestUnconfirmedLog(unconfirmedLog: SystemLog[]): void {
         this.unconfirmedLog = unconfirmedLog;
         const latestUnconfirmedLog = head(this.unconfirmedLog);
         const unconfirmedLogCount = length(this.unconfirmedLog);
-        const hasNoCanConfirm = this.unconfirmedLog.every(x => x.canConfirm === false);
+        const hasNoCanConfirm = this.unconfirmedLog.every(x => x.isNotMaintenance === false);
         if (isNotUndefined(latestUnconfirmedLog)) {
             if (this.fisrtPrompt) {
                 this.snackbarService.openLogSnackbar(latestUnconfirmedLog, unconfirmedLogCount, hasNoCanConfirm);
@@ -96,38 +155,44 @@ export class SysLogWatcherService {
 
     private subscribeEvents(): void {
         this.clickContentSubcription = this.snackbarService.clickContent.subscribe(id => {
-            this.pauseListenSysLog();
+            this.pauseListen = true;
             this.dialog.open(LogUnconfirmDialogComponent, {
                 width: '800px',
                 disableClose: true,
                 data: { unconfirmLog: [...this.unconfirmedLog] }
-            }).afterClosed().subscribe(() => {
-                this.startListenSysLog();
+            }).afterClosed().subscribe(confirmedIds => {
+                this.confirmedLogId = this.confirmedLogId.concat(confirmedIds);
+                this.pauseListen = false;
+                this.refreshLog.next(LogChangeSource.ErrHistoryDelta);
             });
         });
         this.clickQuestionSubscription = this.snackbarService.clickQuestion.subscribe(log => {
-            this.pauseListenSysLog();
+            // this.pauseListen = true;
             this.dialog.open(LogInfoComponent, {
                 width: '600px',
                 disableClose: true,
                 data: { log }
             }).afterClosed().subscribe(() => {
-                this.startListenSysLog();
+                // this.pauseListen = false;
+                // this.refreshLog.next(LogChangeSource.ErrHistoryDelta);
             });
         });
         this.clickConfirmSubcription = this.snackbarService.clickConfirm.subscribe((log: SystemLog) => {
             const needConfirmErr = log.source !== 'webServer';
             this.fetchLog.setConfirmId(log.id, needConfirmErr).subscribe(success => {
                 if (!success) return;
-                this.refreshLog.next();
+                this.unconfirmedLog.shift();
+                this.promptLatestUnconfirmedLog(this.unconfirmedLog);
             });
         });
         this.clickConfirmAllSubcription = this.snackbarService.clickConfirmAll.subscribe(() => {
-            const getIdList = compose(map(prop('id')), filter((x: SystemLog) => x.canConfirm));
+            const getIdList = compose(map(prop('id')), filter((x: SystemLog) => x.isNotMaintenance));
             const isNotAllWebLog = compose(isNotUndefined, find(x => x.source !== 'webServer'))(this.unconfirmedLog);
-            this.fetchLog.setConfirmIdList(getIdList(this.unconfirmedLog), isNotAllWebLog).subscribe(success => {
+            const allIdList = getIdList(this.unconfirmedLog);
+            this.fetchLog.setConfirmIdList(allIdList, isNotAllWebLog).subscribe(success => {
                 if (!success) return;
-                this.refreshLog.next();
+                this.unconfirmedLog = this.unconfirmedLog.filter(x => !x.isNotMaintenance);
+                this.promptLatestUnconfirmedLog(this.unconfirmedLog);
             });
         });
         this.subscribeClicks = false;

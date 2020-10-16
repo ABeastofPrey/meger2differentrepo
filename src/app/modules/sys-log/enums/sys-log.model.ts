@@ -12,7 +12,7 @@ export interface SystemLog {
     type: LogType, // required
     message: string, // required
     module: string,
-    canConfirm: boolean,
+    isNotMaintenance: boolean,
     paras?: string[],
     task?: string, // optional
     file?: string, // optional
@@ -60,5 +60,5 @@ export const fakeLog: SystemLog = {
     id: '9e08eee5-7baf-4689-a302-32e3b5037dee',
     code: 5049,
     type: 'error',
-    canConfirm: true,
+    isNotMaintenance: true,
 } as SystemLog;

@@ -19,10 +19,12 @@ export class LogUnconfirmDialogComponent implements OnInit, AfterViewInit {
     public infoCount: number = 0;
     public canExpand = false;
 
+    private confirmedLogId: string[] = [];
+
     private confirmEvent: EventEmitter<SystemLog> = new EventEmitter<SystemLog>();
 
     public get hasNoCanConfirm(): boolean {
-        return this.unconfirmLog.every(x => x.canConfirm === false);
+        return this.unconfirmLog.every(x => x.isNotMaintenance === false);
     }
 
     constructor(
@@ -46,9 +48,10 @@ export class LogUnconfirmDialogComponent implements OnInit, AfterViewInit {
                 if (!success) return;
                 const index = this.unconfirmLog.findIndex(_log => _log.id === log.id);
                 this.unconfirmLog = remove(index, 1)(this.unconfirmLog);
+                this.confirmedLogId.push(log.id);
                 this.caculateCount();
                 if (this.unconfirmLog.length === 0) {
-                    this.ref.close();
+                    this.close();
                 }
             });
         });
@@ -60,21 +63,26 @@ export class LogUnconfirmDialogComponent implements OnInit, AfterViewInit {
 
     public confirm(event: MouseEvent, log: SystemLog): void {
         event.stopPropagation();
-        log.canConfirm && this.confirmEvent.next(log);
+        log.isNotMaintenance && this.confirmEvent.next(log);
     }
 
     public confirmAll(): void {
-        const confirmId = compose(map(prop('id')), filter((x: SystemLog) => x.canConfirm))(this.unconfirmLog);
+        const confirmId = compose(map(prop('id')), filter((x: SystemLog) => x.isNotMaintenance))(this.unconfirmLog);
         const isNotAllWebLog = compose(isNotUndefined, find(x => x.source !== 'webServer'))(this.unconfirmLog);
         this.fetchLogService.setConfirmIdList(confirmId, isNotAllWebLog).subscribe(success => {
             if (!success) return;
+            this.confirmedLogId = this.confirmedLogId.concat(confirmId);
             if (confirmId.length === this.unconfirmLog.length) {
                 this.unconfirmLog = [];
-                this.ref.close();
+                this.close();
             } else {
-                this.unconfirmLog = filter((x: SystemLog) => !x.canConfirm, this.unconfirmLog);
+                this.unconfirmLog = filter((x: SystemLog) => !x.isNotMaintenance, this.unconfirmLog);
             }
         });
+    }
+
+    public close(): void {
+        this.ref.close(this.confirmedLogId);
     }
 
     public viewPortHeight(): string {

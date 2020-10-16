@@ -6,6 +6,7 @@ import { MainAuthResolver } from './main-auth-resolver.service';
 import { ProgramEditorComponent } from '../program-editor/components/program-editor/program-editor.component';
 import { HomeScreenComponent } from '../home-screen/components/home-screen/home-screen.component';
 import { PermissionGuardService } from '../configuration/permission-guard.service';
+import { LogBookComponent } from '../sys-log/components/logbook/logbook.component';
 
 const routes: Routes = [
   {
@@ -93,10 +94,11 @@ const routes: Routes = [
       },
       {
         path: 'logbook',
-        loadChildren: () =>
-          import('../sys-log/sys-log.module').then(
-            m => m.SystemLogModule
-          ),
+        // loadChildren: () =>
+        //   import('../sys-log/sys-log.module').then(
+        //     m => m.SystemLogModule
+        //   ),
+        component: LogBookComponent,
         canActivate: [PermissionGuardService],
         data: { permission: 99 },
       },{

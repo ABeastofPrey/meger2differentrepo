@@ -67,7 +67,7 @@ const convertErrHistoryLog = (err: ErrHistory): SystemLog => {
         file: err.file,
         line: err.line,
         sernum: err.sernum,
-        canConfirm: true,
+        isNotMaintenance: true,
     };
     return log;
 };
@@ -81,7 +81,16 @@ export class SysLogFetchService {
         const api = '?getConfirmId';
         return this.ws.observableQuery(api).pipe(
             leftHandler('Get confirmedId failed'),
-            rightHandler(JSON.parse));
+            rightHandler(JSON.parse)
+        );
+    }
+
+    public fetchMaintenceConfirmedIds(): Observable<string[]> {
+        const api = '?mntn_getconfirmID';
+        return this.ws.observableQuery(api).pipe(
+            leftHandler('Get confirmedId failed'),
+            rightHandler(JSON.parse)
+        );
     }
 
     public clearSysLog(): Observable<boolean> {
@@ -218,7 +227,7 @@ export class SysLogFetchService {
                 source: 'webServer',
                 type: 'information',
                 module: 'Web Server',
-                canConfirm: true,
+                isNotMaintenance: true,
                 message: msg,
                 userName: _log.username,
                 paras,
@@ -232,8 +241,9 @@ export class SysLogFetchService {
         );
     }
 
-    private fetchFromErrHistory(): Observable<SystemLog[]> {
-        const api = '?errorhistory$(1)';
+    public fetchFromErrHistory(api: string = '?errorhistory$(1)'): Observable<SystemLog[]> {
+        // const api = '?errorhistory$(1)';
+        console.log(api)
         const getErr = res => {
             if (res === 'No error history') {
                 return [];
@@ -248,10 +258,10 @@ export class SysLogFetchService {
             .pipe(rxjsMap(converter));
     }
 
-    private fetchFromLibMaintenance(): Observable<SystemLog[]> {
+    public fetchFromLibMaintenance(): Observable<SystemLog[]> {
         const api = '?mntn_log';
         const parser = compose(prop('error'), JSON.parse);
-        const disableConfirm = (x: SystemLog) => ({ ...x, canConfirm: false });
+        const disableConfirm = (x: SystemLog) => ({ ...x, isNotMaintenance: false });
         const converter = map(compose(disableConfirm, convertErrHistoryLog));
         return this.ws.observableQuery(api).pipe(
             rightHandler(parser),
