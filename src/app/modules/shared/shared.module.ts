@@ -50,6 +50,8 @@ import { DropDownAddComponent } from '../../components/drop-down-add/drop-down-a
 import { TraceNewComponent } from '../dashboard/components/trace/trace-new/trace-new.component';
 import { IpAddressComponent } from '../../components/ip-address/ip-address.component';
 import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-field.component';
+import { CustomKeyBoardComponent } from '../custom-key-board/custom-key-board.component';
+import { CustomKeyBoardDialogComponent } from '../custom-key-board-dialog/custom-key-board-dialog.component';
 
 
 @NgModule({
@@ -112,7 +114,9 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
     DropDownAddComponent,
     TraceNewComponent,
     IpAddressComponent,
-    IpFormFieldComponent
+    IpFormFieldComponent,
+    CustomKeyBoardComponent,
+    CustomKeyBoardDialogComponent
   ],
   declarations: [
     YesNoDialogComponent,
@@ -148,7 +152,9 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
     DropDownAddComponent,
     TraceNewComponent,
     IpAddressComponent,
-    IpFormFieldComponent
+    IpFormFieldComponent,
+    CustomKeyBoardComponent,
+    CustomKeyBoardDialogComponent
   ],
   entryComponents: [
     YesNoDialogComponent,
@@ -167,7 +173,8 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
     DropDownAddComponent,
     TraceNewComponent,
     IpAddressComponent,
-    IpFormFieldComponent
+    IpFormFieldComponent,
+    CustomKeyBoardDialogComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

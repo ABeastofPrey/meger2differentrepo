@@ -211,6 +211,18 @@ export class CircleDialogComponent implements OnInit {
     });
   }
 
+  angleChange(value) {
+    this.ctrl.controls.angle.patchValue(value);
+  }
+
+  vtranChange(value) {
+    this.ctrl.controls.vtran.patchValue(value);
+  }
+
+  blendChange(value) {
+    this.ctrl.controls.blendingPh.patchValue(value);
+  }
+
   cancel() {
     this.dialogRef.close();
   }

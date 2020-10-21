@@ -13,6 +13,7 @@ import { TpStatService } from './tp-stat.service';
 import {CommonService} from './common.service';
 import {UtilsService} from '../../../modules/core/services/utils.service';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
+import { CustomKeyBoardComponent } from '../../custom-key-board/custom-key-board.component';
 
 /*
  * THIS SERVICE MANAGES THE PROJECTS IN THE PROJECT EDITOR, BUT ALSO MANAGES
@@ -83,7 +84,7 @@ export class ProjectManagerService {
   stopStatusRefresh() {
     if (this.interval) clearInterval(this.interval);
   }
-  
+
   setDebugMode(on: boolean) {
     if (on) {
       this.reset();
@@ -268,7 +269,7 @@ export class ProjectManagerService {
         prj.settings.autoStart = !prj.settings.autoStart;
       }
     });
-    
+
   }
 
   private loadProgramSetting(setting: string, proj: MCProject): Promise<void> {
@@ -394,40 +395,40 @@ export class ProjectManagerService {
         ];
         return Promise.all(promises).then((ret: MCQueryResponse[]) => {
           // WORLD
-          proj.settings.limits.world[0].min = Number(ret[0].result);
-          proj.settings.limits.world[0].max = Number(ret[1].result);
-          proj.settings.limits.world[1].min = Number(ret[2].result);
-          proj.settings.limits.world[1].max = Number(ret[3].result);
-          proj.settings.limits.world[2].min = Number(ret[4].result);
-          proj.settings.limits.world[2].max = Number(ret[5].result);
+          proj.settings.limits.world[0].min = ret[0].result;
+          proj.settings.limits.world[0].max = ret[1].result;
+          proj.settings.limits.world[1].min = ret[2].result;
+          proj.settings.limits.world[1].max = ret[3].result;
+          proj.settings.limits.world[2].min = ret[4].result;
+          proj.settings.limits.world[2].max = ret[5].result;
           // BASE
-          proj.settings.limits.base[0].min = Number(ret[6].result);
-          proj.settings.limits.base[0].max = Number(ret[7].result);
-          proj.settings.limits.base[1].min = Number(ret[8].result);
-          proj.settings.limits.base[1].max = Number(ret[9].result);
-          proj.settings.limits.base[2].min = Number(ret[10].result);
-          proj.settings.limits.base[2].max = Number(ret[11].result);
+          proj.settings.limits.base[0].min = ret[6].result;
+          proj.settings.limits.base[0].max = ret[7].result;
+          proj.settings.limits.base[1].min = ret[8].result;
+          proj.settings.limits.base[1].max = ret[9].result;
+          proj.settings.limits.base[2].min = ret[10].result;
+          proj.settings.limits.base[2].max = ret[11].result;
           // TOOL
-          proj.settings.limits.tool[0].min = Number(ret[12].result);
-          proj.settings.limits.tool[0].max = Number(ret[13].result);
-          proj.settings.limits.tool[1].min = Number(ret[14].result);
-          proj.settings.limits.tool[1].max = Number(ret[15].result);
-          proj.settings.limits.tool[2].min = Number(ret[16].result);
-          proj.settings.limits.tool[2].max = Number(ret[17].result);
+          proj.settings.limits.tool[0].min = ret[12].result;
+          proj.settings.limits.tool[0].max = ret[13].result;
+          proj.settings.limits.tool[1].min = ret[14].result;
+          proj.settings.limits.tool[1].max = ret[15].result;
+          proj.settings.limits.tool[2].min = ret[16].result;
+          proj.settings.limits.tool[2].max = ret[17].result;
           // WORKPIECE
-          proj.settings.limits.wp[0].min = Number(ret[18].result);
-          proj.settings.limits.wp[0].max = Number(ret[19].result);
-          proj.settings.limits.wp[1].min = Number(ret[20].result);
-          proj.settings.limits.wp[1].max = Number(ret[21].result);
-          proj.settings.limits.wp[2].min = Number(ret[22].result);
-          proj.settings.limits.wp[2].max = Number(ret[23].result);
+          proj.settings.limits.wp[0].min = ret[18].result;
+          proj.settings.limits.wp[0].max = ret[19].result;
+          proj.settings.limits.wp[1].min = ret[20].result;
+          proj.settings.limits.wp[1].max = ret[21].result;
+          proj.settings.limits.wp[2].min = ret[22].result;
+          proj.settings.limits.wp[2].max = ret[23].result;
           // MACHINETABLE
-          proj.settings.limits.mt[0].min = Number(ret[24].result);
-          proj.settings.limits.mt[0].max = Number(ret[25].result);
-          proj.settings.limits.mt[1].min = Number(ret[26].result);
-          proj.settings.limits.mt[1].max = Number(ret[27].result);
-          proj.settings.limits.mt[2].min = Number(ret[28].result);
-          proj.settings.limits.mt[2].max = Number(ret[29].result);
+          proj.settings.limits.mt[0].min = ret[24].result;
+          proj.settings.limits.mt[0].max = ret[25].result;
+          proj.settings.limits.mt[1].min = ret[26].result;
+          proj.settings.limits.mt[1].max = ret[27].result;
+          proj.settings.limits.mt[2].min = ret[28].result;
+          proj.settings.limits.mt[2].max = ret[29].result;
         });
       });
   }
@@ -437,11 +438,12 @@ export class ProjectManagerService {
     e: Event,
     paramType: string,
     prevValue: number,
-    limit: Limit
+    limit: Limit,
+    keyboardContext?: CustomKeyBoardComponent
   ) {
     const target = e.target as HTMLInputElement;
-    if (target.value.trim().length === 0) {
-      target.value = prevValue.toString();
+    if (target.value.toString().trim().length === 0) {
+      this.updateModel(name, limit, prevValue,keyboardContext);
       return;
     }
     const cmd =
@@ -456,19 +458,22 @@ export class ProjectManagerService {
       if (ret.result === '0') {
         //   this.snack.open(this.words, '', { duration: 1500 });
           this.snackbarService.openTipSnackBar(this.words);
-        this.updateModel(name, limit, Number(target.value));
+          this.updateModel(name, limit, target.value,keyboardContext);
+
       } else {
-        target.value = prevValue.toString();
+        this.updateModel(name, limit, prevValue,keyboardContext);
       }
     });
   }
 
-  private updateModel(name: string, limit: Limit, newVal: number) {
+  private updateModel(name: string, limit: Limit, newVal: number | string,keyboardContext?: CustomKeyBoardComponent) {
+    newVal = newVal.toString();
     if (name.endsWith('min')) {
       limit.min = newVal;
     } else {
       limit.max = newVal;
     }
+    keyboardContext && keyboardContext.setControlValue(newVal);
   }
 
   onProgramSettingChanged(setting: string) {

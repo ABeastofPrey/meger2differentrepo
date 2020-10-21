@@ -26,6 +26,7 @@ import { CommonService } from './services/common.service';
 import { TaskFilterPipe } from '../task-manager/task-filter.pipe';
 import {PassPipe} from './pipes/space-to-nbsp.pipe';
 import { ProgramEditorService } from '../program-editor/services/program-editor.service';
+import { CustomKeyBoardService } from './services/custom-key-board.service';
 
 @NgModule({
   imports: [CommonModule],
@@ -55,6 +56,7 @@ import { ProgramEditorService } from '../program-editor/services/program-editor.
     TaskFilterPipe,
     PassPipe,
     ProgramEditorService,
+    CustomKeyBoardService
   ]
 })
 export class CoreModule {}

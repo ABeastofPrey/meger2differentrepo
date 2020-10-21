@@ -109,7 +109,7 @@
 						</button>
 					</div>
 					<div class="var-details" *ngIf="selectedVar">
-						<mat-form-field *ngFor="let val of _value; let i = index" floatLabel="never">
+						<!-- <mat-form-field *ngFor="let val of _value; let i = index" floatLabel="never">
 							<span matPrefix style="font-weight: bold;">{{ this._legend[i] }}:&nbsp;&nbsp;</span>
 							<input
 								matInput
@@ -121,7 +121,12 @@
 								[disabled]="selectedVar.name === 'VOID' || busy"
 								(onKeyboardClose)="onKeyboardClose()"
 							/>
-						</mat-form-field>
+                        </mat-form-field> -->
+                        <custom-key-board *ngFor="let val of _value; let i = index" type="float"
+                            prefix="{{ this._legend[i] }}:&nbsp;&nbsp;" [placeHolder]="_legend[i]" [(value)]="_value[i].value"
+                            (valueChange)="onKeyboardClose()" [disabled]="selectedVar.name === 'VOID' || busy"
+                            (blurEvent)="onKeyboardClose()"
+                        ></custom-key-board>
 					</div>
 				</mat-card>
 			</as-split-area>

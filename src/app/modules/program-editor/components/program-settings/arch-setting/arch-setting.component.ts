@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { SysLogSnackBarService } from '../../../../sys-log/services/sys-log-snack-bar.service';
 
 export interface ArchElement {
   index: number;
@@ -32,7 +33,8 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     private asService: ArchSettingService,
     private terminalService: TerminalService,
     public snackBar: MatSnackBar,
-    private trn: TranslateService
+    private trn: TranslateService,
+		private sysLogSnackBar: SysLogSnackBarService
   ) {
     this.terminalService.sentCommandEmitter
       .pipe(takeUntil(this.notifier))
@@ -80,6 +82,7 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
       );
       // this.snackBar.open(this.words['valChangedTip'], '', { duration: 1500 });
       console.log('Replace snack: ' + this.words['valChangedTip']);
+      this.sysLogSnackBar.openTipSnackBar('changeOK');
     } catch (err) {
       console.error('Change value failed: ' + err.errString);
     }

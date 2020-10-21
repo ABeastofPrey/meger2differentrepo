@@ -104,8 +104,8 @@ export class Macro {
 
 export class Limit {
   name: string;
-  min: number;
-  max: number;
+  min: number | string;
+  max: number | string;
   units: string;
 
   constructor(name, units) {

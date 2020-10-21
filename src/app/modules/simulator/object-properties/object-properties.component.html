@@ -1,32 +1,30 @@
 <div *ngIf="lastSelectedNode" style="margin: 8px;">
-	<div class="title center-vertical">
-		<mat-form-field appearance="outline" class="name">
-			<input
-				matInput
-				[(ngModel)]="lastSelectedNode.name"
-				virtualKeyboard
-				ktype="text"
-				[disabled]="lastSelectedNode.name.startsWith('Pallet_')"
-			/>
-		</mat-form-field>
-		<button mat-icon-button color="warn" (click)="sim.deleteSelected()">
-			<mat-icon>delete</mat-icon>
-		</button>
-	</div>
+  <div class="title center-vertical">
+    <mat-form-field appearance="outline" class="name">
+      <input
+        matInput
+        [(ngModel)]="lastSelectedNode.name"
+        virtualKeyboard
+        ktype="text"
+        [disabled]="lastSelectedNode.name.startsWith('Pallet_')"
+      />
+    </mat-form-field>
+    <button mat-icon-button color="warn" (click)="sim.deleteSelected()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
   <table class="full" *ngIf="pallet">
     <thead>
-			<tr>
-				<td>{{ 'simulator_screen.prop' | translate }}</td>
-				<td>{{ 'simulator_screen.val' | translate }}</td>
-			</tr>
-		</thead>
+      <tr>
+        <td>{{ 'simulator_screen.prop' | translate }}</td>
+        <td>{{ 'simulator_screen.val' | translate }}</td>
+      </tr>
+    </thead>
     <tr>
-      <td>
-        {{ 'pallets.wizard.origin' | translate }}:
-      </td>
+      <td>{{ 'pallets.wizard.origin' | translate }}:</td>
       <td>
         <span *ngFor="let l of data.robotCoordinateType.legends">
-          {{pallet.origin[l.toLowerCase()]}}
+          {{ pallet.origin[l.toLowerCase()] }}
         </span>
       </td>
     </tr>
@@ -35,154 +33,208 @@
         {{ 'pallets.wizard.dimensions_pallet' | translate }}:
       </td>
       <td>
-        {{pallet.palletSizeX}},
-        {{pallet.palletSizeY}}
+        {{ pallet.palletSizeX }},
+        {{ pallet.palletSizeY }}
       </td>
     </tr>
     <tr *ngIf="lastSelectedNode.color">
-			<td>Color</td>
-			<td
-				class="color-select"
-				[colorPicker]="'#' + lastSelectedNode.color"
-				(colorPickerChange)="onColorChange($event)"
-				[style.background]="'#' + lastSelectedNode.color"
-				cpAlphaChannel="disabled"
-			>
-				{{ lastSelectedNode.color }}
-			</td>
-		</tr>
+      <td>Color</td>
+      <td
+        class="color-select"
+        [colorPicker]="'#' + lastSelectedNode.color"
+        (colorPickerChange)="onColorChange($event)"
+        [style.background]="'#' + lastSelectedNode.color"
+        cpAlphaChannel="disabled"
+      >
+        {{ lastSelectedNode.color }}
+      </td>
+    </tr>
   </table>
-	<table class="full" *ngIf="!lastSelectedNode.name.startsWith('Pallet_')">
-		<thead>
-			<tr>
-				<td>{{ 'simulator_screen.prop' | translate }}</td>
-				<td>{{ 'simulator_screen.val' | translate }}</td>
-				<td></td>
-			</tr>
-		</thead>
-		<tr>
-			<td>POS_X</td>
-			<td>
-				<input
+
+  <table class="full" *ngIf="!lastSelectedNode.name.startsWith('Pallet_')">
+    <thead>
+      <tr>
+        <td>{{ 'simulator_screen.prop' | translate }}</td>
+        <td>{{ 'simulator_screen.val' | translate }}</td>
+        <td></td>
+      </tr>
+    </thead>
+    <tr>
+      <td>POS_X</td>
+      <td>
+        <!-- <input
 					type="number"
 					[(ngModel)]="lastSelectedNode.positionMM.x"
 					virtualKeyboard
 					ktype="numeric"
-				/>
-			</td>
-			<td>mm</td>
-		</tr>
-		<tr>
-			<td>POS_Y</td>
-			<td>
-				<input
-					type="number"
-					[(ngModel)]="lastSelectedNode.positionMM.y"
-					virtualKeyboard
-					ktype="numeric"
-				/>
-			</td>
-			<td>mm</td>
-		</tr>
-		<tr>
-			<td>POS_Z</td>
-			<td>
-				<input
-					type="number"
-					[(ngModel)]="lastSelectedNode.positionMM.z"
-					virtualKeyboard
-					ktype="numeric"
-				/>
-			</td>
-			<td>mm</td>
-		</tr>
-		<tr>
-			<td>ROT_X</td>
-			<td>
-				<input
-					type="number"
-					[(ngModel)]="lastSelectedNode.eulerXYZDeg.x"
-					virtualKeyboard
-					ktype="numeric"
-				/>
-			</td>
-			<td>deg</td>
-		</tr>
-		<tr>
-			<td>ROT_Y</td>
-			<td>
-				<input
-					type="number"
-					[(ngModel)]="lastSelectedNode.eulerXYZDeg.y"
-					virtualKeyboard
-					ktype="numeric"
-				/>
-			</td>
-			<td>deg</td>
-		</tr>
-		<tr>
-			<td>ROT_Z</td>
-			<td>
-				<input
-					type="number"
-					[(ngModel)]="lastSelectedNode.eulerXYZDeg.z"
-					virtualKeyboard
-					ktype="numeric"
-				/>
-			</td>
-			<td>deg</td>
-		</tr>
-		<tr>
-			<td>SCALE_X</td>
-			<td>
-				<input
-					type="number"
-					[(ngModel)]="lastSelectedNode.scale.x"
-					virtualKeyboard
-					ktype="numeric_pos"
-					step="any"
-				/>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>SCALE_Y</td>
-			<td>
-				<input
-					type="number"
-					[(ngModel)]="lastSelectedNode.scale.y"
-					virtualKeyboard
-					ktype="numeric_pos"
-					step="any"
-				/>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>SCALE_Z</td>
-			<td>
-				<input
-					type="number"
-					[(ngModel)]="lastSelectedNode.scale.z"
-					virtualKeyboard
-					ktype="numeric_pos"
-					step="any"
-				/>
-			</td>
-			<td></td>
-		</tr>
-		<tr *ngIf="lastSelectedNode.color">
-			<td>Color</td>
-			<td
-				class="color-select"
-				[colorPicker]="'#' + lastSelectedNode.color"
-				cpAlphaChannel="disabled"
-				(colorPickerChange)="onColorChange($event)"
-				[style.background]="'#' + lastSelectedNode.color"
-			>
-				{{ lastSelectedNode.color }}
-			</td>
-			<td></td>
-		</tr>
-	</table>
+        /> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.positionMM.x"
+          [toNumber]="true"
+          suffix="mm"
+        ></custom-key-board>
+      </td>
+      <!-- <td>mm</td> -->
+    </tr>
+    <tr>
+      <td>POS_Y</td>
+      <td>
+        <!-- <input
+          type="number"
+          [(ngModel)]="lastSelectedNode.positionMM.y"
+          virtualKeyboard
+          ktype="numeric"
+        /> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.positionMM.y"
+          [toNumber]="true"
+          suffix="mm"
+        ></custom-key-board>
+      </td>
+      <!-- <td>mm</td> -->
+    </tr>
+    <tr>
+      <td>POS_Z</td>
+      <td>
+        <!-- <input
+          type="number"
+          [(ngModel)]="lastSelectedNode.positionMM.z"
+          virtualKeyboard
+          ktype="numeric"
+        /> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.positionMM.z"
+          [toNumber]="true"
+          suffix="mm"
+        ></custom-key-board>
+      </td>
+      <!-- <td>mm</td> -->
+    </tr>
+    <tr>
+      <td>ROT_X</td>
+      <td>
+        <!-- <input
+          type="number"
+          [(ngModel)]="lastSelectedNode.eulerXYZDeg.x"
+          virtualKeyboard
+          ktype="numeric"
+        /> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.eulerXYZDeg.x"
+          [toNumber]="true"
+          suffix="deg"
+        ></custom-key-board>
+      </td>
+      <!-- <td>deg</td> -->
+    </tr>
+    <tr>
+      <td>ROT_Y</td>
+      <td>
+        <!-- <input
+          type="number"
+          [(ngModel)]="lastSelectedNode.eulerXYZDeg.y"
+          virtualKeyboard
+          ktype="numeric"
+        /> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.eulerXYZDeg.y"
+          [toNumber]="true"
+          suffix="deg"
+        ></custom-key-board>
+      </td>
+      <!-- <td>deg</td> -->
+    </tr>
+    <tr>
+      <td>ROT_Z</td>
+      <td>
+        <!-- <input
+          type="number"
+          [(ngModel)]="lastSelectedNode.eulerXYZDeg.z"
+          virtualKeyboard
+          ktype="numeric"
+        /> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.eulerXYZDeg.z"
+          [toNumber]="true"
+          suffix="deg"
+        ></custom-key-board>
+      </td>
+      <!-- <td>deg</td> -->
+    </tr>
+    <tr>
+      <td>SCALE_X</td>
+      <td>
+        <!-- <input
+          type="number"
+          [(ngModel)]="lastSelectedNode.scale.x"
+          virtualKeyboard
+          ktype="numeric_pos"
+          step="any"
+        />
+      </td> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.scale.x"
+          [toNumber]="true"
+        ></custom-key-board>
+        <!-- <td></td> -->
+      </td>
+    </tr>
+
+    <tr>
+      <td>SCALE_Y</td>
+      <td>
+        <!-- <input
+          type="number"
+          [(ngModel)]="lastSelectedNode.scale.y"
+          virtualKeyboard
+          ktype="numeric_pos"
+          step="any"
+        /> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.scale.y"
+          [toNumber]="true"
+        ></custom-key-board>
+      </td>
+      <!-- <td></td> -->
+    </tr>
+    <tr>
+      <td>SCALE_Z</td>
+      <td>
+        <!-- <input
+          type="number"
+          [(ngModel)]="lastSelectedNode.scale.z"
+          virtualKeyboard
+          ktype="numeric_pos"
+          step="any"
+        /> -->
+        <custom-key-board
+          type="float"
+          [(value)]="lastSelectedNode.scale.z"
+          [toNumber]="true"
+        ></custom-key-board>
+      </td>
+      <!-- <td></td> -->
+    </tr>
+    <tr *ngIf="lastSelectedNode.color">
+      <td>Color</td>
+      <td
+        class="color-select"
+        [colorPicker]="'#' + lastSelectedNode.color"
+        cpAlphaChannel="disabled"
+        (colorPickerChange)="onColorChange($event)"
+        [style.background]="'#' + lastSelectedNode.color"
+      >
+        {{ lastSelectedNode.color }}
+      </td>
+      <td></td>
+    </tr>
+  </table>
 </div>

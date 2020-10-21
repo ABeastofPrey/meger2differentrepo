@@ -44,9 +44,9 @@ export class MaintenanceInputComponent implements OnInit {
         });
     }
 
-    limitNum(event): void {
-        event.target.value = event.target.value.replace(/\D/g, '');
-        this.inputForm.value.orderNum = event.target.value;
+    limitNum(value): void {
+        // event.target.value = event.target.value.replace(/\D/g, '');
+        this.inputForm.value.orderNum = value;
         this.inputForm.patchValue({ ...this.inputForm.value });
 
     }

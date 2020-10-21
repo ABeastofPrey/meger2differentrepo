@@ -1,0 +1,126 @@
+<div
+  class="wrapper virtual-keyboard tablet-ui mat-typography"
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+  cdkDragBoundary="body"
+>
+  <h2 mat-dialog-title class="mat-toolbar  mat-elevation-z3 cdkDragHandle">
+    <mat-icon class="openWith">open_with</mat-icon>
+    <mat-icon (click)="close()" class="close">close</mat-icon>
+  </h2>
+  <mat-dialog-content>
+    <custom-key-board
+      class="customKeyBoard"
+      #customKeyBoard
+      [(value)]="dialogData.value"
+      [type]="dialogData.type"
+      [min]="dialogData.min"
+      [max]="dialogData.max"
+      [leftClosedInterval]="dialogData.leftClosedInterval"
+      [rightClosedInterval]="dialogData.rightClosedInterval"
+      [required]="dialogData.required"
+      [requiredErrMsg]="dialogData.requiredErrMsg"
+      [disabled]="dialogData.disabled"
+      [label]="dialogData.label"
+      [placeHolder]="dialogData.placeHolder"
+      keyBoardDialog="true"
+    >
+    </custom-key-board>
+    <div class="btnBox">
+      <div *ngFor="let keyboard of layout" class="key-row">
+        <button
+          mat-raised-button
+          *ngFor="let item of keyboard"
+          [value]="item"
+          (touchstart)="touchstart($event, item)"
+          (touchend)="touchend()"
+          [ngClass]="{
+            darkBtn:
+              item == '.' ||
+              item == '-' ||
+              item == InputTypes.Delete ||
+              item == InputTypes.Left ||
+              item == InputTypes.Right,
+            enter: item === InputTypes.Enter,
+            btnSmall:
+              item == '.' ||
+              item == '-' ||
+              item == InputTypes.Left ||
+              item == InputTypes.Right ||
+              item == InputTypes.Delete ||
+              item === InputTypes.Enter,
+            pointerDisable:
+              (dialogData.isPositiveNum && item === '-') ||
+              ((dialogData.type === 'int' ||
+                (customKeyBoard &&
+                  customKeyBoard.getValue &&
+                  customKeyBoard.getValue().indexOf('.') > -1)) &&
+                dialogData.type !== 'string' &&
+                item === '.') ||
+              (customKeyBoard &&
+                customKeyBoard.getValid &&
+                !customKeyBoard.getValid() &&
+                item === InputTypes.Enter) ||
+                (customKeyBoard && customKeyBoard.getValue && (customKeyBoard.getValue() == '-') && item === InputTypes.Enter)
+          }"
+          [disabled]="
+            (dialogData.isPositiveNum && item === '-') ||
+            ((dialogData.type === 'int' ||
+              (customKeyBoard &&
+                customKeyBoard.getValue &&
+                customKeyBoard.getValue().indexOf('.') > -1)) &&
+              dialogData.type !== 'string' &&
+              item === '.') ||
+            (customKeyBoard &&
+              customKeyBoard.getValid &&
+              !customKeyBoard.getValid() &&
+              item === InputTypes.Enter) || 
+            (customKeyBoard && customKeyBoard.getValue && (customKeyBoard.getValue() == '-') && item === InputTypes.Enter)
+          "
+        >
+          <span *ngIf="item.length <= 1 || item == InputTypes.Enter">{{
+            item
+          }}</span>
+          <mat-icon *ngIf="item.length > 1 && item !== InputTypes.Enter">{{
+            item
+          }}</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="bottom-bar"></div>
+  </mat-dialog-content>
+</div>
+
+<!-- <div class="wrapper virtual-keyboard tablet-ui mat-typography" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+    cdkDragBoundary="body">
+    <div class="dragger" cdkDragHandle>
+        <mat-icon (click)="close()" class="close">close</mat-icon>
+        <mat-icon class="openWith">open_with</mat-icon>
+    </div>
+    <custom-key-board class="customKeyBoard" #customKeyBoard
+        [(value)]="dialogData.value"
+        [type]="dialogData.type"
+        [min]="dialogData.min"
+        [max]="dialogData.max"
+        [leftClosedInterval]="dialogData.leftClosedInterval"
+        [rightClosedInterval]="dialogData.rightClosedInterval"
+        [required]="dialogData.required"
+        [requiredErrMsg]="dialogData.requiredErrMsg"
+        [disabled]="dialogData.disabled"
+        [label]="dialogData.label"
+        [placeHolder]="dialogData.placeHolder"
+        keyBoardDialog=true>
+    </custom-key-board>
+    <div class="btnBox">
+        <div *ngFor="let keyboard of layout">
+            <button mat-raised-button *ngFor="let item of keyboard" [value]="item" (touchstart)="touchstart($event,item)" (touchend)="touchend()"
+                [ngClass]="{'heightDouble':item=='Enter','twoThirdsWidth': item=='.' || item=='arrow_back' || item=='arrow_forward','twoThirdsMl':item=='.',
+                            'bkgcPink':item=='Enter', 'bkgcGrey': item=='.' || item=='-' || item=='backspace' || item=='arrow_back' || item=='arrow_forward'}"
+                [disabled]="(dialogData.isPositiveNum && item==='-') || (((dialogData.type === 'int') || (customKeyBoard && customKeyBoard.getValue && customKeyBoard.getValue().indexOf('.') > -1)) && dialogData.type !== 'string' && item==='.') || (customKeyBoard && customKeyBoard.getValid && !customKeyBoard.getValid() && item==='Enter')"
+                [class.pointerDisable]="(dialogData.isPositiveNum && item==='-') || (((dialogData.type === 'int') || (customKeyBoard && customKeyBoard.getValue && customKeyBoard.getValue().indexOf('.') > -1)) && dialogData.type !== 'string' && item==='.') || (customKeyBoard && customKeyBoard.getValid && !customKeyBoard.getValid() && item==='Enter')">
+                <span *ngIf="item.length <= 1 || item == 'Enter'">{{item}}</span>
+                <mat-icon *ngIf="item.length > 1 && item !== 'Enter'">{{item}}</mat-icon>
+            </button>
+        </div>
+    </div>
+</div> -->

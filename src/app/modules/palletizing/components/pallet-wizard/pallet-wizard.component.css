@@ -21,11 +21,14 @@ mat-form-field {
 }
 .input-normal {
   max-width: 90px;
+  margin-right: 10px;
+  display: inline-block;
 }
 .input-small {
   max-width: 45px;
   margin-top: 8px;
   margin-bottom: -10px;
+  margin-right: 5px;
 }
 .flag-wrapper {
   padding-left: 16px;

@@ -25,15 +25,16 @@
                     (onKeyboardClose)="onBlur($event, element.index, element.depart, 1)"
 				/>
             </mat-form-field>  -->
-            <cs-number-input 
+            <custom-key-board 
                 type="float" 
                 [required]="true"
-                [min]="0"
-				[leftClosedInterval]=true 
+				[min]="0"
+				[isPositiveNum]="true"
+				[leftClosedInterval]="true" 
 				[(value)]="element.depart"
                 (pressEnterEvent)="onBlur({target:{value:$event}}, element.index, element.depart, 1)"
 				(blurEvent)="onBlur({target:{value:$event}}, element.index, element.depart, 1)">
-            </cs-number-input>
+            </custom-key-board>
 		</mat-cell>
 	</ng-container>
 	<!-- Approach Column -->
@@ -55,16 +56,17 @@
 					(onKeyboardClose)="onBlur($event, element.index, element.approach, 2)"
 				/>
             </mat-form-field> -->
-            <cs-number-input 
+            <custom-key-board 
                 type="float" 
                 [required]="true"
                 [min]="0"
+				[isPositiveNum]="true"
                 [leftClosedInterval]=true 
                 [value]="element.approach"  
                 (valueChange)="element.approach = $event" 
                 (pressEnterEvent)="onBlur({target:{value:$event}}, element.index, element.approach, 2)"
                 (blurEvent)="onBlur({target:{value:$event}}, element.index, element.approach, 2)" >
-            </cs-number-input>
+            </custom-key-board>
 		</mat-cell>
 	</ng-container>
 

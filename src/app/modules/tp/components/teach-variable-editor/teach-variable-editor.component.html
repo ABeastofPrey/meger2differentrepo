@@ -1,5 +1,8 @@
 <div *ngIf="teach.value">
-	<mat-form-field *ngFor="let val of teach.value; let i = index" floatLabel="never">
+    <mat-form-field *ngFor="let val of teach.value; let i = index" floatLabel="never"
+        [class.hide]="(teach.selectedTeachVariable.typeStr !== 'STRING' && teach.selectedTeachVariable.typeStr !== 'LOCATION') ||
+        (teach.selectedTeachVariable.typeStr === 'LOCATION' && i < data.robotCoordinateType.legends.length)"
+    >
 		<span matPrefix style="font-weight: bold;">{{ teach.legend[i] | translate }}:&nbsp;&nbsp;</span>
 		<mat-select
 			*ngIf="teach.selectedTeachVariable.typeStr === 'LOCATION' && i >= data.robotCoordinateType.legends.length"
@@ -22,7 +25,7 @@
 				<mat-option value="2">FLIP</mat-option>
 			</div>
 		</mat-select>
-		<input
+		<!-- <input
 			*ngIf="
 				(teach.selectedTeachVariable.typeStr !== 'STRING' && teach.selectedTeachVariable.typeStr !== 'LOCATION') ||
 				(teach.selectedTeachVariable.typeStr === 'LOCATION' && i < data.robotCoordinateType.legends.length)
@@ -33,7 +36,8 @@
 			[(ngModel)]="teach.value[i].value"
 			(change)="teach.onKeyboardClose()"
 			(onKeyboardClose)="teach.onKeyboardClose()"
-		/>
+        /> -->
+        <input matInput>
 		<input
 			*ngIf="teach.selectedTeachVariable.typeStr === 'STRING'"
 			matInput
@@ -43,5 +47,15 @@
 			(change)="teach.onKeyboardClose()"
 			(onKeyboardClose)="teach.onKeyboardClose()"
 		/>
-	</mat-form-field>
+    </mat-form-field>
+    <div *ngFor="let val of teach.value; let i = index">
+        <div *ngIf="
+            (teach.selectedTeachVariable.typeStr !== 'STRING' && teach.selectedTeachVariable.typeStr !== 'LOCATION') ||
+            (teach.selectedTeachVariable.typeStr === 'LOCATION' && i < data.robotCoordinateType.legends.length)
+        ">
+            <custom-key-board [(value)]="teach.value[i].value" type="float" prefix="{{ teach.legend[i] | translate }}:&nbsp;&nbsp;"
+                (valueChange)="teach.onKeyboardClose()"  (blurEvent)="teach.onKeyboardClose()"
+            ></custom-key-board>
+        </div>
+    </div>
 </div>

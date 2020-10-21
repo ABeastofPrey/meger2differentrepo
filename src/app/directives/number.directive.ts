@@ -8,22 +8,23 @@ export const isFloat = (type: InputType) => type.toLocaleLowerCase() === 'float'
 
 export const isInt = (type: InputType) => type.toLocaleLowerCase() === 'int';
 
-export const getValidNumberString = (originalVal: string, type: InputType): string => {
-    const firstOne = originalVal.trim()[0] === '-' ? '-' : '';
+export const getValidNumberString = (originalVal: string, type: InputType, isPositiveNum?: boolean): string => {
+    let firstOne = originalVal.trim()[0] === '-' ? '-' : '';
+    isPositiveNum ? firstOne = '' : "";
     if (isFloat(type)) {
         const validStr = originalVal.replace(/[^0-9|.]+/g, '').replace('.', '*').replace(/[.]/g, '').replace('*', '.');
         const indexOfNotZero = [...validStr].findIndex(n => n !== '0');
-        const slicedString = validStr.slice(indexOfNotZero);
+        const slicedString = validStr.slice(0);
         const correctedStr = slicedString[0] === '.' ? `0${slicedString}` : slicedString;
         const finalString = `${firstOne}${correctedStr}`;
         return finalString;
     } else if (isInt(type)) {
         const validStr = originalVal.replace(/[^0-9]+/g, '');
-        if (validStr !== '0') {
-            const indexOfNotZero = [...validStr].findIndex(n => n !== '0');
-            const slicedString = validStr.slice(indexOfNotZero);
-            return `${firstOne}${slicedString}`;
-        }
+        // if (validStr !== '0') {
+        //     const indexOfNotZero = [...validStr].findIndex(n => n !== '0');
+        //     const slicedString = validStr.slice(indexOfNotZero);
+        //     return `${firstOne}${slicedString}`;
+        // }
         return `${firstOne}${validStr}`;
     }
 };

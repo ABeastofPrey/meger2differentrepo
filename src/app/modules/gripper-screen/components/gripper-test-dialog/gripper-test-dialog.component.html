@@ -7,7 +7,7 @@
 				{{ 'button.close' | translate }} {{ data.grp }}
 			</button>
 			<div style="margin: 8px 0;"></div>
-			<mat-form-field class="time">
+			<!-- <mat-form-field class="time">
 				<input
 					matInput
 					placeholder="{{ 'grippers.cycle_time' | translate }}"
@@ -18,7 +18,17 @@
 					[disabled]="running"
 				/>
 				<span matSuffix>ms.</span>
-			</mat-form-field>
+      </mat-form-field> -->
+      <div class="time">
+        <custom-key-board
+        placeHolder="{{ 'grippers.cycle_time' | translate }}"
+        [(value)]="time"
+        [disabled]="running"
+        type="int"
+        [isPositiveNum]="true"
+        (blurEvent)="onCycleChange()"
+        suffix="ms."></custom-key-board>
+      </div>
 			<button mat-raised-button color="primary" (click)="cycle()" [disabled]="running">
 				{{ 'grippers.btnCycle' | translate }}
 			</button>

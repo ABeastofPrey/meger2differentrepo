@@ -35,7 +35,7 @@
 				<button mat-raised-button color="primary" (click)="setAsCurrent()">{{ 'button.set_current' | translate }}</button>
 				<button mat-raised-button color="warn" *ngIf="!login.isOperator" [disabled]="selectedPayload.name === NONE_PAYLOAD" (click)="reset()">{{ 'payloads.btn_reset' | translate }}</button>
 			</div>
-			<mat-form-field>
+			<!-- <mat-form-field>
 				<input
 					matInput
 					min="0"
@@ -47,8 +47,11 @@
 					[formControl]="ctrlMass"
 				/>
 				<span matSuffix>[Kg]</span>
-			</mat-form-field>
-			<mat-form-field>
+            </mat-form-field> -->
+            <custom-key-board class="customKeyBoard" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.mass' | translate }}" [suffix]="'[Kg]'"
+                [(value)]="ctrlMass.value" (blurEvent)="onMassChange({target: {value: $event}})"
+            ></custom-key-board>
+			<!-- <mat-form-field>
 				<input
 					matInput
 					min="0"
@@ -60,8 +63,11 @@
 					[formControl]="ctrlInertia"
 				/>
 				<span matSuffix>[Kg * m<sup>2</sup>]</span>
-			</mat-form-field>
-			<mat-form-field>
+            </mat-form-field> -->
+            <custom-key-board class="customKeyBoard" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.inertia' | translate }}" [suffix]="'[Kg * m<sup>2</sup>]'"
+                [(value)]="ctrlInertia.value"  (blurEvent)="onInertiaChange({target: {value: $event}})"
+            ></custom-key-board>
+			<!-- <mat-form-field>
 				<input
 					matInput
 					min="0"
@@ -73,7 +79,10 @@
 					[formControl]="ctrllx"
 				/>
 				<span matSuffix>[m]</span>
-			</mat-form-field>
+            </mat-form-field> -->
+            <custom-key-board class="customKeyBoard" type="float" placeHolder="{{ 'payloads.offX' | translate }}" [suffix]="'[m]'"
+                [(value)]="ctrllx.value"  (blurEvent)="onXOffsetChange({target: {value: $event}})"
+            ></custom-key-board>
 			<table class="advanced-table" *ngIf="advanced">
 				<thead>
 					<tr>
@@ -88,58 +97,73 @@
 					<tr>
 						<td>{{ 'payloads.start_pos' | translate }}</td>
 						<td *ngFor="let i of [0, 1, 2, 3]">
-							<mat-form-field appearance="outline">
+							<!-- <mat-form-field appearance="outline">
 								<input
 									matInput
 									[(ngModel)]="data.payloadStart[i]"
-									
+
 									(change)="data.onPayloadStartChange()"
 									virtualKeyboard
 									ktype="numeric"
 									(onKeyboardClose)="data.onPayloadStartChange()"
 								/>
 								<span matSuffix>{{ i !== 2 ? '[deg]' : '[mm]' }}</span>
-							</mat-form-field>
+                            </mat-form-field> -->
+                            <div class="customKeyBoard2">
+                                <custom-key-board type="float" [(value)]="data.payloadStart[i]" suffix="{{ i !== 2 ? '[deg]' : '[mm]' }}" appearance="outline"
+                                    (blurEvent)="data.onPayloadStartChange()"
+                                ></custom-key-board>
+                            </div>
 						</td>
 					</tr>
 					<tr>
 						<td>{{ 'payloads.relative_pos' | translate }}</td>
 						<td *ngFor="let i of [0, 1, 2, 3]">
-							<mat-form-field appearance="outline">
+							<!-- <mat-form-field appearance="outline">
 								<input
 									matInput
 									[(ngModel)]="data.payloadRelative[i]"
-									
+
 									(change)="data.onPayloadRelativeChange()"
 									virtualKeyboard
 									ktype="numeric"
 									(onKeyboardClose)="data.onPayloadRelativeChange()"
 								/>
 								<span matSuffix>{{ i !== 2 ? '[deg]' : '[mm]' }}</span>
-							</mat-form-field>
+                            </mat-form-field> -->
+                            <div class="customKeyBoard2">
+                                <custom-key-board type="float" [(value)]="data.payloadRelative[i]" suffix="{{ i !== 2 ? '[deg]' : '[mm]' }}" appearance="outline"
+                                 (blurEvent)="data.onPayloadRelativeChange()"
+                                ></custom-key-board>
+                            </div>
 						</td>
 					</tr>
 					<tr>
 						<td>{{ 'payloads.freq' | translate }}</td>
 						<td *ngFor="let i of [0, 1, 2, 3]">
-							<mat-form-field appearance="outline">
+							<!-- <mat-form-field appearance="outline">
 								<input
 									matInput
 									[(ngModel)]="data.payloadFreq[i]"
-									
+
 									(change)="data.onPayloadFreqChange()"
 									virtualKeyboard
 									ktype="numeric"
 									(onKeyboardClose)="data.onPayloadFreqChange()"
 								/>
 								<span matSuffix>[Hz.]</span>
-							</mat-form-field>
+                            </mat-form-field> -->
+                            <div class="customKeyBoard2">
+                                <custom-key-board type="float" [(value)]="data.payloadFreq[i]" suffix="[Hz.]" appearance="outline"
+                                (blurEvent)="data.onPayloadFreqChange()"
+                                ></custom-key-board>
+                            </div>
 						</td>
 					</tr>
 					<tr class="table-end">
 						<td>{{ 'payloads.time' | translate }}</td>
 						<td>
-							<mat-form-field appearance="outline">
+							<!-- <mat-form-field appearance="outline">
 								<input
 									matInput
 									[(ngModel)]="data.payloadDuration"
@@ -149,7 +173,12 @@
 									(onKeyboardClose)="data.onPayloadDurationChange()"
 								/>
 								<span matSuffix>[s]</span>
-							</mat-form-field>
+                            </mat-form-field> -->
+                            <div class="customKeyBoard2">
+                                <custom-key-board type="float" [(value)]="data.payloadDuration" suffix="[s]" appearance="outline"
+                                    (blurEvent)="data.onPayloadDurationChange()"
+                                ></custom-key-board>
+                            </div>
 						</td>
 						<td colspan="3">
 							<button mat-raised-button color="primary" (click)="showIdentDialog()" [disabled]="!stat.enabled">

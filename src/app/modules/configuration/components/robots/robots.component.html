@@ -1,52 +1,75 @@
 <div class="wrapper">
-	<div class="robots">
-		<mat-card>
-			<h2>
-				{{ 'robots.selected' | translate }}
-				<button
-					mat-raised-button
-					color="primary"
-					class="btn-change"
-					(click)="openRobotSelectionDialog()"
-					[disabled]="!robot.types"
-				>
-					{{ 'robots.btnChange' | translate }}...
-				</button>
-			</h2>
-			<div *ngIf="robot.selectedRobot" class="selected-robot" @fade>
-				<div>
-					<span class="mat-subtitle-color">{{ 'robots.name' | translate }}: </span>
-					{{ robot.selectedRobot.name }}
-				</div>
-				<div>
-					<span class="mat-subtitle-color">{{ 'robots.type' | translate }}: </span>
-					{{ robot.selectedRobot.type }}
-				</div>
-				<div>
-					<span class="mat-subtitle-color">{{ 'robots.bus' | translate }}: </span>
-					{{ robot.selectedRobot.bus }}
-				</div>
-				<div>
-					<span class="mat-subtitle-color">{{ 'robots.max-payload' | translate }}: </span>
-					{{ robot.selectedRobot.payload }} [Kg.]
-				</div>
-				<div>
-					<span class="mat-subtitle-color">{{ 'robots.part' | translate }}: </span>
-					{{ robot.selectedRobot.part_number }}
-				</div>
-			</div>
-			<div *ngIf="robot.selectedRobot === null">{{ 'na' | translate }}</div>
-			<div *ngIf="robot.rarm" @fade>
-				<span class="mat-subtitle-color"><b>{{'rarm' | translate}}:</b></span> {{robot.rarm.PN}} | {{robot.rarm.SN}}
-			</div>
-		</mat-card>
-		<mat-card *ngIf="robot.selectedRobot && stat.onlineStatus.value" style="min-height: 200px;">
-			<h2>{{ 'robots.params' | translate }}</h2>
-			<mat-tab-group animationDuration="0ms" backgroundColor="primary" color="accent">
-				<mat-tab label="{{ 'robots.disp' | translate }}">
-					<div class="container">
-						<div class="center-vertical" *ngFor="let d of disp; let i = index; trackBy: trackByFn">
-							<mat-form-field appearance="outline" class="disp">
+  <div class="robots">
+    <mat-card>
+      <h2>
+        {{ 'robots.selected' | translate }}
+        <button
+          mat-raised-button
+          color="primary"
+          class="btn-change"
+          (click)="openRobotSelectionDialog()"
+          [disabled]="!robot.types"
+        >
+          {{ 'robots.btnChange' | translate }}...
+        </button>
+      </h2>
+      <div *ngIf="robot.selectedRobot" class="selected-robot" @fade>
+        <div>
+          <span class="mat-subtitle-color"
+            >{{ 'robots.name' | translate }}:
+          </span>
+          {{ robot.selectedRobot.name }}
+        </div>
+        <div>
+          <span class="mat-subtitle-color"
+            >{{ 'robots.type' | translate }}:
+          </span>
+          {{ robot.selectedRobot.type }}
+        </div>
+        <div>
+          <span class="mat-subtitle-color"
+            >{{ 'robots.bus' | translate }}:
+          </span>
+          {{ robot.selectedRobot.bus }}
+        </div>
+        <div>
+          <span class="mat-subtitle-color"
+            >{{ 'robots.max-payload' | translate }}:
+          </span>
+          {{ robot.selectedRobot.payload }} [Kg.]
+        </div>
+        <div>
+          <span class="mat-subtitle-color"
+            >{{ 'robots.part' | translate }}:
+          </span>
+          {{ robot.selectedRobot.part_number }}
+        </div>
+      </div>
+      <div *ngIf="robot.selectedRobot === null">{{ 'na' | translate }}</div>
+      <div *ngIf="robot.rarm" @fade>
+        <span class="mat-subtitle-color"
+          ><b>{{ 'rarm' | translate }}:</b></span
+        >
+        {{ robot.rarm.PN }} | {{ robot.rarm.SN }}
+      </div>
+    </mat-card>
+    <mat-card
+      *ngIf="robot.selectedRobot && stat.onlineStatus.value"
+      style="min-height: 200px;"
+    >
+      <h2>{{ 'robots.params' | translate }}</h2>
+      <mat-tab-group
+        animationDuration="0ms"
+        backgroundColor="primary"
+        color="accent"
+      >
+        <mat-tab label="{{ 'robots.disp' | translate }}">
+          <div class="container">
+            <div
+              class="center-vertical"
+              *ngFor="let d of disp; let i = index; trackBy: trackByFn"
+            >
+              <!-- <mat-form-field appearance="outline" class="disp">
 								<mat-label>A{{ i + 1 }}</mat-label>
 								<input
 									matInput
@@ -58,46 +81,88 @@
 								/>
 								<span matSuffix *ngIf="units">[{{ units[i] }}]</span>
 								<mat-hint *ngIf="rarmDisp && rarmDisp['A' + (i+1)]"><b>{{'rarm' | translate}}:</b> {{rarmDisp['A' + (i+1)]}}</mat-hint>
-							</mat-form-field>
-							<button
-								mat-raised-button
-								color="primary"
-								(click)="setHome(i + 1)"
-								class="btn-home center-vertical-horizontal"
-							>
-								<mat-icon>gps_fixed</mat-icon
-								><span style="margin-left: 8px;">{{ 'robots.btnSetCurrent' | translate }}</span>
-							</button>
-							<div class="battery center-vertical" [class.battery-warn]="battery[i] !== 0" *ngIf="battery.length > 0">
-								<mat-icon [color]="battery[i] === 2 ? 'warn' : ''" matTooltip="{{'robots.battery.status' | translate}}" [class.battery-critical]="battery[i] === 2">
-									{{ battery[i] === 0 ? 'battery_full' : 'battery_alert' }}
-								</mat-icon>
-								<div *ngIf="battery[i] !== 0" class="battery-warn-box center-vertical">
-									<mat-icon>arrow_right</mat-icon>
-									<button mat-raised-button color="primary" (click)="clearBattery(i)" [disabled]="busy">
-										<mat-spinner color="primary" *ngIf="busy" diameter="24" style="margin: 8px;"></mat-spinner>
-										<span *ngIf="!busy">{{ 'button.reset' | translate }}</span>
-									</button>
-								</div>
-							</div>
-						</div>
-						<button *ngIf="masteringAck" mat-raised-button color="warn" (click)="acknowledgeMastering()">
-							{{ 'robots.battery.masteringAck' | translate }}
-						</button>
-					</div>
-				</mat-tab>
-				<mat-tab label="{{ 'robots.reference.title' | translate }}" #refMasteringTab>
-					<div *ngIf="refMasteringTab.isActive" class="container">
-						<app-reference-mastering></app-reference-mastering>
-					</div>
-				</mat-tab>
-				<mat-tab label="DH">
-					<div class="container">
-						<div class="images">
-							<img *ngIf="dhImgPath1" src="assets/pics/dh/{{ dhImgPath1 }}" />
-							<img *ngIf="dhImgPath2" src="assets/pics/dh/{{ dhImgPath2 }}" style="align-self:flex-end;" />
-						</div>
-						<mat-form-field appearance="outline" *ngFor="let d of dh; let i = index; trackBy: trackByFn" class="dh">
+                            </mat-form-field> -->
+              <custom-key-board
+                type="float"
+                matLabel="A{{ i + 1 }}"
+                appearance="outline"
+                [(value)]="disp[i]"
+                (blurEvent)="onSettingsKeyboardClose()"
+              ></custom-key-board>
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="setHome(i + 1)"
+                class="btn-home center-vertical-horizontal"
+              >
+                <mat-icon>gps_fixed</mat-icon
+                ><span style="margin-left: 8px;">{{
+                  'robots.btnSetCurrent' | translate
+                }}</span>
+              </button>
+              <div
+                class="battery center-vertical"
+                [class.battery-warn]="battery[i] !== 0"
+                *ngIf="battery.length > 0"
+              >
+                <mat-icon
+                  [color]="battery[i] === 2 ? 'warn' : ''"
+                  matTooltip="{{ 'robots.battery.status' | translate }}"
+                  [class.battery-critical]="battery[i] === 2"
+                >
+                  {{ battery[i] === 0 ? 'battery_full' : 'battery_alert' }}
+                </mat-icon>
+                <div
+                  *ngIf="battery[i] !== 0"
+                  class="battery-warn-box center-vertical"
+                >
+                  <mat-icon>arrow_right</mat-icon>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="clearBattery(i)"
+                    [disabled]="busy"
+                  >
+                    <mat-spinner
+                      color="primary"
+                      *ngIf="busy"
+                      diameter="24"
+                      style="margin: 8px;"
+                    ></mat-spinner>
+                    <span *ngIf="!busy">{{ 'button.reset' | translate }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button
+              *ngIf="masteringAck"
+              mat-raised-button
+              color="warn"
+              (click)="acknowledgeMastering()"
+            >
+              {{ 'robots.battery.masteringAck' | translate }}
+            </button>
+          </div>
+        </mat-tab>
+        <mat-tab
+          label="{{ 'robots.reference.title' | translate }}"
+          #refMasteringTab
+        >
+          <div *ngIf="refMasteringTab.isActive" class="container">
+            <app-reference-mastering></app-reference-mastering>
+          </div>
+        </mat-tab>
+        <mat-tab label="DH">
+          <div class="container">
+            <div class="images">
+              <img *ngIf="dhImgPath1" src="assets/pics/dh/{{ dhImgPath1 }}" />
+              <img
+                *ngIf="dhImgPath2"
+                src="assets/pics/dh/{{ dhImgPath2 }}"
+                style="align-self:flex-end;"
+              />
+            </div>
+            <!-- <mat-form-field appearance="outline" *ngFor="let d of dh; let i = index; trackBy: trackByFn" class="dh">
 							<mat-label>{{ d.name }}</mat-label>
 							<input
 								matInput
@@ -110,64 +175,85 @@
 							<span matSuffix>[mm]</span>
 							<mat-hint *ngIf="rarmDH && d.name === 'L1'"><b>{{'rarm' | translate}}:</b> {{rarmDH.L1}}</mat-hint>
 							<mat-hint *ngIf="rarmDH && d.name === 'L2'"><b>{{'rarm' | translate}}:</b> {{rarmDH.L2}}</mat-hint>
-						</mat-form-field>
-					</div>
-				</mat-tab>
-				<mat-tab label="{{ 'robots.vord.title' | translate }}" #refVordTab>
-					<div *ngIf="refVordTab.isActive" class="container">
-						<app-axis-vord></app-axis-vord>
-					</div>
-				</mat-tab>
-				<mat-tab label="{{ 'robots.brakes.title' | translate }}" #refBrakeTab>
-					<div *ngIf="refBrakeTab.isActive" class="container">
-						<brake-test></brake-test>
-					</div>
-				</mat-tab>
-			</mat-tab-group>
-		</mat-card>
-	</div>
-	<mat-card class="system">
-		<h2>
-			{{ 'robots.title' | translate }}
-		</h2>
-    	<mat-slide-toggle *ngIf="login.isSuper" color="warn" style="margin-bottom: 8px;" (change)="toggleDebug($event.checked)">DEBUG MODE</mat-slide-toggle>
-		<mat-form-field appearance="outline">
-			<mat-label>{{ 'robots.name' | translate }}</mat-label>
-			<input
-				matInput
-				[formControl]="sysName"
-				(change)="onNameChange()"
-				virtualKeyboard
-				ktype="text"
-				(onKeyboardClose)="onNameChange()"
-			/>
-		</mat-form-field>
-		<mat-form-field appearance="outline">
-			<input 
-				matInput
-				[matDatepicker]="datePicker"
-				[formControl]="sysDate"
-				(dateChange)="onDateChange($event)"
-				placeholder="{{ 'date' | translate }} {{'date_format' | translate}}">
-			<mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-			<mat-datepicker #datePicker></mat-datepicker>
-		</mat-form-field>
-		<mat-form-field appearance="outline">
-			<mat-label>{{ 'time' | translate }}</mat-label>
-			<input
-				matInput
-				[formControl]="sysTime"
-				(change)="onTimeChange()"
-				virtualKeyboard
-				ktype="text"
-				(onKeyboardClose)="onTimeChange()"
-			/>
-		</mat-form-field>
-		<button mat-raised-button color="primary" (click)="changeSafetyPassword()">
-			<mat-icon>security</mat-icon>
-			{{'safety.password_change.btn' | translate }}
-		</button>
-		<mat-form-field appearance="outline">
+                        </mat-form-field> -->
+            <div class="customKeyBoard">
+              <custom-key-board
+                type="float"
+                appearance="outline"
+                *ngFor="let d of dh; let i = index; trackBy: trackByFn"
+                [matLabel]="d.name"
+                [(value)]="d.value"
+                (blurEvent)="onSettingsKeyboardClose(i)"
+                [suffix]="'[mm]'"
+              ></custom-key-board>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="{{ 'robots.vord.title' | translate }}" #refVordTab>
+          <div *ngIf="refVordTab.isActive" class="container">
+            <app-axis-vord></app-axis-vord>
+          </div>
+        </mat-tab>
+        <mat-tab label="{{ 'robots.brakes.title' | translate }}" #refBrakeTab>
+          <div *ngIf="refBrakeTab.isActive" class="container">
+            <brake-test></brake-test>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
+  <mat-card class="system">
+    <h2>
+      {{ 'robots.title' | translate }}
+    </h2>
+    <mat-slide-toggle
+      *ngIf="login.isSuper"
+      color="warn"
+      style="margin-bottom: 8px;"
+      (change)="toggleDebug($event.checked)"
+      >DEBUG MODE</mat-slide-toggle
+    >
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'robots.name' | translate }}</mat-label>
+      <input
+        matInput
+        [formControl]="sysName"
+        (change)="onNameChange()"
+        virtualKeyboard
+        ktype="text"
+        (onKeyboardClose)="onNameChange()"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        [formControl]="sysDate"
+        (dateChange)="onDateChange($event)"
+        placeholder="{{ 'date' | translate }} {{ 'date_format' | translate }}"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="datePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'time' | translate }}</mat-label>
+      <input
+        matInput
+        [formControl]="sysTime"
+        (change)="onTimeChange()"
+        virtualKeyboard
+        ktype="text"
+        (onKeyboardClose)="onTimeChange()"
+      />
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="changeSafetyPassword()">
+      <mat-icon>security</mat-icon>
+      {{ 'safety.password_change.btn' | translate }}
+    </button>
+    <!-- <mat-form-field appearance="outline">
 			<mat-label>{{ 'robots.mcu.fan-threshold' | translate }}</mat-label>
 			<input
 				matInput
@@ -179,6 +265,16 @@
 		[disabled]="!mcuConnected"
 			/>
 			<span matSuffix>[RPM]</span>
-		</mat-form-field>
-	</mat-card>
+        </mat-form-field> -->
+    <custom-key-board
+      type="int"
+      appearance="outline"
+      [isPositiveNum]="true"
+      matLabel="{{ 'robots.mcu.fan-threshold' | translate }}"
+      [(value)]="mcuThreshold"
+      (blurEvent)="onThresholdUpdate()"
+      [suffix]="'[RPM]'"
+      [disabled]="!mcuConnected"
+    ></custom-key-board>
+  </mat-card>
 </div>

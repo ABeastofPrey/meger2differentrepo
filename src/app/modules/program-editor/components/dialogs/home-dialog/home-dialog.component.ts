@@ -103,7 +103,11 @@ export class HomeDialogComponent implements OnInit {
   emitCmd(): void {
     if (this.cannotInsert) return;
     const val = this.control.controls['velocity'].value as number;
-    const velocity = handleVelocity(val);
+    const velocity = handleVelocity(val.toString());
     this.dialogRef.close(`goHome(${velocity})`);
+  }
+
+  vscaleChange(value) {
+    this.control.controls.velocity.patchValue(value);
   }
 }

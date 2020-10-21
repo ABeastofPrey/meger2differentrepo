@@ -80,7 +80,7 @@
 				>{{ 'projectSettings.position_trigger.valueCol' | translate }}</mat-header-cell
 			>
 			<mat-cell *matCellDef="let element">
-				<mat-form-field [ngStyle]="{'width': '40%', 'text-align': 'center'}">
+				<!-- <mat-form-field [ngStyle]="{'width': '40%', 'text-align': 'center'}">
 					<input
 						matInput
 						type="text"
@@ -91,7 +91,32 @@
 						ktype="text"
 						(onKeyboardClose)="onBlur(element)"
 					/>
-				</mat-form-field>
+				</mat-form-field> -->
+
+				<ng-container [ngSwitch]="element.selectedSourceType">
+					<custom-key-board *ngSwitchCase="'Percentage'" 
+						type="float" 
+						[ngStyle]="{'width': '40%', 'text-align': 'center'}"
+						[required]="true" 
+						[min]="0"
+						[max]="100"
+						[isPositiveNum]="true"
+						[(value)]="element.distance" 
+						(focusEvent)="onFocus(element.distance)"
+						(blurEvent)="onBlur(element)">
+					</custom-key-board>
+					<custom-key-board *ngSwitchDefault
+						type="float" 
+						[ngStyle]="{'width': '40%', 'text-align': 'center'}"
+						[required]="true" 
+						[min]="0"
+						[isPositiveNum]="true"
+						[(value)]="element.distance" 
+						(focusEvent)="onFocus(element.distance)"
+						(blurEvent)="onBlur(element)">
+					</custom-key-board>
+				</ng-container>
+
 				&nbsp;&nbsp;
 				<mat-form-field [ngStyle]="{'width': '55%'}">
 					<mat-select [(ngModel)]="element.selectedSourceType" (selectionChange)="resetValue(element)" (selectionChange)="updatePls(element)">

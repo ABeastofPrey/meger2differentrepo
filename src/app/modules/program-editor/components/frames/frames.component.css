@@ -55,6 +55,9 @@
   margin-top: 12px;
   margin-bottom: -24px;
 }
+.var-details custom-key-board {
+    width: 112px;
+}
 .var-name {
   font-weight: bold;
   font-size: 24px;

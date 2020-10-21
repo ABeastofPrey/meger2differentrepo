@@ -164,3 +164,11 @@ h3 {
 :host-context(.cs-dark) .menu {
   background-color: #424242;
 }
+
+.customKeyBoard {
+    width: 200px;
+}
+
+.customKeyBoard2 {
+    width: 100px;
+}

@@ -24,9 +24,14 @@
 					<mat-option *ngFor="let data of circlePoint.value; let i = index" [value]="i + 1">{{ i + 1 }}</mat-option>
 				</mat-select>
 			</mat-form-field>
-			<mat-form-field *ngIf="data.angle">
+            <!-- <mat-form-field *ngIf="data.angle">
 				<input matInput placeholder="Angle" formControlName="angle" virtualKeyboard ktype="numeric" />
-			</mat-form-field>
+            </mat-form-field> -->
+            <div class="customKeyBoard">
+                <custom-key-board type="float" [placeHolder]="'Angle'"  [value]="ctrl.controls.angle.value" [isNgIf]="data.angle"
+                    (valueChange)="angleChange($event)"  (blurEvent)="angleChange($event)"
+                ></custom-key-board>
+            </div>
 			<mat-form-field *ngIf="!data.angle">
 				<mat-select placeholder="{{ 'targetPoint' | translate }}" formControlName="targetPoint" (selectionChange)="resetIndexTargetPoint()">
 					<mat-optgroup label="{{ 'joints' | translate }}" *ngIf="this.dataService.joints.length > 0"
@@ -58,14 +63,19 @@
 						<mat-option [value]="null">{{'options.none' | translate}}</mat-option>
 						<mat-option *ngFor="let e of dataService.robots" [value]="e + ' '">{{ e }}</mat-option>
 					</mat-select>
-				</mat-form-field>
-				<mat-form-field>
+                </mat-form-field>
+				<!-- <mat-form-field>
 					<input matInput placeholder="Vtran [mm/s]" formControlName="vtran" virtualKeyboard ktype="numeric_pos" />
 					<mat-error>
 						{{'projectCommands.jumpx.numRange' | translate: {range: '(0, '+vtranMax+']'} }}
 					</mat-error>
-				</mat-form-field>
-				<mat-form-field>
+                </mat-form-field> -->
+                <div class="customKeyBoard">
+                    <custom-key-board type="float" [min]="0" [max]="12234" [leftClosedInterval]="false" [placeHolder]="'Vtran [mm/s]'" [(value)]="ctrl.controls.vtran.value"
+                        (valueChange)="vtranChange($event)"  (blurEvent)="vtranChange($event)"
+                    ></custom-key-board>
+                </div>
+				<!-- <mat-form-field>
 					<input 
 						matInput
 						placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}"
@@ -75,7 +85,12 @@
           <mat-error *ngIf="blendingPh.invalid">
             {{ 'form_validation.percent' | translate }}
           </mat-error>
-				</mat-form-field>
+                </mat-form-field> -->
+                <div class="customKeyBoard">
+                    <custom-key-board type="float" [min]="0" [max]="100" placeHolder="{{ 'projectCommands.jump.blendingPh' | translate }}" [(value)]="ctrl.controls.blendingPh.value"
+                        (valueChange)="blendChange($event)"  (blurEvent)="blendChange($event)"
+                    ></custom-key-board>
+                </div>
 				<mat-form-field>
 					<mat-select placeholder="{{ 'projectSettings.position_trigger.title' | translate }}" formControlName="pts" multiple>
 						<mat-option *ngFor="let pt of ptList" [value]="pt">{{ pt }}</mat-option>

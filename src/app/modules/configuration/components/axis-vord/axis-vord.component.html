@@ -11,8 +11,8 @@
   <div *ngFor="let ax of vords; let i=index;" class="vords">
     <div>{{ax.name}}</div>
     <div class="original" [class.disabled]="enabled">{{ax.original}}</div>
-    <mat-form-field appearance="outline" class="vord">
-      <input 
+    <!-- <mat-form-field appearance="outline" class="vord">
+      <input
         matInput
         virtualKeyboard
         ktype="numeric_pos"
@@ -20,7 +20,10 @@
         [value]="ax.vord"
         (change)="onVordChange(i,$event.target.value)"/>
         <span matSuffix>[RPM]</span>
-    </mat-form-field>
+    </mat-form-field> -->
+    <custom-key-board type="float" [isPositiveNum]="true" appearance="outline"
+        [disabled]="!enabled" [(value)]="ax.vord" [suffix]="'RPM'" (blurEvent)="onVordChange(i,$event)"
+    ></custom-key-board>
   </div>
 </div>
 <div *ngIf="!initDone">{{ 'loading' | translate }}...</div>

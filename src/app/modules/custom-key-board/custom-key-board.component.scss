@@ -1,0 +1,33 @@
+.custom-key-board {
+    width: 100%;
+}
+.keyboard {
+    position: relative;
+}
+.numInputKeyBoard {
+    position: relative;
+}
+.cursor {
+    width: 2px;
+    background: #888;
+    height: 24px;
+    position: absolute;
+    top: 10px;
+}
+.isHide {
+    display: none;
+}
+.blink {
+    animation: blink-animation 1s steps(2, start) infinite;
+    -webkit-animation: blink-animation 1s steps(2, start) infinite;
+}
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+@-webkit-keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}

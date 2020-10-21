@@ -39,3 +39,6 @@
   width: calc(50% - 16px);
   margin-right: 16px;
 }
+.customKeyBoard {
+  width: calc(52%);
+}

@@ -63,25 +63,48 @@
 					</mat-select>
 				</mat-form-field>
 
-				<mat-form-field *ngIf="!data.moveS else VTranTemp">
+				<!-- <mat-form-field *ngIf="!data.moveS else VTranTemp">
 					<input matInput [placeholder]="'VScale [%]'" formControlName="vscale" virtualKeyboard
 						ktype="numeric_pos" />
 					<mat-error *ngIf="ctrl.get('vscale').invalid">
 						{{ 'form_validation.percent' | translate }}
 					</mat-error>
-				</mat-form-field>
+                </mat-form-field> -->
+                <div *ngIf="!data.moveS else VTranTemp" class="customKeyBoard">
+					<custom-key-board 
+						type="float" 
+						[min]="0" 
+						[max]="100" 
+						[placeHolder]="'VScale [%]'" 
+						[(value)]="ctrl.controls.vscale.value"
+						(valueChange)="vscaleChange($event)"  
+						(blurEvent)="vscaleChange($event)">
+					</custom-key-board>
+                </div>
 
 				<ng-template #VTranTemp>
-					<mat-form-field>
+					<!-- <mat-form-field>
 						<input matInput [placeholder]="'VTran [mm/s]'" formControlName="vscale" virtualKeyboard
 							ktype="numeric_pos" />
 						<mat-error *ngIf="ctrl.get('vscale').invalid">
 							{{'projectCommands.jumpx.numRange' | translate: {range: '(0, '+vtranMax+']'} }}
 						</mat-error>
-					</mat-form-field>
+                    </mat-form-field> -->
+                    <div class="customKeyBoard">
+						<custom-key-board 
+							type="float"
+							[leftClosedInterval]="false" 
+							[min]="0" 
+							[max]="vtranMax" 
+							[placeHolder]="'VTran [mm/s]'" 
+							[(value)]="ctrl.controls.vscale.value"
+							(valueChange)="vscaleChange($event)"  
+							(blurEvent)="vscaleChange($event)">
+						</custom-key-board>
+                    </div>
 				</ng-template>
 
-				<mat-form-field>
+				<!-- <mat-form-field>
 					<input 
         matInput
         placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}"
@@ -92,7 +115,13 @@
           <mat-error *ngIf="blendingPh.invalid">
             {{ 'form_validation.percent' | translate }}
           </mat-error>
-				</mat-form-field>
+                </mat-form-field> -->
+                <div class="customKeyBoard">
+                    <custom-key-board [isPositiveNum]="true" type="float" [min]="0" [max]="100" placeHolder="{{ 'projectCommands.jump.blendingPh' | translate }}" 
+                            [(value)]="ctrl.controls.blendingPh.value" [suffix]="'%'"
+                            (valueChange)="blendingPhChange($event)"  (blurEvent)="blendingPhChange($event)"
+                    ></custom-key-board>
+                </div>
 				<mat-form-field>
 					<mat-select placeholder="{{ 'projectSettings.position_trigger.title' | translate }}" [(ngModel)]="pts" multiple [ngModelOptions]="{standalone: true}">
 						<mat-option *ngFor="let pt of ptList" [value]="pt">{{ pt }}</mat-option>

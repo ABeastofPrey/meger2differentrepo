@@ -30,6 +30,7 @@
 .time {
   max-width: 100px;
   margin-right: 16px;
+  display: inline-block;
 }
 .indicator {
   background: red;

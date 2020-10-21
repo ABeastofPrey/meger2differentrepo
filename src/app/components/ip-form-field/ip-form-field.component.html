@@ -1,4 +1,4 @@
-<div class="example-tel-input-container" [formGroup]="ipForm">
+<div class="example-tel-input-container" [formGroup]="ipForm" [class.hide]="isPad" *ngIf="!isPad">
     <input class="example-tel-input-element" formControlName="ip1" autocomplete="off" id="ip1" maxlength="3"
         (input)="_handleInput($event,'ip1',1)" (blur)="setStationIp()">
     <span class="example-tel-input-spacer">&sdot;</span>
@@ -13,6 +13,16 @@
     <br>
 
 </div>
-<div class="matError" *ngIf="ipValid">
+<div class="example-tel-input-container" [formGroup]="ipForm" [class.hide]="!isPad" *ngIf="isPad">
+    <custom-key-board type="int" [required]="isPad" [min]="0" [max]="255" [isPositiveNum]="true" maxlength="3" placeHolder="IP" [(value)]="ipForm.controls.ip1.value" (blurEvent)="blurIP($event,'ip1',1)"></custom-key-board>
+    <span class="isPadPoint">&sdot;</span>
+    <custom-key-board type="int" [required]="isPad" [min]="0" [max]="255" [isPositiveNum]="true" maxlength="3" [(value)]="ipForm.controls.ip2.value" (blurEvent)="blurIP($event,'ip2',2)"></custom-key-board>
+    <span class="isPadPoint">&sdot;</span>
+    <custom-key-board type="int" [required]="isPad" [min]="0" [max]="255" [isPositiveNum]="true" maxlength="3" [(value)]="ipForm.controls.ip3.value" (blurEvent)="blurIP($event,'ip3',3)"></custom-key-board>
+    <span class="isPadPoint">&sdot;</span>
+    <custom-key-board type="int" [required]="isPad" [min]="0" [max]="255" [isPositiveNum]="true" maxlength="3" [(value)]="ipForm.controls.ip4.value" (blurEvent)="blurIP($event,'ip4',4)"></custom-key-board>
+    <br>
+</div>
+<div class="matError" *ngIf="ipValid" [class.isPadMt]="isPad">
     <mat-error>{{ 'vision.templateConfig.ipValid' | translate }}</mat-error>
 </div>

@@ -1,0 +1,101 @@
+$marginGap: 24px;
+$smallGap: 12px;
+$darkGray: #abafbb;
+$lightGray: #d1d2d7;
+$htnHeight: 45px;
+$font-size: 24px;
+::ng-deep .virtual-keyboard .mat-form-field-flex {
+  background-color: white !important;
+  padding-left: $smallGap;
+  padding-right: $smallGap;
+}
+::ng-deep .virtual-keyboard .mat-raised-button {
+  padding: 0;
+  min-width: 50px;
+}
+::ng-deep .virtual-keyboard .mat-error {
+  font-size: $font-size / 2;
+  padding-left: $smallGap;
+}
+::ng-deep
+  .virtual-keyboard
+  .mat-form-field-appearance-legacy
+  .mat-form-field-underline {
+  background-color: rgba(0, 0, 0, 0);
+}
+.mat-dialog-title {
+  margin: -24px -24px 0px -24px;
+  height: 40px;
+  padding: 0 $marginGap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  .close {
+    position: absolute;
+    right: $smallGap;
+  }
+}
+.mat-toolbar {
+  background-color: $lightGray;
+}
+.mat-dialog-content {
+  position: relative;
+  background-color: $lightGray;
+  font-size: $font-size;
+  padding: 0px;
+  overflow: visible;
+  .btnBox {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    // row-gap: 10px;
+    // padding: 0px $smallGap;
+    padding: 0 2px 0px 12px;
+    z-index: 1;
+    .key-row {
+      position: relative;
+      display: flex;
+      justify-items: center;
+      // column-gap: 10px;
+    }
+    button {
+      width: 80px;
+      height: $htnHeight;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0px 10px 10px 0px;
+    }
+    button.darkBtn {
+      background-color: $darkGray;
+    }
+    button.highLight {
+      background-color: $darkGray;
+    }
+    button.btnSmall {
+      width: 50px;
+    }
+    button.enter {
+      background-color: #ff7300;
+      position: absolute;
+      right: 0px;
+      height: $htnHeight + $htnHeight + 10px;
+      color: white;
+      font-weight: normal;
+      font-size: 16px;
+    }
+    button.pointerDisable {
+      color: $lightGray;
+      background-color: $darkGray;
+      pointer-events: none;
+    }
+  }
+}
+.bottom-bar {
+  position: absolute;
+  background-color: $lightGray;
+  width: 100%;
+  height: $marginGap;
+  bottom: -$marginGap;
+}

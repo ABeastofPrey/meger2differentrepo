@@ -1,115 +1,155 @@
 <mat-card>
-    <div class="configuration">
-        <div class="name">
-            <mat-form-field>
-                <mat-label>{{'dashboard.trace.common.trace_name' | translate}}</mat-label>
-                <mat-select #traceSelect [value]="selectedTrace?.name" 
-                    (selectionChange)="changeSelectedTrace($event)"
-                    (openedChange)="addingNewTrace = false"
-                    [disableOptionCentering]="true"
-                    [disabled]="disableEidt">
-                    <div *ngFor="let trace of traceList | async" class="option-container">
-                        <mat-option [value]="trace.name">
-                            {{trace.name}}
-                        </mat-option>
-                        <button mat-icon-button color="primary" (click)="deleteTrace($event, trace)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </div>
-                    <div *ngIf="addingNewTrace" class="create-new-trace">
-                        <app-trace-new 
-                            [traceList]="traceList | async" 
-                            [label]="'dashboard.trace.common.new_trace'"
-                            [placeholder]="'dashboard.trace.common.trace_name_tip'"
-                            (createTraceEvent)="traceSelect.close()"
-                            (createTraceEvent)="createTrace($event)">
-                        </app-trace-new>
-                    </div>
-                    <mat-option class="create-point-option" [value]="null">
-                        <span *ngIf="(traceList | async)?.length < traceLimit; else limitSpan" (click)="addTrace($event)" class="create-trace-option">
-                            {{ 
-                                !addingNewTrace ? 
-                                ('dashboard.trace.common.trace_add' | translate) : 
-                                ('dashboard.trace.common.trace_cancel' | translate)
-                            }}
-                        </span>
-                        <ng-template #limitSpan>
-                            <span (click)="$event.stopPropagation()" class="create-trace-option">
-                                {{'dashboard.trace.common.trace_limit' | translate:{ max:traceLimit } }}
-                            </span>
-                        </ng-template>
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <cs-number-input class="duration" 
-            [suffix]="'s'" 
-            [hint]="''"
-            [placeHolder]="''"
-            [label]="'dashboard.trace.common.duration' | translate"
-            [type]="'int'"
-            [min]="0"
-            [max]="180"
-            [required]="true"
-            [leftClosedInterval]="false"
-            (blurEvent)="changeDuration()"
-            (isValidEvent)="checkIsValid($event)"
-            [disabled]="disableEidt || !selectedTrace"
-            [(value)]="selectedTrace && selectedTrace.duration">
-        </cs-number-input>
-        <mat-form-field class="rate">
-            <mat-label>{{'dashboard.trace.common.rate' | translate}}</mat-label>
-            <mat-select 
-                [disableOptionCentering]="true"
-                [(ngModel)]="selectedTrace && selectedTrace.rate" 
-                [disabled]="disableEidt || !selectedTrace"
-                (selectionChange)="changeRate()">
-                <mat-option *ngFor="let rate of rateList | async" [value]="rate">
-                    {{rate}}
-                </mat-option>
-            </mat-select>
-            <span matSuffix>ms</span>
-        </mat-form-field>
+  <div class="configuration">
+    <div class="name">
+      <mat-form-field>
+        <mat-label>{{
+          'dashboard.trace.common.trace_name' | translate
+        }}</mat-label>
+        <mat-select
+          #traceSelect
+          [value]="selectedTrace?.name"
+          (selectionChange)="changeSelectedTrace($event)"
+          (openedChange)="addingNewTrace = false"
+          [disableOptionCentering]="true"
+          [disabled]="disableEidt"
+        >
+          <div *ngFor="let trace of traceList | async" class="option-container">
+            <mat-option [value]="trace.name">
+              {{ trace.name }}
+            </mat-option>
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="deleteTrace($event, trace)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+          <div *ngIf="addingNewTrace" class="create-new-trace">
+            <app-trace-new
+              [traceList]="traceList | async"
+              [label]="'dashboard.trace.common.new_trace'"
+              [placeholder]="'dashboard.trace.common.trace_name_tip'"
+              (createTraceEvent)="traceSelect.close()"
+              (createTraceEvent)="createTrace($event)"
+            >
+            </app-trace-new>
+          </div>
+          <mat-option class="create-point-option" [value]="null">
+            <span
+              *ngIf="(traceList | async)?.length < traceLimit; else limitSpan"
+              (click)="addTrace($event)"
+              class="create-trace-option"
+            >
+              {{
+                !addingNewTrace
+                  ? ('dashboard.trace.common.trace_add' | translate)
+                  : ('dashboard.trace.common.trace_cancel' | translate)
+              }}
+            </span>
+            <ng-template #limitSpan>
+              <span
+                (click)="$event.stopPropagation()"
+                class="create-trace-option"
+              >
+                {{
+                  'dashboard.trace.common.trace_limit'
+                    | translate: { max: traceLimit }
+                }}
+              </span>
+            </ng-template>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
-    <div class="actions">
-        <div class="status">
-            <span>{{'dashboard.trace.common.state' | translate}}</span>
-            <span class="state-span" [ngStyle]="{'background': (curTraceStatus === TraceStatus.TRACEING) ? 'green' : '#80808061'}"></span>
-            <ng-container [ngSwitch]="curTraceStatus">
-                <span *ngSwitchCase="TraceStatus.NOTREADY">
-                    {{'dashboard.trace.common.state_not_ready' | translate}}
-                </span>
-                <span *ngSwitchCase="TraceStatus.READY">
-                    {{'dashboard.trace.common.state_ready' | translate}}
-                </span>
-                <span *ngSwitchCase="TraceStatus.TRACEING">
-                    {{'dashboard.trace.common.state_traceing' | translate}}
-                </span>
-                <!-- <span *ngSwitchCase="TraceStatus.DONE">
+    <custom-key-board
+      class="duration"
+      [suffix]="'s'"
+      [hint]="''"
+      placeHolder="{{'dashboard.trace.common.duration' | translate}}"
+      [label]="'dashboard.trace.common.duration' | translate"
+      [type]="'int'"
+      [min]="0"
+      [max]="180"
+      [isPositiveNum]="true"
+      [required]="true"
+      [leftClosedInterval]="false"
+      (blurEvent)="changeDuration()"
+      (isValidEvent)="checkIsValid($event)"
+      [disabled]="disableEidt || !selectedTrace"
+      [(value)]="selectedTrace && selectedTrace.duration"
+    >
+    </custom-key-board>
+    <mat-form-field class="rate">
+      <mat-label>{{ 'dashboard.trace.common.rate' | translate }}</mat-label>
+      <mat-select
+        [disableOptionCentering]="true"
+        [(ngModel)]="selectedTrace && selectedTrace.rate"
+        [disabled]="disableEidt || !selectedTrace"
+        (selectionChange)="changeRate()"
+      >
+        <mat-option *ngFor="let rate of rateList | async" [value]="rate">
+          {{ rate }}
+        </mat-option>
+      </mat-select>
+      <span matSuffix>ms</span>
+    </mat-form-field>
+  </div>
+  <div class="actions">
+    <div class="status">
+      <span>{{ 'dashboard.trace.common.state' | translate }}</span>
+      <span
+        class="state-span"
+        [ngStyle]="{
+          background:
+            curTraceStatus === TraceStatus.TRACEING ? 'green' : '#80808061'
+        }"
+      ></span>
+      <ng-container [ngSwitch]="curTraceStatus">
+        <span *ngSwitchCase="TraceStatus.NOTREADY">
+          {{ 'dashboard.trace.common.state_not_ready' | translate }}
+        </span>
+        <span *ngSwitchCase="TraceStatus.READY">
+          {{ 'dashboard.trace.common.state_ready' | translate }}
+        </span>
+        <span *ngSwitchCase="TraceStatus.TRACEING">
+          {{ 'dashboard.trace.common.state_traceing' | translate }}
+        </span>
+        <!-- <span *ngSwitchCase="TraceStatus.DONE">
                     {{'dashboard.trace.common.state_not_ready' | translate}}
                 </span> -->
-                <span *ngSwitchDefault>
-                    {{'dashboard.trace.common.state_not_ready' | translate}}
-                </span>
-            </ng-container>
-        </div>
-        <button mat-raised-button color="primary"
-            [disabled]="!selectedTrace || !isValid || unknowTracing"
-            (click)="changeTraceStatus()">
-            {{
-                (curTraceStatus === TraceStatus.NOTREADY) ? 
-                ('dashboard.trace.common.start_trace' | translate) : 
-                ('dashboard.trace.common.stop_trace' | translate)
-            }}
-        </button>
-        <button mat-raised-button
-            color="primary"
-            (click)="startTrigger()"
-            [disabled]="!selectedTrace || !isValid || !hasSelectedTrigger || (curTraceStatus !== TraceStatus.READY)">
-            {{'dashboard.trace.common.trigger' | translate}}
-        </button>
+        <span *ngSwitchDefault>
+          {{ 'dashboard.trace.common.state_not_ready' | translate }}
+        </span>
+      </ng-container>
     </div>
-    <!-- <hr />
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!selectedTrace || !isValid || unknowTracing"
+      (click)="changeTraceStatus()"
+    >
+      {{
+        curTraceStatus === TraceStatus.NOTREADY
+          ? ('dashboard.trace.common.start_trace' | translate)
+          : ('dashboard.trace.common.stop_trace' | translate)
+      }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="startTrigger()"
+      [disabled]="
+        !selectedTrace ||
+        !isValid ||
+        !hasSelectedTrigger ||
+        curTraceStatus !== TraceStatus.READY
+      "
+    >
+      {{ 'dashboard.trace.common.trigger' | translate }}
+    </button>
+  </div>
+  <!-- <hr />
     <p>{{test}}</p>
     <mat-form-field>
         <input matInput autocomplete="off" value="aaa" (contextmenu)="oncontextmenua($event)"/>

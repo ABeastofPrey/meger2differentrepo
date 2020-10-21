@@ -3,7 +3,7 @@
     {{ 'dashboard.record.title' | translate }}
   </div>
   <div class="content">
-    <mat-form-field>
+    <!-- <mat-form-field>
       <input
         placeholder="{{ 'duration' | translate }}"
         matInput
@@ -12,7 +12,14 @@
         ktype="numeric_int_pos"
       />
       <span matSuffix>ms.</span>
-    </mat-form-field>
+    </mat-form-field> -->
+    <custom-key-board
+      [(value)]="duration"
+      placeHolder="{{ 'duration' | translate }}"
+      type="int"
+      suffix="ms."
+      isPositiveNum="true"
+    ></custom-key-board>
     <mat-slide-toggle color="primary" #advanced style="margin: 16px 0;">
       {{ 'advanced' | translate }}
     </mat-slide-toggle>
@@ -27,16 +34,24 @@
       />
       <span matSuffix>.REC</span>
     </mat-form-field>
-    <mat-form-field *ngIf="advanced.checked">
+    <custom-key-board
+      *ngIf="advanced.checked"
+      [(value)]="gap"
+      placeHolder="{{ 'gap' | translate }}"
+      type="int"
+      suffix="{{ 'gap_units' | translate }}"
+      isPositiveNum="true"
+    ></custom-key-board>
+    <!-- <mat-form-field *ngIf="advanced.checked">
       <input
-      placeholder="{{ 'gap' | translate }}"
-      matInput
-      [(ngModel)]="gap"
-      virtualKeyboard
-      ktype="numeric_int_pos"
+        placeholder="{{ 'gap' | translate }}"
+        matInput
+        [(ngModel)]="gap"
+        virtualKeyboard
+        ktype="numeric_int_pos"
       />
       <span matSuffix>{{ 'gap_units' | translate }}</span>
-    </mat-form-field>
+    </mat-form-field> -->
   </div>
 </div>
 <div class="actions">

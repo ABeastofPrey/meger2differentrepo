@@ -1,0 +1,26 @@
+<div class="keyboard" [class.isHide]="!isNgIf">
+    <mat-form-field style="position: relative;" class="custom-key-board" [appearance]="appearance">
+        <mat-label *ngIf="appearance === 'outline'">{{matLabel}}</mat-label>
+        <input matInput [placeholder]="placeHolder" [readonly]="isPad || readonly" [formControl]="control" #numInput
+            class="numInputKeyBoard" [style.textIndent.px]="textIndent" (focus)="onFocus()" autocomplete="off"
+            (panstart)="onSwipe($event)">
+        <span matPrefix style="font-weight: bold;">{{prefix}}</span>
+        <span matSuffix [innerHTML]='suffix'></span>
+        <mat-hint>{{hint}}</mat-hint>
+        <mat-error *ngIf="control.hasError('required')">
+            <ng-container *ngIf="requiredErrMsg; else elseTemplate">
+                {{requiredErrMsg}}
+            </ng-container>
+            <ng-template #elseTemplate>
+                <!-- {{'number_input_required' | translate}} -->
+            </ng-template>
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && control.hasError('limit')">
+            {{'number_input_range' | translate}}
+            {{leftClosedInterval ? '[' : '('}}{{min !== undefined ? min : '-&infin;'}},
+            {{max !== undefined ? max : '+&infin;'}}{{rightClosedInterval ? ']' : ')'}}
+        </mat-error>
+        <div class="cursor blink" *ngIf="isPad && keyBoardDialog" [style.left.px]="cursorLeft"></div>
+
+    </mat-form-field>
+</div>

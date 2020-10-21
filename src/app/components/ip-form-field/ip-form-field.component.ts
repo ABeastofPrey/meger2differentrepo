@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ControlValueAccessor, NgControl, Validators, Fo
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject } from 'rxjs';
 import { isUndefined } from 'ramda-adjunct';
+import { CommonService } from '../../modules/core/services/common.service';
 export class MyIp {
     constructor(public ip1: string, public ip2: string, public ip3: string, public ip4: string) { }
 }
@@ -27,6 +28,7 @@ export class IpFormFieldComponent {
     @Input() ipInput: string;
 
     static nextId = 0;
+    public isPad: boolean = this.common.isTablet;
 
     ipForm: FormGroup;
     public ip: FormControl = new FormControl("", [Validators.required, this.validIp()]);
@@ -90,6 +92,7 @@ export class IpFormFieldComponent {
 
     constructor(
         formBuilder: FormBuilder,
+        public common: CommonService,
         private _focusMonitor: FocusMonitor,
         private _elementRef: ElementRef<HTMLElement>,
         @Optional() @Self() public ngControl: NgControl) {
@@ -183,7 +186,7 @@ export class IpFormFieldComponent {
         this.ip.patchValue(ip.slice(0, ip.length - 1));
         this.ipValid = this.ip.hasError("ip");
         // 前一个输入完成后面主动获取焦点
-        if (this.ipForm.value[ipId].length === 3 && ipId !== "ip4") {
+        if (this.ipForm.value[ipId].length === 3 && ipId !== "ip4" && !this.isPad) {
             document.getElementById("ip" + (index + 1)).focus();
         }
 
@@ -194,6 +197,11 @@ export class IpFormFieldComponent {
             const str = this.value.ip1 + "." + this.value.ip2 + "." + this.value.ip3 + "." + this.value.ip4;
             this.changeIp.emit(str);
         }
+    }
+
+    blurIP(value: string,ipId: string, index: number): void {
+        this._handleInput({"target":{"value":value.toString()}},ipId,index);
+        this.setStationIp();
     }
 
     static ngAcceptInputType_disabled: boolean | string | null | undefined;

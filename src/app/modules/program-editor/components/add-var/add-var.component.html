@@ -29,7 +29,7 @@
 			</mat-select>
 		</mat-form-field>
 
-		<mat-form-field *ngIf="canUseArray && isArray && dimension === 1" style="margin-top: 8px;">
+		<!-- <mat-form-field *ngIf="canUseArray && isArray && dimension === 1" style="margin-top: 8px;">
 			<input matInput
 				placeholder="{{ 'arr_size' | translate }}" 
 				[(ngModel)]="arrSize" virtualKeyboard
@@ -40,9 +40,10 @@
 			<mat-error>
 				{{ getErrors(validationControls[dataParameterReference.OneArraySize]) }}
 			</mat-error>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="int" placeHolder="{{ 'arr_size' | translate }}" [isNgIf]="canUseArray && isArray && dimension === 1" [isPositiveNum]=true [(value)]="arrSize"></custom-key-board>
 		
-		<mat-form-field *ngIf="canUseArray && isArray && dimension === 2" style="margin-top: 8px;">
+		<!-- <mat-form-field *ngIf="canUseArray && isArray && dimension === 2" style="margin-top: 8px;">
 			<input matInput
 				placeholder="{{ 'one_dimension_size' | translate }}"  
 				[(ngModel)]="arrSize" virtualKeyboard
@@ -53,9 +54,10 @@
 			<mat-error>
 				{{ getErrors(validationControls[dataParameterReference.OneArraySize]) }}
 			</mat-error>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="int" placeHolder="{{ 'one_dimension_size' | translate }}" [isNgIf]="canUseArray && isArray && dimension === 2" [isPositiveNum]=true [(value)]="arrSize"></custom-key-board>
 
-		<mat-form-field *ngIf="isArray && varType === 'STRING' && dimension === 2" 
+		<!-- <mat-form-field *ngIf="isArray && varType === 'STRING' && dimension === 2" 
 		                style="margin-top: 8px;"
 		>
 			<input matInput 
@@ -68,52 +70,67 @@
 			<mat-error>
 				{{ getErrors(validationControls[dataParameterReference.TwoArraySize]) }}
 			</mat-error>
-		</mat-form-field> 
+        </mat-form-field>  -->
+        <custom-key-board [disabled]="busy" type="int" placeHolder="{{ 'two_dimension_size' | translate }}" [isNgIf]="isArray && varType === 'STRING' && dimension === 2" [isPositiveNum]=true [(value)]="arrSecondSize"></custom-key-board>
 
 		<div *ngIf="!isArray && varType" style="margin-top: 8px;">
 			<div class="label">{{ 'values' | translate }}</div>
 			<div class="value-container">
 				<div *ngIf="varType === 'JOINT'" class="values">
-					<mat-form-field *ngFor="let joint of data.robotCoordinateType.legends; let i = index" floatLabel="never">
+					<!-- <mat-form-field *ngFor="let joint of data.robotCoordinateType.legends; let i = index" floatLabel="never">
 						<span matPrefix style="font-weight: bold;">J{{ i + 1 }}:&nbsp;&nbsp;</span>
 						<input matInput [placeholder]="'J' + (i + 1)" [(ngModel)]="this.values[i]" virtualKeyboard ktype="numeric"  [disabled]="busy" />
-					</mat-form-field>
+                    </mat-form-field> -->
+                    <span style="display: flex;">
+                        <custom-key-board type="float" [prefix]="'j'+(i+1)+':&nbsp;&nbsp;'" style="width: 80px;"
+                            [placeHolder]="'J' + (i + 1)" [(value)]="this.values[i]" [disabled]="busy"
+                            *ngFor="let joint of data.robotCoordinateType.legends; let i = index"
+                        ></custom-key-board>
+                    </span>
 				</div>
 				<div *ngIf="varType === 'LOCATION'" class="values">
-					<mat-form-field *ngFor="let legend of data.robotCoordinateType.all; let i = index" floatLabel="never" [class.flag-select]="i >= data.robotCoordinateType.legends.length">
-						<span matPrefix style="font-weight: bold;">{{ legend }}:&nbsp;&nbsp;</span>
-						<input
-							*ngIf="i < data.robotCoordinateType.legends.length"
-							matInput
-							[placeholder]="legend"
-							[(ngModel)]="this.values[i]"
-							virtualKeyboard
-							[disabled]="busy"
-							ktype="numeric"
-						/>
-						<mat-select *ngIf="i >= data.robotCoordinateType.legends.length" [(ngModel)]="this.values[i]"  [disabled]="busy">
-							<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Arm'">
-								<mat-option value="0">AUTO</mat-option>
-								<mat-option value="1">LEFTY</mat-option>
-								<mat-option value="2">RIGHTY</mat-option>
-							</div>
-							<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Elbow'">
-								<mat-option value="0">AUTO</mat-option>
-								<mat-option value="1">BELOW</mat-option>
-								<mat-option value="2">ABOVE</mat-option>
-							</div>
-							<div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Wrist'">
-								<mat-option value="0">AUTO</mat-option>
-								<mat-option value="1">NOFLIP</mat-option>
-								<mat-option value="2">FLIP</mat-option>
-							</div>
-						</mat-select>
-					</mat-form-field>
+                    <div *ngFor="let legend of data.robotCoordinateType.all; let i = index" >
+                        <div *ngIf="i < data.robotCoordinateType.legends.length">
+                            <custom-key-board type="float" style="width: 25%;float: left;" [disabled]="busy" prefix="{{ legend }}:&nbsp;&nbsp;" [(value)]="this.values[i]"></custom-key-board>
+                        </div>
+                        <div *ngIf="i >= data.robotCoordinateType.legends.length">
+                            <mat-form-field floatLabel="never" [class.flag-select]="i >= data.robotCoordinateType.legends.length">
+                                <span matPrefix style="font-weight: bold;" *ngIf="i >= data.robotCoordinateType.legends.length">{{ legend }}:&nbsp;&nbsp;</span>
+                                <!-- <input
+                                    *ngIf="i < data.robotCoordinateType.legends.length"
+                                    matInput
+                                    [placeholder]="legend"
+                                    [(ngModel)]="this.values[i]"
+                                    virtualKeyboard
+                                    [disabled]="busy"
+                                    ktype="numeric"
+                                    style="display: none;border:none"
+                                /> -->
+                                <mat-select *ngIf="i >= data.robotCoordinateType.legends.length" [(ngModel)]="this.values[i]"  [disabled]="busy">
+                                    <div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Arm'">
+                                        <mat-option value="0">AUTO</mat-option>
+                                        <mat-option value="1">LEFTY</mat-option>
+                                        <mat-option value="2">RIGHTY</mat-option>
+                                    </div>
+                                    <div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Elbow'">
+                                        <mat-option value="0">AUTO</mat-option>
+                                        <mat-option value="1">BELOW</mat-option>
+                                        <mat-option value="2">ABOVE</mat-option>
+                                    </div>
+                                    <div *ngIf="data.robotCoordinateType.flags[i - data.robotCoordinateType.legends.length] === 'Wrist'">
+                                        <mat-option value="0">AUTO</mat-option>
+                                        <mat-option value="1">NOFLIP</mat-option>
+                                        <mat-option value="2">FLIP</mat-option>
+                                    </div>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
 				</div>
 				<div *ngIf="varType && varType !== 'LOCATION' && varType !== 'JOINT'" class="values">
-					<mat-form-field floatLabel="never" style="width: inherit;">
+					<mat-form-field floatLabel="never" style="width: inherit;" *ngIf="varType === 'STRING'">
 						<span matPrefix style="font-weight: bold;">{{ 'value' | translate }}:&nbsp;&nbsp;</span>
-						<input
+						<!-- <input
 							*ngIf="varType === 'LONG'"
 							matInput
 							[placeholder]="Value"
@@ -121,8 +138,8 @@
 							virtualKeyboard
 							[disabled]="busy"
 							ktype="numeric_int"
-						/>
-						<input
+                        /> -->
+						<!-- <input
 							*ngIf="varType === 'DOUBLE'"
 							matInput
 							[placeholder]="Value"
@@ -130,10 +147,9 @@
 							virtualKeyboard
 							[disabled]="busy"
 							ktype="numeric"
-						/>
+                        /> -->
 						<textarea
 							matInput
-							*ngIf="varType === 'STRING'"
 							[placeholder]="Value"
 							[(ngModel)]="this.values[0]"
 							virtualKeyboard
@@ -144,7 +160,9 @@
 							[disabled]="busy"
 							cdkAutosizeMinRows="1"
 						></textarea>
-					</mat-form-field>
+                    </mat-form-field>
+                    <custom-key-board  prefix="{{ 'value' | translate }}:&nbsp;&nbsp;" type="int" [isNgIf]="varType === 'LONG'" [placeHolder]="Value" [(value)]="this.values[0]" [disabled]="busy"></custom-key-board>
+                    <custom-key-board  prefix="{{ 'value' | translate }}:&nbsp;&nbsp;" type="float" [isNgIf]="varType === 'DOUBLE'" [placeHolder]="Value" [(value)]="this.values[0]" [disabled]="busy"></custom-key-board>
 				</div>
 				<button 
         *ngIf="varType === 'JOINT' || varType === 'LOCATION'"

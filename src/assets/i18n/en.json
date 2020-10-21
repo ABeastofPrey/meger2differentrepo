@@ -903,6 +903,17 @@
       "beginWithLetter": "Must start with an letter",
       "nameExist": "Name already exists."
     },
+    "subs": {
+        "tip":"Tip: Sub names and parameter names are not case sensitive.",
+        "name": "Sub Name",
+        "para_name": "Parameter Name",
+        "para_type": "Parameter Type",
+        "manipulate": "Manipulate",
+        "parameter": "Add a parameter",
+        "required": "Name is required",
+        "beginWithLetter": "Must start with an letter",
+        "nameExist": "Name already exists."
+    },
     "call": {
       "title": "Insert Call Command",
       "name": "Sub Name"

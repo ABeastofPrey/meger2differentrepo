@@ -15,3 +15,6 @@ input.mat-input-element {
 input.mat-input-element:hover {
   background: #ebebeb;
 }
+.hide {
+    display: none;
+}

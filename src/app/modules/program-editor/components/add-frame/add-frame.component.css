@@ -22,6 +22,15 @@
 .name-wrapper mat-form-field {
   width: 100%;
 }
+.values {
+    display: flex;
+}
 .values mat-form-field {
   width: 100px;
+}
+.values custom-key-board {
+    width: 100px;
+}
+.customKeyBoard {
+    width: 100%;
 }

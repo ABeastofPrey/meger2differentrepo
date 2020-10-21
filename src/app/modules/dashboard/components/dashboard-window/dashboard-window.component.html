@@ -1,77 +1,94 @@
 <div
-	class="mat-elevation-z3 wrapper"
-	ngDraggable
-	[bounds]="container"
-	inBounds="true"
-	[zIndexMoving]="2"
-	[position]="params.pos"
-	(stopped)="onDragEnd()"
-	[handle]="handle"
-	#window
+  class="mat-elevation-z3 wrapper"
+  ngDraggable
+  [bounds]="container"
+  inBounds="true"
+  [zIndexMoving]="2"
+  [position]="params.pos"
+  (stopped)="onDragEnd()"
+  [handle]="handle"
+  #window
 >
-	<div class="title primary-bg center-vertical" #handle>
-		<div style="flex: 1; cursor: move;">{{ params.name }}</div>
-		<button
-			mat-icon-button
-			*ngIf="params.name === 'SCARA (Tour)'"
-			(click)="record()"
-			matTooltip="{{ 'record' | translate }}"
-			[disabled]="params.params.length === 0"
-			tourAnchor="dashboard-rec"
-		>
-			<mat-icon>{{ params.isRecording ? 'stop' : 'fiber_manual_record' }}</mat-icon>
-		</button>
-		<button
-			mat-icon-button
-			*ngIf="params.name !== 'SCARA (Tour)'"
-			(click)="record()"
-			matTooltip="{{ 'record' | translate }}"
-			[disabled]="params.params.length === 0 && !params.isGroup"
-		>
-			<mat-icon>{{ params.isRecording ? 'stop' : 'fiber_manual_record' }}</mat-icon>
-		</button>
-		<button mat-icon-button (click)="close()" matTooltip="{{ 'close' | translate }}">
-			<mat-icon>close</mat-icon>
-		</button>
-	</div>
-	<mat-progress-bar color="accent" [value]="params.recordingTime"></mat-progress-bar>
-	<div class="content">
-		<div style="flex: 1;">
-			<mat-slide-toggle
-				*ngIf="params.name === 'SCARA (Tour)'"
-				color="primary"
-				style="margin-bottom: 8px;"
-				[checked]="params.enable"
-				(change)="toggleEnable()"
-				tourAnchor="dashboard-enable"
-				>{{ 'enable' | translate }}</mat-slide-toggle
-			>
-			<mat-slide-toggle
-				*ngIf="params.name !== 'SCARA (Tour)'"
-				color="primary"
-				style="margin-bottom: 8px;"
-				[checked]="params.enable"
-				(change)="toggleEnable()"
-				[disabled]="login.isViewer || dashboard.longProcess"
-				>{{ 'enable' | translate }}</mat-slide-toggle
-			>
-			<div class="params-container">
-				<div
-					class="params-title center-vertical"
-					matTooltip="{{ 'dashboard.err_param_count' | translate:{count:MAX_PARAMS} }}"
-					[matTooltipDisabled]="dashboard.totalParamCount < MAX_PARAMS">
-					<span style="flex: 1;">{{ 'parameters' | translate }}</span>
-					<button mat-icon-button color="primary"
-						(click)="addParam()"
-						[disabled]="dashboard.totalParamCount >= MAX_PARAMS">
-						<mat-icon>add</mat-icon>
-					</button>
-				</div>
-				<table class="params-list">
-					<tr *ngFor="let p of params.params; let i = index">
-						<td style="padding-right: 8px;">{{ p.name }}</td>
-						<td>
-							<mat-form-field *ngIf="p.inputType === 'INPUT'"
+  <div class="title primary-bg center-vertical" #handle>
+    <div style="flex: 1; cursor: move;">{{ params.name }}</div>
+    <button
+      mat-icon-button
+      *ngIf="params.name === 'SCARA (Tour)'"
+      (click)="record()"
+      matTooltip="{{ 'record' | translate }}"
+      [disabled]="params.params.length === 0"
+      tourAnchor="dashboard-rec"
+    >
+      <mat-icon>{{
+        params.isRecording ? 'stop' : 'fiber_manual_record'
+      }}</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      *ngIf="params.name !== 'SCARA (Tour)'"
+      (click)="record()"
+      matTooltip="{{ 'record' | translate }}"
+      [disabled]="params.params.length === 0 && !params.isGroup"
+    >
+      <mat-icon>{{
+        params.isRecording ? 'stop' : 'fiber_manual_record'
+      }}</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="close()"
+      matTooltip="{{ 'close' | translate }}"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-progress-bar
+    color="accent"
+    [value]="params.recordingTime"
+  ></mat-progress-bar>
+  <div class="content">
+    <div style="flex: 1;">
+      <mat-slide-toggle
+        *ngIf="params.name === 'SCARA (Tour)'"
+        color="primary"
+        style="margin-bottom: 8px;"
+        [checked]="params.enable"
+        (change)="toggleEnable()"
+        tourAnchor="dashboard-enable"
+        >{{ 'enable' | translate }}</mat-slide-toggle
+      >
+      <mat-slide-toggle
+        *ngIf="params.name !== 'SCARA (Tour)'"
+        color="primary"
+        style="margin-bottom: 8px;"
+        [checked]="params.enable"
+        (change)="toggleEnable()"
+        [disabled]="login.isViewer || dashboard.longProcess"
+        >{{ 'enable' | translate }}</mat-slide-toggle
+      >
+      <div class="params-container">
+        <div
+          class="params-title center-vertical"
+          matTooltip="{{
+            'dashboard.err_param_count' | translate: { count: MAX_PARAMS }
+          }}"
+          [matTooltipDisabled]="dashboard.totalParamCount < MAX_PARAMS"
+        >
+          <span style="flex: 1;">{{ 'parameters' | translate }}</span>
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="addParam()"
+            [disabled]="dashboard.totalParamCount >= MAX_PARAMS"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <table class="params-list">
+          <tr *ngFor="let p of params.params; let i = index">
+            <td style="padding-right: 8px;">{{ p.name }}</td>
+            <td>
+              <mat-form-field *ngIf="p.inputType === 'INPUT'"
 								><input
 									matInput
 									[(ngModel)]="p.value"
@@ -79,102 +96,148 @@
 									[disabled]="login.isViewer"
 									virtualKeyboard
 									ktype="text"
-							/></mat-form-field>
-							<mat-slide-toggle
-								*ngIf="p.inputType === 'TOGGLE'"
-								color="primary"
-								style="margin-bottom: 8px;"
-								[checked]="p.value === '1'"
-								(change)="dashboard.onChange(params, p, $event.checked)"
-								[disabled]="login.isViewer"
-							></mat-slide-toggle>
-							<mat-slider
-								*ngIf="p.inputType === 'SLIDER'"
-								thumbLabel="true"
-								tickInterval="auto"
-								[min]="p.sliderMin"
-								[max]="p.sliderMax"
-								[(ngModel)]="p.value"
-								color="primary"
-								(change)="dashboard.onChange(params, p, $event.value)"
-								[disabled]="login.isViewer"
-							></mat-slider>
-						</td>
-						<td>
-							<div *ngIf="p.inputType === 'SLIDER'">{{ p.value }}</div>
-						</td>
-						<td>
-							<button mat-icon-button color="warn" (click)="deleteParam(i)">
-								<mat-icon>delete</mat-icon>
-							</button>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div style="flex: 1;" *ngIf="params.isExpanded">
-			<div class="move-content" tourAnchor="dashboard-move">
-				<button 
-					mat-raised-button
-					color="primary"
-					[disabled]="invalidTarget"
-					(touchstart)="move()"
-					(mousedown)="move()"
-					(touchend)="stopMotion()"
-					(mouseup)="stopMotion()">
-					{{ 'button.move' | translate }}
-				</button>
-				<mat-slide-toggle
-					color="primary"
-					style="margin-bottom: 8px;"
-					*ngIf="params.isGroup"
-					[(ngModel)]="params.cartesian"
-					>{{ 'cartesian' | translate }}</mat-slide-toggle
-				>
-				<table>
-					<tr *ngFor="let a of params.axes; let i = index">
-						<td>{{ params.cartesian ? cart[i] : a }}</td>
-						<td>
-							<mat-form-field>
+                            /></mat-form-field>
+              <!-- <ng-container *ngIf="p || p.inputType === 'INPUT'">
+                <custom-key-board
+                  [(value)]="p.value"
+                  [isNgIf]="p.inputType === 'INPUT'"
+                  [disabled]="login.isViewer"
+                  type="int"
+                  [isPositiveNum]="true"
+                  (valueChange)="
+                    dashboard.onChange(params, p, $event.target.value)
+                  "
+                ></custom-key-board>
+              </ng-container> -->
+
+              <mat-slide-toggle
+                *ngIf="p.inputType === 'TOGGLE'"
+                color="primary"
+                style="margin-bottom: 8px;"
+                [checked]="p.value === '1'"
+                (change)="dashboard.onChange(params, p, $event.checked)"
+                [disabled]="login.isViewer"
+              ></mat-slide-toggle>
+              <mat-slider
+                *ngIf="p.inputType === 'SLIDER'"
+                thumbLabel="true"
+                tickInterval="auto"
+                [min]="p.sliderMin"
+                [max]="p.sliderMax"
+                [(ngModel)]="p.value"
+                color="primary"
+                (change)="dashboard.onChange(params, p, $event.value)"
+                [disabled]="login.isViewer"
+              ></mat-slider>
+            </td>
+            <td>
+              <div *ngIf="p.inputType === 'SLIDER'">{{ p.value }}</div>
+            </td>
+            <td>
+              <button mat-icon-button color="warn" (click)="deleteParam(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div style="flex: 1;" *ngIf="params.isExpanded">
+      <div class="move-content" tourAnchor="dashboard-move">
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="invalidTarget"
+          (touchstart)="move()"
+          (mousedown)="move()"
+          (touchend)="stopMotion()"
+          (mouseup)="stopMotion()"
+        >
+          {{ 'button.move' | translate }}
+        </button>
+        <mat-slide-toggle
+          color="primary"
+          style="margin-bottom: 8px;"
+          *ngIf="params.isGroup"
+          [(ngModel)]="params.cartesian"
+          >{{ 'cartesian' | translate }}</mat-slide-toggle
+        >
+        <table>
+          <tr *ngFor="let a of params.axes; let i = index">
+            <td>{{ params.cartesian ? cart[i] : a }}</td>
+            <td>
+              <!-- <mat-form-field>
 								<input
 									matInput
 									[(ngModel)]="params.target[i]"
 									virtualKeyboard
 									ktype="numeric"/>
-								</mat-form-field>
-						</td>
-					</tr>
-					<tr>
-						<td>VScale</td>
-						<td>
-							<mat-form-field
+                                </mat-form-field> -->
+              <div class="custom-key-board">
+                <custom-key-board
+                  [(value)]="params.target[i]"
+                  type="float"
+                ></custom-key-board>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>VScale</td>
+            <td>
+              <!-- <mat-form-field
 								><input matInput [(ngModel)]="params.vscale" virtualKeyboard ktype="numeric"
-							/></mat-form-field>
-						</td>
-					</tr>
-					<tr>
-						<td>AScale</td>
-						<td>
-							<mat-form-field
+                            /></mat-form-field> -->
+              <div class="custom-key-board">
+                <custom-key-board
+                  [(value)]="params.vscale"
+                  [isPositiveNum]="true"
+                  type="float"
+                ></custom-key-board>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>AScale</td>
+            <td>
+              <!-- <mat-form-field
 								><input matInput [(ngModel)]="params.ascale"  virtualKeyboard ktype="numeric_int_pos"
-							/></mat-form-field>
-						</td>
-					</tr>
-					<tr>
-						<td>Jerk</td>
-						<td>
-							<mat-form-field
+                            /></mat-form-field> -->
+              <div class="custom-key-board">
+                <custom-key-board
+                  [(value)]="params.ascale"
+                  [isPositiveNum]="true"
+                  type="float"
+                ></custom-key-board>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Jerk</td>
+            <td>
+              <!-- <mat-form-field
 								><input matInput [(ngModel)]="params.jerk"  virtualKeyboard ktype="numeric"
-							/></mat-form-field>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div *ngIf="!login.isViewer" matRipple class="expand primary-bg-dark" (click)="toggleExpand()">
-			<mat-icon class="primary-light" style="color: #fff;">{{
-				params.isExpanded ? 'chevron_left' : 'more_vert'
-			}}</mat-icon>
-		</div>
-	</div>
+                            /></mat-form-field> -->
+              <div class="custom-key-board">
+                <custom-key-board
+                  [(value)]="params.jerk"
+                  [isPositiveNum]="true"
+                  type="float"
+                ></custom-key-board>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div
+      *ngIf="!login.isViewer"
+      matRipple
+      class="expand primary-bg-dark"
+      (click)="toggleExpand()"
+    >
+      <mat-icon class="primary-light" style="color: #fff;">{{
+        params.isExpanded ? 'chevron_left' : 'more_vert'
+      }}</mat-icon>
+    </div>
+  </div>
 </div>

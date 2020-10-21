@@ -103,34 +103,54 @@
 				</div>
 				<h2>{{ 'grippers.sleep' | translate }}:</h2>
 				<div class="row">
-					<mat-form-field>
+					<!-- <mat-form-field>
 						<input
 							matInput
 							[disabled]="login.isOperator"
 							placeholder="{{ 'open' | translate }}"
 							[(ngModel)]="selectedNode.sleep_open"
-							
+
 							(change)="updateGripperSleep('OPEN')"
 							(onKeyboardClose)="updateGripperSleep('OPEN')"
 							virtualKeyboard
 							ktype="numeric_int_pos"
 						/>
 						<span matSuffix>ms.</span>
-					</mat-form-field>
-					<mat-form-field>
+          </mat-form-field> -->
+
+          <custom-key-board
+          placeHolder="{{ 'open' | translate }}"
+          [(value)]="selectedNode.sleep_open"
+          [disabled]="login?.isOperator"
+          type="int"
+          [isPositiveNum]="true"
+          (blurEvent)="updateGripperSleep('OPEN')"
+          suffix="ms."
+        ></custom-key-board>
+
+					<!-- <mat-form-field>
 						<input
 							[disabled]="login.isOperator"
 							matInput
 							placeholder="{{ 'close' | translate }}"
 							[(ngModel)]="selectedNode.sleep_close"
-							
+
 							(change)="updateGripperSleep('CLOSE')"
 							virtualKeyboard
 							ktype="numeric_int_pos"
 							(onKeyboardClose)="updateGripperSleep('CLOSE')"
 						/>
 						<span matSuffix>ms.</span>
-					</mat-form-field>
+          </mat-form-field> -->
+          <custom-key-board
+          placeHolder="{{ 'close' | translate }}"
+          [(value)]="selectedNode.sleep_close"
+          [disabled]="login?.isOperator"
+          type="int"
+          [isPositiveNum]="true"
+          (blurEvent)="updateGripperSleep('CLOSE')"
+          suffix="ms."
+        ></custom-key-board>
 				</div>
 				<h2>{{ 'optional' | translate }}:</h2>
 				<div class="row">

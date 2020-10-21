@@ -941,9 +941,14 @@ export class PalletWizardComponent implements OnInit {
           this.step1.controls['itemsZ'].setErrors({ invalidItemCount: true });
           this.ws.query(cmdRestore).then(ret=>{
             const itemCount = (ret.result.length === 0 ? '0,0,0' : ret.result).split(',');
-            this.dataService.selectedPallet.itemsX = Number(itemCount[0]);
-            this.dataService.selectedPallet.itemsY = Number(itemCount[1]);
-            this.dataService.selectedPallet.itemsZ = Number(itemCount[2]);
+            // setTimeout(() => {
+                this.dataService.selectedPallet.itemsX = Number(itemCount[0]);
+                this.dataService.selectedPallet.itemsY = Number(itemCount[1]);
+                this.dataService.selectedPallet.itemsZ = Number(itemCount[2]);
+                this.step1.controls['itemsY'].markAsTouched();
+                this.step1.controls['itemsY'].setValue(Number(itemCount[1]));
+                // this.step1.controls['itemsY'].reset();
+            // }, 0);
           });
           return { invalidItemCount: true };
         }
@@ -1801,6 +1806,58 @@ export class PalletWizardComponent implements OnInit {
   async ngAfterViewInit() {
     await this.getPalletInfo();
     await this.refreshDesigners();
+    // this.onWindowResize(this.dataService.selectedPallet.itemsX,"itemsX");
+    // this.onWindowResize(this.dataService.selectedPallet.itemSizeX,"itemSizeX");
+    this.initFormControl();
+  }
+
+  public initFormControl() {
+      const step1Control: string[] = ["itemsX","itemsY","itemsZ","itemSizeX","itemSizeY","itemSizeZ","palletSizeX","palletSizeY"];
+      const step2Control: any[] = [
+          {"key":"originX","value1":"origin","value2":"x"},
+          {"key":"originY","value1":"origin","value2":"y"},
+          {"key":"originZ","value1":"origin","value2":"z"},
+          {"key":"posXX","value1":"posX","value2":"x"},
+          {"key":"posXY","value1":"posX","value2":"y"},
+          {"key":"posXZ","value1":"posX","value2":"z"},
+          {"key":"posYX","value1":"posY","value2":"x"},
+          {"key":"posYY","value1":"posY","value2":"y"},
+          {"key":"posYZ","value1":"posY","value2":"z"}
+      ];
+      const step3Control: string[] = ["x","y","z","yaw","pitch","roll"];
+      const step4Control: any[] = [
+          {"key":"app_off_v","value":"approachOffsetVertical"},
+          {"key":"app_off_h","value":"approachOffsetHorizontal"},
+          {"key":"ret_off_v","value":"retractOffsetVertical"},
+          {"key":"ret_off_h","value":"retractOffsetHorizontal"}
+      ]
+      step1Control.forEach((item) => {
+        this.step1.controls[item].setValue(Number(this.dataService.selectedPallet[item]));
+      })
+      step2Control.forEach((item) => {
+        this.step2.controls[item.key].setValue(Number(this.dataService.selectedPallet[item.value1][item.value2]));
+      })
+      step3Control.forEach((item) => {
+        this.step3.controls[item].setValue(Number(this.dataService.selectedPallet.entry[item]));
+      })
+      step4Control.forEach((item) => {
+        this.step4.controls[item.key].setValue(Number(this.dataService.selectedPallet[item.value]));
+      })
+  }
+
+  public setStep2Origin(value,type) {
+    this.step2.controls[type].markAsTouched();
+    this.step2.controls[type].setValue(Number(value));
+  }
+
+  public setStep3Entry(value,type) {
+    this.step3.controls[type].markAsTouched();
+    this.step3.controls[type].setValue(Number(value));
+  }
+
+  public setStep4App(value,type) {
+    this.step4.controls[type].markAsTouched();
+    this.step4.controls[type].setValue(Number(value));
   }
 
   refreshDesigners() : Promise<any> {
@@ -1815,7 +1872,7 @@ export class PalletWizardComponent implements OnInit {
           this.designer2.refresh();
           count += await this.designer2.onPalletInfoLoaded();
         }
-        resolve();
+        resolve(null);
       },0);
     });
   }
@@ -1829,7 +1886,15 @@ export class PalletWizardComponent implements OnInit {
     (document.activeElement as HTMLElement).blur();
   }
 
-  onWindowResize() {
+  onWindowResize(values?,item?) {
+    setTimeout(() => {
+        if(values) {
+            this.step1.controls[item].markAsTouched();
+            this.step1.controls[item].setValue(Number(values));
+            this.dataService.selectedPallet[item] = Number(values);
+            // this.step1.controls[item].reset();
+        }
+    }, 0);
     if (typeof this.container === 'undefined') {
       if (this.designer) this.designer.refresh();
       if (this.designer2) this.designer2.refresh();

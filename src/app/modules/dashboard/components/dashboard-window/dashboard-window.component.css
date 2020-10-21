@@ -60,3 +60,7 @@ mat-slider {
 :host-context(.cs-dark) .content {
   background-color: #424242;
 }
+.custom-key-board {
+    width: 50px;
+    display: inline-block;
+}

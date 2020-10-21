@@ -248,5 +248,14 @@ export class VisionCommandComponent implements OnInit, OnDestroy {
 		when(identity, addPixel_y)(hasPixelToPos);
 		when(identity, addPos_x)(hasPixelToPos);
 		when(identity, addPos_y)(hasPixelToPos);
-	}
+    }
+    
+    public timeouotChange(value) {
+        this.form.controls.timeout.patchValue(value);
+    }
+
+    public timeouotBlur(value) {
+        this.form.controls.timeout.patchValue(value);
+        this.updateStore(this.form.value)
+    }
 }

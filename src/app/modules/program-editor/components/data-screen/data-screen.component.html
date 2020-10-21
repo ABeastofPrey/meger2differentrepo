@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper data-screen">
   <img
     *ngIf="!shouldDisplayTable"
     src="assets/pics/Curved_Arrow.svg"
@@ -148,12 +148,47 @@
         <th mat-header-cell *matHeaderCellDef>{{ leg }}</th>
         >
         <td mat-cell *matCellDef="let element">
+          <div *ngIf="
+            (!element?.isArr && element?.dataLoaded) ||
+            (element?.isArr &&
+                !element?.isTwoDimension &&
+                (element?.value)[element.selectedIndex - 1].dataLoaded) ||
+            (element?.isArr &&
+                element?.isTwoDimension &&
+                (element?.value)[element.selectedIndex - 1][
+                element.selectedSecondIndex - 1
+                ].dataLoaded)
+          ">
+            <div *ngIf="
+                element?.typeStr !== 'STRING' &&
+                (element?.typeStr !== 'LOCATION' ||
+                i < data?.robotCoordinateType?.legends?.length)
+            ">
+                <custom-key-board
+                    type="float" appearance="outline"
+                    [placeHolder]="leg"
+                    [(value)]="
+                        element.isArr
+                        ? element.value[element.selectedIndex - 1].value[i].value
+                        : element.value[i].value
+                    "
+                    (valueChange)="
+                        element?.isArr
+                        ? ((element?.value)[element.selectedIndex - 1].value[
+                            i
+                            ].value = $event)
+                        : (element.value[i].value = $event)
+                    "
+                    (blurEvent)="onKeyboardClose(element)"
+                ></custom-key-board>
+            </div>
+          </div>
           <mat-form-field
             appearance="outline"
             floatLabel="never"
             class="value-field"
             *ngIf="
-              (!element?.isArr && element?.dataLoaded) ||
+              ((!element?.isArr && element?.dataLoaded) ||
               (element?.isArr &&
                 !element?.isTwoDimension &&
                 (element?.value)[element.selectedIndex - 1].dataLoaded) ||
@@ -161,7 +196,9 @@
                 element?.isTwoDimension &&
                 (element?.value)[element.selectedIndex - 1][
                   element.selectedSecondIndex - 1
-                ].dataLoaded)
+                ].dataLoaded)) && !(element?.typeStr !== 'STRING' &&
+                (element?.typeStr !== 'LOCATION' ||
+                i < data?.robotCoordinateType?.legends?.length))
             "
             [class.text-field]="element.typeStr === 'STRING'"
           >
@@ -212,7 +249,7 @@
                 <mat-option value="2">FLIP</mat-option>
               </div>
             </mat-select>
-            <input
+            <!-- <input
               *ngIf="
                 element?.typeStr !== 'STRING' &&
                 (element?.typeStr !== 'LOCATION' ||
@@ -236,7 +273,7 @@
               virtualKeyboard
               ktype="numeric"
               (onKeyboardClose)="onKeyboardClose(element)"
-            />
+            /> -->
             <textarea
               matInput
               *ngIf="element?.typeStr === 'STRING'"

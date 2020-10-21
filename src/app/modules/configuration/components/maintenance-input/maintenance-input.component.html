@@ -19,11 +19,11 @@
                 </th>
                 <td mat-cell *matCellDef="let element">
                     <div class="numInp">
-                        <cs-number-input type="int" [rightClosedInterval]="false"
-                            [(value)]="element.usedLife.control.value"
+                        <custom-key-board type="int" [rightClosedInterval]="false"
+                            [(value)]="element.usedLife.control.value" [isPositiveNum]="true"
                             (isValidEvent)="isValidEvent($event,element.usedLife.index)" [disabled]="!isAdmin"
                             [suffix]='element.usedLife.unit' [min]="0" [max]="element.usedLife.max" [required]="true">
-                        </cs-number-input>
+                        </custom-key-board>
                     </div>
                 </td>
             </ng-container>
@@ -52,12 +52,16 @@
                 <mat-error *ngIf="!person.required">{{'maintenance.input.nameRequire' | translate}}</mat-error>
             </mat-form-field>
         </div>
-        <div class="form-contain">
-            <mat-form-field>
+        <div class="form-contain customKeyBoard">
+            <!-- <mat-form-field>
                 <input matInput maxlength="50" autocomplete="off" type="text" (input)="limitNum($event)" (keypress)="preventEnter($event)"
                     [placeholder]="'maintenance.input.order_number' | translate" formControlName="orderNum">
                 <mat-error *ngIf="!orderNum.required">{{'maintenance.input.ordernum' | translate}}</mat-error>
-            </mat-form-field>
+            </mat-form-field> -->
+            <custom-key-board type="int" [isPositiveNum]="true"
+                [placeHolder]="'maintenance.input.order_number' | translate" [(value)]="inputForm.value.orderNum"
+                (valueChange)="limitNum($event)"  (blurEvent)="limitNum($event)"
+            ></custom-key-board>
         </div>
         <div class="form-contain">
             <mat-form-field>

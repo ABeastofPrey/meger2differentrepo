@@ -15,8 +15,8 @@ import { MaterialComponentsModule } from '../../../material-components/material-
 import { SysLogWatcherService } from '../../../sys-log/services/sys-log-watcher.service';
 
 
-@Component({ selector: 'cs-number-input', template: '' })
-export class NumberInputComponent {
+@Component({ selector: 'custom-key-board', template: '' })
+export class CustomKeyBoardComponent {
     @Input() required: boolean = true;
     @Input() appearance: any = 'standard';
     @Input() label: string | number;
@@ -50,7 +50,7 @@ describe('MaintenanceInputComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [MaintenanceInputComponent, NumberInputComponent],
+            declarations: [MaintenanceInputComponent, CustomKeyBoardComponent],
             imports: [FormsModule, ReactiveFormsModule, HttpClientModule, MaterialComponentsModule, BrowserAnimationsModule, UnitTestModule],
             providers: [
                 { provide: MaintenanceService, useValue: fakeService },

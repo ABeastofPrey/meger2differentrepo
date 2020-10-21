@@ -392,8 +392,8 @@ export class PayloadWizardComponent implements OnInit {
     });
   }
 
-  onMassChange(e: {target: {value: number}}) {
-    const newVal = e.target.value;
+  onMassChange(e: {target: {value: number | string}}) {
+    const newVal = Number(e.target.value);
     const oldVal = this.selectedPayload.mass;
     const cmd =
       '?PAY_SET_MASS("' + this.selectedPayload.name + '",' + newVal + ')';
@@ -401,6 +401,7 @@ export class PayloadWizardComponent implements OnInit {
       if (ret.result !== '0' || ret.err) {
         this.ctrlMass.setValue(oldVal);
       } else {
+        this.ctrlMass.setValue(newVal);
         this.selectedPayload.mass = newVal;
         //   this.snack.open(this.words['changeOK'], '', { duration: 1500 });
           this.snackbarService.openTipSnackBar("changeOK");
@@ -417,6 +418,7 @@ export class PayloadWizardComponent implements OnInit {
       if (ret.result !== '0' || ret.err) {
         this.ctrlInertia.setValue(oldVal);
       } else {
+        this.ctrlInertia.setValue(newVal);
         this.selectedPayload.inertia = newVal;
         //   this.snack.open(this.words['changeOK'], '', { duration: 1500 });
           this.snackbarService.openTipSnackBar("changeOK");
@@ -433,6 +435,7 @@ export class PayloadWizardComponent implements OnInit {
       if (ret.result !== '0' || ret.err) {
         this.ctrllx.setValue(oldVal);
       } else {
+        this.ctrllx.setValue(newVal);
         this.selectedPayload.lx = newVal;
         //   this.snack.open(this.words['changeOK'], '', { duration: 1500 });
           this.snackbarService.openTipSnackBar("changeOK");

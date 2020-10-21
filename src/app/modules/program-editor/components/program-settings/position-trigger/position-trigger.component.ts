@@ -4,11 +4,13 @@ import { NewPositionTriggerComponent } from '../new-position-trigger/new-positio
 import { PositionTriggerService, IResPLS } from '../../../services/position-trigger.service';
 import {
 	T, F, ifElse, always, map, compose, converge, propEq, equals, filter,
-	bind, forEach, all, any, not, and, lensProp, set, or, isNil, isEmpty, gte,
+	all, any, not, and, lensProp, set, or, isNil, isEmpty, gte,
 	__, prop, reduce, complement,
 } from 'ramda';
 import { Either } from 'ramda-fantasy';
 import { TranslateService } from '@ngx-translate/core';
+import { SysLogSnackBarService } from '../../../../sys-log/services/sys-log-snack-bar.service';
+
 
 // tslint:disable-next-line: interface-name
 export interface IPositionTrigger {
@@ -92,7 +94,6 @@ export const getSelectedNames: (x: IPositionTrigger[]) => string[] = compose(map
 export const insertComma: (x: string[]) => string = reduce((acc, i) => acc + i + ',', '');
 
 export const combineNames: (x: IPositionTrigger[]) => string = compose(insertComma, getSelectedNames);
-
 @Component({
 	selector: 'app-position-trigger',
 	templateUrl: './position-trigger.component.html',
@@ -121,7 +122,8 @@ export class PositionTriggerComponent implements OnInit {
 		// public snackBar: MatSnackBar,
 		public dialog: MatDialog,
 		private service: PositionTriggerService,
-		private trn: TranslateService
+		private trn: TranslateService,
+		private sysLogSnackBar: SysLogSnackBarService
 	) { }
 
 	ngOnInit(): void {
@@ -157,6 +159,7 @@ export class PositionTriggerComponent implements OnInit {
 			err => console.log(err), // handle error.
 			(res: IResPLS[]) => {
 				this.data = assemblePLSList(res);
+				this.sysLogSnackBar.openTipSnackBar('changeOK');
 			}
 		)(await this.service.updatePls(element));
 	}

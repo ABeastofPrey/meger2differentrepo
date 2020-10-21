@@ -10,24 +10,34 @@ import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { TraceService, Trace, TraceStatus } from '../../../services/trace.service';
 
-@Component({ selector: 'cs-number-input', template: '' })
-export class NumberInputComponent {
-    @Input() required: boolean = true;
-    @Input() appearance: any = 'standard';
+@Component({ selector: 'custom-key-board', template: '' })
+export class CustomKeyBoardComponent {
+    @Input() value: string | number;
+    @Input() keyBoardDialog: boolean = false;
+    @Input() type: 'int' | 'float';
+    @Input() min: number;
+    @Input() max: number;
+    @Input() leftClosedInterval = true;
+    @Input() rightClosedInterval = true;
+    @Input() required: boolean = false;
+    @Input() requiredErrMsg: string;
+    @Input() disabled: boolean = false;
     @Input() label: string | number;
     @Input() prefix: string | number;
     @Input() suffix: string | number;
     @Input() hint: string;
     @Input() placeHolder: string | number;
-    @Input() type: any;
-    @Input() disabled: boolean = false;
-    @Input() min: number;
-    @Input() max: number;
-    @Input() leftClosedInterval = true;
-    @Input() rightClosedInterval = true;
-    @Input() value: string;
-    @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
-    @Output() blur: EventEmitter<string> = new EventEmitter<string>();
+    @Input() appearance: string = "legacy";
+    @Input() matLabel: string;
+    @Input() isPositiveNum: boolean = false;
+    @Input() isNgIf: boolean = true;
+    @Input() readonly: boolean = false;
+    @Input() toNumber: boolean = false;
+    @Input() markAsTouchedFirst: boolean = true;
+    @Output() valueChange: EventEmitter<string | number> = new EventEmitter<string | number>();
+    @Output() focusEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
+    @Output() blurEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
+    @Output() pressEnterEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
     @Output() isValidEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 }
 
@@ -76,7 +86,7 @@ describe('TraceCommonComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TraceCommonComponent, NumberInputComponent, TraceNewComponent],
+            declarations: [TraceCommonComponent, CustomKeyBoardComponent, TraceNewComponent],
             providers: [
                 { provide: TraceService, useValue: traceService },
                 { provide: MatDialog, useValue: fakeDialog },

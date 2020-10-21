@@ -49,11 +49,11 @@
 }
 .index-field {
   max-width: 50px;
-  margin-bottom: -16px;
+  /* margin-bottom: -16px; */
 }
 .value-field {
   max-width: 90px;
-  margin-bottom: -16px;
+  /* margin-bottom: -16px; */
 }
 .text-field {
   max-width: 170px !important;
@@ -102,4 +102,14 @@
 }
 .hidden {
   display: none;
+}
+
+::ng-deep .data-screen .mat-form-field {
+  max-width: 90px;
+}
+::ng-deep .data-screen .mat-form-field-appearance-outline .mat-form-field-wrapper {
+  padding: 0.25em;
+}
+::ng-deep .data-screen .mat-form-field-wrapper {
+  padding-bottom: 0;
 }

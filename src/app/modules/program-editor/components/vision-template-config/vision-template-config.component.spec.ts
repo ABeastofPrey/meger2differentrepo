@@ -18,8 +18,8 @@ export class VisionTemplateConfigRightComponent {
     @Input() typeList: string[] = ["Float", "String"];
 }
 
-@Component({ selector: 'cs-number-input', template: '' })
-export class NumberInputComponent {
+@Component({ selector: 'custom-key-board', template: '' })
+export class CustomKeyBoardComponent {
     @Input() required: boolean = true;
     @Input() appearance: any = 'standard';
     @Input() label: string | number;
@@ -34,8 +34,9 @@ export class NumberInputComponent {
     @Input() leftClosedInterval = true;
     @Input() rightClosedInterval = true;
     @Input() value: string;
+    @Output() focusEvent: EventEmitter<string> = new EventEmitter<string>();
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
-    @Output() blur: EventEmitter<string> = new EventEmitter<string>();
+    @Output() blurEvent: EventEmitter<string> = new EventEmitter<string>();
     @Output() isValidEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 }
 

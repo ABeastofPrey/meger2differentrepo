@@ -226,6 +226,14 @@ export class MoveDialogComponent implements OnInit {
     });
   }
 
+  vscaleChange(value) {
+    this.ctrl.controls.vscale.patchValue(value);
+  }
+
+  blendingPhChange(value) {
+    this.ctrl.controls.blendingPh.patchValue(value);
+  }
+
   cancel() {
     this.dialogRef.close(null);
   }

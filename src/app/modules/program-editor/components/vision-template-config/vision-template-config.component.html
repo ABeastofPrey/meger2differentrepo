@@ -28,9 +28,9 @@
                         <app-ip-address [ip]="ip" (changeIpEmit)="changeIp($event)"></app-ip-address>
                     </span>
                     <span class="right">
-                        <cs-number-input #numInput type="int" [label]="'vision.templateConfig.port' | translate"
+                        <custom-key-board #numInput type="int" [label]="'vision.templateConfig.port' | translate" [isPositiveNum]=true [placeHolder]="'Port'"
                             [rightClosedInterval]="true" [value]="port.value" (valueChange)="port.setValue($event)"  [min]="0" [max]="65535"
-                            (blurEvent)="portBlur()" (isValidEvent)="changePort($event)" [required]="true"></cs-number-input>
+                            (blurEvent)="portBlur()" (isValidEvent)="changePort($event)" [required]="true"></custom-key-board>
                     </span>
                 </div>
                 <div class="config">

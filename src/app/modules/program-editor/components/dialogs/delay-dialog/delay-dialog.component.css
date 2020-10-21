@@ -27,3 +27,7 @@
   overflow: auto;
   min-height: 100px;
 }
+
+.customKeyBoard {
+    width: 52%;
+}

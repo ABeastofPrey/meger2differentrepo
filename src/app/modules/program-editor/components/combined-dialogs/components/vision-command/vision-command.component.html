@@ -111,18 +111,22 @@
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field *ngIf="commandOptionAuth.hasTimeout">
+            <!-- <mat-form-field *ngIf="commandOptionAuth.hasTimeout">
                 <input matInput [formControlName]="CommandOptions.Timeout"
                     autocomplete="off"
                     [formGroup]="form"
                     numberInput="int"
                     placeholder="{{ 'projectCommands.visionCommand.timeoutPlaceHolder' | translate }} [ms]"
                     (blur)="updateStore(form.value)" [readonly]="!(selectedModel | async)">
-                <!-- <span matSuffix>ms</span> -->
                 <mat-error>
                     {{ 'projectCommands.visionCommand.timeoutPositiveErr' | translate }}
                 </mat-error>
-            </mat-form-field>
+            </mat-form-field> -->
+            <div class="customKeyBoard" *ngIf="commandOptionAuth.hasTimeout">
+                <custom-key-board type="int" placeHolder="{{ 'projectCommands.visionCommand.timeoutPlaceHolder' | translate }} [ms]" [(value)]="form.controls.timeout.value"
+                    [readonly]="!(selectedModel | async)" (valueChange)="timeouotChange($event)"  (blurEvent)="timeouotBlur($event)" [isPositiveNum]="true"
+                ></custom-key-board>
+            </div>
 
             <mat-form-field *ngIf="commandOptionAuth.hasVariable">
                 <mat-select placeholder="{{ 'projectCommands.visionCommand.variablePlaceHolder' | translate }}"

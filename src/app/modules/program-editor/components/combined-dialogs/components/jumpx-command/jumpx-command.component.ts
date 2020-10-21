@@ -369,4 +369,13 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
         }
         return `${this.commandType} ${command}`;
     }
+
+    public change(value,key) {
+        this.form.controls[key].patchValue(value);
+    }
+
+    public blur(value,key) {
+        this.form.controls[key].patchValue(value);
+        this.updateStore(key, value)
+    }
 }

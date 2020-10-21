@@ -17,6 +17,8 @@ export class SleepDialogComponent implements OnInit {
     })
   });
 
+  dialogSleep = new FormControl(0);
+
   constructor(
     public dataService: DataService,
     private dialogRef: MatDialogRef<SleepDialogComponent, number>
@@ -24,9 +26,18 @@ export class SleepDialogComponent implements OnInit {
 
   ngOnInit() {}
 
+  get isValid(): boolean {
+    let valid = this.dialogSleep.value as number > 0;
+    return valid;
+  }
+
   insert() {
-    if (this.dialogForm.invalid) return;
-    const val = this.dialogForm.controls['time'].value as number;
+    // if (this.dialogForm.invalid) return;
+    const val = this.dialogSleep.value as number;
     this.dialogRef.close(val);
+  }
+
+  timeChange(value) {
+    this.dialogSleep.patchValue(value);
   }
 }

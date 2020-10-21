@@ -64,6 +64,8 @@ export class DataScreenComponent implements OnInit {
   private notifier: Subject<boolean> = new Subject();
   private _deleteInterval: number;
 
+  private setTimeOutRefreshVarId: any;
+
   /*
     weather or not to display the mat-table element
   */
@@ -77,7 +79,8 @@ export class DataScreenComponent implements OnInit {
   }
 
   get isRefreshing() {
-    return this._varRefreshing;
+    // return this._varRefreshing;
+    return false;
   }
 
   ngAfterViewInit() {
@@ -149,7 +152,10 @@ export class DataScreenComponent implements OnInit {
     this.displayVarType = this.data.isRobotType ? TPVariableType.JOINT : TPVariableType.LONG;
     this.data.dataRefreshed.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat && !this.data.varRefreshInProgress) {
-        this.updateDataType();
+        this.setTimeOutRefreshVarId && clearTimeout(this.setTimeOutRefreshVarId);
+        this.setTimeOutRefreshVarId = setTimeout(()=>{
+          this.updateDataType();
+        },500);
       }
     });
   }
@@ -158,6 +164,7 @@ export class DataScreenComponent implements OnInit {
     window.clearInterval(this._deleteInterval);
     this.notifier.next(true);
     this.notifier.unsubscribe();
+    this.setTimeOutRefreshVarId && clearTimeout(this.setTimeOutRefreshVarId);
   }
 
   /*
