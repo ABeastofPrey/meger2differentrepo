@@ -133,9 +133,15 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasArchNo">
-                    <custom-key-board type="int" [isPositiveNum]="true" [min]="1" [max]="7" [(value)]="form.controls.ArchNo.value"
-                        placeHolder="{{'projectCommands.jumpx.arch' | translate}}"   (valueChange)="change($event,CommandOptions.ArchNo)"  (blurEvent)="blur($event,CommandOptions.ArchNo)"
-                    ></custom-key-board>
+                    <custom-key-board type="int" 
+                        [isPositiveNum]="true" 
+                        [min]="model[CommandOptions.ArchNoLimit][0]" 
+                        [max]="model[CommandOptions.ArchNoLimit][1]" 
+                        [(value)]="form.controls.ArchNo.value"
+                        placeHolder="{{'projectCommands.jumpx.arch' | translate}}"   
+                        (valueChange)="change($event,CommandOptions.ArchNo)"  
+                        (blurEvent)="blur($event,CommandOptions.ArchNo)">
+                    </custom-key-board>
                 </div>
                 <!-- <mat-form-field *ngIf="commandOptionAuth.hasLimZ">
                     <input matInput type="text" [formGroup]="form" numberInput="float"
@@ -147,9 +153,14 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasLimZ">
-                    <custom-key-board type="float" [min]="-300" [max]="10" [(value)]="form.controls.LimZ.value"
-                        placeHolder="{{'projectCommands.jumpx.limZ' | translate}} [mm]"   (valueChange)="change($event,CommandOptions.LimZ)"  (blurEvent)="blur($event,CommandOptions.LimZ)"
-                    ></custom-key-board>
+                    <custom-key-board type="float" 
+                        [min]="model[CommandOptions.LimZLimit][0]" 
+                        [max]="model[CommandOptions.LimZLimit][1]" 
+                        [(value)]="form.controls.LimZ.value"
+                        placeHolder="{{'projectCommands.jumpx.limZ' | translate}} [mm]"   
+                        (valueChange)="change($event,CommandOptions.LimZ)"  
+                        (blurEvent)="blur($event,CommandOptions.LimZ)">
+                    </custom-key-board>
                 </div>
                 <!-- <mat-form-field *ngIf="commandOptionAuth.hasBlendingPercentage">
                     <input matInput type="text" [formGroup]="form" numberInput="float"
@@ -162,9 +173,15 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasBlendingPercentage">
-                    <custom-key-board [suffix]="'%'" type="float" [min]="0" [max]="100" [(value)]="form.controls.BlendingPercentage.value"
-                        placeHolder="{{'projectCommands.jumpx.blending' | translate}}"   (valueChange)="change($event,CommandOptions.BlendingPercentage)"  (blurEvent)="blur($event,CommandOptions.BlendingPercentage)"
-                    ></custom-key-board>
+                    <custom-key-board [suffix]="'%'" 
+                        type="float" 
+                        [min]="model[CommandOptions.BlendingPercentageLimit][0]" 
+                        [max]="model[CommandOptions.BlendingPercentageLimit][1]" 
+                        [(value)]="form.controls.BlendingPercentage.value"
+                        placeHolder="{{'projectCommands.jumpx.blending' | translate}}"   
+                        (valueChange)="change($event,CommandOptions.BlendingPercentage)"  
+                        (blurEvent)="blur($event,CommandOptions.BlendingPercentage)">
+                    </custom-key-board>
                 </div>
                 <!-- <mat-form-field *ngIf="commandOptionAuth.hasVcruise">
                     <input matInput type="text" [formGroup]="form" numberInput="float"
@@ -177,9 +194,14 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasVcruise">
-                    <custom-key-board type="float" [min]="1" [max]="100" [(value)]="form.controls.VScale.value"
-                        placeHolder="{{'projectCommands.jumpx.vscale' | translate}} [%]"   (valueChange)="change($event,CommandOptions.VScale)"  (blurEvent)="blur($event,CommandOptions.VScale)"
-                    ></custom-key-board>
+                    <custom-key-board type="float" 
+                        [min]="model[CommandOptions.AccLimit][0]" 
+                        [max]="model[CommandOptions.AccLimit][1]" 
+                        [(value)]="form.controls.VScale.value"
+                        placeHolder="{{'projectCommands.jumpx.vscale' | translate}} [%]"   
+                        (valueChange)="change($event,CommandOptions.VScale)"  
+                        (blurEvent)="blur($event,CommandOptions.VScale)">
+                    </custom-key-board>
                 </div>
                 <!-- <mat-form-field *ngIf="commandOptionAuth.hasVtran">
                     <input matInput type="text" [formGroup]="form" numberInput="float"
@@ -191,9 +213,15 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasVtran">
-                    <custom-key-board type="float" [min]="0" [max]="12234" [(value)]="form.controls.Vtran.value" [leftClosedInterval]="false"
-                        placeHolder="{{'projectCommands.jumpx.vtran' | translate}} [mm/s]"  (valueChange)="change($event,CommandOptions.Vtran)"  (blurEvent)="blur($event,CommandOptions.Vtran)"
-                    ></custom-key-board>
+                    <custom-key-board type="float" 
+                        [min]="model[CommandOptions.VtranLimit][0]" 
+                        [max]="model[CommandOptions.VtranLimit][1]" 
+                        [(value)]="form.controls.Vtran.value" 
+                        [leftClosedInterval]="false"
+                        placeHolder="{{'projectCommands.jumpx.vtran' | translate}} [mm/s]"  
+                        (valueChange)="change($event,CommandOptions.Vtran)"  
+                        (blurEvent)="blur($event,CommandOptions.Vtran)">
+                    </custom-key-board>
                 </div>
                 <!-- <mat-form-field *ngIf="commandOptionAuth.hasAcc">
                     <input matInput type="text" [formGroup]="form" numberInput="float"
@@ -205,9 +233,15 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasAcc">
-                    <custom-key-board type="float" [min]="0" [max]="100" [(value)]="form.controls.AScale.value" [leftClosedInterval]="false"
-                        placeHolder="{{'projectCommands.jumpx.acc' | translate}} [%]"  (valueChange)="change($event,CommandOptions.Acc)"  (blurEvent)="blur($event,CommandOptions.Acc)"
-                    ></custom-key-board>
+                    <custom-key-board type="float" 
+                        [min]="model[CommandOptions.AccLimit][0]" 
+                        [max]="model[CommandOptions.AccLimit][1]" 
+                        [(value)]="form.controls.AScale.value" 
+                        [leftClosedInterval]="false"
+                        placeHolder="{{'projectCommands.jumpx.acc' | translate}} [%]"  
+                        (valueChange)="change($event,CommandOptions.Acc)"  
+                        (blurEvent)="blur($event,CommandOptions.Acc)">
+                    </custom-key-board>
                 </div>
                 <mat-form-field *ngIf="commandOptionAuth.hasWithPls">
                     <mat-select multiple

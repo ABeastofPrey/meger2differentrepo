@@ -42,6 +42,7 @@ export class FunctionProgramComponent implements OnInit {
     public dataSource: VariableList[] = [];
     public ULB_LIB_End: boolean;
     public parameterValid: boolean = true;
+    public isParameterEmpty: boolean = false;
 
     ngOnInit() {
         this.ULB_LIB_End = this.prg.activeFile.endsWith(".ULB") || this.prg.activeFile.endsWith(".LIB");
@@ -76,6 +77,7 @@ export class FunctionProgramComponent implements OnInit {
         this.parameterTable.renderRows();
         let addInputElement: any = document.getElementsByClassName("inputElementParameter")[this.dataSource.length - 1];
         addInputElement.focus();
+        this.isParameterEmpty = true;
     }
 
     public deleteParameter(index: number): void {
@@ -84,6 +86,7 @@ export class FunctionProgramComponent implements OnInit {
     }
 
     public changeParameter(e: any, index: number): void {
+        this.isParameterEmpty = false;
         this.existParameter = [];
         this.dataSource.forEach((item, i) => {
             (i !== index) ? this.existParameter.push(item.VariableName.value.toUpperCase()) : "";
@@ -96,6 +99,7 @@ export class FunctionProgramComponent implements OnInit {
     }
 
     public blurParameter(index: number): void {
+        this.isParameterEmpty = false;
         let inputValid: boolean = this.dataSource[index].VariableName.valid;
         (!inputValid) ? this.dataSource.splice(index, 1) : "";
         this.parameterValid = true;

@@ -14,44 +14,44 @@ import { SysLogSnackBarService } from '../../../../sys-log/services/sys-log-snac
 
 // tslint:disable-next-line: interface-name
 export interface IPositionTrigger {
-	name: string;
-	checked: boolean;
-	distance: number;
-	output: number[];
-	state: number[];
-	from: number[];
-	selectedOutput: number;
-	selectedState: number;
-	selectedFrom: number;
-	selectedSourceType: string;
+  name: string;
+  checked: boolean;
+  distance: number;
+  output: number[];
+  state: number[];
+  from: number[];
+  selectedOutput: number;
+  selectedState: number;
+  selectedFrom: number;
+  selectedSourceType: string;
 }
 
 type JudgeCheckFn = (elements: IPositionTrigger[]) => boolean;
 type CheckElesFn = (elements: IPositionTrigger[]) => IPositionTrigger[];
 type ToggleAllFn = (element: {
-	checked: boolean;
+  checked: boolean;
 }) => (elements: IPositionTrigger[]) => IPositionTrigger[];
 
 export const freeze = x => Object.freeze(x);
 
 export const initColumns: () => ReadonlyArray<string> = always(
-	freeze(['check', 'Name', 'Output', 'State', 'From', 'Distance'])
+  freeze(['check', 'Name', 'Output', 'State', 'From', 'Distance'])
 );
 
 export const assemblePLS: (x: IResPLS) => IPositionTrigger = x => {
-	const obj: IPositionTrigger = {
-		checked: false,
-		name: x.PLSname,
-		output: x.Output,
-		distance: x.Position,
-		state: [0, 1],
-		from: [0, 1], // for from: 0 means start point, 1 means end point.
-		selectedOutput: x.DigitalOut,
-		selectedState: x.Polarity,
-		selectedFrom: x.RelatedTo,
-		selectedSourceType: x.Source
-	};
-	return obj;
+  const obj: IPositionTrigger = {
+    checked: false,
+    name: x.PLSname,
+    output: x.Output,
+    distance: x.Position,
+    state: [0, 1],
+    from: [0, 1], // for from: 0 means start point, 1 means end point.
+    selectedOutput: x.DigitalOut,
+    selectedState: x.Polarity,
+    selectedFrom: x.RelatedTo,
+    selectedSourceType: x.Source
+  };
+  return obj;
 };
 
 export const assemblePLSList: (x: IResPLS[]) => IPositionTrigger[] = map(assemblePLS);
@@ -95,9 +95,9 @@ export const insertComma: (x: string[]) => string = reduce((acc, i) => acc + i +
 
 export const combineNames: (x: IPositionTrigger[]) => string = compose(insertComma, getSelectedNames);
 @Component({
-	selector: 'app-position-trigger',
-	templateUrl: './position-trigger.component.html',
-	styleUrls: ['./position-trigger.component.scss'],
+  selector: 'app-position-trigger',
+  templateUrl: './position-trigger.component.html',
+  styleUrls: ['./position-trigger.component.scss'],
 })
 export class PositionTriggerComponent implements OnInit {
 	private preDistance: number;

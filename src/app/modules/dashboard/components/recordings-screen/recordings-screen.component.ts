@@ -6,6 +6,7 @@ import {MatDialog} from '@angular/material';
 import {GraphDerivativeComponent} from '../../../../components/graph-derivative/graph-derivative.component';
 import {ApiService} from '../../../core';
 import {ExternalGraphDialogComponent} from '../external-graph-dialog/external-graph-dialog.component';
+import { Platform } from '@angular/cdk/platform';
 
 @Component({
   selector: 'app-recordings-screen',
@@ -26,9 +27,14 @@ export class RecordingsScreenComponent implements OnInit {
 
   constructor(
   public service: RecordService,
+  private platform: Platform,
   private dialog: MatDialog,
-  private api: ApiService
+  private api: ApiService,
   ) { }
+
+  get isTablet(): boolean {
+    return this.platform.ANDROID || this.platform.IOS;
+  }
 
   ngOnInit() {
     this.service.available.subscribe(stat=>{

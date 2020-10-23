@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ArchSettingService } from '../../../services/arch-setting.service';
-import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
 import { Subject } from 'rxjs';
@@ -26,15 +25,14 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
 
   private previousValue: string;
   private currentValue: string;
-  private words: {};
+  private words: string;
   private notifier: Subject<boolean> = new Subject();
 
   constructor(
     private asService: ArchSettingService,
     private terminalService: TerminalService,
-    public snackBar: MatSnackBar,
-    private trn: TranslateService,
-		private sysLogSnackBar: SysLogSnackBarService
+    public snackbarService: SysLogSnackBarService,
+    private trn: TranslateService
   ) {
     this.terminalService.sentCommandEmitter
       .pipe(takeUntil(this.notifier))
@@ -45,8 +43,8 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getTableData();
-    this.trn.get(['projectSettings.arch']).subscribe(words => {
-      this.words = words['projectSettings.arch'];
+    this.trn.get('changeOK').subscribe(words => {
+      this.words = words;
     });
   }
 
@@ -55,12 +53,12 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     this.notifier.unsubscribe();
   }
 
-  onFocus(event: FocusEvent | { target: { value: string | number }}): void {
+  onFocus(event: FocusEvent | { target: { value: string | number } }): void {
     this.previousValue = (event.target as HTMLInputElement).value;
   }
 
   public async onBlur(
-    event: FocusEvent | { target: { value: string | number }},
+    event: FocusEvent | { target: { value: string | number } },
     index: string,
     changedValue: string,
     departOrApproach: '1' | '2'
@@ -70,8 +68,7 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     }
     if (!this.validator((event.target as HTMLInputElement).value)) {
       (event.target as HTMLInputElement).value = this.previousValue;
-      // this.snackBar.open(this.words['positiveNumTip'], '', { duration: 2000 });
-      console.log('Replace snack: ' + this.words['positiveNumTip']);
+      this.snackbarService.openTipSnackBar(this.words);
       return;
     }
     try {
@@ -80,9 +77,7 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
         Number(departOrApproach) as 1 | 2,
         Number(changedValue)
       );
-      // this.snackBar.open(this.words['valChangedTip'], '', { duration: 1500 });
-      console.log('Replace snack: ' + this.words['valChangedTip']);
-      this.sysLogSnackBar.openTipSnackBar('changeOK');
+      this.snackbarService.openTipSnackBar(this.words);
     } catch (err) {
       console.error('Change value failed: ' + err.errString);
     }
@@ -103,7 +98,7 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
     this.getTableData();
   }
 
-  onKeydown(event: KeyboardEvent | { target: { value: string | number }}): void {
+  onKeydown(event: KeyboardEvent | { target: { value: string | number } }): void {
     this.currentValue = (event.target as HTMLInputElement).value;
   }
 
