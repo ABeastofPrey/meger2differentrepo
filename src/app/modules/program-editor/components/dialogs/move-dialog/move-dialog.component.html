@@ -71,13 +71,15 @@
 					</mat-error>
                 </mat-form-field> -->
                 <div *ngIf="!data.moveS else VTranTemp" class="customKeyBoard">
-					<custom-key-board 
-						type="float" 
-						[min]="0" 
-						[max]="100" 
-						[placeHolder]="'VScale [%]'" 
+					<custom-key-board
+						type="float"
+						[leftClosedInterval]="false"
+						[min]="0"
+            [max]="100"
+            [isPositiveNum]="true"
+						[placeHolder]="'VScale [%]'"
 						[(value)]="ctrl.controls.vscale.value"
-						(valueChange)="vscaleChange($event)"  
+						(valueChange)="vscaleChange($event)"
 						(blurEvent)="vscaleChange($event)">
 					</custom-key-board>
                 </div>
@@ -91,24 +93,25 @@
 						</mat-error>
                     </mat-form-field> -->
                     <div class="customKeyBoard">
-						<custom-key-board 
+						<custom-key-board
 							type="float"
-							[leftClosedInterval]="false" 
-							[min]="0" 
-							[max]="vtranMax" 
-							[placeHolder]="'VTran [mm/s]'" 
+							[leftClosedInterval]="false"
+							[min]="0"
+              [max]="vtranMax"
+              [isPositiveNum]="true"
+							[placeHolder]="'VTran [mm/s]'"
 							[(value)]="ctrl.controls.vscale.value"
-							(valueChange)="vscaleChange($event)"  
+							(valueChange)="vscaleChange($event)"
 							(blurEvent)="vscaleChange($event)">
 						</custom-key-board>
                     </div>
 				</ng-template>
 
 				<!-- <mat-form-field>
-					<input 
+					<input
         matInput
         placeholder="{{ 'projectCommands.jump.blendingPh' | translate }}"
-        
+
         formControlName="blendingPh"
         virtualKeyboard ktype="numeric" />
 					<span matSuffix>%</span>
@@ -117,7 +120,7 @@
           </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard">
-                    <custom-key-board [isPositiveNum]="true" type="float" [min]="0" [max]="100" placeHolder="{{ 'projectCommands.jump.blendingPh' | translate }}" 
+                    <custom-key-board [isPositiveNum]="true" type="float" [min]="0" [max]="100" placeHolder="{{ 'projectCommands.jump.blendingPh' | translate }}"
                             [(value)]="ctrl.controls.blendingPh.value" [suffix]="'%'"
                             (valueChange)="blendingPhChange($event)"  (blurEvent)="blendingPhChange($event)"
                     ></custom-key-board>

@@ -52,16 +52,16 @@
                 <mat-error *ngIf="!person.required">{{'maintenance.input.nameRequire' | translate}}</mat-error>
             </mat-form-field>
         </div>
-        <div class="form-contain customKeyBoard">
-            <!-- <mat-form-field>
-                <input matInput maxlength="50" autocomplete="off" type="text" (input)="limitNum($event)" (keypress)="preventEnter($event)"
+        <div class="form-contain">
+            <mat-form-field>
+                <input matInput maxlength="50" autocomplete="off" type="text"  (keypress)="preventEnter($event)"
                     [placeholder]="'maintenance.input.order_number' | translate" formControlName="orderNum">
                 <mat-error *ngIf="!orderNum.required">{{'maintenance.input.ordernum' | translate}}</mat-error>
-            </mat-form-field> -->
-            <custom-key-board type="int" [isPositiveNum]="true"
+            </mat-form-field>
+            <!-- <custom-key-board type="int" [isPositiveNum]="true" [requiredErrMsg]="'number_input_required' | translate" [required]="true" 
                 [placeHolder]="'maintenance.input.order_number' | translate" [(value)]="inputForm.value.orderNum"
-                (valueChange)="limitNum($event)"  (blurEvent)="limitNum($event)"
-            ></custom-key-board>
+                (valueChange)="limitNum($event)"  (blurEvent)="limitNum($event)" 
+            ></custom-key-board> -->
         </div>
         <div class="form-contain">
             <mat-form-field>

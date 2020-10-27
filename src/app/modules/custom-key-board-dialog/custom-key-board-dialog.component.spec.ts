@@ -13,7 +13,7 @@ import { CustomKeyBoardDialogComponent } from './custom-key-board-dialog.compone
 export class CustomKeyBoardComponent {
     @Input() value: string | number;
     @Input() keyBoardDialog: boolean = false;
-    @Input() type: 'int' | 'float';
+    @Input() type: 'int' | 'float' | 'string';
     @Input() min: number;
     @Input() max: number;
     @Input() leftClosedInterval = true;
@@ -31,10 +31,26 @@ export class CustomKeyBoardComponent {
     @Input() isPositiveNum: boolean = false;
     @Input() isNgIf: boolean = true;
     @Input() readonly: boolean = false;
-    @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
-    @Output() focusEvent: EventEmitter<string> = new EventEmitter<string>();
-    @Output() blurEvent: EventEmitter<string> = new EventEmitter<string>();
-    @Output() pressEnterEvent: EventEmitter<string> = new EventEmitter<string>();
+    @Input() toNumber: boolean = false;
+    @Input() maxLength: number;
+    @Input() minLength: number;
+    @Input() firstLetter: boolean = false;
+    @Input() nameRules: boolean = false;
+    @Input() existNameList: string[];
+    @Input() password: boolean = false;
+    @Input() isCommand: boolean = false;
+    @Input() iconPrefix: boolean = false;
+    @Input() iconPrefixColor: string = "#0000000DE"; 
+    @Input() iconSuffix: boolean = false;
+    @Input() markAsTouchedFirst: boolean = true;
+    @Input() reserved: boolean = false;
+    @Input() fullName: boolean = false;
+    @Input() letterAndNumber: boolean = false;
+    @Input() confirmPassword: string;
+    @Output() valueChange: EventEmitter<string | number> = new EventEmitter<string | number>();
+    @Output() focusEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
+    @Output() blurEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
+    @Output() pressEnterEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
     @Output() isValidEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 }
 

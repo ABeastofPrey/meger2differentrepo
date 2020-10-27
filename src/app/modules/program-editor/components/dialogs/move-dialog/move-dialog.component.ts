@@ -172,12 +172,19 @@ export class MoveDialogComponent implements OnInit {
       ctrl.clearValidators();
       ctrl.setValidators([Validators.min(0)]);
     }
-    this.data.moveS && this.jumpxService.retrieveVtranMax().subscribe(max => {
-      this.vtranMax = max;
+    if (this.data.moveS) {
+      this.jumpxService.retrieveVtranMax().subscribe(max => {
+        this.vtranMax = max;
+        this.ctrl.controls['vscale'].setValidators(
+          this.utilsService.limitValidator(0, max, true, true)
+        );
+      });
+    } else {
       this.ctrl.controls['vscale'].setValidators(
-        this.utilsService.limitValidator(0, max, false, true)
+        this.utilsService.limitValidator(0, 100, true, false)
       );
-    });
+    }
+
   }
 
   ngAfterContentInit() {

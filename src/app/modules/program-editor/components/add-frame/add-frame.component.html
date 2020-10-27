@@ -18,7 +18,7 @@
 				matInput
 				placeholder="{{ 'arr_size' | translate }}"
 				[(ngModel)]="arrSize"
-				
+
 				virtualKeyboard
 				ktype="numeric_int_pos"
 			/>
@@ -48,7 +48,7 @@
                 </mat-form-field> -->
                 <custom-key-board *ngFor="let legend of dataService.robotCoordinateType.legends; let i = index" type="float"
                     prefix="{{ dataService.robotCoordinateType.legends[i] }}:&nbsp;&nbsp;"
-                    [placeHolder]="dataService.robotCoordinateType.legends[i]" [(value)]="this.values[i]"
+                   [(value)]="this.values[i]"
                 ></custom-key-board>
 			</div>
 		</div>

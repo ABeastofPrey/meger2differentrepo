@@ -158,7 +158,7 @@ export class PalletizingComponent implements OnInit {
   }
 
   addPallet() {
-    this.dialog.open(AddPalletDialogComponent, { width: '400px' }).afterClosed()
+    this.dialog.open(AddPalletDialogComponent, { width: '420px' }).afterClosed()
     .subscribe((ret: NewPalletOptions) => {
       if (ret) {
         const name = ret.name.toUpperCase();

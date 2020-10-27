@@ -57,13 +57,13 @@ export class UtilsService {
   downloadFromText(fileName: string, content: string) {
     // tslint:disable-next-line: no-any
     const windowObj = window as any;
-    const createObjectURL = 
+    const createObjectURL =
         (windowObj.URL || windowObj.webkitURL || {}).createObjectURL || (()=>{});
     let blob = null;
     const fileType = "application/octet-stream";
-    windowObj.BlobBuilder = windowObj.BlobBuilder || 
-                         windowObj.WebKitBlobBuilder || 
-                         windowObj.MozBlobBuilder || 
+    windowObj.BlobBuilder = windowObj.BlobBuilder ||
+                         windowObj.WebKitBlobBuilder ||
+                         windowObj.MozBlobBuilder ||
                          windowObj.MSBlobBuilder;
     if(windowObj.BlobBuilder){
       const bb = new windowObj.BlobBuilder();
@@ -274,6 +274,137 @@ export class UtilsService {
     };
   }
 
+  public minLengthValidator(minLength: number): ValidatorFn {
+    return ({ value }: AbstractControl): { [key: string]: any } | null => {
+        if((value || value=="0") && value.toString && value.toString().length < minLength) {
+            return { minLength: minLength}
+        }else {
+            return null;
+        }
+    }
+  }
+
+  public maxLengthValidator(maxLength: number): ValidatorFn {
+    return ({ value }: AbstractControl): { [key: string]: any } | null => {
+        if((value || value=="0") && value.toString && value.toString().length > maxLength) {
+            return { maxLength: maxLength}
+        }else {
+            return null;
+        }
+    }
+  }
+
+  public firstLetterValidator(): ValidatorFn {
+    return ({ value }: AbstractControl) => {
+        let reg = /^[a-zA-Z]/;
+        return (reg.test(value) ? null : { "firstLetter": "firstLetter" })
+    };
+  }
+
+  public nameRulesValidator(): ValidatorFn {
+    return ({ value }: AbstractControl) => {
+        let reg = /^[a-zA-Z][a-zA-Z0-9_]*$/;
+        return (reg.test(value) ? null : { "nameRules": "nameRules" })
+    };
+  }
+
+  public existNameListValidator(list: string[]): ValidatorFn {
+    return ({ value }: AbstractControl) => {
+        let existList = list.filter((data) => {
+            return data == value
+        })
+        return ((existList.length === 0) ? null : { "existNameList": "existNameList" })
+    };
+  }
+
+  public reserved(): ValidatorFn {
+    return ({ value }: AbstractControl) => {
+        if(value === 'admin' || value === 'super') {
+            return {"reserved": "reserved"}
+        }else {
+            return null;
+        }
+    };
+  }
+
+  public fullName(): ValidatorFn {
+    return ({ value }: AbstractControl) => {
+        let reg = /[A-Za-z]+ {1}[A-Za-z]+( [A-Za-z]+)*/;
+        return (reg.test(value) ? null : { "fullName": "fullName" })
+    };
+  }
+
+  public letterAndNumber(): ValidatorFn {
+    return ({ value }: AbstractControl) => {
+        let reg = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/;
+        return (reg.test(value) ? null : { "letterAndNumber": "letterAndNumber" })
+    };
+  }
+
+  public confirmPassword(password: string): ValidatorFn {
+    return ({ value }: AbstractControl) => {
+        if(value !== password) {
+            return { "confirmPassword": "confirmPassword" }
+        }
+        return null;
+    };
+  }
+
+  public precision(len: number | string): ValidatorFn {
+    return ({ value }: AbstractControl) => {
+        let lens = Number(len);
+        let floatNum = 0;
+        (value && value.toString().split(".")[1]) ? floatNum = value.toString().split(".")[1].length : "";
+        if(lens < floatNum) {
+            return {"precision": "precision"}
+        }
+        return null;
+    };
+  }
+
+  public parseFloatAchieve(originValue: string): string {
+    if(!originValue) {
+        return originValue;
+    }
+    originValue = originValue.toString();
+    let head: number = 0;
+    for (let i = 0; i < originValue.length - 1; i++) {
+        if (originValue[i] == "0") {
+            head++;
+        } else {
+            break;
+        }
+    }
+    originValue = originValue.slice(head);
+    originValue = originValue[0] === '.' ? `0${originValue}` : originValue;
+    let negative = 0;
+    if (originValue[0] == "-") {
+        for (let z = 1; z < originValue.length - 1; z++) {
+            if (originValue[z] == "0") {
+                negative++;
+            } else {
+                break;
+            }
+        }
+        originValue = originValue[0] + originValue.slice(negative + 1);
+    }
+    originValue = (originValue[0] === '-' && originValue[1] === '.') ? `-0${originValue.slice(1)}` : originValue;
+    let foot: number = originValue.length;
+    let originValueArray = originValue.split(".");
+    if (originValueArray.length == 2) {
+        for (let j = originValueArray[1].length - 1; j > 0; j--) {
+            if (originValueArray[1][j] == "0") {
+                foot--;
+            } else {
+                break;
+            }
+        }
+    }
+    originValue = originValue.slice(0, foot);
+    originValue = originValue[originValue.length - 1] === '.' ? `${originValue.slice(0, originValue.length - 1)}` : originValue;
+    return originValue;
+  }
+
   parseINIString(data){
     var regex = {
       section: /^\s*\[\s*([^\]]*)\s*\]\s*$/,
@@ -303,5 +434,5 @@ export class UtilsService {
     });
     return value;
   }
-  
+
 }

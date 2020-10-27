@@ -49,7 +49,7 @@
 				<span matSuffix>[Kg]</span>
             </mat-form-field> -->
             <custom-key-board class="customKeyBoard" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.mass' | translate }}" [suffix]="'[Kg]'"
-                [(value)]="ctrlMass.value" (blurEvent)="onMassChange({target: {value: $event}})"
+                [(value)]="ctrlMass.value" (blurEvent)="onMassChange({target: {value: $event}})" [disabled]="login.isOperator"
             ></custom-key-board>
 			<!-- <mat-form-field>
 				<input
@@ -65,7 +65,7 @@
 				<span matSuffix>[Kg * m<sup>2</sup>]</span>
             </mat-form-field> -->
             <custom-key-board class="customKeyBoard" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.inertia' | translate }}" [suffix]="'[Kg * m<sup>2</sup>]'"
-                [(value)]="ctrlInertia.value"  (blurEvent)="onInertiaChange({target: {value: $event}})"
+                [(value)]="ctrlInertia.value"  (blurEvent)="onInertiaChange({target: {value: $event}})" [disabled]="login.isOperator"
             ></custom-key-board>
 			<!-- <mat-form-field>
 				<input
@@ -81,7 +81,7 @@
 				<span matSuffix>[m]</span>
             </mat-form-field> -->
             <custom-key-board class="customKeyBoard" type="float" placeHolder="{{ 'payloads.offX' | translate }}" [suffix]="'[m]'"
-                [(value)]="ctrllx.value"  (blurEvent)="onXOffsetChange({target: {value: $event}})"
+                [(value)]="ctrllx.value"  (blurEvent)="onXOffsetChange({target: {value: $event}})" [disabled]="login.isOperator"
             ></custom-key-board>
 			<table class="advanced-table" *ngIf="advanced">
 				<thead>

@@ -12,7 +12,7 @@
     background: #888;
     height: 24px;
     position: absolute;
-    top: 10px;
+    top: 12px;
 }
 .isHide {
     display: none;
@@ -20,6 +20,22 @@
 .blink {
     animation: blink-animation 1s steps(2, start) infinite;
     -webkit-animation: blink-animation 1s steps(2, start) infinite;
+}
+.inputLineHeight .mat-input-element {
+    // height: 32px !important;
+    line-height: initial;
+}
+.mat-input-element {
+  // height: 32px !important;
+  line-height: 17px;
+}
+.iconPrefix {
+    mat-icon {
+        margin-right: 24px;
+    }
+}
+::ng-deep .iconPrefix .mat-form-field-infix {
+    top: 6px !important;
 }
 @keyframes blink-animation {
     to {

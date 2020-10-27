@@ -22,11 +22,24 @@
       [requiredErrMsg]="dialogData.requiredErrMsg"
       [disabled]="dialogData.disabled"
       [label]="dialogData.label"
+      [matLabel]="dialogData.matLabel"
       [placeHolder]="dialogData.placeHolder"
+      [minLength]="dialogData.minLength"
+      [maxLength]="dialogData.maxLength"
+      [firstLetter]="dialogData.firstLetter"
+      [nameRules]="dialogData.nameRules"
+      [existNameList]="dialogData.existNameList"
+      [password]="dialogData.password"
+      [isCommand]="dialogData.isCommand"
+      [reserved]="dialogData.reserved"
+      [fullName]="dialogData.fullName"
+      [confirmPassword]="dialogData.confirmPassword"
+      [letterAndNumber]="dialogData.letterAndNumber"
+      [precision]="dialogData.precision"
       keyBoardDialog="true"
     >
     </custom-key-board>
-    <div class="btnBox">
+    <div class="btnBox" *ngIf="keyBoardType === 'int' || keyBoardType === 'float'">
       <div *ngFor="let keyboard of layout" class="key-row">
         <button
           mat-raised-button
@@ -61,7 +74,8 @@
                 customKeyBoard.getValid &&
                 !customKeyBoard.getValid() &&
                 item === InputTypes.Enter) ||
-                (customKeyBoard && customKeyBoard.getValue && (customKeyBoard.getValue() == '-') && item === InputTypes.Enter)
+                (customKeyBoard && customKeyBoard.getValue && (customKeyBoard.getValue() == '-') && item === InputTypes.Enter) ||
+                (getNegativeDisabled &&  item === '-')
           }"
           [disabled]="
             (dialogData.isPositiveNum && item === '-') ||
@@ -75,7 +89,8 @@
               customKeyBoard.getValid &&
               !customKeyBoard.getValid() &&
               item === InputTypes.Enter) || 
-            (customKeyBoard && customKeyBoard.getValue && (customKeyBoard.getValue() == '-') && item === InputTypes.Enter)
+            (customKeyBoard && customKeyBoard.getValue && (customKeyBoard.getValue() == '-') && item === InputTypes.Enter) ||
+            (getNegativeDisabled &&  item === '-')
           "
         >
           <span *ngIf="item.length <= 1 || item == InputTypes.Enter">{{
@@ -87,40 +102,54 @@
         </button>
       </div>
     </div>
+    <div class="btnBox" *ngIf="keyBoardType === 'string'">
+        <div *ngFor="let keyboard of layout;" class="key-row">
+            <button
+                mat-raised-button
+                *ngFor="let item of keyboard;"
+                [value]="item"
+                (touchstart)="touchstart($event, item)"
+                (touchend)="touchend()"
+                [ngClass]="{
+                stringWidth: dialogData.type === 'string',
+                darkBtn:
+                    item == InputTypes.Delete ||
+                    item == InputTypes.Left ||
+                    item == InputTypes.Right ||
+                    item == InputTypes.Top || 
+                    item == InputTypes.Bottom || 
+                    item == InputTypes.Symbol,
+                enterString: item === InputTypes.Enter,
+                caseConversion: item === InputTypes.Forward && caseConversion,
+                marginLeft2: item === 'A' || item === 'a' || item === '~',
+                space: item === ' ',
+                heightHalf: item === InputTypes.Top || item === InputTypes.Bottom,
+                marginInputTypesTop: item === InputTypes.Top,
+                marginInputTypesBottom: item === InputTypes.Bottom,
+                pointerDisable:
+                    (customKeyBoard && customKeyBoard.getValid && !customKeyBoard.getValid() && item === InputTypes.Enter) ||
+                    (!dialogData.isCommand && (item === InputTypes.Top || item === InputTypes.Bottom))
+                }"
+                [disabled]="
+                    (customKeyBoard && customKeyBoard.getValid && !customKeyBoard.getValid() && item === InputTypes.Enter) ||
+                    (!dialogData.isCommand && (item === InputTypes.Top || item === InputTypes.Bottom))"
+                >
+                <span *ngIf="item.length <= 1 || item == InputTypes.Enter">
+                    {{item}}
+                </span>
+                <span *ngIf="item === InputTypes.Symbol || item === InputTypes.Back"> 
+                    {{item | translate}}
+                </span>
+                <mat-icon *ngIf="item.length > 1 && item !== InputTypes.Enter && item !== InputTypes.Symbol && item !== InputTypes.Back"
+                    [ngClass]="{
+                        rotate: item === InputTypes.Forward
+                    }">
+                    {{item}}
+                </mat-icon>
+            </button>
+        </div>
+    </div>
     <div class="bottom-bar"></div>
   </mat-dialog-content>
 </div>
 
-<!-- <div class="wrapper virtual-keyboard tablet-ui mat-typography" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
-    cdkDragBoundary="body">
-    <div class="dragger" cdkDragHandle>
-        <mat-icon (click)="close()" class="close">close</mat-icon>
-        <mat-icon class="openWith">open_with</mat-icon>
-    </div>
-    <custom-key-board class="customKeyBoard" #customKeyBoard
-        [(value)]="dialogData.value"
-        [type]="dialogData.type"
-        [min]="dialogData.min"
-        [max]="dialogData.max"
-        [leftClosedInterval]="dialogData.leftClosedInterval"
-        [rightClosedInterval]="dialogData.rightClosedInterval"
-        [required]="dialogData.required"
-        [requiredErrMsg]="dialogData.requiredErrMsg"
-        [disabled]="dialogData.disabled"
-        [label]="dialogData.label"
-        [placeHolder]="dialogData.placeHolder"
-        keyBoardDialog=true>
-    </custom-key-board>
-    <div class="btnBox">
-        <div *ngFor="let keyboard of layout">
-            <button mat-raised-button *ngFor="let item of keyboard" [value]="item" (touchstart)="touchstart($event,item)" (touchend)="touchend()"
-                [ngClass]="{'heightDouble':item=='Enter','twoThirdsWidth': item=='.' || item=='arrow_back' || item=='arrow_forward','twoThirdsMl':item=='.',
-                            'bkgcPink':item=='Enter', 'bkgcGrey': item=='.' || item=='-' || item=='backspace' || item=='arrow_back' || item=='arrow_forward'}"
-                [disabled]="(dialogData.isPositiveNum && item==='-') || (((dialogData.type === 'int') || (customKeyBoard && customKeyBoard.getValue && customKeyBoard.getValue().indexOf('.') > -1)) && dialogData.type !== 'string' && item==='.') || (customKeyBoard && customKeyBoard.getValid && !customKeyBoard.getValid() && item==='Enter')"
-                [class.pointerDisable]="(dialogData.isPositiveNum && item==='-') || (((dialogData.type === 'int') || (customKeyBoard && customKeyBoard.getValue && customKeyBoard.getValue().indexOf('.') > -1)) && dialogData.type !== 'string' && item==='.') || (customKeyBoard && customKeyBoard.getValid && !customKeyBoard.getValid() && item==='Enter')">
-                <span *ngIf="item.length <= 1 || item == 'Enter'">{{item}}</span>
-                <mat-icon *ngIf="item.length > 1 && item !== 'Enter'">{{item}}</mat-icon>
-            </button>
-        </div>
-    </div>
-</div> -->

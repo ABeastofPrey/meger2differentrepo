@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { InputType } from '../core/models/customKeyBoard/custom-key-board.model';
+import { CommandLocalType, InputType } from '../core/models/customKeyBoard/custom-key-board.model';
 import { CommonService } from '../core/services/common.service';
 import { CustomKeyBoardService } from '../core/services/custom-key-board.service';
 import { UtilsService } from '../core/services/utils.service';
@@ -11,11 +11,25 @@ import { SharedModule } from '../shared/shared.module';
 import { UnitTestModule } from '../shared/unit-test.module';
 
 import { CustomKeyBoardComponent } from './custom-key-board.component';
-
 const fakeCommonService = jasmine.createSpyObj('CommonService', ['isTablet']);
 const fakeMatDialog = jasmine.createSpyObj('MatDialog', ['open']);
-const fakeUtilsService = jasmine.createSpyObj('UtilsService', ['limitValidator']);
-const fakeCustomKeyBoardService = jasmine.createSpyObj('CustomKeyBoardService', ['getCharWidth', 'selectionStart', '']);
+const fakeUtilsService = jasmine.createSpyObj('UtilsService', ['limitValidator','minLengthValidator','maxLengthValidator','firstLetterValidator','nameRulesValidator','existNameListValidator','reserved','fullName','letterAndNumber','confirmPassword']);
+const fnValidator = () => {
+    return ({ value }: AbstractControl): null => {
+        return null;
+    }
+}
+fakeUtilsService.minLengthValidator = fnValidator;
+fakeUtilsService.maxLengthValidator = fnValidator;
+fakeUtilsService.firstLetterValidator = fnValidator;
+fakeUtilsService.nameRulesValidator = fnValidator;
+fakeUtilsService.existNameListValidator = fnValidator;
+fakeUtilsService.reserved = fnValidator;
+fakeUtilsService.fullName = fnValidator;
+fakeUtilsService.letterAndNumber = fnValidator;
+fakeUtilsService.confirmPassword = fnValidator;
+
+const fakeCustomKeyBoardService = jasmine.createSpyObj('CustomKeyBoardService', ['getCharWidth', 'selectionStart']);
 describe('CustomKeyBoardComponent', () => {
     let component: CustomKeyBoardComponent;
     let fixture: ComponentFixture<CustomKeyBoardComponent>;
@@ -40,10 +54,23 @@ describe('CustomKeyBoardComponent', () => {
         fakeUtilsService.limitValidator.and.returnValue(({ value }: AbstractControl): { [key: string]: any } | null => {
             return { limit: { min: 0, max: 100, value: 0 } };
         })
+        component.type = "string";
         component.min = 0;
         component.max = 100;
         component.value = 0;
         component.required = true;
+        component.minLength = 3;
+        component.maxLength = 32;
+        component.firstLetter = true;
+        component.nameRules = true;
+        component.existNameList = ['a'];
+        component.reserved = true;
+        component.fullName = true;
+        component.letterAndNumber = true;
+        component.confirmPassword = "ADMIN";
+        component.password  = true;
+        component.isPad = false;
+        component.type = "float";
         setTimeout(() => {
             component.value = "1";
         }, 0);
@@ -55,6 +82,8 @@ describe('CustomKeyBoardComponent', () => {
         input.value = "123";
         component.inputElement = input;
         fakeCustomKeyBoardService.getCharWidth.and.returnValue(10000);
+        component.password  = true;
+        component.isPad = true;
         fixture.detectChanges();
     })
 
@@ -62,7 +91,19 @@ describe('CustomKeyBoardComponent', () => {
         fixture = TestBed.createComponent(CustomKeyBoardComponent);
         component = fixture.componentInstance;
         component.value = 10;
+        component.min = 10;
+        component.max = 100;
+        component.type = "int";
         component.keyBoardDialog = true;
+        fixture.detectChanges();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(CustomKeyBoardComponent);
+        component = fixture.componentInstance;
+        component.type = "string";
+        component.value = "abc";
+        component.markAsTouchedFirst = false;
         fixture.detectChanges();
     });
 
@@ -74,9 +115,14 @@ describe('CustomKeyBoardComponent', () => {
         component.type = 'int';
         fakeMatDialog.open.and.returnValue({ "afterClosed": () => { return of(null) } })
         component.openDialog();
+        component.toNumber = true;
         fakeMatDialog.open.and.returnValue({ "afterClosed": () => { return of(10) } })
         component.openDialog();
         component.readonly = true;
+        let a = undefined;
+        component.openDialog();
+        component.toNumber = true;
+        fakeMatDialog.open.and.returnValue({ "afterClosed": () => { return of(a) } })
         component.openDialog();
     });
 
@@ -94,6 +140,8 @@ describe('CustomKeyBoardComponent', () => {
         component.setValue("1");
         fakeCustomKeyBoardService.selectionStart.and.returnValue(10);
         component.setValue(InputType.Left);
+        component.type = "string";
+        component.setValue("abc");
     });
 
     it("cursorToLeft", () => {
@@ -135,11 +183,24 @@ describe('CustomKeyBoardComponent', () => {
         component.ngOnChanges({value:{currentValue:undefined,firstChange:true,previousValue:"234"}} as any);
         component.ngOnChanges({disabled :{currentValue:true,firstChange:true,previousValue:false}} as any);
         component.ngOnChanges({disabled :{currentValue:false,firstChange:true,previousValue:true}} as any);
+        component.ngOnChanges({existNameList  :{currentValue:["a","b"],firstChange:true,previousValue:false}} as any);
+        component.ngOnChanges({existNameList  :{currentValue:["c","d"],firstChange:true,previousValue:true}} as any);
     })
 
     it('onFocus', () => {
+        component.keyBoardDialog = true;
         component.onFocus();
         component.keyBoardDialog = false;
+        component.toNumber = true;
+        component.value = "123";
+        component.control = new FormControl("123");
+        component.onFocus();
+    })
+
+    it('onFocus2', () => {
+        component.toNumber = false;
+        component.value = "123";
+        component.control = new FormControl("123");
         component.onFocus();
     })
 
@@ -168,11 +229,32 @@ describe('CustomKeyBoardComponent', () => {
     it("keyupEventHandler", () => {
         component.keyupEventHandler({keyCode :11});
         component.keyupEventHandler({keyCode :13});
+        component.toNumber = true;
+        component.value = "123";
+        component.control = new FormControl("123");
+        component.keyupEventHandler({keyCode :13});
     })
 
     it("inputEventHandler", () => {
         component.type = "int";
         component.inputEventHandler({ target: { value: "1" } });
+        component.type = "string";
+        component.toNumber = true;
+        component.value = "123";
+        component.control = new FormControl("123");
+        component.inputEventHandler({ target: { value: "1" } });
+    })
+
+    it("setDefaultValue", () => {
+        localStorage.setItem(CommandLocalType.CommandList,JSON.stringify(["a","b"]));
+        component.setDefaultValue(InputType.Top);
+        component.setDefaultValue(InputType.Bottom);
+        localStorage.setItem(CommandLocalType.CommandList,JSON.stringify([]));
+        component.setDefaultValue(InputType.Top);
+    })
+
+    it("setControlValue", () => {
+        component.setControlValue("a");
     })
 
 });

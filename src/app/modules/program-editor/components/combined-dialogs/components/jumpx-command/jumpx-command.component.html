@@ -28,7 +28,7 @@
                     <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="model && model[CommandOptions.AscendingPoint]?.isArr">
-                    <mat-select [formControlName]="CommandOptions.AscendingPointIndex" 
+                    <mat-select [formControlName]="CommandOptions.AscendingPointIndex"
                         placeholder="{{ 'index' | translate }}"
                         (selectionChange)="updateStore(CommandOptions.AscendingPointIndex, $event.value)">
                         <mat-option *ngFor="let data of model[CommandOptions.AscendingPoint]?.value; let i = index" [value]="i + 1">
@@ -102,7 +102,7 @@
                     <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
                 </mat-form-field>
             </ng-container>
-            
+
             <mat-slide-toggle [(ngModel)]="isAdvanced" [ngModelOptions]="{ standalone: true }" style="margin-bottom: 8px;" color="primary">
                 {{ 'projectCommands.jumpx.advanced' | translate }}
             </mat-slide-toggle>
@@ -122,7 +122,7 @@
                 </mat-form-field>
                 <!-- <mat-form-field *ngIf="commandOptionAuth.hasArchNo">
                     <input matInput type="text"
-                        placeholder="{{'projectCommands.jumpx.arch' | translate}}" 
+                        placeholder="{{'projectCommands.jumpx.arch' | translate}}"
                         [formControlName]="CommandOptions.ArchNo"
                         autocomplete="off"
                         [formGroup]="form"
@@ -133,13 +133,14 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasArchNo">
-                    <custom-key-board type="int" 
-                        [isPositiveNum]="true" 
-                        [min]="model[CommandOptions.ArchNoLimit][0]" 
-                        [max]="model[CommandOptions.ArchNoLimit][1]" 
+                    <custom-key-board type="int"
+                        [isPositiveNum]="true"
+                        [min]="model[CommandOptions.ArchNoLimit][0]"
+                        [max]="model[CommandOptions.ArchNoLimit][1]"
                         [(value)]="form.controls.ArchNo.value"
-                        placeHolder="{{'projectCommands.jumpx.arch' | translate}}"   
-                        (valueChange)="change($event,CommandOptions.ArchNo)"  
+                        [isPositiveNum]="true"
+                        placeHolder="{{'projectCommands.jumpx.arch' | translate}}"
+                        (valueChange)="change($event,CommandOptions.ArchNo)"
                         (blurEvent)="blur($event,CommandOptions.ArchNo)">
                     </custom-key-board>
                 </div>
@@ -153,12 +154,12 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasLimZ">
-                    <custom-key-board type="float" 
-                        [min]="model[CommandOptions.LimZLimit][0]" 
-                        [max]="model[CommandOptions.LimZLimit][1]" 
+                    <custom-key-board type="float"
+                        [min]="model[CommandOptions.LimZLimit][0]"
+                        [max]="model[CommandOptions.LimZLimit][1]"
                         [(value)]="form.controls.LimZ.value"
-                        placeHolder="{{'projectCommands.jumpx.limZ' | translate}} [mm]"   
-                        (valueChange)="change($event,CommandOptions.LimZ)"  
+                        placeHolder="{{'projectCommands.jumpx.limZ' | translate}} [mm]"
+                        (valueChange)="change($event,CommandOptions.LimZ)"
                         (blurEvent)="blur($event,CommandOptions.LimZ)">
                     </custom-key-board>
                 </div>
@@ -173,13 +174,14 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasBlendingPercentage">
-                    <custom-key-board [suffix]="'%'" 
-                        type="float" 
-                        [min]="model[CommandOptions.BlendingPercentageLimit][0]" 
-                        [max]="model[CommandOptions.BlendingPercentageLimit][1]" 
+                    <custom-key-board [suffix]="'%'"
+                        type="float"
+                        [min]="model[CommandOptions.BlendingPercentageLimit][0]"
+                        [max]="model[CommandOptions.BlendingPercentageLimit][1]"
                         [(value)]="form.controls.BlendingPercentage.value"
-                        placeHolder="{{'projectCommands.jumpx.blending' | translate}}"   
-                        (valueChange)="change($event,CommandOptions.BlendingPercentage)"  
+                        [isPositiveNum]="true"
+                        placeHolder="{{'projectCommands.jumpx.blending' | translate}}"
+                        (valueChange)="change($event,CommandOptions.BlendingPercentage)"
                         (blurEvent)="blur($event,CommandOptions.BlendingPercentage)">
                     </custom-key-board>
                 </div>
@@ -194,12 +196,13 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasVcruise">
-                    <custom-key-board type="float" 
-                        [min]="model[CommandOptions.AccLimit][0]" 
-                        [max]="model[CommandOptions.AccLimit][1]" 
+                    <custom-key-board type="float"
+                        [min]="model[CommandOptions.AccLimit][0]"
+                        [max]="model[CommandOptions.AccLimit][1]"
                         [(value)]="form.controls.VScale.value"
-                        placeHolder="{{'projectCommands.jumpx.vscale' | translate}} [%]"   
-                        (valueChange)="change($event,CommandOptions.VScale)"  
+                        [isPositiveNum]="true"
+                        placeHolder="{{'projectCommands.jumpx.vscale' | translate}} [%]"
+                        (valueChange)="change($event,CommandOptions.VScale)"
                         (blurEvent)="blur($event,CommandOptions.VScale)">
                     </custom-key-board>
                 </div>
@@ -213,13 +216,14 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasVtran">
-                    <custom-key-board type="float" 
-                        [min]="model[CommandOptions.VtranLimit][0]" 
-                        [max]="model[CommandOptions.VtranLimit][1]" 
-                        [(value)]="form.controls.Vtran.value" 
+                    <custom-key-board type="float"
+                        [min]="model[CommandOptions.VtranLimit][0]"
+                        [max]="model[CommandOptions.VtranLimit][1]"
+                        [(value)]="form.controls.Vtran.value"
                         [leftClosedInterval]="false"
-                        placeHolder="{{'projectCommands.jumpx.vtran' | translate}} [mm/s]"  
-                        (valueChange)="change($event,CommandOptions.Vtran)"  
+                        [isPositiveNum]="true"
+                        placeHolder="{{'projectCommands.jumpx.vtran' | translate}} [mm/s]"
+                        (valueChange)="change($event,CommandOptions.Vtran)"
                         (blurEvent)="blur($event,CommandOptions.Vtran)">
                     </custom-key-board>
                 </div>
@@ -233,13 +237,14 @@
                     </mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard" *ngIf="commandOptionAuth.hasAcc">
-                    <custom-key-board type="float" 
-                        [min]="model[CommandOptions.AccLimit][0]" 
-                        [max]="model[CommandOptions.AccLimit][1]" 
-                        [(value)]="form.controls.AScale.value" 
+                    <custom-key-board type="float"
+                        [isPositiveNum]="true"
+                        [min]="model[CommandOptions.AccLimit][0]"
+                        [max]="model[CommandOptions.AccLimit][1]"
+                        [(value)]="form.controls.AScale.value"
                         [leftClosedInterval]="false"
-                        placeHolder="{{'projectCommands.jumpx.acc' | translate}} [%]"  
-                        (valueChange)="change($event,CommandOptions.Acc)"  
+                        placeHolder="{{'projectCommands.jumpx.acc' | translate}} [%]"
+                        (valueChange)="change($event,CommandOptions.Acc)"
                         (blurEvent)="blur($event,CommandOptions.Acc)">
                     </custom-key-board>
                 </div>

@@ -4,6 +4,9 @@ $darkGray: #abafbb;
 $lightGray: #d1d2d7;
 $htnHeight: 45px;
 $font-size: 24px;
+$width: 80px;
+$rowGap: 10px;
+$stringWidth: 65px;
 ::ng-deep .virtual-keyboard .mat-form-field-flex {
   background-color: white !important;
   padding-left: $smallGap;
@@ -67,6 +70,9 @@ $font-size: 24px;
       font-weight: 600;
       margin: 0px 10px 10px 0px;
     }
+    button.stringWidth {
+        width: 65px;
+    }
     button.darkBtn {
       background-color: $darkGray;
     }
@@ -85,10 +91,47 @@ $font-size: 24px;
       font-weight: normal;
       font-size: 16px;
     }
+    button.enterString {
+      background-color: #ff7300;
+      width: 2*$stringWidth + 10px;
+      color: white;
+    }
+    button.caseConversion {
+      background-color: #ff7300;
+      mat-icon {
+          color: white;
+      }
+    }
+    button.marginLeft2 {
+        margin-left: 1/2 * $stringWidth + $rowGap/2;
+    }
+    button.space {
+        width: 5 * $stringWidth + 4 * $rowGap;
+    }
+    button.heightHalf {
+        height: 20px;
+        font-size: 20px;
+    }
+    button.marginInputTypesTop {
+        mat-icon {
+            margin-top: -20px;
+        }
+    }
+    button.marginInputTypesBottom {
+        position: absolute;
+        left: 7 * $stringWidth + 7 * $rowGap;
+        top: -30px;
+        mat-icon {
+            margin-top: -20px;
+        }
+    }
     button.pointerDisable {
       color: $lightGray;
       background-color: $darkGray;
       pointer-events: none;
+    }
+    button .rotate {
+        transform: rotate(-90deg);
     }
   }
 }
@@ -96,6 +139,10 @@ $font-size: 24px;
   position: absolute;
   background-color: $lightGray;
   width: 100%;
-  height: $marginGap;
+  height: 25px;
   bottom: -$marginGap;
+}
+
+.mat-input-element {
+    height: 19px !important;
 }

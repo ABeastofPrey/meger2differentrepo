@@ -31,9 +31,9 @@
 
 		<!-- <mat-form-field *ngIf="canUseArray && isArray && dimension === 1" style="margin-top: 8px;">
 			<input matInput
-				placeholder="{{ 'arr_size' | translate }}" 
+				placeholder="{{ 'arr_size' | translate }}"
 				[(ngModel)]="arrSize" virtualKeyboard
-				ktype="numeric_int_pos" 
+				ktype="numeric_int_pos"
 				[formControl]="validationControls[dataParameterReference.OneArraySize]"
 				[errorStateMatcher]="errorMatcher"
 				/>
@@ -41,13 +41,13 @@
 				{{ getErrors(validationControls[dataParameterReference.OneArraySize]) }}
 			</mat-error>
         </mat-form-field> -->
-        <custom-key-board type="int" placeHolder="{{ 'arr_size' | translate }}" [isNgIf]="canUseArray && isArray && dimension === 1" [isPositiveNum]=true [(value)]="arrSize"></custom-key-board>
-		
+        <custom-key-board type="int"  [min]="1"  [required]="true" placeHolder="{{ 'arr_size' | translate }}" [isNgIf]="canUseArray && isArray && dimension === 1" [isPositiveNum]=true [(value)]="arrSize"></custom-key-board>
+
 		<!-- <mat-form-field *ngIf="canUseArray && isArray && dimension === 2" style="margin-top: 8px;">
 			<input matInput
-				placeholder="{{ 'one_dimension_size' | translate }}"  
+				placeholder="{{ 'one_dimension_size' | translate }}"
 				[(ngModel)]="arrSize" virtualKeyboard
-				ktype="numeric_int_pos" 
+				ktype="numeric_int_pos"
 				[formControl]="validationControls[dataParameterReference.OneArraySize]"
 				[errorStateMatcher]="errorMatcher"
 				/>
@@ -55,15 +55,24 @@
 				{{ getErrors(validationControls[dataParameterReference.OneArraySize]) }}
 			</mat-error>
         </mat-form-field> -->
-        <custom-key-board type="int" placeHolder="{{ 'one_dimension_size' | translate }}" [isNgIf]="canUseArray && isArray && dimension === 2" [isPositiveNum]=true [(value)]="arrSize"></custom-key-board>
+        <div *ngIf="canUseArray && isArray && dimension === 2">
+            <custom-key-board type="int"
+                placeHolder="{{ 'one_dimension_size' | translate }}"
+                [isPositiveNum]=true
+                [min]="1"
+                [required]="true"
+                [(value)]="arrSize"
+                [requiredErrMsg]="getErrors(validationControls[dataParameterReference.OneArraySize])"
+            ></custom-key-board>
+        </div>
 
-		<!-- <mat-form-field *ngIf="isArray && varType === 'STRING' && dimension === 2" 
+		<!-- <mat-form-field *ngIf="isArray && varType === 'STRING' && dimension === 2"
 		                style="margin-top: 8px;"
 		>
-			<input matInput 
-				placeholder="{{ 'two_dimension_size' | translate }}" 
+			<input matInput
+				placeholder="{{ 'two_dimension_size' | translate }}"
 				[(ngModel)]="arrSecondSize" virtualKeyboard
-				ktype="numeric_int_pos" 				
+				ktype="numeric_int_pos"
 				[formControl]="validationControls[dataParameterReference.TwoArraySize]"
 				[disabled]="busy"
 				[errorStateMatcher]="errorMatcher"/>
@@ -82,8 +91,8 @@
 						<input matInput [placeholder]="'J' + (i + 1)" [(ngModel)]="this.values[i]" virtualKeyboard ktype="numeric"  [disabled]="busy" />
                     </mat-form-field> -->
                     <span style="display: flex;">
-                        <custom-key-board type="float" [prefix]="'j'+(i+1)+':&nbsp;&nbsp;'" style="width: 80px;"
-                            [placeHolder]="'J' + (i + 1)" [(value)]="this.values[i]" [disabled]="busy"
+                        <custom-key-board type="float" [prefix]="'J'+(i+1)+':&nbsp;&nbsp;'" style="width: 80px;"
+                            [(value)]="this.values[i]" [disabled]="busy"
                             *ngFor="let joint of data.robotCoordinateType.legends; let i = index"
                         ></custom-key-board>
                     </span>
@@ -164,7 +173,7 @@
                     <custom-key-board  prefix="{{ 'value' | translate }}:&nbsp;&nbsp;" type="int" [isNgIf]="varType === 'LONG'" [placeHolder]="Value" [(value)]="this.values[0]" [disabled]="busy"></custom-key-board>
                     <custom-key-board  prefix="{{ 'value' | translate }}:&nbsp;&nbsp;" type="float" [isNgIf]="varType === 'DOUBLE'" [placeHolder]="Value" [(value)]="this.values[0]" [disabled]="busy"></custom-key-board>
 				</div>
-				<button 
+				<button
         *ngIf="varType === 'JOINT' || varType === 'LOCATION'"
         mat-raised-button
         color="primary"

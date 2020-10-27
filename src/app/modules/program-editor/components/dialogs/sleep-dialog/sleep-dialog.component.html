@@ -7,14 +7,17 @@
 					matInput
 					placeholder="{{ 'projectCommands.sleep.time' | translate }}"
 					formControlName="time"
-					
+
 					virtualKeyboard
 					ktype="numeric_int_pos"
 				/>
 				<span matSuffix>ms.</span>
             </mat-form-field> -->
-            <custom-key-board type="int" 
-                placeHolder="{{ 'projectCommands.sleep.time' | translate }}" 
+            <custom-key-board type="int"
+                placeHolder="{{ 'projectCommands.sleep.time' | translate }}"
+                [min]="0"
+                [leftClosedInterval]="false"
+                [required]="true"
                 [value]="dialogSleep.value" [isPositiveNum]="true" (valueChange)="timeChange($event)"
             ></custom-key-board>
 		</div>

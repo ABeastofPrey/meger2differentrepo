@@ -123,7 +123,7 @@
 							/>
                         </mat-form-field> -->
                         <custom-key-board *ngFor="let val of _value; let i = index" type="float"
-                            prefix="{{ this._legend[i] }}:&nbsp;&nbsp;" [placeHolder]="_legend[i]" [(value)]="_value[i].value"
+                            prefix="{{ this._legend[i] }}:&nbsp;&nbsp;" [(value)]="_value[i].value"
                             (valueChange)="onKeyboardClose()" [disabled]="selectedVar.name === 'VOID' || busy"
                             (blurEvent)="onKeyboardClose()"
                         ></custom-key-board>

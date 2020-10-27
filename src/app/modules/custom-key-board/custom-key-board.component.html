@@ -1,24 +1,57 @@
-<div class="keyboard" [class.isHide]="!isNgIf">
-    <mat-form-field style="position: relative;" class="custom-key-board" [appearance]="appearance">
-        <mat-label *ngIf="appearance === 'outline'">{{matLabel}}</mat-label>
+<div class="keyboard" [class.isHide]="!isNgIf" [class.inputLineHeight]="keyBoardDialog">
+    <mat-form-field style="position: relative;" class="custom-key-board" [appearance]="appearance" [class.iconPrefix]="iconPrefixColor !== '#0000000DE'">
+        <mat-label *ngIf="matLabel">{{matLabel}}</mat-label>
+        <mat-label *ngIf="label">{{label}}</mat-label>
         <input matInput [placeholder]="placeHolder" [readonly]="isPad || readonly" [formControl]="control" #numInput
-            class="numInputKeyBoard" [style.textIndent.px]="textIndent" (focus)="onFocus()" autocomplete="off"
-            (panstart)="onSwipe($event)">
-        <span matPrefix style="font-weight: bold;">{{prefix}}</span>
-        <span matSuffix [innerHTML]='suffix'></span>
+            class="numInputKeyBoard" [style.textIndent.px]="textIndent" (focus)="onFocus()" autocomplete="off"  [type]="isPasswordInput"
+            (panstart)="onSwipe($event)" [value]="(password && isPad) ? (control.value | passPipe) : control.value">
+        <span matPrefix style="font-weight: bold;" *ngIf="!iconPrefix">{{prefix}}</span>
+        <mat-icon [ngStyle]="{'color': iconPrefixColor}" *ngIf="iconPrefix" matPrefix>{{prefix}}</mat-icon>
+        <span matSuffix [innerHTML]='suffix' *ngIf="!iconSuffix"></span>
+        <mat-icon matSuffix *ngIf="iconSuffix">{{suffix}}</mat-icon>
         <mat-hint>{{hint}}</mat-hint>
         <mat-error *ngIf="control.hasError('required')">
             <ng-container *ngIf="requiredErrMsg; else elseTemplate">
                 {{requiredErrMsg}}
             </ng-container>
             <ng-template #elseTemplate>
-                <!-- {{'number_input_required' | translate}} -->
+                {{'number_input_required' | translate}}
             </ng-template>
         </mat-error>
         <mat-error *ngIf="!control.hasError('required') && control.hasError('limit')">
             {{'number_input_range' | translate}}
             {{leftClosedInterval ? '[' : '('}}{{min !== undefined ? min : '-&infin;'}},
             {{max !== undefined ? max : '+&infin;'}}{{rightClosedInterval ? ']' : ')'}}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && control.hasError('maxLength')">
+            {{'maxLength' | translate}} : {{maxLength}}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && control.hasError('firstLetter')">
+            {{'firstLetter' | translate}}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && control.hasError('nameRules')">
+            {{'nameRules' | translate}}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && control.hasError('existNameList')">
+            {{'existNameList' | translate}}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && control.hasError('reserved')">
+            {{ 'error.invalid_username2' | translate }}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && control.hasError('fullName')">
+            {{ 'error.invalid_full_name' | translate }}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && control.hasError('confirmPassword')">
+            {{ 'error.mismatch_pass' | translate }}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && control.hasError('minLength')">
+            {{'minLength' | translate}} : {{minLength}}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && control.hasError('letterAndNumber')">
+            {{'safety.password_change.err_regex' | translate}} : {{minLength}}
+        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && !control.hasError('letterAndNumber') && control.hasError('precision')">
+            {{'maxDecimals' | translate}} : {{precision}}
         </mat-error>
         <div class="cursor blink" *ngIf="isPad && keyBoardDialog" [style.left.px]="cursorLeft"></div>
 

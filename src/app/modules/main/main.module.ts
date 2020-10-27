@@ -16,6 +16,7 @@ import { StxsimNgModule } from 'stxsim-ng';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TourMatMenuModule } from 'ngx-tour-md-menu';
 import { MaintenanceArmModule } from '../maintenance-arm/maintenance-arm.module';
+import { SystemLogModule } from '../sys-log/sys-log.module';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { MaintenanceArmModule } from '../maintenance-arm/maintenance-arm.module'
     ScrollingModule,
     TourModule,
     TourMatMenuModule,
-    MaintenanceArmModule
+    MaintenanceArmModule,
+    SystemLogModule
   ],
   declarations: [
     MainComponent,

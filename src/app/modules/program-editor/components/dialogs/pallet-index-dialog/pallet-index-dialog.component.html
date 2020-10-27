@@ -26,7 +26,7 @@
 						/>
                     </mat-form-field> -->
                     <div *ngIf="pallet !== null && option === 'custom'">
-                        <custom-key-board type="int" [placeHolder]="'VScale [%]'" [(value)]="pallet.index"></custom-key-board>
+                        <custom-key-board type="int" [isPositiveNum]="true" placeHolder="{{ 'pallets.wizard.index_custom' | translate }}" [(value)]="pallet.index"></custom-key-board>
                     </div>
 				</mat-radio-button>
 			</mat-radio-group>

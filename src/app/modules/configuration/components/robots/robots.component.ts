@@ -235,7 +235,9 @@ export class RobotsComponent implements OnInit {
     });
   }
 
-  onNameChange() {
+  onNameChange(value: string,key: string) {
+    this[key].setValue(value);
+    this[key].markAsTouched();
     if (this.sysName.invalid) return;
     this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName.value + '")');
     this.snackbarService.openTipSnackBar(this.wordOk);
@@ -442,6 +444,16 @@ export class RobotsComponent implements OnInit {
         this.snackbarService.openTipSnackBar(this.words['safety.password_change']['err']);
       }
     });
+  }
+
+  changeSysName(value: string): void {
+    this.sysName.setValue(value);
+    this.sysName.markAsTouched();
+  }
+
+  changeSysTime(value: string): void {
+    this.sysTime.setValue(value);
+    this.sysTime.markAsTouched();
   }
 }
 

@@ -2,21 +2,24 @@
 	<div class="wrapper">
 		<div class="title">{{ 'pallets.create' | translate }}</div>
 		<div class="content">
-			<mat-form-field
+			<!-- <mat-form-field
 				><input
 					matInput
 					placeholder="{{ 'pallets.name' | translate }}"
 					[(ngModel)]="palletName"
 					virtualKeyboard
 					ktype="text"
-			/></mat-form-field>
-			<div>
-				<mat-form-field>
-					<mat-select placeholder="{{ 'pallets.type' | translate }}" [(ngModel)]="palletType">
-						<mat-option *ngFor="let t of dataService.palletTypeOptions" [value]="t">{{ ('pallets.type_' + t) | translate }}</mat-option>
-					</mat-select>
-				</mat-form-field>
-			</div>
+            /></mat-form-field> -->
+            <div class="options">
+                <custom-key-board type="string" placeHolder="{{ 'pallets.name' | translate }}"
+                    [(value)]="palletName" [maxLength]="32" [nameRules]="true"
+                ></custom-key-board>
+            </div>
+			<mat-form-field class="options">
+				<mat-select placeholder="{{ 'pallets.type' | translate }}" [(ngModel)]="palletType">
+					<mat-option *ngFor="let t of dataService.palletTypeOptions" [value]="t">{{ ('pallets.type_' + t) | translate }}</mat-option>
+				</mat-select>
+			</mat-form-field>
 			<div>
 				<mat-checkbox [(ngModel)]="showWizard" color="primary">{{ 'pallets.wizard_open' | translate }}</mat-checkbox>
 			</div>

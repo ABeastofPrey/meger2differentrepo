@@ -27,3 +27,7 @@
   overflow: auto;
   padding: 16px;
 }
+
+.options {
+    width: 100%;
+}

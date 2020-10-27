@@ -2,7 +2,7 @@ import { Directive, ElementRef, HostListener, Input, EventEmitter, Renderer2 } f
 import { FormGroup } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-export type InputType = 'int' | 'float';
+export type InputType = 'int' | 'float' | 'string';
 
 export const isFloat = (type: InputType) => type.toLocaleLowerCase() === 'float';
 

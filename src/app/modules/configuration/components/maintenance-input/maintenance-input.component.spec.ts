@@ -67,32 +67,32 @@ describe('MaintenanceInputComponent', () => {
         fixture.detectChanges();
     });
 
-    it('limitNum', () => {
-        const convertToNumber = {
-            target: {
-                value: "123"
-            }
-        }
-        component.limitNum(convertToNumber);
-        component.limitNum(convertToNumber);
-        expect(component.inputForm.value.orderNum).toBe('123');
-        component.limitNum(convertToNumber);
-        expect(convertToNumber.target.value).toBe('123');
-        const limitNum = {
-            target: {
-                value: "200"
-            }
-        }
-        component.limitNum(limitNum);
-        expect(limitNum.target.value).toBe('200');
-        const limitNum2 = {
-            target: {
-                value: "20abc"
-            }
-        }
-        component.limitNum(limitNum2);
-        expect(limitNum2.target.value).toBe('20');
-    })
+    // it('limitNum', () => {
+    //     const convertToNumber = {
+    //         target: {
+    //             value: "123"
+    //         }
+    //     }
+    //     component.limitNum(convertToNumber);
+    //     component.limitNum(convertToNumber);
+    //     expect(component.inputForm.value.orderNum).toBe('123');
+    //     component.limitNum(convertToNumber);
+    //     expect(convertToNumber.target.value).toBe('123');
+    //     const limitNum = {
+    //         target: {
+    //             value: "200"
+    //         }
+    //     }
+    //     component.limitNum(limitNum);
+    //     expect(limitNum.target.value).toBe('200');
+    //     const limitNum2 = {
+    //         target: {
+    //             value: "20abc"
+    //         }
+    //     }
+    //     component.limitNum(limitNum2);
+    //     expect(limitNum2.target.value).toBe('20');
+    // })
 
     it('checkedList', () => {
         component.checkedList();
