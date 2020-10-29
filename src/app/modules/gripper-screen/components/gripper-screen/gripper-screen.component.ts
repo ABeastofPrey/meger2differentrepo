@@ -627,7 +627,7 @@ export class GripperScreenComponent implements OnInit {
   }
 }
 
-interface SysIO {
+export interface SysIO {
   index: string;
   value: string;
   label: string;

@@ -170,7 +170,7 @@ export class TerminalComponent implements OnInit {
         const addition = e.command.name === 'backspace' ? 1 : 0;
         const isFirstCol = e.command.name !== 'del' && (r.start.column === r.end.column) && r.start.column < (SEP.length+1+addition);
         const isBeforeSep = isFirstCol || r.start.column < (SEP.length+1) || r.end.column < (SEP.length+1);
-        if (!isEditableRow || ((deletesLeft || e.command.name === 'insertstring') && isBeforeSep)) {
+        if (!isEditableRow || ((deletesLeft || e.command.name === 'insertstring' || e.command.name === 'paste') && isBeforeSep)) {
           return true;
         }
         return r.start.row !== editableRow || r.end.row !== editableRow;
@@ -180,8 +180,7 @@ export class TerminalComponent implements OnInit {
         if (e.command.name === 'Enter') {
           this.send();
         }
-      }
-      if (e.command.name === 'paste') {
+      } else if (e.command.name === 'paste') {
         e.preventDefault();
         const text = e.args.text.split('\n').join('\t').split('\r').join('\t');
         this.editor.insert(text,1);

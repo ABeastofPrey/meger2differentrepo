@@ -204,6 +204,7 @@ export class ProgramEditorService {
     this.backtrace = null;
     this._modeToggle = val;
     this.close();
+    this.fileRef = null;
     if (val === 'mc') {
       this.mode = 'editor';
       this.router.navigateByUrl('/projects');
@@ -456,7 +457,7 @@ export class ProgramEditorService {
     this.editorLine = -1;
     this.isDirty = false;
     this.backtrace = bt;
-    // this.fileRef = null;
+    //this.fileRef = null;
   }
 
   save() {

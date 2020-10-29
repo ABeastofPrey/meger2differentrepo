@@ -128,6 +128,12 @@ html, body {
 .mat-tab-label-active { opacity: 1!important; }
 mat-slide-toggle { display: block!important; }
 
+/* BUSY SPINNER */
+body.busy .busy-blocker {
+  display: block;
+}
+
+
 /* DARK THEME */
 
 .cs-dark {

@@ -96,7 +96,16 @@ export class RecordGraphComponent implements OnInit {
         };
       }
     }
-    Plotly.newPlot(this.graph.nativeElement, this.chartData.data, layout, {responsive: true, displaylogo: false});
+    Plotly.newPlot(
+      this.graph.nativeElement,
+      this.chartData.data,
+      layout,
+      {
+        responsive: true,
+        displaylogo: false,
+        modeBarButtonsToRemove: this.utils.isTablet ? ['toImage', 'sendDataToCloud'] : []
+      }
+    );
     const name = this.chartData.file;
     this.graph.nativeElement.on('plotly_relayout',e=>{
       if (this.chartData.chartType === ChartType.Time) {

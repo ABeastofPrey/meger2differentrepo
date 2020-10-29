@@ -56,7 +56,7 @@ function timer(id, interval, msg, force) {
 }
 
 function getWebsocketPort(ip) {
-  //const PORT  = '32599';
+  //const PORT  = '32057';
   const PORT = self.location.port === '4200' ? '1207' : self.location.port;
   return new Promise((resolve,reject)=>{
     const http = new XMLHttpRequest();
@@ -86,7 +86,7 @@ function MCConnection() {
   var ws = null;
   var MCPORT = 3010;  
   var IP = self.location.hostname;
-  //var IP = 'mc1.servotronix.com';
+  //var IP = '10.4.20.107';
   var reset = true;
   var isConnected = false;
   var pingPongInterval = null;

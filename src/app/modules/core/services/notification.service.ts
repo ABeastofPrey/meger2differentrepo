@@ -80,7 +80,9 @@ export class NotificationService {
       this._count++;
     }
     this._notifications = this._notifications.concat(nots);
-    if (!this.messagesShowing) this.count.next(Math.min(this.count.value + 1,this.notificationsLimit));
+    if (!this.messagesShowing) {
+      this.count.next(Math.min(this.count.value + 1,this.notificationsLimit));
+    }
     setTimeout(()=>{ // TO AVOID PERFORMANCE ISSUES
       this.newMessage.next();
     },0);

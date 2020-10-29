@@ -142,7 +142,8 @@ export class ScreenManagerService {
       permission: 1,
       url: 'simulator',
       requiresTpLib: true,
-      requiresCoos: true
+      requiresCoos: true,
+      requiresRobot: true
     },
     {
       icon: 'touch_app',
@@ -233,6 +234,7 @@ export class ScreenManagerService {
       (s.requiresCoos && !this.coos.coosLoaded.value) ||
       (s.autoModeOnly && this.stat.mode !== 'A');
     const cond2 = s.requiresInactiveProject && activeProject;
+    const cond3 = s.requiresRobot && !this.data.isRobotType;
     switch (s.url) {
       case 'teach':
         return (
@@ -241,7 +243,7 @@ export class ScreenManagerService {
           (this.cmn.isTablet && this.stat.mode !== 'T1' && this.stat.mode !== 'T2')
         );
       default:
-        return cond1 || cond2;
+        return cond1 || cond2 || cond3;
     }
   }
 
@@ -570,4 +572,5 @@ export interface ControlStudioScreen {
   autoModeOnly?: boolean;
   requiresInactiveProject?: boolean;
   stxOnly?: boolean;
+  requiresRobot?: boolean;
 }

@@ -78,6 +78,7 @@ import { PluginComponent } from './components/plugins/plugin.component';
 import { FunctionProgramComponent } from './components/dialogs/function-program/function-program.component';
 import { SelectFrameDialogComponent } from './components/dialogs/select-frame-dialog/select-frame-dialog.component';
 import { SubProgramComponent } from './components/dialogs/sub-program/sub-program.component';
+import { RemoteIoComponent } from './components/program-settings/remote-io/remote-io.component';
 
 const declarations_entry = [
   NewProjectDialogComponent,
@@ -153,7 +154,8 @@ const declarations_entry = [
     HomeSettingComponent,
     FwconfigEditorComponent,
     ProgramEditorMainComponent,
-    declarations_entry
+    declarations_entry,
+    RemoteIoComponent
   ],
   entryComponents: [
     declarations_entry

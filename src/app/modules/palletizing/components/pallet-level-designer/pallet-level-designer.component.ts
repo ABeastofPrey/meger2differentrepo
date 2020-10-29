@@ -112,7 +112,7 @@ export class PalletLevelDesignerComponent implements OnInit {
       pHeight / this.normalizeItem + 'px';
   }
 
-  validate(item: CustomPalletItem) {
+  validate(item: CustomPalletItem, skipEmitter?: boolean) {
     // CALLED AFTER EVERY DRAG
     item.untouched = false;
     const element: HTMLElement = item.element;
@@ -167,7 +167,9 @@ export class PalletLevelDesignerComponent implements OnInit {
       }
     }
     item.error = error;
-    this.changed.emit(this._items.length);
+    if (!skipEmitter) {
+      this.changed.emit(this._items.length);
+    }
     setTimeout(()=>{
       (this.container.nativeElement as HTMLElement).click();
       this.cd.detectChanges();
@@ -180,7 +182,7 @@ export class PalletLevelDesignerComponent implements OnInit {
 
   validateAll() {
     for (const item of this._items) {
-      this.validate(item);
+      this.validate(item, true);
     }
   }
 
@@ -202,7 +204,7 @@ export class PalletLevelDesignerComponent implements OnInit {
 
   addItem() {
     const isFirst = this._items.length === 0;
-    this._items.push({
+    const item: CustomPalletItem = {
       x: 0,
       y: 0,
       r: this.rotation,
@@ -210,8 +212,12 @@ export class PalletLevelDesignerComponent implements OnInit {
       error: false,
       element: null,
       untouched: !isFirst,
-    });
+    };
+    this._items.push(item);
     this.changed.emit(this._items.length);
+    setTimeout(()=>{
+      this.validate(item);
+    });
   }
 
   removeItem(index: number) {

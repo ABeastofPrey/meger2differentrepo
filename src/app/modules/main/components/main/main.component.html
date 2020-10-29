@@ -148,7 +148,11 @@
 				</div>
 				<mat-card class="emulator-settings" [class.open]="screenManager.openedControls | async" style="flex:1;">
 					<div class="center-vertical" style="margin-bottom: 8px;">
-						<button mat-mini-fab color="primary" (click)="openJogSettings()"
+						<button
+							*ngIf="!login.isViewer"
+							mat-mini-fab
+							color="primary"
+							(click)="openJogSettings()"
 							matTooltip="{{ 'dialogs.jogSettings' | translate }}">
 							<mat-icon>settings</mat-icon>
 						</button>
@@ -325,7 +329,7 @@
 		tourAnchor="simWindow"
 		(started)="onWindowMoving(simWindow)"
 		(stopped)="saveFloatingWindowsConfiguration()"
-		*ngIf="simOpen && screenManager.screen && screenManager.screen.url !== 'simulator'"
+		*ngIf="simOpen && screenManager.screen && screenManager.screen.url !== 'simulator' && data.isRobotType"
 		class="window window-sim mat-elevation-z6"
 		style="left: 20%; top: 20%"
 		ngDraggable

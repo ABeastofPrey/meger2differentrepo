@@ -462,6 +462,9 @@ export class PalletWizardComponent implements OnInit {
         if (ret.result === '0') {
           this.ws.query('PrintPointU "#.##"; PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","o")').then(ret => {
             this.dataService.selectedPallet.origin = this.parseLocation(ret.result);
+            this.step2.get('originX').updateValueAndValidity();
+            this.step2.get('originY').updateValueAndValidity();
+            this.step2.get('originZ').updateValueAndValidity();
           });
         }
       });
@@ -482,6 +485,9 @@ export class PalletWizardComponent implements OnInit {
               this.dataService.selectedPallet.posX = this.parseLocation(
                 ret.result
               );
+              this.step2.get('posXX').updateValueAndValidity();
+              this.step2.get('posXY').updateValueAndValidity();
+              this.step2.get('posXZ').updateValueAndValidity();
             });
         }
       });
@@ -502,6 +508,9 @@ export class PalletWizardComponent implements OnInit {
               this.dataService.selectedPallet.posY = this.parseLocation(
                 ret.result
               );
+              this.step2.get('posYX').updateValueAndValidity();
+              this.step2.get('posYY').updateValueAndValidity();
+              this.step2.get('posYZ').updateValueAndValidity();
             });
         }
       });
@@ -554,8 +563,6 @@ export class PalletWizardComponent implements OnInit {
   }
 
   onIndexChange() {
-    console.log('indexName');
-    console.log(this.indexName);
     this.step1.controls['index'].markAsTouched();
     this.step1.controls['index'].markAsDirty();
     this.step1.controls['index'].setValue(this.indexName);
@@ -1161,7 +1168,11 @@ export class PalletWizardComponent implements OnInit {
     const x = changed === 'x' ? control.value : pos.x;
     const y = changed === 'y' ? control.value : pos.y;
     const z = changed === 'z' ? control.value : pos.z;
-    if (x !== null && y !== null && z !== null) {
+    if (
+      x !== null && y !== null && z !== null &&
+      typeof x !== 'undefined' && typeof y !== 'undefined' && typeof z !== 'undefined' &&
+      !isNaN(Number(x)) && !isNaN(Number(y)) && !isNaN(Number(z))
+    ) {
       if (!control.touched && !control.dirty) return Promise.resolve(null);
       const cmd =
         '?PLT_FRAME_CALIBRATION_SET("' +
@@ -1253,7 +1264,6 @@ export class PalletWizardComponent implements OnInit {
       const cmd = '?PLT_SET_ENTRY_POSITION("' + this.dataService.selectedPallet.name + '",' + loc + ')';
       return this.ws.query(cmd).then((ret: MCQueryResponse) => {
         if (ret.err || ret.result !== '0') {
-          console.log('pallets');
           this.step3.controls['x'].setErrors({ invalidEntry: true });
           this.step3.controls['y'].setErrors({ invalidEntry: true });
           this.step3.controls['z'].setErrors({ invalidEntry: true });
@@ -1882,15 +1892,16 @@ export class PalletWizardComponent implements OnInit {
 
   public setStep2Origin(value,type) {
     if(!this.step2.controls || !this.step2.controls[type]) return;
-    this.step2.controls[type].markAsTouched();
     this.step2.controls[type].setValue(Number(value));
-    this.step2.controls[type].patchValue(value);
+    this.step2.controls[type].markAsTouched();
+    // this.step2.controls[type].patchValue(value);
+    this.step2.controls[type].updateValueAndValidity();
   }
 
   public setStep3Entry(value,type) {
     if(!this.step3.controls || !this.step3.controls[type]) return;
-    this.step3.controls[type].markAsTouched();
     this.step3.controls[type].setValue(Number(value));
+    this.step3.controls[type].markAsTouched();
     this.step3.controls[type].patchValue(value);
   }
 

@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from './lang.service';
 import { TpDialogComponent } from '../../../components/tp-dialog/tp-dialog.component';
+import { time } from 'console';
 
 interface MCResponse {
   msg: string;
@@ -87,6 +88,7 @@ export class WebsocketService {
     this._isTimeout.next(false);
     this._isConnected.next(false);
     this.notification.clear();
+    document.body.classList.remove('busy');
   }
 
   constructor(
@@ -114,6 +116,7 @@ export class WebsocketService {
                 Promise.all([
                   this.query('java_port'),
                   this.query('java_es'),
+                  this.query('setep type = 1 priority = 16'),
                   // this.query('common shared GUI_ERR as error ""')
                 ]).then(ret => {
                     this._port = ret[0].result;
@@ -196,7 +199,18 @@ export class WebsocketService {
 
   query(query) : Promise<MCQueryResponse> {
     return new Promise<MCQueryResponse>((resolve, reject) => {
+      // let timeout = setTimeout(()=>{
+      //   if (this.connected) {
+      //     document.body.classList.add('busy');
+      //     timeout = null;
+      //     console.log('busy',query);
+      //   }
+      // },1500);
       this.send(query, false, (result, cmd: string, err) => {
+        // if (timeout == null) {
+        //   document.body.classList.remove('busy');
+        // }
+        // clearTimeout(timeout);
         resolve({ result, cmd, err });
       });
     }).catch(reason => {

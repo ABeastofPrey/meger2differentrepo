@@ -16,4 +16,5 @@ export * from './teach.service';
 export * from './project-manager.service';
 export * from './keywords.service';
 export * from './service-adjunct';
+export * from './utils.service';
 export * from '../../program-editor/services/program-editor.service';

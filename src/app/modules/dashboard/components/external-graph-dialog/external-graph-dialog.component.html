@@ -4,7 +4,7 @@
 			{{ 'dashboard.external.title' | translate }}
 		</div>
 		<div class="content">
-      <mat-radio-group [(ngModel)]="mode" color="primary" class="mode">
+      <mat-radio-group [(ngModel)]="mode" color="primary" class="mode" [disabled]="busy">
 				<mat-radio-button value="mc">softMC</mat-radio-button>
         <mat-radio-button value="pc">Upload file</mat-radio-button>
 			</mat-radio-group>
@@ -19,15 +19,17 @@
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
-			<button *ngIf="mode==='pc'" mat-raised-button (click)="fileUpload()" color="accent">{{ 'button.select_file' | translate }}</button>
-      <input type="file" accept=".REC" #upload (change)="onUploadFilesChange($event)" class="file-input" />
+			<button *ngIf="mode==='pc'" mat-raised-button (click)="fileUpload()" color="accent" [disabled]="busy">{{ 'button.select_file' | translate }}</button>
+			<input type="file" accept=".REC" #upload (change)="onUploadFilesChange($event)" class="file-input" />
+			<mat-spinner *ngIf="busy" color="primary" diameter="24"></mat-spinner>
+			<div class="warn" *ngIf="err">{{err}}</div>
 		</div>
 	</div>
 	<div class="actions">
 		<button mat-button color="primary" mat-dialog-close>
 			{{ 'button.cancel' | translate }}
 		</button>
-		<button mat-raised-button color="primary" (click)="show()" [disabled]="selectedFile === null">
+		<button mat-raised-button color="primary" (click)="show()" [disabled]="selectedFile === null || busy">
 			{{ 'dashboard.external.btnShow' | translate }}
 		</button>
 	</div>

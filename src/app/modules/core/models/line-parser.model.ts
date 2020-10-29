@@ -151,6 +151,21 @@ export class LineParser {
             if (!isNaN(val)) params['vscale'] = val;
           }
         }
+        if (!params['moves']) {
+          searchWord = 'ASCALE';
+          index = line.indexOf(searchWord);
+          if (index > 0) {
+            let tmpLine = line.substring(index + searchWord.length);
+            index = tmpLine.indexOf('=');
+            if (index >= 0 && tmpLine.length > index + 1) {
+              tmpLine = tmpLine.substring(index + 1);
+              index = tmpLine.indexOf(' ');
+              if (index > 0) tmpLine = tmpLine.substring(0, index);
+              const val = Number(tmpLine);
+              if (!isNaN(val)) params['ascale'] = val;
+            }
+          }
+        }
         searchWord = 'BLENDINGPERCENTAGE';
         index = line.indexOf(searchWord);
         if (index > 0) {

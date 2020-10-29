@@ -16,7 +16,7 @@ const rangeValidator: ValidatorFn = (control: FormGroup): ValidationErrors | nul
   if ((loc && !loc.isArr) || (!rangeMode)) return null;
   const iFrom = control.controls['indexFrom'];
   const iTo = control.controls['indexTo'];
-  if (iFrom.value !== -1 && iTo.value !== -1 && iFrom.value <= iTo.value ) {
+  if (iFrom.value !== -1 && iTo.value !== -1) {
     iFrom.setErrors(null);
     iTo.setErrors(null);
     return null;
@@ -27,7 +27,7 @@ const rangeValidator: ValidatorFn = (control: FormGroup): ValidationErrors | nul
   if (iFrom.value === -1) {
     iFrom.setErrors(err);
   }
-  if (iTo.value === -1 || iTo.value < iFrom.value) {
+  if (iTo.value === -1) {
     iTo.setErrors(err);
   }
   return err;
@@ -61,6 +61,10 @@ export class MoveDialogComponent implements OnInit {
   pts: string[] = [];
   ctrl: FormGroup = new FormGroup({
     advancedMode: new FormControl(false),
+    ascale: new FormControl(null, [
+      Validators.min(0),
+      Validators.max(100)
+    ]),
     blendingPh: new FormControl('', [
       Validators.min(0),
       Validators.max(100)
@@ -190,7 +194,7 @@ export class MoveDialogComponent implements OnInit {
   ngAfterContentInit() {
     const params = this.data.params;
     if (params) {
-      if (params['element'] || params['vscale'] || params['blending']) {
+      if (params['element'] || params['vscale'] || params['blending'] || params['ascale']) {
         this.ctrl.controls['advancedMode'].setValue(true);
       }
       // PARSE MOTION ELEMENT
@@ -211,6 +215,9 @@ export class MoveDialogComponent implements OnInit {
       // PARSE OTHER PARAMS
       if (params['vscale']) {
         this.ctrl.controls['vscale'].setValue(params['vscale']);
+      }
+      if (params['ascale']) {
+        this.ctrl.controls['ascale'].setValue(params['ascale']);
       }
       if (params['blending']) {
         this.ctrl.controls['blendingPh'].setValue(params['blending']);
@@ -237,6 +244,10 @@ export class MoveDialogComponent implements OnInit {
     this.ctrl.controls.vscale.patchValue(value);
   }
 
+  ascaleChange(value) {
+    this.ctrl.controls.ascale.patchValue(value);
+  }
+
   blendingPhChange(value) {
     this.ctrl.controls.blendingPh.patchValue(value);
   }
@@ -261,8 +272,14 @@ export class MoveDialogComponent implements OnInit {
       else {
         const iFrom = this.ctrl.controls['indexFrom'].value;
         const iTo = this.ctrl.controls['indexTo'].value;
-        for (let i = iFrom; i <= iTo; i++) {
-          names.push(name + '[' + i + ']');
+        if (iFrom <= iTo) {
+          for (let i = iFrom; i <= iTo; i++) {
+            names.push(name + '[' + i + ']');
+          }
+        } else {
+          for (let i = iFrom; i >= iTo; i--) {
+            names.push(name + '[' + i + ']');
+          }
         }
       }
     } else {
@@ -273,12 +290,17 @@ export class MoveDialogComponent implements OnInit {
     if (vscale && Number(vscale) > 0) {
       vscaleString = (this.data.moveS ? ' Vtran=' : ' VScale=') + vscale;
     }
+    let ascaleString = '';
+    const ascale = this.ctrl.controls['ascale'].value;
+    if (ascale && Number(ascale) > 0) {
+      ascaleString = ' AScale=' + ascale;
+    }
     let blendingString = '';
     if (this.ctrl.controls['blendingPh'].value) {
       blendingString = ' BlendingPercentage=' + this.ctrl.controls['blendingPh'].value;
     }
     for (let i = 0; i < names.length; i++) {
-      cmds += cmd + robot + names[i] + vscaleString + blendingString;
+      cmds += cmd + robot + names[i] + vscaleString + ascaleString + blendingString;
       if (i < names.length - 1) cmds += '\n';
     }
     // add pls to cmds.

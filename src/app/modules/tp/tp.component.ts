@@ -58,7 +58,7 @@ export class TpComponent implements OnInit, OnDestroy {
       await this.stat.setMode('T1');
     }
     if (this.login.isViewer) return;
-    if (this.stat.mode.charAt(0) !== 'T') {
+    if (!this.stat.mode || this.stat.mode.charAt(0) !== 'T') {
       this.router.navigateByUrl('/');
     } else {
       this.stat.modeChanged.pipe(takeUntil(this.unsubscribeEvent)).subscribe(mode => {
@@ -92,9 +92,9 @@ export class TpComponent implements OnInit, OnDestroy {
     const isLbn = (_tabPath: string) => (_tabPath === lbnTab ? true : false);
     const isHandGuiding = (_tabPath: string) => (_tabPath === hGTab ? true : false);
     if (isLbn(tabPath)) {
-      return !this.utils.IsScara;
+      return !this.utils.IsKuka;
     } else if (isHandGuiding(tabPath)) {
-      return this.utils.IsScara && this.data.safetyCardRunning ? true : false;
+      return this.utils.isTablet && this.utils.IsScara && this.data.safetyCardRunning ? true : false;
     } else {
       return true;
     }

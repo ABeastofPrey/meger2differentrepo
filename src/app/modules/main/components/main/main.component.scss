@@ -256,9 +256,10 @@ coordinates {
 }
 .remote {
   flex: 1;
-  border: 1px solid;
+  border: 2px solid;
   border-radius: 16px;
   margin: 0 32px;
+  padding: 0 8px;
   display: flex;
   align-items: center;
   justify-content: center;

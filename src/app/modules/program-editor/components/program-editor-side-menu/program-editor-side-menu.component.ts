@@ -62,6 +62,13 @@ const disableWhenProjectActive = [
   'VISION',
   projectPoints.toUpperCase(),
 ];
+const disableWhenSingleAxis = [
+  'SETTINGS',
+  projectPoints.toUpperCase(),
+  'FRAMES',
+  'PALLETS',
+  'PAYLOADS'
+];
 
 class TreeNode {
   name: string;
@@ -287,6 +294,7 @@ export class ProgramEditorSideMenuComponent implements OnInit {
   }
 
   isNodeDisabled(node: TreeNode) {
+    if (disableWhenSingleAxis.includes(node.type.toUpperCase()) && !this.data.isRobotType) return true;
     if (!this.prj.activeProject) return false;
     if (disableWhenProjectActive.includes(node.type.toUpperCase())) return true;
     return false;

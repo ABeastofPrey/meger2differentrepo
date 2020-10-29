@@ -30,7 +30,7 @@ export class SimulatorService {
   }
   
   get shouldShowSimulator() {
-    return this.robots.selectedRobot &&
+    return this.robots.selectedRobot && this.dataService.isRobotType &&
       this.robots.get3DModelPath(this.robots.selectedRobot.part_number) !== null;
   }
 

@@ -245,7 +245,9 @@ export class CircleDialogComponent implements OnInit {
       ? ' CircleCenter=' + name1
       : ' TargetPoint=' + name2;
     let blendingString = '';
-    if (this.ctrl.get('blendingPh').valid) blendingString = ' BlendingPercentage=' + this.blendingPh.value;
+    if (this.blendingPh.valid && this.blendingPh.value) {
+      blendingString = ' BlendingPercentage=' + this.blendingPh.value;
+    }
     cmd += robot + circlePoint + targetPoint + vtranString + blendingString;
     // add pls to cmds.
     if (complement(isEmpty(this.pts.length))) {

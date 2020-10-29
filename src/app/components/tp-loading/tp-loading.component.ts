@@ -92,7 +92,8 @@ export class TpLoadingComponent implements OnInit, OnDestroy {
     });
     window.clearTimeout(this.timeout);
     this.timeout = window.setTimeout(() => {
-      this._zone.run(() => {
+      this._zone.run(async () => {
+        await this.ws.query('setep type = 1 priority = 2');
         const notDone = this.steps.some(s => !s.done);
         if (notDone) {
           console.warn(this.steps);
@@ -129,6 +130,9 @@ export class TpLoadingComponent implements OnInit, OnDestroy {
     ) {
       this.ref.close(true);
       this.stat.onloadingStatus.next(true);
+      setTimeout(()=>{
+        this.ws.query('setep type = 1 priority = 2');
+      },1000);
     }
   }
 

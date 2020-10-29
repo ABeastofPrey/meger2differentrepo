@@ -1,4 +1,3 @@
-import { ApiService } from './api.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { BehaviorSubject, Subject, Observable, Observer } from 'rxjs';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
@@ -686,10 +685,9 @@ export class DataService {
           console.error(result);
           return;
         }
-        const apps =
-          result[0].result.length > 0 ? result[0].result.split(';') : [];
+        const apps = result[0].result.length > 0 ? result[0].result.split(';') : [];
         for (let i = 0; i < apps.length; i++) apps[i] = apps[i].split(',')[0];
-        this._domains = apps;
+        this._domains = apps.sort();
         if (this._selectedDomain !== result[1].result) {
           this._selectedDomain = result[1].result;
         }
@@ -884,7 +882,6 @@ export class DataService {
     private stat: TpStatService,
     private login: LoginService,
     private trn: TranslateService,
-    private api: ApiService,
     private snackbarService: SysLogSnackBarService
   ) {
     this.trn

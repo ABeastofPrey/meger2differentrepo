@@ -85,10 +85,7 @@ export class FactoryRestoreComponent implements OnInit {
           id: 'update',
         });
         // RESET LIBRARIES
-        const cmd =
-          '?FACTORY_RESET_SELECT_ROBOT("' +
-          this.selectedRobot.part_number +
-          '",0)';
+        const cmd = '?FACTORY_RESET_SELECT_ROBOT("' + this.selectedRobot.part_number + '",0)';
         this.ws.query(cmd).then((ret: MCQueryResponse) => {
           if (ret.result === '0') {
             // RESET WEBSERVER
@@ -96,7 +93,7 @@ export class FactoryRestoreComponent implements OnInit {
               if (ret) {
                 console.log('factory reset ' + ret);
                 setTimeout(()=>{
-                  this.reboot();
+                  this.reboot(true);
                 },1000);
               }
               else dialog.close();
@@ -111,10 +108,13 @@ export class FactoryRestoreComponent implements OnInit {
     });
   }
 
-  private reboot() {
+  private reboot(clearLocalStorage?:boolean) {
     this.ws.updateFirmwareMode = true;
     this.ws.query('?user sys_reboot(0,0,0)');
     setTimeout(() => {
+      if (clearLocalStorage) {
+        localStorage.clear();
+      }
       let ok = false;
       const interval = setInterval(() => {
         if (ok) return;

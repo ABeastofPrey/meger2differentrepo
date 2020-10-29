@@ -243,7 +243,7 @@ export class SysLogFetchService {
 
     public fetchFromErrHistory(api: string = '?errorhistory$(1)'): Observable<SystemLog[]> {
         // const api = '?errorhistory$(1)';
-        console.log(api)
+        //console.log(api)
         const getErr = res => {
             if (res === 'No error history') {
                 return [];

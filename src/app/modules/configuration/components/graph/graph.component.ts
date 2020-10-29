@@ -81,7 +81,7 @@ export class GraphComponent implements OnInit {
       Plotly.newPlot(this.graph.nativeElement, data, layout, {
         responsive: true,
         displaylogo: false,
-        modeBarButtonsToRemove: [this.utils.isTablet && 'sendDataToCloud'].filter(Boolean),
+        modeBarButtonsToRemove: this.utils.isTablet ? ['sendDataToCloud', 'toImage'] : [],
       });
     } catch (err) {
       console.log(err);

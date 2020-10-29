@@ -21,8 +21,9 @@
   margin: 24px;
 }
 .btn-add {
-  border-radius: 36px;
+  border-radius: 48px;
   padding-right: 36px;
+  height: 48px;
 }
 .btn-add mat-icon {
   font-size: 36px;
@@ -87,7 +88,7 @@
 .arrow {
   position: absolute;
   width: 48px;
-  top: 64px;
+  top: 70px;
   left: 80px;
   z-index: 1;
   transform: rotate(90deg) scale(-1, 1);

@@ -25,7 +25,12 @@ export class PermissionGuardService implements CanActivate {
         const user = this.login.permissionCode;
         const screen = route.data.permission;
         const requiresTP = route.data.requiresTP;
+        const requiresRobot = route.data.requiresRobot;
         if (requiresTP && !this.stat.onlineStatus.value) {
+          this.router.navigateByUrl('/');
+          return false;
+        }
+        if (requiresRobot && !this.data.isRobotType) {
           this.router.navigateByUrl('/');
           return false;
         }

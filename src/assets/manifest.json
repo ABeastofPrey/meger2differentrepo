@@ -12,5 +12,8 @@
   "name": "ControlStudio+",
   "short_name": "CS+",
   "start_url": "../index.html",
-  "orientation": "landscape"
+  "orientation": "landscape",
+  "permissions": [
+    "fileSystem"
+  ]
 }

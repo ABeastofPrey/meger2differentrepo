@@ -27,7 +27,6 @@ export const PLATFORMS = {
   Kuka: KUKA,
   Servotronix: STX,
 };
-
 export const LANGS = {//support langurage
   cmn: 'cmn',
   en: 'en',
@@ -39,8 +38,8 @@ export const environment = {
   appName_Kuka: 'KUKA.ControlStudio',
   api_url: 'http://10.4.20.107:1207',
   ip: '10.4.20.107',
-  gui_ver: 'v1.6.1-dev 2020-04-10',
-  compatible_webserver_ver: 'v3.6.1',
+  gui_ver: 'v1.6.2-dev 2020-10-28',
+  compatible_webserver_ver: 'v3.6.2',
   platform: PLATFORMS.Servotronix,
   platforms: PLATFORMS,
   langs: LANGS,

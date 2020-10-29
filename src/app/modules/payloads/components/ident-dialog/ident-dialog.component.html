@@ -21,7 +21,7 @@
       [backgroundColor]="sim.bgColor"
       [traceColor]="sim.traceColor"
       #simulator
-      [trace]="sim.showTrace"
+      [trace]="false"
       [roboturl]="robot.get3DModelPath(robot.selectedRobot.part_number)"
       [jntValues]="cooService.jointsAsArr"
       ></lib-app-simulator>

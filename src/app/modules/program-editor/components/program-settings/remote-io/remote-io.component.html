@@ -1,0 +1,61 @@
+<div class="center-vertical header">
+  <mat-form-field appearance="fill">
+    <mat-label>{{'projectSettings.remote-io.device' | translate}}</mat-label>
+    <mat-select value="Remote_IO" [disabled]="busy || stat.mode === 'R'">
+      <mat-option value="Remote_IO">Remote_IO</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="upload.click()" [disabled]="busy || stat.mode === 'R'">{{'projectSettings.remote-io.import' | translate}}</button>
+  <button mat-raised-button color="primary" (click)="export()" [disabled]="busy || stat.mode === 'R'">{{'projectSettings.remote-io.export' | translate}}</button>
+</div>
+<div class="tables">
+  <section class="mat-elevation-z3">
+    <h3>{{'projectSettings.remote-io.inputs' | translate}}</h3>
+    <table>
+      <tr *ngFor="let io of list?.inputs">
+        <td>{{io.name}}</td>
+        <td>
+          <mat-form-field appearance="fill">
+            <mat-select [value]="io.associated_io" (selectionChange)="onIOChange(io,$event,true)" [disabled]="busy || stat.mode === 'R'">
+              <mat-option [value]="0">{{'options.none' | translate}}</mat-option>
+              <mat-option *ngIf="io.associated_io" [value]="io.associated_io" disabled>{{ io.associated_io }}</mat-option>
+              <mat-option *ngFor="let i of inputs" [value]="toNumber(i.index)">{{ i.index }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-checkbox color="primary" [checked]="io.invert" [disabled]="busy || io.associated_io === 0 || stat.mode === 'R'" (change)="onIoInvertChange(io,$event,true)">{{'invert' | translate}}</mat-checkbox>
+        </td>
+      </tr>
+    </table>
+    <div class="buttons center-vertical">
+      <button mat-raised-button color="primary" (click)="getDefault(true)" [disabled]="busy || stat.mode === 'R'">{{'button.default' | translate}}</button>
+      <button mat-raised-button color="warn" (click)="clear(true)" [disabled]="busy || stat.mode === 'R'">{{'button.clear' | translate}}</button>
+    </div>
+  </section>
+  <section class="mat-elevation-z3">
+    <h3>{{'projectSettings.remote-io.outputs' | translate}}</h3>
+    <table>
+      <tr *ngFor="let io of list?.outputs">
+        <td>{{io.name}}</td>
+        <td>
+          <mat-form-field appearance="fill">
+            <mat-select [value]="io.associated_io" (selectionChange)="onIOChange(io,$event,false)" [disabled]="busy || stat.mode === 'R'">
+              <mat-option [value]="0">{{'options.none' | translate}}</mat-option>
+              <mat-option *ngIf="io.associated_io" [value]="io.associated_io" disabled>{{ io.associated_io }}</mat-option>
+              <mat-option *ngFor="let i of outputs" [value]="toNumber(i.index)">{{ i.index }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-checkbox color="primary" [checked]="io.invert" [disabled]="busy || io.associated_io === 0 || stat.mode === 'R'" (change)="onIoInvertChange(io,$event,false)">{{'invert' | translate}}</mat-checkbox>
+        </td>
+      </tr>
+    </table>
+    <div class="buttons center-vertical">
+      <button mat-raised-button color="primary" (click)="getDefault(false)" [disabled]="busy || stat.mode === 'R'">{{'button.default' | translate}}</button>
+      <button mat-raised-button color="warn" (click)="clear(false)" [disabled]="busy || stat.mode === 'R'">{{'button.clear' | translate}}</button>
+    </div>
+  </section>
+</div>
+<input type="file" accept=".DAT" #upload (change)="import($event)" class="file-input" />

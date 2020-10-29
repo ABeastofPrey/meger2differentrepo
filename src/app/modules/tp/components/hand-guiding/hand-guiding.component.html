@@ -1,6 +1,7 @@
 <div class="hand-guiding mat-typography">
 	<mat-card>
 		<mat-slide-toggle [checked]="mode" color="primary" (change)="onSfreeChange($event)">{{ 'handGuiding.toggleMode' | translate }}</mat-slide-toggle>
-		<mat-slide-toggle [checked]="j3j4" color="primary" (change)="onJ3J4Change($event)">{{ 'handGuiding.toggleJ3J4' | translate }}</mat-slide-toggle>
+		<mat-checkbox [checked]="j1" color="primary" (change)="onChange(1,$event)" [disabled]="!mode">{{ 'handGuiding.toggleJ1' | translate }}</mat-checkbox>
+		<mat-checkbox [checked]="j2" color="primary" (change)="onChange(2,$event)" [disabled]="!mode">{{ 'handGuiding.toggleJ2' | translate }}</mat-checkbox>
 	</mat-card>
 </div>

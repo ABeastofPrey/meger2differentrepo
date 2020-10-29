@@ -10,17 +10,41 @@ import { Component, OnInit } from '@angular/core';
 export class HandGuidingComponent implements OnInit {
 
   mode = false;
-  j3j4 = false;
+  j1 = false;
+  j2 = false;
 
   constructor(
     private ws: WebsocketService
   ) {}
 
   async ngOnInit() {
-    let ret = await this.ws.query('?TP_GET_SFREE_MODE');
+    const ret = await this.ws.query('?TP_GET_SFREE_MODE');
     this.mode = ret.result === '1';
-    ret = await this.ws.query('?TP_GET_SFREE_BRAKE');
-    this.j3j4 = ret.result === '1';
+    this.refreshBreakes();
+  }
+
+  private async refreshBreakes() {
+    const ret = await this.ws.query('?TP_GET_SFREE_BRAKE');
+    switch (ret.result) {
+      case '0':
+        this.j1 = false;
+        this.j2 = false;
+        break;
+      case '1':
+        this.j1 = true;
+        this.j2 = false;
+        break;
+      case '2':
+        this.j1 = false;
+        this.j2 = true;
+        break;
+      case '3':
+        this.j1 = true;
+        this.j2 = true;
+        break;
+      default:
+        break;
+    }
   }
 
   async onSfreeChange(mode: MatSlideToggleChange) {
@@ -30,11 +54,16 @@ export class HandGuidingComponent implements OnInit {
     if (ret.result !== '0') {
       this.mode = !mode.checked;
     }
+    await this.refreshBreakes();
   }
 
-  async onJ3J4Change(mode: MatSlideToggleChange) {
-    const cmd = `call TP_SET_SFREE_BRAKE(${mode.checked ? 1 : 0})`;
-    this.j3j4 = mode.checked;
+  async onChange(axis: number, mode: MatSlideToggleChange) {
+    const cmd = `call TP_SET_SFREE_BRAKE(${axis},${mode.checked ? 1 : 0})`;
+    if (axis === 1) {
+      this.j1 = mode.checked;
+    } else if (axis === 2) {
+      this.j2 = mode.checked;
+    }
     await this.ws.query(cmd);
   }
 

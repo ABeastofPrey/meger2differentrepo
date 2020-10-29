@@ -60,16 +60,20 @@ export class MessageLogComponent implements OnInit {
     private router: Router) { }
 
     ngOnInit() {
-      this.notification.newMessage
-        .pipe(takeUntil(this.notifier))
-        .subscribe(() => {
-          clearTimeout(this._timeout);
-          this._timeout = setTimeout(()=>{
-            if (this.notifier.closed) return;
-            this.cd.detectChanges();
-            this.msgContainer.scrollToIndex(this.msgContainer.getDataLength());
-          },MIN_REFRESH_RATE);
-        });
+      let busy = false;
+      this.notification.newMessage.pipe(takeUntil(this.notifier)).subscribe(() => {
+        if (busy) {
+          return;
+        }
+        clearTimeout(this._timeout);
+        busy = true;
+        this._timeout = setTimeout(()=>{
+          if (this.notifier.closed) return;
+          this.cd.detectChanges();
+          this.msgContainer.scrollToIndex(this.msgContainer.getDataLength());
+          busy = false;
+        },MIN_REFRESH_RATE);
+      });
     }
   
     ngOnDestroy() {

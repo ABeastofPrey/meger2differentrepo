@@ -125,7 +125,6 @@ export class PayloadWizardComponent implements OnInit {
       },
       [Validators.min(0)]
     );
-    console.log(ctrl);
     return ctrl;
   }
 

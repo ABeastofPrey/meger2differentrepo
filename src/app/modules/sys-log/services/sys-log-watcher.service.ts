@@ -50,10 +50,7 @@ export class SysLogWatcherService {
         private ngZone: NgZone
     ) { }
 
-    public startListenSysLog(): void {
-        // this.notify.newMessage.pipe(debounceTime<any>(500), mapTo(LogChangeSource.ErrHistoryDelta)).subscribe(() => {
-        //     console.log('trigger delta');
-        // });
+    startListenSysLog(): void {
         this.subscribeClicks && this.subscribeEvents();
         const notifier = merge(
             this.notify.newMessage.pipe(debounceTime<any>(500), mapTo(LogChangeSource.ErrHistoryDelta)),
@@ -66,7 +63,7 @@ export class SysLogWatcherService {
         ).pipe(
             rxjsFilter(() => !this.pauseListen), takeUntil(this.stopListen),
             tap(x => {
-                console.log(x);
+                // console.log(x);
             })
         );
         const getUnconfimredLogs = flatMap((_source: LogChangeSource = LogChangeSource.Ohter) => this.getUnconfimredLogs(_source));
@@ -91,7 +88,6 @@ export class SysLogWatcherService {
     }
 
     private getUnconfimredLogs(source: LogChangeSource): Observable<SystemLog[]> {
-        console.log('source from: ' + source);
         if (source === LogChangeSource.OnStartListen) {
             return this.getFromErrHistoryAndMaintenance();
         } else if (source === LogChangeSource.Maintenance) {
@@ -99,7 +95,6 @@ export class SysLogWatcherService {
         } else if (source === LogChangeSource.ErrHistoryDelta) {
             return this.getFromLatestAndLocal();
         }  else {
-            console.log('Refresh log with unknow source.');
             return of(this.unconfirmedLog);
         }
     }

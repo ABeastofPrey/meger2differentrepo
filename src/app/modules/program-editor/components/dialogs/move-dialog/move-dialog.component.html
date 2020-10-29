@@ -64,13 +64,12 @@
 				</mat-form-field>
 
 				<!-- <mat-form-field *ngIf="!data.moveS else VTranTemp">
-					<input matInput [placeholder]="'VScale [%]'" formControlName="vscale" virtualKeyboard
-						ktype="numeric_pos" />
+					<input matInput [placeholder]="'VScale [%]'" formControlName="vscale" virtualKeyboard	ktype="numeric_pos" />
 					<mat-error *ngIf="ctrl.get('vscale').invalid">
 						{{ 'form_validation.percent' | translate }}
 					</mat-error>
                 </mat-form-field> -->
-                <div *ngIf="!data.moveS else VTranTemp" class="customKeyBoard">
+				<div *ngIf="!data.moveS else VTranTemp" class="customKeyBoard">
 					<custom-key-board
 						type="float"
 						[leftClosedInterval]="false"
@@ -82,7 +81,28 @@
 						(valueChange)="vscaleChange($event)"
 						(blurEvent)="vscaleChange($event)">
 					</custom-key-board>
-                </div>
+				</div>
+
+				<div *ngIf="!data.moveS" class="customKeyBoard">
+					<custom-key-board 
+						type="float"
+						[leftClosedInterval]="false"
+						[isPositiveNum]="true"
+						[min]="0" 
+						[max]="100" 
+						[placeHolder]="'AScale [%]'" 
+						[(value)]="ctrl.controls.ascale.value"
+						(valueChange)="ascaleChange($event)"  
+						(blurEvent)="ascaleChange($event)">
+					</custom-key-board>
+				</div>
+
+				<!-- <mat-form-field *ngIf="!data.moveS">
+					<input matInput [placeholder]="'AScale [%]'" formControlName="ascale" virtualKeyboard kype="numeric_pos" />
+					<mat-error *ngIf="ctrl.get('ascale').invalid">
+						{{ 'form_validation.percent' | translate }}
+					</mat-error>
+				</mat-form-field> -->
 
 				<ng-template #VTranTemp>
 					<!-- <mat-form-field>

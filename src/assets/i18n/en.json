@@ -100,10 +100,12 @@
     "calibrate": "CALIBRATE",
     "cancel": "CANCEL",
     "change": "CHANGE",
+    "clear": "CLEAR",
     "close": "CLOSE",
     "confirm": "CONFIRM",
     "copy": "CREATE COPY",
     "create": "CREATE",
+    "default": "DEFAULT",
     "delete": "DELETE",
     "delete_selected": "DELETE SELECTED",
     "discard": "DISCARD",
@@ -174,6 +176,7 @@
     "external": {
       "3d": "3D Graph",
       "btnShow": "SHOW",
+      "error": "Error uploading {{name}} - File exceeded the 10MB limit -OR- not enough space left on the controller.",
       "name": "Recording Name",
       "title": "Open Recording"
     },
@@ -633,7 +636,8 @@
   },
   "handGuiding": {
     "toggleMode": "Enable Servo Free mode",
-    "toggleJ3J4": "Release brakes J1 + J2"
+    "toggleJ1": "Release brakes J1",
+    "toggleJ2": "Release brakes J2"
   },
   "joint": "Joint",
   "joints": "Joints",
@@ -734,7 +738,7 @@
   },
   "message_log": "Message Log",
   "mode_debug": "DEBUG MODE",
-  "mode_remote": "REMOTE MODE",
+  "mode_remote": "Remote Mode",
   "mode_selector": "Mode",
   "motion_element": "Motion Element",
   "motion_elements": "Motion Elements",
@@ -1276,6 +1280,15 @@
     "pos": {
       "desc": "Define the joint position limits",
       "title": "Position Limits"
+    },
+    "remote-io": {
+      "desc": "Define the remote IO device used to control project applications",
+      "device": "Control Device",
+      "export": "EXPORT...",
+      "import": "IMPORT...",
+      "inputs": "Remote Control Inputs",
+      "outputs": "Remote Control Outputs",
+      "title": "Remote Control"
     },
     "tool": {
       "desc": "Define the tool limits",

@@ -487,5 +487,15 @@
 				<app-home-setting></app-home-setting>
 			</div>
 		</mat-expansion-panel>
+
+		<mat-expansion-panel #remoteIO>
+			<mat-expansion-panel-header>
+				<mat-panel-title>{{ 'projectSettings.remote-io.title' | translate }}</mat-panel-title>
+				<mat-panel-description>{{ 'projectSettings.remote-io.desc' | translate }}</mat-panel-description>
+			</mat-expansion-panel-header>
+			<div *ngIf="remoteIO.expanded">
+				<app-remote-io></app-remote-io>
+			</div>
+		</mat-expansion-panel>
 	</mat-accordion>
 </div>

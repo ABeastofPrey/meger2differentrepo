@@ -71,6 +71,9 @@ export class JogScreenComponent implements OnInit {
         this.menuTypes.push(new MenuType('Teach', 'vertical_align_bottom', words[1]));
       }
       this.selectedMenuTypeIndex = 1;
+      if (this.teach.selectedTeachVariable) { // refresh value
+        this.teach.selectedTeachVariable = this.teach.selectedTeachVariable;
+      }
     });
   }
 

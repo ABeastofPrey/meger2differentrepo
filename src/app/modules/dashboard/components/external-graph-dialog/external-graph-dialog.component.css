@@ -19,7 +19,10 @@
 }
 .content {
   overflow: auto;
-  min-height: 100px;
+  min-height: 148px;
+}
+mat-spinner {
+  margin: 16px;
 }
 mat-form-field {
   display: block;
@@ -37,4 +40,8 @@ mat-radio-button {
 .mode {
   display: block;
   margin-bottom: 16px;
+}
+.warn {
+  max-width: 400px;
+  margin-top: 16px;
 }

@@ -22,7 +22,7 @@
       (change)="updateDataType()"
       [disabled]="isRefreshing"
     >
-      <mat-button-toggle *ngFor="let t of varTypes" [value]="t">
+      <mat-button-toggle *ngFor="let t of varTypes" [value]="t" [disabled]="(t === 'joint' || t === 'location') && !data.isRobotType">
         {{ t | translate }}
       </mat-button-toggle>
     </mat-button-toggle-group>

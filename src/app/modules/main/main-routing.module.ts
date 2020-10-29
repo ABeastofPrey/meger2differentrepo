@@ -41,7 +41,7 @@ const routes: Routes = [
         loadChildren: () =>
           import('../simulator/simulator.module').then(m => m.SimulatorModule),
         canActivate: [PermissionGuardService],
-        data: { permission: 1, requiresTP: true },
+        data: { permission: 1, requiresTP: true, requiresRobot: true },
       },
       {
         path: 'teach',

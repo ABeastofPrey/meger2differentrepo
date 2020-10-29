@@ -34,7 +34,6 @@ export class RobotService {
         this.reset();
         return;
       }
-      if (this.interval) clearInterval(this.interval);
       this.refresh();
     });
     this.stat.onlineStatus.subscribe(stat=>{
@@ -42,13 +41,13 @@ export class RobotService {
         this.reset();
         return;
       } else {
-        if (this.interval) window.clearInterval(this.interval);
         this.refresh();
       }
     });
   }
 
   private refresh() {
+    window.clearInterval(this.interval);
     this.interval = window.setInterval(() => {
       this.ws.query('?rob_ver').then((ret: MCQueryResponse) => {
         if (ret.err) return;

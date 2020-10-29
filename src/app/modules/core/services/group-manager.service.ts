@@ -16,6 +16,8 @@ export class GroupManagerService {
   private groupInterval = NaN;
   private lastGrouplist: string = null;
 
+  private _busy = false;
+
   constructor(
     private ws: WebsocketService,
     private api: ApiService,
@@ -76,8 +78,13 @@ export class GroupManagerService {
   }
 
   private refreshGroupsAndInfo() {
+    if (this._busy) {
+      return;
+    }
+    this._busy = true;
     const promises = [this.ws.query('?grouplist')];
     Promise.all(promises).then(ret => {
+      this._busy = false;
       const grouplist: MCQueryResponse = ret[0];
       if (grouplist.result === this.lastGrouplist) return;
       this.zone.run(()=>{

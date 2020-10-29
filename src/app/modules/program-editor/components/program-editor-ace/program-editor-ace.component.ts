@@ -613,7 +613,7 @@ export class ProgramEditorAceComponent implements OnInit {
       const stream = new this.TokenIterator(this.editor.session, position.row, position.column);
       const stream2 = new this.TokenIterator(this.editor.session, position.row, position.column);
       const token = stream.getCurrentToken();
-      if (!token) {
+      if (!token || token.type === 'keyword.control.asp') {
         this.hideTooltip();
         return;
       }

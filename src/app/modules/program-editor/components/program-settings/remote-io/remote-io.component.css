@@ -1,0 +1,48 @@
+.tables {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 1000px;
+}
+.tables section {
+  padding: 16px;
+  margin: 0 24px 16px 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.separator {
+  flex: 1;
+}
+.buttons {
+  margin-top: 16px;
+}
+.buttons button:not(:last-of-type) {
+  margin-right: 16px;
+}
+table mat-form-field {
+  margin-bottom: -16px;
+  max-width: 100px;
+}
+table tr {
+  border-bottom: 1px solid rgba(0,0,0,0.18);
+}
+table tr td:first-of-type {
+  min-width: 100px;
+  text-align: center;
+}
+.header {
+  margin-bottom: 16px;
+}
+.header mat-form-field {
+  margin-bottom: -16px;
+}
+.header button {
+  margin-left: 16px;
+}
+.file-input {
+  display: block;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
