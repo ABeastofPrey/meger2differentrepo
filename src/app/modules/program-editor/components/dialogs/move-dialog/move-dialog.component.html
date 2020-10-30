@@ -84,15 +84,15 @@
 				</div>
 
 				<div *ngIf="!data.moveS" class="customKeyBoard">
-					<custom-key-board 
+					<custom-key-board
 						type="float"
 						[leftClosedInterval]="false"
 						[isPositiveNum]="true"
-						[min]="0" 
-						[max]="100" 
-						[placeHolder]="'AScale [%]'" 
+						[min]="0"
+						[max]="100"
+						[placeHolder]="'AScale [%]'"
 						[(value)]="ctrl.controls.ascale.value"
-						(valueChange)="ascaleChange($event)"  
+						(valueChange)="ascaleChange($event)"
 						(blurEvent)="ascaleChange($event)">
 					</custom-key-board>
 				</div>

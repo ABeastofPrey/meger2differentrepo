@@ -13,7 +13,7 @@
 			<form [formGroup]="step1">
 				<ng-template matStepLabel>{{ 'pallets.wizard.step1' | translate }}</ng-template>
 				<div class="step-wrapper">
-					<div class="step-content step-content-1">
+					<div class="step-content">
 						<div style="display: flex;">
 							<mat-form-field class="input-normal" style="margin-right: 16px;">
 								<mat-select
@@ -42,7 +42,7 @@
 						</div>
 						<div *ngIf="dataService.selectedPallet.type === 'GRID'">
 							<h3>{{ 'pallets.wizard.num_of_items' | translate }}</h3>
-							<div style="display: flex;">
+							<div class="pallet-waizard-keyboard">
 								<!-- <mat-form-field class="input-small">
 									<input
 										matInput
@@ -55,13 +55,8 @@
 										virtualKeyboard
 										ktype="numeric_int_pos"
 									/>
-                                </mat-form-field> -->
-                                <custom-key-board type="int" [isPositiveNum]="true" [min]="1" [placeHolder]="'nX'" class="input-small"
-                                    [value]="dataService.selectedPallet.itemsX" [required]="true"
-                                    (blurEvent)="onWindowResize($event,'itemsX')"
-                                    (inputChange)="onWindowResize($event,'itemsX')"
-                                ></custom-key-board>
-								<!-- <mat-form-field class="input-small">
+                </mat-form-field>
+                <mat-form-field class="input-small">
 									<input
 										matInput
 										placeholder="nY"
@@ -73,13 +68,8 @@
 										virtualKeyboard
 										ktype="numeric_int_pos"
 									/>
-                                </mat-form-field> -->
-                                <custom-key-board type="int" [isPositiveNum]="true" [min]="1" [placeHolder]="'nY'" class="input-small"
-                                    [value]="dataService.selectedPallet.itemsY" [required]="true"
-                                    (blurEvent)="onWindowResize($event,'itemsY')"
-                                    (inputChange)="onWindowResize($event,'itemsY')"
-                                ></custom-key-board>
-								<!-- <mat-form-field class="input-small">
+                </mat-form-field>
+                <mat-form-field class="input-small">
 									<input
 										matInput
 										placeholder="nZ"
@@ -91,18 +81,51 @@
 										virtualKeyboard
 										ktype="numeric_int_pos"
 									/>
-                                </mat-form-field> -->
-                                <custom-key-board type="int" [isPositiveNum]="true" [min]="1" [placeHolder]="'nZ'" class="input-small"
-                                    [value]="dataService.selectedPallet.itemsZ" [required]="true"
-                                    (blurEvent)="onWindowResize($event,'itemsZ')"
-                                    (inputChange)="onWindowResize($event,'itemsZ')"
-                                ></custom-key-board>
+                </mat-form-field> -->
+                <custom-key-board type="int"
+                    [isPositiveNum]="true"
+                    [min]="1"
+                    [max]="1000"
+                    [placeHolder]="'nX'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.itemsX"
+                    [required]="true"
+                    (valueChange)="onWindowResize()"
+                    (blurEvent)="setFormGroupItem($event,'itemsX',step1)"
+                    (inputChange)="setFormGroupItem($event,'itemsX',step1,true)">
+                </custom-key-board>
+                <custom-key-board
+                    type="int"
+                    [isPositiveNum]="true"
+                    [min]="1"
+                    [max]="1000"
+                    [placeHolder]="'nY'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.itemsY"
+                    [required]="true"
+                    (valueChange)="onWindowResize()"
+                    (blurEvent)="setFormGroupItem($event,'itemsY',step1)"
+                    (inputChange)="setFormGroupItem($event,'itemsY',step1,true)">
+              </custom-key-board>
+                <custom-key-board
+                    type="int"
+                    [isPositiveNum]="true"
+                    [min]="1"
+                    [max]="1000"
+                    [placeHolder]="'nZ'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.itemsZ"
+                    [required]="true"
+                    (valueChange)="onWindowResize()"
+                    (blurEvent)="setFormGroupItem($event,'itemsZ',step1)"
+                    (inputChange)="setFormGroupItem($event,'itemsZ',step1,true)">
+                </custom-key-board>
 							</div>
 						</div>
 						<div style="display: flex;">
 							<div>
 								<h3>{{ 'pallets.wizard.dimensions_item' | translate }}</h3>
-								<div style="display: flex;">
+								<div class="pallet-waizard-keyboard">
 									<!-- <mat-form-field class="input-small">
 										<input
 											matInput
@@ -114,13 +137,8 @@
 											virtualKeyboard
 											ktype="numeric_pos"
 										/>
-                                    </mat-form-field> -->
-                                    <custom-key-board type="float" [isPositiveNum]="true"  [placeHolder]="'X'" class="input-small" [min]="1"
-                                        [(value)]="dataService.selectedPallet.itemSizeX" [required]="true"
-                                        (blurEvent)="onWindowResize($event,'itemSizeX')"
-                                        (inputChange)="onWindowResize($event,'itemSizeX')"
-                                    ></custom-key-board>
-									<!-- <mat-form-field class="input-small">
+                  </mat-form-field>
+                  <mat-form-field class="input-small">
 										<input
 											matInput
 											placeholder="Y"
@@ -131,13 +149,8 @@
 											virtualKeyboard
 											ktype="numeric_pos"
 										/>
-                                    </mat-form-field> -->
-                                    <custom-key-board type="float" [isPositiveNum]="true"  [placeHolder]="'Y'" class="input-small" [min]="1"
-                                        [(value)]="dataService.selectedPallet.itemSizeY" [required]="true"
-                                        (blurEvent)="onWindowResize($event,'itemSizeY')"
-                                        (inputChange)="onWindowResize($event,'itemSizeY')"
-                                    ></custom-key-board>
-									<!-- <mat-form-field class="input-small">
+									</mat-form-field>
+									<mat-form-field class="input-small">
 										<input
 											matInput
 											placeholder="Z"
@@ -148,12 +161,43 @@
 											virtualKeyboard
 											ktype="numeric_pos"
 										/>
-                                    </mat-form-field> -->
-                                    <custom-key-board type="float" [isPositiveNum]="true"  [placeHolder]="'Z'" class="input-small" [min]="1"
-                                        [(value)]="dataService.selectedPallet.itemSizeZ" [required]="true"
-                                        (blurEvent)="onWindowResize($event,'itemSizeZ')"
-                                        (inputChange)="onWindowResize($event,'itemSizeZ')"
-                                    ></custom-key-board>
+									</mat-form-field> -->
+                  <custom-key-board
+                      type="float"
+                      [isPositiveNum]="true"
+                      [min]="1"
+                      [placeHolder]="'X'"
+                      class="input-small"
+                      [(value)]="dataService.selectedPallet.itemSizeX"
+                      [required]="true"
+                      (valueChange)="onWindowResize()"
+                      (blurEvent)="setFormGroupItem($event,'itemSizeX',step1)"
+                      (inputChange)="setFormGroupItem($event,'itemSizeX',step1,true)">
+                 </custom-key-board>
+                 <custom-key-board
+                      type="float"
+                      [isPositiveNum]="true"
+                      [min]="1"
+                      [placeHolder]="'Y'"
+                      class="input-small"
+                      [(value)]="dataService.selectedPallet.itemSizeY"
+                      [required]="true"
+                      (valueChange)="onWindowResize()"
+                      (blurEvent)="setFormGroupItem($event,'itemSizeY',step1)"
+                      (inputChange)="setFormGroupItem($event,'itemSizeY',step1,true)">
+                </custom-key-board>
+                <custom-key-board
+                      type="float"
+                      [isPositiveNum]="true"
+                      [min]="1"
+                      [placeHolder]="'Z'"
+                      class="input-small"
+                      [(value)]="dataService.selectedPallet.itemSizeZ"
+                      [required]="true"
+                      (valueChange)="onWindowResize()"
+                      (blurEvent)="setFormGroupItem($event,'itemSizeZ',step1)"
+                      (inputChange)="setFormGroupItem($event,'itemSizeZ',step1,true)">
+                </custom-key-board>
 								</div>
 							</div>
 							<div style="margin-left: 24px;">
@@ -170,13 +214,8 @@
 											virtualKeyboard
 											ktype="numeric_pos"
 										/>
-                                    </mat-form-field> -->
-                                    <custom-key-board type="float" [isPositiveNum]="true"  [placeHolder]="'X'" class="input-small" [min]="1"
-                                        [(value)]="dataService.selectedPallet.palletSizeX" [required]="true"
-                                        (blurEvent)="onWindowResize($event,'palletSizeX')"
-                                        (inputChange) ="onWindowResize($event,'palletSizeX')"
-                                    ></custom-key-board>
-									<!-- <mat-form-field class="input-small">
+									</mat-form-field>
+									<mat-form-field class="input-small">
 										<input
 											matInput
 											placeholder="Y"
@@ -187,19 +226,35 @@
 											virtualKeyboard
 											ktype="numeric_pos"
 										/>
-                                    </mat-form-field> -->
-                                    <custom-key-board type="float" [isPositiveNum]="true"  [placeHolder]="'Y'" class="input-small" [min]="1"
-
-                                        [(value)]="dataService.selectedPallet.palletSizeY" [required]="true"
-                                        (blurEvent)="onWindowResize($event,'palletSizeY')"
-                                        (inputChange)="onWindowResize($event,'palletSizeY')"
-                                    ></custom-key-board>
+                  </mat-form-field> -->
+                  <custom-key-board
+                      type="float"
+                      [isPositiveNum]="true"
+                      [placeHolder]="'X'"
+                      class="input-small"
+                      [min]="1"
+                      [(value)]="dataService.selectedPallet.palletSizeX"
+                      [required]="true"
+                      (blurEvent)="setFormGroupItem($event,'palletSizeX',step1)"
+                      (inputChange) ="setFormGroupItem($event,'palletSizeX',step1,true)">
+                  </custom-key-board>
+                  <custom-key-board
+                      type="float"
+                      [isPositiveNum]="true"
+                      [placeHolder]="'Y'"
+                      class="input-small"
+                      [min]="1"
+                      [(value)]="dataService.selectedPallet.palletSizeY"
+                      [required]="true"
+                      (blurEvent)="setFormGroupItem($event,'palletSizeY',step1)"
+                      (inputChange) ="setFormGroupItem($event,'palletSizeY',step1,true)">
+                  </custom-key-board>
 								</div>
 							</div>
 						</div>
 						<div *ngIf="dataService.selectedPallet.type === 'CUSTOM'">
 							<h3>{{ 'pallets.wizard.levels_in_pallet' | translate }}:</h3>
-							<div style="display: flex; align-items: center;">
+							<div style="align-items: center;width:120px" class="pallet-waizard-keyboard">
 								<!-- <mat-form-field class="input-normal">
 									<input
 										matInput
@@ -211,19 +266,16 @@
 										ktype="numeric_int_pos"
 									/>
                 </mat-form-field> -->
-                <div class="input-normal">
-                  <custom-key-board
-                  type="int"
-                  [isPositiveNum]="true"
-                  [required]="true"
-                  placeHolder="{{ 'pallets.wizard.levels' | translate }}"
-                  class="input-small"
-                  [(value)]="dataService.selectedPallet.levels"
-                  (blurEvent) ="onLevelsChange()"
-                  [min]="1"
-                  (inputChange) = "onLevelChange()"
+                <custom-key-board
+                    type="int"
+                    [min]="1"
+                    [isPositiveNum]="true"
+                    [required]="true"
+                    placeHolder="{{ 'pallets.wizard.levels' | translate }}"
+                    [(value)]="dataService.selectedPallet.levels"
+                    (blurEvent) ="setFormGroupItem($event,'levels',step1)"
+                    (inputChange) = "setFormGroupItem($event,'levels',step1)"
                 ></custom-key-board>
-                </div>
 								<mat-checkbox
 									color="primary"
 									[(ngModel)]="dataService.selectedPallet.diffOddEven"
@@ -237,8 +289,8 @@
 							<mat-error *ngIf="step1.controls['index'].hasError('invalidIndex')">{{
 								'pallets.wizard.invalid_val' | translate
 							}}</mat-error>
-							<mat-radio-group formControlName="index" (change)="blurActive()" [(ngModel)]="indexName">
-								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'" (click)="indexName ='full'">
+							<mat-radio-group formControlName="index" (change)="blurActive()">
+								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'">
 									<span>{{ 'pallets.wizard.index_full' | translate }}</span>
 									<span *ngIf="dataService.selectedPallet.itemsX && dataService.selectedPallet.itemsY && dataService.selectedPallet.itemsZ">({{
 										dataService.selectedPallet.itemsX *
@@ -246,10 +298,10 @@
 											dataService.selectedPallet.itemsZ
 									}})</span>
 								</mat-radio-button>
-								<mat-radio-button value="empty" style="margin: 0 16px;" color="primary" (click)="indexName = 'empty'"
+								<mat-radio-button value="empty" style="margin: 0 16px;" color="primary"
 									>{{ 'pallets.wizard.index_empty' | translate }} (0)</mat-radio-button
 								>
-								<mat-radio-button value="custom" color="primary" (click)="indexName ='custom'">
+								<mat-radio-button value="custom" color="primary">
 									{{ 'pallets.wizard.index_custom' | translate }}
 								</mat-radio-button>
 								<!-- <mat-form-field class="input-normal" appearance="outline" style="margin-left: 8px;">
@@ -263,17 +315,20 @@
 										virtualKeyboard
 										ktype="numeric_int_pos"
 									/>
-                                </mat-form-field> -->
-                                <div style="width: 90px;">
-                                    <custom-key-board class="input-normal" appearance="outline" style="margin-left: 8px;"
-                                        type="int"
-                                        [isPositiveNum]="true"
-                                        [(value)]="dataService.selectedPallet.index"
-                                        [disabled]="step1.controls['index'].value !== 'custom'"
-                                        (blurEvent)="onIndexChange()"
-                                        (inputChange)="onIndexChange()"
-                                    ></custom-key-board>
-                                </div>
+                </mat-form-field> -->
+
+                <div style="width: 90px;margin-left: 8px;">
+                  <custom-key-board
+                      class="input-normal"
+                      appearance="outline"
+                      type="int"
+                      [isPositiveNum]="true"
+                      [(value)]="dataService.selectedPallet.index"
+                      [disabled]="step1.controls['index'].value !== 'custom'"
+                      (blurEvent)="onIndexChange()"
+                      (inputChange)="onIndexChange()"
+                  ></custom-key-board>
+              </div>
 							</mat-radio-group>
 
 						</div>
@@ -372,7 +427,7 @@
 									</button>
 								</span>
 							</div>
-							<div style="display: flex;height:80px">
+							<div class="pallet-waizard-keyboard">
 								<!-- <mat-form-field class="input-small"
 									><input
 										matInput
@@ -382,13 +437,8 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'X'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.origin.x" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'originX')"
-                                    (inputChange)="setStep2Origin($event,'originX')"
-                                ></custom-key-board>
-								<!-- <mat-form-field class="input-small"
+								/></mat-form-field>
+								<mat-form-field class="input-small"
 									><input
 										matInput
 										placeholder="Y"
@@ -397,13 +447,8 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'Y'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.origin.y" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'originY')"
-                                    (inputChange)="setStep2Origin($event,'originY')"
-                                ></custom-key-board>
-								<!-- <mat-form-field class="input-small"
+								/></mat-form-field>
+								<mat-form-field class="input-small"
 									><input
 										matInput
 										placeholder="Z"
@@ -412,12 +457,34 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'Z'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.origin.z" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'originZ')"
-                                    (inputChange)="setStep2Origin($event,'originZ')"
-                                ></custom-key-board>
+                /></mat-form-field> -->
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'X'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.origin.x"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'originX',step2)"
+                    (inputChange)="setFormGroupItem($event,'originX',step2)">
+                </custom-key-board>
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'Y'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.origin.y"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'originY',step2)"
+                    (inputChange)="setFormGroupItem($event,'originY',step2)">
+                </custom-key-board>
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'Z'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.origin.z"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'originZ',step2)"
+                    (inputChange)="setFormGroupItem($event,'originZ',step2)">
+                </custom-key-board>
 							</div>
 						</div>
 						<div (mouseenter)="setOriginPic(2)">
@@ -438,7 +505,7 @@
 									</button>
 								</span>
 							</div>
-							<div style="display: flex;height:80px">
+							<div class="pallet-waizard-keyboard">
 								<!-- <mat-form-field class="input-small"
 									><input
 										matInput
@@ -448,13 +515,8 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'X'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.posX.x" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'posXX')"
-                                    (inputChange)="setStep2Origin($event,'posXX')"
-                                ></custom-key-board>
-								<!-- <mat-form-field class="input-small"
+								/></mat-form-field>
+								<mat-form-field class="input-small"
 									><input
 										matInput
 										placeholder="Y"
@@ -463,13 +525,8 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'Y'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.posX.y" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'posXY')"
-                                    (inputChange)="setStep2Origin($event,'posXY')"
-                                ></custom-key-board>
-								<!-- <mat-form-field class="input-small"
+								/></mat-form-field>
+								<mat-form-field class="input-small"
 									><input
 										matInput
 										placeholder="Z"
@@ -478,12 +535,34 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'Z'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.posX.z" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'posXZ')"
-                                    (inputChange)="setStep2Origin($event,'posXZ')"
-                                ></custom-key-board>
+                /></mat-form-field> -->
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'X'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.posX.x"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'posXX',step2)"
+                    (inputChange)="setFormGroupItem($event,'posXX',step2)">
+                </custom-key-board>
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'Y'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.posX.y"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'posXY',step2)"
+                    (inputChange)="setFormGroupItem($event,'posXY',step2)">
+                </custom-key-board>
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'Z'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.posX.z"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'posXZ',step2)"
+                    (inputChange)="setFormGroupItem($event,'posXZ',step2)">
+                </custom-key-board>
 							</div>
 						</div>
 						<div (mouseenter)="setOriginPic(3)">
@@ -504,7 +583,7 @@
 									</button>
 								</span>
 							</div>
-							<div style="display: flex;height:80px">
+							<div class="pallet-waizard-keyboard">
 								<!-- <mat-form-field class="input-small"
 									><input
 										matInput
@@ -514,13 +593,8 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'X'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.posY.x" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'posYX')"
-                                    (inputChange)="setStep2Origin($event,'posYX')"
-                                ></custom-key-board>
-								<!-- <mat-form-field class="input-small"
+								/></mat-form-field>
+								<mat-form-field class="input-small"
 									><input
 										matInput
 										placeholder="Y"
@@ -529,13 +603,8 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'Y'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.posY.y" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'posYY')"
-                                    (inputChange)="setStep2Origin($event,'posYY')"
-                                ></custom-key-board>
-								<!-- <mat-form-field class="input-small"
+								/></mat-form-field>
+								<mat-form-field class="input-small"
 									><input
 										matInput
 										placeholder="Z"
@@ -544,12 +613,34 @@
 										required
 										virtualKeyboard
 										ktype="numeric"
-                                /></mat-form-field> -->
-                                <custom-key-board type="float" [placeHolder]="'Z'" class="input-small"
-                                    [(value)]="dataService.selectedPallet.posY.z" [required]="true"
-                                    (blurEvent)="setStep2Origin($event,'posYZ')"
-                                    (inputChange)="setStep2Origin($event,'posYZ')"
-                                ></custom-key-board>
+                /></mat-form-field> -->
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'X'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.posY.x"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'posYX',step2)"
+                    (inputChange)="setFormGroupItem($event,'posYX',step2)">
+                </custom-key-board>
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'Y'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.posY.y"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'posYY',step2)"
+                    (inputChange)="setFormGroupItem($event,'posYY',step2)">
+                </custom-key-board>
+                <custom-key-board
+                    type="float"
+                    [placeHolder]="'Z'"
+                    class="input-small"
+                    [(value)]="dataService.selectedPallet.posY.z"
+                    [required]="true"
+                    (blurEvent)="setFormGroupItem($event,'posYZ',step2)"
+                    (inputChange)="setFormGroupItem($event,'posYZ',step2)">
+                </custom-key-board>
 							</div>
 						</div>
 					</div>
@@ -604,14 +695,8 @@
 												required
 												virtualKeyboard
 												ktype="numeric"
-                                        /></mat-form-field> -->
-                                        <custom-key-board type="float" [placeHolder]="'X'" class="input-small"
-                                            [(value)]="dataService.selectedPallet.entry.x" [required]="true"
-                                            (blurEvent)="setStep3Entry($event,'x')"
-                                            (inputChange)="setStep3Entry($event,'x')"
-                                            [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
-                                        ></custom-key-board>
-										<!-- <mat-form-field class="input-small"
+										/></mat-form-field>
+										<mat-form-field class="input-small"
 											><input
 												matInput
 												placeholder="Y"
@@ -620,14 +705,8 @@
 												required
 												virtualKeyboard
 												ktype="numeric"
-                                        /></mat-form-field> -->
-                                        <custom-key-board type="float" [placeHolder]="'Y'" class="input-small"
-                                            [(value)]="dataService.selectedPallet.entry.y" [required]="true"
-                                            (blurEvent)="setStep3Entry($event,'y')"
-                                            (inputChange)="setStep3Entry($event,'y')"
-                                            [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
-                                        ></custom-key-board>
-										<!-- <mat-form-field class="input-small"
+										/></mat-form-field>
+										<mat-form-field class="input-small"
 											><input
 												matInput
 												placeholder="Z"
@@ -636,14 +715,8 @@
 												required
 												virtualKeyboard
 												ktype="numeric"
-                                        /></mat-form-field> -->
-                                        <custom-key-board type="float" [placeHolder]="'Z'" class="input-small"
-                                            [(value)]="dataService.selectedPallet.entry.z" [required]="true"
-                                            (blurEvent)="setStep3Entry($event,'z')"
-                                            (inputChange)="setStep3Entry($event,'z')"
-                                            [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
-                                        ></custom-key-board>
-										<!-- <mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"
+										/></mat-form-field>
+										<mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"
 											><input
 												matInput
 												placeholder="Yaw"
@@ -652,16 +725,8 @@
 												required
 												virtualKeyboard
 												ktype="numeric"
-                                        /></mat-form-field> -->
-                                        <div *ngIf="dataService.robotType === 'PUMA'">
-                                            <custom-key-board type="float" [placeHolder]="'Yaw'" class="input-small"
-                                                [(value)]="dataService.selectedPallet.entry.yaw" [required]="true"
-                                                (blurEvent)="setStep3Entry($event,'yaw')"
-                                                (inputChange)="setStep3Entry($event,'yaw')"
-                                                [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
-                                            ></custom-key-board>
-                                        </div>
-										<!-- <mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"
+										/></mat-form-field>
+										<mat-form-field class="input-small" *ngIf="dataService.robotType === 'PUMA'"
 											><input
 												matInput
 												placeholder="Pitch"
@@ -670,16 +735,8 @@
 												required
 												virtualKeyboard
 												ktype="numeric"
-                                        /></mat-form-field> -->
-                                        <div *ngIf="dataService.robotType === 'PUMA'">
-                                            <custom-key-board type="float" [placeHolder]="'Pitch'" class="input-small"
-                                                [(value)]="dataService.selectedPallet.entry.pitch" [required]="true"
-                                                (blurEvent)="setStep3Entry($event,'pitch')"
-                                                (inputChange)="setStep3Entry($event,'pitch')"
-                                                [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
-                                            ></custom-key-board>
-                                        </div>
-										<!-- <mat-form-field class="input-small"
+										/></mat-form-field>
+										<mat-form-field class="input-small"
 											><input
 												matInput
 												placeholder="Roll"
@@ -688,13 +745,69 @@
 												required
 												virtualKeyboard
 												ktype="numeric"
-                                        /></mat-form-field> -->
-                                        <custom-key-board type="float" [placeHolder]="'Roll'" class="input-small"
-                                            [(value)]="dataService.selectedPallet.entry.roll" [required]="true"
-                                            (blurEvent)="setStep3Entry($event,'roll')"
-                                            (inputChange)="setStep3Entry($event,'roll')"
-                                            [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
-                                        ></custom-key-board>
+                    /></mat-form-field> -->
+                    <custom-key-board
+                        type="float"
+                        [placeHolder]="'X'"
+                        class="input-small"
+                        [(value)]="dataService.selectedPallet.entry.x"
+                        [required]="true"
+                        [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        (blurEvent)="setFormGroupItem($event,'x',step3)"
+                        (inputChange)="setFormGroupItem($event,'x',step3)">
+                    </custom-key-board>
+                    <custom-key-board
+                        type="float"
+                        [placeHolder]="'Y'"
+                        class="input-small"
+                        [(value)]="dataService.selectedPallet.entry.y"
+                        [required]="true"
+                        [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        (blurEvent)="setFormGroupItem($event,'y',step3)"
+                        (inputChange)="setFormGroupItem($event,'y',step3)">
+                    </custom-key-board>
+                    <custom-key-board
+                        type="float"
+                        [placeHolder]="'Z'"
+                        class="input-small"
+                        [(value)]="dataService.selectedPallet.entry.z"
+                        [required]="true"
+                        [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        (blurEvent)="setFormGroupItem($event,'z',step3)"
+                        (inputChange)="setFormGroupItem($event,'z',step3)">
+                    </custom-key-board>
+                    <custom-key-board
+                        *ngIf="dataService.robotType === 'PUMA'"
+                        type="float"
+                        [placeHolder]="'Yaw'"
+                        class="input-small"
+                        [(value)]="dataService.selectedPallet.entry.yaw"
+                        [required]="true"
+                        [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        (blurEvent)="setFormGroupItem($event,'yaw',step3)"
+                        (inputChange)="setFormGroupItem($event,'yaw',step3)">
+                    </custom-key-board>
+                    <custom-key-board
+                        *ngIf="dataService.robotType === 'PUMA'"
+                        type="float"
+                        [placeHolder]="'Pitch'"
+                        [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        class="input-small"
+                        [(value)]="dataService.selectedPallet.entry.pitch"
+                        [required]="true"
+                        (blurEvent)="setFormGroupItem($event,'pitch',step3)"
+                        (inputChange)="setFormGroupItem($event,'pitch',step3)">
+                    </custom-key-board>
+                    <custom-key-board
+                        type="float"
+                        [placeHolder]="'Roll'"
+                        [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        class="input-small"
+                        [(value)]="dataService.selectedPallet.entry.roll"
+                        [required]="true"
+                        (blurEvent)="setFormGroupItem($event,'roll',step3)"
+                        (inputChange)="setFormGroupItem($event,'roll',step3)">
+                    </custom-key-board>
 									</div>
 								</td>
 								<td class="flag-wrapper">
@@ -743,7 +856,7 @@
 								>{{ 'enable' | translate }}</mat-slide-toggle
 							>
 						</div>
-						<div style="display: flex;height:80px">
+						<div class="pallet-waizard-keyboard">
 							<!-- <mat-form-field class="input-medium"
 								><input
 									matInput
@@ -752,15 +865,8 @@
 									formControlName="app_off_v"
 									virtualKeyboard
 									ktype="numeric_pos"
-                            /></mat-form-field> -->
-                            <custom-key-board type="float" placeHolder="{{ 'pallets.wizard.offV' | translate }}" class="input-small"
-                                [(value)]="dataService.selectedPallet.approachOffsetVertical" [required]="true"
-                                (blurEvent)="setStep4App($event,'app_off_v')"
-                                (inputChange)="setStep4App($event,'app_off_v')"
-                                [isPositiveNum]="true"
-                                [disabled]="!dataService.selectedPallet.appEnabled"
-                            ></custom-key-board>
-							<!-- <mat-form-field class="input-medium"
+							/></mat-form-field>
+							<mat-form-field class="input-medium"
 								><input
 									matInput
 									placeholder="{{ 'pallets.wizard.offH' | translate }}"
@@ -768,14 +874,29 @@
 									formControlName="app_off_h"
 									virtualKeyboard
 									ktype="numeric_pos"
-                            /></mat-form-field> -->
-                            <custom-key-board type="float" placeHolder="{{ 'pallets.wizard.offH' | translate }}" class="input-small"
-                                [(value)]="dataService.selectedPallet.approachOffsetHorizontal" [required]="true"
-                                (blurEvent)="setStep4App($event,'app_off_h')"
-                                (inputChange)="setStep4App($event,'app_off_h')"
-                                [isPositiveNum]="true"
-                                [disabled]="!dataService.selectedPallet.appEnabled"
-                            ></custom-key-board>
+              /></mat-form-field> -->
+
+              <custom-key-board
+                  type="float"
+                  placeHolder="{{ 'pallets.wizard.offV' | translate }}"
+                  class="input-small"
+                  [(value)]="dataService.selectedPallet.approachOffsetVertical"
+                  [required]="true"
+                  (blurEvent)="setFormGroupItem($event,'app_off_v',step4)"
+                  (inputChange)="setFormGroupItem($event,'app_off_v',step4)"
+                  [isPositiveNum]="true"
+                  [disabled]="!dataService.selectedPallet.appEnabled"
+              ></custom-key-board>
+             <custom-key-board
+                  type="float"
+                  placeHolder="{{ 'pallets.wizard.offH' | translate }}"
+                  class="input-small"
+                  [(value)]="dataService.selectedPallet.approachOffsetHorizontal" [required]="true"
+                  (blurEvent)="setFormGroupItem($event,'app_off_h',step4)"
+                  (inputChange)="setFormGroupItem($event,'app_off_h',step4)"
+                  [isPositiveNum]="true"
+                  [disabled]="!dataService.selectedPallet.appEnabled"
+            ></custom-key-board>
 						</div>
 						<mat-checkbox
 							[(ngModel)]="dataService.selectedPallet.appExceed"
@@ -810,7 +931,7 @@
 								>{{ 'enable' | translate }}</mat-slide-toggle
 							>
 						</div>
-						<div style="display: flex;height:80px">
+						<div  class="pallet-waizard-keyboard">
 							<!-- <mat-form-field class="input-medium"
 								><input
 									matInput
@@ -819,15 +940,8 @@
 									formControlName="ret_off_v"
 									virtualKeyboard
 									ktype="numeric_pos"
-                            /></mat-form-field> -->
-                            <custom-key-board type="float" placeHolder="{{ 'pallets.wizard.offV' | translate }}" class="input-small"
-                                [(value)]="dataService.selectedPallet.retractOffsetVertical" [required]="true"
-                                (blurEvent)="setStep4App($event,'ret_off_v')"
-                                (inputChange)="setStep4App($event,'ret_off_v')"
-                                [isPositiveNum]="true"
-                                [disabled]="!dataService.selectedPallet.retEnabled"
-                            ></custom-key-board>
-							<!-- <mat-form-field class="input-medium"
+							/></mat-form-field>
+							<mat-form-field class="input-medium"
 								><input
 									matInput
 									placeholder="{{ 'pallets.wizard.offH' | translate }}"
@@ -835,14 +949,28 @@
 									formControlName="ret_off_h"
 									virtualKeyboard
 									ktype="numeric_pos"
-                            /></mat-form-field> -->
-                            <custom-key-board type="float" placeHolder="{{ 'pallets.wizard.offH' | translate }}" class="input-small"
-                                [(value)]="dataService.selectedPallet.retractOffsetHorizontal" [required]="true"
-                                (blurEvent)="setStep4App($event,'ret_off_h')"
-                                (inputChange)="setStep4App($event,'ret_off_h')"
-                                [isPositiveNum]="true"
-                                [disabled]="!dataService.selectedPallet.retEnabled"
-                            ></custom-key-board>
+              /></mat-form-field> -->
+              <custom-key-board
+                  type="float"
+                  placeHolder="{{ 'pallets.wizard.offV' | translate }}"
+                  class="input-small"
+                  [(value)]="dataService.selectedPallet.retractOffsetVertical" [required]="true"
+                  (blurEvent)="setFormGroupItem($event,'ret_off_v',step4)"
+                  (inputChange)="setFormGroupItem($event,'ret_off_v',step4)"
+                  [isPositiveNum]="true"
+                  [disabled]="!dataService.selectedPallet.retEnabled"
+              ></custom-key-board>
+              <custom-key-board
+                  type="float"
+                  placeHolder="{{ 'pallets.wizard.offH' | translate }}"
+                  class="input-small"
+                  [(value)]="dataService.selectedPallet.retractOffsetHorizontal"
+                  [required]="true"
+                  (blurEvent)="setFormGroupItem($event,'ret_off_h',step4)"
+                  (inputChange)="setFormGroupItem($event,'ret_off_h',step4)"
+                  [isPositiveNum]="true"
+                  [disabled]="!dataService.selectedPallet.retEnabled"
+          ></custom-key-board>
 						</div>
 						<mat-checkbox
 							[(ngModel)]="dataService.selectedPallet.retExceed"
