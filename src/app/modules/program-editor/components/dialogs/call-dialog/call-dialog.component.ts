@@ -24,6 +24,11 @@ export class CallDialogComponent implements OnInit {
 
   ngOnInit() {}
 
+  public change(value: string): void {
+    this.dialogForm.controls.expression.setValue(value);
+    this.dialogForm.controls.expression.markAsTouched();
+  }
+
   insert() {
     if (this.dialogForm.invalid) return;
     const val = this.dialogForm.controls['expression'].value as string;

@@ -21,6 +21,11 @@ export class NewProjectDialogComponent implements OnInit {
     this.dialogRef.close(name.toUpperCase());
   }
 
+  public change(value: string): void {
+    this.dialogForm.controls.val.setValue(value);
+    this.dialogForm.controls.val.markAsTouched();
+  }
+
   ngOnInit() {
   }
 }

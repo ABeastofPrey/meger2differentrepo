@@ -10,10 +10,25 @@
             width: calc(100% - 20px);
         }
         mat-select {
+            width: 0;
+            height: 0;
             z-index: 0;
-            .mat-select-value {
-                opacity: 0;
-            }
+            overflow: hidden;
         }
     }
+    mat-icon {
+        z-index: 2;
+        right: -5px;
+        position: absolute;
+    }
+}
+
+.rich-option-list {
+    width: 300px;
+    overflow-y: auto;
+    border: solid 1px #ccc;
+    border-radius: 4px;
+    background: #fff;
+    text-align: center;
+    margin: 8px 0 0 0;
 }

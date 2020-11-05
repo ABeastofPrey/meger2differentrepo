@@ -1,36 +1,36 @@
+
+
 <form class="rich-select">
     <mat-form-field>
         <input matInput autocomplete="off"
-            #autoCompleteInput
-            [(ngModel)]="value"
-            [matAutocomplete]="richAuto"
+            [readonly]="isTablet ? true : false"
+            cdkOverlayOrigin 
+            #trigger="cdkOverlayOrigin"
+            [value]="value"
             [placeholder]="placeholder"
-            (keyup.enter)="autoCompleteInput.blur()"
+            (keyup.enter)="trigger.blur()"
             (blur)="onInputBlur()"
             (focus)="onInputFocus()"
             (input)="onInputChange($event.target.value)"
             [ngModelOptions]="{standalone: true}">
-        <mat-autocomplete #richAuto="matAutocomplete">
-            <mat-option *ngFor="let option of filteredOptions | async"
-                [value]="option"
-                (click)="autoCompleteChange(option)">
-                <colorful-span [key]="value" [value]="option"></colorful-span>
-            </mat-option>
-        </mat-autocomplete>
-        <mat-select [disabled]="options?.length === 0"
-            (selectionChange)="onSelectionChange($event.value)"
-            (openedChange)="openedChange($event)"
-            (click)="openSelect()"
-            [disableOptionCentering]="true"
-            [ngModelOptions]="{standalone: true}">
-            <ng-container *ngIf="options?.length < 1000 else virtualScroll">
-                <mat-option *ngFor="let option of options" [value]="option">{{option}}</mat-option>
-            </ng-container>
-            <ng-template #virtualScroll>
-                <cdk-virtual-scroll-viewport itemSize="10" [style.height]="viewPortHeight(options)">
-                    <mat-option *cdkVirtualFor="let option of options" [value]="option">{{option}}</mat-option>
-                </cdk-virtual-scroll-viewport>
-            </ng-template>
-        </mat-select>
+        <mat-select [disabled]="true"></mat-select>
     </mat-form-field>
+    <mat-icon [ngStyle]="{ 
+            'color': isFocused || options?.length === 0 ? 'lightgray' : 'black',
+            'bottom': isTablet ? '25px' : '20px'
+        }" 
+        (click)="openSlection($event)">arrow_drop_down
+    </mat-icon>
 </form>
+<ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="selectOptions?.length !== 0">
+    <cdk-virtual-scroll-viewport itemSize="10" [style.height]="viewPortHeight(selectOptions)" class="rich-option-list">
+        <mat-option *ngFor="let option of selectOptions"
+            [value]="option"
+            (click)="onSelectionChange(option)">
+            <colorful-span [key]="value" [value]="option"></colorful-span>
+        </mat-option>
+    </cdk-virtual-scroll-viewport>
+</ng-template>

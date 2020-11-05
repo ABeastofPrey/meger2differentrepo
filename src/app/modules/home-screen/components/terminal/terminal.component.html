@@ -4,18 +4,26 @@
 	</div>
 </div>
 <div class="wrapper disabled" *ngIf="!login.isAdmin"></div>
-<mat-form-field class="hidden">
+<!-- <mat-form-field class="hidden">
 	<input
 		matInput
 		placeholder=""
 		[(ngModel)]="dummyText"
-		virtualKeyboard
+		virtualKeyboard 
 		showArrows="true"
 		ktype="text"
 		#dummyInput
 		(onKeyboardClose)="onDummyKeyboardClose()"
 	/>
-</mat-form-field>
+</mat-form-field> -->
+<custom-key-board
+    class="hidden"
+    type="string"
+    [(value)]="dummyText"
+    [isCommand]="true"
+    (blurEvent)="onDummyKeyboardClose()"
+    #dummyInput
+></custom-key-board>
 <button mat-fab *ngIf="cmn.isTablet && login.isAdmin" class="fab" (click)="showKeyboard()">
 	<mat-icon>keyboard</mat-icon>
 </button>

@@ -431,7 +431,8 @@ export class TerminalComponent implements OnInit {
   }
 
   /*************** Virtual Keyboard **********************/
-  @ViewChild(MatInput, { static: false }) dummyInput!: MatInput;
+//   @ViewChild(MatInput, { static: false }) dummyInput!: MatInput;
+  @ViewChild('dummyInput', { static: true }) dummyInput: any;
   dummyText = '';
   showKeyboard() {
     const editor = this.editor;
@@ -440,7 +441,9 @@ export class TerminalComponent implements OnInit {
     const editableRow = editor.session.getLength() - 1;
     if (row !== editableRow) return;
     this.dummyText = editor.session.getLine(row).substring(3).trim();
-    this.dummyInput.focus();
+    this.dummyInput.numInput.nativeElement.click();
+    
+    // this.dummyInput.focus();
   }
   onDummyKeyboardClose() {
     this.send(this.dummyText);

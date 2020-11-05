@@ -52,7 +52,7 @@ import { IpAddressComponent } from '../../components/ip-address/ip-address.compo
 import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-field.component';
 import { CustomKeyBoardComponent } from '../custom-key-board/custom-key-board.component';
 import { CustomKeyBoardDialogComponent } from '../custom-key-board-dialog/custom-key-board-dialog.component';
-
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   imports: [
@@ -69,6 +69,7 @@ import { CustomKeyBoardDialogComponent } from '../custom-key-board-dialog/custom
     TranslateModule,
     NgScrollbarModule,
     ScrollingModule,
+    OverlayModule,
   ],
   exports: [
     CommonModule,

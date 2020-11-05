@@ -3,7 +3,7 @@
 		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'projects.toolbar.rename_prj' | translate }}
 	</div>
 	<div class="name-wrapper">
-		<mat-form-field>
+		<!-- <mat-form-field>
 			<input
 				matInput
 				placeholder="{{ 'projects.toolbar.rename_prj_name' | translate }}"
@@ -11,7 +11,10 @@
 				virtualKeyboard
 				ktype="text"
 			/>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" placeHolder="{{ 'projects.toolbar.rename_prj_name' | translate }}"
+            [nameRules]="true" [maxLength]="32" [(value)]="name"
+        ></custom-key-board>
 	</div>
 	<div class="actions">
 		<button mat-button mat-dialog-close>

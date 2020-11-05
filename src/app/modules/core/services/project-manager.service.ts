@@ -469,9 +469,9 @@ export class ProjectManagerService {
   private updateModel(name: string, limit: Limit, newVal: number | string,keyboardContext?: CustomKeyBoardComponent) {
     newVal = newVal.toString();
     if (name.endsWith('min')) {
-      limit.min = newVal;
+      limit.min = newVal.toString();
     } else {
-      limit.max = newVal;
+      limit.max = newVal.toString();
     }
     keyboardContext && keyboardContext.setControlValue(newVal);
   }

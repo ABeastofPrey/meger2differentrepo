@@ -19,7 +19,7 @@
                             {{'vision.calibration.elementName' | translate}}
                         </th>
                         <td mat-cell *matCellDef="let element;let i=index">
-                            <mat-form-field class="nameShowAll">
+                            <!-- <mat-form-field class="nameShowAll">
                                 <input matInput autocomplete="off" class="inputElementName"
                                     (input)="changeInput($event,i,'respondData')" (blur)="blurReapondData(i)"
                                     [formControl]="element.dataName">
@@ -31,7 +31,13 @@
                                 <mat-error
                                     *ngIf="element.dataName.hasError('exist') && !element.dataName.hasError('required') && !element.dataName.hasError('letter')">
                                     {{ 'vision.templateConfig.nameExist' | translate }}</mat-error>
-                            </mat-form-field>
+                            </mat-form-field> -->
+                            <div class="customKeyBoard">
+                                <custom-key-board type="string" [required]="true" [(value)]="element.dataName.value" [maxLength]="32" class="inputElementName"
+                                    [nameRules]="true" (valueChange)="changeInput({target:{value:$event}},i,'respondData')"
+                                    (blurEvent)="blurReapondData(i)" [existNameList]="respondExist"
+                                ></custom-key-board>
+                            </div>
                         </td>
                     </ng-container>
 
@@ -80,7 +86,7 @@
                 <th mat-header-cell *matHeaderCellDef class="dataHeader">
                     {{'vision.calibration.elementName' | translate}}</th>
                 <td mat-cell *matCellDef="let element;let i=index">
-                    <mat-form-field class="nameShowAll">
+                    <!-- <mat-form-field class="nameShowAll">
                         <input matInput autocomplete="off" (input)="changeInput($event,i,'respondError')"
                             [formControl]="element.dataName" (blur)="setResErrorName(i)">
                         <mat-error *ngIf="element.dataName.hasError('required')">
@@ -88,7 +94,13 @@
                         <mat-error
                             *ngIf="element.dataName.hasError('letter') && !element.dataName.hasError('required')">
                             {{ 'vision.templateConfig.createLetter' | translate }}</mat-error>
-                    </mat-form-field>
+                    </mat-form-field> -->
+                    <div class="customKeyBoard">
+                        <custom-key-board type="string" [required]="true" [(value)]="element.dataName.value" [maxLength]="32"
+                            [nameRules]="true" (valueChange)="changeInput({target:{value:$event}},i,'respondError')"
+                            (blurEvent)="setResErrorName(i)"
+                        ></custom-key-board>
+                    </div>
                 </td>
             </ng-container>
 
@@ -118,7 +130,7 @@
                 <th mat-header-cell *matHeaderCellDef class="dataHeader">
                     {{'vision.calibration.elementName' | translate}}</th>
                 <td mat-cell *matCellDef="let element;let i=index">
-                    <mat-form-field class="nameShowAll">
+                    <!-- <mat-form-field class="nameShowAll">
                         <input matInput autocomplete="off" (input)="changeInput($event,i,'respondStatus')"
                             [formControl]="element.dataName" (blur)="setResStatusName(i)">
                         <mat-error *ngIf="element.dataName.hasError('required')">
@@ -126,7 +138,13 @@
                         <mat-error
                             *ngIf="element.dataName.hasError('letter') && !element.dataName.hasError('required')">
                             {{ 'vision.templateConfig.createLetter' | translate }}</mat-error>
-                    </mat-form-field>
+                    </mat-form-field> -->
+                    <div class="customKeyBoard">
+                        <custom-key-board type="string" [required]="true" [(value)]="element.dataName.value" [maxLength]="32"
+                            [nameRules]="true" (valueChange)="changeInput({target:{value:$event}},i,'respondStatus')"
+                            (blurEvent)="setResStatusName(i)"
+                        ></custom-key-board>
+                    </div>
                 </td>
             </ng-container>
 

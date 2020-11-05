@@ -126,4 +126,8 @@ export class CustomKeyBoardDialogComponent implements OnInit {
 
     }
 
+    public onLineDelete() {
+        this.dialogRef.close({delete: true});
+    }
+
 }

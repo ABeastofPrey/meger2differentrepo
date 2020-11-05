@@ -70,13 +70,21 @@ export class SubProgramComponent implements OnInit {
         this.subName.markAsTouched();
     }
 
+    public change(value: string): void {
+        this.subName.patchValue(value);
+        this.subName.markAsTouched();
+    }
+
     public addParameter(): void {
         let parameter: VariableList = { "VariableName": new FormControl("", [Validators.required, this.validFirstLetter(), this.validExist()]), "VariableType": "long", "operation": "" };
         this.dataSource.push(parameter);
         this.parameterTable.renderRows();
         let addInputElement: any = document.getElementsByClassName("inputElementParameter")[this.dataSource.length - 1];
-        addInputElement.focus();
-        this.isParameterEmpty = true;
+        // addInputElement.focus();
+        setTimeout(() => {
+            addInputElement.getElementsByTagName("input")[0].click();
+            this.changeParameter({target:{value:""}},this.dataSource.length - 1);
+        }, 0);
     }
 
     public deleteParameter(index: number): void {

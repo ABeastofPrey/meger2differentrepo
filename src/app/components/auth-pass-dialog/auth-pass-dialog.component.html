@@ -12,7 +12,7 @@
         <mat-button-toggle color="primary" value="R" [disabled]="data.currentMode === 'R'">R</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-		<mat-form-field appearance="outline" style="margin-top: 24px;">
+		<!-- <mat-form-field appearance="outline" style="margin-top: 24px;">
 
 			<input
 				matInput
@@ -23,7 +23,11 @@
 				ktype="password"
 				(keydown)="isError = false"
 			/>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" [password]="true" placeHolder="{{ 'password_confirm' | translate }}"
+            style="margin-top: 24px;" appearance="outline"
+            [(value)]="val" (valueChange)="isError = false" (blurEvent)="isError = false" 
+        ></custom-key-board>
 		<div class="warn" *ngIf="isError">{{ 'password_err' | translate }}</div>
 	</div>
 	<div class="actions">

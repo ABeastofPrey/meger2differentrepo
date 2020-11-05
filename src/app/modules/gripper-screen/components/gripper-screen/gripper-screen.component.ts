@@ -231,7 +231,8 @@ export class GripperScreenComponent implements OnInit {
           placeholder: this.words['name'],
           accept: title,
           regex: '[a-zA-Z]+(\\w*)$',
-          maxLength: 32
+          maxLength: 32,
+          nameRules: true
         },
       })
       .afterClosed()

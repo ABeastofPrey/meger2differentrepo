@@ -37,7 +37,7 @@
 			(change)="teach.onKeyboardClose()"
 			(onKeyboardClose)="teach.onKeyboardClose()"
         /> -->
-        <input matInput>
+        <input matInput [hidden]="true">
 		<input
 			*ngIf="teach.selectedTeachVariable.typeStr === 'STRING'"
 			matInput
@@ -53,8 +53,8 @@
             (teach.selectedTeachVariable.typeStr !== 'STRING' && teach.selectedTeachVariable.typeStr !== 'LOCATION') ||
             (teach.selectedTeachVariable.typeStr === 'LOCATION' && i < data.robotCoordinateType.legends.length)
         ">
-            <custom-key-board [(value)]="teach.value[i].value" type="float" prefix="{{ teach.legend[i] | translate }}:&nbsp;&nbsp;"
-                (valueChange)="teach.onKeyboardClose()"  (blurEvent)="teach.onKeyboardClose()"
+            <custom-key-board [(value)]="teach.value[i].value"    type="{{teach.selectedTeachVariable.typeStr === 'LONG' ? 'int' : 'float' }}" prefix="{{ teach.legend[i] | translate }}:&nbsp;&nbsp;"
+            (blurEvent)="teach.onKeyboardClose()"
             ></custom-key-board>
         </div>
     </div>

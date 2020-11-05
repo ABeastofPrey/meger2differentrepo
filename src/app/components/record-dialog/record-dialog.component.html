@@ -18,12 +18,14 @@
       placeHolder="{{ 'duration' | translate }}"
       type="int"
       suffix="ms."
+      [min]="minDuration"
+      [required] ="true"
       isPositiveNum="true"
     ></custom-key-board>
     <mat-slide-toggle color="primary" #advanced style="margin: 16px 0;">
       {{ 'advanced' | translate }}
     </mat-slide-toggle>
-    <mat-form-field *ngIf="advanced.checked">
+    <!-- <mat-form-field *ngIf="advanced.checked">
       <input
         type="text"
         placeholder="{{ 'files.name' | translate }}"
@@ -33,12 +35,19 @@
         ktype="text"
       />
       <span matSuffix>.REC</span>
-    </mat-form-field>
+    </mat-form-field> -->
+    <div *ngIf="advanced.checked">
+        <custom-key-board type="string" placeHolder="{{ 'files.name' | translate }}" [suffix]="'.REC'"
+            [value]="fileName.value" (valueChange)="changeFileName($event)" (blurEvent)="changeFileName($event)"
+        ></custom-key-board>
+    </div>
     <custom-key-board
       *ngIf="advanced.checked"
       [(value)]="gap"
       placeHolder="{{ 'gap' | translate }}"
       type="int"
+      [min]="0"
+      [leftClosedInterval] = "false"
       suffix="{{ 'gap_units' | translate }}"
       isPositiveNum="true"
     ></custom-key-board>
@@ -64,11 +73,11 @@
     (click)="record()"
     [disabled]="
       (data && data.params.length === 0 && recMode === '1') ||
-      duration === null ||
-      gap === null ||
-      duration === null ||
+      !duration ||
+      !gap ||
+      !duration ||
       gap < 1 ||
-      duration < 10 ||
+      duration < minDuration ||
       fileName.invalid
     "
   >

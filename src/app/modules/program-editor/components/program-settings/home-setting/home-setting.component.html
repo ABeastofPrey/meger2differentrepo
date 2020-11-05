@@ -19,10 +19,21 @@
         	/>
         <span matSuffix>{{i == 2 ? "[mm]" : "[deg]"}}</span>
             </mat-form-field> -->
-            <custom-key-board *ngFor="let p of positionList; let i = index" type="float" [(value)]="p"
-                prefix="J{{ i + 1 }}: &nbsp;" suffix='{{i == 2 ? "[mm]" : "[deg]"}}'
-                (focusEvent)="onFocus($event)" (blurEvent)="updatePosition(i+1,{value:$event})"
-            ></custom-key-board>
+			<ng-container *ngIf="limits.length !== 0">
+				<custom-key-board *ngFor="let p of positionList; let i = index" 
+					type="float" 
+					[(value)]="p"
+					[min]="limits[i]?.min"
+					[max]="limits[i]?.max"
+					[leftClosedInterval]="false"
+					[rightClosedInterval]="false"
+					prefix="J{{ i + 1 }}: &nbsp;" 
+					suffix='{{i == 2 ? "[mm]" : "[deg]"}}'
+					(focusEvent)="onFocus($event)" 
+					(blurEvent)="updatePosition(i+1,{value:$event})">
+				</custom-key-board>
+			</ng-container>
+			
 		</div>
 		<button *ngIf="positionList.length !== 0" mat-raised-button class="read-btn" (click)="readCurrentPosition()">
 			{{ 'projectSettings.home_config.curPositionBtn' | translate }}

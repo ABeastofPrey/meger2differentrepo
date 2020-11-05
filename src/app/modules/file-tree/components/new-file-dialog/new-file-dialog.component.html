@@ -3,7 +3,7 @@
 		<mat-icon>note_add</mat-icon>&nbsp;&nbsp;{{ 'projects.toolbar.new_file' | translate }}
 	</div>
 	<div class="name-wrapper">
-		<mat-form-field>
+		<!-- <mat-form-field>
 			<input
 				matInput
 				placeholder="{{ 'files.name' | translate }}"
@@ -12,7 +12,11 @@
 				ktype="text"
 			/>
 			<mat-error *ngIf="name.invalid">{{ 'error.invalid_var_name' | translate }}</mat-error>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" placeHolder="{{ 'files.name' | translate }}"
+            [value]="name.value" [maxLength]="32" [nameRules]="true"
+            (valueChange)="changeName($event)" (blurEvent)="changeName($event)"
+        ></custom-key-board>
 		<mat-form-field>
 			<mat-select placeholder="{{ 'files.ext' | translate }}" [(ngModel)]="ext">
 				<mat-optgroup label="{{ 'projects.toolbar.prg' | translate }}">

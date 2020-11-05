@@ -48,7 +48,7 @@ const DEFAULT_MC_NAME = 'MC';
 })
 export class RobotsComponent implements OnInit {
 
-  // DH AND DISP  
+  // DH AND DISP
   disp: number[] = [];
   units: string[] = [];
   dh: DH[] = [];
@@ -103,8 +103,8 @@ export class RobotsComponent implements OnInit {
   }
 
   // SYSTEM
-  sysName: FormControl = new FormControl('',[Validators.required, Validators.maxLength(11)]);
-  
+  sysName: FormControl = new FormControl('',[Validators.required, Validators.maxLength(16)]);
+
   // MCU
   mcuThreshold = 0;
   mcuConnected = false;
@@ -135,7 +135,7 @@ export class RobotsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const words = ['changeOK', 'robots.updating', 'safety.password_change'];
+    const words = ['changeOK', 'changeError','robots.updating', 'safety.password_change'];
     this.trn.get(words).subscribe(words => {
       this.wordOk = words['changeOK'];
       this.wordUpdating = words['robots.updating'];
@@ -239,8 +239,14 @@ export class RobotsComponent implements OnInit {
     this[key].setValue(value);
     this[key].markAsTouched();
     if (this.sysName.invalid) return;
-    this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName.value + '")');
-    this.snackbarService.openTipSnackBar(this.wordOk);
+    this.ws.query('call UTL_SET_SYSTEM_NAME("' + this.sysName.value + '")').then((res)=>{
+      if(res.err){
+        this.snackbarService.openTipSnackBar(this.words['changeError']);
+      }else{
+        this.snackbarService.openTipSnackBar(this.wordOk);
+      }
+    });
+
   }
 
   private async refreshDisp() {
@@ -408,7 +414,7 @@ export class RobotsComponent implements OnInit {
         }
       });
   }
-  
+
   toggleDebug(on: boolean) {
     if (!on) return;
     this.mgr.debugMode = on;
@@ -429,7 +435,9 @@ export class RobotsComponent implements OnInit {
         regex: '^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$',
         maxLength: 15,
         minLength: 4,
-        error: 'safety.password_change.err_regex'
+        error: 'safety.password_change.err_regex',
+        letterAndNumber: true,
+        password: true
       }
     }).afterClosed().subscribe(async ret=>{
       if (ret) {

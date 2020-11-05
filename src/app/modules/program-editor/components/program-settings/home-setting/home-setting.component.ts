@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HomeSettingService } from '../../../services/home-setting.service';
 import {
-	range, equals, converge, __, and, gt, lt,
-	complement, isEmpty, identity, ifElse,
+	range, equals, isEmpty, identity, ifElse, map, 
+	converge, __, and, gt, lt,complement,
 } from 'ramda';
-import { isNotValidNumber } from 'ramda-adjunct';
 import { Either } from 'ramda-fantasy';
 import { TranslateService } from '@ngx-translate/core';
 import { TerminalService } from '../../../../home-screen/services/terminal.service';
@@ -23,12 +22,9 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
 	orderOptions: number[] = range(1, 10);
 	orderList: number[] = [];
 	positionList: number[] = [];
-	private preValue: number | string;
-	private preIndex: number;
-	private min: number;
-	private max: number;
 	private words: {};
 	private notifier: Subject<boolean> = new Subject();
+	public limits: { min: number, max: number }[] = [];
 
 	constructor(
 		private service: HomeSettingService,
@@ -48,6 +44,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
 		this.trn.get(['projectSettings.home_config']).subscribe(words => {
 			this.words = words['projectSettings.home_config'];
 		});
+		this.getLimits();
 		this.retrieveOrder();
 		this.retrievePosition();
 	}
@@ -55,6 +52,12 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this.notifier.next(true);
 		this.notifier.unsubscribe();
+	}
+
+	private getLimits(): void {
+		Promise.all(map(idx => this.getMinMax(idx), range(1, 5))).then(res => {
+			this.limits = res as any;
+		});
 	}
 
 	private async retrievePosition(): Promise<void> {
@@ -72,7 +75,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
 	}
 
 	onFocus(value: string): void {
-		this.preValue = transferNum(value);
+		// this.preValue = transferNum(value);
 	}
 
 	// tslint:disable-next-line: no-any
@@ -84,43 +87,14 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
 
 	async updatePosition(index: number, target: HTMLInputElement): Promise<void> {
 		const value = transferNum(target.value);
-		const isEqualsToPrevious = equals(this.preValue);
-		if (isEmpty(value)) {
-			if (isEqualsToPrevious(value)) {
-				return;
-			} else {
-				Either.either(
-					err => console.warn('Update Home Position failed: ' + err),
-					this.sysLogSnackBar.openTipSnackBar(this.words['savedTip'])
-				)(await this.service.clearHomePosition(index));
-			}
-		} else {
-			if (isNotValidNumber(value)) {
-				target.value = this.preValue as string;
-				this.sysLogSnackBar.openTipSnackBar(this.words['validNumTip'])
-				return;
-			} else if (isEqualsToPrevious(value)) {
-				return;
-			} else {
-				const isNotEq2PreIndex = complement(equals(this.preIndex));
-				if (isNotEq2PreIndex(index)) {
-					const { min, max } = await this.getMinMax(index);
-					(this.min = min), (this.max = max);
-					this.preIndex = index;
-				}
-				const positionRange = converge(and, [gt(__, this.min), lt(__, this.max),]);
-				const isOverLimit = complement(positionRange);
-				if (isOverLimit(value)) {
-					target.value = this.preValue as string;
-					this.sysLogSnackBar.openTipSnackBar(`${this.words['numRange']} [${this.min},${this.max}].`)
-					return;
-				}
-			}
-			Either.either(
-				err => console.warn('Update Home Position failed: ' + err),
-				this.sysLogSnackBar.openTipSnackBar(this.words['savedTip'])
-			)(await this.service.updateHomePostion(index, value));
-		}
+		const positionRange = converge(and, [gt(__, this.limits[index].min), lt(__, this.limits[index].max),]);
+		const isOverLimit = complement(positionRange);
+		if (isOverLimit(value)) return;
+		this.service.updateHomePostion(index, value).then(() => {
+			this.sysLogSnackBar.openTipSnackBar(this.words['savedTip']);
+		}).catch(err => {
+			console.warn('Update Home Position failed: ' + err);
+		});
 	}
 
 	async updateOrder(index: number, value: number): Promise<void> {

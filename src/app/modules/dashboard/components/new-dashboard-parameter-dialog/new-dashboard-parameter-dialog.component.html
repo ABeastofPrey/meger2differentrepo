@@ -21,7 +21,7 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <mat-form-field *ngIf="cmn.isTablet">
+      <!-- <mat-form-field *ngIf="cmn.isTablet">
         <input
           type="text"
           placeholder="{{ 'parameter' | translate }}"
@@ -30,7 +30,12 @@
           ktype="text"
           [(ngModel)]="newParam.name"
         />
-      </mat-form-field>
+      </mat-form-field> -->
+      <div *ngIf="cmn.isTablet">
+        <custom-key-board type="string" placeHolder="{{ 'parameter' | translate }}"
+            [(value)]="newParam.name"
+        ></custom-key-board>
+      </div>
       <mat-form-field>
         <mat-select
           placeholder="{{ 'inputs.type' | translate }}"

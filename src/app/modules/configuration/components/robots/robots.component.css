@@ -86,6 +86,13 @@ mat-card {
   -o-animation: flickerAnimation .5s infinite;
    animation: flickerAnimation .5s infinite;
 }
+.sys_name{
+  margin-bottom: 10px;
+}
+
+::ng-deep .sys_name .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
+  height: 32px;
+}
 
 @keyframes flickerAnimation {
   0%   { opacity:1; }

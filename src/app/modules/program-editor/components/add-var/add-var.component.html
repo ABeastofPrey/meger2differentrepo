@@ -1,10 +1,16 @@
 <div class="mat-typography">
 	<div class="title mat-elevation-z1"><mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'variables.new' | translate }}</div>
 	<div class="name-wrapper">
-		<mat-form-field class="variableName">
+		<!-- <mat-form-field class="variableName">
 			<input matInput placeholder="{{ 'variables.name' | translate }}" [formControl]="name" maxlength="32" virtualKeyboard ktype="text" />
 			<mat-error *ngIf="name.invalid">{{ 'error.invalid_var_name' | translate }}</mat-error>
-		</mat-form-field>
+        </mat-form-field> -->
+        <div class="customKeyBoard">
+            <custom-key-board type="string" placeHolder="{{ 'variables.name' | translate }}"
+                [nameRules]="true" [maxLength]="32" [value]="name.value"
+                (valueChange)="change($event)" (blurEvent)="change($event)"
+            ></custom-key-board>
+        </div>
 		<mat-form-field *ngIf="!data.domainIsFrame">
 			<mat-select
 				placeholder="{{ 'variables.type' | translate }}"
@@ -137,8 +143,8 @@
                     </div>
 				</div>
 				<div *ngIf="varType && varType !== 'LOCATION' && varType !== 'JOINT'" class="values">
-					<mat-form-field floatLabel="never" style="width: inherit;" *ngIf="varType === 'STRING'">
-						<span matPrefix style="font-weight: bold;">{{ 'value' | translate }}:&nbsp;&nbsp;</span>
+					<!-- <mat-form-field floatLabel="never" style="width: inherit;" *ngIf="varType === 'STRING'">
+						<span matPrefix style="font-weight: bold;">{{ 'value' | translate }}:&nbsp;&nbsp;</span> -->
 						<!-- <input
 							*ngIf="varType === 'LONG'"
 							matInput
@@ -157,7 +163,7 @@
 							[disabled]="busy"
 							ktype="numeric"
                         /> -->
-						<textarea
+						<!-- <textarea
 							matInput
 							[placeholder]="Value"
 							[(ngModel)]="this.values[0]"
@@ -169,11 +175,12 @@
 							[disabled]="busy"
 							cdkAutosizeMinRows="1"
 						></textarea>
-                    </mat-form-field>
+                    </mat-form-field> -->
                     <custom-key-board  prefix="{{ 'value' | translate }}:&nbsp;&nbsp;" type="int" [isNgIf]="varType === 'LONG'" [placeHolder]="Value" [(value)]="this.values[0]" [disabled]="busy"></custom-key-board>
                     <custom-key-board  prefix="{{ 'value' | translate }}:&nbsp;&nbsp;" type="float" [isNgIf]="varType === 'DOUBLE'" [placeHolder]="Value" [(value)]="this.values[0]" [disabled]="busy"></custom-key-board>
-				</div>
-				<button
+                    <custom-key-board  prefix="{{ 'value' | translate }}:&nbsp;&nbsp;" type="string" [isNgIf]="varType === 'STRING'" [placeHolder]="Value" [(value)]="this.values[0]" [disabled]="busy"></custom-key-board>
+                </div>
+				<button 
         *ngIf="varType === 'JOINT' || varType === 'LOCATION'"
         mat-raised-button
         color="primary"

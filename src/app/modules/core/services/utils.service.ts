@@ -252,6 +252,29 @@ export class UtilsService {
     this.upperRightOverlayEle.classList.remove('upper-right-conner-overlay-shrink');
   }
 
+  public isNumber(value: string): boolean {
+    if (value === undefined || value === null) return false;
+    if (value === 'undefined' || value === 'null' || value === 'NaN') return false;
+    if (value.trim().length !== value.length) return false;
+    if (value === '-' || value === '.' || value === '') return false;
+    const removedChar = value.replace(/[^0-9|.|-]+/g, '');
+    const removedPoint = removedChar.replace('.', '*').replace(/[.]/g, '').replace('*', '.');
+    const removedMinus = removedPoint.replace('-', '*').replace(/[-]/g, '').replace('*', '-');
+    const hasNoMinus = removedMinus.indexOf('-') === -1;
+    const minusAtFirst = removedMinus.indexOf('-') === 0;
+    const pointAtSecond = removedMinus.indexOf('.') === 1;
+    const equalsToOriginal =  (removedMinus === value);
+    const hasCorrectMinus = (minusAtFirst || hasNoMinus);
+    const isNotMinusAtFistAndPointAtSecond = !(minusAtFirst && pointAtSecond);
+    return equalsToOriginal && hasCorrectMinus && isNotMinusAtFistAndPointAtSecond;
+  }
+
+  public isNumberValidator(): ValidatorFn {
+    return ({ value }: AbstractControl): { notNumber: boolean } | null => {
+      return !this.isNumber(String(value)) ? { notNumber: true } : null;
+    };
+  }
+
   public limitValidator(min: number, max: number, canBeDecimal = true, leftClosedInterval = true, rightClosedInterval = true): ValidatorFn {
     return ({ value }: AbstractControl): { [key: string]: any } | null => {
       if (value !== 0 && !!value === false) {
@@ -363,9 +386,6 @@ export class UtilsService {
   }
 
   public parseFloatAchieve(originValue: string): string {
-    if(!originValue) {
-        return originValue;
-    }
     originValue = originValue.toString();
     let head: number = 0;
     for (let i = 0; i < originValue.length - 1; i++) {
@@ -402,6 +422,9 @@ export class UtilsService {
     }
     originValue = originValue.slice(0, foot);
     originValue = originValue[originValue.length - 1] === '.' ? `${originValue.slice(0, originValue.length - 1)}` : originValue;
+    if(Math.abs(parseFloat(originValue)) === 0) {
+        originValue = "0";
+    }
     return originValue;
   }
 

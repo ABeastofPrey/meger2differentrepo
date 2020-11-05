@@ -88,7 +88,7 @@
           <tr *ngFor="let p of params.params; let i = index">
             <td style="padding-right: 8px;">{{ p.name }}</td>
             <td>
-              <mat-form-field *ngIf="p.inputType === 'INPUT'"
+              <!-- <mat-form-field *ngIf="p.inputType === 'INPUT'"
 								><input
 									matInput
 									[(ngModel)]="p.value"
@@ -96,7 +96,12 @@
 									[disabled]="login.isViewer"
 									virtualKeyboard
 									ktype="text"
-                            /></mat-form-field>
+                            /></mat-form-field> -->
+              <div *ngIf="p.inputType === 'INPUT'">
+                <custom-key-board type="string" [(value)]="p.value" [disabled]="login.isViewer"
+                    (valueChange)="dashboard.onChange(params, p, $event)"
+                ></custom-key-board>
+              </div>
               <!-- <ng-container *ngIf="p || p.inputType === 'INPUT'">
                 <custom-key-board
                   [(value)]="p.value"

@@ -57,7 +57,7 @@ export class SimulatorV2Component implements OnInit {
     private grp: GroupManagerService,
     private dataService: DataService,
     private trn: TranslateService,
-    private utils: UtilsService
+    public utils: UtilsService
   ) {}
 
   ngOnInit() {
@@ -187,7 +187,8 @@ export class SimulatorV2Component implements OnInit {
           accept: 'SAVE',
           regex: '[a-zA-Z]+(\\w*)$',
           maxLength: 32,
-          initialValue: sceneName
+          initialValue: sceneName,
+          nameRules: true
         },
       })
       .afterClosed()

@@ -83,4 +83,9 @@ export class AddFrameComponent implements OnInit {
       }
     });
   }
+
+  public change(value: string): void {
+      this.name.setValue(value);
+      this.name.markAsTouched();
+  }
 }

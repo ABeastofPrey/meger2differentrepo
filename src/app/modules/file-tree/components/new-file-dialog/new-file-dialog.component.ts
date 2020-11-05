@@ -20,4 +20,9 @@ export class NewFileDialogComponent implements OnInit {
     const finalName = this.name.value + '.' + this.ext;
     this.ref.close(finalName.toUpperCase());
   }
+
+  changeName(value: string): void {
+      this.name.setValue(value);
+      this.name.markAsTouched();
+  }
 }

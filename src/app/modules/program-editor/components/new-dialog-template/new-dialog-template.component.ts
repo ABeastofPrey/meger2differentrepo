@@ -46,6 +46,11 @@ export class NewDialogTemplateComponent implements OnInit {
         this.name.markAsTouched();
     }
 
+    change(value: string): void {
+        this.name.patchValue(value);
+        this.name.markAsTouched();
+    }
+
     insert(): void {
         let addStation = `?AddStation("${this.name.value}")`;
         this.ws.query(addStation).then((result: List) => {

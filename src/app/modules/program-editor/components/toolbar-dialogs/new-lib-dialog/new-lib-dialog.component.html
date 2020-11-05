@@ -10,7 +10,7 @@
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
-		<mat-form-field>
+		<!-- <mat-form-field>
 			<input
 				matInput
 				placeholder="{{ 'projects.toolbar.lib_name' | translate }}"
@@ -19,7 +19,11 @@
 				ktype="text"
 			/>
 			<mat-error *ngIf="libName.invalid">{{ 'error.invalid_file_name' | translate }}</mat-error>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" placeHolder="{{ 'projects.toolbar.lib_name' | translate }}"
+            [nameRules]="true" [maxLength]="32" [value]="libName.value"
+            (valueChange)="change($event)" (blurEvent)="change($event)"
+        ></custom-key-board>
 	</div>
 	<div class="actions">
 		<button mat-button mat-dialog-close>

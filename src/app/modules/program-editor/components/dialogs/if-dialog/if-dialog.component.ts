@@ -35,4 +35,9 @@ export class IfDialogComponent implements OnInit {
       else: this.dialogForm.controls['elseFlag'].value
     });
   }
+
+  change(value: string): void {
+      this.dialogForm.controls.expression.setValue(value);
+      this.dialogForm.controls.expression.markAsTouched();
+  }
 }

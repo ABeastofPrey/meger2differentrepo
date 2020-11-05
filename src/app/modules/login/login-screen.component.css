@@ -223,3 +223,6 @@ header {
   height: 72px;
   width: 72px;
 }
+::ng-deep custom-key-board.customKeyBoardLogin .mat-input-element {
+    height: 32px;
+}

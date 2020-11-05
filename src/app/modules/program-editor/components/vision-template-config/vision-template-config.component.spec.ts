@@ -192,9 +192,9 @@ describe('VisionTemplateConfigComponent', () => {
 
     it(('changePort'), () => {
         component.changePort(true);
-        component.portBlur();
+        component.portBlur(null);
         component.changePort(false);
-        component.portBlur();
+        component.portBlur(null);
     })
 
     it('selectedTerminator', () => {

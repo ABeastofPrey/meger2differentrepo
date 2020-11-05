@@ -1,7 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map as rxjsMap, distinctUntilChanged, debounceTime, bufferCount, takeUntil } from 'rxjs/operators';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { distinctUntilChanged, debounceTime, takeUntil } from 'rxjs/operators';
 import { __, toLower, compose, filter, indexOf, gte, prop, sortBy, map } from 'ramda';
+import { MatDialog } from '@angular/material';
+import { CustomKeyBoardDialogComponent } from '../../modules/custom-key-board-dialog/custom-key-board-dialog.component';
+import { Platform } from '@angular/cdk/platform';
+import { fromEvent, Subscription } from 'rxjs';
 
 @Component({
     selector: 'rich-select',
@@ -16,103 +19,148 @@ export class RichSelectComponent implements OnInit, OnDestroy {
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() focusEvent: EventEmitter<string> = new EventEmitter<string>();
     @Output() blurEvent: EventEmitter<string> = new EventEmitter<string>();
-    @Output() inputEvent: EventEmitter<string> = new EventEmitter<string>();
-    public filteredOptions: Observable<string[]>;
-    private filterWatcher: EventEmitter<string> = new EventEmitter<string>();
+    public selectOptions: string[] = [];
     private inputWatcher: EventEmitter<string> = new EventEmitter<string>();
-    private focusOrBlurWatcher: EventEmitter<boolean> = new EventEmitter<boolean>();
     private stopListenEvent: EventEmitter<void> = new EventEmitter<void>();
-    private isSelectOpened = false;
-    private isSelectAutoComplete = false;
+    private previousValue: string = '';
 
-    constructor() { }
+    public isFocused = false;
+    public isOpenSelect = false;
+    private isKeyBoardOpen = false;
+    private pageClick: Subscription;
+
+    get isTablet(): boolean {
+        return this.platform.ANDROID || this.platform.IOS;
+    }
+
+    constructor(
+        private dialog: MatDialog,
+        private platform: Platform,
+        private cdk: ChangeDetectorRef
+    ) {
+        // this.focusEvent.subscribe(() => {
+        //     console.log('on focus');
+        // });
+        // this.blurEvent.subscribe(() => {
+        //     console.log('on blur');
+        // });
+        // this.valueChange.subscribe(() => {
+        //     console.log('on valueChange');
+        // });
+    }
 
     ngOnInit(): void {
-        this.filteredOptions = this.filterWatcher.pipe(
-            rxjsMap(value => {
-                return !this.isSelectOpened ? this.fuzzyQuery(value, this.options) : [];
-            }),
-            takeUntil(this.stopListenEvent)
-        );
-
-        this.inputWatcher.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
-            takeUntil(this.stopListenEvent)
-        ).subscribe((value) => {
-            console.log('Emit Input: ', value);
+        this.inputWatcher.pipe(debounceTime(200), distinctUntilChanged(), takeUntil(this.stopListenEvent)).subscribe(value => {
             this.value = value;
-            this.inputEvent.next(this.value);
-            this.valueChange.next(this.value);
-            this.filterWatcher.next(this.value);
+            this.valueChange.emit(this.value);
+            this.selectOptions = this.fuzzyQuery(this.value, this.options);
+            this.cdk.detectChanges();
         });
+    }
 
-        this.focusOrBlurWatcher.pipe(
-            debounceTime(300),
-            bufferCount(2, 1),
-            takeUntil(this.stopListenEvent)
-        ).subscribe(([preIsFocus, curIsFocus]) => {
-            if (this.isSelectOpened) return;
-            if (preIsFocus && curIsFocus) return;
-            if (curIsFocus) {
-                console.log('Emit Focus: ', this.value);
-                this.focusEvent.next(this.value);
-            } else if (!curIsFocus) {
-                console.log('Emit Blur: ', this.value);
-                this.blurEvent.next(this.value);
-                this.filterWatcher.next('');
-            }
-        });
-        this.focusOrBlurWatcher.next(false);
+    ngAfterViewInit(): void {
+        this.pageClick = fromEvent(document, 'click').subscribe(this.onDocumentClick.bind(this));
     }
 
     ngOnDestroy(): void {
+        this.pageClick.unsubscribe();
         this.stopListenEvent.next();
         this.stopListenEvent.unsubscribe();
     }
 
     // Input events
     public onInputFocus(): void {
-        if (this.isSelectOpened) {
-            const hasNoOptions = (!this.options || this.options.length === 0);
-            !hasNoOptions && this.filterWatcher.next('');
-            return;
-        };
-        this.filterWatcher.next(this.value);
-        this.focusOrBlurWatcher.next(true);
-    }
-
-    public onInputBlur(): void {
-        this.focusOrBlurWatcher.next(false);
-    }
-
-    public onInputChange(value: string): void {
-        this.inputWatcher.next(value);
-    }
-
-    // Auto complete events
-    public autoCompleteChange(value: string): void {
-        this.isSelectAutoComplete = true;
-        this.inputWatcher.next(value);
-    }
-
-    // Select events
-    public openSelect(): void {
-        this.isSelectOpened = true;
-    }
-
-    public openedChange(isOpen: boolean): void {
-        if (!isOpen) {
-            this.isSelectOpened = false;
-            this.focusOrBlurWatcher.next(false);
+        !this.isFocused && this.focusEvent.emit();
+        this.isFocused = true;
+        this.previousValue = this.value;
+        if (this.isTablet) {
+            this.isKeyBoardOpen = true;
+            this.selectOptions = [];
+            const option = { data: { type: 'string', value: this.value } };
+            this.dialog.open(CustomKeyBoardDialogComponent, option).afterClosed().subscribe(res => {
+                this.isKeyBoardOpen = false;
+                if (res === undefined) {
+                    this.isFocused = false;
+                    this.blurEvent.emit(this.value);
+                    return;
+                }
+                this.value = res;
+                if (option.data.value !== res) this.valueChange.emit(this.value);
+                this.selectOptions = this.fuzzyQuery(this.value, this.options);
+                if (this.selectOptions.length === 0) {
+                    this.isFocused = false;
+                    this.blurEvent.emit(this.value);
+                } else {
+                    this.isKeyBoardOpen = true;
+                    this.isOpenSelect = true;
+                }
+                this.cdk.detectChanges();
+            });
         } else {
-            this.isSelectOpened = true;
+            this.selectOptions = this.fuzzyQuery(this.value, this.options);
         }
     }
 
+    public onInputBlur(): void {
+        if (this.isKeyBoardOpen) return;
+        setTimeout(() => {
+            this.isFocused = false;
+            this.selectOptions = [];
+            this.blurEvent.emit(this.value);
+            this.cdk.detectChanges();
+        }, 300);
+    }
+
+    public onInputChange(value: string): void {
+        this.inputWatcher.emit(value);
+    }
+
+    // Auto complete events
     public onSelectionChange(value: string): void {
-        this.inputWatcher.next(value);
-        this.focusOrBlurWatcher.next(false);
+        this.value = value;
+        this.selectOptions = [];
+        if (this.previousValue !== this.value) {
+            this.valueChange.emit(this.value);
+            this.blurEvent.emit(this.value);
+        }
+        if(this.previousValue === this.value && this.isKeyBoardOpen) {
+            this.blurEvent.emit(this.value);
+            this.isFocused = false;
+        }
+        if (!this.isFocused) {
+            this.blurEvent.emit(this.value);
+        }
+        if (this.isOpenSelect) {
+            this.isOpenSelect = false;
+        }
+    }
+
+    // Select events
+    public openSlection(event: Event): void {
+        if (this.isFocused || !this.options || this.options.length === 0) return;
+        this.isOpenSelect = true;
+        this.previousValue = this.value;
+        this.selectOptions = [...this.options];
+        this.focusEvent.emit(this.value);
+        this.cdk.detectChanges();
+        event.stopPropagation();
+    }
+
+    private onDocumentClick(): void {
+        if (this.isKeyBoardOpen && this.selectOptions.length !== 0) {
+            this.isKeyBoardOpen = false;
+            this.selectOptions = [];
+            this.blurEvent.emit(this.value);
+            this.cdk.detectChanges();
+            return;
+        }
+        if (this.isFocused) return;
+        if (this.isOpenSelect) {
+            this.blurEvent.emit(this.value);
+        }
+        this.isOpenSelect = false;
+        this.selectOptions = [];
+        this.cdk.detectChanges();
     }
 
     public viewPortHeight(items): string {

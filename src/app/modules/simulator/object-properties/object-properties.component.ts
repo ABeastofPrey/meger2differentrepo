@@ -12,7 +12,7 @@ import {DataService} from '../../core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObjectPropertiesComponent implements OnInit {
-  
+
   @Input() lastSelectedNode: SceneObject;
 
   constructor(
@@ -30,11 +30,16 @@ export class ObjectPropertiesComponent implements OnInit {
       localStorage.setItem('color_' + el.name, color);
     }
   }
-  
+
   get pallet() {
     const n = this.lastSelectedNode.name;
     if (!n.startsWith('Pallet_')) return null;
     const i = Number(n.split('_')[1]);
     return this.data.pallets[i];
   }
+
+  onValueChanged($event,field1,field2){
+     this.lastSelectedNode[field1][field2] = $event;
+  }
+
 }

@@ -225,7 +225,7 @@ export class DataScreenComponent implements OnInit {
     else api = `?tp_get_value_namespace("${fullname}")`;
     return this.ws.query(api).then((ret: MCQueryResponse) => {
       if (ret.err) return;
-      this.buildVariable(v, ret.result);
+      setTimeout(()=>{ this.buildVariable(v, ret.result);},0)
       this.changeDetectorRef.detectChanges();
     });
   }
@@ -292,6 +292,7 @@ export class DataScreenComponent implements OnInit {
     } else {
       for (let i = 0; i < val.length; i++) {
         v.value[i].value = val[i].value;
+        this.changeDetectorRef.detectChanges();
       }
     }
 

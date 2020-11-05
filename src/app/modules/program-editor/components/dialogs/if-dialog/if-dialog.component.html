@@ -2,7 +2,7 @@
 	<div class="wrapper">
 		<div class="title">{{ 'projectCommands.if.title' | translate }}</div>
 		<div class="content">
-			<mat-form-field>
+			<!-- <mat-form-field>
 				<input
 					matInput
 					placeholder="{{ 'projectCommands.if.condition' | translate }}"
@@ -11,7 +11,11 @@
 					virtualKeyboard
 					ktype="text"
 				/>
-			</mat-form-field>
+            </mat-form-field> -->
+            <custom-key-board type="string" placeHolder="{{ 'projectCommands.if.condition' | translate }}"
+                 [value]="dialogForm.controls.expression.value"
+                (valueChange)="change($event)" (blurEvent)="change($event)"
+            ></custom-key-board>
 			<mat-checkbox color="primary" formControlName="elseFlag">{{ 'projectCommands.if.else' | translate }}</mat-checkbox>
 		</div>
 	</div>

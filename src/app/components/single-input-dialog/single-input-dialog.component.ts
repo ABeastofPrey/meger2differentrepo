@@ -27,7 +27,10 @@ export class SingleInputDialogComponent implements OnInit {
       accept: string,
       regex?: string,
       maxLength?: number,
-      minLength?: number
+      minLength?: number,
+      letterAndNumber?: boolean,
+      nameRules?: boolean,
+      password?: boolean
     }
   ) {}
 
@@ -52,6 +55,11 @@ export class SingleInputDialogComponent implements OnInit {
     if (this.dialogForm.invalid) return;
     const val = this.dialogForm.controls['val'].value;
     this.dialogRef.close(val);
+  }
+
+  change(value: string): void {
+      this.dialogForm.controls.val.setValue(value);
+      this.dialogForm.controls.val.markAsTouched();
   }
 }
 

@@ -4,7 +4,7 @@
 		>&nbsp;&nbsp;{{ data.title }}
 	</div>
 	<div class="name-wrapper">
-		<mat-form-field>
+		<!-- <mat-form-field>
 			<input
 				matInput
 				placeholder="{{ data.placeholder }}"
@@ -18,7 +18,14 @@
 			<mat-error *ngIf="dialogForm.controls['val'].invalid">
 				{{ (data.error || 'error.invalid_file_name') | translate }}
 			</mat-error>
-		</mat-form-field>
+        </mat-form-field> -->
+        <div class="customKeyBoard">
+            <custom-key-board type="string" placeHolder="{{ data.placeholder }}"
+                [password]="data.password" [value]="dialogForm.controls.val.value" [suffix]="data.suffix"
+                (valueChange)="change($event)" (blurEvent)="change($event)" [maxLength]="data.maxLength" [minLength]="data.minLength"
+                [letterAndNumber]="data.letterAndNumber" [nameRules]="data.nameRules"
+            ></custom-key-board>
+        </div>
 	</div>
 	<div class="actions">
 		<button mat-button color="primary" mat-dialog-close>

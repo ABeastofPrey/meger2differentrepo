@@ -5,7 +5,7 @@
 	</div>
 	<img src="assets/pics/{{ env.platform.spinner }}" *ngIf="service.busy" class="spinner">
 </div>
-<mat-form-field class="hidden">
+<!-- <mat-form-field class="hidden">
 	<input
 		matInput
 		placeholder=""
@@ -17,7 +17,17 @@
 		enableLineDelete="true"
 		(onLineDelete)="deleteLine()"
 	/>
-</mat-form-field>
+</mat-form-field> -->
+<custom-key-board
+    class="hidden"
+    type="string"
+    [(value)]="dummyText"
+    [isCommand]="false"
+    (blurEvent)="onDummyKeyboardClose()"
+    [isProgram]="true"
+    (onLineDelete)="deleteLine()"
+    #dummyInput
+></custom-key-board>
 <button
 	mat-fab
 	*ngIf="cmn.isTablet && !login.isViewer && !login.isOperator && service.status && service.status.statusCode < 0"

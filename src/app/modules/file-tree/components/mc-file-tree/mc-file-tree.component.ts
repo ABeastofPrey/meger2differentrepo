@@ -33,7 +33,7 @@ import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-b
 })
 export class McFileTreeComponent implements OnInit {
 
-  @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
+//   @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
   @ViewChild('menuDiv', { static: false }) menuDiv: ElementRef;
 
   nestedTreeControl: NestedTreeControl<TreeNode>;

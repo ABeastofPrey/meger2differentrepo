@@ -1,5 +1,5 @@
 <div class="trace-new-container">
-    <mat-form-field>
+    <!-- <mat-form-field>
         <mat-label>{{label | translate}}</mat-label>
         <input #newTraceInput
             type="text" matInput 
@@ -19,9 +19,14 @@
         <mat-error *ngIf="control.hasError('beginWithLetter')">
             {{'vision.templateConfig.createLetter' | translate}}
         </mat-error>
-    </mat-form-field>
-    <button #createTraceBtn mat-icon-button 
-        color="primary" 
+    </mat-form-field> -->
+    <div class="customKeyBoard">
+        <custom-key-board type="string" [value]="control.value" [placeHolder]="placeholder | translate" matLabel="{{label | translate}}" [maxLength]="32"
+            [nameRules]="true" [existNameList]="traceList" (valueChange)="change($event)" (blurEvent)="change($event)"
+        ></custom-key-board>
+    </div>
+    <button #createTraceBtn mat-icon-button class="done"
+        color="primary" (click)="sendValue()"
         [disabled]="control.value.length === 0 || control.hasError('exist') || control.hasError('beginWithLetter')">
         <mat-icon>done</mat-icon>
     </button>

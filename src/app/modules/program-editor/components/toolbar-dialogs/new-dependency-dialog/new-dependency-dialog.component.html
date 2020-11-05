@@ -3,7 +3,7 @@
 		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'projects.toolbar.new_dep' | translate }}
 	</div>
 	<div class="name-wrapper">
-		<mat-form-field>
+		<!-- <mat-form-field>
 			<input
 				matInput
 				placeholder="{{ 'projects.toolbar.dep_name' | translate }}"
@@ -15,7 +15,11 @@
 			/>
 			<span matSuffix>.ULB</span>
 			<mat-error *ngIf="dialogForm.invalid">{{ 'error.invalid_file_name' | translate }}</mat-error>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" placeHolder="{{ 'projects.toolbar.dep_name' | translate }}" [suffix]="'.ULB'"
+            [nameRules]="true" [maxLength]="32" [value]="dialogForm.controls.val.value"
+            (valueChange)="change($event)" (blurEvent)="create()" (pressEnterEvent)="create()"
+        ></custom-key-board>
 	</div>
 	<div class="actions">
 		<button mat-button mat-dialog-close>

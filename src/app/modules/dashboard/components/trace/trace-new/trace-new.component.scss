@@ -3,9 +3,16 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    // align-items: center;
     mat-form-field {
         flex-grow: 1;
         margin-right: 5px;
+    }
+    .customKeyBoard {
+        width: 290px;
+        padding-bottom: 21px;
+    }
+    button.done {
+        margin-top: 13px;
     }
 }

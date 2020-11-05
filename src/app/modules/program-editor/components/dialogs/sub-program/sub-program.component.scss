@@ -18,6 +18,7 @@
     font-size: 18px;
 }
 header {
+    width: 260px;
     mat-form-field {
         width: 260px;
     }
@@ -55,4 +56,9 @@ th.mat-header-cell:first-of-type {
 }
 .mat-input-element {
     height: 19px !important;
+}
+
+.customKeyBoard {
+    width: 180px;
+    padding-bottom: 13px;
 }

@@ -1,6 +1,6 @@
 <div *ngIf="lastSelectedNode" style="margin: 8px;">
   <div class="title center-vertical">
-    <mat-form-field appearance="outline" class="name">
+    <!-- <mat-form-field appearance="outline" class="name">
       <input
         matInput
         [(ngModel)]="lastSelectedNode.name"
@@ -8,7 +8,11 @@
         ktype="text"
         [disabled]="lastSelectedNode.name.startsWith('Pallet_')"
       />
-    </mat-form-field>
+    </mat-form-field> -->
+    <custom-key-board type="string" appearance="outline" class="name" [maxLength]="32"
+        (blurEvent)="this.lastSelectedNode.name = $event"
+        [value]="lastSelectedNode.name" [disabled]="lastSelectedNode.name.startsWith('Pallet_')"
+    ></custom-key-board>
     <button mat-icon-button color="warn" (click)="sim.deleteSelected()">
       <mat-icon>delete</mat-icon>
     </button>
@@ -70,7 +74,9 @@
         /> -->
         <custom-key-board
           type="float"
-          [(value)]="lastSelectedNode.positionMM.x"
+          [value]="lastSelectedNode.positionMM.x"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'positionMM','x')"
           [toNumber]="true"
           suffix="mm"
         ></custom-key-board>
@@ -88,7 +94,9 @@
         /> -->
         <custom-key-board
           type="float"
-          [(value)]="lastSelectedNode.positionMM.y"
+          [value]="lastSelectedNode.positionMM.y"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'positionMM','y')"
           [toNumber]="true"
           suffix="mm"
         ></custom-key-board>
@@ -106,7 +114,9 @@
         /> -->
         <custom-key-board
           type="float"
-          [(value)]="lastSelectedNode.positionMM.z"
+          [value]="lastSelectedNode.positionMM.z"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'positionMM','z')"
           [toNumber]="true"
           suffix="mm"
         ></custom-key-board>
@@ -124,7 +134,9 @@
         /> -->
         <custom-key-board
           type="float"
-          [(value)]="lastSelectedNode.eulerXYZDeg.x"
+          [value]="lastSelectedNode.eulerXYZDeg.x"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'eulerXYZDeg','x')"
           [toNumber]="true"
           suffix="deg"
         ></custom-key-board>
@@ -142,7 +154,9 @@
         /> -->
         <custom-key-board
           type="float"
-          [(value)]="lastSelectedNode.eulerXYZDeg.y"
+          [value]="lastSelectedNode.eulerXYZDeg.y"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'eulerXYZDeg','y')"
           [toNumber]="true"
           suffix="deg"
         ></custom-key-board>
@@ -160,7 +174,9 @@
         /> -->
         <custom-key-board
           type="float"
-          [(value)]="lastSelectedNode.eulerXYZDeg.z"
+          [value]="lastSelectedNode.eulerXYZDeg.z"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'eulerXYZDeg','z')"
           [toNumber]="true"
           suffix="deg"
         ></custom-key-board>
@@ -180,7 +196,9 @@
       </td> -->
         <custom-key-board
           type="float"
-          [(value)]="lastSelectedNode.scale.x"
+          [value]="lastSelectedNode.scale.x"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'scale','x')"
           [toNumber]="true"
         ></custom-key-board>
         <!-- <td></td> -->
@@ -199,7 +217,9 @@
         /> -->
         <custom-key-board
           type="float"
-          [(value)]="lastSelectedNode.scale.y"
+          [value]="lastSelectedNode.scale.y"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'scale','y')"
           [toNumber]="true"
         ></custom-key-board>
       </td>
@@ -218,6 +238,8 @@
         <custom-key-board
           type="float"
           [(value)]="lastSelectedNode.scale.z"
+          [emitInvalidValue] = "false"
+          (blurEvent) ="onValueChanged($event,'scale','z')"
           [toNumber]="true"
         ></custom-key-board>
       </td>

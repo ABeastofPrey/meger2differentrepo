@@ -420,6 +420,10 @@ export class PalletWizardComponent implements OnInit {
   }
 
   calibrate(e: Event) {
+    // if(this.step2.invalid) {
+    //   this.dataService.selectedPallet.isFrameCalibrated = true;
+    //   return ;
+    // }
     const p = this.dataService.selectedPallet;
     this.ws.query('?PLT_ORIGIN_CALIBRATION("' + p.name + '")').then(ret => {
       if (ret.result === '0') {
@@ -1956,9 +1960,14 @@ export class PalletWizardComponent implements OnInit {
     }
   }
 
-  public setFormGroupItem(value: string | number,item: string,formGroup: FormGroup,onWindowResize: boolean = false,markAsDirty: boolean = true){
+  public setFormGroupItem(value: any,item: string,formGroup: FormGroup,onWindowResize: boolean = false,markAsDirty: boolean = true){
     // const newValue = Number(value);
-    if(!formGroup.controls || !formGroup.controls[item] || (formGroup.controls[item].value === value && formGroup.controls[item].dirty)) return;
+    if(!formGroup.controls || !formGroup.controls[item]) return;
+
+    if(isNaN(+value)){
+      formGroup.setErrors({invalid: true});
+      return;
+    }
     markAsDirty && formGroup.controls[item].markAsDirty();
     formGroup.controls[item].setValue(value);
     onWindowResize && this.onWindowResize();
@@ -2069,5 +2078,10 @@ export class PalletWizardComponent implements OnInit {
       // this.step4.controls[item.key].setValue(Number(this.dataService.selectedPallet[item.value]));
       this.setFormGroupItem(selectedPallet[item.value],item.key,this.step4,false,item.markAsDirty);
     });
+}
+onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup,){
+  if(valid) return;
+  if(!formGroup.controls || !formGroup.controls[item]) return;
+  formGroup.setErrors({invalid: true});
 }
 }

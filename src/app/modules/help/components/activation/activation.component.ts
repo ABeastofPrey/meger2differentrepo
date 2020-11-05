@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivationService } from './activation.service';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
@@ -29,6 +29,8 @@ export class ActivationComponent implements OnInit {
   public pinCode = '';
   private machineId = '';
   private verficationCode = '';
+  public isValid = false;
+  @ViewChild('customKeyBoard', { static: false }) customKeyBoard: any;
 
   constructor(
     public dialogRef: MatDialogRef<ActivationComponent, string>,
@@ -49,6 +51,7 @@ export class ActivationComponent implements OnInit {
   }
 
   verify(): void {
+    this.isValid = this.customKeyBoard.getValid();
     const lowerVCode = toLower(this.verficationCode);
     const lowerPCode = toLower(this.pinCode);
     const isVerified: boolean = equals(lowerVCode);
@@ -88,5 +91,10 @@ export class ActivationComponent implements OnInit {
     const assembleVal = x => (`SN:${x.machineId},RUNTIME:0.00,ROBOT:SCARA,KEY:${x.verificationCode}`);
     const encrypt = compose(aesEncrypt, assembleVal, tap(saveCode), getKukaInfo);
     return encrypt(machineId);
+  }
+
+  public changePicCode(value: string): void {
+      this.control.setValue(value);
+      this.control.markAsTouched();
   }
 }

@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { Console } from 'console';
 import { isNotNumber, isNull, isUndefined } from 'ramda-adjunct';
 import { fromEvent, Subject } from 'rxjs';
 import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
@@ -11,11 +12,13 @@ import { CommonService } from '../core/services/common.service';
 import { CustomKeyBoardService } from '../core/services/custom-key-board.service';
 import { UtilsService } from '../core/services/utils.service';
 import { CustomKeyBoardDialogComponent } from '../custom-key-board-dialog/custom-key-board-dialog.component';
+import { TerminalService } from '../home-screen/services/terminal.service';
 
 @Component({
     selector: 'custom-key-board',
     templateUrl: './custom-key-board.component.html',
-    styleUrls: ['./custom-key-board.component.scss']
+    styleUrls: ['./custom-key-board.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
 
@@ -24,9 +27,11 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
         public dialog: MatDialog,
         private utils: UtilsService,
         private ckb: CustomKeyBoardService,
-        private ngZone: NgZone
+        private ngZone: NgZone,
+        public terminal: TerminalService
     ) { }
 
+    @Input() emitInvalidValue: boolean = true;
     @Input() value: string | number;
     @Input() keyBoardDialog: boolean = false;
     @Input() type: 'int' | 'float' | 'string';
@@ -51,6 +56,7 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
     @Input() maxLength: number;
     @Input() minLength: number;
     @Input() precision: number = 6;
+    @Input() isShowPrecision: boolean = true;
     @Input() firstLetter: boolean = false;
     @Input() nameRules: boolean = false;
     @Input() existNameList: string[];
@@ -64,12 +70,14 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
     @Input() fullName: boolean = false;
     @Input() letterAndNumber: boolean = false;
     @Input() confirmPassword: string;
+    @Input() isProgram: boolean = false;
     @Output() valueChange: EventEmitter<string | number> = new EventEmitter<string | number>();
     @Output() inputChange: EventEmitter<string | number> = new EventEmitter<string | number>();
     @Output() focusEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
     @Output() blurEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
     @Output() pressEnterEvent: EventEmitter<string | number> = new EventEmitter<string | number>();
     @Output() isValidEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() onLineDelete: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('numInput', { static: true }) numInput: ElementRef<FromEventTarget<{ target: HTMLInputElement }>>;
 
     public isPad: boolean = this.common.isTablet;
@@ -82,10 +90,13 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
     private setTimeoutId: any;
     private hasFocus: boolean = true;
 
+    private lastCmdIndex = -1;
+
     ngOnInit() {
         this.type === "string" ? this.inputWidth = 815 : "";
-        (this.password && !this.isPad) ? (this.isPasswordInput = "password") : "";
+        this.password ? (this.isPasswordInput = "password") : "";
         (this.value || this.value == 0) && this.control.setValue(this.value.toString());
+        // this.setFloatValue();
         this.inputElement = this.numInput.nativeElement as HTMLInputElement;
         // The initial content exceeds the input box
         if (this.inputWidth < this.ckb.getCharWidth(this.control.value,this.password) && this.keyBoardDialog) {
@@ -93,6 +104,9 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
         }
         const validators = [];
         this.required && validators.push(Validators.required);
+        if (this.type === 'int' || this.type === 'float') {
+            validators.push(this.utils.isNumberValidator());
+        }
         if((!isNotNumber(this.min) || !isNotNumber(this.max)) && (this.type==DATA_TYPE.Float || this.type==DATA_TYPE.Int)) {
 
             const validatorLimit = this.utils.limitValidator(this.min, this.max, this.type === DATA_TYPE.Float, this.leftClosedInterval, this.rightClosedInterval);
@@ -182,22 +196,38 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
                     fullName: this.fullName,
                     confirmPassword: this.confirmPassword,
                     letterAndNumber: this.letterAndNumber,
-                    precision: this.precision
+                    precision: this.precision,
+                    isProgram: this.isProgram
                 },
                 width: this.type === 'string' ? '839px' : '344px',
                 height: this.type === 'string' ? '439.75px' : '384.75px'
             });
             ref && ref.afterClosed().subscribe((data) => {
+                if(data && data.delete) {
+                    this.onLineDelete.emit();
+                    return;
+                }
                 let isUndefined = (typeof data === "undefined");
                 if (!isUndefined) {
                     this.control.setValue(data);
                     this.valueChange.emit(((this.toNumber && Number(data).toString() !== "NaN") ? Number(data) : data));
                     this.blurEventHandler(true);
+                    setTimeout(() => {
+                        this.setFloatValue();
+                    }, 0);
                 }
             });
 
         });
 
+    }
+
+    private setFloatValue() {
+       const newValue = this.control.value + '';
+        if (newValue.trim() === '') return;
+        if(this.type === DATA_TYPE.Float && Math.abs(+newValue) === 0) {
+            this.control.setValue("0.0");
+        }
     }
 
     public setValue(value: string): void {
@@ -210,7 +240,7 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
                 this.cursorToRight(num);
                 break;
             case InputType.Delete:
-                num > 0 ? this.deleteChar(num) : "";
+                num > 0 ? this.deleteChar(num) : this.programDeleteLine();
                 break;
             default:
                 this.setInputValue(value, num);
@@ -276,6 +306,13 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
             // normal
             this.deleteCharSetValue(num);
         }
+        this.programDeleteLine();
+    }
+
+    public programDeleteLine() {
+        if(!this.control.value && this.getSelectionStartNum() === 0 && this.isProgram) {
+            this.onLineDelete.emit();
+        }
     }
 
     public deleteCharSetValue(num: number): void {
@@ -333,6 +370,28 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
             this.existNameList = currentValue;
         })(changes);
 
+        (({ confirmPassword }) => {
+            if (isUndefined(confirmPassword)) return;
+            const { currentValue } = confirmPassword;
+            this.control.setValidators(this.utils.confirmPassword(this.confirmPassword));
+        })(changes);
+
+        (({ max }) => {
+            this.changeMaxMin(max);
+        })(changes);
+
+        (({ min }) => {
+            this.changeMaxMin(min);
+        })(changes);
+
+    }
+
+    private changeMaxMin(value: any) :void {
+        if (isUndefined(value)) return;
+        if((!isNotNumber(this.min) || !isNotNumber(this.max)) && (this.type==DATA_TYPE.Float || this.type==DATA_TYPE.Int)) {
+            const validatorLimit = this.utils.limitValidator(this.min, this.max, this.type === DATA_TYPE.Float, this.leftClosedInterval, this.rightClosedInterval);
+            this.control.setValidators(validatorLimit);
+        }
     }
 
     public onFocus() {
@@ -362,10 +421,16 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
                 this.control.setValue('0');
             }
         }
-        this.control.setValue(this.utils.parseFloatAchieve(this.control.value));
+        const numberType: boolean = this.type === DATA_TYPE.Float || this.type === DATA_TYPE.Int;
+        const inputValue = numberType ? this.utils.parseFloatAchieve(this.control.value) : this.control.value;
+        this.control.setValue(inputValue);
         this.control.markAsTouched();
         this.isValidEvent.emit(this.control.valid);
-        this.blurEvent.emit(((this.toNumber && Number(this.control.value).toString() !== "NaN") ? Number(this.getPrecisionLimit(this.control.value)) : this.getPrecisionLimit(this.control.value)));
+        let emitValue = ((this.toNumber && Number(this.control.value).toString() !== "NaN") ? Number(this.getPrecisionLimit(this.control.value)) : this.getPrecisionLimit(this.control.value))
+        this.control.setValue(emitValue);
+        this.setFloatValue();
+        if (!this.emitInvalidValue && this.control.status === 'INVALID') return;
+        this.blurEvent.emit(this.control.value);
     }
 
     public keyupEventHandler(event: any): void {
@@ -384,7 +449,8 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
         this.control.setValue(validValue);
         this.control.markAsTouched();
         this.isValidEvent.emit(this.control.valid);
-        this.valueChange.emit( (this.toNumber && Number(validValue).toString() !== "NaN")? Number(validValue) : validValue);
+        if (!this.emitInvalidValue && this.control.status === 'INVALID') return;
+        this.valueChange.emit( (this.toNumber && Number(validValue).toString() !== "NaN")? Number(this.getPrecisionLimit(validValue)) : this.getPrecisionLimit(validValue));
     }
 
     public resetStatus(): void {
@@ -402,17 +468,23 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
         }
         let value: string = "";
         if(direction === InputType.Top) {
-            Number(localStorage.getItem(CommandLocalType.CommandIndex)) === 0 ? localStorage.setItem(CommandLocalType.CommandIndex,JSON.parse(list).length.toString()) : "";
-            let index = Number(localStorage.getItem(CommandLocalType.CommandIndex))-1;
-            localStorage.setItem(CommandLocalType.CommandIndex,index.toString());
-            value = JSON.parse(list)[index];
+            // Number(localStorage.getItem(CommandLocalType.CommandIndex)) === 0 ? localStorage.setItem(CommandLocalType.CommandIndex,JSON.parse(list).length.toString()) : "";
+            // let index = Number(localStorage.getItem(CommandLocalType.CommandIndex))-1;
+            // localStorage.setItem(CommandLocalType.CommandIndex,index.toString());
+            // value = JSON.parse(list)[index];
+            const obj  = this.terminal.up(this.lastCmdIndex,this.control.value);
+            value = obj.cmd;
+            this.lastCmdIndex = obj.index;
         }
         if(direction === InputType.Bottom) {
 
-            Number(localStorage.getItem(CommandLocalType.CommandIndex)) >= (JSON.parse(list).length-1) ? localStorage.setItem(CommandLocalType.CommandIndex,"-1") : "";
-            let index = Number(localStorage.getItem(CommandLocalType.CommandIndex))+1;
-            localStorage.setItem(CommandLocalType.CommandIndex,index.toString());
-            value = JSON.parse(list)[Number(localStorage.getItem(CommandLocalType.CommandIndex))];
+            // Number(localStorage.getItem(CommandLocalType.CommandIndex)) >= (JSON.parse(list).length-1) ? localStorage.setItem(CommandLocalType.CommandIndex,"-1") : "";
+            // let index = Number(localStorage.getItem(CommandLocalType.CommandIndex))+1;
+            // localStorage.setItem(CommandLocalType.CommandIndex,index.toString());
+            // value = JSON.parse(list)[Number(localStorage.getItem(CommandLocalType.CommandIndex))];
+            const obj  = this.terminal.down(this.lastCmdIndex,this.control.value);
+            value = obj.cmd;
+            this.lastCmdIndex = obj.index;
         }
         (this.value || this.value == 0) && this.control.setValue(value);
         this.control.value ? this.inputElement.setSelectionRange(this.control.value.length,this.control.value.length) : "";
@@ -443,5 +515,6 @@ export class CustomKeyBoardComponent implements OnInit,OnDestroy,AfterViewInit {
         this.control.markAsTouched();
         return returnValue;
     }
+
 
 }

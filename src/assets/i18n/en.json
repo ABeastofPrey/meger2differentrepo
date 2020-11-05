@@ -9,7 +9,7 @@
   "existNameList":"Name already exists.",
   "keyboardSymbol": "sym",
   "keyboardBack": "back",
-  "maxDecimals": "Max number of decimals:",
+  "maxDecimals": "Max number of decimals",
   "about": {
     "title": "About",
     "subtitle": "Version information for this controller",

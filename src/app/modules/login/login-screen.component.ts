@@ -380,5 +380,10 @@ export class LoginScreenComponent implements OnInit {
     });
     this.pageLoaded = 'shown';
   }
+  
+  public usernameBlur(value: string,key: string): void {
+      this.authForm.controls[key].setValue(value);
+      this.authForm.controls[key].markAsTouched();
+  }
 
 }

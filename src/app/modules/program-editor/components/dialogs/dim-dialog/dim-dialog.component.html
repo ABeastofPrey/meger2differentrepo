@@ -2,7 +2,7 @@
 	<div class="wrapper">
 		<div class="title">{{ 'projectCommands.dim.title' | translate }}</div>
 		<div class="content">
-			<mat-form-field>
+			<!-- <mat-form-field>
 				<input
 					matInput
 					placeholder="{{ 'variables.name' | translate }}"
@@ -11,7 +11,10 @@
 					virtualKeyboard
 					ktype="text"
 				/>
-			</mat-form-field>
+            </mat-form-field> -->
+            <custom-key-board type="string" placeHolder="{{ 'variables.name' | translate }}"
+                [nameRules]="true" [maxLength]="32" [(value)]="varName"
+            ></custom-key-board>
       <mat-form-field>
         <mat-select placeholder="{{ 'variables.type' | translate }}" [(ngModel)]="varType">
           <mat-option value="long">{{ 'long' | translate }}</mat-option>

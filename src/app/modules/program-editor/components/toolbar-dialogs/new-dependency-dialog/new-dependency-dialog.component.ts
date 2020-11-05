@@ -43,5 +43,10 @@ export class NewDependencyDialogComponent implements OnInit {
     );
   }
 
+  public change(value: string): void {
+    this.dialogForm.controls.val.setValue(value);
+    this.dialogForm.controls.val.markAsTouched();
+  }
+
   ngOnInit() {}
 }

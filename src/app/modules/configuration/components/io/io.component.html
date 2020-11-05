@@ -179,7 +179,7 @@
 		<mat-tab *ngFor="let tab of tabs; let index = index" class="content" #customIOTab>
 			<ng-template mat-tab-label>
 				<input *ngIf="!customIOTab?.isActive" matInput [(ngModel)]="customViewFormControl[index].value" />
-				<input
+				<!-- <input
 					*ngIf="customIOTab?.isActive"
 					matInput
 					placeholder=""
@@ -191,7 +191,16 @@
 					ktype="text"
 					(onKeyboardClose)="tabLabelNameChange(index, customViewFormControl[index].value)"
 					required
-				/>
+				/> -->
+				<custom-key-board *ngIf="customIOTab?.isActive"
+					type="string"
+					[required]="true"
+					[(value)]="customViewFormControl[index].value" 
+					(keypress)="preventEnter($event)"
+					(valueChange)="tabLabelNameChange(index, customViewFormControl[index].value)" 
+					(blurEvent)="tabLabelNameChange(index, customViewFormControl[index].value)">
+				</custom-key-board>
+
 				<mat-error *ngIf="customViewFormControl[index].hasError('required')">
 					{{ 'io.invalidName' | translate }}
 				</mat-error>

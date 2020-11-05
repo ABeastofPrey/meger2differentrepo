@@ -50,7 +50,7 @@
         <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && control.hasError('letterAndNumber')">
             {{'safety.password_change.err_regex' | translate}} : {{minLength}}
         </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && !control.hasError('letterAndNumber') && control.hasError('precision')">
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && !control.hasError('letterAndNumber') && control.hasError('precision') && isShowPrecision">
             {{'maxDecimals' | translate}} : {{precision}}
         </mat-error>
         <div class="cursor blink" *ngIf="isPad && keyBoardDialog" [style.left.px]="cursorLeft"></div>

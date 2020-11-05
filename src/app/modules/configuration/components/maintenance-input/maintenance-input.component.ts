@@ -44,12 +44,22 @@ export class MaintenanceInputComponent implements OnInit {
         });
     }
 
-    // limitNum(value): void {
-    //     // event.target.value = event.target.value.replace(/\D/g, '');
-    //     this.inputForm.value.orderNum = value;
-    //     this.inputForm.patchValue({ ...this.inputForm.value });
+    limitNum(value): void {
+        // event.target.value = event.target.value.replace(/\D/g, '');
+        this.inputForm.value.orderNum = value;
+        this.inputForm.patchValue({ ...this.inputForm.value });
 
-    // }
+    }
+
+    public patchComment(value): void {
+        this.inputForm.value.comment = value;
+        this.inputForm.patchValue({ ...this.inputForm.value });
+    }
+
+    public patchPerson(value): void {
+        this.inputForm.value.person = value;
+        this.inputForm.patchValue({ ...this.inputForm.value });
+    }
 
     isValidEvent(e, index) {
         this.dataSource[index].usedLife.vaild = e;

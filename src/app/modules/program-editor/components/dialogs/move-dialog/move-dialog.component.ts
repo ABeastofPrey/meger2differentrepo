@@ -78,7 +78,7 @@ export class MoveDialogComponent implements OnInit {
     motionElement: new FormControl(null),
     rangeMode: new FormControl(false),
     vscale: new FormControl(null, [
-      Validators.min(0),
+      Validators.min(1),
       Validators.max(100)
     ])
   }, {
@@ -185,7 +185,7 @@ export class MoveDialogComponent implements OnInit {
       });
     } else {
       this.ctrl.controls['vscale'].setValidators(
-        this.utilsService.limitValidator(0, 100, true, false)
+        this.utilsService.limitValidator(1, 100, true, true)
       );
     }
 

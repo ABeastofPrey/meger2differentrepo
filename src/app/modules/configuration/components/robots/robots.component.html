@@ -248,14 +248,17 @@
 		<custom-key-board
 			type="string"
 			[appearance]="'outline'"
-			[label]="'robots.name' | translate"
+      [label]="'robots.name' | translate"
+      class="sys_name"
 			[required]="true"
             [value]="sysName.value"
             (valueChange)="changeSysName($event)"
+            [maxLength]="16"
 			(blurEvent)="onNameChange($event,'sysName')">
 		</custom-key-board>
 		<mat-form-field appearance="outline">
-			<input
+            <input
+                [readonly]="true"
 				matInput
 				[matDatepicker]="datePicker"
 				[formControl]="sysDate"

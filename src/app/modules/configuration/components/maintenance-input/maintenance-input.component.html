@@ -46,29 +46,53 @@
 
     <form [formGroup]="inputForm" *ngIf="saveBtn">
         <div class="form-contain form-contain-name">
-            <mat-form-field>
+            <!-- <mat-form-field>
                 <input matInput maxlength="50" autocomplete="off" (keypress)="preventEnter($event)"
                     [placeholder]="'maintenance.input.person_company' | translate" formControlName="person">
                 <mat-error *ngIf="!person.required">{{'maintenance.input.nameRequire' | translate}}</mat-error>
-            </mat-form-field>
+            </mat-form-field> -->
+            
+            <custom-key-board 
+                type="string"
+                [maxLength]="50"
+                [required]="true"
+                [(value)]="inputForm.value.person" 
+                (keypress)="preventEnter($event)"
+                (valueChange)="patchPerson($event)" 
+                (blurEvent)="patchPerson($event)"
+                [placeHolder]="'maintenance.input.person_company' | translate">
+            </custom-key-board>
+
         </div>
         <div class="form-contain">
-            <mat-form-field>
+            <!-- <mat-form-field>
                 <input matInput maxlength="50" autocomplete="off" type="text"  (keypress)="preventEnter($event)"
                     [placeholder]="'maintenance.input.order_number' | translate" formControlName="orderNum">
                 <mat-error *ngIf="!orderNum.required">{{'maintenance.input.ordernum' | translate}}</mat-error>
-            </mat-form-field>
-            <!-- <custom-key-board type="int" [isPositiveNum]="true" [requiredErrMsg]="'number_input_required' | translate" [required]="true" 
+            </mat-form-field> -->
+            <custom-key-board type="string" [isPositiveNum]="true" [requiredErrMsg]="'number_input_required' | translate" [required]="true" 
                 [placeHolder]="'maintenance.input.order_number' | translate" [(value)]="inputForm.value.orderNum"
                 (valueChange)="limitNum($event)"  (blurEvent)="limitNum($event)" 
-            ></custom-key-board> -->
+            ></custom-key-board>
         </div>
         <div class="form-contain">
-            <mat-form-field>
+            <!-- <mat-form-field>
                 <textarea matInput maxlength="400" autocomplete="off" (keypress)="preventEnter($event)" (paste)="false"
                     [placeholder]="'maintenance.input.comment' | translate" formControlName="comment"></textarea>
                 <mat-error *ngIf="!comment.required">{{'maintenance.input.commentRequire' | translate}}</mat-error>
-            </mat-form-field>
+            </mat-form-field> -->
+            
+            <custom-key-board 
+                type="string"
+                [maxLength]="400"
+                [required]="true"
+                [(value)]="inputForm.value.comment" 
+                (keypress)="preventEnter($event)"
+                (valueChange)="patchComment($event)" 
+                (blurEvent)="patchComment($event)"
+                [placeHolder]="'maintenance.input.comment' | translate">
+            </custom-key-board>
+
         </div>
         <button mat-raised-button [disabled]="!inputForm.valid || dataSourceCheck.length===0 || checkInvaild === false"
             color="primary" (click)="save()">

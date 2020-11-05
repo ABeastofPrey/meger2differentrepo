@@ -135,4 +135,12 @@ export class WatchWindowComponent implements OnInit {
       v.variableList = of(res);
     });
   }
+
+  onb(v) {
+    // console.log('ob: ' + v);
+  }
+  
+  onc(v) {
+    // console.log('oc: ' + v);
+  }
 }

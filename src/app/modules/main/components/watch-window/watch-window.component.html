@@ -41,8 +41,11 @@
 					</button>
 				</td>
 				<td>
-					<rich-select [options]="v.variableList | async" [(value)]="v.name" (blurEvent)="onBlur(v)"
-						(focusEvent)="getVariablesWithContext(v)" (openSelectEvent)="getVariablesWithContext(v)">
+					<rich-select 
+						[options]="v.variableList | async" 
+						[(value)]="v.name"
+						(focusEvent)="getVariablesWithContext(v)"
+						(blurEvent)="onBlur(v)">
 					</rich-select>
 				</td>
 				<td>

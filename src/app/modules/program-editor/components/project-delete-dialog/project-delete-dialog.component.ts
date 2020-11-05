@@ -7,10 +7,14 @@ import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent,
   MAT_DIALOG_DATA,
+  MatDialog,
 } from '@angular/material';
 import { WebsocketService, MCQueryResponse } from '../../../core';
 import { FormControl, Validators } from '@angular/forms';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
+import { Platform } from '@angular/cdk/platform';
+import { CustomKeyBoardDialogComponent } from '../../../custom-key-board-dialog/custom-key-board-dialog.component';
+import { fromEvent } from 'rxjs';
 
 @Component({
   selector: 'app-project-delete-dialog',
@@ -34,11 +38,16 @@ export class ProjectDeleteDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<ProjectDeleteDialogComponent>,
     private ws: WebsocketService,
     private prj: ProjectManagerService,
+    private platform: Platform,
+    private dialog: MatDialog,
     private snack: SysLogSnackBarService,
     @Inject(MAT_DIALOG_DATA) private data: { current?: boolean }
   ) {}
 
   ngOnInit() {
+    if(this.isTablet) {
+        fromEvent(document, 'mousedown').subscribe(this.preventLoseFocus.bind(this));
+    }
     if (this.data) {
       this.current = this.data.current;
     }
@@ -51,6 +60,10 @@ export class ProjectDeleteDialogComponent implements OnInit {
     });
   }
 
+  get isTablet(): boolean {
+    return this.platform.ANDROID || this.platform.IOS;
+  }
+
   remove(prj: string): void {
     const index = this.selected.indexOf(prj);
     if (index >= 0) {
@@ -58,18 +71,49 @@ export class ProjectDeleteDialogComponent implements OnInit {
     }
   }
 
-  onSelected(event: MatAutocompleteSelectedEvent): void {
-    const val = event.option.viewValue;
+  // onSelected(event: MatAutocompleteSelectedEvent): void {
+  //   const val = event.option.viewValue;
+  //   if (this.selected.includes(val)) {
+  //     this.snack.openTipSnackBar('projects.delete-dialog.err_exists');
+  //     return;
+  //   }
+  //   this.selected.push(event.option.viewValue);
+  //   this.prjInput.nativeElement.value = '';
+  //   this.prjCtrl.setValue(null);
+  // }
+
+  onSelected(val: string): void {
     if (this.selected.includes(val)) {
       this.snack.openTipSnackBar('projects.delete-dialog.err_exists');
       return;
     }
-    this.selected.push(event.option.viewValue);
+    this.selected.push(val);
     this.prjInput.nativeElement.value = '';
     this.prjCtrl.setValue(null);
   }
 
   delete() {
     this.dialogRef.close(this.data && this.data.current ? [this.openProjectCtrl.value] : this.selected);
+  }
+
+  private preventLoseFocus(e: any): void {
+    (e.target.getAttribute('class') && e.target.getAttribute('class').indexOf("projectDeleteDialog") > -1) ? "" : e.preventDefault();
+  }
+
+  onInputFocus() {
+    setTimeout(() => {
+        if (this.isTablet) {
+            const option = { data: { type: 'string', value: this.prjCtrl.value }, width: '839px',
+            height: '439.75px'};
+            this.dialog.open(CustomKeyBoardDialogComponent, option).afterClosed().subscribe(res => {
+                let isUndefined = (typeof res === "undefined");
+                if (!isUndefined) {
+                    this.prjCtrl.setValue(res);
+                    this.prjCtrl.markAsTouched();
+                    this.prjInput.nativeElement.value = res;
+                }
+            });
+        }
+    }, 0);
   }
 }

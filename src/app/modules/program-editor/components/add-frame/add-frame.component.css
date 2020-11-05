@@ -22,6 +22,9 @@
 .name-wrapper mat-form-field {
   width: 100%;
 }
+.name-wrapper .customKeyBoard {
+    width: 400px;
+}
 .values {
     display: flex;
 }

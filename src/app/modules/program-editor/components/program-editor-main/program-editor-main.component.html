@@ -24,13 +24,18 @@
           : ('projectSettings.apps.app_desc_none' | translate)
       }}
     </span>
-    <mat-form-field *ngIf="appDescEditMode && service.fileRef">
+    <!-- <mat-form-field *ngIf="appDescEditMode && service.fileRef">
       <input
         matInput
         placeholder="{{ 'projectSettings.apps.app_desc' | translate }}"
         [(ngModel)]="service.fileRef.desc"
       />
-    </mat-form-field>
+    </mat-form-field> -->
+    <div *ngIf="appDescEditMode && service.fileRef">
+        <custom-key-board type="string" placeHolder="{{ 'projectSettings.apps.app_desc' | translate }}"
+            [(value)]="service.fileRef.desc"
+        ></custom-key-board>
+    </div>
     <button *ngIf="service.fileRef && !login.isViewer && !login.isOperator" mat-icon-button color="primary" (click)="onAppDescSave()">
       <mat-icon>{{ appDescEditMode ? 'save' : 'edit' }}</mat-icon>
     </button>

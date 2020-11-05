@@ -35,9 +35,11 @@ export class NewUserDialogComponent implements OnInit {
     if (!this.passwordConfirm) return null;
     if (pass.trim().length === 0) {
       this.passwordConfirm.disable();
+      this.disabledConfirmPassword = true;
       return { empty: true };
     }
     this.passwordConfirm.enable();
+    this.disabledConfirmPassword = false;
     return null;
   }
 
@@ -73,6 +75,9 @@ export class NewUserDialogComponent implements OnInit {
     this.checkPasswords,
   ]);
 
+  public disabledUserName: boolean = false;
+  public disabledConfirmPassword: boolean = false;
+
   constructor(
     private api: ApiService,
     private snack: MatSnackBar,
@@ -86,11 +91,14 @@ export class NewUserDialogComponent implements OnInit {
 
   ngOnInit() {
     if (this.data) {
+      this.disabledUserName = true;
       const user: UserWithPic = this.data;
       this.userNameControl.setValue(user.username);
       this.userNameControl.disable();
       this.fullNameControl.setValue(user.fullName);
       this.permission = user.permission;
+    }else {
+        this.changePassword("");
     }
     this.trn.get('userManager.err').subscribe(word => {
       this.wordErr = word;
@@ -128,4 +136,25 @@ export class NewUserDialogComponent implements OnInit {
         }
       });
   }
+
+  changeUserName(value: string): void {
+    this.userNameControl.setValue(value);
+    this.userNameControl.markAsTouched();
+  }
+
+  changeFullName(value: string): void {
+    this.fullNameControl.setValue(value);
+    this.fullNameControl.markAsTouched();
+  }
+
+  changePassword(value: string): void {
+    this.passwordValidator.setValue(value);
+    this.passwordValidator.markAsTouched();
+  }
+
+  changeConfirmPassword(value: string): void {
+    this.passwordConfirm.setValue(value);
+    this.passwordConfirm.markAsTouched();
+  }
+
 }

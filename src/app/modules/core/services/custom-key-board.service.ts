@@ -16,7 +16,7 @@ export class CustomKeyBoardService {
         document.body.appendChild(span);
         let textPassword = "";
         for(let i=0;i<text.length;i++) {
-            textPassword += "*";
+            textPassword += ".";
         }
         if (typeof span.textContent != "undefined") {
             span.textContent = (password ? textPassword : text);
@@ -27,19 +27,24 @@ export class CustomKeyBoardService {
         document.body.removeChild(span);
         let isSpace: boolean = false;
         let num: number = 0;
-        for(let i=0;i<text.length;i++) {
-            if(text[i] === " ") {
-                if(isSpace) {
-                    num++;
+        if(!password) {
+            for(let i=0;i<text.length;i++) {
+                if(text[i] === " ") {
+                    if(isSpace) {
+                        num++;
+                    }
+                    isSpace = true;
+                }else {
+                    isSpace = false;
                 }
-                isSpace = true;
-            }else {
-                isSpace = false;
             }
+            text[text.length-1]=== " " ? num++ : "";
+            text[0]=== " " ? num++ : "";
         }
-        text[text.length-1]=== " " ? num++ : "";
-        text[0]=== " " ? num++ : "";
-        return result.width + 7.1 * num;
+        if(password) {
+            return result.width + 1.74 * textPassword.length;
+        }
+        return result.width + 6.0 * num;
     }
 
     public selectionStart(ele: HTMLInputElement): number {

@@ -76,7 +76,7 @@ export class ProgramToolbarComponent implements OnInit {
     public stat: TpStatService,
     public login: LoginService,
     public cmn: CommonService,
-    private utils: UtilsService,
+    public utils: UtilsService,
     private router: Router
   ) {
     this.trn
@@ -417,7 +417,8 @@ export class ProgramToolbarComponent implements OnInit {
           placeholder: this.words['files.dir_name'],
           accept: this.words['button.create'],
           regex: '[a-zA-Z]+(\\w*)$',
-          maxLength: 32
+          maxLength: 32,
+          nameRules: true
         },
       })
       .afterClosed()

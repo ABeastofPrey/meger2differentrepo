@@ -242,7 +242,7 @@
                         [min]="model[CommandOptions.AccLimit][0]"
                         [max]="model[CommandOptions.AccLimit][1]"
                         [(value)]="form.controls.AScale.value"
-                        [leftClosedInterval]="false"
+                        [leftClosedInterval]="true"
                         placeHolder="{{'projectCommands.jumpx.acc' | translate}} [%]"
                         (valueChange)="change($event,CommandOptions.Acc)"
                         (blurEvent)="blur($event,CommandOptions.Acc)">

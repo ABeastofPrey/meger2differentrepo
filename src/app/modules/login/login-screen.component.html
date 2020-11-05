@@ -30,7 +30,7 @@
 			<div class="main">
 				<form [formGroup]="authForm" (ngSubmit)="submitForm()">
 					<fieldset [disabled]="isSubmitting">
-						<mat-form-field appearance="fill">
+						<!-- <mat-form-field appearance="fill">
 							<mat-label>{{ 'userManager.username' | translate }}</mat-label>
 							<mat-icon class="mat-primary" matPrefix>person</mat-icon>
 							<input
@@ -41,8 +41,13 @@
 								ktype="text"
 								id="username"
 							/>
-						</mat-form-field>
-						<mat-form-field appearance="fill">
+                        </mat-form-field> -->
+                        <custom-key-board class="customKeyBoardLogin" type="string" [value]="authForm.controls.username.value" [required]="true" 
+                            (blurEvent)="usernameBlur($event,'username')" placeHolder="{{ 'userManager.username' | translate }}"
+                            matLabel="{{ 'userManager.username' | translate }}" [iconPrefix]="true" [iconPrefixColor]="'#FF7300'"
+                            [prefix]="'person'" (valueChange)="usernameBlur($event,'username')" 
+                        ></custom-key-board>
+						<!-- <mat-form-field appearance="fill">
 							<mat-label>{{ 'password' | translate }}</mat-label>
 							<mat-icon class="mat-primary" matPrefix>security</mat-icon>
 							<input
@@ -54,7 +59,12 @@
 								ktype="password"
 								id="password"
 							/>
-						</mat-form-field>
+                        </mat-form-field> -->
+                        <custom-key-board class="customKeyBoardLogin" type="string" [value]="authForm.controls.password.value" [required]="true" [password]="true"
+                            matLabel="{{ 'password' | translate }}" [iconPrefix]="true" placeHolder="{{ 'password' | translate }}"
+                            (blurEvent)="usernameBlur($event,'password')" [prefix]="'security'" (valueChange)="usernameBlur($event,'password')"
+                            [iconPrefixColor]="'#FF7300'"
+                        ></custom-key-board>
 						<button
 							mat-raised-button
 							color="primary"

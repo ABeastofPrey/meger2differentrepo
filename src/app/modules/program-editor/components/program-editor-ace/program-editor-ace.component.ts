@@ -793,22 +793,26 @@ export class ProgramEditorAceComponent implements OnInit {
   
 
   /*************** Virtual Keyboard **********************/
-  @ViewChild('dummyInput', { static: false }) dummyInput: ElementRef;
+//   @ViewChild('dummyInput', { static: false }) dummyInput: ElementRef;
+  @ViewChild('dummyInput', { static: true }) dummyInput: any;
   dummyText = '';
   showKeyboard() {
     const editor = this.editor;
     const position = editor.getCursorPosition();
     const row = position.row; // current row
     this.dummyText = editor.session.getLine(row).replace(/\t/g,'  ');
-    this.dummyInput.nativeElement.setAttribute('column', position.column);
-    this.dummyInput.nativeElement.focus();
+    // this.dummyInput.nativeElement.setAttribute('column', position.column);
+    // this.dummyInput.nativeElement.focus();
+    this.dummyInput.numInput.nativeElement.click();
   }
   onDummyKeyboardClose() {
     const editor = this.editor;
     const position = editor.getCursorPosition();
     const row = position.row; // current row
-    if (this.dummyText === '\n') this.insertLineBreak();
-    else this.replaceLine(row, this.dummyText, true);
+    // if (this.dummyText === '\n') this.insertLineBreak();
+    // else this.replaceLine(row, this.dummyText, true);
+    this.replaceLine(row, this.dummyText, true);
+    this.insertLineBreak();
     this.dummyText = '';
   }
   /******************************************************/

@@ -18,6 +18,9 @@
   align-items: center;
   min-height: 80px;
 }
-.mat-form-field {
-  width: 100%;
+.customKeyBoard {
+    width: 360px;
 }
+/* .mat-form-field {
+  width: 100%;
+} */

@@ -1,3 +1,10 @@
+::ng-deep .tab-view custom-key-board .mat-form-field-underline {
+  display: none;
+}
+
+::ng-deep .tab-view custom-key-board input {
+  text-align: center;
+}
 .content {
   height: 100%;
   width: 100%;

@@ -21,7 +21,7 @@
 		<div class="warn warn-msg">
 			{{ 'apps.restore.msg' | translate }}
 		</div>
-		<mat-form-field appearance="fill" class="confirm">
+		<!-- <mat-form-field appearance="fill" class="confirm">
 			<mat-label>{{ 'password_confirm' | translate }} ({{ username }})</mat-label>
 			<input
 				matInput
@@ -32,7 +32,11 @@
 				ktype="text"
 			/>
 			<mat-icon matSuffix>security</mat-icon>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" appearance="fill" class="confirm" matLabel="{{ 'password_confirm' | translate }} ({{ username }})"
+            placeHolder="{{ 'password' | translate }}" [password]="true" [(value)]="password" [iconSuffix]="true" [suffix]="'security'"
+            [required]="true"
+        ></custom-key-board>
 		<div class="warn" *ngIf="wrongPass">{{ 'password_err' | translate }}</div>
 	</div>
 	<div class="buttons">

@@ -9,7 +9,7 @@ import {DashboardWindow} from '../../modules/dashboard/services/dashboard.servic
   styleUrls: ['./record-dialog.component.css'],
 })
 export class RecordDialogComponent implements OnInit {
-  
+  minDuration: number = 10;
   duration: number = null;
   override = false;
   x = 'setPoint{1}';
@@ -62,6 +62,11 @@ export class RecordDialogComponent implements OnInit {
       gap: this.gap,
       name: this.fileName.value
     });
+  }
+
+  changeFileName(value: string): void {
+      this.fileName.setValue(value);
+      this.fileName.markAsTouched();
   }
 }
 

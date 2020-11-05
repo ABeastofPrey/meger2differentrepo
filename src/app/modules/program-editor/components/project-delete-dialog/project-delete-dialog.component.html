@@ -12,12 +12,13 @@
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field class="chip-field" *ngIf="!current">
-			<mat-chip-list #chipList>
+			<!-- <mat-chip-list #chipList>
 				<mat-chip *ngFor="let project of selected" selectable="false" removable="true" (removed)="remove(project)">
 					{{ project }}
 					<mat-icon matChipRemove>cancel</mat-icon>
 				</mat-chip>
-				<input
+                <input
+                    class="projectDeleteDialog"
 					placeholder="{{ 'projects.delete-dialog.input' | translate }}"
 					#prjInput
 					[formControl]="prjCtrl"
@@ -25,14 +26,23 @@
 					[matChipInputFor]="chipList"
 					[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
 					matChipInputAddOnBlur="true"
-					[disabled]="projects.length === 0"
+                    [disabled]="projects.length === 0"
+                    [readonly]="isTablet"
 				/>
 			</mat-chip-list>
 			<mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelected($event)">
 				<mat-option *ngFor="let project of projects" [value]="project">
 					{{ project }}
 				</mat-option>
-			</mat-autocomplete>
+			</mat-autocomplete> -->
+			
+			<mat-select multiple
+				placeholder="{{ 'projects.delete-dialog.input' | translate }}"
+				[formControl]="prjCtrl">
+				<mat-option *ngFor="let item of projects" [value]="item" (click)="onSelected(item)">
+					{{item}}
+				</mat-option>
+			</mat-select>
 		</mat-form-field>
 	</div>
 	<div class="footer">

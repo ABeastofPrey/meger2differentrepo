@@ -52,6 +52,11 @@ export class NewLibDialogComponent implements OnInit {
     });
   }
 
+  change(value: string): void {
+      this.libName.setValue(value);
+      this.libName.markAsTouched();
+  }
+
   ngOnInit() {
     this.libName = new FormControl('',[
       Validators.maxLength(32),

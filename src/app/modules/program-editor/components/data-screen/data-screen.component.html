@@ -165,8 +165,9 @@
                 i < data?.robotCoordinateType?.legends?.length)
             ">
                 <custom-key-board
-                    type="float" appearance="outline"
+                    type="{{element?.typeStr === 'LONG' ? 'int' : 'float' }}"  appearance="outline"
                     [placeHolder]="leg"
+                    [isShowPrecision]="false"
                     [(value)]="
                         element.isArr
                         ? element.value[element.selectedIndex - 1].value[i].value
@@ -183,12 +184,55 @@
                 ></custom-key-board>
             </div>
           </div>
+          <div *ngIf="
+            ((!element?.isArr && element?.dataLoaded) ||
+            (element?.isArr &&
+                !element?.isTwoDimension &&
+                (element?.value)[element.selectedIndex - 1].dataLoaded) ||
+            (element?.isArr &&
+                element?.isTwoDimension &&
+                (element?.value)[element.selectedIndex - 1][
+                element.selectedSecondIndex - 1
+                ].dataLoaded)) && !(element?.typeStr !== 'STRING' &&
+                (element?.typeStr !== 'LOCATION' ||
+                i < data?.robotCoordinateType?.legends?.length))
+            ">
+            <div *ngIf="element?.typeStr === 'STRING'">
+                <custom-key-board
+                    appearance="outline"
+                    type="string"
+                    [placeHolder]="legend[i]"
+                    [(value)]="
+                        element.isArr
+                        ? element.isTwoDimension
+                            ? element.value[element.selectedIndex - 1][
+                                element.selectedSecondIndex - 1
+                            ].value[i].value
+                            : element.value[element.selectedIndex - 1].value[i].value
+                        : element.value[i].value
+                    "
+                    (valueChange)="
+                        element?.isArr
+                        ? element?.isTwoDimension
+                            ? ((element?.value)[element.selectedIndex - 1][
+                                element.selectedSecondIndex - 1
+                            ].value[i].value = $event)
+                            : ((element?.value)[element.selectedIndex - 1].value[
+                                i
+                            ].value = $event)
+                        : ((element?.value)[i].value = $event)
+                    "
+                    (blurEvent)="onKeyboardClose(element)"
+                    [maxLength]="80"
+                ></custom-key-board>
+            </div>
+          </div>
           <mat-form-field
             appearance="outline"
             floatLabel="never"
             class="value-field"
             *ngIf="
-              ((!element?.isArr && element?.dataLoaded) ||
+              (((!element?.isArr && element?.dataLoaded) ||
               (element?.isArr &&
                 !element?.isTwoDimension &&
                 (element?.value)[element.selectedIndex - 1].dataLoaded) ||
@@ -198,7 +242,7 @@
                   element.selectedSecondIndex - 1
                 ].dataLoaded)) && !(element?.typeStr !== 'STRING' &&
                 (element?.typeStr !== 'LOCATION' ||
-                i < data?.robotCoordinateType?.legends?.length))
+                i < data?.robotCoordinateType?.legends?.length))) && (element?.typeStr !== 'STRING')
             "
             [class.text-field]="element.typeStr === 'STRING'"
           >
@@ -274,7 +318,7 @@
               ktype="numeric"
               (onKeyboardClose)="onKeyboardClose(element)"
             /> -->
-            <textarea
+            <!-- <textarea
               matInput
               *ngIf="element?.typeStr === 'STRING'"
               [placeholder]="legend[i]"
@@ -306,7 +350,7 @@
               (onKeyboardClose)="onKeyboardClose(element)"
               maxlength="80"
               cdkAutosizeMinRows="1"
-            ></textarea>
+            ></textarea> -->
           </mat-form-field>
         </td>
       </ng-container>

@@ -22,6 +22,9 @@
   align-items: flex-start;
   flex-direction: column;
 }
+.name-wrapper .customKeyBoard {
+    width: 471px;
+}
 .name-wrapper mat-form-field {
   width: 100%;
 }

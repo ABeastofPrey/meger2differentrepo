@@ -22,4 +22,9 @@ export class NewPayloadDialogComponent implements OnInit {
   insert() {
     this.ref.close(this.name.value);
   }
+
+  change(value: string): void {
+      this.name.setValue(value);
+      this.name.markAsTouched();
+  }
 }

@@ -3,7 +3,7 @@
 		<mat-icon>cancel</mat-icon>
 		{{ 'button.abort' | translate }}
 	</button>
-	<mat-form-field class="search">
+	<!-- <mat-form-field class="search">
 		<input
 			matInput
 			type="text"
@@ -17,7 +17,12 @@
 			ktype="text"
 		/>
 		<mat-icon matPrefix>search</mat-icon>
-	</mat-form-field>
+    </mat-form-field> -->
+    <custom-key-board type="string" class="search" [(value)]="filterByString"
+        (valueChange)="onSearchChange()" (pressEnterEvent)="onSearchChange(true)"
+        (blurEvent)="onSearchChange(true)" [disabled]="isRefreshing"
+        [iconPrefix]="true" [prefix]="'search'"
+    ></custom-key-board>
 	<mat-form-field class="search">
 		<mat-label>{{ 'files.search_in' | translate }}</mat-label>
 		<mat-select [(ngModel)]="searchIn" (selectionChange)="onSearchChange(true)">

@@ -3,9 +3,12 @@
     <mat-slide-toggle color="primary" [checked]="config.isStaticIP" (change)="toggleStaticIP($event.checked)" #useStatic>Use static IP</mat-slide-toggle>
     <span>(When OFF the controller will use DHCP)</span>
   </div>
-  <div>
-  <mat-form-field>
+  <div class="customKeyBoard">
+  <!-- <mat-form-field>
     <input matInput placeholder="IP:MASK" [value]="config.staticIP" (change)="onIPChange($event.target.value)" [disabled]="!useStatic.checked">
-  </mat-form-field>
+  </mat-form-field> -->
+    <custom-key-board type="string" placeHolder="IP:MASK" 
+        [value]="config.staticIP" (valueChange)="onIPChange($event)" [disabled]="!useStatic.checked"
+    ></custom-key-board>
   </div>
 </div>

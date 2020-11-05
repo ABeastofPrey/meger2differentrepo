@@ -54,15 +54,25 @@ export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit {
                 event.stopPropagation();
             });
 
-        fromEvent(this.createTraceBtn._elementRef.nativeElement, 'click')
-            .pipe(takeUntil(this.endSubscribe))
-            .subscribe(() => {
-                this.createTraceEvent.emit(this.control.value);
-            });
+        // fromEvent(this.createTraceBtn._elementRef.nativeElement, 'click')
+        //     .pipe(takeUntil(this.endSubscribe))
+        //     .subscribe(() => {
+        //         this.createTraceEvent.emit(this.control.value);
+        //     });
     }
 
     ngOnDestroy(): void {
         this.endSubscribe.next(true);
         this.endSubscribe.unsubscribe();
+    }
+
+    sendValue(): void {
+        console.log(this.control.value);
+        this.createTraceEvent.emit(this.control.value);
+    }
+
+    change(value: string): void {
+        this.control.setValue(value);
+        this.control.markAsTouched();
     }
 }

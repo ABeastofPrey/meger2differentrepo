@@ -91,6 +91,59 @@ export class TerminalService {
     this.cmds = [];
     this.onNewCommand.emit();
   }
+
+  down(lastCmdIndex,value) {
+    let cmd: string = '';
+    if (this.history.length > 0) {
+      lastCmdIndex++;
+      if (lastCmdIndex >= this.history.length) {
+        lastCmdIndex = 0;
+      }
+      cmd = this.history[lastCmdIndex];
+      let cmdTmp: string = cmd;
+      while (
+        lastCmdIndex < this.history.length &&
+        (cmdTmp.trim().length === 0 || cmdTmp === value)
+      ) {
+        lastCmdIndex++;
+        if (lastCmdIndex < this.history.length) {
+          cmdTmp = this.history[lastCmdIndex];
+        }
+      }
+      if (lastCmdIndex < this.history.length) cmd = cmdTmp;
+    }
+    return {
+      index: lastCmdIndex,
+      cmd: cmd,
+    };
+  }
+
+  up(lastCmdIndex,value) {
+    let cmd: string = '';
+    if (this.history.length > 0) {
+      lastCmdIndex--;
+      if (lastCmdIndex < 0) {
+        lastCmdIndex = this.history.length - 1;
+      }
+      cmd= this.history[lastCmdIndex];
+      let cmdTmp: string = cmd;
+      while (
+        lastCmdIndex >= 0 &&
+        (cmdTmp.trim().length === 0 || cmdTmp == value)
+      ) {
+        lastCmdIndex--;
+        if (lastCmdIndex >= 0) {
+          cmdTmp = this.history[lastCmdIndex];
+        }
+      }
+      if (lastCmdIndex > -1) cmd = cmdTmp;
+
+    }
+    return {
+      index: lastCmdIndex,
+      cmd: cmd,
+    };
+  }
 }
 
 export interface TerminalCommand {

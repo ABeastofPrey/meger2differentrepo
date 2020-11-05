@@ -566,7 +566,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           placeholder: this.words[ph],
           accept: this.words['button.rename'],
           regex: '[a-zA-Z]+(\\w*)$',
-          maxLength: 32
+          maxLength: 32,
+          nameRules: true 
         },
       }).afterClosed().subscribe((name: string) => {
         if (name) {
@@ -597,7 +598,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           placeholder: this.words[ph],
           accept: this.words['button.save'],
           regex: '[a-zA-Z]+(\\w*)$',
-          maxLength: 32
+          maxLength: 32,
+          nameRules: true 
         },
       })
       .afterClosed()
@@ -647,7 +649,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           accept: this.words['button.rename'],
           suffix: '.ULB',
           regex: '[a-zA-Z]+(\\w*)$',
-          maxLength: 32
+          maxLength: 32,
+          nameRules: true 
         },
       }).afterClosed().subscribe((name: string) => {
         if (name) {
@@ -678,7 +681,8 @@ export class ProgramEditorSideMenuComponent implements OnInit {
           accept: this.words['button.save'],
           suffix: '.ULB',
           regex: '[a-zA-Z]+(\\w*)$',
-          maxLength: 32
+          maxLength: 32,
+          nameRules: true 
         },
       })
       .afterClosed()

@@ -3,7 +3,7 @@
 		<mat-icon>add</mat-icon>&nbsp;&nbsp;{{ 'home.addFeature.title' | translate }}
 	</div>
 	<div class="name-wrapper">
-		<mat-form-field>
+		<!-- <mat-form-field>
 			<input
 				matInput
 				placeholder="{{ 'home.addFeature.name' | translate }}"
@@ -11,8 +11,11 @@
 				virtualKeyboard
 				ktype="text"
 			/>
-		</mat-form-field>
-		<mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" placeHolder="{{ 'home.addFeature.name' | translate }}"
+            [(value)]="feature.name" [maxLength]="32" [nameRules]="true"
+        ></custom-key-board>
+		<!-- <mat-form-field>
 			<input
 				matInput
 				placeholder="{{ 'home.addFeature.code' | translate }}"
@@ -20,7 +23,10 @@
 				virtualKeyboard
 				ktype="text"
 			/>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" placeHolder="{{ 'home.addFeature.code' | translate }}"
+            [(value)]="feature.code" [maxLength]="32" [nameRules]="true"
+        ></custom-key-board>
 	</div>
 	<div class="actions">
 		<button mat-button color="primary" mat-dialog-close>

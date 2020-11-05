@@ -2,7 +2,7 @@
 	<h1 class="title">{{ 'help.activation.title' | translate }}</h1>
 	<div mat-dialog-content>
 		<qrcode [qrdata]="url" [size]="200" [level]="'M'"></qrcode>
-		<mat-form-field class="activation-form">
+		<!-- <mat-form-field class="activation-form">
 			<input
 				matInput
 				maxlength="6"
@@ -20,7 +20,14 @@
 			<mat-error *ngIf="control.hasError('required')">
 				{{ 'help.activation.requireErr' | translate }}
 			</mat-error>
-		</mat-form-field>
+        </mat-form-field> -->
+        <custom-key-board type="string" placeHolder="{{ 'help.activation.captchaPlaceholder' | translate }}" [maxLength]="6"
+            [minLength]="6" [(value)]="pinCode" [required]="true" #customKeyBoard
+            (valueChange)="changePicCode($event)" (blurEvent)="changePicCode($event)"
+        ></custom-key-board>
+        <div class="errorMessage" *ngIf="isValid && control.hasError('incorrectPinCode')">
+            {{ 'help.activation.incorrectCaptchaTip' | translate }}
+        </div>
 	</div>
 	<div mat-dialog-actions class="actions">
 		<button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>

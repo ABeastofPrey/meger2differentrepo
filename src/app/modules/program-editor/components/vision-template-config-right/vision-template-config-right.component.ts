@@ -145,7 +145,11 @@ export class VisionTemplateConfigRightComponent implements OnInit {
         this.respondData.push(respondData);
         this.respondDataTable.renderRows();
         let addInputElement: any = document.getElementsByClassName("inputElementName")[this.respondData.length - 1];
-        addInputElement.focus();
+        // addInputElement.focus();
+        setTimeout(() => {
+            addInputElement.getElementsByTagName("input")[0].click();
+            this.changeInput({target:{value:""}},this.respondData.length - 1,"respondData");
+        }, 0);
     }
 
     private addResData(index: number): void {

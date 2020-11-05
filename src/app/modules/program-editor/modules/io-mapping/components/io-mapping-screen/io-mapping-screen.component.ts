@@ -154,6 +154,9 @@ export class IoMappingScreenComponent implements OnInit {
 
   updateName(e: {target: {value: string}}, io: Io) {
     const newVal = e.target.value;
+    if(!newVal) {
+        return;
+    }
     const ioType = this.activeModule.showInputs ? 1 : 0;
     this.ws
       .query(
@@ -182,6 +185,9 @@ export class IoMappingScreenComponent implements OnInit {
 
   updateDescription(e: {target: {value: string}}, io: Io) {
     const newVal = e.target.value;
+    if(!newVal) {
+        return;
+    }
     const ioType = this.activeModule.showInputs ? 1 : 0;
     this.ws
       .query(
@@ -250,6 +256,7 @@ export class IoMappingScreenComponent implements OnInit {
     if (this.interval) clearInterval(this.interval);
     this.zone.runOutsideAngular(() => {
       this.interval = window.setInterval(() => {
+        console.log('here')
         const ioType = this.activeModule.showInputs ? 1 : 0;
         let start, end;
         if (this.activeModule.showInputs) {
@@ -278,7 +285,7 @@ export class IoMappingScreenComponent implements OnInit {
             }
             this.ref.detectChanges();
           });
-      }, 200);
+      }, !this.utils.isTablet ? 200 : 2000);
     });
   }
 

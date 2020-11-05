@@ -86,17 +86,20 @@
                     [isPositiveNum]="true"
                     [min]="1"
                     [max]="1000"
+                    [emitInvalidValue]="true"
                     [placeHolder]="'nX'"
                     class="input-small"
                     [(value)]="dataService.selectedPallet.itemsX"
                     [required]="true"
                     (valueChange)="onWindowResize()"
+                    (isValidEvent)="onValidatorCheck($event,'itemsX',step1)"
                     (blurEvent)="setFormGroupItem($event,'itemsX',step1)"
-                    (inputChange)="setFormGroupItem($event,'itemsX',step1,true)">
+                    (inputChange)="setFormGroupItem($event,'itemsX',step1)">
                 </custom-key-board>
                 <custom-key-board
                     type="int"
                     [isPositiveNum]="true"
+                    [emitInvalidValue]="true"
                     [min]="1"
                     [max]="1000"
                     [placeHolder]="'nY'"
@@ -104,12 +107,14 @@
                     [(value)]="dataService.selectedPallet.itemsY"
                     [required]="true"
                     (valueChange)="onWindowResize()"
+                    (isValidEvent)="onValidatorCheck($event,'itemsY',step1)"
                     (blurEvent)="setFormGroupItem($event,'itemsY',step1)"
-                    (inputChange)="setFormGroupItem($event,'itemsY',step1,true)">
+                    (inputChange)="setFormGroupItem($event,'itemsY',step1)">
               </custom-key-board>
                 <custom-key-board
                     type="int"
                     [isPositiveNum]="true"
+                    [emitInvalidValue]="true"
                     [min]="1"
                     [max]="1000"
                     [placeHolder]="'nZ'"
@@ -117,8 +122,9 @@
                     [(value)]="dataService.selectedPallet.itemsZ"
                     [required]="true"
                     (valueChange)="onWindowResize()"
+                    (isValidEvent)="onValidatorCheck($event,'itemsZ',step1)"
                     (blurEvent)="setFormGroupItem($event,'itemsZ',step1)"
-                    (inputChange)="setFormGroupItem($event,'itemsZ',step1,true)">
+                    (inputChange)="setFormGroupItem($event,'itemsZ',step1)">
                 </custom-key-board>
 							</div>
 						</div>
@@ -165,38 +171,44 @@
                   <custom-key-board
                       type="float"
                       [isPositiveNum]="true"
+                      [emitInvalidValue]="true"
                       [min]="1"
                       [placeHolder]="'X'"
                       class="input-small"
                       [(value)]="dataService.selectedPallet.itemSizeX"
                       [required]="true"
                       (valueChange)="onWindowResize()"
+                      (isValidEvent)="onValidatorCheck($event,'itemSizeX',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeX',step1)"
-                      (inputChange)="setFormGroupItem($event,'itemSizeX',step1,true)">
+                      (inputChange)="setFormGroupItem($event,'itemSizeX',step1)">
                  </custom-key-board>
                  <custom-key-board
                       type="float"
                       [isPositiveNum]="true"
+                      [emitInvalidValue]="true"
                       [min]="1"
                       [placeHolder]="'Y'"
                       class="input-small"
                       [(value)]="dataService.selectedPallet.itemSizeY"
                       [required]="true"
                       (valueChange)="onWindowResize()"
+                      (isValidEvent)="onValidatorCheck($event,'itemSizeY',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeY',step1)"
-                      (inputChange)="setFormGroupItem($event,'itemSizeY',step1,true)">
+                      (inputChange)="setFormGroupItem($event,'itemSizeY',step1)">
                 </custom-key-board>
                 <custom-key-board
                       type="float"
                       [isPositiveNum]="true"
+                      [emitInvalidValue]="true"
                       [min]="1"
                       [placeHolder]="'Z'"
                       class="input-small"
                       [(value)]="dataService.selectedPallet.itemSizeZ"
                       [required]="true"
                       (valueChange)="onWindowResize()"
+                      (isValidEvent)="onValidatorCheck($event,'itemSizeZ',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeZ',step1)"
-                      (inputChange)="setFormGroupItem($event,'itemSizeZ',step1,true)">
+                      (inputChange)="setFormGroupItem($event,'itemSizeZ',step1)">
                 </custom-key-board>
 								</div>
 							</div>
@@ -230,24 +242,28 @@
                   <custom-key-board
                       type="float"
                       [isPositiveNum]="true"
+                      [emitInvalidValue]="true"
                       [placeHolder]="'X'"
                       class="input-small"
                       [min]="1"
                       [(value)]="dataService.selectedPallet.palletSizeX"
                       [required]="true"
+                      (isValidEvent)="onValidatorCheck($event,'palletSizeX',step1)"
                       (blurEvent)="setFormGroupItem($event,'palletSizeX',step1)"
-                      (inputChange) ="setFormGroupItem($event,'palletSizeX',step1,true)">
+                      (inputChange) ="setFormGroupItem($event,'palletSizeX',step1)">
                   </custom-key-board>
                   <custom-key-board
                       type="float"
                       [isPositiveNum]="true"
+                      [emitInvalidValue]="true"
                       [placeHolder]="'Y'"
                       class="input-small"
                       [min]="1"
                       [(value)]="dataService.selectedPallet.palletSizeY"
                       [required]="true"
+                      (isValidEvent)="onValidatorCheck($event,'palletSizeY',step1)"
                       (blurEvent)="setFormGroupItem($event,'palletSizeY',step1)"
-                      (inputChange) ="setFormGroupItem($event,'palletSizeY',step1,true)">
+                      (inputChange) ="setFormGroupItem($event,'palletSizeY',step1)">
                   </custom-key-board>
 								</div>
 							</div>
@@ -270,9 +286,11 @@
                     type="int"
                     [min]="1"
                     [isPositiveNum]="true"
+                    [emitInvalidValue]="true"
                     [required]="true"
                     placeHolder="{{ 'pallets.wizard.levels' | translate }}"
                     [(value)]="dataService.selectedPallet.levels"
+                    (isValidEvent)="onValidatorCheck($event,'levels',step1)"
                     (blurEvent) ="setFormGroupItem($event,'levels',step1)"
                     (inputChange) = "setFormGroupItem($event,'levels',step1)"
                 ></custom-key-board>
@@ -323,8 +341,10 @@
                       appearance="outline"
                       type="int"
                       [isPositiveNum]="true"
+                      [emitInvalidValue]="true"
                       [(value)]="dataService.selectedPallet.index"
                       [disabled]="step1.controls['index'].value !== 'custom'"
+                      (isValidEvent)="onValidatorCheck($event,'index',step1)"
                       (blurEvent)="onIndexChange()"
                       (inputChange)="onIndexChange()"
                   ></custom-key-board>
@@ -462,8 +482,10 @@
                     type="float"
                     [placeHolder]="'X'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.origin.x"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'originX',step2)"
                     (blurEvent)="setFormGroupItem($event,'originX',step2)"
                     (inputChange)="setFormGroupItem($event,'originX',step2)">
                 </custom-key-board>
@@ -471,8 +493,10 @@
                     type="float"
                     [placeHolder]="'Y'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.origin.y"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'originY',step2)"
                     (blurEvent)="setFormGroupItem($event,'originY',step2)"
                     (inputChange)="setFormGroupItem($event,'originY',step2)">
                 </custom-key-board>
@@ -480,8 +504,10 @@
                     type="float"
                     [placeHolder]="'Z'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.origin.z"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'originZ',step2)"
                     (blurEvent)="setFormGroupItem($event,'originZ',step2)"
                     (inputChange)="setFormGroupItem($event,'originZ',step2)">
                 </custom-key-board>
@@ -540,8 +566,10 @@
                     type="float"
                     [placeHolder]="'X'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posX.x"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'posXX',step2)"
                     (blurEvent)="setFormGroupItem($event,'posXX',step2)"
                     (inputChange)="setFormGroupItem($event,'posXX',step2)">
                 </custom-key-board>
@@ -549,8 +577,10 @@
                     type="float"
                     [placeHolder]="'Y'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posX.y"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'posXY',step2)"
                     (blurEvent)="setFormGroupItem($event,'posXY',step2)"
                     (inputChange)="setFormGroupItem($event,'posXY',step2)">
                 </custom-key-board>
@@ -558,8 +588,10 @@
                     type="float"
                     [placeHolder]="'Z'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posX.z"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'posXZ',step2)"
                     (blurEvent)="setFormGroupItem($event,'posXZ',step2)"
                     (inputChange)="setFormGroupItem($event,'posXZ',step2)">
                 </custom-key-board>
@@ -618,8 +650,10 @@
                     type="float"
                     [placeHolder]="'X'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posY.x"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'posYX',step2)"
                     (blurEvent)="setFormGroupItem($event,'posYX',step2)"
                     (inputChange)="setFormGroupItem($event,'posYX',step2)">
                 </custom-key-board>
@@ -627,8 +661,10 @@
                     type="float"
                     [placeHolder]="'Y'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posY.y"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'posYY',step2)"
                     (blurEvent)="setFormGroupItem($event,'posYY',step2)"
                     (inputChange)="setFormGroupItem($event,'posYY',step2)">
                 </custom-key-board>
@@ -636,8 +672,10 @@
                     type="float"
                     [placeHolder]="'Z'"
                     class="input-small"
+                    [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posY.z"
                     [required]="true"
+                    (isValidEvent)="onValidatorCheck($event,'posYZ',step2)"
                     (blurEvent)="setFormGroupItem($event,'posYZ',step2)"
                     (inputChange)="setFormGroupItem($event,'posYZ',step2)">
                 </custom-key-board>
@@ -750,9 +788,11 @@
                         type="float"
                         [placeHolder]="'X'"
                         class="input-small"
+                        [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.x"
                         [required]="true"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        (isValidEvent)="onValidatorCheck($event,'x',step3)"
                         (blurEvent)="setFormGroupItem($event,'x',step3)"
                         (inputChange)="setFormGroupItem($event,'x',step3)">
                     </custom-key-board>
@@ -760,9 +800,11 @@
                         type="float"
                         [placeHolder]="'Y'"
                         class="input-small"
+                        [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.y"
                         [required]="true"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        (isValidEvent)="onValidatorCheck($event,'y',step3)"
                         (blurEvent)="setFormGroupItem($event,'y',step3)"
                         (inputChange)="setFormGroupItem($event,'y',step3)">
                     </custom-key-board>
@@ -770,9 +812,11 @@
                         type="float"
                         [placeHolder]="'Z'"
                         class="input-small"
+                        [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.z"
                         [required]="true"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        (isValidEvent)="onValidatorCheck($event,'z',step3)"
                         (blurEvent)="setFormGroupItem($event,'z',step3)"
                         (inputChange)="setFormGroupItem($event,'z',step3)">
                     </custom-key-board>
@@ -781,9 +825,11 @@
                         type="float"
                         [placeHolder]="'Yaw'"
                         class="input-small"
+                        [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.yaw"
                         [required]="true"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
+                        (isValidEvent)="onValidatorCheck($event,'yaw',step3)"
                         (blurEvent)="setFormGroupItem($event,'yaw',step3)"
                         (inputChange)="setFormGroupItem($event,'yaw',step3)">
                     </custom-key-board>
@@ -793,8 +839,10 @@
                         [placeHolder]="'Pitch'"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
                         class="input-small"
+                        [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.pitch"
                         [required]="true"
+                        (isValidEvent)="onValidatorCheck($event,'pitch',step3)"
                         (blurEvent)="setFormGroupItem($event,'pitch',step3)"
                         (inputChange)="setFormGroupItem($event,'pitch',step3)">
                     </custom-key-board>
@@ -803,8 +851,10 @@
                         [placeHolder]="'Roll'"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
                         class="input-small"
+                        [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.roll"
                         [required]="true"
+                        (isValidEvent)="onValidatorCheck($event,'roll',step3)"
                         (blurEvent)="setFormGroupItem($event,'roll',step3)"
                         (inputChange)="setFormGroupItem($event,'roll',step3)">
                     </custom-key-board>
@@ -882,6 +932,8 @@
                   class="input-small"
                   [(value)]="dataService.selectedPallet.approachOffsetVertical"
                   [required]="true"
+                  [emitInvalidValue]="true"
+                  (isValidEvent)="onValidatorCheck($event,'app_off_v',step4)"
                   (blurEvent)="setFormGroupItem($event,'app_off_v',step4)"
                   (inputChange)="setFormGroupItem($event,'app_off_v',step4)"
                   [isPositiveNum]="true"
@@ -891,7 +943,9 @@
                   type="float"
                   placeHolder="{{ 'pallets.wizard.offH' | translate }}"
                   class="input-small"
+                  [emitInvalidValue]="true"
                   [(value)]="dataService.selectedPallet.approachOffsetHorizontal" [required]="true"
+                  (isValidEvent)="onValidatorCheck($event,'app_off_h',step4)"
                   (blurEvent)="setFormGroupItem($event,'app_off_h',step4)"
                   (inputChange)="setFormGroupItem($event,'app_off_h',step4)"
                   [isPositiveNum]="true"
@@ -954,7 +1008,9 @@
                   type="float"
                   placeHolder="{{ 'pallets.wizard.offV' | translate }}"
                   class="input-small"
+                  [emitInvalidValue]="true"
                   [(value)]="dataService.selectedPallet.retractOffsetVertical" [required]="true"
+                  (isValidEvent)="onValidatorCheck($event,'ret_off_v',step4)"
                   (blurEvent)="setFormGroupItem($event,'ret_off_v',step4)"
                   (inputChange)="setFormGroupItem($event,'ret_off_v',step4)"
                   [isPositiveNum]="true"
@@ -964,8 +1020,10 @@
                   type="float"
                   placeHolder="{{ 'pallets.wizard.offH' | translate }}"
                   class="input-small"
+                  [emitInvalidValue]="true"
                   [(value)]="dataService.selectedPallet.retractOffsetHorizontal"
                   [required]="true"
+                  (isValidEvent)="onValidatorCheck($event,'ret_off_h',step4)"
                   (blurEvent)="setFormGroupItem($event,'ret_off_h',step4)"
                   (inputChange)="setFormGroupItem($event,'ret_off_h',step4)"
                   [isPositiveNum]="true"

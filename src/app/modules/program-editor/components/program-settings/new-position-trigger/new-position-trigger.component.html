@@ -1,6 +1,6 @@
 <div>
 	<div mat-dialog-content>
-		<cs-variable-input
+		<!-- <cs-variable-input
 			[(value)]="name"
 			[required]="true"
 			[requiredErrMsg]="'projectSettings.position_trigger.newPositionTrigger.requireErr' | translate"
@@ -9,7 +9,18 @@
 			[hint]="'projectSettings.position_trigger.newPositionTrigger.namePlaceholder' | translate"
 			[letterStart]="false"
 			(pressEnterEvent)="(name !== '') && close()">
-		</cs-variable-input>
+        </cs-variable-input> -->
+        <custom-key-board 
+            type="string" 
+            [(value)]="name"
+            [required]="true"
+            [maxLength]="29"
+            [nameRules]="true"
+            [prefix]="namePrefix"
+            [firstLetter]="false"
+            (blurEvent)="(name !== '')"
+            (pressEnterEvent)="(name !== '') && close()"
+        ></custom-key-board>
 	</div>
 	<div mat-dialog-actions class="actions">
 		<button mat-button color="primary" [mat-dialog-close]="null" cdkFocusInitial>

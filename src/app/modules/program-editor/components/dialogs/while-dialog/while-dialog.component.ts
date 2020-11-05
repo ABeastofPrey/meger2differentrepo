@@ -29,4 +29,10 @@ export class WhileDialogComponent implements OnInit {
     const val = this.dialogForm.controls['expression'].value as string;
     this.dialogRef.close(val);
   }
+
+  public change(value: string): void {
+      this.dialogForm.controls.expression.setValue(value);
+      this.dialogForm.controls.expression.markAsTouched();
+  }
+
 }

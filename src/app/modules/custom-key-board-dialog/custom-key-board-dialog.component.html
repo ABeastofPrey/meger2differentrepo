@@ -4,7 +4,7 @@
   cdkDragRootElement=".cdk-overlay-pane"
   cdkDragBoundary="body"
 >
-  <h2 mat-dialog-title class="mat-toolbar  mat-elevation-z3 cdkDragHandle">
+  <h2 mat-dialog-title class="mat-toolbar  mat-elevation-z3" cdkDragHandle>
     <mat-icon class="openWith">open_with</mat-icon>
     <mat-icon (click)="close()" class="close">close</mat-icon>
   </h2>
@@ -36,7 +36,9 @@
       [confirmPassword]="dialogData.confirmPassword"
       [letterAndNumber]="dialogData.letterAndNumber"
       [precision]="dialogData.precision"
+      [isProgram]="dialogData.isProgram"
       keyBoardDialog="true"
+      (onLineDelete)="onLineDelete()"
     >
     </custom-key-board>
     <div class="btnBox" *ngIf="keyBoardType === 'int' || keyBoardType === 'float'">
@@ -88,7 +90,7 @@
             (customKeyBoard &&
               customKeyBoard.getValid &&
               !customKeyBoard.getValid() &&
-              item === InputTypes.Enter) || 
+              item === InputTypes.Enter) ||
             (customKeyBoard && customKeyBoard.getValue && (customKeyBoard.getValue() == '-') && item === InputTypes.Enter) ||
             (getNegativeDisabled &&  item === '-')
           "
@@ -116,8 +118,8 @@
                     item == InputTypes.Delete ||
                     item == InputTypes.Left ||
                     item == InputTypes.Right ||
-                    item == InputTypes.Top || 
-                    item == InputTypes.Bottom || 
+                    item == InputTypes.Top ||
+                    item == InputTypes.Bottom ||
                     item == InputTypes.Symbol,
                 enterString: item === InputTypes.Enter,
                 caseConversion: item === InputTypes.Forward && caseConversion,
@@ -137,7 +139,7 @@
                 <span *ngIf="item.length <= 1 || item == InputTypes.Enter">
                     {{item}}
                 </span>
-                <span *ngIf="item === InputTypes.Symbol || item === InputTypes.Back"> 
+                <span *ngIf="item === InputTypes.Symbol || item === InputTypes.Back">
                     {{item | translate}}
                 </span>
                 <mat-icon *ngIf="item.length > 1 && item !== InputTypes.Enter && item !== InputTypes.Symbol && item !== InputTypes.Back"

@@ -3,7 +3,7 @@
 		<mat-icon>{{ data ? 'edit' : 'person_add' }}</mat-icon
 		>&nbsp;&nbsp;{{ (data ? 'userManager.btnEdit' : 'userManager.new') | translate }}
 	</div>
-	<mat-form-field>
+	<!-- <mat-form-field>
 		<input
 			matInput
 			placeholder="{{ 'userManager.username' | translate }}"
@@ -15,8 +15,12 @@
 			<span *ngIf="userNameControl.hasError('reserved')">{{ 'error.invalid_username2' | translate }}</span>
 			<span *ngIf="!userNameControl.hasError('reserved')">{{ 'error.invalid_username' | translate }}</span>
 		</mat-error>
-	</mat-form-field>
-	<mat-form-field>
+    </mat-form-field> -->
+    <custom-key-board type="string" placeHolder="{{ 'userManager.username' | translate }}"
+        [value]="userNameControl.value" [reserved]="true" [maxLength]="32" [disabled]="disabledUserName"
+        (valueChange)="changeUserName($event)" (blurEvent)="changeUserName($event)"
+    ></custom-key-board>
+	<!-- <mat-form-field>
 		<input
 			[formControl]="fullNameControl"
 			matInput
@@ -27,8 +31,12 @@
 		<mat-error *ngIf="fullNameControl.errors">
 			{{ 'error.invalid_full_name' | translate }}
 		</mat-error>
-	</mat-form-field>
-	<mat-form-field>
+    </mat-form-field> -->
+    <custom-key-board type="string" placeHolder="{{ 'userManager.full' | translate }}"
+        [value]="fullNameControl.value" [fullName]="true" [required]="true"
+        (valueChange)="changeFullName($event)" (blurEvent)="changeFullName($event)"
+    ></custom-key-board>
+	<!-- <mat-form-field>
 		<input
 			matInput
 			type="password"
@@ -40,8 +48,11 @@
 		<mat-hint align="start" *ngIf="data && passwordValidator.invalid"
 			><strong>{{ 'userManager.password_hint' | translate }}</strong>
 		</mat-hint>
-	</mat-form-field>
-	<mat-form-field>
+    </mat-form-field> -->
+    <custom-key-board type="string" [password]="true" placeHolder="{{ 'password' | translate }}"
+        [value]="passwordValidator.value" (valueChange)="changePassword($event)" (blurEvent)="changePassword($event)"
+    ></custom-key-board>
+	<!-- <mat-form-field>
 		<input
 			matInput
 			type="password"
@@ -53,7 +64,11 @@
 		<mat-error *ngIf="passwordConfirm.errors">
 			{{ 'error.mismatch_pass' | translate }}
 		</mat-error>
-	</mat-form-field>
+    </mat-form-field> -->
+    <custom-key-board type="string" [password]="true" placeHolder="{{ 'password_confirm' | translate }}"
+        [value]="passwordConfirm.value" [confirmPassword]="passwordValidator.value" [disabled]="disabledConfirmPassword"
+        (valueChange)="changeConfirmPassword($event)" (blurEvent)="changeConfirmPassword($event)"
+    ></custom-key-board>
 	<mat-form-field>
 		<mat-select
 			placeholder="{{ 'userManager.permission' | translate }}"

@@ -165,8 +165,9 @@ export class VisionTemplateConfigComponent implements OnInit {
         this.portValid = vaild;
     }
 
-    public portBlur(): void {
-        this.portValid ? this.setPortNumber(this.port.value) : "";
+    public portBlur($event): void {
+      this.port.setValue($event);
+      this.portValid ? this.setPortNumber(this.port.value) : "";
     }
 
     private setPortNumber(port: string) {
@@ -188,5 +189,6 @@ export class VisionTemplateConfigComponent implements OnInit {
         const api: string = `VLoadStationBookDefault()`;
         this.service.debounceVload(api);
     }
+
 
 }

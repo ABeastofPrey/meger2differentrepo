@@ -290,4 +290,9 @@ export class AddVarComponent implements OnInit {
         : { [errorKey]: true };
     };
   }
+
+  public change(value: string): void {
+      this.name.setValue(value);
+      this.name.markAsTouched();
+  }
 }

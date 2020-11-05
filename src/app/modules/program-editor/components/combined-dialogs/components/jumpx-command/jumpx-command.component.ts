@@ -232,7 +232,7 @@ export class JumpxCommandComponent implements OnInit, OnDestroy {
             };
         };
         const addArchNoControl = () => addControl(CommandOptions.ArchNo, model[CommandOptions.ArchNoLimit], false);
-        const addAccControl = () => addControl(CommandOptions.Acc, model[CommandOptions.AccLimit], true, false);
+        const addAccControl = () => addControl(CommandOptions.Acc, model[CommandOptions.AccLimit], true);
         const addLimZControl = () => addControl(CommandOptions.LimZ, model[CommandOptions.LimZLimit]);
         const addBlendingPercentageControl = () => addControl(CommandOptions.BlendingPercentage, model[CommandOptions.BlendingPercentageLimit]);
         const addVcruiseControl = () => addControl(CommandOptions.VScale, model[CommandOptions.VcruiseLimit]);

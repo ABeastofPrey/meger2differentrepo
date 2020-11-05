@@ -2,7 +2,7 @@
     <div class="wrapper">
         <div class="title">{{ data.title | translate }}</div>
         <div class="content">
-            <mat-form-field>
+            <!-- <mat-form-field>
                 <mat-label>{{ data.label | translate}}</mat-label>
                 <input autocomplete="off" maxlength="32" matInput placeholder="{{ data.placeholder | translate }}"
                     [formControl]="name" (input)="changeInput($event)" />
@@ -12,7 +12,10 @@
                     {{ 'error.invalid_var_name' | translate }}</mat-error>
                 <mat-error *ngIf="name.hasError('exist') && !name.hasError('letter') && !name.hasError('required')">
                     {{ 'vision.templateConfig.nameExist' | translate }}</mat-error>
-            </mat-form-field>
+            </mat-form-field> -->
+            <custom-key-board type="string" placeholder="{{ data.placeholder | translate }}" [maxLength]="32" [value]="name.value" matLabel="{{ data.label | translate}}"
+                (valueChange)="change($event)" (blurEvent)="change($event)" [nameRules]="true"
+            ></custom-key-board>
         </div>
         <div class="openDialog" *ngIf="data.checkbox">
             <mat-checkbox color="primary" [(ngModel)]="dialog">

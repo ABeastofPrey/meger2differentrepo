@@ -11,9 +11,9 @@
 		<mat-menu #menu="matMenu">
 			<button mat-menu-item (click)="save()">{{ 'projects.toolbar.save' | translate }}...</button>
 			<button mat-menu-item (click)="open()">{{ 'projects.toolbar.open' | translate }}...</button>
-			<mat-divider></mat-divider>
-			<button mat-menu-item (click)="export()">{{ 'projects.toolbar.export' | translate }}...</button>
-			<button mat-menu-item (click)="import()">{{ 'projects.toolbar.import' | translate }}...</button>
+			<mat-divider *ngIf="!utils.isTablet" ></mat-divider>
+			<button *ngIf="!utils.isTablet" mat-menu-item (click)="export()">{{ 'projects.toolbar.export' | translate }}...</button>
+			<button *ngIf="!utils.isTablet" mat-menu-item (click)="import()">{{ 'projects.toolbar.import' | translate }}...</button>
 		</mat-menu>
 		<div class="separator"></div>
 		<button

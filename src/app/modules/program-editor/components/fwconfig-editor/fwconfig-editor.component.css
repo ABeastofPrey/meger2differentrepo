@@ -8,3 +8,7 @@ mat-form-field {
   width: 400px;
   font-family: cs-monospace;
 }
+
+.customKeyBoard {
+    width: 400px;
+}

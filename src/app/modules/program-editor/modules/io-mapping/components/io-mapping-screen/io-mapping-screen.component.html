@@ -57,7 +57,7 @@
 									></mat-slide-toggle>
 								</td>
 								<td>
-									<mat-form-field>
+									<!-- <mat-form-field>
 										<input
 											type="text"
 											matInput
@@ -69,10 +69,18 @@
 											virtualKeyboard
 											(onKeyboardClose)="updateName($event, io)"
 										/>
-									</mat-form-field>
+                                    </mat-form-field> -->
+                                    <custom-key-board
+                                        type="string"
+                                        [value]="io.name"
+                                        [maxLength]="32"
+                                        [required]="true"
+                                        [disabled]="prj.activeProject || !io.editable"
+                                        (blurEvent)="updateName({target:{value:$event}}, io)"
+                                    ></custom-key-board>
 								</td>
 								<td>
-									<mat-form-field>
+									<!-- <mat-form-field>
 										<input
 											type="text"
 											matInput
@@ -84,7 +92,15 @@
 											ktype="text"
 											(onKeyboardClose)="updateDescription($event, io)"
 										/>
-									</mat-form-field>
+                                    </mat-form-field> -->
+                                    <custom-key-board
+                                        type="string"
+                                        [value]="io.description"
+                                        [maxLength]="80"
+                                        [required]="true"
+                                        [disabled]="prj.activeProject"
+                                        (blurEvent)="updateDescription({target:{value:$event}}, io)"
+                                    ></custom-key-board>
 								</td>
 								<td style="text-align: center;">
 									<mat-checkbox
@@ -109,7 +125,7 @@
 									></mat-slide-toggle>
 								</td>
 								<td>
-									<mat-form-field>
+									<!-- <mat-form-field>
 										<input
 											type="text"
 											matInput
@@ -121,10 +137,18 @@
 											ktype="text"
 											(onKeyboardClose)="updateName($event, io)"
 										/>
-									</mat-form-field>
+                                    </mat-form-field> -->
+                                    <custom-key-board
+                                        type="string"
+                                        [value]="io.name"
+                                        [maxLength]="32"
+                                        [required]="true"
+                                        [disabled]="prj.activeProject || !io.editable"
+                                        (blurEvent)="updateName({target:{value:$event}}, io)"
+                                    ></custom-key-board>
 								</td>
 								<td>
-									<mat-form-field>
+									<!-- <mat-form-field>
 										<input
 											type="text"
 											matInput
@@ -136,7 +160,15 @@
 											ktype="text"
 											(onKeyboardClose)="updateDescription($event, io)"
 										/>
-									</mat-form-field>
+                                    </mat-form-field> -->
+                                    <custom-key-board
+                                        type="string"
+                                        [value]="io.description"
+                                        [maxLength]="80"
+                                        [required]="true"
+                                        [disabled]="prj.activeProject"
+                                        (blurEvent)="updateDescription({target:{value:$event}}, io)"
+                                    ></custom-key-board>
 								</td>
 								<td style="text-align: center;">
 									<mat-checkbox

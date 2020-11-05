@@ -28,8 +28,9 @@ export interface CharWidth {
 export interface customKeyBoardType {
     getValue:Function;
     setValue:Function;
-    getValid:Function;
+    getValid:Function; 
     setDefaultValue:Function;
+    isProgram: boolean;
 }
 
 export const LAYOUT_NUMBER: string[][] = [
@@ -59,7 +60,7 @@ export const LAYOUT_STRING_CAPITAL: string[][] = [
 
 export const LAYOUT_STRING_SYMBOL: string[][] = [
     ["1","2","3","4","5","6","7","8","9","0",InputType.Delete],
-    ["!","@","#","$","%","^","&","*","(",")","."],
+    ["!","@","#","$","%","^","&","*","(",")","'"],
     ["~","{","}","[","]","\\","|","+","-","_"],
     ["`","<",">",",","/","\"",":",";",".","?","="],
     [InputType.Back," ",InputType.Left,InputType.Top,InputType.Right,InputType.Enter],
