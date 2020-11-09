@@ -48,7 +48,7 @@
 				/>
 				<span matSuffix>[Kg]</span>
             </mat-form-field> -->
-            <custom-key-board class="customKeyBoard" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.mass' | translate }}" [suffix]="'[Kg]'"
+            <custom-key-board class="customKeyBoard" [emitInvalidValue]="false" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.mass' | translate }}" [suffix]="'[Kg]'"
                 [(value)]="ctrlMass.value" (blurEvent)="onMassChange({target: {value: $event}})" [disabled]="login.isOperator"
             ></custom-key-board>
 			<!-- <mat-form-field>
@@ -64,7 +64,7 @@
 				/>
 				<span matSuffix>[Kg * m<sup>2</sup>]</span>
             </mat-form-field> -->
-            <custom-key-board class="customKeyBoard" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.inertia' | translate }}" [suffix]="'[Kg * m<sup>2</sup>]'"
+            <custom-key-board class="customKeyBoard" [emitInvalidValue]="false" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.inertia' | translate }}" [suffix]="'[Kg * m<sup>2</sup>]'"
                 [(value)]="ctrlInertia.value"  (blurEvent)="onInertiaChange({target: {value: $event}})" [disabled]="login.isOperator"
             ></custom-key-board>
 			<!-- <mat-form-field>
@@ -80,7 +80,7 @@
 				/>
 				<span matSuffix>[m]</span>
             </mat-form-field> -->
-            <custom-key-board class="customKeyBoard" type="float" placeHolder="{{ 'payloads.offX' | translate }}" [suffix]="'[m]'"
+            <custom-key-board class="customKeyBoard" type="float" [emitInvalidValue]="false"  placeHolder="{{ 'payloads.offX' | translate }}" [suffix]="'[m]'"
                 [(value)]="ctrllx.value"  (blurEvent)="onXOffsetChange({target: {value: $event}})" [disabled]="login.isOperator"
             ></custom-key-board>
 			<table class="advanced-table" *ngIf="advanced">
@@ -110,7 +110,11 @@
 								<span matSuffix>{{ i !== 2 ? '[deg]' : '[mm]' }}</span>
                             </mat-form-field> -->
                             <div class="customKeyBoard2">
-                                <custom-key-board type="float" [(value)]="data.payloadStart[i]" suffix="{{ i !== 2 ? '[deg]' : '[mm]' }}" appearance="outline"
+                                <custom-key-board type="float"
+                                   [emitInvalidValue]="false"
+                                   [(value)]="data.payloadStart[i]"
+                                   suffix="{{ i !== 2 ? '[deg]' : '[mm]' }}"
+                                    appearance="outline"
                                     (blurEvent)="data.onPayloadStartChange()"
                                 ></custom-key-board>
                             </div>
@@ -132,7 +136,7 @@
 								<span matSuffix>{{ i !== 2 ? '[deg]' : '[mm]' }}</span>
                             </mat-form-field> -->
                             <div class="customKeyBoard2">
-                                <custom-key-board type="float" [(value)]="data.payloadRelative[i]" suffix="{{ i !== 2 ? '[deg]' : '[mm]' }}" appearance="outline"
+                                <custom-key-board type="float" [emitInvalidValue]="false" [(value)]="data.payloadRelative[i]" suffix="{{ i !== 2 ? '[deg]' : '[mm]' }}" appearance="outline"
                                  (blurEvent)="data.onPayloadRelativeChange()"
                                 ></custom-key-board>
                             </div>
@@ -154,7 +158,7 @@
 								<span matSuffix>[Hz.]</span>
                             </mat-form-field> -->
                             <div class="customKeyBoard2">
-                                <custom-key-board type="float" [(value)]="data.payloadFreq[i]" suffix="[Hz.]" appearance="outline"
+                                <custom-key-board type="float" [emitInvalidValue]="false" [(value)]="data.payloadFreq[i]" suffix="[Hz.]" appearance="outline"
                                 (blurEvent)="data.onPayloadFreqChange()"
                                 ></custom-key-board>
                             </div>
@@ -175,7 +179,7 @@
 								<span matSuffix>[s]</span>
                             </mat-form-field> -->
                             <div class="customKeyBoard2">
-                                <custom-key-board type="float" [(value)]="data.payloadDuration" suffix="[s]" appearance="outline"
+                                <custom-key-board type="float" [emitInvalidValue]="false"  [(value)]="data.payloadDuration" suffix="[s]" appearance="outline"
                                     (blurEvent)="data.onPayloadDurationChange()"
                                 ></custom-key-board>
                             </div>

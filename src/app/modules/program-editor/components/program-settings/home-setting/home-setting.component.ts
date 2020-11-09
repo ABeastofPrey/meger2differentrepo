@@ -87,7 +87,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
 
 	async updatePosition(index: number, target: HTMLInputElement): Promise<void> {
 		const value = transferNum(target.value);
-		const positionRange = converge(and, [gt(__, this.limits[index].min), lt(__, this.limits[index].max),]);
+		const positionRange = converge(and, [gt(__, this.limits[index - 1].min), lt(__, this.limits[index - 1].max),]);
 		const isOverLimit = complement(positionRange);
 		if (isOverLimit(value)) return;
 		this.service.updateHomePostion(index, value).then(() => {

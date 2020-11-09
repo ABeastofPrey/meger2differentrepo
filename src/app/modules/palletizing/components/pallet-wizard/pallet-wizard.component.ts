@@ -460,6 +460,7 @@ export class PalletWizardComponent implements OnInit {
         if (ret.result === '0') {
           this.ws.query('PrintPointU "#.##"; PLT_FRAME_CALIBRATION_GET("' + pallet.name + '","o")').then(ret => {
             this.dataService.selectedPallet.origin = this.parseLocation(ret.result);
+            this.step2Origin(this.dataService.selectedPallet);
           });
         }
       });
@@ -480,6 +481,7 @@ export class PalletWizardComponent implements OnInit {
               this.dataService.selectedPallet.posX = this.parseLocation(
                 ret.result
               );
+              this.step2posX(this.dataService.selectedPallet);
             });
         }
       });
@@ -500,6 +502,7 @@ export class PalletWizardComponent implements OnInit {
               this.dataService.selectedPallet.posY = this.parseLocation(
                 ret.result
               );
+              this.step2posY(this.dataService.selectedPallet);
             });
         }
       });
@@ -517,6 +520,7 @@ export class PalletWizardComponent implements OnInit {
               this.dataService.selectedPallet.entry = this.parseLocation(
                 ret.result
               );
+              this.step3Entry(this.dataService.selectedPallet);
             });
           this.ws.query('?PLT_GET_CONFIGURATION_FLAGS("' +  pallet.name + '")').then(ret=>{
             const flags = ret.result.split(',');
@@ -1953,11 +1957,19 @@ export class PalletWizardComponent implements OnInit {
       }
       else if(i === 3  && this.dataService.selectedPallet.diffOddEven || i=== 2){//step2 origin
         this.calibrate(null);
+      }else if(i === 4  && this.dataService.selectedPallet.diffOddEven || i=== 3){ //step3 entry
+        this.checkEntry();
       }
-    }
-    else if(i === 1){//step2 origin
+    }else if(i === 1){//step2 origin
       this.calibrate(null);
+    }else if(i === 2){ //step3 entry
+      this.checkEntry();
     }
+  }
+
+  private checkEntry(){
+    this.step3.controls['roll'].setValue(this.dataService.selectedPallet.entry.roll);
+    this.step3.controls['roll'].markAsDirty();
   }
 
   public setFormGroupItem(value: any,item: string,formGroup: FormGroup,onWindowResize: boolean = false,markAsDirty: boolean = true){
@@ -2019,44 +2031,6 @@ export class PalletWizardComponent implements OnInit {
             value:'palletSizeY',
             markAsDirty: true
           }];
-    const step2Control: any[] = [
-        {key:"originX",value1:"origin",value2:"x",markAsDirty: false},
-        {key:"originY",value1:"origin",value2:"y",markAsDirty: false},
-        {key:"originZ",value1:"origin",value2:"z",markAsDirty: true},
-        {key:"posXX",value1:"posX",value2:"x",markAsDirty: false},
-        {key:"posXY",value1:"posX",value2:"y",markAsDirty: false},
-        {key:"posXZ",value1:"posX",value2:"z",markAsDirty: true},
-        {key:"posYX",value1:"posY",value2:"x",markAsDirty: false},
-        {key:"posYY",value1:"posY",value2:"y",markAsDirty: false},
-        {key:"posYZ",value1:"posY",value2:"z",markAsDirty: true}
-    ];
-    const step3Control: any[] = [
-       {
-          key:"x",
-          value:'x',
-          markAsDirty: false
-        }, {
-          key:"y",
-          value:'y',
-          markAsDirty: false
-        },  {
-          key:"z",
-          value:'z',
-          markAsDirty: false
-        },
-        {
-          key:"yaw",
-          value:'yaw',
-          markAsDirty: false
-        }, {
-          key:"pitch",
-          value:'pitch',
-          markAsDirty: false
-        },  {
-          key:"roll",
-          value:'roll',
-          markAsDirty: true
-        }];
     const step4Control: any[] = [
         {"key":"app_off_v","value":"approachOffsetVertical",markAsDirty: false},
         {"key":"app_off_h","value":"approachOffsetHorizontal",markAsDirty: true},
@@ -2068,12 +2042,12 @@ export class PalletWizardComponent implements OnInit {
     step1Control.forEach((item) => {
       this.setFormGroupItem(selectedPallet[item.value],item.key,this.step1,true,item.markAsDirty);
     });
-    step2Control.forEach((item) => {
-      this.setFormGroupItem(selectedPallet[item.value1][item.value2],item.key,this.step2,false,item.markAsDirty);
-    });
-    step3Control.forEach((item) => {
-      this.setFormGroupItem(selectedPallet.entry[item.value],item.key,this.step3,false,item.markAsDirty);
-    })
+
+    this.step2Origin(selectedPallet);
+    this.step2posX(selectedPallet);
+    this.step2posY(selectedPallet);
+
+    this.step3Entry(selectedPallet);
     step4Control.forEach((item) => {
       // this.step4.controls[item.key].setValue(Number(this.dataService.selectedPallet[item.value]));
       this.setFormGroupItem(selectedPallet[item.value],item.key,this.step4,false,item.markAsDirty);
@@ -2084,4 +2058,76 @@ onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup,){
   if(!formGroup.controls || !formGroup.controls[item]) return;
   formGroup.setErrors({invalid: true});
 }
+
+ private step2Origin(selectedPallet){
+  const step2Control: any[] = [
+    {key:"originX",value1:"origin",value2:"x",markAsDirty: false},
+    {key:"originY",value1:"origin",value2:"y",markAsDirty: false},
+    {key:"originZ",value1:"origin",value2:"z",markAsDirty: true}
+  ];
+  this.setStep2FormControl(step2Control,selectedPallet);
+
+ }
+
+
+ private step2posX(selectedPallet){
+  const step2Control: any[] = [
+    {key:"posXX",value1:"posX",value2:"x",markAsDirty: false},
+    {key:"posXY",value1:"posX",value2:"y",markAsDirty: false},
+    {key:"posXZ",value1:"posX",value2:"z",markAsDirty: true}
+  ];
+  this.setStep2FormControl(step2Control,selectedPallet);
+ }
+
+
+ private step2posY(selectedPallet){
+  const step2Control: any[] = [
+    {key:"posYX",value1:"posY",value2:"x",markAsDirty: false},
+    {key:"posYY",value1:"posY",value2:"y",markAsDirty: false},
+    {key:"posYZ",value1:"posY",value2:"z",markAsDirty: true}
+  ];
+  this.setStep2FormControl(step2Control,selectedPallet);
+ }
+
+
+
+ private setStep2FormControl(step2Control,selectedPallet){
+  step2Control.forEach((item) => {
+    this.setFormGroupItem(selectedPallet[item.value1][item.value2],item.key,this.step2,false,item.markAsDirty);
+  });
+ }
+
+ private step3Entry(selectedPallet){
+       const step3Control: any[] = [
+      {
+         key:"x",
+         value:'x',
+         markAsDirty: false
+       }, {
+         key:"y",
+         value:'y',
+         markAsDirty: false
+       },  {
+         key:"z",
+         value:'z',
+         markAsDirty: false
+       },
+       {
+         key:"yaw",
+         value:'yaw',
+         markAsDirty: false
+       }, {
+         key:"pitch",
+         value:'pitch',
+         markAsDirty: false
+       },  {
+         key:"roll",
+         value:'roll',
+         markAsDirty: true
+       }];
+       step3Control.forEach((item) => {
+        this.setFormGroupItem(selectedPallet.entry[item.value],item.key,this.step3,false,item.markAsDirty);
+      })
+
+ }
 }

@@ -21,7 +21,7 @@
 			<mat-icon>perm_data_setting</mat-icon>
 			<div>{{ 'apps.modbus' | translate }}</div>
 		</a>
-		<a (click)="uploadIPK()" *ngIf="login.isAdmin"
+		<a (click)="uploadIPK()" *ngIf="login.isSuper"
 				[class.disabled]="cmn.isCloud " matTooltip="{{'cloud.na' | translate}}" [matTooltipDisabled]="!cmn.isCloud">
 			<mat-icon>system_update</mat-icon>
 			<div>{{ 'apps.firmware' | translate }}...</div>
@@ -41,10 +41,10 @@
 			<mat-icon>restore</mat-icon>
 			<div>{{ 'apps.restore.desc' | translate }}...</div>
 		</a>
-		<a>
+		<a *ngIf="!utils.isTablet">
 			<cs-diagnosis></cs-diagnosis>
 		</a>
-		<a (click)="loadPluginFiles()" *ngIf="login.isAdmin" [class.disabled]="cmn.isCloud  || pluginDisabled" matTooltip="{{'cloud.na' | translate}}" [matTooltipDisabled]="!cmn.isCloud">
+		<a (click)="loadPluginFiles()" *ngIf="login.isAdmin && !utils.isTablet" [class.disabled]="cmn.isCloud  || pluginDisabled" matTooltip="{{'cloud.na' | translate}}" [matTooltipDisabled]="!cmn.isCloud">
 			   <!-- <mat-icon>system_update</mat-icon> -->
 			   <mat-icon>extension</mat-icon>
 			  <div>{{ 'pluginInstall.name' | translate }}...</div>

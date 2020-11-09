@@ -10,7 +10,7 @@
       />
     </mat-form-field> -->
     <custom-key-board type="string" appearance="outline" class="name" [maxLength]="32"
-        (blurEvent)="this.lastSelectedNode.name = $event"
+        (blurEvent)="this.lastSelectedNode.name = $event" [nameRules]="true"
         [value]="lastSelectedNode.name" [disabled]="lastSelectedNode.name.startsWith('Pallet_')"
     ></custom-key-board>
     <button mat-icon-button color="warn" (click)="sim.deleteSelected()">
@@ -73,11 +73,11 @@
 					ktype="numeric"
         /> -->
         <custom-key-board
+          #positionMM_X
           type="float"
           [value]="lastSelectedNode.positionMM.x"
           [emitInvalidValue] = "false"
-          (blurEvent) ="onValueChanged($event,'positionMM','x')"
-          [toNumber]="true"
+          (blurEvent) ="onValueChanged($event,'positionMM','x', positionMM_X)"
           suffix="mm"
         ></custom-key-board>
       </td>
@@ -93,11 +93,11 @@
           ktype="numeric"
         /> -->
         <custom-key-board
+        #positionMM_Y
           type="float"
           [value]="lastSelectedNode.positionMM.y"
           [emitInvalidValue] = "false"
-          (blurEvent) ="onValueChanged($event,'positionMM','y')"
-          [toNumber]="true"
+          (blurEvent) ="onValueChanged($event,'positionMM','y', positionMM_Y)"
           suffix="mm"
         ></custom-key-board>
       </td>
@@ -113,11 +113,11 @@
           ktype="numeric"
         /> -->
         <custom-key-board
+          #positionMM_Z
           type="float"
           [value]="lastSelectedNode.positionMM.z"
           [emitInvalidValue] = "false"
-          (blurEvent) ="onValueChanged($event,'positionMM','z')"
-          [toNumber]="true"
+          (blurEvent) ="onValueChanged($event,'positionMM','z',positionMM_Z)"
           suffix="mm"
         ></custom-key-board>
       </td>
@@ -137,7 +137,6 @@
           [value]="lastSelectedNode.eulerXYZDeg.x"
           [emitInvalidValue] = "false"
           (blurEvent) ="onValueChanged($event,'eulerXYZDeg','x')"
-          [toNumber]="true"
           suffix="deg"
         ></custom-key-board>
       </td>
@@ -157,7 +156,6 @@
           [value]="lastSelectedNode.eulerXYZDeg.y"
           [emitInvalidValue] = "false"
           (blurEvent) ="onValueChanged($event,'eulerXYZDeg','y')"
-          [toNumber]="true"
           suffix="deg"
         ></custom-key-board>
       </td>
@@ -177,7 +175,6 @@
           [value]="lastSelectedNode.eulerXYZDeg.z"
           [emitInvalidValue] = "false"
           (blurEvent) ="onValueChanged($event,'eulerXYZDeg','z')"
-          [toNumber]="true"
           suffix="deg"
         ></custom-key-board>
       </td>
@@ -199,7 +196,6 @@
           [value]="lastSelectedNode.scale.x"
           [emitInvalidValue] = "false"
           (blurEvent) ="onValueChanged($event,'scale','x')"
-          [toNumber]="true"
         ></custom-key-board>
         <!-- <td></td> -->
       </td>
@@ -220,7 +216,6 @@
           [value]="lastSelectedNode.scale.y"
           [emitInvalidValue] = "false"
           (blurEvent) ="onValueChanged($event,'scale','y')"
-          [toNumber]="true"
         ></custom-key-board>
       </td>
       <!-- <td></td> -->
@@ -240,7 +235,6 @@
           [(value)]="lastSelectedNode.scale.z"
           [emitInvalidValue] = "false"
           (blurEvent) ="onValueChanged($event,'scale','z')"
-          [toNumber]="true"
         ></custom-key-board>
       </td>
       <!-- <td></td> -->

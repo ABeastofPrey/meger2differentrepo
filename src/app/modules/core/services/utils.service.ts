@@ -12,7 +12,7 @@ import {
 } from '../../../../environments/environment';
 import { DataService } from './data.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidatorFn, Validators } from '@angular/forms';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 import { CommonService } from './common.service';
 
@@ -253,7 +253,7 @@ export class UtilsService {
   }
 
   public isNumber(value: string): boolean {
-    if (value === undefined || value === null) return false;
+    if (value === undefined || value === null || value === '') return false;
     if (value === 'undefined' || value === 'null' || value === 'NaN') return false;
     if (value.trim().length !== value.length) return false;
     if (value === '-' || value === '.' || value === '') return false;
@@ -373,15 +373,31 @@ export class UtilsService {
     };
   }
 
+  public validatorUserName(): ValidatorFn {
+  return ({ value }: AbstractControl) => {
+    const reg = /[a-zA-Z0-9_]+/;
+      if(!reg.test(value)) {
+        return {"invalidUserName": "invalid_username" }
+      }
+    return null;
+  };
+  }
+
   public precision(len: number | string): ValidatorFn {
     return ({ value }: AbstractControl) => {
-        let lens = Number(len);
-        let floatNum = 0;
-        (value && value.toString().split(".")[1]) ? floatNum = value.toString().split(".")[1].length : "";
-        if(lens < floatNum) {
+        // let lens = Number(len);
+        // let floatNum = 0;
+        // (value && value.toString().split(".")[1]) ? floatNum = value.toString().split(".")[1].length : "";
+        // if(lens < floatNum) {
+        //     return {"precision": "precision"}
+        // }
+        // return null;
+        const re = new RegExp(`^([-|0-9]*)(.[0-9]{0,${len}})?$`);
+        if(!re.test(value)) {
             return {"precision": "precision"}
         }
         return null;
+
     };
   }
 

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { isNull } from 'util';
 import { fontRule, CharWidth } from '../models/customKeyBoard/custom-key-board.model';
 
 @Injectable()
@@ -6,8 +7,9 @@ export class CustomKeyBoardService {
     constructor() { }
 
     public getCharWidth(text: string,password: boolean): number {
-        var span = document.createElement("span");
         var result: CharWidth = { width: 0 };
+        if(text === null) return result.width;
+        var span = document.createElement("span");
         result.width = span.offsetWidth;
         span.style.visibility = "hidden";
         span.style.fontSize = fontRule.size;

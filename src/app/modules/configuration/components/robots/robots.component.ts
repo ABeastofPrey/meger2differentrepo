@@ -56,7 +56,9 @@ export class RobotsComponent implements OnInit {
   dhImgPath2: string | undefined;
   busy = false;
   sysDate = new FormControl(new Date());
-  sysTime = new FormControl('',[Validators.pattern(/^(?:\d\d:\d\d)$/)]);
+  public sysTimeValidators = [Validators.pattern(/^(?:\d\d:\d\d)$/)];
+  sysTime = new FormControl('',this.sysTimeValidators);
+
 
   private _rarmDH: {L1: number, L2: number} = null;
   get rarmDH() { return this._rarmDH; }
@@ -222,6 +224,8 @@ export class RobotsComponent implements OnInit {
     const ret = await this.ws.query('sys.time="'+t+'"');
     if (!ret.err) {
       this.snackbarService.openTipSnackBar(this.wordOk);
+    }else{
+      this.snackbarService.openTipSnackBar(this.words['changeError']);
     }
   }
 
@@ -343,6 +347,8 @@ export class RobotsComponent implements OnInit {
       this.refreshDisp();
       return;
     }
+    const empty = this.disp.find(x => String(x).trim() === '');
+    if (empty !== undefined) return;
     const values = this.disp.join(',');
     const robot = this.data.selectedRobot;
     if (index === -1) {
@@ -462,6 +468,7 @@ export class RobotsComponent implements OnInit {
   changeSysTime(value: string): void {
     this.sysTime.setValue(value);
     this.sysTime.markAsTouched();
+    this.onTimeChange();
   }
 }
 

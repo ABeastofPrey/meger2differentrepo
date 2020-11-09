@@ -16,8 +16,15 @@
 			<span *ngIf="!userNameControl.hasError('reserved')">{{ 'error.invalid_username' | translate }}</span>
 		</mat-error>
     </mat-form-field> -->
-    <custom-key-board type="string" placeHolder="{{ 'userManager.username' | translate }}"
-        [value]="userNameControl.value" [reserved]="true" [maxLength]="32" [disabled]="disabledUserName"
+    <custom-key-board
+        type="string"
+        placeHolder="{{ 'userManager.username' | translate }}"
+        [value]="userNameControl.value"
+        [reserved]="true"
+        [minLength]="1"
+        [maxLength]="32"
+        [nameRules]="true"
+        [disabled]="disabledUserName"
         (valueChange)="changeUserName($event)" (blurEvent)="changeUserName($event)"
     ></custom-key-board>
 	<!-- <mat-form-field>
@@ -32,8 +39,12 @@
 			{{ 'error.invalid_full_name' | translate }}
 		</mat-error>
     </mat-form-field> -->
-    <custom-key-board type="string" placeHolder="{{ 'userManager.full' | translate }}"
-        [value]="fullNameControl.value" [fullName]="true" [required]="true"
+    <custom-key-board
+        type="string"
+        placeHolder="{{ 'userManager.full' | translate }}"
+        [value]="fullNameControl.value"
+        [fullName]="true"
+        [required]="true"
         (valueChange)="changeFullName($event)" (blurEvent)="changeFullName($event)"
     ></custom-key-board>
 	<!-- <mat-form-field>
@@ -49,7 +60,10 @@
 			><strong>{{ 'userManager.password_hint' | translate }}</strong>
 		</mat-hint>
     </mat-form-field> -->
-    <custom-key-board type="string" [password]="true" placeHolder="{{ 'password' | translate }}"
+    <custom-key-board type="string"
+        [password]="true"
+        placeHolder="{{ 'password' | translate }}"
+        hint ="{{ (data && passwordValidator.invalid) ? ('userManager.password_hint' | translate) : '' }}"
         [value]="passwordValidator.value" (valueChange)="changePassword($event)" (blurEvent)="changePassword($event)"
     ></custom-key-board>
 	<!-- <mat-form-field>
@@ -65,8 +79,11 @@
 			{{ 'error.mismatch_pass' | translate }}
 		</mat-error>
     </mat-form-field> -->
-    <custom-key-board type="string" [password]="true" placeHolder="{{ 'password_confirm' | translate }}"
-        [value]="passwordConfirm.value" [confirmPassword]="passwordValidator.value" [disabled]="disabledConfirmPassword"
+    <custom-key-board type="string"
+        [password]="true"
+        placeHolder="{{ 'password_confirm' | translate }}"
+        [value]="passwordConfirm.value"
+        [confirmPassword]="passwordValidator.value" [disabled]="disabledConfirmPassword"
         (valueChange)="changeConfirmPassword($event)" (blurEvent)="changeConfirmPassword($event)"
     ></custom-key-board>
 	<mat-form-field>
@@ -75,10 +92,10 @@
 			[(ngModel)]="permission"
 			[disabled]="userNameControl.value === 'admin' || (data && !login.isAdmin)"
 		>
-			<mat-option [value]="0">Administrator</mat-option>
-			<mat-option [value]="1">Programmer</mat-option>
-			<mat-option [value]="2">Operator</mat-option>
-			<mat-option [value]="3">Viewer</mat-option>
+			<mat-option [value]="0">{{"role.Administrator" | translate}}</mat-option>
+			<mat-option [value]="1">{{"role.Programmer" | translate}}</mat-option>
+			<mat-option [value]="2">{{"role.Operator" | translate}}</mat-option>
+			<mat-option [value]="3">{{"role.Viewer" | translate}}</mat-option>
 		</mat-select>
 	</mat-form-field>
 	<div class="actions">

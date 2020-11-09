@@ -5,6 +5,7 @@ import { ProgramEditorService, ProgramStatus, TASKSTATE_STOPPED, TASKSTATE_ERROR
 import { Component, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { UtilsService } from '../../../core';
 
 @Component({
   selector: 'app-program-editor-main',
@@ -22,7 +23,8 @@ export class ProgramEditorMainComponent implements OnInit {
     public service: ProgramEditorService,
     public login: LoginService,
     private ws: WebsocketService,
-    private prj: ProjectManagerService
+    private prj: ProjectManagerService,
+    public utils: UtilsService
   ) { }
 
   ngOnInit() {

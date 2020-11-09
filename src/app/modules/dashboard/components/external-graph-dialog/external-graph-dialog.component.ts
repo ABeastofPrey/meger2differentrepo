@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { ApiService, UploadResult } from '../../../core';
+import { ApiService, UploadResult, UtilsService } from '../../../core';
 import {HttpErrorResponse} from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -34,7 +34,8 @@ export class ExternalGraphDialogComponent implements OnInit {
   constructor(
     private ref: MatDialogRef<string>,
     private api: ApiService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    public utils: UtilsService
   ) {}
 
   ngOnInit() {

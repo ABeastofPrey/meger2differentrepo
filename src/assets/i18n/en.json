@@ -1433,6 +1433,12 @@
     "list": "Log",
     "help_outline": "Help"
   },
+  "role":{
+    "Administrator": "Administrator",
+    "Programmer":"Programmer",
+    "Operator":"Operator",
+    "Viewer":"Viewer"
+  },
   "robot": "Robot",
   "robots": {
     "axes": "Robot Axes",

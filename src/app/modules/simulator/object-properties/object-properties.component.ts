@@ -9,7 +9,7 @@ import {DataService} from '../../core';
   selector: 'object-properties',
   templateUrl: './object-properties.component.html',
   styleUrls: ['./object-properties.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObjectPropertiesComponent implements OnInit {
 
@@ -38,8 +38,9 @@ export class ObjectPropertiesComponent implements OnInit {
     return this.data.pallets[i];
   }
 
-  onValueChanged($event,field1,field2){
-     this.lastSelectedNode[field1][field2] = $event;
+  onValueChanged($event,field1,field2,keyboardContext: any){
+    this.lastSelectedNode[field1][field2] = $event;
+    keyboardContext && (keyboardContext.setControlValue(this.lastSelectedNode[field1][field2]));
   }
 
 }

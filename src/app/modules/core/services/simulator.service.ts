@@ -9,12 +9,12 @@ import {RobotService} from './robot.service';
   providedIn: 'root',
 })
 export class SimulatorService {
-  
+
   data: BehaviorSubject<SceneObject[]> = new BehaviorSubject([]);
   bgColor = '#7c99b7';
   traceColor = '#ffd740';
   showTrace = false;
-  
+
   private sceneLoaded = false;
 
   private _selected: SceneObject = null;
@@ -28,7 +28,7 @@ export class SimulatorService {
   get scene() {
     return this.service.simulatorScene;
   }
-  
+
   get shouldShowSimulator() {
     return this.robots.selectedRobot && this.dataService.isRobotType &&
       this.robots.get3DModelPath(this.robots.selectedRobot.part_number) !== null;
@@ -172,21 +172,21 @@ export class SimulatorService {
         obj = new Box();
         obj.positionMM.set(500, 0, 50);
         obj.scale.set(0.1, 0.1, 0.1);
-        obj.name = 'Untitled Box';
+        obj.name = 'Untitled_Box';
         this.scene.addChild(obj);
         break;
       case 'Sphere':
         obj = new Sphere();
         obj.positionMM.set(500, 0, 50);
         obj.scale.set(0.1, 0.1, 0.1);
-        obj.name = 'Untitled Sphere';
+        obj.name = 'Untitled_Sphere';
         this.scene.addChild(obj);
         break;
       case 'Cylinder':
         obj = new Cylinder();
         obj.positionMM.set(500, 0, 50);
         obj.scale.set(0.1, 0.1, 0.1);
-        obj.name = 'Untitled Cylinder';
+        obj.name = 'Untitled_Cylinder';
         obj.eulerXYZDeg.set(90, 0, 0);
         this.scene.addChild(obj);
         break;

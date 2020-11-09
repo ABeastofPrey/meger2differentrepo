@@ -6,7 +6,7 @@
 		<div class="content">
       <mat-radio-group [(ngModel)]="mode" color="primary" class="mode" [disabled]="busy">
 				<mat-radio-button value="mc">softMC</mat-radio-button>
-        <mat-radio-button value="pc">Upload file</mat-radio-button>
+        <mat-radio-button *ngIf="!utils.isTablet" value="pc">Upload file</mat-radio-button>
 			</mat-radio-group>
 			<mat-form-field *ngIf="mode==='mc'">
 				<mat-label>{{ 'dashboard.external.name' | translate }}</mat-label>

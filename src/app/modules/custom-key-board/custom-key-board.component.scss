@@ -25,10 +25,10 @@
     // height: 32px !important;
     line-height: initial;
 }
-.mat-input-element {
-  // height: 32px !important;
-  line-height: 17px;
-}
+// .mat-input-element {
+//   height: 32px !important;
+//   line-height: 1.125em;
+// }
 .iconPrefix {
     mat-icon {
         margin-right: 24px;
@@ -46,4 +46,8 @@
     to {
         visibility: hidden;
     }
+}
+
+::ng-deep .keyboard .mat-error {
+  padding-bottom: 1px;
 }

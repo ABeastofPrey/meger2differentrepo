@@ -302,8 +302,9 @@
 									>{{ 'pallets.wizard.odd_even' | translate }}</mat-checkbox>
 							</div>
 						</div>
-						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile">
-							<h3>{{ 'pallets.wizard.curr_index' | translate }}:</h3>
+						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile"
+							style="margin-top: 20px;">
+							<h3>{{ 'pallets.wizard.curr_index' | translate }}: aaa</h3>
 							<mat-error *ngIf="step1.controls['index'].hasError('invalidIndex')">{{
 								'pallets.wizard.invalid_val' | translate
 							}}</mat-error>

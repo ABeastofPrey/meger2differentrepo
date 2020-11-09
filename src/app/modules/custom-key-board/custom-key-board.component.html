@@ -2,7 +2,7 @@
     <mat-form-field style="position: relative;" class="custom-key-board" [appearance]="appearance" [class.iconPrefix]="iconPrefixColor !== '#0000000DE'">
         <mat-label *ngIf="matLabel">{{matLabel}}</mat-label>
         <mat-label *ngIf="label">{{label}}</mat-label>
-        <input matInput [placeholder]="placeHolder" [readonly]="isPad || readonly" [formControl]="control" #numInput
+        <input matInput [placeholder]="!showPlaceHolderOnlyDialog ? placeHolder : '' " [readonly]="isPad || readonly" [formControl]="control" #numInput
             class="numInputKeyBoard" [style.textIndent.px]="textIndent" (focus)="onFocus()" autocomplete="off"  [type]="isPasswordInput"
             (panstart)="onSwipe($event)" [value]="(password && isPad) ? (control.value | passPipe) : control.value">
         <span matPrefix style="font-weight: bold;" *ngIf="!iconPrefix">{{prefix}}</span>
@@ -10,6 +10,7 @@
         <span matSuffix [innerHTML]='suffix' *ngIf="!iconSuffix"></span>
         <mat-icon matSuffix *ngIf="iconSuffix">{{suffix}}</mat-icon>
         <mat-hint>{{hint}}</mat-hint>
+
         <mat-error *ngIf="control.hasError('required')">
             <ng-container *ngIf="requiredErrMsg; else elseTemplate">
                 {{requiredErrMsg}}
@@ -38,6 +39,9 @@
         <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && control.hasError('reserved')">
             {{ 'error.invalid_username2' | translate }}
         </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && control.hasError('invalidUserName')">
+          {{ 'error.invalid_username' | translate }}
+      </mat-error>
         <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && control.hasError('fullName')">
             {{ 'error.invalid_full_name' | translate }}
         </mat-error>

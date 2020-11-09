@@ -54,7 +54,7 @@
         [class.disabled]="status.statusCode > -1 && !service.isLib"
         >save</mat-icon
       >
-      <mat-icon (click)="service.download()" matTooltip="{{ 'projects.toolbar.download' | translate }}"
+      <mat-icon *ngIf="!utils.isTablet" (click)="service.download()" matTooltip="{{ 'projects.toolbar.download' | translate }}"
         >file_download</mat-icon
       >
       <div class="center-vertical" *ngIf="status.statusCode !== -2">

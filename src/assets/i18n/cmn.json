@@ -3,6 +3,7 @@
   "number_input_range": "输入值的范围为 ",
   "number_input_required": "必需项",
   "maxLength": "最大长度",
+  "minLength": "最小长度",
   "firstLetter": "必须以字母开头",
   "nameRules": "必须以字母开头，仅包含字母、数字或 _",
   "existNameList":"名称以存在",
@@ -1377,6 +1378,12 @@
     "help_outline": "帮助"
   },
   "robot": "机器人",
+  "role":{
+    "Administrator": "管理员",
+    "Programmer":"程序员",
+    "Operator":"操作员",
+    "Viewer":"观察员"
+  },
   "robots": {
     "axes": "机器人轴",
     "battery": {
@@ -1490,6 +1497,8 @@
     "password_change": {
       "btn": "修改密码...",
       "change": "修改密码",
+      "err": "不能修改密码",
+      "err_regex": "密码长度为4-15位，至少包含一个字母和数字",
       "new": "新密码",
       "old": "当前密码",
       "title": "安全卡管理员密码修改"
@@ -1754,6 +1763,7 @@
     "full": "全称",
     "new": "新建用户",
     "permission": "权限",
+    "password_hint": "空白视为不做修改",
     "profilePic": "个人头像",
     "title": "用户管理器",
     "username": "用户名"
