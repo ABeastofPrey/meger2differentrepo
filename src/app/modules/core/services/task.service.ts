@@ -46,7 +46,7 @@ export class TaskService {
 
   parseTasklist(list: string): MCTask[] {
     if (list.length === 0) {
-      console.warn('CYC1 RETURNED BLANK RESULT');
+      console.log('CYC1 RETURNED BLANK RESULT, TRYING ?TASKLIST instead...');
       this.tasklistCommand = '?tasklist';
       if (this.isActive) {
         this.start();
@@ -133,10 +133,12 @@ export class TaskService {
     for (const i of indexes) {
       const task = filtered[i];
       if (task.priority === null) continue;
-      this.ws.query('KillTask ' + task.name).then(() => {
+      let cmd = this.stat.onlineStatus.value ? `?UTL_KILL_TASK("${task.name}")` : ('KillTask ' + task.name);
+      this.ws.query(cmd).then(() => {
         const isUserTask = task.name.endsWith('UPG');
         const priorityStr = isUserTask ? ' priority=15' : '';
-        this.ws.query('StartTask ' + task.name + priorityStr).then(ret=>{
+        cmd = this.stat.onlineStatus.value ? `?UTL_START_TASK("${task.name}")` : ('StartTask ' + task.name + priorityStr);
+        this.ws.query(cmd).then(ret=>{
           if (!showErrors || !ret.err) return;
             // this.snack.open(errorString(ret.err),this.words['dismiss']);  
             this.snackbarService.openTipSnackBar(errorString(ret.err));      
@@ -150,10 +152,10 @@ export class TaskService {
     for (const i of indexes) {
       const task = filtered[i];
       if (task.priority == null) continue;
-      this.ws.query('KillTask ' + task.name).then(ret=>{
+      const cmd = this.stat.onlineStatus.value ? `?UTL_KILL_TASK("${task.name}")` : ('KillTask ' + task.name);
+      this.ws.query(cmd).then(ret=>{
         if (!showErrors || !ret.err) return;
-        //   this.snack.open(errorString(ret.err),this.words['dismiss']); 
-          this.snackbarService.openTipSnackBar(errorString(ret.err));      
+        this.snackbarService.openTipSnackBar(errorString(ret.err));
       });
     }
   }
@@ -163,7 +165,8 @@ export class TaskService {
     for (const i of indexes) {
       const task = filtered[i];
       if (task.priority == null) continue;
-      this.ws.query('IdleTask ' + task.name).then(ret=>{
+      const cmd = this.stat.onlineStatus.value ? `?UTL_IDLE_TASK("${task.name}")` : ('IdleTask ' + task.name);
+      this.ws.query(cmd).then(ret=>{
         if (!showErrors || !ret.err) return;
         //   this.snack.open(errorString(ret.err),this.words['dismiss']);   
           this.snackbarService.openTipSnackBar(errorString(ret.err));    
@@ -175,15 +178,14 @@ export class TaskService {
     const filtered: MCTask[] = this.filter.transform(this.tasks, filters);
     for (const i of indexes) {
       const task = filtered[i];
-      const promise =
-        task.priority == null
-          ? Promise.resolve(null)
-          : this.ws.query('KillTask ' + task.name);
+      let cmd = this.stat.onlineStatus.value ? `?UTL_KILL_TASK("${task.name}")` : ('KillTask ' + task.name);
+      const promise = task.priority == null ? Promise.resolve(null) : this.ws.query(cmd);
       promise.then(() => {
         if (task.priority || task.state.indexOf('Global') === -1) {
-          this.ws.query('Unload ' + task.name).then(ret=>{
+          cmd = this.stat.onlineStatus.value ? `?UTL_UNLOAD_TASK("${task.name}")` : ('Unload ' + task.name);
+          this.ws.query(cmd).then(ret=>{
             if (!showErrors || !ret.err) return;
-            // this.snack.open(errorString(ret.err),this.words['dismiss']);  
+            // this.snack.open(errorString(ret.err),this.words['dismiss']);
             this.snackbarService.openTipSnackBar(errorString(ret.err));         
           });
         }

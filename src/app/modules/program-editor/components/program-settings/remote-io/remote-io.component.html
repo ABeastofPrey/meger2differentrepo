@@ -5,8 +5,8 @@
       <mat-option value="Remote_IO">Remote_IO</mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-raised-button color="primary" (click)="upload.click()" [disabled]="busy || stat.mode === 'R'">{{'projectSettings.remote-io.import' | translate}}</button>
-  <button mat-raised-button color="primary" (click)="export()" [disabled]="busy || stat.mode === 'R'">{{'projectSettings.remote-io.export' | translate}}</button>
+  <button mat-raised-button color="primary" (click)="upload.click()" *ngIf="!utils.isTablet" [disabled]="busy || stat.mode === 'R'">{{'projectSettings.remote-io.import' | translate}}</button>
+  <button mat-raised-button color="primary" (click)="export()" *ngIf="!utils.isTablet" [disabled]="busy || stat.mode === 'R'">{{'projectSettings.remote-io.export' | translate}}</button>
 </div>
 <div class="tables">
   <section class="mat-elevation-z3">

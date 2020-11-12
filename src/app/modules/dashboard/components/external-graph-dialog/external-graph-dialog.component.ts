@@ -53,7 +53,7 @@ export class ExternalGraphDialogComponent implements OnInit {
     this.uploadInput.nativeElement.click();
   }
   
-  onUploadFilesChange(e: { target: HTMLInputElement } ) {
+  onUploadFilesChange(e: { target: HTMLInputElement, value: string } ) {
     let count = 0;
     const targetCount = e.target.files.length;
     this._err = null;
@@ -72,17 +72,17 @@ export class ExternalGraphDialogComponent implements OnInit {
             this.show();
             this._busy = false;
             e.target.files = null;
+            e.target.value = '';
           }
         },
         (ret: HttpErrorResponse) => {
           // ON ERROR
-          if (ret.status === 0) {
-            this.trn.get('dashboard.external.error',{name: f.name}).subscribe(ret=>{
-              this._err = ret;
-            });
-          }
+          this.trn.get('dashboard.external.error',{name: f.name}).subscribe(ret=>{
+            this._err = ret;
+          });
           this._busy = false;
           e.target.files = null;
+          e.target.value = '';
         }
       )
     }

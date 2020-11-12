@@ -239,14 +239,15 @@ export class IoMappingScreenComponent implements OnInit {
         let ok = false;
         const interval = setInterval(() => {
           if (ok) return;
-          this.api
-            .getFile('isWebServerAlive.HTML')
-            .then(ret => {
-              ok = true;
-              clearInterval(interval);
-              location.href = location.href + '?from=io';
-            })
-            .catch(err => {});
+          this.api.getFile('isWebServerAlive.HTML').then(ret => {
+            ok = true;
+            clearInterval(interval);
+            setTimeout(()=>{
+              window.location.href = window.location.href + '?from=io';
+            }, 200);
+          }).catch(err => {
+            
+          });
         }, 2000);
       }, 10000);
     });

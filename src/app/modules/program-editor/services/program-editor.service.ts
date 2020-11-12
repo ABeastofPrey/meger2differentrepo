@@ -517,99 +517,81 @@ export class ProgramEditorService {
     if (this.activeFile === null) return;
     this.busy = true;
     const path = this.activeFilePath || '';
-    this.api
-      .uploadToPath(
-        new File([new Blob([this.editorText])], this.activeFile),
-        true,
-        path
-      )
-      .then((ret: UploadResult) => {
-        if (ret.success) {
-          this.isDirty = false;
-          this.snackbarService.openTipSnackBar('projects.saved');
-          if (this.fileRef) {
-            const prj = this.prj.currProject.value.name;
-            const file = this.activeFile.substring(
-              0,
-              this.activeFile.indexOf('.')
-            );
-            const cmd = '?tp_load_app("' + prj + '","' + file + '")';
-            this.ws
-              .query(cmd)
-              .then((ret: MCQueryResponse) => {
-                if (ret.result !== '0') this.getTRNERR(null);
-                else this.errors = [];
-                this.busy = false;
-              });
-            return;
-          }
-          const isUserTask = this.activeFile.endsWith('UPG');
-          const priorityStr = isUserTask ? ' priority=15' : '';
-        //   const cmd = `Load$ "/FFS0/SSMC/${path}${this.activeFile}"` + priorityStr;
-          if (endsWithBKG(this.activeFile)) {
-            const pathCmd = `/FFS0/SSMC/${path}${this.activeFile}`
-            const cmd = `BKG_load("${pathCmd}")`
-            this.ws.query(cmd).then((ret: MCQueryResponse) => {
-                const err = ret.err ? ret.err.find(e=>e.errType === 'ERROR') : null;
-                if (err) {
-                this.getTRNERR(err.errMsg);
-                } else {
-                this.errors = [];
-                }
-                this.busy = false;
+    this.api.uploadToPath(new File([new Blob([this.editorText])], this.activeFile), true, path).then((ret: UploadResult) => {
+      if (ret.success) {
+        this.isDirty = false;
+        this.snackbarService.openTipSnackBar('projects.saved');
+        if (this.fileRef) {
+          const prj = this.prj.currProject.value.name;
+          const file = this.activeFile.substring(
+            0,
+            this.activeFile.indexOf('.')
+          );
+          const cmd = '?tp_load_app("' + prj + '","' + file + '")';
+          this.ws
+            .query(cmd)
+            .then((ret: MCQueryResponse) => {
+              if (ret.result !== '0') this.getTRNERR(null);
+              else this.errors = [];
+              this.busy = false;
             });
-          }else {
-            const cmd = `Load$ "/FFS0/SSMC/${path}${this.activeFile}"` + priorityStr;
-            this.ws
-              .query(cmd)
-              .then((ret: MCQueryResponse) => {
-                // if (ret.result !== '0') this.getTRNERR(null);
-                // else this.errors = [];
-                if (ret.result !== '0') {
-                    this.getTRNERR(null);
-                }else {
-                    this.errors = [];
-                }
-                this.busy = false;
-              });
-          }
+          return;
+        }
+        const isUserTask = this.activeFile.endsWith('UPG');
+        const priorityStr = isUserTask ? ' priority=15' : '';
+        if (endsWithBKG(this.activeFile)) {
+          const pathCmd = `/FFS0/SSMC/${path}${this.activeFile}`
+          const cmd = `BKG_load("${pathCmd}")`
+          this.ws.query(cmd).then((ret: MCQueryResponse) => {
+            const err = ret.err ? ret.err.find(e=>e.errType === 'ERROR') : null;
+            if (err) {
+              this.getTRNERR(err.errMsg);
+            } else {
+              this.errors = [];
+            }
+            this.busy = false;
+          });
         } else {
-          const words = [
-            'files.err_upload',
-            'files.err_ext',
-            'files.err_permission',
-          ];
-          this.trn.get(words, { name: this.activeFile }).subscribe(words => {
-            switch (ret.err) {
-              default:
-                break;
-              case -2:
-                //   this.snack.open(
-                //     words['files.err_upload'],
-                //     this.words['dismiss']
-                //   );       
-                  this.snackbarService.openTipSnackBar("files.err_upload");
-                break;
-              case -3:
-                //   this.snack.open(words['files.err_ext'], this.words['dismiss']);    
-                  this.snackbarService.openTipSnackBar("files.err_ext");           
-                break;
-              case -4:
-                //   this.snack.open(
-                //     words['files.err_permission'],
-                //     this.words['dismiss']
-                //   );
-                  this.snackbarService.openTipSnackBar("files.err_permission"); 
-                break;
-              case -99:
-                // this.snack.open(this.words['err.not_enough_space'],this.words['dismiss']);
-                this.snackbarService.openTipSnackBar('err.not_enough_space'); 
-                break;
+          const cmd = `Load$ "/FFS0/SSMC/${path}${this.activeFile}"` + priorityStr;
+          this.ws.query(cmd).then((ret: MCQueryResponse) => {
+            if (ret.result !== '0') {
+              this.getTRNERR(null);
+            } else {
+              this.errors = [];
             }
             this.busy = false;
           });
         }
-      });
+      } else {
+        const words = [
+          'files.err_upload',
+          'files.err_ext',
+          'files.err_permission',
+        ];
+        this.trn.get(words, { name: this.activeFile }).subscribe(words => {
+          switch (ret.err) {
+            default:
+              break;
+            case -2:
+              this.snackbarService.openTipSnackBar("files.err_upload");
+              break;
+            case -3:
+              this.snackbarService.openTipSnackBar("files.err_ext");           
+              break;
+            case -4:
+              this.snackbarService.openTipSnackBar("files.err_permission"); 
+              break;
+            case -99:
+              this.snackbarService.openTipSnackBar('err.not_enough_space'); 
+              break;
+          }
+          this.busy = false;
+        });
+      }
+    }).catch(err=>{
+      this.busy = false;
+      console.warn(err);
+    });
   }
 
   run() {

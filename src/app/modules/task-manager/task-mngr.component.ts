@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { TaskService } from '../../modules/core/services/task.service';
 import { UtilsService } from '../core/services/utils.service';
-import { MCTask, ScreenManagerService, LoginService } from '../core';
+import { MCTask, ScreenManagerService, LoginService, TpStatService } from '../core';
 import { Router } from '@angular/router';
 import { ProgramEditorService } from '../program-editor/services/program-editor.service';
 
@@ -28,7 +28,8 @@ export class TaskMngrComponent implements OnInit {
     private mgr: ScreenManagerService,
     private router: Router,
     private prg: ProgramEditorService,
-    public login: LoginService
+    public login: LoginService,
+    private stat: TpStatService
   ) {
     this.task.start();
   }
@@ -37,6 +38,10 @@ export class TaskMngrComponent implements OnInit {
 
   ngOnDestroy() {
     this.task.stop();
+  }
+
+  get disableButtons() {
+    return !this.login.isAdmin && !this.login.isSuper && !this.stat.onlineStatus.value;
   }
 
   async openFile(task: MCTask) {

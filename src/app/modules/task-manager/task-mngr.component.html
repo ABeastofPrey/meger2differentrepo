@@ -1,16 +1,16 @@
 <div class="wrapper">
 	<div class="toolbar card-bg mat-elevation-z3">
 		<div class="center-vertical">
-			<button mat-raised-button color="primary" (click)="kill()" matTooltip="{{ 'tasks.kill' | translate }}">
+			<button mat-raised-button color="primary" (click)="kill()" matTooltip="{{ 'tasks.kill' | translate }}" [disabled]="disableButtons">
 				<mat-icon>stop</mat-icon>
 			</button>
-			<button mat-raised-button color="primary" (click)="run()" matTooltip="{{ 'tasks.run' | translate }}">
+			<button mat-raised-button color="primary" (click)="run()" matTooltip="{{ 'tasks.run' | translate }}" [disabled]="disableButtons">
 				<mat-icon>play_arrow</mat-icon>
 			</button>
-			<button mat-raised-button color="primary" (click)="idle()" matTooltip="{{ 'tasks.idle' | translate }}">
+			<button mat-raised-button color="primary" (click)="idle()" matTooltip="{{ 'tasks.idle' | translate }}" [disabled]="disableButtons">
 				<mat-icon>pause</mat-icon>
 			</button>
-			<button mat-raised-button color="primary" (click)="unload()" matTooltip="{{ 'tasks.unload' | translate }}">
+			<button mat-raised-button color="primary" (click)="unload()" matTooltip="{{ 'tasks.unload' | translate }}" [disabled]="disableButtons">
 				<mat-icon>eject</mat-icon>
 			</button>
 			<button mat-raised-button color="warn" (click)="resetAll()">

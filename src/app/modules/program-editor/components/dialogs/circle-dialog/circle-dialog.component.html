@@ -15,7 +15,7 @@
 						></mat-optgroup
 					>
 					<mat-option class="create-point-option" (click)="createPoint('circle')">
-						+ {{ 'projectCommands.createVar' | translate }}
+						<mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
@@ -45,7 +45,7 @@
 						></mat-optgroup
 					>
 					<mat-option class="create-point-option" (click)="createPoint('target')">
-						+ {{ 'projectCommands.createVar' | translate }}
+						<mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
 					</mat-option>
 				</mat-select>
 			</mat-form-field>

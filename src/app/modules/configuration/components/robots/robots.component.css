@@ -42,6 +42,9 @@ mat-card {
 .container {
   padding: 16px;
 }
+.container custom-key-board {
+  margin-top: 16px;
+}
 .dh {
   margin-right: 8px;
   width: 100px;
@@ -49,6 +52,7 @@ mat-card {
 .customKeyBoard {
     width: 100px;
     display: flex;
+    margin-bottom: 16px;
 }
 .customKeyBoard custom-key-board {
     flex: 1;

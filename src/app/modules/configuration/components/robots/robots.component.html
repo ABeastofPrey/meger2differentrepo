@@ -69,25 +69,11 @@
               class="center-vertical"
               *ngFor="let d of disp; let i = index; trackBy: trackByFn"
             >
-              <!-- <mat-form-field appearance="outline" class="disp">
-								<mat-label>A{{ i + 1 }}</mat-label>
-								<input
-									matInput
-									[(ngModel)]="disp[i]"
-									(change)="onSettingsKeyboardClose()"
-									virtualKeyboard
-									ktype="numeric"
-									(onKeyboardClose)="onSettingsKeyboardClose()"
-								/>
-								<span matSuffix *ngIf="units">[{{ units[i] }}]</span>
-								<mat-hint *ngIf="rarmDisp && rarmDisp['A' + (i+1)]"><b>{{'rarm' | translate}}:</b> {{rarmDisp['A' + (i+1)]}}</mat-hint>
-                            </mat-form-field> -->
-                            <!-- [hint]="(rarmDisp && rarmDisp['A' + (i+1)] ? ('rarm' | translate)  + rarmDisp['A' + (i+1)]: '')" -->
               <custom-key-board
                 type="float"
                 matLabel="A{{ i + 1 }}"
                 appearance="outline"
-                [hint]="(rarmDisp && rarmDisp['A' + (i+1)] ? ('rarm' | translate)  + rarmDisp['A' + (i+1)]: '')"
+                [hint]="(rarmDisp && rarmDisp['A' + (i+1)] ? '<b>' + ('rarm' | translate) + '</b>: ' + rarmDisp['A' + (i+1)]: '')"
                 [(value)]="disp[i]"
                 (blurEvent)="onSettingsKeyboardClose()"
               ></custom-key-board>

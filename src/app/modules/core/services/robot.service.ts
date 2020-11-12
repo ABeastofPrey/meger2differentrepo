@@ -102,10 +102,8 @@ export class RobotService {
   }
 
   reset() {
-    if (this.interval) {
-      this.ws.clearInterval(this.interval);
-      this.interval = null;
-    }
+    window.clearInterval(this.interval);
+    this.interval = null;
   }
 
   /* HARD CODED ! */

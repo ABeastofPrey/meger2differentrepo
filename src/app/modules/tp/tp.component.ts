@@ -22,7 +22,7 @@ export class TpComponent implements OnInit, OnDestroy {
   tabs: Tab[] = [];
 
   private timeout: number = null;
-  private unsubscribeEvent = new Subject<void>();
+  private notifier = new Subject<boolean>();
 
   constructor(
     private trn: TranslateService,
@@ -61,7 +61,7 @@ export class TpComponent implements OnInit, OnDestroy {
     if (!this.stat.mode || this.stat.mode.charAt(0) !== 'T') {
       this.router.navigateByUrl('/');
     } else {
-      this.stat.modeChanged.pipe(takeUntil(this.unsubscribeEvent)).subscribe(mode => {
+      this.stat.modeChanged.pipe(takeUntil(this.notifier)).subscribe(mode => {
         if (mode !== 'T1' && mode !== 'T2') {
           this.router.navigateByUrl('/');
         }
@@ -76,8 +76,8 @@ export class TpComponent implements OnInit, OnDestroy {
     if (!this.cmn.isTablet && !this.login.isViewer) {
       this.stat.setMode('A');
     }
-    this.unsubscribeEvent.next();
-    this.unsubscribeEvent.complete();
+    this.notifier.next(true);
+    this.notifier.unsubscribe();
   }
 
   /**

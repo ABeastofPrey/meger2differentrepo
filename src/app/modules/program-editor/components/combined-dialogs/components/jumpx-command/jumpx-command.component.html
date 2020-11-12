@@ -22,7 +22,7 @@
                             </mat-option>
                         </mat-optgroup>
                         <mat-option class="create-point-option" [value]="null" (click)="createVar(CommandOptions.AscendingPoint, 'JOINT')">
-                            + {{ 'projectCommands.createVar' | translate }}
+                            <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                         </mat-option>
                     </mat-select>
                     <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
@@ -54,7 +54,7 @@
                             </mat-option>
                         </mat-optgroup>
                         <mat-option class="create-point-option" [value]="null" (click)="createVar(CommandOptions.DescendingPoint, 'JOINT')">
-                            + {{ 'projectCommands.createVar' | translate }}
+                            <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                         </mat-option>
                     </mat-select>
                     <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>
@@ -86,7 +86,7 @@
                             </mat-option>
                         </mat-optgroup>
                         <mat-option class="create-point-option" [value]="null" (click)="createVar(CommandOptions.TargetPoint, 'JOINT')">
-                            + {{ 'projectCommands.createVar' | translate }}
+                            <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                         </mat-option>
                     </mat-select>
                     <mat-error>{{'projectCommands.jumpx.requireErr' | translate}}</mat-error>

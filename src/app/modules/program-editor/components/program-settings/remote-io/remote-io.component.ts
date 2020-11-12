@@ -27,7 +27,7 @@ export class RemoteIoComponent implements OnInit {
   constructor(
     private ws: WebsocketService,
     private api: ApiService,
-    private utils: UtilsService,
+    public utils: UtilsService,
     public stat: TpStatService,
     private snackbarService: SysLogSnackBarService
   ) { }
@@ -105,6 +105,13 @@ export class RemoteIoComponent implements OnInit {
   }
 
   async export() {
+    const state = await this.ws.query('?RMT_IS_EXPORT_READY');
+    if (state.err) {
+      this.snackbarService.openTipSnackBar('projectSettings.remote-io.err_export');
+      return;
+    } else if (state.result === '0') {
+      return; // LIB WILL SHOW AN ERROR
+    }
     try {
       const path = (await this.ws.query('?RMT_GET_FILE_PATH')).result;
       const content = await this.api.getPathFile(path);

@@ -58,7 +58,7 @@
     },
     "rebooting": "Rebooting Controller...",
     "title": "Controller Tools",
-    "update_warning": "KR CS Update Tool requires you to exit ControlStudio+ and DISABLE all motion tasks. Any unsaved data will be lost. Are you sure you want to leave ControlStudio+ and open the Cabinet Update Tool?",
+    "update_warning": "Activating the KR CS Update Tool will stop all motion tasks, disable the system (including all axes), and close ControlStudio+. All unsaved data will be lost. Are you sure you want to open the Update Tool?",
     "updating": "Updating System Software",
     "restore": {
       "default": "Default",
@@ -636,8 +636,8 @@
   },
   "handGuiding": {
     "toggleMode": "Enable Servo Free mode",
-    "toggleJ1": "Release brakes J1",
-    "toggleJ2": "Release brakes J2"
+    "toggleJ1": "Release brake J1",
+    "toggleJ2": "Release brake J2"
   },
   "joint": "Joint",
   "joints": "Joints",
@@ -1095,7 +1095,7 @@
       "Pos_x_RequireErr": "Pos_x is required",
       "Pos_y_RequireErr": "Pos_y is required"
     },
-    "createVar": "Add Variable",
+    "createVar": "CREATE VARIABLE",
     "traceOn": {
       "title": "Insert TraceOn Command",
       "trace_holder": "Trace"
@@ -1284,6 +1284,7 @@
     "remote-io": {
       "desc": "Define the remote IO device used to control project applications",
       "device": "Control Device",
+      "err_export": "Error: Can't export the current configuration",
       "export": "EXPORT...",
       "import": "IMPORT...",
       "inputs": "Remote Control Inputs",
@@ -1705,6 +1706,10 @@
   "terminal": "Terminal",
   "terminal_restricted": "Terminal is not available for privilege level \"{{user}}\"",
   "time_update": "Controller Date and Time are synced",
+  "token_expire": {
+    "message": "For safety reasons, ControlStudio+ will automatically logout in 15 minutes. All unsaved data will be lost. Please make sure to save your changes in the next 15 minutes.",
+    "title": "Token Expire"
+  },
   "tool": "Robot Tool",
   "tool_calib": {
     "calibrate_tool": "CALIBRATE TOOL",

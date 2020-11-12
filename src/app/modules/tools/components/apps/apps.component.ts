@@ -244,7 +244,9 @@ export class AppsComponent implements OnInit {
                   this.api.getFile('isWebServerAlive.HTML').then(() => {
                     ok = true;
                     clearInterval(interval);
-                    location.href = location.href + '?from=firmware';
+                    setTimeout(()=>{
+                      window.location.href = window.location.href + '?from=firmware';
+                    }, 200);
                   });
                 }, 2000);
               }, 10000);

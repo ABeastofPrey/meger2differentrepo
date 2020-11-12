@@ -20,8 +20,8 @@
 							>{{ data.name }}<span *ngIf="data.isArr">[...]</span></mat-option
 						></mat-optgroup
 					>
-					<mat-option class="create-point-option" (click)="createPoint()">
-						+ {{ 'projectCommands.createVar' | translate }}
+					<mat-option (click)="createPoint()">
+						<mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
 					</mat-option>
 				</mat-select>
 			</mat-form-field>

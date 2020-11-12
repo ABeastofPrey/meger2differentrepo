@@ -39,7 +39,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.Dimension, 'LONG', [0,0,1,0,0])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>
@@ -55,7 +55,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.DataNum, 'LONG', [0,0,1,0,0])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>
@@ -71,7 +71,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.AsData, 'STRING', [0,0,0,0,1])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>
@@ -87,7 +87,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.Status, 'STRING', [0,0,0,0,1])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>
@@ -103,7 +103,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.Error, 'STRING', [0,0,0,0,1])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>
@@ -138,7 +138,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.Variable, 'LONG', [0,0,1,0,0])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -150,7 +150,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.Pixel_x, 'DOUBLE', [1,1,1,1,1])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>
@@ -165,7 +165,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.Pixel_y, 'DOUBLE', [1,1,1,1,1])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>
@@ -180,7 +180,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.Pos_x, 'DOUBLE', [1,1,1,1,1])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>
@@ -195,7 +195,7 @@
                     </mat-option>
                     <mat-option *ngIf="!!(selectedModel | async)" class="create-point-option" [value]="null"
                         (click)="createVar(CommandOptions.Pos_y, 'DOUBLE', [1,1,1,1,1])">
-                        + {{ 'projectCommands.createVar' | translate }}
+                        <mat-icon>add</mat-icon><span>{{ 'projectCommands.createVar' | translate }}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error>

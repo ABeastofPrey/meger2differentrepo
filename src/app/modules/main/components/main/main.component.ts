@@ -122,6 +122,8 @@ export class MainComponent implements OnInit {
   private motionFlag = false;
   private words: {};
   private notifier: Subject<boolean> = new Subject();
+  private _logoutTime;
+  private _logoutWarningTime;
 
   constructor(
     public notification: NotificationService,
@@ -181,7 +183,7 @@ export class MainComponent implements OnInit {
   }
 
   private refreshLang() {
-    this.trn.get(['main.errJog', 'main.jogControlsToggle', 'error.space']).subscribe(words => {
+    this.trn.get(['main.errJog', 'main.jogControlsToggle', 'error.space', 'token_expire']).subscribe(words => {
       this.words = words;
     });
   }
@@ -203,6 +205,19 @@ export class MainComponent implements OnInit {
   // }
 
   ngOnInit() {
+    // SET AUTO LOGOUT AFTER 7 DAYS
+    const TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000; // 7 days
+    const TOKEN_WARNING_TIME = TOKEN_EXPIRE_TIME - (15 * 60 * 1000); // 7 days - 15 minutes
+    this._logoutTime = setTimeout(()=>{
+      this.login.logout();
+    }, TOKEN_EXPIRE_TIME);
+    this._logoutWarningTime = setTimeout(()=>{
+      this.dialog.open(ErrorDialogComponent,{
+        data: this.words['token_expire'],
+        maxWidth: '400px'
+      })
+    },TOKEN_WARNING_TIME);
+
     this.api.ready.pipe(takeUntil(this.notifier)).subscribe(stat => {
       if (stat) {
         this.api.get('/cs/api/free-space').toPromise().then(free => {
@@ -304,6 +319,8 @@ export class MainComponent implements OnInit {
   ngOnDestroy() {
     this.notifier.next(true);
     this.notifier.unsubscribe();
+    clearTimeout(this._logoutTime);
+    clearTimeout(this._logoutWarningTime);
   }
 
   onWindowMoving(el: HTMLElement) {

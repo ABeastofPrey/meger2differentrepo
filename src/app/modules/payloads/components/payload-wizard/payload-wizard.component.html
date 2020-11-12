@@ -1,5 +1,5 @@
 <div class="mat-typography wizard">
-	<div class="sbs" style="flex: 1;">
+	<div class="sbs" style="flex: 1; overflow: hidden;">
 		<div class="menu mat-elevation-z3">
 			<button mat-raised-button color="primary" (click)="newPayload()" *ngIf="!login.isOperator" class="btn-add">
 				<mat-icon>add</mat-icon>
@@ -27,9 +27,13 @@
 		</div>
 		<div *ngIf="selectedPayload" class="temp-scara-wizard">
 			<div class="wizard-header" *ngIf="!login.isOperator || data.robotType !== 'SCARA'">
-				<mat-slide-toggle color="primary" [(ngModel)]="advanced" [disabled]="selectedPayload.name === NONE_PAYLOAD" *ngIf="login.isSuper">{{
-					'payloads.advanced' | translate
-				}}</mat-slide-toggle>
+				<mat-slide-toggle
+					color="primary"
+					[(ngModel)]="advanced"
+					[disabled]="selectedPayload.name === NONE_PAYLOAD"
+					*ngIf="login.isSuper">
+					{{ 'payloads.advanced' | translate }}
+				</mat-slide-toggle>
 			</div>
 			<div class="buttons">
 				<button mat-raised-button color="primary" (click)="setAsCurrent()">{{ 'button.set_current' | translate }}</button>
@@ -48,8 +52,17 @@
 				/>
 				<span matSuffix>[Kg]</span>
             </mat-form-field> -->
-            <custom-key-board class="customKeyBoard" [emitInvalidValue]="false" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.mass' | translate }}" [suffix]="'[Kg]'"
-                [(value)]="ctrlMass.value" (blurEvent)="onMassChange({target: {value: $event}})" [disabled]="login.isOperator"
+						<custom-key-board
+							class="customKeyBoard"
+							[isPositiveNum]="true"
+							[emitInvalidValue]="false"
+							type="float"
+							[min]="0"
+							placeHolder="{{ 'payloads.mass' | translate }}"
+							[suffix]="'[Kg]'"
+							[(value)]="ctrlMass.value"
+							(blurEvent)="onMassChange({target: {value: $event}})"
+							[disabled]="login.isOperator || selectedPayload.name === NONE_PAYLOAD"
             ></custom-key-board>
 			<!-- <mat-form-field>
 				<input
@@ -65,7 +78,7 @@
 				<span matSuffix>[Kg * m<sup>2</sup>]</span>
             </mat-form-field> -->
             <custom-key-board class="customKeyBoard" [emitInvalidValue]="false" [isPositiveNum]="true" type="float" [min]="0" placeHolder="{{ 'payloads.inertia' | translate }}" [suffix]="'[Kg * m<sup>2</sup>]'"
-                [(value)]="ctrlInertia.value"  (blurEvent)="onInertiaChange({target: {value: $event}})" [disabled]="login.isOperator"
+                [(value)]="ctrlInertia.value"  (blurEvent)="onInertiaChange({target: {value: $event}})" [disabled]="login.isOperator || selectedPayload.name === NONE_PAYLOAD"
             ></custom-key-board>
 			<!-- <mat-form-field>
 				<input
@@ -81,8 +94,8 @@
 				<span matSuffix>[m]</span>
             </mat-form-field> -->
             <custom-key-board class="customKeyBoard" type="float" [emitInvalidValue]="false"  placeHolder="{{ 'payloads.offX' | translate }}" [suffix]="'[m]'"
-                [(value)]="ctrllx.value"  (blurEvent)="onXOffsetChange({target: {value: $event}})" [disabled]="login.isOperator"
-            ></custom-key-board>
+					[(value)]="ctrllx.value"  (blurEvent)="onXOffsetChange({target: {value: $event}})" [disabled]="login.isOperator || selectedPayload.name === NONE_PAYLOAD"
+			></custom-key-board>
 			<table class="advanced-table" *ngIf="advanced">
 				<thead>
 					<tr>
@@ -157,11 +170,17 @@
 								/>
 								<span matSuffix>[Hz.]</span>
                             </mat-form-field> -->
-                            <div class="customKeyBoard2">
-                                <custom-key-board type="float" [emitInvalidValue]="false" [(value)]="data.payloadFreq[i]" suffix="[Hz.]" appearance="outline"
-                                (blurEvent)="data.onPayloadFreqChange()"
-                                ></custom-key-board>
-                            </div>
+							<div class="customKeyBoard2">
+									<custom-key-board
+										type="float"
+										[(value)]="data.payloadFreq[i]"
+										[emitInvalidValue]="false"
+										suffix="[Hz.]"
+										appearance="outline"
+										(blurEvent)="data.onPayloadFreqChange()"
+										[isPositiveNum]="true">
+									</custom-key-board>
+							</div>
 						</td>
 					</tr>
 					<tr class="table-end">
@@ -178,11 +197,16 @@
 								/>
 								<span matSuffix>[s]</span>
                             </mat-form-field> -->
-                            <div class="customKeyBoard2">
-                                <custom-key-board type="float" [emitInvalidValue]="false"  [(value)]="data.payloadDuration" suffix="[s]" appearance="outline"
-                                    (blurEvent)="data.onPayloadDurationChange()"
-                                ></custom-key-board>
-                            </div>
+							<div class="customKeyBoard2">
+									<custom-key-board 
+										type="int"
+										[isPositiveNum]="true"
+										[(value)]="data.payloadDuration"
+										suffix="[s]"
+										appearance="outline"
+										(blurEvent)="data.onPayloadDurationChange()"
+									></custom-key-board>
+							</div>
 						</td>
 						<td colspan="3">
 							<button mat-raised-button color="primary" (click)="showIdentDialog()" [disabled]="!stat.enabled">

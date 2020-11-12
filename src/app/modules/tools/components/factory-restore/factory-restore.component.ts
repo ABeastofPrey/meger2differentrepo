@@ -125,7 +125,6 @@ export class FactoryRestoreComponent implements OnInit {
             ok = true;
             clearInterval(interval);
             this.login.logout().then(ret=>{
-              console.log('logout result:',ret);
               setTimeout(()=>{
                 const newURL = window.location.href + '?from=restore';
                 window.location.href = newURL;

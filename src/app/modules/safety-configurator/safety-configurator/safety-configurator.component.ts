@@ -147,7 +147,7 @@ export class SafetyConfiguratorComponent implements OnInit {
     this.api.getRawFile('SC/fromDrive.cdc');
   }
 
-  async import(e: { target: { files: FileList } } ) {
+  async import(e: { target: { files: FileList, value: string } } ) {
     const f = e.target.files.item(0);
     const ret = await this.api.uploadToPath(f,true,'SC/');
     if (ret.err || !ret.success) {
@@ -162,6 +162,7 @@ export class SafetyConfiguratorComponent implements OnInit {
     const asJSON = this.utils.parseINIString(ini);
     this.conf = new SafetyConfiguration(ini, asJSON);
     e.target.files = null;
+    e.target.value = '';
   }
 
   async confirmPassword() {

@@ -9,7 +9,7 @@
         <mat-icon [ngStyle]="{'color': iconPrefixColor}" *ngIf="iconPrefix" matPrefix>{{prefix}}</mat-icon>
         <span matSuffix [innerHTML]='suffix' *ngIf="!iconSuffix"></span>
         <mat-icon matSuffix *ngIf="iconSuffix">{{suffix}}</mat-icon>
-        <mat-hint>{{hint}}</mat-hint>
+        <mat-hint [innerHTML]="hint"></mat-hint>
 
         <mat-error *ngIf="control.hasError('required')">
             <ng-container *ngIf="requiredErrMsg; else elseTemplate">
@@ -24,39 +24,17 @@
             {{leftClosedInterval ? '[' : '('}}{{min !== undefined ? min : '-&infin;'}},
             {{max !== undefined ? max : '+&infin;'}}{{rightClosedInterval ? ']' : ')'}}
         </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && control.hasError('maxLength')">
-            {{'maxLength' | translate}} : {{maxLength}}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && control.hasError('firstLetter')">
-            {{'firstLetter' | translate}}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && control.hasError('nameRules')">
-            {{'nameRules' | translate}}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && control.hasError('existNameList')">
-            {{'existNameList' | translate}}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && control.hasError('reserved')">
-            {{ 'error.invalid_username2' | translate }}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && control.hasError('invalidUserName')">
-          {{ 'error.invalid_username' | translate }}
-      </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && control.hasError('fullName')">
-            {{ 'error.invalid_full_name' | translate }}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && control.hasError('confirmPassword')">
-            {{ 'error.mismatch_pass' | translate }}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && control.hasError('minLength')">
-            {{'minLength' | translate}} : {{minLength}}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && control.hasError('letterAndNumber')">
-            {{'safety.password_change.err_regex' | translate}} : {{minLength}}
-        </mat-error>
-        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && !control.hasError('letterAndNumber') && control.hasError('precision') && isShowPrecision">
-            {{'maxDecimals' | translate}} : {{precision}}
-        </mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && control.hasError('maxLength')">{{'maxLength' | translate}} : {{maxLength}}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && control.hasError('firstLetter')">{{'firstLetter' | translate}}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && control.hasError('nameRules')">{{'nameRules' | translate}}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && control.hasError('existNameList')">{{'existNameList' | translate}}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && control.hasError('reserved')">{{ 'error.invalid_username2' | translate }}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && control.hasError('invalidUserName')">{{ 'error.invalid_username' | translate }}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && control.hasError('fullName')">{{ 'error.invalid_full_name' | translate }}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && control.hasError('confirmPassword')">{{ 'error.mismatch_pass' | translate }}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && control.hasError('minLength')">{{'minLength' | translate}} : {{minLength}}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && control.hasError('letterAndNumber')">{{'safety.password_change.err_regex' | translate}} : {{minLength}}</mat-error>
+        <mat-error *ngIf="!control.hasError('required') && !control.hasError('limit') && !control.hasError('maxLength') && !control.hasError('firstLetter') && !control.hasError('nameRules') && !control.hasError('existNameList') && !control.hasError('reserved') && !control.hasError('fullName') && !control.hasError('confirmPassword') && !control.hasError('minLength') && !control.hasError('letterAndNumber') && control.hasError('precision') && isShowPrecision">{{'maxDecimals' | translate}} : {{precision}}</mat-error>
         <div class="cursor blink" *ngIf="isPad && keyBoardDialog" [style.left.px]="cursorLeft"></div>
 
     </mat-form-field>
