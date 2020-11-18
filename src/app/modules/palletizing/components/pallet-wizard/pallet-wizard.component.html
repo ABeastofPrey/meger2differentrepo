@@ -92,6 +92,7 @@
                     [(value)]="dataService.selectedPallet.itemsX"
                     [required]="true"
                     (valueChange)="onWindowResize()"
+                    identificationTag="itemsX"
                     (isValidEvent)="onValidatorCheck($event,'itemsX',step1)"
                     (blurEvent)="setFormGroupItem($event,'itemsX',step1)"
                     (inputChange)="setFormGroupItem($event,'itemsX',step1)">
@@ -104,6 +105,7 @@
                     [max]="1000"
                     [placeHolder]="'nY'"
                     class="input-small"
+                    identificationTag="itemsY"
                     [(value)]="dataService.selectedPallet.itemsY"
                     [required]="true"
                     (valueChange)="onWindowResize()"
@@ -118,6 +120,7 @@
                     [min]="1"
                     [max]="1000"
                     [placeHolder]="'nZ'"
+                    identificationTag="itemsZ"
                     class="input-small"
                     [(value)]="dataService.selectedPallet.itemsZ"
                     [required]="true"
@@ -128,7 +131,7 @@
                 </custom-key-board>
 							</div>
 						</div>
-						<div style="display: flex;">
+						<div style="display: flex; flex-direction: column;">
 							<div>
 								<h3>{{ 'pallets.wizard.dimensions_item' | translate }}</h3>
 								<div class="pallet-waizard-keyboard">
@@ -177,6 +180,7 @@
                       class="input-small"
                       [(value)]="dataService.selectedPallet.itemSizeX"
                       [required]="true"
+                      identificationTag="itemSizeX"
                       (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeX',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeX',step1)"
@@ -191,6 +195,7 @@
                       class="input-small"
                       [(value)]="dataService.selectedPallet.itemSizeY"
                       [required]="true"
+                      identificationTag="itemSizeY"
                       (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeY',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeY',step1)"
@@ -205,6 +210,7 @@
                       class="input-small"
                       [(value)]="dataService.selectedPallet.itemSizeZ"
                       [required]="true"
+                      identificationTag="itemSizeZ"
                       (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeZ',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeZ',step1)"
@@ -212,9 +218,9 @@
                 </custom-key-board>
 								</div>
 							</div>
-							<div style="margin-left: 24px;">
+							<div style="margin-left: 0;">
 								<h3>{{ 'pallets.wizard.dimensions_pallet' | translate }}</h3>
-								<div style="display: flex;">
+								<div class="pallet-waizard-keyboard">
 									<!-- <mat-form-field class="input-small">
 										<input
 											matInput
@@ -248,6 +254,7 @@
                       [min]="1"
                       [(value)]="dataService.selectedPallet.palletSizeX"
                       [required]="true"
+                      identificationTag="palletSizeX"
                       (isValidEvent)="onValidatorCheck($event,'palletSizeX',step1)"
                       (blurEvent)="setFormGroupItem($event,'palletSizeX',step1)"
                       (inputChange) ="setFormGroupItem($event,'palletSizeX',step1)">
@@ -261,6 +268,7 @@
                       [min]="1"
                       [(value)]="dataService.selectedPallet.palletSizeY"
                       [required]="true"
+                      identificationTag="palletSizeY"
                       (isValidEvent)="onValidatorCheck($event,'palletSizeY',step1)"
                       (blurEvent)="setFormGroupItem($event,'palletSizeY',step1)"
                       (inputChange) ="setFormGroupItem($event,'palletSizeY',step1)">
@@ -288,6 +296,7 @@
                     [isPositiveNum]="true"
                     [emitInvalidValue]="true"
                     [required]="true"
+                    identificationTag="levels"
                     placeHolder="{{ 'pallets.wizard.levels' | translate }}"
                     [(value)]="dataService.selectedPallet.levels"
                     (isValidEvent)="onValidatorCheck($event,'levels',step1)"
@@ -303,12 +312,12 @@
 							</div>
 						</div>
 						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile"
-							style="margin-top: 20px;">
-							<h3>{{ 'pallets.wizard.curr_index' | translate }}: aaa</h3>
+							style="margin-top: 40px;">
+							<h3>{{ 'pallets.wizard.curr_index' | translate }}:</h3>
 							<mat-error *ngIf="step1.controls['index'].hasError('invalidIndex')">{{
 								'pallets.wizard.invalid_val' | translate
 							}}</mat-error>
-							<mat-radio-group formControlName="index" (change)="blurActive()">
+							<mat-radio-group formControlName="index" (change)="blurActive()" class="form-index">
 								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'">
 									<span>{{ 'pallets.wizard.index_full' | translate }}</span>
 									<span *ngIf="dataService.selectedPallet.itemsX && dataService.selectedPallet.itemsY && dataService.selectedPallet.itemsZ">({{
@@ -343,6 +352,7 @@
                       type="int"
                       [isPositiveNum]="true"
                       [emitInvalidValue]="true"
+                      identificationTag="index"
                       [(value)]="dataService.selectedPallet.index"
                       [disabled]="step1.controls['index'].value !== 'custom'"
                       (isValidEvent)="onValidatorCheck($event,'index',step1)"
@@ -486,6 +496,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.origin.x"
                     [required]="true"
+                    identificationTag="originX"
                     (isValidEvent)="onValidatorCheck($event,'originX',step2)"
                     (blurEvent)="setFormGroupItem($event,'originX',step2)"
                     (inputChange)="setFormGroupItem($event,'originX',step2)">
@@ -497,6 +508,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.origin.y"
                     [required]="true"
+                    identificationTag="originY"
                     (isValidEvent)="onValidatorCheck($event,'originY',step2)"
                     (blurEvent)="setFormGroupItem($event,'originY',step2)"
                     (inputChange)="setFormGroupItem($event,'originY',step2)">
@@ -508,6 +520,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.origin.z"
                     [required]="true"
+                    identificationTag="originZ"
                     (isValidEvent)="onValidatorCheck($event,'originZ',step2)"
                     (blurEvent)="setFormGroupItem($event,'originZ',step2)"
                     (inputChange)="setFormGroupItem($event,'originZ',step2)">
@@ -570,6 +583,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posX.x"
                     [required]="true"
+                    identificationTag="posXX"
                     (isValidEvent)="onValidatorCheck($event,'posXX',step2)"
                     (blurEvent)="setFormGroupItem($event,'posXX',step2)"
                     (inputChange)="setFormGroupItem($event,'posXX',step2)">
@@ -581,6 +595,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posX.y"
                     [required]="true"
+                    identificationTag="posXY"
                     (isValidEvent)="onValidatorCheck($event,'posXY',step2)"
                     (blurEvent)="setFormGroupItem($event,'posXY',step2)"
                     (inputChange)="setFormGroupItem($event,'posXY',step2)">
@@ -592,6 +607,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posX.z"
                     [required]="true"
+                    identificationTag="posXZ"
                     (isValidEvent)="onValidatorCheck($event,'posXZ',step2)"
                     (blurEvent)="setFormGroupItem($event,'posXZ',step2)"
                     (inputChange)="setFormGroupItem($event,'posXZ',step2)">
@@ -654,6 +670,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posY.x"
                     [required]="true"
+                    identificationTag="posYX"
                     (isValidEvent)="onValidatorCheck($event,'posYX',step2)"
                     (blurEvent)="setFormGroupItem($event,'posYX',step2)"
                     (inputChange)="setFormGroupItem($event,'posYX',step2)">
@@ -665,6 +682,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posY.y"
                     [required]="true"
+                    identificationTag="posYY"
                     (isValidEvent)="onValidatorCheck($event,'posYY',step2)"
                     (blurEvent)="setFormGroupItem($event,'posYY',step2)"
                     (inputChange)="setFormGroupItem($event,'posYY',step2)">
@@ -676,6 +694,7 @@
                     [emitInvalidValue]="true"
                     [(value)]="dataService.selectedPallet.posY.z"
                     [required]="true"
+                    identificationTag="posYZ"
                     (isValidEvent)="onValidatorCheck($event,'posYZ',step2)"
                     (blurEvent)="setFormGroupItem($event,'posYZ',step2)"
                     (inputChange)="setFormGroupItem($event,'posYZ',step2)">
@@ -792,6 +811,7 @@
                         [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.x"
                         [required]="true"
+                        identificationTag="x"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
                         (isValidEvent)="onValidatorCheck($event,'x',step3)"
                         (blurEvent)="setFormGroupItem($event,'x',step3)"
@@ -804,6 +824,7 @@
                         [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.y"
                         [required]="true"
+                        identificationTag="y"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
                         (isValidEvent)="onValidatorCheck($event,'y',step3)"
                         (blurEvent)="setFormGroupItem($event,'y',step3)"
@@ -816,6 +837,7 @@
                         [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.z"
                         [required]="true"
+                        identificationTag="z"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
                         (isValidEvent)="onValidatorCheck($event,'z',step3)"
                         (blurEvent)="setFormGroupItem($event,'z',step3)"
@@ -829,6 +851,7 @@
                         [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.yaw"
                         [required]="true"
+                        identificationTag="yaw"
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
                         (isValidEvent)="onValidatorCheck($event,'yaw',step3)"
                         (blurEvent)="setFormGroupItem($event,'yaw',step3)"
@@ -843,6 +866,7 @@
                         [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.pitch"
                         [required]="true"
+                        identificationTag="pitch"
                         (isValidEvent)="onValidatorCheck($event,'pitch',step3)"
                         (blurEvent)="setFormGroupItem($event,'pitch',step3)"
                         (inputChange)="setFormGroupItem($event,'pitch',step3)">
@@ -855,6 +879,7 @@
                         [emitInvalidValue]="true"
                         [(value)]="dataService.selectedPallet.entry.roll"
                         [required]="true"
+                        identificationTag="roll"
                         (isValidEvent)="onValidatorCheck($event,'roll',step3)"
                         (blurEvent)="setFormGroupItem($event,'roll',step3)"
                         (inputChange)="setFormGroupItem($event,'roll',step3)">
@@ -934,6 +959,7 @@
                   [(value)]="dataService.selectedPallet.approachOffsetVertical"
                   [required]="true"
                   [emitInvalidValue]="true"
+                  identificationTag="app_off_v"
                   (isValidEvent)="onValidatorCheck($event,'app_off_v',step4)"
                   (blurEvent)="setFormGroupItem($event,'app_off_v',step4)"
                   (inputChange)="setFormGroupItem($event,'app_off_v',step4)"
@@ -945,6 +971,7 @@
                   placeHolder="{{ 'pallets.wizard.offH' | translate }}"
                   class="input-small"
                   [emitInvalidValue]="true"
+                  identificationTag="app_off_h"
                   [(value)]="dataService.selectedPallet.approachOffsetHorizontal" [required]="true"
                   (isValidEvent)="onValidatorCheck($event,'app_off_h',step4)"
                   (blurEvent)="setFormGroupItem($event,'app_off_h',step4)"
@@ -1010,6 +1037,7 @@
                   placeHolder="{{ 'pallets.wizard.offV' | translate }}"
                   class="input-small"
                   [emitInvalidValue]="true"
+                  identificationTag="ret_off_v"
                   [(value)]="dataService.selectedPallet.retractOffsetVertical" [required]="true"
                   (isValidEvent)="onValidatorCheck($event,'ret_off_v',step4)"
                   (blurEvent)="setFormGroupItem($event,'ret_off_v',step4)"
@@ -1024,6 +1052,7 @@
                   [emitInvalidValue]="true"
                   [(value)]="dataService.selectedPallet.retractOffsetHorizontal"
                   [required]="true"
+                  identificationTag="ret_off_h"
                   (isValidEvent)="onValidatorCheck($event,'ret_off_h',step4)"
                   (blurEvent)="setFormGroupItem($event,'ret_off_h',step4)"
                   (inputChange)="setFormGroupItem($event,'ret_off_h',step4)"

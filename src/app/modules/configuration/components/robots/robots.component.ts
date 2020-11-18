@@ -56,7 +56,7 @@ export class RobotsComponent implements OnInit {
   dhImgPath2: string | undefined;
   busy = false;
   sysDate = new FormControl(new Date());
-  public sysTimeValidators = [Validators.pattern(/^(?:\d\d:\d\d)$/)];
+  public sysTimeValidators = [Validators.pattern(/^(([0-1][0-9])|([2][0-3])):([0-5][0-9])$/)];//^(?:\d\d:\d\d)$
   sysTime = new FormControl('',this.sysTimeValidators);
 
 
@@ -105,7 +105,7 @@ export class RobotsComponent implements OnInit {
   }
 
   // SYSTEM
-  sysName: FormControl = new FormControl('',[Validators.required, Validators.maxLength(16)]);
+  sysName: FormControl = new FormControl('',[Validators.required, Validators.maxLength(11)]);
 
   // MCU
   mcuThreshold = 0;
@@ -197,8 +197,13 @@ export class RobotsComponent implements OnInit {
 
   onThresholdUpdate() {
     const cmd = '?MCU_SET_FanThresholdFromUser(' + this.mcuThreshold + ')';
-    this.ws.query(cmd).then(() => {
-      this.initMCU();
+    this.ws.query(cmd).then((res) => {
+      if (!res.err) {
+        this.snackbarService.openTipSnackBar(this.wordOk);
+      }else{
+        this.snackbarService.openTipSnackBar(this.words['changeError']);
+        this.initMCU();
+      }
     });
   }
 

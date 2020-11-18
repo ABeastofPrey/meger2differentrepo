@@ -3,7 +3,7 @@
 		<mat-icon>{{ data ? 'edit' : 'person_add' }}</mat-icon
 		>&nbsp;&nbsp;{{ (data ? 'userManager.btnEdit' : 'userManager.new') | translate }}
 	</div>
-	<!-- <mat-form-field>
+  <!-- <mat-form-field>
 		<input
 			matInput
 			placeholder="{{ 'userManager.username' | translate }}"
@@ -23,7 +23,7 @@
         [reserved]="true"
         [minLength]="1"
         [maxLength]="32"
-        [nameRules]="true"
+        [isUserName]="true"
         [disabled]="disabledUserName"
         (valueChange)="changeUserName($event)" (blurEvent)="changeUserName($event)"
     ></custom-key-board>

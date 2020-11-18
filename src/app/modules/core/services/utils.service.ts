@@ -15,6 +15,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { AbstractControl, ValidatorFn, Validators } from '@angular/forms';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 import { CommonService } from './common.service';
+import { isUndefined } from 'ramda-adjunct';
 
 /*
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
@@ -253,10 +254,13 @@ export class UtilsService {
   }
 
   public isNumber(value: string): boolean {
-    if (value === undefined || value === null || value === '') return false;
+    if (value === undefined || value === null || value === '') return true;
     if (value === 'undefined' || value === 'null' || value === 'NaN') return false;
+    // if (value.trim().length !== value.length) return false;
+    // if (value === '-' || value === '.' || value === '') return false;
     if (value.trim().length !== value.length) return false;
-    if (value === '-' || value === '.' || value === '') return false;
+    if (value === 'NaN') return false;
+    if (value === '-' || value === '.') return false;
     const removedChar = value.replace(/[^0-9|.|-]+/g, '');
     const removedPoint = removedChar.replace('.', '*').replace(/[.]/g, '').replace('*', '.');
     const removedMinus = removedPoint.replace('-', '*').replace(/[-]/g, '').replace('*', '-');
@@ -270,8 +274,8 @@ export class UtilsService {
   }
 
   public isNumberValidator(): ValidatorFn {
-    return ({ value }: AbstractControl): { notNumber: boolean } | null => {
-      return !this.isNumber(String(value)) ? { notNumber: true } : null;
+    return ({ value }: AbstractControl): { invalidNumber: string } | null => {
+      return !this.isNumber(String(value)) ? { invalidNumber: 'invalidNumber' } : null;
     };
   }
 
@@ -293,14 +297,14 @@ export class UtilsService {
       if (Number(value).toString() === 'NaN') {
         forbidden = true;
       }
-      return forbidden ? { limit: { min, max, value } } : null;
+      return forbidden ? { limit: 'limit' } : null;
     };
   }
 
   public minLengthValidator(minLength: number): ValidatorFn {
     return ({ value }: AbstractControl): { [key: string]: any } | null => {
         if((value || value=="0") && value.toString && value.toString().length < minLength) {
-            return { minLength: minLength}
+            return { minLength: 'minLength'}
         }else {
             return null;
         }
@@ -310,7 +314,7 @@ export class UtilsService {
   public maxLengthValidator(maxLength: number): ValidatorFn {
     return ({ value }: AbstractControl): { [key: string]: any } | null => {
         if((value || value=="0") && value.toString && value.toString().length > maxLength) {
-            return { maxLength: maxLength}
+            return { maxLength: 'maxLength'}
         }else {
             return null;
         }
@@ -333,17 +337,16 @@ export class UtilsService {
 
   public existNameListValidator(list: string[]): ValidatorFn {
     return ({ value }: AbstractControl) => {
-        let existList = list.filter((data) => {
-            return data == value
-        })
-        return ((existList.length === 0) ? null : { "existNameList": "existNameList" })
+        const newValue = value.toUpperCase();
+        const index = list.findIndex(item=> item === newValue);
+        return (index >= 0 ? { "existNameList": "existNameList" } : null)
     };
   }
 
   public reserved(): ValidatorFn {
     return ({ value }: AbstractControl) => {
         if(value === 'admin' || value === 'super') {
-            return {"reserved": "reserved"}
+            return {"userNameReserved": "userNameReserved"}
         }else {
             return null;
         }
@@ -375,9 +378,9 @@ export class UtilsService {
 
   public validatorUserName(): ValidatorFn {
   return ({ value }: AbstractControl) => {
-    const reg = /[a-zA-Z0-9_]+/;
+    const reg = /^\w+$/;
       if(!reg.test(value)) {
-        return {"invalidUserName": "invalid_username" }
+        return {"invalidUserName": "invalidUserName" }
       }
     return null;
   };
@@ -403,6 +406,9 @@ export class UtilsService {
 
   public parseFloatAchieve(originValue: string): string {
     originValue = originValue.toString();
+    // if(originValue === '-'){
+    //   return '0';
+    // }
     let head: number = 0;
     for (let i = 0; i < originValue.length - 1; i++) {
         if (originValue[i] == "0") {
@@ -473,5 +479,111 @@ export class UtilsService {
     });
     return value;
   }
+
+  public static checkIp(ip){
+    const exp = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+    if(!exp.test(ip)){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  public static checkMask(mask){
+    const exp=/^((254|252|248|240|224|192|128|0)\.0\.0\.0)$|^(255\.(254|252|248|240|224|192|128|0)\.0\.0)$|^(255\.255\.(254|252|248|240|224|192|128|0)\.0)$|^(255\.255\.255\.(254|252|248|240|224|192|128|0))$/;
+    if(!exp.test(mask)){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+
+  public static  iPValidator(): ValidatorFn {
+    return ({ value }: AbstractControl): { [key: string]: any } | null => {
+        if(UtilsService.checkIp(value)) {
+            return { inValidIP: "invalidIP"}
+        }else {
+            return null;
+        }
+    }
+  }
+
+  public static  maskValidator(): ValidatorFn{
+    return ({ value }: AbstractControl): { [key: string]: any } | null => {
+      if(UtilsService.checkMask(value)) {
+          return { inValidIP: "invalidMask"}
+      }else {
+          return null;
+      }}
+  }
+
+  public static checkMaskWithIP(ip1,mask): boolean{
+    // obj=mask;
+   //符合规范返回值为0，否则返回2
+     const A_IP_REGEX_ALL = /^(\d|[1-9]\d|1[0-1]\d|12[0-7])(\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){3}$/;
+     const B_IP_REGEX_ALL = /^(12[8-9]|1[3-8]\d|19[0-1])(\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){3}$/;
+     const C_IP_REGEX_ALL = /^(19[2-9]|2[0-1]\d|22[0-3])((\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))){3}$/;
+     if(!UtilsService.checkMask(mask) || !UtilsService.checkIp(ip1)){
+       return false;
+     }else{
+       const mask_arr = mask.split(".");
+       if(A_IP_REGEX_ALL.test(ip1)){
+         const static_Mask = [255,0,0,0];
+         return UtilsService.checkStaticMaskAndIPMask(static_Mask,mask_arr);
+       }else if(B_IP_REGEX_ALL.test(ip1)){
+         const static_Mask = [255,255,0,0];
+        return UtilsService.checkStaticMaskAndIPMask(static_Mask,mask_arr);
+       }else if(C_IP_REGEX_ALL.test(ip1)){
+         const static_Mask = [255,255,255,0];
+         return UtilsService.checkStaticMaskAndIPMask(static_Mask,mask_arr);
+       }
+     }
+ }
+
+ public static checkStaticMaskAndIPMask(static_Mask: any[],ip_mask: any[]): boolean{
+        let yuIp1 = new Array();
+        let checkMask = true;
+        yuIp1.push(parseInt(static_Mask[0]) & parseInt(ip_mask[0]));
+        yuIp1.push(parseInt(static_Mask[1]) & parseInt(ip_mask[1]));
+        yuIp1.push(parseInt(static_Mask[2]) & parseInt(ip_mask[2]));
+        yuIp1.push(parseInt(static_Mask[3]) & parseInt(ip_mask[3]));
+
+        yuIp1.map((value,index)=>{
+            if(value!=static_Mask[index]){
+              checkMask = false;
+              return false;
+            }
+            });
+        if(!checkMask){
+            return true;
+        }else{
+            return false;
+        }
+ }
+
+ public static  ipAndMaskValidator(): ValidatorFn{
+    return ({ value }: AbstractControl): { [key: string]: any } | null => {
+      let invalid = true;
+       if(isUndefined(value) || value === null || value === ''){
+        invalid = true;
+       }else{
+          const ipAndMask = value.split(':');
+          if(ipAndMask && ipAndMask.length === 2){
+            invalid = !(UtilsService.checkIp(ipAndMask[0]) && UtilsService.checkMask(ipAndMask[1]));
+          }else{
+            invalid = true;
+          }
+       }
+
+      if(invalid) {
+          return { inValidIPAndMask: "inValidIPAndMask"}
+      }else {
+          return null;
+      }
+    }
+  }
+
+
 
 }

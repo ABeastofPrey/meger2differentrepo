@@ -77,15 +77,15 @@ export class RichSelectComponent implements OnInit, OnDestroy {
             this.isKeyBoardOpen = true;
             this.selectOptions = [];
             const option = { data: { type: 'string', value: this.value } };
-            this.dialog.open(CustomKeyBoardDialogComponent, option).afterClosed().subscribe(res => {
+            this.dialog.open(CustomKeyBoardDialogComponent, option).afterClosed().subscribe((res:{delete?: boolean,enter?: boolean,value?: any}) => {
                 this.isKeyBoardOpen = false;
-                if (res === undefined) {
+                if (res === undefined || res.delete) {
                     this.isFocused = false;
                     this.blurEvent.emit(this.value);
                     return;
                 }
-                this.value = res;
-                if (option.data.value !== res) this.valueChange.emit(this.value);
+                this.value = res.value;
+                if (option.data.value !== res.value) this.valueChange.emit(this.value);
                 this.selectOptions = this.fuzzyQuery(this.value, this.options);
                 if (this.selectOptions.length === 0) {
                     this.isFocused = false;

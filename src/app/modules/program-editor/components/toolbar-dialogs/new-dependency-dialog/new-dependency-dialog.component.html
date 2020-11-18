@@ -18,7 +18,7 @@
         </mat-form-field> -->
         <custom-key-board type="string" placeHolder="{{ 'projects.toolbar.dep_name' | translate }}" [suffix]="'.ULB'"
             [nameRules]="true" [maxLength]="32" [value]="dialogForm.controls.val.value"
-            (valueChange)="change($event)" (blurEvent)="create()" (pressEnterEvent)="create()"
+            (valueChange)="change($event)" (pressEnterEvent)="create()"
         ></custom-key-board>
 	</div>
 	<div class="actions">

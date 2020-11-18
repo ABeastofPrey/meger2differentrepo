@@ -1,5 +1,5 @@
 import { SysLogSnackBarService } from './../../../../../sys-log/services/sys-log-snack-bar.service';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {
   DataService,
@@ -13,11 +13,10 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import {
   MatTreeNestedDataSource,
   MatSlideToggleChange,
-  MatSnackBar,
   MatDialog,
 } from '@angular/material';
 import { Io } from '../../../../../core/models/io/io.model';
-import { NgZone } from '@angular/core';
+import { NgZone, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {UpdateDialogComponent} from '../../../../../../components/update-dialog/update-dialog.component';
 import {YesNoDialogComponent} from '../../../../../../components/yes-no-dialog/yes-no-dialog.component';
@@ -61,18 +60,18 @@ export class IoMappingScreenComponent implements OnInit {
 
   private words: {};
   private notifier: Subject<boolean> = new Subject();
+  private changeNodeEvent: EventEmitter<TreeNode> = new EventEmitter<TreeNode>();
 
   constructor(
     private data: DataService,
     private ws: WebsocketService,
-    private snack: MatSnackBar,
     private zone: NgZone,
     private ref: ChangeDetectorRef,
     public prj: ProjectManagerService,
     private trn: TranslateService,
     private dialog: MatDialog,
     private api: ApiService,
-    private utils: UtilsService,
+    public utils: UtilsService,
     private snackbarService: SysLogSnackBarService
   ) {
     this.treeControl = new NestedTreeControl<TreeNode>(this._getChildren);
@@ -88,6 +87,9 @@ export class IoMappingScreenComponent implements OnInit {
       this.zone.run(()=>{
         this.dataSource.data = this.buildTree();
       });
+      this.changeNodeEvent.pipe(debounceTime(500)).subscribe(node => {
+        this.changeNode(node);
+      })
     });
   }
 
@@ -106,15 +108,29 @@ export class IoMappingScreenComponent implements OnInit {
     return data;
   }
 
-  selectNode(n: TreeNode) {
+  private changeNode(n: TreeNode): void {
     this.activeModule = {
       io: n.module,
       showInputs: n.name === 'ios.inputs',
     };
+    // Check need to get range info or not.
+    if (this.interval !== null) {
+      if (this.activeModule.showInputs && this.activeModule.io.inputs.length !== 0) {
+        return;
+      }
+      if (!this.activeModule.showInputs && this.activeModule.io.outputs.length !== 0) {
+        return;
+      }
+    };
+
     // GET INITIAL RANGE INFO
     this.getRangeInfo().then(() => {
       this.startDataRefreshInterval();
     });
+  }
+
+  selectNode(n: TreeNode) {
+    this.changeNodeEvent.emit(n);
   }
 
   getRangeInfo() {
@@ -165,20 +181,11 @@ export class IoMappingScreenComponent implements OnInit {
       .then((ret: MCQueryResponse) => {
         if (ret.result !== '0') {
           e.target.value = io.name;
-          // this.snack.open(this.words['changeError'], '', { duration: 2000 });
-          if(!this.utils.IsKuka)
-          {
-            console.log('Replace snack: ' + this.words['changeError']);
-          }
+          this.snackbarService.openTipSnackBar(this.words['changeError']);
           
         } else {
           io.name = newVal;
           this.snackbarService.openTipSnackBar('changeOK');
-          if(!this.utils.IsKuka)
-          {
-            console.log('Replace snack: ' + this.words['changeOK']);
-          }
-          
         }
       });
   }
@@ -196,18 +203,10 @@ export class IoMappingScreenComponent implements OnInit {
       .then((ret: MCQueryResponse) => {
         if (ret.result !== '0') {
           e.target.value = io.description;
-          // this.snack.open(this.words['changeError'], '', { duration: 2000 });
-          if(!this.utils.IsKuka)
-          {
-            console.log('Replace snack: ' + this.words['changeError']);
-          }
+          this.snackbarService.openTipSnackBar(this.words['changeError']);
         } else {
           io.description = newVal;
           this.snackbarService.openTipSnackBar('changeOK');
-          if(!this.utils.IsKuka)
-          {
-            console.log('Replace snack: ' + this.words['changeError']);
-          }
         }
       });
   }
@@ -253,11 +252,12 @@ export class IoMappingScreenComponent implements OnInit {
     });
   }
 
+  private cachedIOs: string = '';
+
   startDataRefreshInterval() {
     if (this.interval) clearInterval(this.interval);
     this.zone.runOutsideAngular(() => {
       this.interval = window.setInterval(() => {
-        console.log('here')
         const ioType = this.activeModule.showInputs ? 1 : 0;
         let start, end;
         if (this.activeModule.showInputs) {
@@ -270,6 +270,9 @@ export class IoMappingScreenComponent implements OnInit {
         this.ws
           .query('cyc5,' + ioType + ',' + start + ',' + end)
           .then((ret: MCQueryResponse) => {
+            // Check whether io was changed so that we need to re-render the screen or not.
+            if (ret.result === this.cachedIOs) return;
+            this.cachedIOs = ret.result;
             const parts = ret.result.split(';');
             if (ioType === 1) {
               for (let i = 0; i < parts.length; i++) {
@@ -286,7 +289,7 @@ export class IoMappingScreenComponent implements OnInit {
             }
             this.ref.detectChanges();
           });
-      }, !this.utils.isTablet ? 200 : 2000);
+      }, !this.utils.isTablet ? 200 : 1000);
     });
   }
 

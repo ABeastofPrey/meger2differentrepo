@@ -238,8 +238,7 @@
       class="sys_name"
 			[required]="true"
       [value]="sysName.value"
-      (valueChange)="changeSysName($event)"
-      [maxLength]="16"
+      [maxLength]="11"
 			(blurEvent)="onNameChange($event,'sysName')">
 		</custom-key-board>
 		<mat-form-field appearance="outline">
@@ -274,7 +273,6 @@
       [value]="sysTime.value"
       [outSideValidators]="sysTimeValidators"
       [emitInvalidValue]="false"
-      (valueChange)="changeSysTime($event)"
 			(blurEvent)="changeSysTime($event)">
 		</custom-key-board>
 

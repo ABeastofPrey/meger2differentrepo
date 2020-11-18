@@ -266,9 +266,9 @@
                   ] === 'Arm'
                 "
               >
-                <mat-option value="0">AUTO</mat-option>
-                <mat-option value="1">LEFTY</mat-option>
-                <mat-option value="2">RIGHTY</mat-option>
+                <mat-option [value]="0">AUTO</mat-option>
+                <mat-option [value]="1">LEFTY</mat-option>
+                <mat-option [value]="2">RIGHTY</mat-option>
               </div>
               <div
                 *ngIf="
@@ -277,9 +277,9 @@
                   ] === 'Elbow'
                 "
               >
-                <mat-option value="0">AUTO</mat-option>
-                <mat-option value="1">BELOW</mat-option>
-                <mat-option value="2">ABOVE</mat-option>
+                <mat-option [value]="0">AUTO</mat-option>
+                <mat-option [value]="1">BELOW</mat-option>
+                <mat-option [value]="2">ABOVE</mat-option>
               </div>
               <div
                 *ngIf="
@@ -288,9 +288,9 @@
                   ] === 'Wrist'
                 "
               >
-                <mat-option value="0">AUTO</mat-option>
-                <mat-option value="1">NOFLIP</mat-option>
-                <mat-option value="2">FLIP</mat-option>
+                <mat-option [value]="0">AUTO</mat-option>
+                <mat-option [value]="1">NOFLIP</mat-option>
+                <mat-option [value]="2">FLIP</mat-option>
               </div>
             </mat-select>
             <!-- <input

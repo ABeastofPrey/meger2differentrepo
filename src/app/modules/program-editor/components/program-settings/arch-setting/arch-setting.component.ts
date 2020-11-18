@@ -67,8 +67,9 @@ export class ArchSettingComponent implements OnInit, OnDestroy {
       return;
     }
     if (!this.validator((event.target as HTMLInputElement).value)) {
-      (event.target as HTMLInputElement).value = this.previousValue;
-      this.snackbarService.openTipSnackBar(this.words);
+      // (event.target as HTMLInputElement).value = this.previousValue;
+      // this.snackbarService.openTipSnackBar(this.words);
+      // console.error((event.target as HTMLInputElement).value);
       return;
     }
     try {

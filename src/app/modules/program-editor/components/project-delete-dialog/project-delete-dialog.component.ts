@@ -105,13 +105,12 @@ export class ProjectDeleteDialogComponent implements OnInit {
         if (this.isTablet) {
             const option = { data: { type: 'string', value: this.prjCtrl.value }, width: '839px',
             height: '439.75px'};
-            this.dialog.open(CustomKeyBoardDialogComponent, option).afterClosed().subscribe(res => {
-                let isUndefined = (typeof res === "undefined");
-                if (!isUndefined) {
-                    this.prjCtrl.setValue(res);
-                    this.prjCtrl.markAsTouched();
-                    this.prjInput.nativeElement.value = res;
-                }
+            this.dialog.open(CustomKeyBoardDialogComponent, option).afterClosed().subscribe((res:{delete?: boolean,enter?: boolean,value?: any}) => {
+                if(res === undefined || res.delete) return;
+                this.prjCtrl.setValue(res.value);
+                this.prjCtrl.markAsTouched();
+                this.prjInput.nativeElement.value = res.value;
+
             });
         }
     }, 0);

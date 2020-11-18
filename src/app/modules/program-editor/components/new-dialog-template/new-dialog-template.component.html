@@ -13,8 +13,14 @@
                 <mat-error *ngIf="name.hasError('exist') && !name.hasError('letter') && !name.hasError('required')">
                     {{ 'vision.templateConfig.nameExist' | translate }}</mat-error>
             </mat-form-field> -->
-            <custom-key-board type="string" placeholder="{{ data.placeholder | translate }}" [maxLength]="32" [value]="name.value" matLabel="{{ data.label | translate}}"
-                (valueChange)="change($event)" (blurEvent)="change($event)" [nameRules]="true"
+            <custom-key-board type="string" placeholder="{{ data.placeholder | translate }}"
+               [maxLength]="32" [value]="name.value"
+                matLabel="{{ data.label | translate}}"
+                [required]="true"
+                [nameRules]="true"
+                [existNameList]="data.stationList"
+                (isValidEvent)="onInValidName($event)"
+                (valueChange)="change($event)" (blurEvent)="change($event)"
             ></custom-key-board>
         </div>
         <div class="openDialog" *ngIf="data.checkbox">
@@ -26,7 +32,7 @@
         <button mat-button color="primary" matDialogClose>
             {{ 'button.cancel' | translate }}
         </button>
-        <button mat-button color="primary" (click)="insert()" [disabled]="!name.valid">
+        <button mat-button mat-raised-button  color="primary" (click)="insert()" [disabled]="!validName">
             {{ 'button.create' | translate }}
         </button>
     </div>

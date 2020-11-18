@@ -26,7 +26,7 @@
 			<mat-icon>system_update</mat-icon>
 			<div>{{ 'apps.firmware' | translate }}...</div>
 		</a>
-		<a (click)="cabinetUpdate()" *ngIf="login.isAdmin"
+		<a (click)="cabinetUpdate()" *ngIf="login.isAdmin&& !utils.isTablet"
 				[class.disabled]="cmn.isCloud" matTooltip="{{'cloud.na' | translate}}" [matTooltipDisabled]="!cmn.isCloud">
 			<mat-icon>system_update</mat-icon>
 			<div>{{ 'apps.cabinet_update' | translate }}...</div>

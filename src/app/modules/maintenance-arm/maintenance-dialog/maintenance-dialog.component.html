@@ -86,8 +86,7 @@
   <!-- unexception error -->
   <button
     *ngIf="
-      !avalibleParams &&
-      (stepInfo?.id !== Steps?.USERSWITCH && stepInfo?.id !== Steps?.ERROR)
+      !avalibleParams && (stepInfo?.id !== Steps?.USERSWITCH && stepInfo?.id !== Steps?.ERROR)
     "
     mat-button
     mat-raised-button
@@ -96,8 +95,21 @@
     cdkFocusInitial
     (click)="dialogRef.close()"
   >
-    {{ 'button.confirm' | translate }}
+    {{ 'button.confirm' | translate}}
   </button>
+  <button
+  *ngIf="
+    !(!avalibleParams && (stepInfo?.id !== Steps?.USERSWITCH && stepInfo?.id !== Steps?.ERROR))
+    && (stepInfo?.id === Steps?.PARAMETERSELECTION) && loginService.isSuper
+  "
+  mat-button
+  color="primary"
+  mat-button
+  cdkFocusInitial
+  (click)="dialogRef.close()"
+>
+  {{'button.cancel' | translate }}
+</button>
   <button
     *ngIf="stepInfo?.id === Steps?.CHOICECONFIRM"
     mat-button

@@ -442,7 +442,7 @@ export class ProjectManagerService {
     keyboardContext?: CustomKeyBoardComponent
   ) {
     const target = e.target as HTMLInputElement;
-    if (target.value.toString().trim().length === 0) {
+    if (target.value === null || target.value === undefined || target.value.toString().trim().length === 0) {
       this.updateModel(name, limit, prevValue,keyboardContext);
       return;
     }

@@ -65,7 +65,7 @@ export class MaintenanceDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<MaintenanceDialogComponent, boolean>,
     private maintenanceArmService: MaintenanceArmService,
     private changeDeractor: ChangeDetectorRef,
-    private loginService: LoginService) {
+    public loginService: LoginService) {
 
   }
 
@@ -118,7 +118,7 @@ export class MaintenanceDialogComponent implements OnInit {
         await this.maintenanceArmService.restoration(this.dialogRef, this.paramsType).then();
         break;
       default:
-        this.setStepInfo(MaintenanceStepId.RESTORATION)
+        // this.setStepInfo(MaintenanceStepId.RESTORATION)
         this.loginService.logout();
         break;
     }

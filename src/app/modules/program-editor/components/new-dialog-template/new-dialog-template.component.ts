@@ -16,39 +16,45 @@ export class NewDialogTemplateComponent implements OnInit {
     public name: FormControl = new FormControl('');
     public dialog: boolean = true;
 
+    public validName: boolean = true;
+
     ngOnInit() {
-        let vaild = [Validators.required, this.validFirstLetter(this.name), this.validExist(this.name)]
-        this.name.setValidators(vaild);
-
+        // let vaild = [Validators.required, Validators.pattern(/[a-zA-Z0-9_]*/g),this.validFirstLetter(this.name), this.validExist(this.name)]
+        // this.name.setValidators(vaild);
     }
 
-    validFirstLetter(name: FormControl) {
-        return () => {
-            let reg = /^[a-zA-Z]/;
-            return (reg.test(name.value) ? null : { "letter": "letter" })
-        }
-    }
+    // validFirstLetter(name: FormControl) {
+    //     return () => {
+    //         let reg = /^[a-zA-Z]/;
+    //         return (reg.test(name.value) ? null : { "letter": "letter" })
+    //     }
+    // }
 
-    validExist(name: FormControl) {
-        return () => {
-            let stationList: string[] = this.data.stationList;
-            let existList = stationList.filter((value) => {
-                return value === this.name.value.toUpperCase();
-            })
-            return ((existList.length === 0) ? null : { "exist": "exist" })
-        }
-    }
+    // validExist(name: FormControl) {
+    //     return () => {
+    //         let stationList: string[] = this.data.stationList;
+    //         let existList = stationList.filter((value) => {
+    //             return value === this.name.value.toUpperCase();
+    //         })
+    //         return ((existList.length === 0) ? null : { "exist": "exist" })
+    //     }
+    // }
 
-    changeInput(e: any): void {
-        const [validName] = e.target.value.match(/[a-zA-Z0-9_]*/g);
-        const name: string = validName.slice(0, 32);
-        this.name.patchValue(name);
-        this.name.markAsTouched();
-    }
+    // changeInput(e: any): void {
+    //     const [validName] = e.target.value.match(/[a-zA-Z0-9_]*/g);
+    //     const name: string = validName.slice(0, 32);
+    //     this.name.patchValue(name);
+    //     this.name.markAsTouched();
+    // }
 
     change(value: string): void {
         this.name.patchValue(value);
         this.name.markAsTouched();
+    }
+
+    onInValidName(valid: boolean){
+      valid ? this.name.setErrors(null) : this.name.setErrors({invalidName: true});
+      this.validName = valid;
     }
 
     insert(): void {

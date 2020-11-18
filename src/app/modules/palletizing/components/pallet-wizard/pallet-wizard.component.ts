@@ -5,6 +5,8 @@ import {
   ElementRef,
   HostListener,
   Output,
+  QueryList,
+  ViewChildren,
 } from '@angular/core';
 import {
   MatSnackBar,
@@ -34,6 +36,7 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CustomKeyBoardComponent } from '../../../custom-key-board/custom-key-board.component';
 
 // tslint:disable-next-line: no-any
 declare let Isomer: any;
@@ -85,6 +88,8 @@ export class PalletWizardComponent implements OnInit {
   @ViewChild('designer', { static: false }) designer: PalletLevelDesignerComponent;
   @ViewChild('designer2', { static: false }) designer2: PalletLevelDesignerComponent;
   @ViewChild('stepper', { static: false }) stepper: MatHorizontalStepper;
+
+  @ViewChildren(CustomKeyBoardComponent) customKeyboards: QueryList<CustomKeyBoardComponent>;
 
   // tslint:disable-next-line: no-any
   private iso: any = null;
@@ -576,8 +581,11 @@ export class PalletWizardComponent implements OnInit {
       default:
         // NO PALLET INDEX MODE SELECTED
         if (pallet.type === 'CUSTOM' && pallet.dataFile === null) {
+          this.setErrorsKeyboard(['index'],null);
           return Promise.resolve(null);
         }
+
+        this.setErrorsKeyboard(['index'],{ invalidIndex: true });
         return Promise.resolve({ invalidIndex: true });
     }
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
@@ -586,6 +594,7 @@ export class PalletWizardComponent implements OnInit {
         .then((ret: MCQueryResponse) => {
           this.dataService.selectedPallet.index = Number(ret.result);
           this.onWindowResize();
+          this.setErrorsKeyboard(['index'],null);
           return null;
         });
     });
@@ -934,6 +943,7 @@ export class PalletWizardComponent implements OnInit {
       this.step1.controls['itemsX'].setErrors(null);
       this.step1.controls['itemsY'].setErrors(null);
       this.step1.controls['itemsZ'].setErrors(null);
+      this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
       return Promise.resolve(null);
     }
     if (!control.touched && !control.dirty) {
@@ -951,6 +961,7 @@ export class PalletWizardComponent implements OnInit {
           this.step1.controls['itemsX'].setErrors({ invalidItemCount: true });
           this.step1.controls['itemsY'].setErrors({ invalidItemCount: true });
           this.step1.controls['itemsZ'].setErrors({ invalidItemCount: true });
+          this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],{ invalidItemCount: true });
           this.ws.query(cmdRestore).then(ret=>{
             const itemCount = (ret.result.length === 0 ? '0,0,0' : ret.result).split(',');
             this.dataService.selectedPallet.itemsX = Number(itemCount[0]);
@@ -966,12 +977,14 @@ export class PalletWizardComponent implements OnInit {
         this.step1.controls['itemsX'].setErrors(null);
         this.step1.controls['itemsY'].setErrors(null);
         this.step1.controls['itemsZ'].setErrors(null);
+        this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
         return Promise.resolve(null);
       });
     }
     this.step1.controls['itemsX'].setErrors(null);
     this.step1.controls['itemsY'].setErrors(null);
     this.step1.controls['itemsZ'].setErrors(null);
+    this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
     return Promise.resolve(null);
   }
 
@@ -1045,6 +1058,7 @@ export class PalletWizardComponent implements OnInit {
         if (ret.err || ret.result !== '0') {
           this.step1.controls['palletSizeX'].setErrors({ invalidSize: true });
           this.step1.controls['palletSizeY'].setErrors({ invalidSize: true });
+          this.setErrorsKeyboard(['palletSizeX','palletSizeY'],{ invalidSize: true });
           this.ws.query(cmdRestore).then(ret=>{
             const palletSizes = (ret.result.length === 0 ? '0,0' : ret.result).split(',');
             this.dataService.selectedPallet.palletSizeX = Number(palletSizes[0]);
@@ -1054,6 +1068,7 @@ export class PalletWizardComponent implements OnInit {
         }
         this.step1.controls['palletSizeX'].setErrors(null);
         this.step1.controls['palletSizeY'].setErrors(null);
+        this.setErrorsKeyboard(['palletSizeX','palletSizeY'],null);
         return Promise.resolve(null);
       });
     }
@@ -1086,6 +1101,7 @@ export class PalletWizardComponent implements OnInit {
           this.step2.controls['originX'].setErrors({ invalidOrigin: true });
           this.step2.controls['originY'].setErrors({ invalidOrigin: true });
           this.step2.controls['originZ'].setErrors({ invalidOrigin: true });
+          this.setErrorsKeyboard(['originX','originY','originZ'],{ invalidOrigin: true });
           return { invalidOrigin: true };
         }
         if (this.dataService.selectedPallet.entryEnabled) {
@@ -1095,6 +1111,7 @@ export class PalletWizardComponent implements OnInit {
         this.step2.controls['originX'].setErrors(null);
         this.step2.controls['originY'].setErrors(null);
         this.step2.controls['originZ'].setErrors(null);
+        this.setErrorsKeyboard(['originX','originY','originZ'],null);
         this.step2.controls['calibrated'].setValue(false);
         return Promise.resolve(null);
       });
@@ -1129,11 +1146,13 @@ export class PalletWizardComponent implements OnInit {
           this.step2.controls['posXX'].setErrors({ invalidPosX: true });
           this.step2.controls['posXY'].setErrors({ invalidPosX: true });
           this.step2.controls['posXZ'].setErrors({ invalidPosX: true });
+          this.setErrorsKeyboard(['posXX','posXY','posXZ'],{ invalidPosX: true });
           return { invalidOrigin: true };
         }
         this.step2.controls['posXX'].setErrors(null);
         this.step2.controls['posXY'].setErrors(null);
         this.step2.controls['posXZ'].setErrors(null);
+        this.setErrorsKeyboard(['posXX','posXY','posXZ'],null);
         this.step2.controls['calibrated'].setValue(false);
         return Promise.resolve(null);
       });
@@ -1164,12 +1183,14 @@ export class PalletWizardComponent implements OnInit {
           this.step2.controls['posYX'].setErrors({ invalidPosY: true });
           this.step2.controls['posYY'].setErrors({ invalidPosY: true });
           this.step2.controls['posYZ'].setErrors({ invalidPosY: true });
+          this.setErrorsKeyboard(['posYX','posYY','posYZ'],{ invalidPosY: true });
           return { invalidOrigin: true };
         }
         this.step2.controls['posYX'].setErrors(null);
         this.step2.controls['posYY'].setErrors(null);
         this.step2.controls['posYZ'].setErrors(null);
         this.step2.controls['calibrated'].setValue(false);
+        this.setErrorsKeyboard(['posYX','posYY','posYZ'],null);
         return Promise.resolve(null);
       });
     }
@@ -1183,6 +1204,7 @@ export class PalletWizardComponent implements OnInit {
     const newVal = control.value;
     if (newVal === 0 || pal.flags.every(f => isNaN(f))) {
       this.step3.controls['flag' + flag].setErrors({ invalidFlag: true });
+      this.setErrorsKeyboard(['flag' + flag],{ invalidFlag: true });
       return Promise.resolve({ invalidFlag: true });
     }
     pal.flags[flag] = newVal;
@@ -1191,9 +1213,11 @@ export class PalletWizardComponent implements OnInit {
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err || ret.result !== '0') {
         this.step3.controls['flag' + flag].setErrors({ invalidFlag: true });
+        this.setErrorsKeyboard(['flag' + flag],{ invalidFlag: true });
         return { invalidFlag: true };
       }
       this.step3.controls['flag' + flag].setErrors(null);
+      this.setErrorsKeyboard(['flag' + flag],null);
       if (pal.entryEnabled) {
         this.step3.controls['x'].markAsDirty();
         this.step3.controls['x'].updateValueAndValidity();
@@ -1210,7 +1234,7 @@ export class PalletWizardComponent implements OnInit {
       this.step3.controls['yaw'].setErrors(null);
       this.step3.controls['pitch'].setErrors(null);
       this.step3.controls['roll'].setErrors(null);
-      this.showStep3KeyboardError = false;
+      this.setErrorsKeyboard(['x','y','z','yaw','pitch','roll'],null);
       return Promise.resolve(null);
     }
     const pos = this.dataService.selectedPallet.entry;
@@ -1226,7 +1250,7 @@ export class PalletWizardComponent implements OnInit {
         if (yaw !== null && pitch !== null){
           loc += yaw + ',' + pitch + ',';
         } else {
-          this.showStep3KeyboardError = false;
+          this.setErrorsKeyboard([changed],null);
           return Promise.resolve(null);
         }
       }
@@ -1245,7 +1269,8 @@ export class PalletWizardComponent implements OnInit {
           this.step3.controls['yaw'].setErrors({ invalidEntry: true });
           this.step3.controls['pitch'].setErrors({ invalidEntry: true });
           this.step3.controls['roll'].setErrors({ invalidEntry: true });
-          this.showStep3KeyboardError = true;
+          this.setErrorsKeyboard(['x','y','z','yaw','pitch','roll'],{ invalidEntry: true });
+          // this.showStep3KeyboardError = true;
           return { invalidEntry: true };
         }
         this.step3.controls['x'].setErrors(null);
@@ -1254,11 +1279,12 @@ export class PalletWizardComponent implements OnInit {
         this.step3.controls['yaw'].setErrors(null);
         this.step3.controls['pitch'].setErrors(null);
         this.step3.controls['roll'].setErrors(null);
-        this.showStep3KeyboardError = false;
+        this.setErrorsKeyboard(['x','y','z','yaw','pitch','roll'],null);
+        // this.showStep3KeyboardError = false;
         return Promise.resolve(null);
       });
     }
-    this.showStep3KeyboardError = false;
+    // this.showStep3KeyboardError = false;
     return Promise.resolve(null);
   }
 
@@ -1931,6 +1957,7 @@ export class PalletWizardComponent implements OnInit {
           } else {
             this.ws.query('?PLT_RESTORE_PALLET("' + name + '")').then(ret=>{
               setTimeout(()=>{
+                this.customKeyboards = null;
                 this.getPalletInfo();
               }, 200);
             });
@@ -1974,7 +2001,7 @@ export class PalletWizardComponent implements OnInit {
 
   public setFormGroupItem(value: any,item: string,formGroup: FormGroup,onWindowResize: boolean = false,markAsDirty: boolean = true){
     // const newValue = Number(value);
-    if(!formGroup.controls || !formGroup.controls[item]) return;
+    if(!formGroup.controls || !formGroup.controls[item] || formGroup.controls[item].value === value) return;
 
     if(isNaN(+value)){
       formGroup.setErrors({invalid: true});
@@ -2053,8 +2080,8 @@ export class PalletWizardComponent implements OnInit {
       this.setFormGroupItem(selectedPallet[item.value],item.key,this.step4,false,item.markAsDirty);
     });
 }
-onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup,){
-  if(valid) return;
+onValidatorCheck(invalid: boolean,item: string,formGroup: FormGroup,){
+  if(invalid) return;
   if(!formGroup.controls || !formGroup.controls[item]) return;
   formGroup.setErrors({invalid: true});
 }
@@ -2130,4 +2157,15 @@ onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup,){
       })
 
  }
+
+   private setErrorsKeyboard(items: any[], error){
+     if(!this.customKeyboards) return;
+     const children: any[] = this.customKeyboards['_results'] || [];
+     children.map(node=>{
+        if(items.includes(node.identificationTag)){
+          node.setErrors(error);
+          return;
+        }
+     });
+   }
 }

@@ -314,6 +314,14 @@ input[type=number] {
   display: none;
 }
 
+.hidden-mat-dialog-container {
+  .mat-dialog-container {
+    padding: 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+  }
+}
+
 .virtual-select {
   min-width: 100%!important;
 }

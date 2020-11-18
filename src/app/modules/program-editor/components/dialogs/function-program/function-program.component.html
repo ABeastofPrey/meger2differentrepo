@@ -16,7 +16,7 @@
                     {{ 'projectCommands.functions.beginWithLetter' | translate }}</mat-error>
             </mat-form-field> -->
             <custom-key-board type="string" matLabel='{{ "projectCommands.functions.name" | translate }}'
-                placeHolder="{{  'projectCommands.functions.name' | translate}}"
+                placeHolder="{{  'projectCommands.functions.name' | translate}}" [required]="true"
                 [nameRules]="true" [maxLength]="32" [value]="functionName.value"
                 (valueChange)="change($event)" (blurEvent)="change($event)"
             ></custom-key-board>
@@ -43,6 +43,7 @@
                         <div class="customKeyBoard">
                             <custom-key-board type="string"  [existNameList]="existParameter" class="inputElementParameter"
                                 [nameRules]="true" [maxLength]="32" [value]="element.VariableName.value" [required]="true"
+                                [emitNoDirtyValue]="true"
                                 (valueChange)="changeParameter({target:{value:$event}},i)" (blurEvent)="blurParameter(i)"
                             ></custom-key-board>
                         </div>

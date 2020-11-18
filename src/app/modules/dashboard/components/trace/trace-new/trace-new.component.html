@@ -2,14 +2,14 @@
     <!-- <mat-form-field>
         <mat-label>{{label | translate}}</mat-label>
         <input #newTraceInput
-            type="text" matInput 
+            type="text" matInput
             autoComplete="off"
             [formControl]="control"
             [placeholder]="placeholder | translate"
             [value]="control.value" />
         <button mat-button *ngIf="control.value"
-            matSuffix mat-icon-button 
-            aria-label="Clear" 
+            matSuffix mat-icon-button
+            aria-label="Clear"
             (click)="control.patchValue('')">
             <mat-icon>close</mat-icon>
         </button>
@@ -21,13 +21,22 @@
         </mat-error>
     </mat-form-field> -->
     <div class="customKeyBoard">
-        <custom-key-board type="string" [value]="control.value" [placeHolder]="placeholder | translate" matLabel="{{label | translate}}" [maxLength]="32"
-            [nameRules]="true" [existNameList]="traceList" (valueChange)="change($event)" (blurEvent)="change($event)"
+        <custom-key-board type="string"
+            [value]="control.value"
+            [placeHolder]="placeholder | translate"
+            matLabel="{{label | translate}}"
+            [maxLength]="32"
+            [required]="true"
+            [nameRules]="true"
+            [existNameList]="traceList"
+            (valueChange)="change($event)"
+            (blurEvent)="change($event)"
+            (isValidEvent)="onValidEvent($event)"
         ></custom-key-board>
     </div>
     <button #createTraceBtn mat-icon-button class="done"
         color="primary" (click)="sendValue()"
-        [disabled]="control.value.length === 0 || control.hasError('exist') || control.hasError('beginWithLetter')">
+        [disabled]="!validName">
         <mat-icon>done</mat-icon>
     </button>
 </div>

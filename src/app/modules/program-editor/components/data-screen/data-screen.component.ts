@@ -66,6 +66,7 @@ export class DataScreenComponent implements OnInit {
 
   private setTimeOutRefreshVarId: any;
 
+  private buildVariableTimeoutId: any;
   /*
     weather or not to display the mat-table element
   */
@@ -165,6 +166,7 @@ export class DataScreenComponent implements OnInit {
     this.notifier.next(true);
     this.notifier.unsubscribe();
     this.setTimeOutRefreshVarId && clearTimeout(this.setTimeOutRefreshVarId);
+    this.buildVariableTimeoutId && clearTimeout(this.buildVariableTimeoutId);
   }
 
   /*
@@ -225,12 +227,17 @@ export class DataScreenComponent implements OnInit {
     else api = `?tp_get_value_namespace("${fullname}")`;
     return this.ws.query(api).then((ret: MCQueryResponse) => {
       if (ret.err) return;
-      setTimeout(()=>{ this.buildVariable(v, ret.result);},0)
+      this.buildVariableTimeoutId && clearTimeout(this.buildVariableTimeoutId);
+      this.buildVariableTimeoutId = setTimeout(()=>{
+        this.buildVariable(v, ret.result);
+      },0);
       this.changeDetectorRef.detectChanges();
+
     });
   }
 
   private buildVariable(v: TPVariable, valuesString: string): void {
+    let toNumber = v.varType !== TPVariableType.STRING;
     if (valuesString.indexOf('#') === 0) {
       valuesString = valuesString.substr(1);
     }
@@ -278,23 +285,32 @@ export class DataScreenComponent implements OnInit {
     if (v.isArr) {
       const selected = v.value[v.selectedIndex - 1] as TPVariable;
       if (!selected.dataLoaded) {
+        val.forEach((item)=>{
+          item.value = toNumber ? Number(item.value) : item.value;
+       });
         selected.value = val;
         selected.dataLoaded = true;
       } else {
         for (let i = 0; i < val.length; i++) {
-          selected.value[i].value = val[i].value;
+          const newValue = toNumber ? Number(val[i].value) : val[i].value;
+          selected.value[i].value = newValue;
         }
       }
-    }
-    else if (!v.dataLoaded) {
+
+    }else if (!v.dataLoaded) {
+      val.forEach((item)=>{
+         item.value = toNumber ? Number(item.value) : item.value;
+      });
       v.value = val;
       v.dataLoaded = true;
     } else {
       for (let i = 0; i < val.length; i++) {
-        v.value[i].value = val[i].value;
-        this.changeDetectorRef.detectChanges();
+        const newValue = toNumber ? Number(val[i].value) : val[i].value;
+        v.value[i].value = newValue;
       }
     }
+
+    this.changeDetectorRef.detectChanges();
 
   }
 
@@ -340,11 +356,15 @@ export class DataScreenComponent implements OnInit {
         for (const v of this.dataSource.data) {
           const key = this.data.buildFullName(v);
           if (dataNameMap.has(key)) {
-            this.buildVariable(v, dataNameMap.get(key))
+            this.buildVariable(v, dataNameMap.get(key));
+            this.changeDetectorRef.markForCheck();
           }
         }
 
-        this.changeDetectorRef.detectChanges();
+       this.buildVariableTimeoutId && clearTimeout(this.buildVariableTimeoutId);
+       this.buildVariableTimeoutId =  setTimeout(() => {
+          this.changeDetectorRef.detectChanges();
+        }, 0);
 
       });
   }

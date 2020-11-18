@@ -42,7 +42,7 @@
                         </mat-form-field> -->
                         <div class="customKeyBoard">
                             <custom-key-board type="string"  [existNameList]="existParameter" class="inputElementParameter"
-                                [nameRules]="true" [maxLength]="32" [value]="element.VariableName.value" [required]="true"
+                                [nameRules]="true" [maxLength]="32" [value]="element.VariableName.value" [required]="true" [emitNoDirtyValue]="true"
                                 (valueChange)="changeParameter({target:{value:$event}},i)" (blurEvent)="blurParameter(i)"
                             ></custom-key-board>
                         </div>

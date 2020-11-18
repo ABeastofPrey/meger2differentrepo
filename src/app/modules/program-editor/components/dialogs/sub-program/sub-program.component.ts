@@ -89,6 +89,7 @@ export class SubProgramComponent implements OnInit {
 
     public deleteParameter(index: number): void {
         this.dataSource.splice(index, 1);
+        this.existParameter.splice(index,1);
         this.parameterTable.renderRows();
     }
 
@@ -97,7 +98,7 @@ export class SubProgramComponent implements OnInit {
         this.existParameter = [];
         this.dataSource.forEach((item, i) => {
             (i !== index) ? this.existParameter.push(item.VariableName.value.toUpperCase()) : "";
-        })
+        });
         const [validName] = e.target.value.match(/[a-zA-Z0-9_]*/g);
         const VariableName = validName.slice(0, 32);
         this.dataSource[index].VariableName.patchValue(VariableName);

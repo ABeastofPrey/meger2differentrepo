@@ -13,8 +13,8 @@
 				/>
             </mat-form-field> -->
             <custom-key-board type="string" placeHolder="{{ 'projectCommands.call.name' | translate }}"
-                [nameRules]="true" [maxLength]="32" [value]="dialogForm.controls.expression.value"
-                (valueChange)="change($event)" (blurEvent)="change($event)" 
+                [required]="true" [nameRules]="true" [maxLength]="32" [value]="dialogForm.controls.expression.value"
+                (valueChange)="change($event)" (blurEvent)="change($event)"
             ></custom-key-board>
 		</div>
 	</div>

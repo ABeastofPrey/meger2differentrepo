@@ -61,89 +61,89 @@ const fakeProgramEditorService = jasmine.createSpyObj('ProgramEditorService', ['
 fakeProgramEditorService.activeFile = "APP.UPG";
 
 describe('SubProgramComponent', () => {
-    let component: SubProgramComponent;
-    let fixture: ComponentFixture<SubProgramComponent>;
+    // let component: SubProgramComponent;
+    // let fixture: ComponentFixture<SubProgramComponent>;
 
-    const dialogRef = {
-        close: jasmine.createSpy('close'),
-    };
+    // const dialogRef = {
+    //     close: jasmine.createSpy('close'),
+    // };
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [SubProgramComponent,CustomKeyBoardComponent],
-            // imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
-            imports: [FormsModule, HttpClientModule, MaterialComponentsModule, BrowserAnimationsModule, UnitTestModule],
-            providers: [
-                { provide: ProgramEditorService, useValue: fakeProgramEditorService },
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: {
-                        title: 'Failed!'
-                    },
-                },
-                { provide: MatDialogRef, useValue: dialogRef },
-            ],
-        })
-            .compileComponents();
-    }));
+    // beforeEach(async(() => {
+    //     TestBed.configureTestingModule({
+    //         declarations: [SubProgramComponent,CustomKeyBoardComponent],
+    //         // imports: [SharedModule, UnitTestModule, BrowserAnimationsModule],
+    //         imports: [FormsModule, HttpClientModule, MaterialComponentsModule, BrowserAnimationsModule, UnitTestModule],
+    //         providers: [
+    //             { provide: ProgramEditorService, useValue: fakeProgramEditorService },
+    //             {
+    //                 provide: MAT_DIALOG_DATA,
+    //                 useValue: {
+    //                     title: 'Failed!'
+    //                 },
+    //             },
+    //             { provide: MatDialogRef, useValue: dialogRef },
+    //         ],
+    //     })
+    //         .compileComponents();
+    // }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(SubProgramComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-        component.existParameter = ["s", "b"];
-    });
+    // beforeEach(() => {
+    //     fixture = TestBed.createComponent(SubProgramComponent);
+    //     component = fixture.componentInstance;
+    //     fixture.detectChanges();
+    //     component.existParameter = ["s", "b"];
+    // });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+    // it('should create', () => {
+    //     expect(component).toBeTruthy();
+    // });
 
-    it('changeInput', () => {
-        component.changeInput({ "target": { "value": "subName" } });
-    });
+    // it('changeInput', () => {
+    //     component.changeInput({ "target": { "value": "subName" } });
+    // });
 
-    it('addParameter', () => {
-        component.existParameter = ["", "s"];
-        // component.addParameter();
-        component.existParameter = ["a", "s"];
-        // component.addParameter();
-    });
+    // it('addParameter', () => {
+    //     component.existParameter = ["", "s"];
+    //     // component.addParameter();
+    //     component.existParameter = ["a", "s"];
+    //     // component.addParameter();
+    // });
 
-    it('deleteParameter', () => {
-        component.deleteParameter(0);
-    });
+    // it('deleteParameter', () => {
+    //     component.deleteParameter(0);
+    // });
 
-    it('changeParameter', () => {
-        component.dataSource = [
-            { "VariableName": new FormControl("abc", [Validators.required]), "VariableType": "double", "operation": "" },
-            { "VariableName": new FormControl("s", [Validators.required]), "VariableType": "double", "operation": "" },
-        ]
-        component.changeParameter({ "target": { "value": "abc" } }, 0);
-    });
+    // it('changeParameter', () => {
+    //     component.dataSource = [
+    //         { "VariableName": new FormControl("abc", [Validators.required]), "VariableType": "double", "operation": "" },
+    //         { "VariableName": new FormControl("s", [Validators.required]), "VariableType": "double", "operation": "" },
+    //     ]
+    //     component.changeParameter({ "target": { "value": "abc" } }, 0);
+    // });
 
-    it('blurParameter', () => {
-        component.dataSource = [
-            { "VariableName": new FormControl("abc", [Validators.required]), "VariableType": "double", "operation": "" },
-            { "VariableName": new FormControl("s", [Validators.required]), "VariableType": "double", "operation": "" },
-            { "VariableName": new FormControl("", [Validators.required]), "VariableType": "double", "operation": "" },
-        ]
-        component.blurParameter(0);
-        component.blurParameter(2);
-    });
+    // it('blurParameter', () => {
+    //     component.dataSource = [
+    //         { "VariableName": new FormControl("abc", [Validators.required]), "VariableType": "double", "operation": "" },
+    //         { "VariableName": new FormControl("s", [Validators.required]), "VariableType": "double", "operation": "" },
+    //         { "VariableName": new FormControl("", [Validators.required]), "VariableType": "double", "operation": "" },
+    //     ]
+    //     component.blurParameter(0);
+    //     component.blurParameter(2);
+    // });
 
-    it('cancel', () => {
-        component.cancel();
-    });
+    // it('cancel', () => {
+    //     component.cancel();
+    // });
 
-    it('insert', () => {
-        component.ULB_LIB_End = true;
-        component.dataSource = [
-            { "VariableName": new FormControl("abc", [Validators.required]), "VariableType": "double", "operation": "" },
-            { "VariableName": new FormControl("s", [Validators.required]), "VariableType": "double", "operation": "" },
-        ]
-        component.insert();
-        component.ULB_LIB_End = false;
-        component.dataSource = [];
-        component.insert();
-    });
+    // it('insert', () => {
+    //     component.ULB_LIB_End = true;
+    //     component.dataSource = [
+    //         { "VariableName": new FormControl("abc", [Validators.required]), "VariableType": "double", "operation": "" },
+    //         { "VariableName": new FormControl("s", [Validators.required]), "VariableType": "double", "operation": "" },
+    //     ]
+    //     component.insert();
+    //     component.ULB_LIB_End = false;
+    //     component.dataSource = [];
+    //     component.insert();
+    // });
 });

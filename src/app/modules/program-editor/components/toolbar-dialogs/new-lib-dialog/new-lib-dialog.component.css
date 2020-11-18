@@ -15,6 +15,10 @@
   margin: 0 -24px -24px 0;
 }
 .name-wrapper {
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
+  min-width: 240px;
+}
+.mat-form-field{
+  width: 100%;
 }

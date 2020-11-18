@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { fromEvent } from 'rxjs';
-import { customKeyBoardType, InputType, LAYOUT_NUMBER, LAYOUT_STRING_LOWER,LAYOUT_STRING_CAPITAL, LAYOUT_STRING_SYMBOL, DATA_TYPE, CommandLocalType } from '../core/models/customKeyBoard/custom-key-board.model';
+import { fromEvent, Subject } from 'rxjs';
+import {  InputType, LAYOUT_NUMBER, LAYOUT_NUMBER2,LAYOUT_STRING_LOWER,LAYOUT_STRING_CAPITAL, LAYOUT_STRING_SYMBOL, DATA_TYPE, CommandLocalType, ILayoutOfNumber } from '../core/models/customKeyBoard/custom-key-board.model';
 import { UtilsService } from '../core/services/utils.service';
 
 @Component({
@@ -9,11 +9,11 @@ import { UtilsService } from '../core/services/utils.service';
     templateUrl: './custom-key-board-dialog.component.html',
     styleUrls: ['./custom-key-board-dialog.component.scss']
 })
-export class CustomKeyBoardDialogComponent implements OnInit {
-    
+export class CustomKeyBoardDialogComponent implements OnInit,OnDestroy {
+
     public InputTypes = InputType;
     public value: string;
-    public layout: string[][];
+    public layout: string[][] | ILayoutOfNumber[][];
     public timeout: NodeJS.Timeout;
     public caseConversion: boolean = false;
     public keyBoardType: string = "";
@@ -23,30 +23,29 @@ export class CustomKeyBoardDialogComponent implements OnInit {
     constructor(
         @Inject(MAT_DIALOG_DATA) public dialogData: any, public dialogRef: MatDialogRef<CustomKeyBoardDialogComponent>,
         private utils: UtilsService
-    ) { 
-        this.dialogData.type === DATA_TYPE.String ? this.layout = LAYOUT_STRING_LOWER : this.layout = LAYOUT_NUMBER;
+    ) {
+        this.dialogData.type === DATA_TYPE.String ? this.layout = LAYOUT_STRING_LOWER : this.layout = LAYOUT_NUMBER2;
         // setTimeout(() => {
             this.keyBoardType = this.dialogData.type;
         // }, 0);
     }
 
-    ngOnInit() {
-        
+    ngOnInit() { }
+
+    ngOnDestroy(): void {
+      this.timeout && clearInterval(this.timeout);
     }
 
     ngAfterViewInit(): void {
         fromEvent(document, 'mousedown').subscribe(this.preventLoseFocus.bind(this));
-        if(this.dialogData.isCommand) {
-            localStorage.getItem(CommandLocalType.CommandList) ? "" : localStorage.setItem(CommandLocalType.CommandList,JSON.stringify([]));
-            let localCommand = JSON.parse(localStorage.getItem(CommandLocalType.CommandList));
-            localStorage.setItem(CommandLocalType.CommandList,JSON.stringify(localCommand));
-            localStorage.setItem(CommandLocalType.CommandIndex,(JSON.parse(localStorage.getItem(CommandLocalType.CommandList)).length).toString());
-        }
+        const globalOverlayWrappers = document.getElementsByClassName('cdk-global-overlay-wrapper');
+        globalOverlayWrappers[globalOverlayWrappers.length - 1].classList.add('hidden-mat-dialog-container');
     }
 
     get getNegativeDisabled(): boolean {
         if(this.customKeyBoard) {
-            if(this.customKeyBoard.numInput.nativeElement.selectionStart !== 0 || this.customKeyBoard.numInput.nativeElement.value.indexOf('-') > -1) {
+            let newValue = this.customKeyBoard.numInput.nativeElement.value || '';
+            if(this.customKeyBoard.numInput.nativeElement.selectionStart !== 0 ||  newValue.indexOf('-')> -1) {
                 return true;
             }else {
                 return false;
@@ -62,12 +61,12 @@ export class CustomKeyBoardDialogComponent implements OnInit {
     }
 
     public touchstart(e: TouchEvent, value: string): void {
+      this.touchend();
         switch (value) {
             case InputType.Enter:
                 const numberType: boolean = this.dialogData.type === DATA_TYPE.Float || this.dialogData.type === DATA_TYPE.Int;
                 const inputValue = numberType ? this.utils.parseFloatAchieve(this.customKeyBoard.getValue()) : this.customKeyBoard.getValue();
-                this.setLocalCommand(inputValue);
-                this.dialogRef.close(inputValue);
+                this.dialogRef.close({enter: true,value: inputValue});
                 break;
             case InputType.Top:
                 this.customKeyBoard.setDefaultValue(InputType.Top);
@@ -75,7 +74,7 @@ export class CustomKeyBoardDialogComponent implements OnInit {
             case InputType.Bottom:
                 this.customKeyBoard.setDefaultValue(InputType.Bottom);
                 break;
-            case InputType.Forward: 
+            case InputType.Forward:
                 this.letterConversion(!this.caseConversion);
                 break;
             case InputType.Symbol:
@@ -98,19 +97,7 @@ export class CustomKeyBoardDialogComponent implements OnInit {
     }
 
     public touchend(): void {
-        clearInterval(this.timeout);
-    }
-
-    private setLocalCommand(value: string): void {
-        if(this.dialogData.isCommand) {
-            localStorage.getItem(CommandLocalType.CommandList) ? "" : localStorage.setItem(CommandLocalType.CommandList,JSON.stringify([]));
-            let localCommand = JSON.parse(localStorage.getItem(CommandLocalType.CommandList));
-            if(localCommand.indexOf(value) > -1) {
-                return;
-            }
-            localCommand.splice(localCommand.length,0,value);
-            localStorage.setItem(CommandLocalType.CommandList,JSON.stringify(localCommand));
-        }
+      this.timeout && clearInterval(this.timeout);
     }
 
     private letterConversion(state: boolean): void {
@@ -122,12 +109,37 @@ export class CustomKeyBoardDialogComponent implements OnInit {
         this.dialogRef.close();
     }
 
-    ngOnDestroy(): void {
-
-    }
-
     public onLineDelete() {
         this.dialogRef.close({delete: true});
     }
+
+    disabledKey(item: ILayoutOfNumber): boolean{
+      if(!this.customKeyBoard || !item.checkStatus) return false;
+      const dialogData = this.dialogData;
+      const customKeyBoard = this.customKeyBoard;
+      let disabled = false;
+      let value = customKeyBoard.getValue();
+      if(value === null || value === undefined){
+        value = '';
+      }else{
+        value = value.toString();
+      }
+      switch(item.value){
+        case '-':
+          disabled = dialogData.isPositiveNum || this.getNegativeDisabled;
+          break;
+        case '.':
+          disabled = dialogData.type === DATA_TYPE.Int || (dialogData.type !== DATA_TYPE.String && (value.indexOf('.') > -1));
+          break;
+        case InputType.Enter:
+          disabled = !customKeyBoard.getValid();
+          break;
+          default:
+            disabled = false;
+      }
+     return disabled
+    }
+
+
 
 }

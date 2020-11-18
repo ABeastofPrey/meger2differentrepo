@@ -1,3 +1,5 @@
+import { constants } from 'fs'
+
 export const fontRule = {
   "size": "24px",
   "family": "Roboto",
@@ -28,10 +30,44 @@ export interface CharWidth {
 export interface customKeyBoardType {
     getValue:Function;
     setValue:Function;
-    getValid:Function; 
+    getValid:Function;
     setDefaultValue:Function;
     isProgram: boolean;
 }
+
+export interface ILayoutOfNumber{
+  value: string;
+  darkBtn: boolean;  // '.' || '-' || InputTypes.Delete || InputTypes.Left || InputTypes.Right,
+  smallBtn: boolean; // '.' || '-' ||InputTypes.Left || InputTypes.Right || InputTypes.Delete || InputTypes.Enter
+  disabled: boolean;
+  checkStatus: boolean;
+}
+export const LAYOUT_NUMBER2: ILayoutOfNumber[][] = [
+  [
+    {value: '7', darkBtn: false,smallBtn: false, disabled: false,checkStatus: false},
+    {value: '8',darkBtn: false,smallBtn: false, disabled: false,checkStatus: false},
+    {value: '9', darkBtn: false,smallBtn: false, disabled: false,checkStatus: false },
+    {value: InputType.Delete,darkBtn: true,smallBtn: true, disabled: false,checkStatus: false}
+  ],
+  [
+    {value: '4', darkBtn: false,smallBtn: false, disabled: false,checkStatus: false },
+    {value: '5',darkBtn: false,smallBtn: false, disabled: false,checkStatus: false},
+    {value: '6', darkBtn: false,smallBtn: false, disabled: false,checkStatus: false },
+    {value: '-',darkBtn: true,smallBtn: true, disabled: false,checkStatus: true}
+  ],
+  [
+    {value: '1', darkBtn: false,smallBtn: false, disabled: false,checkStatus: false},
+    {value: '2',darkBtn: false,smallBtn: false, disabled: false,checkStatus: false},
+    {value: '3', darkBtn: false,smallBtn: false, disabled: false,checkStatus: false },
+    {value: InputType.Enter,darkBtn: false,smallBtn: true, disabled: false,checkStatus: true}
+  ],
+  [
+    {value: '0', darkBtn: false,smallBtn: false, disabled: false,checkStatus: false },
+    {value: '.',darkBtn: true,smallBtn: true, disabled: false,checkStatus: true},
+    {value: InputType.Left, darkBtn: true,smallBtn: true, disabled: false ,checkStatus: false},
+    {value: InputType.Right,darkBtn: true,smallBtn: true, disabled: false,checkStatus: false}
+  ]
+];
 
 export const LAYOUT_NUMBER: string[][] = [
     ["7", "8", "9", InputType.Delete],

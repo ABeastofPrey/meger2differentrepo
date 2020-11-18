@@ -8,7 +8,7 @@ export class CustomKeyBoardService {
 
     public getCharWidth(text: string,password: boolean): number {
         var result: CharWidth = { width: 0 };
-        if(text === null) return result.width;
+        if(text === null || text === undefined) return result.width;
         var span = document.createElement("span");
         result.width = span.offsetWidth;
         span.style.visibility = "hidden";

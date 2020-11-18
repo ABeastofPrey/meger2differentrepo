@@ -20,4 +20,5 @@
 }
 .content {
   /* overflow: auto; */
+  min-width: 240px;
 }

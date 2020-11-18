@@ -42,10 +42,12 @@
 								id="username"
 							/>
                         </mat-form-field> -->
-                        <custom-key-board class="customKeyBoardLogin" type="string" [value]="authForm.controls.username.value" [required]="true" 
+                        <custom-key-board class="customKeyBoardLogin" type="string" [value]="authForm.controls.username.value" [required]="true"
+                            [isUserName]="true"
+                            id="username"
                             (blurEvent)="usernameBlur($event,'username')" placeHolder="{{ 'userManager.username' | translate }}"
                             matLabel="{{ 'userManager.username' | translate }}" [iconPrefix]="true" [iconPrefixColor]="'#FF7300'"
-                            [prefix]="'person'" (valueChange)="usernameBlur($event,'username')" 
+                            [prefix]="'person'" (valueChange)="usernameBlur($event,'username')"
                         ></custom-key-board>
 						<!-- <mat-form-field appearance="fill">
 							<mat-label>{{ 'password' | translate }}</mat-label>
@@ -61,6 +63,7 @@
 							/>
                         </mat-form-field> -->
                         <custom-key-board class="customKeyBoardLogin" type="string" [value]="authForm.controls.password.value" [required]="true" [password]="true"
+                            id="password"
                             matLabel="{{ 'password' | translate }}" [iconPrefix]="true" placeHolder="{{ 'password' | translate }}"
                             (blurEvent)="usernameBlur($event,'password')" [prefix]="'security'" (valueChange)="usernameBlur($event,'password')"
                             [iconPrefixColor]="'#FF7300'"

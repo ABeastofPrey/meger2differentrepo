@@ -90,6 +90,7 @@ export class FunctionProgramComponent implements OnInit {
 
     public deleteParameter(index: number): void {
         this.dataSource.splice(index, 1);
+        this.existParameter.splice(index,1);
         this.parameterTable.renderRows();
     }
 

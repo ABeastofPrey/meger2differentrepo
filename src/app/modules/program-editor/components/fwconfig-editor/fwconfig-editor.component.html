@@ -7,8 +7,8 @@
   <!-- <mat-form-field>
     <input matInput placeholder="IP:MASK" [value]="config.staticIP" (change)="onIPChange($event.target.value)" [disabled]="!useStatic.checked">
   </mat-form-field> -->
-    <custom-key-board type="string" placeHolder="IP:MASK" 
-        [value]="config.staticIP" (valueChange)="onIPChange($event)" [disabled]="!useStatic.checked"
+    <custom-key-board type="string" placeHolder="IP:MASK" [emitInvalidValue]="false"
+        [value]="config.staticIP" (blurEvent)="onIPChange($event)" [disabled]="!useStatic.checked" [isIPAndMask] ="true"
     ></custom-key-board>
   </div>
 </div>

@@ -27,16 +27,21 @@ $stringWidth: 65px;
   background-color: rgba(0, 0, 0, 0);
 }
 .mat-dialog-title {
-  margin: -24px -24px 0px -24px;
+  margin: 5px 5px 0px 5px;
   height: 40px;
-  padding: 0 $marginGap;
+  // padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   .close {
     position: absolute;
-    right: $smallGap;
+    right: 0px;
+    width:50px;
+    height:40px;
+    line-height: 40px;
+    font-size: 32px;
+    padding-left: 20px;
   }
 }
 .mat-toolbar {
@@ -47,6 +52,7 @@ $stringWidth: 65px;
   background-color: $lightGray;
   font-size: $font-size;
   padding: 0px;
+  margin: 0 5px;
   overflow: visible;
   .btnBox {
     position: relative;
@@ -145,4 +151,25 @@ $stringWidth: 65px;
 
 .mat-input-element {
     height: 19px !important;
+}
+
+.back-drop-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.32);
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  -webkit-tap-highlight-color: transparent;
+  // pointer-events: auto;
+  // transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
 }
