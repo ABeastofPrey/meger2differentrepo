@@ -1,4 +1,6 @@
 FROM node:12.4.0-stretch
+ARG APT_SOURCE="http://mirrors.ustc.edu.cn"
+RUN sed -i /etc/apt/sources.list -e "s#http[s]\{0,1\}\:\/\/[a-zA-Z0-9.]*#${APT_SOURCE}#g"
 LABEL maintainer="poppy.zeng@kuka.com"
 # To make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
@@ -16,7 +18,8 @@ RUN apt-get update \
 
 ADD . .
 
-RUN npm config set registry https://pkg.apac.int.kuka.com/artifactory/api/npm/npm-proxy/ \
+RUN cp docker/.npmrc .npmrc \
+&& sed -i "s/https:\/\/registry.npmjs.org/https:\/\/pkg.apac.int.kuka.com\/artifactory\/api\/npm\/npm-proxy/g" package-lock.json \
 && npm install \
 && node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod \
 && chmod 755 docker/DEBIAN/preinst \
