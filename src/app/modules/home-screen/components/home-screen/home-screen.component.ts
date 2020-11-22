@@ -339,14 +339,16 @@ export class HomeScreenComponent implements OnInit {
                   let ok = false;
                   const interval = setInterval(() => {
                     if (ok) return;
-                    this.api
-                      .getFile('isWebServerAlive.HTML')
-                      .then(ret => {
-                        ok = true;
-                        clearInterval(interval);
-                        location.href = location.href + '?from=feature';
-                      })
-                      .catch(err => {});
+                    this.api.getFile('isWebServerAlive.HTML').then(ret => {
+                      if (ok) return;
+                      ok = true;
+                      clearInterval(interval);
+                      const URL = window.location.href;
+                      const i = URL.indexOf('?');
+                      const finalURL = i === -1 ? URL : URL.substring(0,i);
+                      const newURL = finalURL + '?from=feature';
+                      window.location.href = newURL;
+                    }).catch(err => {});
                   }, 2000);
                 }, 10000);
               } else {

@@ -186,7 +186,7 @@ export class IoMappingScreenComponent implements OnInit {
         } else {
           io.name = newVal;
           this.snackbarService.openTipSnackBar('changeOK');
-        }
+          }
       });
   }
 
@@ -207,7 +207,7 @@ export class IoMappingScreenComponent implements OnInit {
         } else {
           io.description = newVal;
           this.snackbarService.openTipSnackBar('changeOK');
-        }
+          }
       });
   }
   
@@ -223,6 +223,7 @@ export class IoMappingScreenComponent implements OnInit {
       maxWidth: '400px'
     }).afterClosed().subscribe(ret => {
       if (!ret) return;
+      clearInterval(this.interval);
       this.dialog.open(UpdateDialogComponent, {
         disableClose: true,
         width: '100%',
@@ -239,11 +240,14 @@ export class IoMappingScreenComponent implements OnInit {
         const interval = setInterval(() => {
           if (ok) return;
           this.api.getFile('isWebServerAlive.HTML').then(ret => {
+            if (ok) return;
             ok = true;
             clearInterval(interval);
-            setTimeout(()=>{
-              window.location.href = window.location.href + '?from=io';
-            }, 200);
+            const URL = window.location.href;
+            const i = URL.indexOf('?');
+            const finalURL = i === -1 ? URL : URL.substring(0,i);
+            const newURL = finalURL + '?from=io';
+            window.location.href = newURL;
           }).catch(err => {
             
           });

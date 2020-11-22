@@ -22,7 +22,10 @@ export class ObjectsListComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   onKeyPress(event: KeyboardEvent) {
-    if (event.key !== 'Delete' || !this.sim.selected) return;
+    const target = event.target as HTMLElement;
+    if (event.key !== 'Delete' || !this.sim.selected || (target && target.tagName.toUpperCase() === 'INPUT')) {
+      return;
+    }
     this.sim.deleteSelected();
   }
 

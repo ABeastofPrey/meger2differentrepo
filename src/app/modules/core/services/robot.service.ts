@@ -123,6 +123,7 @@ export class RobotService {
         return 'assets/robots/midea/wukong700/wukong700.xacro';
       case 'DLTL_3_000_IGUS_M01_00_CAN':
       case 'DLTL_3_000_IGUS_M01_00_CAN_SIM':
+      case 'DLTL_3_000_IGUS_M01_D1_CAN':
         return 'assets/robots/igus/delta/delta.xacro';
       case 'SC_4_500_SHY_M01_6_CAN':
       case 'SC_4_500_SHY_M01_6_CAN_SIM':

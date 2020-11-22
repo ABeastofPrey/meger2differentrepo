@@ -425,10 +425,6 @@ export class PalletWizardComponent implements OnInit {
   }
 
   calibrate(e: Event) {
-    // if(this.step2.invalid) {
-    //   this.dataService.selectedPallet.isFrameCalibrated = true;
-    //   return ;
-    // }
     const p = this.dataService.selectedPallet;
     this.ws.query('?PLT_ORIGIN_CALIBRATION("' + p.name + '")').then(ret => {
       if (ret.result === '0') {
@@ -553,9 +549,11 @@ export class PalletWizardComponent implements OnInit {
   }
 
   onIndexChange() {
+    console.log(this.step1.controls['index']);
     this.step1.controls['index'].markAsTouched();
     this.step1.controls['index'].markAsDirty();
     this.step1.controls['index'].setValue(this.step1.controls['index'].value);
+    console.log(this.step1.controls['index']);
   }
 
   private validateIndex(control: AbstractControl) {
@@ -981,10 +979,10 @@ export class PalletWizardComponent implements OnInit {
         return Promise.resolve(null);
       });
     }
-    this.step1.controls['itemsX'].setErrors(null);
-    this.step1.controls['itemsY'].setErrors(null);
-    this.step1.controls['itemsZ'].setErrors(null);
-    this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
+    // this.step1.controls['itemsX'].setErrors(null);
+    // this.step1.controls['itemsY'].setErrors(null);
+    // this.step1.controls['itemsZ'].setErrors(null);
+    // this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
     return Promise.resolve(null);
   }
 
@@ -1411,6 +1409,18 @@ export class PalletWizardComponent implements OnInit {
     this.initControls();
     this.setOriginPic(0);
   }
+
+  /*ngDoCheck() {
+    if (this.step1.invalid) {
+      const keys = Object.keys(this.step1.controls);
+      let errs = [];
+      for (const k of keys) {
+        const e = this.step1.controls[k].errors;
+        errs[k] = e;
+      }
+      console.log(errs);
+    }
+  }*/
 
   ngOnDestroy() {
     this.notifier.next(true);
@@ -1981,17 +1991,14 @@ export class PalletWizardComponent implements OnInit {
       } else if (i === 2  && this.dataService.selectedPallet.diffOddEven) {
         this.designer2.setPositions();
         this.designer2.validateAll();
-      }
-      else if(i === 3  && this.dataService.selectedPallet.diffOddEven || i=== 2){//step2 origin
-        this.calibrate(null);
-      }else if(i === 4  && this.dataService.selectedPallet.diffOddEven || i=== 3){ //step3 entry
+        this.onLevelChange(2, this.designer2.items.length);
+      } else if (i === 4  && this.dataService.selectedPallet.diffOddEven || i=== 3){ //step3 entry
         this.checkEntry();
       }
-    }else if(i === 1){//step2 origin
-      this.calibrate(null);
-    }else if(i === 2){ //step3 entry
+    } else if (i === 2) { //step3 entry
       this.checkEntry();
     }
+
   }
 
   private checkEntry(){
@@ -2000,17 +2007,15 @@ export class PalletWizardComponent implements OnInit {
   }
 
   public setFormGroupItem(value: any,item: string,formGroup: FormGroup,onWindowResize: boolean = false,markAsDirty: boolean = true){
-    // const newValue = Number(value);
     if(!formGroup.controls || !formGroup.controls[item] || formGroup.controls[item].value === value) return;
-
-    if(isNaN(+value)){
-      formGroup.setErrors({invalid: true});
+    if(isNaN(value)){
+      formGroup.controls[item].setErrors({invalid: true});
       return;
     }
     markAsDirty && formGroup.controls[item].markAsDirty();
     formGroup.controls[item].setValue(value);
+    formGroup.controls[item].setErrors(null);
     onWindowResize && this.onWindowResize();
-
   }
 
 
@@ -2031,7 +2036,7 @@ export class PalletWizardComponent implements OnInit {
           {
             key:"itemsZ",
             value:'itemsZ',
-            markAsDirty: true
+            markAsDirty: false
           },
           {
             key:"itemSizeX",
@@ -2046,7 +2051,7 @@ export class PalletWizardComponent implements OnInit {
           {
             key:"itemSizeZ",
             value:'itemSizeZ',
-            markAsDirty: true
+            markAsDirty: false
           },
           {
             key:"palletSizeX",
@@ -2056,13 +2061,13 @@ export class PalletWizardComponent implements OnInit {
           {
             key:"palletSizeY",
             value:'palletSizeY',
-            markAsDirty: true
+            markAsDirty: false
           }];
     const step4Control: any[] = [
         {"key":"app_off_v","value":"approachOffsetVertical",markAsDirty: false},
-        {"key":"app_off_h","value":"approachOffsetHorizontal",markAsDirty: true},
+        {"key":"app_off_h","value":"approachOffsetHorizontal",markAsDirty: false},
         {"key":"ret_off_v","value":"retractOffsetVertical",markAsDirty: false},
-        {"key":"ret_off_h","value":"retractOffsetHorizontal",markAsDirty: true}
+        {"key":"ret_off_h","value":"retractOffsetHorizontal",markAsDirty: false}
     ];
     this.setFormGroupItem(selectedPallet['levels'],'levels',this.step1,false,true);
 
@@ -2080,17 +2085,19 @@ export class PalletWizardComponent implements OnInit {
       this.setFormGroupItem(selectedPallet[item.value],item.key,this.step4,false,item.markAsDirty);
     });
 }
-onValidatorCheck(invalid: boolean,item: string,formGroup: FormGroup,){
-  if(invalid) return;
+onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup){
   if(!formGroup.controls || !formGroup.controls[item]) return;
-  formGroup.setErrors({invalid: true});
+  if (item === 'index' && formGroup.controls['index'].value !== 'custom') {
+    valid = true;
+  }
+   formGroup.controls[item].setErrors(valid ? null : {invalid: true});
 }
 
  private step2Origin(selectedPallet){
   const step2Control: any[] = [
     {key:"originX",value1:"origin",value2:"x",markAsDirty: false},
     {key:"originY",value1:"origin",value2:"y",markAsDirty: false},
-    {key:"originZ",value1:"origin",value2:"z",markAsDirty: true}
+    {key:"originZ",value1:"origin",value2:"z",markAsDirty: false}
   ];
   this.setStep2FormControl(step2Control,selectedPallet);
 
@@ -2101,7 +2108,7 @@ onValidatorCheck(invalid: boolean,item: string,formGroup: FormGroup,){
   const step2Control: any[] = [
     {key:"posXX",value1:"posX",value2:"x",markAsDirty: false},
     {key:"posXY",value1:"posX",value2:"y",markAsDirty: false},
-    {key:"posXZ",value1:"posX",value2:"z",markAsDirty: true}
+    {key:"posXZ",value1:"posX",value2:"z",markAsDirty: false}
   ];
   this.setStep2FormControl(step2Control,selectedPallet);
  }
@@ -2111,7 +2118,7 @@ onValidatorCheck(invalid: boolean,item: string,formGroup: FormGroup,){
   const step2Control: any[] = [
     {key:"posYX",value1:"posY",value2:"x",markAsDirty: false},
     {key:"posYY",value1:"posY",value2:"y",markAsDirty: false},
-    {key:"posYZ",value1:"posY",value2:"z",markAsDirty: true}
+    {key:"posYZ",value1:"posY",value2:"z",markAsDirty: false}
   ];
   this.setStep2FormControl(step2Control,selectedPallet);
  }

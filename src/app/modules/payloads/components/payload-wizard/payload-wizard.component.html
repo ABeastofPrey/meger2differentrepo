@@ -219,11 +219,11 @@
 							</div>
 						</td>
 						<td colspan="3">
-							<button mat-raised-button color="primary" (click)="showIdentDialog()" [disabled]="!stat.enabled">
+							<button mat-raised-button color="primary" (click)="showIdentDialog()" [disabled]="stat.enabled">
 								{{ 'payloads.ident.start' | translate }}
 							</button>
-							<div *ngIf="!stat.enabled" class="warn">
-								{{ 'payloads.ident.robot_disabled' | translate }}
+							<div *ngIf="stat.enabled" class="warn">
+								{{ 'payloads.ident.robot_enabled' | translate }}
 							</div>
 						</td>
 					</tr>

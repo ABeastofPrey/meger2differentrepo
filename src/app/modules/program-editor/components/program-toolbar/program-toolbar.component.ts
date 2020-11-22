@@ -488,13 +488,15 @@ export class ProgramToolbarComponent implements OnInit {
                   let ok = false;
                   const interval = setInterval(() => {
                     if (ok) return;
-                    this.api
-                      .getFile('isWebServerAlive.HTML')
-                      .then(ret => {
-                        ok = true;
-                        location.href = '/rs/?from=restore';
-                      })
-                      .catch(err => {});
+                    this.api.getFile('isWebServerAlive.HTML').then(ret => {
+                      if (ok) return;
+                      ok = true;
+                      const URL = window.location.href;
+                      const i = URL.indexOf('?');
+                      const finalURL = i === -1 ? URL : URL.substring(0,i);
+                      const newURL = finalURL + '?from=restore';
+                      window.location.href = newURL;
+                    }).catch(err => {});
                   }, 2000);
                 }, 10000);
               }

@@ -8,7 +8,7 @@ export class Pallet {
   }
 
   reset() {
-    delete this.index;
+    this.index = 0;
     delete this.order;
     delete this.itemsX;
     delete this.itemsY;

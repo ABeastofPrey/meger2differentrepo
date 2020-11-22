@@ -17,6 +17,7 @@ export class DraggableItemDirective {
   private _time: number;
 
   @Input() draggableItem: CustomPalletItem;
+  @Input() level: number;
   @Output() shortclick: EventEmitter<void> = new EventEmitter();
   @Output() dragEnd: EventEmitter<void> = new EventEmitter();
 
@@ -29,7 +30,7 @@ export class DraggableItemDirective {
       stop: () => {
         this.dragEnd.emit();
       },
-      stack: '.container div',
+      stack: '#level-designer-' + this.level + ' .container div',
     });
     this.draggableItem.element = this.el.nativeElement;
   }

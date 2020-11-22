@@ -106,14 +106,16 @@ export class PalletLevelDesignerComponent implements OnInit {
     const pHeight = this.pallet.palletSizeY;
     if (pHeight / 270 > this.normalizeItem) this.normalizeItem = pHeight / 270;
     if (pWidth / 550 > this.normalizeItem) this.normalizeItem = pWidth / 550;
-    this.container.nativeElement.style.width =
-      pWidth / this.normalizeItem + 'px';
-    this.container.nativeElement.style.height =
-      pHeight / this.normalizeItem + 'px';
+    this.container.nativeElement.style.width = pWidth / this.normalizeItem + 'px';
+    this.container.nativeElement.style.height = pHeight / this.normalizeItem + 'px';
   }
 
-  validate(item: CustomPalletItem, skipEmitter?: boolean) {
-    // CALLED AFTER EVERY DRAG
+  /**
+   * Validate the boundries of an item
+   * @param item The item to validate
+   * @param skipEmitter When true, will not emit the changed event.
+   */
+  private validate(item: CustomPalletItem, skipEmitter?: boolean) {
     item.untouched = false;
     const element: HTMLElement = item.element;
     const elementRect = element.getBoundingClientRect();
@@ -183,6 +185,12 @@ export class PalletLevelDesignerComponent implements OnInit {
   validateAll() {
     for (const item of this._items) {
       this.validate(item, true);
+    }
+  }
+
+  onDragEnd(item) {
+    for (const i of this._items) {
+      this.validate(i, i !== item);
     }
   }
 

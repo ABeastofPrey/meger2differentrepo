@@ -255,7 +255,11 @@ export class LoginScreenComponent implements OnInit {
   }
 
   reload() {
-    window.location.href = window.location.href + '?time=' + new Date().getTime();
+    const URL = window.location.href;
+    const i = URL.indexOf('?');
+    const finalURL = i === -1 ? URL : URL.substring(0,i);
+    const newURL = finalURL + '?time=' + new Date().getTime();
+    window.location.href = newURL;
   }
 
   private refreshInfo() {

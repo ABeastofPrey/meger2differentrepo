@@ -154,14 +154,12 @@ export class AppsComponent implements OnInit {
           let ok = false;
           const interval = setInterval(() => {
             if (ok) return;
-            this.api
-              .getFile('isWebServerAlive.HTML')
-              .then(ret => {
-                ok = true;
-                clearInterval(interval);
-                location.reload();
-              })
-              .catch(err => {});
+            this.api.getFile('isWebServerAlive.HTML').then(ret => {
+              if (ok) return;
+              ok = true;
+              clearInterval(interval);
+              window.location.reload();
+            }).catch(err => {});
           }, 2000);
         }, 10000);
       }
@@ -242,11 +240,14 @@ export class AppsComponent implements OnInit {
                 const interval = setInterval(() => {
                   if (ok) return;
                   this.api.getFile('isWebServerAlive.HTML').then(() => {
+                    if (ok) return;
                     ok = true;
                     clearInterval(interval);
-                    setTimeout(()=>{
-                      window.location.href = window.location.href + '?from=firmware';
-                    }, 200);
+                    const URL = window.location.href;
+                    const i = URL.indexOf('?');
+                    const finalURL = i === -1 ? URL : URL.substring(0,i);
+                    const newURL = finalURL + '?from=firmware';
+                    window.location.href = newURL;
                   });
                 }, 2000);
               }, 10000);

@@ -34,9 +34,7 @@
 									required
 									(selectionChange)="dataService.selectedPallet.order = $event.value; onWindowResize()"
 								>
-									<mat-option *ngFor="let o of dataService.selectedPallet.orderList" value="{{ o }}">{{
-										o
-									}}</mat-option>
+									<mat-option *ngFor="let o of dataService.selectedPallet.orderList" value="{{ o }}">{{o}}</mat-option>
 								</mat-select>
 							</mat-form-field>
 						</div>
@@ -181,10 +179,9 @@
                       [(value)]="dataService.selectedPallet.itemSizeX"
                       [required]="true"
                       identificationTag="itemSizeX"
-                      (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeX',step1)"
-                      (blurEvent)="setFormGroupItem($event,'itemSizeX',step1)"
-                      (inputChange)="setFormGroupItem($event,'itemSizeX',step1)">
+                      (blurEvent)="setFormGroupItem($event,'itemSizeX',step1, true)"
+                      (inputChange)="setFormGroupItem($event,'itemSizeX',step1, true)">
                  </custom-key-board>
                  <custom-key-board
                       type="float"
@@ -196,10 +193,9 @@
                       [(value)]="dataService.selectedPallet.itemSizeY"
                       [required]="true"
                       identificationTag="itemSizeY"
-                      (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeY',step1)"
-                      (blurEvent)="setFormGroupItem($event,'itemSizeY',step1)"
-                      (inputChange)="setFormGroupItem($event,'itemSizeY',step1)">
+                      (blurEvent)="setFormGroupItem($event,'itemSizeY',step1, true)"
+                      (inputChange)="setFormGroupItem($event,'itemSizeY',step1, true)">
                 </custom-key-board>
                 <custom-key-board
                       type="float"
@@ -211,10 +207,9 @@
                       [(value)]="dataService.selectedPallet.itemSizeZ"
                       [required]="true"
                       identificationTag="itemSizeZ"
-                      (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeZ',step1)"
-                      (blurEvent)="setFormGroupItem($event,'itemSizeZ',step1)"
-                      (inputChange)="setFormGroupItem($event,'itemSizeZ',step1)">
+                      (blurEvent)="setFormGroupItem($event,'itemSizeZ',step1, true)"
+                      (inputChange)="setFormGroupItem($event,'itemSizeZ',step1, true)">
                 </custom-key-board>
 								</div>
 							</div>
@@ -254,10 +249,10 @@
                       [min]="1"
                       [(value)]="dataService.selectedPallet.palletSizeX"
                       [required]="true"
-                      identificationTag="palletSizeX"
+											identificationTag="palletSizeX"
                       (isValidEvent)="onValidatorCheck($event,'palletSizeX',step1)"
-                      (blurEvent)="setFormGroupItem($event,'palletSizeX',step1)"
-                      (inputChange) ="setFormGroupItem($event,'palletSizeX',step1)">
+                      (blurEvent)="setFormGroupItem($event,'palletSizeX',step1, true)"
+                      (inputChange) ="setFormGroupItem($event,'palletSizeX',step1, true)">
                   </custom-key-board>
                   <custom-key-board
                       type="float"
@@ -268,10 +263,10 @@
                       [min]="1"
                       [(value)]="dataService.selectedPallet.palletSizeY"
                       [required]="true"
-                      identificationTag="palletSizeY"
+											identificationTag="palletSizeY"
                       (isValidEvent)="onValidatorCheck($event,'palletSizeY',step1)"
-                      (blurEvent)="setFormGroupItem($event,'palletSizeY',step1)"
-                      (inputChange) ="setFormGroupItem($event,'palletSizeY',step1)">
+                      (blurEvent)="setFormGroupItem($event,'palletSizeY',step1, true)"
+                      (inputChange) ="setFormGroupItem($event,'palletSizeY',step1, true)">
                   </custom-key-board>
 								</div>
 							</div>

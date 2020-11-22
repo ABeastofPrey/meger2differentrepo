@@ -802,9 +802,7 @@ export class ProgramEditorService {
       return;
     }
     let cmd: string;
-    if (this.isLib) {
-      cmd = '?' + file + '.dummyVariable';
-    } else if (this.stat.onlineStatus.value) {
+    if (this.isLib && this.stat.onlineStatus.value) {
       // TP.LIB ONLINE
       cmd = 'cyc4,' + file;
     } else {
@@ -829,11 +827,8 @@ export class ProgramEditorService {
           this.oldStatString = ret;
           this.zone.run(() => {
             if (this.isLib) {
-              const tmpStatus = new ProgramStatus(null);
-              tmpStatus.statusCode =
-                err && err[0].errCode === '8020'
-                  ? TASKSTATE_LIB_LOADED
-                  : TASKSTATE_NOTLOADED;
+              const tmpStatus = new ProgramStatus(err ? null : original);
+              tmpStatus.statusCode = tmpStatus.statusCode === TASKSTATE_READY ? TASKSTATE_LIB_LOADED : TASKSTATE_NOTLOADED;
               this.status = tmpStatus;
               this.statusChange.next(this.status);
             } else {

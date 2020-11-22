@@ -868,7 +868,7 @@
     "ident": {
       "dialog": {
         "title": "Caution",
-        "msg": "Payload Identification is about to begin. During this process, the robot will move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles.",
+        "msg": "Payload Identification is about to begin. During this process the robot will be ENABLED and move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles.",
         "yes": "START IDENTIFICATION",
         "no": "CANCEL"
       },
@@ -880,9 +880,9 @@
         "mean": "Mean relative torque error",
         "title": "Payload Identification Results"
       },
-      "robot_disabled": "Robot must be enabled",
+      "robot_enabled": "Robot must be disabled",
       "start": "START IDENTIFICATION...",
-      "subtitle": "During this process, the robot will move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles.",
+      "subtitle": "During this process, the robot will be ENABLED and move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles.",
       "title": "Robot is now performing Payload Identification"
     },
     "inertia": "Inertia",

@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper" [id]="'level-designer-' + level">
 	<div class="toolbar" *ngIf="!static">
 		<h2>{{ 'pallets.wizard.item' | translate}}</h2>
 		<div class="item-wrapper" [style.height]="(pallet.itemSizeY > pallet.itemSizeX ? pallet.itemSizeY / normalizePreview : pallet.itemSizeX / normalizePreview) + 'px'">
@@ -39,16 +39,13 @@
 			class="item item-preview"
 			*ngFor="let item of items"
 			#customItem
-			[style.height]="
-				(item.r % 180 === 0 ? pallet.itemSizeY / normalizeItem : pallet.itemSizeX / normalizeItem) + 'px'
-			"
-			[style.width]="
-				(item.r % 180 === 0 ? pallet.itemSizeX / normalizeItem : pallet.itemSizeY / normalizeItem) + 'px'
-			"
+			[style.height]="(item.r % 180 === 0 ? pallet.itemSizeY / normalizeItem : pallet.itemSizeX / normalizeItem) + 'px'"
+			[style.width]="(item.r % 180 === 0 ? pallet.itemSizeX / normalizeItem : pallet.itemSizeY / normalizeItem) + 'px'"
 			[style.z-index]="item.order"
 			[draggableItem]="item"
+			[level]="level"
 			(shortclick)="showMenu(item)"
-			(dragEnd)="validate(item)"
+			(dragEnd)="onDragEnd(item)"
 			[class.itemError]="item.error"
 			[class.item-untouched]="item.untouched"
 		>
