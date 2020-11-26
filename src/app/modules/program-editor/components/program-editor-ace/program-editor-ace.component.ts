@@ -27,13 +27,14 @@ import {
   KeywordService,
   LoginService,
 } from '../../../core';
-import { MatSnackBar, MatInput } from '@angular/material';
+import { MatSnackBar, MatInput, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../core/services/common.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { environment } from '../../../../../environments/environment';
 import { UtilsService } from '../../../core/services/utils.service';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
+import { CustomKeyBoardDialogComponent } from '../../../../components/custom-key-board/custom-key-board-dialog/custom-key-board-dialog.component';
 declare var ace;
 
 const isBKGFile = (fileName: string): boolean => fileName.split('.').pop().toUpperCase() === 'BKG';
@@ -87,7 +88,8 @@ export class ProgramEditorAceComponent implements OnInit {
     public login: LoginService,
     public cmn: CommonService,
     private utils: UtilsService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {
     this.trn.get(['projects.ace', 'dismiss']).subscribe(words => {
       this.words = words;
@@ -368,7 +370,7 @@ export class ProgramEditorAceComponent implements OnInit {
       this.cd.detectChanges();
     }
     this.editor.getSession().on("changeAnnotation", e=>{
-      if (this.service.status === null || 
+      if (this.service.status === null ||
           (!this.service.isLib && this.service.status.statusCode !== TASKSTATE_NOTLOADED)) {
         return;
       }
@@ -503,8 +505,8 @@ export class ProgramEditorAceComponent implements OnInit {
             //   this.snack.open(
             //     this.words['projects.ace']['bp_err'],
             //     this.words['dismiss']
-            //   );     
-            this.snackbarService.openTipSnackBar("projects.ace.bp_err");      
+            //   );
+            this.snackbarService.openTipSnackBar("projects.ace.bp_err");
           });
           return;
         }
@@ -515,14 +517,14 @@ export class ProgramEditorAceComponent implements OnInit {
         const prjAndApp =
           '"' + this.prj.currProject.value.name + '","' + app + '"';
         const api = isBKGFile(this.service.activeFile) ?
-                    `?BKG_getAppBreakpointsList(${prjAndApp})` : 
+                    `?BKG_getAppBreakpointsList(${prjAndApp})` :
                     `?TP_GET_APP_BREAKPOINTS_LIST(${prjAndApp})`;
-        
+
         let changedFlag = false;
         e.stop();
         const line = e.getDocumentPosition().row;
         const bpts = Object.keys(this.editor.getSession().getBreakpoints());
-        const cmd = isBKGFile(this.service.activeFile) ? 
+        const cmd = isBKGFile(this.service.activeFile) ?
                     `?BKG_toggleAppBreakpoint(${prjAndApp},${line + 1})` :
                     `?TP_TOGGLE_APP_BREAKPOINT(${prjAndApp},${line + 1})`;
         for (let i = 0; i < bpts.length && !changedFlag; i++) {
@@ -684,7 +686,7 @@ export class ProgramEditorAceComponent implements OnInit {
       const prjAndApp =
         '"' + this.prj.currProject.value.name + '","' + app + '"';
       const api = isBKGFile(this.service.activeFile) ? `?BKG_getAppBreakpointsList(${prjAndApp})` : `?TP_GET_APP_BREAKPOINTS_LIST(${prjAndApp})`;
-      
+
       this.ws
         .query(api)
         .then((ret: MCQueryResponse) => {
@@ -789,31 +791,45 @@ export class ProgramEditorAceComponent implements OnInit {
       this.editor.session.removeMarker(this.markers.pop());
     }
   }
-  
-  
+
+
 
   /*************** Virtual Keyboard **********************/
-//   @ViewChild('dummyInput', { static: false }) dummyInput: ElementRef;
-  @ViewChild('dummyInput', { static: true }) dummyInput: any;
-  dummyText = '';
+  // @ViewChild('dummyInput', { static: false }) dummyInput: ElementRef;
+  // @ViewChild('dummyInput', { static: true }) dummyInput: any;
+  private dialogRef:any;
   showKeyboard() {
+    // const editor = this.editor;
+    // const position = editor.getCursorPosition();
+    // const row = position.row; // current row
+    // this.dummyText = editor.session.getLine(row).replace(/\t/g,'  ');
+    // // this.dummyInput.nativeElement.setAttribute('column', position.column);
+    // // this.dummyInput.nativeElement.focus();
+    // this.dummyInput.numInput.nativeElement.click();
+    if(this.dialogRef) return;
     const editor = this.editor;
     const position = editor.getCursorPosition();
     const row = position.row; // current row
-    this.dummyText = editor.session.getLine(row).replace(/\t/g,'  ');
-    // this.dummyInput.nativeElement.setAttribute('column', position.column);
-    // this.dummyInput.nativeElement.focus();
-    this.dummyInput.numInput.nativeElement.click();
+    const dummyText = editor.session.getLine(row).replace(/\t/g,'  ');
+    const option = { data: { type: 'string', value: dummyText,isProgram: true }, width: '839px', height: '439.75px'};
+    this.dialogRef = this.dialog.open(CustomKeyBoardDialogComponent, option).afterClosed().subscribe((res:{delete?: boolean,enter?: boolean,value?: any}) => {
+      this.dialogRef = null;
+      if(res === undefined || !res) return;
+      if(res.delete){
+        this.deleteLine();
+        return;
+      }
+        this.onDummyKeyboardClose(res.value);
+    });
   }
-  onDummyKeyboardClose() {
+  onDummyKeyboardClose(text: string) {
     const editor = this.editor;
     const position = editor.getCursorPosition();
     const row = position.row; // current row
     // if (this.dummyText === '\n') this.insertLineBreak();
     // else this.replaceLine(row, this.dummyText, true);
-    this.replaceLine(row, this.dummyText, true);
+    this.replaceLine(row, text, true);
     this.insertLineBreak();
-    this.dummyText = '';
   }
   /******************************************************/
 }

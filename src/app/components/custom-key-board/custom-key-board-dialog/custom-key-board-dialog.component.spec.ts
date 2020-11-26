@@ -4,8 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialComponentsModule } from '../material-components/material-components.module';
-import { UnitTestModule } from '../shared/unit-test.module';
+
 
 import { CustomKeyBoardDialogComponent } from './custom-key-board-dialog.component';
 

@@ -116,7 +116,7 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   .mat-subtitle-color {
     color: $material-semi-black;
   }
-  
+
   .primary-bg-dark {
     background-color: mat-color($material-kuka-primary, 800);
     color: #fff;
@@ -155,9 +155,9 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
 
   .selected:not(.disabled) { background:mat-color($material-kuka-primary, 900) !important; }
 
-  .cdk-program-focused {
-    background-color:mat-color($material-kuka-primary, 900) !important;
-  }
+  // .cdk-program-focused {
+  //   background-color:mat-color($material-kuka-primary, 900) !important;
+  // }
 
   .item { background:mat-color($material-kuka-primary, 900); }
 
@@ -184,7 +184,7 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
   .kuka-font-dark-gray {
     color: mat-color($material-kuka-primary, 1100);
   }
-  
+
   .dot-span {
     display: inline-block;
     height: 6px;

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { isNull } from 'util';
-import { fontRule, CharWidth } from '../models/customKeyBoard/custom-key-board.model';
+import { fontRule, CharWidth } from './custom-key-board.model';
 
 @Injectable()
 export class CustomKeyBoardService {

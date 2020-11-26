@@ -11,10 +11,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class SleepDialogComponent implements OnInit {
 
   dialogForm = new FormGroup({
-    time: new FormControl(0, ctrl=>{
-      if ((ctrl.value as number) > 0) return null;
-      return { invalidExpression: true };
-    })
+    time: new FormControl(0)
   });
 
   dialogSleep = new FormControl(0);
@@ -25,6 +22,10 @@ export class SleepDialogComponent implements OnInit {
   ) {}
 
   ngOnInit() {}
+
+  onValueChange(value){
+    this.dialogSleep.setValue(value);
+  }
 
   get isValid(): boolean {
     let valid = this.dialogSleep.value as number > 0;
@@ -37,7 +38,4 @@ export class SleepDialogComponent implements OnInit {
     this.dialogRef.close(val);
   }
 
-  timeChange(value) {
-    this.dialogSleep.patchValue(value);
-  }
 }

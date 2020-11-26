@@ -38,7 +38,7 @@ export const environment = {
   appName_Kuka: 'KUKA.ControlStudio',
   api_url: 'http://10.4.20.107:1207',
   ip: '10.4.20.107',
-  gui_ver: 'v1.6.6-dev 2020-11-19',
+  gui_ver: 'v1.6.7-dev 2020-11-19',
   compatible_webserver_ver: 'v3.6.3',
   platform: PLATFORMS.Servotronix,
   platforms: PLATFORMS,

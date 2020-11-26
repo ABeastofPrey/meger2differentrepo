@@ -50,8 +50,8 @@ import { DropDownAddComponent } from '../../components/drop-down-add/drop-down-a
 import { TraceNewComponent } from '../dashboard/components/trace/trace-new/trace-new.component';
 import { IpAddressComponent } from '../../components/ip-address/ip-address.component';
 import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-field.component';
-import { CustomKeyBoardComponent } from '../custom-key-board/custom-key-board.component';
-import { CustomKeyBoardDialogComponent } from '../custom-key-board-dialog/custom-key-board-dialog.component';
+import { CustomKeyBoardComponent } from '../../components/custom-key-board/custom-key-board.component';
+import { CustomKeyBoardDialogComponent } from '../../components/custom-key-board/custom-key-board-dialog/custom-key-board-dialog.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({

@@ -173,14 +173,7 @@
                         ? element.value[element.selectedIndex - 1].value[i].value
                         : element.value[i].value
                     "
-                    (valueChange)="
-                        element?.isArr
-                        ? ((element?.value)[element.selectedIndex - 1].value[
-                            i
-                            ].value = $event)
-                        : (element.value[i].value = $event)
-                    "
-                    (blurEvent)="onKeyboardClose(element)"
+                     (blurEvent)="onKeyboardClose(element)"
                 ></custom-key-board>
             </div>
           </div>
@@ -210,17 +203,6 @@
                             ].value[i].value
                             : element.value[element.selectedIndex - 1].value[i].value
                         : element.value[i].value
-                    "
-                    (valueChange)="
-                        element?.isArr
-                        ? element?.isTwoDimension
-                            ? ((element?.value)[element.selectedIndex - 1][
-                                element.selectedSecondIndex - 1
-                            ].value[i].value = $event)
-                            : ((element?.value)[element.selectedIndex - 1].value[
-                                i
-                            ].value = $event)
-                        : ((element?.value)[i].value = $event)
                     "
                     (blurEvent)="onKeyboardClose(element)"
                     [maxLength]="80"

@@ -96,7 +96,7 @@ export class FunctionProgramComponent implements OnInit {
 
     public changeParameter(e: any, index: number): void {
         this.isParameterEmpty = false;
-        this.existParameter = [];
+        this.existParameter && this.existParameter.splice(0,this.existParameter.length);
         this.dataSource.forEach((item, i) => {
             (i !== index) ? this.existParameter.push(item.VariableName.value.toUpperCase()) : "";
         })

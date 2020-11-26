@@ -10,7 +10,7 @@ import {
   Right,
   Left,
 } from '../../core/services/service-adjunct';
-import { compose, map, prop, always, dropLast, split, tap, then } from 'ramda';
+import { compose, map, prop, always, dropLast, split, sort, then } from 'ramda';
 import { Either } from 'ramda-fantasy';
 
 // tslint:disable-next-line: interface-name
@@ -97,12 +97,19 @@ export class PositionTriggerService {
    * @memberof MotionTriggerService
    */
   private async retrieveIos(io = 0) {
-    const api = `?IOMAP_GET_USER_IOS_NUMBERS(${io})`;
+    // const api = `?IOMAP_GET_USER_IOS_NUMBERS(${io})`;
+    const api = '?PLS_getOutputList';
+    const track = x => {
+      console.log(x);
+      return x;
+    };
     const parseIos = compose(
+      track,
+      sort((a, b) => a - b),
       map(Number),
       dropLast(1),
       split(','),
-      dropLast(1)
+      dropLast(1),
     );
     const resHandler = handler(parseIos, errMsgProp);
     const retrieve = compose(then(resHandler), this.query);

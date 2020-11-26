@@ -28,7 +28,7 @@ export class AxisVordComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.words = await this.trn.get(['changeOK']).toPromise();
+    this.words = await this.trn.get(['changeOK','changeError']).toPromise();
     this.ws.query('?Mpar_get_Enable').then((ret: MCQueryResponse) => {
       this.enabled = ret.result === '1';
     });
@@ -66,6 +66,7 @@ export class AxisVordComponent implements OnInit {
     this.ws.query(cmd).then(ret => {
       if (ret.result !== '0') {
         this.vords[i].vord = prev;
+        this.snackbarService.openTipSnackBar(this.words['changeError']);
       } else {
         this.snackbarService.openTipSnackBar('changeOK');
       }

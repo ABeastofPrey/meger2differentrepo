@@ -12,7 +12,7 @@
             /></mat-form-field> -->
             <div class="options">
                 <custom-key-board type="string" placeHolder="{{ 'pallets.name' | translate }}"
-                    [(value)]="palletName" [maxLength]="32" [nameRules]="true"
+                    [(value)]="palletName" [maxLength]="32" [nameRules]="true" (isValidEvent)="onValidEvent($event)"
                 ></custom-key-board>
             </div>
 			<mat-form-field class="options">
@@ -33,7 +33,7 @@
 			mat-button
 			color="primary"
 			(click)="insert()"
-			[disabled]="palletName == null || palletName.length === 0 || palletType === null"
+			[disabled]="palletName == null || !validName"
 		>
 			{{ 'button.create' | translate }}
 		</button>

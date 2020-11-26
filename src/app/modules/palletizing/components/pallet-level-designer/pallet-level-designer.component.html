@@ -21,14 +21,16 @@
 				<mat-icon>add</mat-icon>
 			</button>
 		</div>
-		<mat-divider style="margin-bottom: 16px;"></mat-divider>
-		<button mat-raised-button color="accent" (click)="uploadFile()" style="display: block;">
-			{{'pallets.wizard.import' | translate }}
-		</button>
-		<button  mat-raised-button color="accent" (click)="download()" style="display: block;">
-			{{'pallets.wizard.export' | translate }}
-		</button>
-		<mat-divider style="margin: 16px 0;"></mat-divider>
+    <mat-divider style="margin-bottom: 16px;"></mat-divider>
+    <ng-container *ngIf="!utils.isTablet">
+      <button mat-raised-button color="accent" (click)="uploadFile()" style="display: block;">
+        {{'pallets.wizard.import' | translate }}
+      </button>
+      <button  mat-raised-button color="accent" (click)="download()" style="display: block;">
+        {{'pallets.wizard.export' | translate }}
+      </button>
+      <mat-divider style="margin: 16px 0;"></mat-divider>
+    </ng-container>
 		<button  mat-raised-button color="warn" (click)="reset()" style="display: block;">
 			{{'pallets.wizard.reset' | translate }}
 		</button>

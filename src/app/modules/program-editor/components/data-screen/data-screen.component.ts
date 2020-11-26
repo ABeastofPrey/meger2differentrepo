@@ -80,8 +80,7 @@ export class DataScreenComponent implements OnInit {
   }
 
   get isRefreshing() {
-    // return this._varRefreshing;
-    return false;
+    return this._varRefreshing;
   }
 
   ngAfterViewInit() {
@@ -252,16 +251,22 @@ export class DataScreenComponent implements OnInit {
           selected = v.value[v.selectedIndex - 1] as TPVariable;
         }
         if (!selected.dataLoaded) {
+          val.forEach((item: any)=>{
+            item.value = toNumber ? Number(item.value) : item.value;
+         });
           selected.value = val;
           selected.dataLoaded = true;
         } else {
-          selected.value[0].value = val[0].value;
+          selected.value[0].value = toNumber ? Number(val[0].value) : val[0].value; val[0].value;
         }
       } else if (!v.dataLoaded) {
+        val.forEach((item: any)=>{
+          item.value = toNumber ? Number(item.value) : item.value;
+       });
         v.value = val;
         v.dataLoaded = true;
       } else {
-        v.value[0].value = val[0].value;
+        v.value[0].value = toNumber ? Number(val[0].value) : val[0].value; val[0].value;
       }
       return;
     }

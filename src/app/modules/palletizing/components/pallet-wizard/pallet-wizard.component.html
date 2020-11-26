@@ -179,6 +179,7 @@
                       [(value)]="dataService.selectedPallet.itemSizeX"
                       [required]="true"
                       identificationTag="itemSizeX"
+                      (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeX',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeX',step1, true)"
                       (inputChange)="setFormGroupItem($event,'itemSizeX',step1, true)">
@@ -193,6 +194,7 @@
                       [(value)]="dataService.selectedPallet.itemSizeY"
                       [required]="true"
                       identificationTag="itemSizeY"
+                      (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeY',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeY',step1, true)"
                       (inputChange)="setFormGroupItem($event,'itemSizeY',step1, true)">
@@ -207,6 +209,7 @@
                       [(value)]="dataService.selectedPallet.itemSizeZ"
                       [required]="true"
                       identificationTag="itemSizeZ"
+                      (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'itemSizeZ',step1)"
                       (blurEvent)="setFormGroupItem($event,'itemSizeZ',step1, true)"
                       (inputChange)="setFormGroupItem($event,'itemSizeZ',step1, true)">
@@ -249,7 +252,8 @@
                       [min]="1"
                       [(value)]="dataService.selectedPallet.palletSizeX"
                       [required]="true"
-											identificationTag="palletSizeX"
+                      identificationTag="palletSizeX"
+                      (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'palletSizeX',step1)"
                       (blurEvent)="setFormGroupItem($event,'palletSizeX',step1, true)"
                       (inputChange) ="setFormGroupItem($event,'palletSizeX',step1, true)">
@@ -263,7 +267,8 @@
                       [min]="1"
                       [(value)]="dataService.selectedPallet.palletSizeY"
                       [required]="true"
-											identificationTag="palletSizeY"
+                      identificationTag="palletSizeY"
+                      (valueChange)="onWindowResize()"
                       (isValidEvent)="onValidatorCheck($event,'palletSizeY',step1)"
                       (blurEvent)="setFormGroupItem($event,'palletSizeY',step1, true)"
                       (inputChange) ="setFormGroupItem($event,'palletSizeY',step1, true)">
@@ -306,13 +311,12 @@
 									>{{ 'pallets.wizard.odd_even' | translate }}</mat-checkbox>
 							</div>
 						</div>
-						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile"
-							style="margin-top: 40px;">
+						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile">
 							<h3>{{ 'pallets.wizard.curr_index' | translate }}:</h3>
 							<mat-error *ngIf="step1.controls['index'].hasError('invalidIndex')">{{
 								'pallets.wizard.invalid_val' | translate
 							}}</mat-error>
-							<mat-radio-group formControlName="index" (change)="blurActive()" class="form-index">
+							<mat-radio-group formControlName="index" (change)="blurActive()"  class="form-index">
 								<mat-radio-button value="full" color="primary" *ngIf="dataService.selectedPallet.type === 'GRID'">
 									<span>{{ 'pallets.wizard.index_full' | translate }}</span>
 									<span *ngIf="dataService.selectedPallet.itemsX && dataService.selectedPallet.itemsY && dataService.selectedPallet.itemsZ">({{
@@ -350,7 +354,6 @@
                       identificationTag="index"
                       [(value)]="dataService.selectedPallet.index"
                       [disabled]="step1.controls['index'].value !== 'custom'"
-                      (isValidEvent)="onValidatorCheck($event,'index',step1)"
                       (blurEvent)="onIndexChange()"
                       (inputChange)="onIndexChange()"
                   ></custom-key-board>

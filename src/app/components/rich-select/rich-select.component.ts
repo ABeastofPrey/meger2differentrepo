@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { distinctUntilChanged, debounceTime, takeUntil } from 'rxjs/operators';
 import { __, toLower, compose, filter, indexOf, gte, prop, sortBy, map } from 'ramda';
 import { MatDialog } from '@angular/material';
-import { CustomKeyBoardDialogComponent } from '../../modules/custom-key-board-dialog/custom-key-board-dialog.component';
+import { CustomKeyBoardDialogComponent } from '../../components/custom-key-board/custom-key-board-dialog/custom-key-board-dialog.component';
 import { Platform } from '@angular/cdk/platform';
 import { fromEvent, Subscription } from 'rxjs';
 
@@ -19,6 +19,7 @@ export class RichSelectComponent implements OnInit, OnDestroy {
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() focusEvent: EventEmitter<string> = new EventEmitter<string>();
     @Output() blurEvent: EventEmitter<string> = new EventEmitter<string>();
+    @ViewChild('trigger', { static: true }) trigger: any;
     public selectOptions: string[] = [];
     private inputWatcher: EventEmitter<string> = new EventEmitter<string>();
     private stopListenEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -28,6 +29,7 @@ export class RichSelectComponent implements OnInit, OnDestroy {
     public isOpenSelect = false;
     private isKeyBoardOpen = false;
     private pageClick: Subscription;
+    private interval;
 
     get isTablet(): boolean {
         return this.platform.ANDROID || this.platform.IOS;
@@ -60,12 +62,26 @@ export class RichSelectComponent implements OnInit, OnDestroy {
 
     ngAfterViewInit(): void {
         this.pageClick = fromEvent(document, 'click').subscribe(this.onDocumentClick.bind(this));
+        let pre_x = Infinity, pre_y = Infinity;
+        this.interval = setInterval(() => {
+          const { x, y } = this.trigger.elementRef.nativeElement.getBoundingClientRect() as DOMRect;
+          if (pre_x === Infinity) {
+            pre_x = x, pre_y = y;
+            return;
+          }
+          if (x !== pre_x || y !== pre_y) {
+            this.selectOptions = [];
+            pre_x = x, pre_y = y;
+            this.cdk.detectChanges();
+          }
+        }, 800);
     }
 
     ngOnDestroy(): void {
         this.pageClick.unsubscribe();
         this.stopListenEvent.next();
         this.stopListenEvent.unsubscribe();
+        clearInterval(this.interval);
     }
 
     // Input events
@@ -76,7 +92,7 @@ export class RichSelectComponent implements OnInit, OnDestroy {
         if (this.isTablet) {
             this.isKeyBoardOpen = true;
             this.selectOptions = [];
-            const option = { data: { type: 'string', value: this.value } };
+            const option = { data: { type: 'string', value: this.value }, width: '839px', height: '439.75px'};
             this.dialog.open(CustomKeyBoardDialogComponent, option).afterClosed().subscribe((res:{delete?: boolean,enter?: boolean,value?: any}) => {
                 this.isKeyBoardOpen = false;
                 if (res === undefined || res.delete) {

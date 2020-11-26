@@ -15,7 +15,7 @@
 			<!-- <mat-form-field>
 				<input
 					matInput
-					
+
 					[(ngModel)]="element.depart"
 					(focus)="onFocus($event)"
 					(blur)="onBlur($event, element.index, element.depart, 1)"
@@ -25,12 +25,12 @@
                     (onKeyboardClose)="onBlur($event, element.index, element.depart, 1)"
 				/>
             </mat-form-field>  -->
-            <custom-key-board 
-                type="float" 
+            <custom-key-board
+                type="float"
                 [required]="true"
 				[min]="0"
 				[isPositiveNum]="true"
-				[leftClosedInterval]="true" 
+				[leftClosedInterval]="true"
 				[(value)]="element.depart"
                 (pressEnterEvent)="onBlur({target:{value:$event}}, element.index, element.depart, 1)"
 				(blurEvent)="onBlur({target:{value:$event}}, element.index, element.depart, 1)">
@@ -46,7 +46,7 @@
 			<!-- <mat-form-field>
 				<input
 					matInput
-					
+
 					[(ngModel)]="element.approach"
 					(focus)="onFocus($event)"
 					(blur)="onBlur($event, element.index, element.approach, 2)"
@@ -56,14 +56,14 @@
 					(onKeyboardClose)="onBlur($event, element.index, element.approach, 2)"
 				/>
             </mat-form-field> -->
-            <custom-key-board 
-                type="float" 
+            <custom-key-board
+                type="float"
                 [required]="true"
                 [min]="0"
 				[isPositiveNum]="true"
-                [leftClosedInterval]=true 
-                [value]="element.approach"  
-                (valueChange)="element.approach = $event" 
+                [leftClosedInterval]=true
+                [value]="element.approach"
+                (valueChange)="element.approach = $event"
                 (pressEnterEvent)="onBlur({target:{value:$event}}, element.index, element.approach, 2)"
                 (blurEvent)="onBlur({target:{value:$event}}, element.index, element.approach, 2)" >
             </custom-key-board>

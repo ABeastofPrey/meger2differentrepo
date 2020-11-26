@@ -28,7 +28,7 @@
             [maxLength]="32"
             [required]="true"
             [nameRules]="true"
-            [existNameList]="traceList"
+            [existNameList]="forTrace ? getTraceName(traceList) : existNameList"
             (valueChange)="change($event)"
             (blurEvent)="change($event)"
             (isValidEvent)="onValidEvent($event)"

@@ -35,6 +35,43 @@ export interface customKeyBoardType {
     isProgram: boolean;
 }
 
+export interface IKeyboardDialogData{
+  value: string;
+  type: DATA_TYPE;
+  min: number;
+  max: number;
+  leftClosedInterval: boolean;
+  rightClosedInterval: boolean;
+  isPositiveNum: boolean;
+  required: boolean;
+  requiredErrMsg: string;
+  disabled: boolean;
+  label: string;
+  matLabel: string;
+  placeHolder: string;
+  minLength: number;
+  maxLength: number;
+  firstLetter: boolean;
+  nameRules: boolean;
+  existNameList: string;
+  password: boolean;
+  isCommand: boolean;
+  reserved: boolean;
+  fullName: boolean;
+  confirmPassword: boolean;
+  letterAndNumber: boolean;
+  isProgram: boolean;
+  precision: number;
+  outSideValidators: any;
+  isUserName: boolean;
+  isIPAndMask: boolean;
+  defaultValueOfInvalidNum: any;
+  useUnitPasswordRegex: boolean;
+  emitNoDirtyValue: boolean;
+  showPlaceHolderOnlyDialog: boolean;
+}
+
+
 export interface ILayoutOfNumber{
   value: string;
   darkBtn: boolean;  // '.' || '-' || InputTypes.Delete || InputTypes.Left || InputTypes.Right,

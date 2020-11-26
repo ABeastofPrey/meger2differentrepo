@@ -64,7 +64,7 @@ export class PalletLevelDesignerComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private api: ApiService,
-    private utils: UtilsService,
+    public utils: UtilsService,
     private cd: ChangeDetectorRef,
     private snackbarService: SysLogSnackBarService
   ) {}

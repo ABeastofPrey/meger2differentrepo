@@ -22,7 +22,7 @@
         <span matSuffix>[RPM]</span>
     </mat-form-field> -->
     <custom-key-board type="float" [isPositiveNum]="true" appearance="outline"
-        [disabled]="!enabled" [(value)]="ax.vord" [suffix]="'RPM'" (blurEvent)="onVordChange(i,$event)"
+        [disabled]="!enabled" [value]="ax.vord" [suffix]="'RPM'" (blurEvent)="onVordChange(i,$event)"
     ></custom-key-board>
   </div>
 </div>

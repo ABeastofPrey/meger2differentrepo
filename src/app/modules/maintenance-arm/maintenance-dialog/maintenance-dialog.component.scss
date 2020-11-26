@@ -16,7 +16,7 @@ $itemGap: 1.5em;
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
-  line-height: 1.5em;
+  // line-height: 1.5em;
   min-height: 173px;
 }
 .mat-inner-title {
@@ -29,7 +29,7 @@ $itemGap: 1.5em;
 
 .tips {
   display: flex;
-  line-height: 1.5em;
+  // line-height: 1.5em;
   align-items: center;
   justify-content: center;
 }

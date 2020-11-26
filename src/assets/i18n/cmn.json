@@ -38,6 +38,8 @@
   },
   "apps": {
     "cabinet_update": "控制柜更新工具",
+	"cabinet_update_open": "打开控制柜更新工具",
+    "cabinet_update_disabled": "版本更新工具需要机器人处于断使能状态。先断使能，再继续操作",
     "err_mcu": "错误：无法更新MCU固件",
     "firmware": "更新固件",
     "firmware_confirm": {
@@ -56,6 +58,7 @@
     },
     "rebooting": "softMC正在重启...",
     "title": "softMC工具",
+	"update_warning": "激活KR CS更新工具将停止所有运动任务，禁用系统（包括所有轴），然后关闭ControlStudio +。所有未保存的数据将丢失。您确定要打开更新工具吗？",
     "updating": "正在更新固件",
     "restore": {
       "default": "默认",
@@ -79,7 +82,8 @@
     "title": "修改未保存",
     "msg": "当前页面有未保存数据. 如果此时离开, 修改将不被保存. 确定要离开当前页面?",
     "yes": "放弃修改",
-    "no": "取消"
+    "no": "取消",
+    "third":"保存修改"
   },
   "binary": "二进制",
   "blending": {
@@ -96,10 +100,12 @@
     "calibrate": "校准",
     "cancel": "取消",
     "change": "改变",
+	"clear": "清除",
     "close": "关闭",
     "confirm": "确认",
     "copy": "复制",
     "create": "创建",
+	"default": "默认",
     "delete": "删除",
     "delete_selected": "删除已选",
     "discard": "放弃",
@@ -165,10 +171,12 @@
     },
     "err_file": "文件未找到",
     "err_move": "{{code}}: {{msg}}报错",
+	"err_param_count": "不能监控超过{{count}}个参数",
     "err_target": "无效目标",
     "external": {
       "3d": "3D图形",
       "btnShow": "显示",
+	   "error": "上传文件{{name}}时出错-文件超出了10MB的限制或控制柜上没有足够的空间。",
       "name": "所记录名称",
       "title": "显示一个外部记录"
     },
@@ -410,7 +418,13 @@
       "posY": "位置Y",
       "posXY": "位置 XY",
       "set": "设为当前",
-      "title": "校准"
+      "title": "校准",
+	  "dialog_close": {
+        "title": "确定关闭？",
+        "msg": "校准数据将丢失，确定要关闭校准对话框吗？",
+        "yes": "关闭",
+        "no": "取消"
+      }
     },
     "create": [
       "创建工具坐标系",
@@ -548,7 +562,7 @@
     "invalidIP":"无效IP",
     "invalidMask":"无效Mask",
     "invalidNumber":"",
-    "passwordRegex": "密码长度为4-15位，至少包含一个字母和数字",
+    "passwordRegex": "密码长度为4-15字母或数字，至少包含一个字母和数字",
     "confirmPassword": "密码不匹配先前字段",
     "fullName": "完整名字应包括姓和名",
     "invalidUserName": "用户名必须包括字母，数字或下划线",
@@ -620,6 +634,14 @@
   },
   "jogScreen": {
     "menu": ["示教", "工具校准"],
+	"non_robot": {
+      "title": "非机器人运动对象",
+      "msg": "你将选择以非机器人运动对象离开此界面，所有与机器人相关的运动将会被中断。是否确认继续使用所选非机器人类型运动对象？",
+      "yes": "确认",
+      "no": "取消",
+      "warnBtn": true,
+      "caution": true
+    },
     "percision": "精度",
     "settings": "点动设置",
     "speed": "速度",
@@ -640,7 +662,8 @@
   },
   "handGuiding": {
     "toggleMode": "模式使能",
-    "toggleJ3J4": "三四轴使能"
+    "toggleJ1": "松开J1抱闸",
+    "toggleJ2": "松开J2抱闸"
   },
   "joint": "轴坐标",
   "joints": "轴坐标",
@@ -791,12 +814,18 @@
       "done_title": "托盘设置已完成!",
       "entry": "入口",
       "entry_pos": "入口位置",
+	  "err_flag": "必须选择机器人配置",
       "err_incomp_robot": "该机器人无法兼容",
       "exceed": "超过托盘范围",
+      "export": "导出...",
+      "import": "导入...",
       "index_custom": "自定义",
       "index_empty": "空",
       "index_full": "满",
       "invalid_val": "选择托盘当前索引",
+	  "item": "工件",
+      "item_new": "添加新工件",
+      "item_rotate": "旋转90度",
       "level": "层数",
       "levels": "层数",
       "levels_in_pallet": "托盘层数",
@@ -809,6 +838,7 @@
       "origin_status": "原点状态",
       "posX": "位置X",
       "posY": "位置Y",
+	  "reset": "清除",
       "ret": "远离",
       "ret_dir": "远离方向",
       "save": "保存修改到{{name}}？",
@@ -839,14 +869,20 @@
       "dialog": {
         "title": "警告",
         "msg": "载荷识别即将开始，在这个过程中，机器人会在工作区域内任意移动，请确保工作区域内没有任何人、物等障碍物。",
-        "yes": "开始识别",
+        "yes": "开始辨识",
         "no": "取消"
       },
       "finish": "移动机器人到初始位置...",
       "moving": "移动机器人到初始位置...",
-      "title": "机器人正在执行载荷识别",
-      "start": "开始识别...",
-      "subtitle": "在这个过程中，机器人会在工作区域内任意移动，请确保工作区域内没有任何人、物等障碍物。"
+	  "result-dialog": {
+        "apply": "应用并关闭",
+        "max": "最大力矩错误",
+        "mean": "最小力矩错误",
+        "title": "负载辨识结果"
+      },
+    "start": "开始识别...",
+    "subtitle": "在这个过程中，机器人会在工作区域内任意移动，请确保工作区域内没有任何人、物等障碍物。",
+	  "title": "机器人正在执行载荷识别"
     },
     "inertia": "惯量",
     "mass": "质量",
@@ -855,6 +891,7 @@
     "offX": "X偏移",
     "payload": "负载",
     "relative_pos": "振幅",
+	"reset_msg": "负载参数将被重置，这一操作无法被撤回，是否继续操作？",
     "start_pos": "初始位置",
     "time": "持续时间"
   },
@@ -890,17 +927,6 @@
       "beginWithLetter": "必须以字母开头",
       "nameExist": "名称已存在.",
       "returnType": "返回值类型"
-    },
-    "subs": {
-      "tip": "提示：子程序名和参数名不区分大小写。",
-      "name": "子程序名",
-      "para_name": "参数名",
-      "para_type": "参数类型",
-      "manipulate": "操作",
-      "parameter": "添加参数",
-      "required": "名称必填",
-      "beginWithLetter": "必须以字母开头",
-      "nameExist": "名称已存在."
     },
     "subs": {
         "tip":"提示：子程序名和参数名不区分大小写。",
@@ -967,6 +993,7 @@
       "title_place": "插入Place命令",
       "title_plt_entry": "插入移至入口位置命令",
       "title_plt_index": "插入获取托盘索引命令",
+	  "title_plt_retract": "插入移动到离开点命令",
       "title_plt_status": "插入获取托盘状态指令",
       "title_waitForMotion": "插入WaitForMotion命令"
     },
@@ -1042,8 +1069,8 @@
       "arch": "拱形编号",
       "limZ": "Z极限",
       "blending": "圆滑百分比",
-      "vcruise": "速度",
-      "vtran": "垂直起降",
+      "vcruise": "关节速度",
+      "vtran": "笛卡尔速度",
       "acc": "加速度",
       "withPls": "位置触发器",
       "requireErr": "此选项为必选项",
@@ -1094,10 +1121,15 @@
     },
     "btnCreate": "创建项目",
     "delete-dialog": {
-      "btn-delete": "删除选中项目",
+	  "btn-delete1": "删除选中项目",
+      "btn-delete2": "删除当前项目",
+      "err_current": "无法删除当前项目",
+      "err_exists": "这一项目已在列表中",
       "input": "选择项目",
-      "message": "以下项目将从系统中删除，此操作无法撤消",
-      "title": "删除项目"
+	  "message1": "这些项目及项目内的所有文件将会从系统中删除，这一操作将无法撤回。",
+      "message2": "所有项目文件将被永久删除，请选择删除后要切换到的项目。",
+      "title1": "删除项目",
+      "title2": "删除当前项目"
     },
     "loaded": "已加载",
     "name": "项目名称",
@@ -1134,6 +1166,7 @@
       "autostart": "自动运行项目",
       "backup": "备份",
       "changing": "修改项目中...",
+	  "continue_prj": "恢复项目",
       "controller": "控制柜",
       "copy_name": "新名字",
       "create": "创建",
@@ -1235,8 +1268,8 @@
       "desc": "定义Arch命令的参数",
       "title": "Arch设置",
       "archCol": "Arch",
-      "departZCol": "DepartZ",
-      "approachZCol": "ApproachZ",
+      "departZCol": "AscendingZ",
+      "approachZCol": "DescendingZ",
       "positiveNumTip": "输入一个正值！",
       "valChangedTip": "已更新数值!"
     },
@@ -1259,6 +1292,16 @@
     "pos": {
       "desc": "定义机器人工作区域边界",
       "title": "工作区域边界"
+    },
+	"remote-io": {
+      "desc": "定义远程IO来控制项目应用程序",
+      "device": "控制设备",
+      "err_export": "错误：无法导出当前配置",
+      "export": "导出...",
+      "import": "导入...",
+      "inputs": "远程控制输入",
+      "outputs": "远程控制输出",
+      "title": "远程控制"
     },
     "tool": {
       "desc": "定义工具坐标系边界",
@@ -1385,12 +1428,13 @@
       "installSuccess": "插件安装成功"
     }
   },
+  "rarm": "机械臂",
   "record": "记录",
   "record_done": "运动记录已完成",
   "restore": {
     "restoring": "备份还原系统中",
     "success": "系统还原成功！",
-    "home": "Home",
+    "home": "主页",
     "insert_chart": "运动控制板",
     "insert_comment": "程序编辑器",
     "3d_rotation": "3D模拟器",
@@ -1402,13 +1446,13 @@
     "list": "日志",
     "help_outline": "帮助"
   },
-  "robot": "机器人",
   "role":{
     "Administrator": "管理员",
     "Programmer":"程序员",
     "Operator":"操作员",
     "Viewer":"观察员"
   },
+  "robot": "机器人",
   "robots": {
     "axes": "机器人轴",
     "battery": {
@@ -1431,8 +1475,8 @@
     "disp": "零点标定",
     "max-payload": "最大负载",
     "mcu": {
-      "fan": "MCU 法兰",
-      "fan-threshold": "MCU 法兰阀值",
+      "fan": "MCU 风扇",
+      "fan-threshold": "MCU 风扇阀值",
       "threshold": "阀值"
     },
     "model": "型号",
@@ -1590,6 +1634,7 @@
   "strings": "字符串",
   "success": "成功！",
   "system_state": {
+	"-999": "通讯错误",
     "1000": "在线",
     "loading": "系统初始化中...",
     "state": "系统状态"
@@ -1671,6 +1716,10 @@
   "terminal": "终端",
   "terminal_restricted": "终端不开放给用户权限 \"{{user}}\"",
   "time_update": "softMC的日期和时间已同步",
+  "token_expire": {
+    "message": "出于安全考虑，ControlStudio+ 将在15分钟内自动退出。所有未保存的数据将会丢失。请在15分钟内保存您的修改。",
+    "title": "令牌到期"
+  },
   "tool": "工具",
   "tool_calib": {
     "calibrate_tool": "校准工具",

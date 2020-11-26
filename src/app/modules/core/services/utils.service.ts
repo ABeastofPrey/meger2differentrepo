@@ -15,7 +15,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { AbstractControl, ValidatorFn, Validators } from '@angular/forms';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 import { CommonService } from './common.service';
-import { isUndefined } from 'ramda-adjunct';
+import { isArray, isUndefined } from 'ramda-adjunct';
 
 /*
  * THIS CONTAINS ALL KINDS OF UTILS THAT SHOULD BE USED ACCROSS THE APP
@@ -337,6 +337,7 @@ export class UtilsService {
 
   public existNameListValidator(list: string[]): ValidatorFn {
     return ({ value }: AbstractControl) => {
+        if(!isArray(list)) return  null;
         const newValue = value.toUpperCase();
         const index = list.findIndex(item=> item === newValue);
         return (index >= 0 ? { "existNameList": "existNameList" } : null)
@@ -405,6 +406,9 @@ export class UtilsService {
   }
 
   public parseFloatAchieve(originValue: string): string {
+    if(originValue === null || originValue === ''){
+      return originValue;
+    }
     originValue = originValue.toString();
     // if(originValue === '-'){
     //   return '0';
@@ -582,6 +586,14 @@ export class UtilsService {
           return null;
       }
     }
+  }
+
+  public static validatoePassword(): ValidatorFn{
+    return ({ value }: AbstractControl) => {
+      let reg = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/;
+      return (reg.test(value) ? null : { "passwordRegex": "passwordRegex" })
+  };
+
   }
 
 

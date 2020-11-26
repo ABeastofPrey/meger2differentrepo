@@ -36,7 +36,7 @@ import { UtilsService } from '../../../core/services/utils.service';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CustomKeyBoardComponent } from '../../../custom-key-board/custom-key-board.component';
+import { CustomKeyBoardComponent } from '../../../../components/custom-key-board/custom-key-board.component';
 
 // tslint:disable-next-line: no-any
 declare let Isomer: any;
@@ -559,9 +559,11 @@ export class PalletWizardComponent implements OnInit {
   private validateIndex(control: AbstractControl) {
     const pallet = this.dataService.selectedPallet;
     if (!control.touched && !control.dirty && typeof control.value !== 'undefined') {
+      // this.setErrorsKeyboard(['index'],null);
       return Promise.resolve(null);
     }
     if (typeof control.value === 'undefined') {
+      // this.setErrorsKeyboard(['index'],{invalidIndex: true});
       return Promise.resolve({invalidIndex: true});
     }
     let cmd;
@@ -579,7 +581,7 @@ export class PalletWizardComponent implements OnInit {
       default:
         // NO PALLET INDEX MODE SELECTED
         if (pallet.type === 'CUSTOM' && pallet.dataFile === null) {
-          this.setErrorsKeyboard(['index'],null);
+          // this.setErrorsKeyboard(['index'],null);
           return Promise.resolve(null);
         }
 
@@ -592,7 +594,7 @@ export class PalletWizardComponent implements OnInit {
         .then((ret: MCQueryResponse) => {
           this.dataService.selectedPallet.index = Number(ret.result);
           this.onWindowResize();
-          this.setErrorsKeyboard(['index'],null);
+          // this.setErrorsKeyboard(['index'],null);
           return null;
         });
     });
@@ -979,10 +981,10 @@ export class PalletWizardComponent implements OnInit {
         return Promise.resolve(null);
       });
     }
-    // this.step1.controls['itemsX'].setErrors(null);
-    // this.step1.controls['itemsY'].setErrors(null);
-    // this.step1.controls['itemsZ'].setErrors(null);
-    // this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
+    this.step1.controls['itemsX'].setErrors(null);
+    this.step1.controls['itemsY'].setErrors(null);
+    this.step1.controls['itemsZ'].setErrors(null);
+    this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
     return Promise.resolve(null);
   }
 

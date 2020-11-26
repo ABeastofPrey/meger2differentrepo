@@ -13,7 +13,7 @@ import { TpStatService } from './tp-stat.service';
 import {CommonService} from './common.service';
 import {UtilsService} from '../../../modules/core/services/utils.service';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
-import { CustomKeyBoardComponent } from '../../custom-key-board/custom-key-board.component';
+import { CustomKeyBoardComponent } from '../../../components/custom-key-board/custom-key-board.component';
 
 /*
  * THIS SERVICE MANAGES THE PROJECTS IN THE PROJECT EDITOR, BUT ALSO MANAGES

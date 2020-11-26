@@ -12,6 +12,7 @@ export class AddPalletDialogComponent implements OnInit {
   palletName: string = null;
   palletType: string = null;
   showWizard = true;
+  public validName: boolean = false;
 
   constructor(
     public dataService: DataService,
@@ -26,6 +27,10 @@ export class AddPalletDialogComponent implements OnInit {
 
   cancel() {
     this.dialogRef.close();
+  }
+
+  onValidEvent(valid: boolean){
+    this.validName = valid;
   }
 
   insert() {

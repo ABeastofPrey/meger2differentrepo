@@ -113,15 +113,15 @@ export class IoMappingScreenComponent implements OnInit {
       io: n.module,
       showInputs: n.name === 'ios.inputs',
     };
-    // Check need to get range info or not.
-    if (this.interval !== null) {
-      if (this.activeModule.showInputs && this.activeModule.io.inputs.length !== 0) {
-        return;
-      }
-      if (!this.activeModule.showInputs && this.activeModule.io.outputs.length !== 0) {
-        return;
-      }
-    };
+    // // Check need to get range info or not.
+    // if (this.interval !== null) {
+    //   if (this.activeModule.showInputs && this.activeModule.io.inputs.length !== 0) {
+    //     return;
+    //   }
+    //   if (!this.activeModule.showInputs && this.activeModule.io.outputs.length !== 0) {
+    //     return;
+    //   }
+    // };
 
     // GET INITIAL RANGE INFO
     this.getRangeInfo().then(() => {
@@ -182,11 +182,11 @@ export class IoMappingScreenComponent implements OnInit {
         if (ret.result !== '0') {
           e.target.value = io.name;
           this.snackbarService.openTipSnackBar(this.words['changeError']);
-          
+
         } else {
           io.name = newVal;
           this.snackbarService.openTipSnackBar('changeOK');
-          }
+        }
       });
   }
 
@@ -207,10 +207,10 @@ export class IoMappingScreenComponent implements OnInit {
         } else {
           io.description = newVal;
           this.snackbarService.openTipSnackBar('changeOK');
-          }
+        }
       });
   }
-  
+
   refresh() {
     this.dialog.open(YesNoDialogComponent, {
       disableClose: true,
@@ -249,7 +249,7 @@ export class IoMappingScreenComponent implements OnInit {
             const newURL = finalURL + '?from=io';
             window.location.href = newURL;
           }).catch(err => {
-            
+
           });
         }, 2000);
       }, 10000);

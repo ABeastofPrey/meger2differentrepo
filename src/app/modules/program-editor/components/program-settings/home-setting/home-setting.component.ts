@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HomeSettingService } from '../../../services/home-setting.service';
 import {
-	range, equals, isEmpty, identity, ifElse, map, 
+	range, equals, isEmpty, identity, ifElse, map,
 	converge, __, and, gt, lt,complement,
 } from 'ramda';
 import { Either } from 'ramda-fantasy';
@@ -10,6 +10,7 @@ import { TerminalService } from '../../../../home-screen/services/terminal.servi
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs';
 import { SysLogSnackBarService } from '../../../../sys-log/services/sys-log-snack-bar.service';
+import { isNilOrEmpty } from 'ramda-adjunct';
 
 const transferNum = ifElse(isEmpty, identity, Number);
 
@@ -86,6 +87,7 @@ export class HomeSettingComponent implements OnInit, OnDestroy {
 	}
 
 	async updatePosition(index: number, target: HTMLInputElement): Promise<void> {
+    if (isNilOrEmpty(target.value)) return;
 		const value = transferNum(target.value);
 		const positionRange = converge(and, [gt(__, this.limits[index - 1].min), lt(__, this.limits[index - 1].max),]);
 		const isOverLimit = complement(positionRange);

@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { fromEvent, Subject } from 'rxjs';
-import {  InputType, LAYOUT_NUMBER, LAYOUT_NUMBER2,LAYOUT_STRING_LOWER,LAYOUT_STRING_CAPITAL, LAYOUT_STRING_SYMBOL, DATA_TYPE, CommandLocalType, ILayoutOfNumber } from '../core/models/customKeyBoard/custom-key-board.model';
-import { UtilsService } from '../core/services/utils.service';
+import { fromEvent } from 'rxjs';
+import {
+  InputType, LAYOUT_NUMBER2,LAYOUT_STRING_LOWER,LAYOUT_STRING_CAPITAL, LAYOUT_STRING_SYMBOL, DATA_TYPE, ILayoutOfNumber, IKeyboardDialogData
+} from '../custom-key-board.model';
+import { UtilsService } from '../../../modules/core';
 
 @Component({
     selector: 'custom-key-board-dialog',
@@ -21,7 +23,7 @@ export class CustomKeyBoardDialogComponent implements OnInit,OnDestroy {
     @ViewChild('customKeyBoard', { static: false }) customKeyBoard: any;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public dialogData: any, public dialogRef: MatDialogRef<CustomKeyBoardDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public dialogData: IKeyboardDialogData, public dialogRef: MatDialogRef<CustomKeyBoardDialogComponent>,
         private utils: UtilsService
     ) {
         this.dialogData.type === DATA_TYPE.String ? this.layout = LAYOUT_STRING_LOWER : this.layout = LAYOUT_NUMBER2;

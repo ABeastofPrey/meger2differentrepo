@@ -51,14 +51,15 @@
                     [placeholder]="'maintenance.input.person_company' | translate" formControlName="person">
                 <mat-error *ngIf="!person.required">{{'maintenance.input.nameRequire' | translate}}</mat-error>
             </mat-form-field> -->
-            
-            <custom-key-board 
+
+            <custom-key-board
                 type="string"
                 [maxLength]="50"
                 [required]="true"
-                [(value)]="inputForm.value.person" 
+                [(value)]="inputForm.value.person"
                 (keypress)="preventEnter($event)"
-                (valueChange)="patchPerson($event)" 
+                [disabled]="!isAdmin"
+                (valueChange)="patchPerson($event)"
                 (blurEvent)="patchPerson($event)"
                 [placeHolder]="'maintenance.input.person_company' | translate">
             </custom-key-board>
@@ -70,9 +71,10 @@
                     [placeholder]="'maintenance.input.order_number' | translate" formControlName="orderNum">
                 <mat-error *ngIf="!orderNum.required">{{'maintenance.input.ordernum' | translate}}</mat-error>
             </mat-form-field> -->
-            <custom-key-board type="string" [isPositiveNum]="true" [requiredErrMsg]="'number_input_required' | translate" [required]="true" 
+            <custom-key-board type="string" [required]="true"
+                [disabled]="!isAdmin"
                 [placeHolder]="'maintenance.input.order_number' | translate" [(value)]="inputForm.value.orderNum"
-                (valueChange)="limitNum($event)"  (blurEvent)="limitNum($event)" 
+                (valueChange)="limitNum($event)"  (blurEvent)="limitNum($event)"
             ></custom-key-board>
         </div>
         <div class="form-contain">
@@ -81,14 +83,15 @@
                     [placeholder]="'maintenance.input.comment' | translate" formControlName="comment"></textarea>
                 <mat-error *ngIf="!comment.required">{{'maintenance.input.commentRequire' | translate}}</mat-error>
             </mat-form-field> -->
-            
-            <custom-key-board 
+
+            <custom-key-board
                 type="string"
                 [maxLength]="400"
+                [disabled]="!isAdmin"
                 [required]="true"
-                [(value)]="inputForm.value.comment" 
+                [(value)]="inputForm.value.comment"
                 (keypress)="preventEnter($event)"
-                (valueChange)="patchComment($event)" 
+                (valueChange)="patchComment($event)"
                 (blurEvent)="patchComment($event)"
                 [placeHolder]="'maintenance.input.comment' | translate">
             </custom-key-board>

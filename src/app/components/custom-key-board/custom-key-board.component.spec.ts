@@ -2,16 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
-import { CommandLocalType, InputType } from '../core/models/customKeyBoard/custom-key-board.model';
-import { CommonService } from '../core/services/common.service';
-import { CustomKeyBoardService } from '../core/services/custom-key-board.service';
-import { UtilsService } from '../core/services/utils.service';
-import { SharedModule } from '../shared/shared.module';
-import { UnitTestModule } from '../shared/unit-test.module';
-import { TerminalService } from '../home-screen/services/terminal.service';
+import { UtilsService } from '../../modules/core';
+import { CommonService } from '../../modules/core/services/common.service';
+import { TerminalService } from '../../modules/home-screen/services/terminal.service';
+import { SharedModule } from '../../modules/shared/shared.module';
+import { UnitTestModule } from '../../modules/shared/unit-test.module';
 
 import { CustomKeyBoardComponent } from './custom-key-board.component';
+import { CustomKeyBoardService } from './custom-key-board.service';
 const fakeCommonService = jasmine.createSpyObj('CommonService', ['isTablet']);
 const fakeMatDialog = jasmine.createSpyObj('MatDialog', ['open']);
 const fakeUtilsService = jasmine.createSpyObj('UtilsService', ['limitValidator','minLengthValidator','maxLengthValidator',

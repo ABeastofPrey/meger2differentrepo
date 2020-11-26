@@ -13,7 +13,7 @@ import { WebsocketService, MCQueryResponse } from '../../../core';
 import { FormControl, Validators } from '@angular/forms';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Platform } from '@angular/cdk/platform';
-import { CustomKeyBoardDialogComponent } from '../../../custom-key-board-dialog/custom-key-board-dialog.component';
+import { CustomKeyBoardDialogComponent } from '../../../../components/custom-key-board/custom-key-board-dialog/custom-key-board-dialog.component';
 import { fromEvent } from 'rxjs';
 
 @Component({

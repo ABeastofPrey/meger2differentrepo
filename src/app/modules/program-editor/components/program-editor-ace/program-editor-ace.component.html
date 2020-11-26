@@ -9,7 +9,7 @@
 	<input
 		matInput
 		placeholder=""
-		[(ngModel)]="dummyText"
+		[(ngModel)]="text"
 		virtualKeyboard
 		ktype="text"
 		#dummyInput
@@ -18,7 +18,7 @@
 		(onLineDelete)="deleteLine()"
 	/>
 </mat-form-field> -->
-<custom-key-board
+<!-- <custom-key-board
     class="hidden"
     type="string"
     [(value)]="dummyText"
@@ -27,7 +27,7 @@
     [isProgram]="true"
     (onLineDelete)="deleteLine()"
     #dummyInput
-></custom-key-board>
+></custom-key-board> -->
 <button
 	mat-fab
 	*ngIf="cmn.isTablet && !login.isViewer && !login.isOperator && service.status && service.status.statusCode < 0"

@@ -11,7 +11,7 @@
             </button>
         </div>
         <div class="create-new-trace" *ngIf="addStatus">
-            <app-trace-new [traceList]="lists" [beginWithLetter]=true [label]="'vision.templateConfig.newTemplate'"
+            <app-trace-new [forTrace]="false" [existNameList]="lists" [beginWithLetter]=true [label]="'vision.templateConfig.newTemplate'"
                 [placeholder]="'error.invalid_file_name'" (createTraceEvent)="traceSelect.close()"
                 (createTraceEvent)="createList($event)">
             </app-trace-new>

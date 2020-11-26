@@ -10,6 +10,9 @@ export const isInt = (type: InputType) => type.toLocaleLowerCase() === 'int';
 
 export const getValidNumberString = (originalVal: string, type: InputType, isPositiveNum?: boolean): string => {
     if(originalVal === null || originalVal === undefined) return '';
+    if(typeof originalVal !== 'string'){
+      originalVal = originalVal + '';
+    }
     let firstOne = originalVal.trim()[0] === '-' ? '-' : '';
     isPositiveNum ? firstOne = '' : "";
     if (isFloat(type)) {

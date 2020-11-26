@@ -45,8 +45,10 @@
         [showPlaceHolderOnlyDialog]="dialogData.showPlaceHolderOnlyDialog"
         [isIPAndMask]="dialogData.isIPAndMask"
         [emitNoDirtyValue]="dialogData.emitNoDirtyValue"
-        [defaultValueOfInvalid]="dialogData.defaultValueOfInvalid"
+        [defaultValueOfInvalid]="dialogData.defaultValueOfInvalidNum"
+        [useUnitPasswordRegex]="dialogData.useUnitPasswordRegex"
         keyBoardDialog="true"
+        (onLineDelete)="onLineDelete()"
         [emitInvalidValue]="true"
       >
       </custom-key-board>

@@ -1,6 +1,6 @@
 import {
     Component, OnInit, OnDestroy, ViewChild, ElementRef,
-    AfterViewInit, Output, EventEmitter, Input, OnChanges
+    AfterViewInit, Output, EventEmitter, Input, OnChanges, SimpleChange, ChangeDetectionStrategy
 } from '@angular/core';
 import { fromEvent, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators'
@@ -11,9 +11,10 @@ import { Trace } from '../../../services/trace.service';
 @Component({
     selector: 'app-trace-new',
     templateUrl: './trace-new.component.html',
-    styleUrls: ['./trace-new.component.scss']
+    styleUrls: ['./trace-new.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit{
+export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit {
     // @ViewChild('newTraceInput', { static: true }) newTraceInput: ElementRef;
     @ViewChild('createTraceBtn', { static: false }) createTraceBtn: MatButton;
     @Output() createTraceEvent: EventEmitter<string> = new EventEmitter<string>();
@@ -21,10 +22,12 @@ export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit{
     @Input() label: string;
     @Input() placeholder: string;
     @Input() beginWithLetter: boolean = false;
-
-    public existTraceList: string[] = [];
+    @Input() forTrace = true;
+    @Input() existNameList: string[] = [];
 
     public validName: boolean = false;
+
+    public existTraceList: string[] = [];
 
     private endSubscribe: Subject<boolean> = new Subject<boolean>();
     public control: FormControl = new FormControl('');
@@ -64,6 +67,10 @@ export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit{
         //     .subscribe(() => {
         //         this.createTraceEvent.emit(this.control.value);
         //     });
+    }
+
+    public getTraceName(traceList: Trace[]): string[] {
+      return traceList ? traceList.map(t => t.name) : [];
     }
 
     ngOnDestroy(): void {

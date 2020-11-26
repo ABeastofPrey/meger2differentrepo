@@ -86,7 +86,7 @@ subFunctionContext.keys().map(subFunctionContext);
 const selectFrameContext = require.context('./app/modules/program-editor/components/dialogs/select-frame-dialog', true, /\.spec\.ts$/);
 selectFrameContext.keys().map(selectFrameContext);
 
-const customKeyBoardContext = require.context('./app/modules/custom-key-board', true, /\.spec\.ts$/);
+const customKeyBoardContext = require.context('./app/components/custom-key-board', true, /\.spec\.ts$/);
 customKeyBoardContext.keys().map(customKeyBoardContext);
 
 
