@@ -557,11 +557,11 @@
     "firstLetter": "Must start with an letter.",
     "nameRules": "Must begin with a letter, include only letters, numbers or _.",
     "existNameList":"Name already exists.",
-	  "inValidIPAndMask":"Invalid address",
     "invalidIP":"Invalid IP",
     "invalidMask":"Invalid Mask",
+	  "inValidIPAndMask":"Invalid address",
     "invalidNumber":"",
-    "passwordRegex": "Password must be 4-15 letters and numbers, and at least one letter and one number",
+    "passwordRegex": "Password must be 4-15 characters long, and contain at least one letter and one number",
     "confirmPassword": "Password does not match the previous field",
     "fullName": "Must include first name and last name",
     "invalidUserName": "Must include letter, number or _",
@@ -928,17 +928,6 @@
       "beginWithLetter": "Must start with an letter",
       "nameExist": "Name already exists.",
       "returnType": "Return Type"
-    },
-    "subs": {
-      "tip": "Tip: Sub names and parameter names are not case sensitive.",
-      "name": "Sub Name",
-      "para_name": "Parameter Name",
-      "para_type": "Parameter Type",
-      "manipulate": "Manipulate",
-      "parameter": "Add a parameter",
-      "required": "Name is required",
-      "beginWithLetter": "Must start with an letter",
-      "nameExist": "Name already exists."
     },
     "subs": {
         "tip":"Tip: Sub names and parameter names are not case sensitive.",
