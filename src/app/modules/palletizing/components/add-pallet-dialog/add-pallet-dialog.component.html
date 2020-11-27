@@ -33,7 +33,7 @@
 			mat-button
 			color="primary"
 			(click)="insert()"
-			[disabled]="palletName == null || !validName"
+			[disabled]="palletName == null || !validName || palletType === null"
 		>
 			{{ 'button.create' | translate }}
 		</button>

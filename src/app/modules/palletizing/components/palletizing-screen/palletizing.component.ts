@@ -162,9 +162,16 @@ export class PalletizingComponent implements OnInit {
     .subscribe((ret: NewPalletOptions) => {
       if (ret) {
         const name = ret.name.toUpperCase();
-        const cmd = `?PLT_ASSIGN_PALLET("${name}","${ret.type}",${this.data.selectedRobot})`;
         this.ws
-          .query(cmd)
+          .query(
+            '?PLT_ASSIGN_PALLET("' +
+              name +
+              '","' +
+              ret.type +
+              '",' +
+              this.data.selectedRobot +
+              ')'
+          )
           .then((response: MCQueryResponse) => {
             if (response.err || response.result !== '0') return;
             this.data.refreshPallets(name).then(() => {
