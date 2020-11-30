@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../../core';
 import { environment } from '../../../../../environments/environment';
 import { WebsocketService, MCQueryResponse } from '../../../core/services/websocket.service';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import {
   slice,
   map,
@@ -17,7 +17,7 @@ import {
   head,
 } from 'ramda';
 import { hasNoError, resProp } from '../../../core/services/service-adjunct';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { LicenseDialogComponent } from '../../../../components/license-dialog/license-dialog.component';
 import { ReleaseNoteComponent } from './release-note/release-note.component';
 import { isNotNil } from 'ramda-adjunct';

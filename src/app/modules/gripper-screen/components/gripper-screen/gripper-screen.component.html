@@ -57,7 +57,7 @@
 							placeholder="{{ 'grippers.pay_ef' | translate }}"
 							[(ngModel)]="selectedNode.payload"
 							(selectionChange)="updatePayload()"
-							[disabled]="login.isOperator"
+							[disabled]="login.isOperator || busy"
 						>
 							<mat-option *ngIf="data.payloads.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
 							<mat-option *ngFor="let p of data.payloads" [value]="p">{{ p.name }}</mat-option>
@@ -68,7 +68,7 @@
 							placeholder="{{ 'grippers.pay_item' | translate }}"
 							[(ngModel)]="selectedNode.payloadItem"
 							(selectionChange)="updatePayloadItem()"
-							[disabled]="login.isOperator"
+							[disabled]="login.isOperator || busy"
 						>
 							<mat-option *ngIf="data.payloads.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
 							<mat-option *ngFor="let p of data.payloads" [value]="p">{{ p.name }}</mat-option>
@@ -89,7 +89,8 @@
 							(selectionChange)="updateGripperCmd(1,'cmd1',$event)"
 							[disabled]="login.isOperator"
 						>
-							<mat-option *ngIf="database.outputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
+							<mat-option *ngIf="database.outputs.length === 0 && !selectedNode.cmd1" disabled>{{ 'empty_list' | translate }}</mat-option>
+							<mat-option *ngIf="selectedNode.cmd1" [value]="selectedNode.cmd1" disabled>{{ selectedNode.cmd1 }}</mat-option>
 							<mat-option *ngFor="let o of database.outputs" [value]="o.label">{{ o.label }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -121,7 +122,7 @@
           <custom-key-board
           placeHolder="{{ 'open' | translate }}"
           [(value)]="selectedNode.sleep_open"
-          [disabled]="login?.isOperator"
+          [disabled]="login?.isOperator || busy"
           type="int"
           [isPositiveNum]="true"
           (blurEvent)="updateGripperSleep('OPEN')"
@@ -159,9 +160,10 @@
 							placeholder="{{ 'grippers.dout2' | translate }}"
 							[value]="selectedNode.cmd2"
 							(selectionChange)="updateGripperCmd(2,'cmd2',$event)"
-							[disabled]="login.isOperator || !selectedNode.cmd2_enabled"
+							[disabled]="login.isOperator || !selectedNode.cmd2_enabled || busy"
 						>
-							<mat-option *ngIf="database.outputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
+							<mat-option *ngIf="database.outputs.length === 0 && !selectedNode.cmd2" disabled>{{ 'empty_list' | translate }}</mat-option>
+							<mat-option *ngIf="selectedNode.cmd2" [value]="selectedNode.cmd2" disabled>{{ selectedNode.cmd2 }}</mat-option>
 							<mat-option *ngFor="let o of database.outputs" [value]="o.label">{{ o.label }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -169,10 +171,10 @@
 						color="primary"
 						[checked]="selectedNode.cmd2_invert"
 						(change)="updateGripperCmd(2,'cmd2_invert',$event)"
-						[disabled]="login.isOperator || !selectedNode.cmd2_enabled || !selectedNode.cmd2"
+						[disabled]="login.isOperator || !selectedNode.cmd2_enabled || !selectedNode.cmd2 || busy"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.cmd2_enabled" (change)="onToggle(1)">{{
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator || busy" [(ngModel)]="selectedNode.cmd2_enabled" (change)="onToggle(1)">{{
 						'enable' | translate
 					}}</mat-slide-toggle>
 				</div>
@@ -184,7 +186,8 @@
 							(selectionChange)="updateGripperFb(1,$event.value)"
 							[disabled]="login.isOperator || !selectedNode.fb1_enabled"
 						>
-							<mat-option *ngIf="database.inputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
+							<mat-option *ngIf="database.inputs.length === 0 && !selectedNode.fb1" disabled>{{ 'empty_list' | translate }}</mat-option>
+							<mat-option *ngIf="selectedNode.fb1" [value]="selectedNode.fb1" disabled>{{ selectedNode.fb1 }}</mat-option>
 							<mat-option *ngFor="let o of database.inputs" [value]="o.label">{{ o.label }}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -195,7 +198,7 @@
 						(change)="updateGripperFb(1)"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb1_enabled" (change)="onToggle(2)">{{
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator || busy" [(ngModel)]="selectedNode.fb1_enabled" (change)="onToggle(2)">{{
 						'enable' | translate
 					}}</mat-slide-toggle>
 				</div>
@@ -205,20 +208,21 @@
 							placeholder="{{ 'grippers.fb2' | translate }}"
 							[value]="selectedNode.fb2"
 							(selectionChange)="updateGripperFb(2,$event.value)"
-							[disabled]="login.isOperator || !selectedNode.fb2_enabled"
+							[disabled]="login.isOperator || !selectedNode.fb2_enabled || busy"
 						>
-							<mat-option *ngIf="database.inputs.length === 0" disabled>{{ 'empty_list' | translate }}</mat-option>
+							<mat-option *ngIf="database.inputs.length === 0 && !selectedNode.fb2" disabled>{{ 'empty_list' | translate }}</mat-option>
+							<mat-option *ngIf="selectedNode.fb2" [value]="selectedNode.fb2" disabled>{{ selectedNode.fb2 }}</mat-option>
 							<mat-option *ngFor="let o of database.inputs" [value]="o.label">{{ o.label }}</mat-option>
 						</mat-select>
 					</mat-form-field>
 					<mat-checkbox
 						color="primary"
 						[(ngModel)]="selectedNode.fb2_invert"
-						[disabled]="login.isOperator || !selectedNode.fb2_enabled || !selectedNode.fb2"
+						[disabled]="login.isOperator || !selectedNode.fb2_enabled || !selectedNode.fb2 || busy"
 						(change)="updateGripperFb(2)"
 						>{{ 'invert' | translate }}</mat-checkbox
 					>
-					<mat-slide-toggle color="primary" [disabled]="login.isOperator" [(ngModel)]="selectedNode.fb2_enabled" (change)="onToggle(3)">{{
+					<mat-slide-toggle color="primary" [disabled]="login.isOperator || busy" [(ngModel)]="selectedNode.fb2_enabled" (change)="onToggle(3)">{{
 						'enable' | translate
 					}}</mat-slide-toggle>
 				</div>
@@ -227,7 +231,7 @@
 						<mat-select
 							placeholder="{{ 'tool' | translate }}"
 							[(ngModel)]="selectedNode.tool"
-							[disabled]="login.isOperator || !selectedNode.useTool"
+							[disabled]="login.isOperator || !selectedNode.useTool || busy"
 							(selectionChange)="updateGripperTool($event)"
 						>
 							<mat-option *ngFor="let t of data.tools" value="{{ t }}">{{ t }}</mat-option>
@@ -235,7 +239,7 @@
 					</mat-form-field>
 					<mat-slide-toggle
 						color="primary"
-						[disabled]="login.isOperator"
+						[disabled]="login.isOperator || busy"
 						[(ngModel)]="selectedNode.useTool"
 						(change)="updateGripperUseTool($event)"
 						>{{ 'grippers.use_tool' | translate }}</mat-slide-toggle

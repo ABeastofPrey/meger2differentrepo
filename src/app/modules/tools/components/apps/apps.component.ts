@@ -8,7 +8,8 @@ import {
   ApiService,
   UploadResult,
 } from '../../../../modules/core/services/api.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WebsocketService } from '../../../../modules/core/services/websocket.service';
@@ -55,10 +56,9 @@ export class AppsComponent implements OnInit {
    */
   private readonly OS_VERSION_QUERY: string = '?vi_getreleaseversion';
 
-  @ViewChild('upload', { static: false }) uploadInput: ElementRef;
+  @ViewChild('upload') uploadInput: ElementRef;
 
-  @ViewChild('uploadPlugin', { static: false })
-  uploadPluginElementRef: ElementRef;
+  @ViewChild('uploadPlugin') uploadPluginElementRef: ElementRef;
 
   private words: {};
   private _factoryAvailable = false;

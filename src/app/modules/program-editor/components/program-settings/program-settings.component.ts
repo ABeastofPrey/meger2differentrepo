@@ -9,7 +9,7 @@ import {
   DataService,
 } from '../../../core';
 import { App } from '../../../core/models/project/mc-project.model';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
 import { Subject } from 'rxjs';
 
 @Component({

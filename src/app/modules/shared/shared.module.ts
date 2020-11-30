@@ -53,6 +53,7 @@ import { IpFormFieldComponent } from '../../components/ip-form-field/ip-form-fie
 import { CustomKeyBoardComponent } from '../../components/custom-key-board/custom-key-board.component';
 import { CustomKeyBoardDialogComponent } from '../../components/custom-key-board/custom-key-board-dialog/custom-key-board-dialog.component';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 
 @NgModule({
   imports: [
@@ -70,6 +71,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     NgScrollbarModule,
     ScrollingModule,
     OverlayModule,
+    TableVirtualScrollModule
   ],
   exports: [
     CommonModule,
@@ -117,7 +119,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     IpAddressComponent,
     IpFormFieldComponent,
     CustomKeyBoardComponent,
-    CustomKeyBoardDialogComponent
+    CustomKeyBoardDialogComponent,
+    TableVirtualScrollModule
   ],
   declarations: [
     YesNoDialogComponent,

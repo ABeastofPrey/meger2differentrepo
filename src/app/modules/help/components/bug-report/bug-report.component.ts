@@ -7,7 +7,8 @@ import {
   ApiService,
 } from '../../../core';
 import { environment } from '../../../../../environments/environment';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl, Validators } from '@angular/forms';
 

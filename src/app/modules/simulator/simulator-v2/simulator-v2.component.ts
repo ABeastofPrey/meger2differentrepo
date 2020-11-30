@@ -10,7 +10,8 @@ import {
 } from 'stxsim-ng';
 import { RobotService } from '../../core/services/robot.service';
 import { environment } from '../../../../environments/environment';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SingleInputDialogComponent } from '../../../components/single-input-dialog/single-input-dialog.component';
 import { FileSelectorDialogComponent } from '../../../components/file-selector-dialog/file-selector-dialog.component';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
@@ -37,8 +38,8 @@ export class SimulatorV2Component implements OnInit {
   private _recName = null;
   get recName() { return this._recName; }
 
-  @ViewChild('simulator', { static: false }) simulator: SimulatorComponent;
-  @ViewChild('upload', { static: false }) uploadInput: ElementRef;
+  @ViewChild('simulator') simulator: SimulatorComponent;
+  @ViewChild('upload') uploadInput: ElementRef;
 
   private notifier: Subject<boolean> = new Subject();
 

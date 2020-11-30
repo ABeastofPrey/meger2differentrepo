@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { distinctUntilChanged, debounceTime, takeUntil } from 'rxjs/operators';
 import { __, toLower, compose, filter, indexOf, gte, prop, sortBy, map } from 'ramda';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { CustomKeyBoardDialogComponent } from '../../components/custom-key-board/custom-key-board-dialog/custom-key-board-dialog.component';
 import { Platform } from '@angular/cdk/platform';
 import { fromEvent, Subscription } from 'rxjs';
@@ -68,7 +68,7 @@ export class RichSelectComponent implements OnInit, OnDestroy {
           if (pre_x === Infinity) {
             pre_x = x, pre_y = y;
             return;
-          }
+    }
           if (x !== pre_x || y !== pre_y) {
             this.selectOptions = [];
             pre_x = x, pre_y = y;

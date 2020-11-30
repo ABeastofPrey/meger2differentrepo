@@ -21,16 +21,16 @@
 				<mat-icon>add</mat-icon>
 			</button>
 		</div>
-    <mat-divider style="margin-bottom: 16px;"></mat-divider>
-    <ng-container *ngIf="!utils.isTablet">
-      <button mat-raised-button color="accent" (click)="uploadFile()" style="display: block;">
-        {{'pallets.wizard.import' | translate }}
-      </button>
-      <button  mat-raised-button color="accent" (click)="download()" style="display: block;">
-        {{'pallets.wizard.export' | translate }}
-      </button>
-      <mat-divider style="margin: 16px 0;"></mat-divider>
-    </ng-container>
+		<mat-divider style="margin-bottom: 16px;"></mat-divider>
+		<ng-container *ngIf="!utils.isTablet">
+			<button mat-raised-button color="accent" (click)="uploadFile()" style="display: block;">
+				{{'pallets.wizard.import' | translate }}
+			</button>
+			<button  mat-raised-button color="accent" (click)="download()" style="display: block;">
+				{{'pallets.wizard.export' | translate }}
+			</button>
+		</ng-container>
+		<mat-divider style="margin: 16px 0;"></mat-divider>
 		<button  mat-raised-button color="warn" (click)="reset()" style="display: block;">
 			{{'pallets.wizard.reset' | translate }}
 		</button>
@@ -40,7 +40,6 @@
 		<div
 			class="item item-preview"
 			*ngFor="let item of items"
-			#customItem
 			[style.height]="(item.r % 180 === 0 ? pallet.itemSizeY / normalizeItem : pallet.itemSizeX / normalizeItem) + 'px'"
 			[style.width]="(item.r % 180 === 0 ? pallet.itemSizeX / normalizeItem : pallet.itemSizeY / normalizeItem) + 'px'"
 			[style.z-index]="item.order"

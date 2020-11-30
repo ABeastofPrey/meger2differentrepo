@@ -20,7 +20,8 @@ import {
 } from '../../../core';
 import { TranslateService } from '@ngx-translate/core';
 import { UtilsService } from '../../../core/services/utils.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddFeatureDialogComponent } from '../add-feature-dialog/add-feature-dialog.component';
 import { Feature } from '../../models/feature.model';
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
@@ -63,9 +64,9 @@ const colors = ['#ffc332', '#11826c'];
   ],
 })
 export class HomeScreenComponent implements OnInit {
-  @ViewChild('graphMemory', { static: false }) gMem: ElementRef;
-  @ViewChild('graphDisk', { static: false }) gDisk: ElementRef;
-  @ViewChild('msgLogContainer', { static: false }) msgContainer: ElementRef;
+  @ViewChild('graphMemory') gMem: ElementRef;
+  @ViewChild('graphDisk') gDisk: ElementRef;
+  @ViewChild('msgLogContainer') msgContainer: ElementRef;
 
   mcImage = '';
   simulated = false;

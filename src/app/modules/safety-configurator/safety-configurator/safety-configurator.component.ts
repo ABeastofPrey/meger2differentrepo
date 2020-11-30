@@ -8,7 +8,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SafetyConfiguration } from '../../configuration/components/configuration/model/configuration.model';
 import { UtilsService } from '../../core/services/utils.service';
 import { HttpClient } from '@angular/common/http';
-import { MatHorizontalStepper, MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatHorizontalStepper } from '@angular/material/stepper';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';
 
 @Component({
@@ -18,7 +19,7 @@ import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.
 })
 export class SafetyConfiguratorComponent implements OnInit {
 
-  @ViewChild('stepper', {static: false}) stepper: MatHorizontalStepper;
+  @ViewChild('stepper') stepper: MatHorizontalStepper;
 
   // environment
   env = environment;

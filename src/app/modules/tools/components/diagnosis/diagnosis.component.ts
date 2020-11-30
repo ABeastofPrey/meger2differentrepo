@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import { fromEvent } from 'rxjs';
 import { switchMap, tap, debounceTime } from 'rxjs/operators';
 import { DiagnosisService } from '../../services/diagnosis.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { CSProgressComponent } from '../../../../components/progress/progress.component';
 

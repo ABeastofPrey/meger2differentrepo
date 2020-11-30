@@ -1,9 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-  MatDialogModule,
-} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { DebugElement } from '@angular/core';
 
 import { SharedModule } from '../../../shared/shared.module';

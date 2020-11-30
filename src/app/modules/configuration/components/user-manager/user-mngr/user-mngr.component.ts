@@ -2,12 +2,10 @@ import { WebsocketService } from './../../../../core/services/websocket.service'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../../../modules/core/services/api.service';
 import { LoginService } from '../../../../../modules/core/services/login.service';
-import {
-  MatTableDataSource,
-  MatSort,
-  MatDialog,
-  MatSnackBar,
-} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { YesNoDialogComponent } from '../../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
@@ -27,7 +25,7 @@ export class UserMngrComponent implements OnInit {
     []
   );
 
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatSort) sort: MatSort;
 
   private words: {};
 

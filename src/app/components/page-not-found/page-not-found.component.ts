@@ -28,7 +28,7 @@ export class PageNotFoundComponent implements OnInit {
   private boxes: Box[] = [];
   private grp: Gripper = new Gripper();
   private gameOver = false;
-  @ViewChild('game', { static: false }) game: ElementRef;
+  @ViewChild('game') game: ElementRef;
 
   back() {
     this._location.back();

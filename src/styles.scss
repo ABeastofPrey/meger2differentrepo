@@ -117,6 +117,12 @@ html, body {
   align-items: center;
 }
 
+.monospace-font {
+  font-family: cs-monospace;
+  background: #ddd;
+  color: #0000ff;
+}
+
 .center-vertical-horizontal {
   display: flex;
   align-items: center;

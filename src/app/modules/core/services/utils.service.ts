@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { WebsocketService, errorString } from './websocket.service';
 import { TpStatService } from './tp-stat.service';
 import { TaskService } from './task.service';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdateDialogComponent } from '../../../components/update-dialog/update-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import {

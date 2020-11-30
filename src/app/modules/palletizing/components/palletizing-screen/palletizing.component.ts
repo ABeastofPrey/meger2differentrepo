@@ -8,7 +8,7 @@ import {
   ElementRef,
   HostListener,
 } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
 import {
   NewPalletOptions,
@@ -43,10 +43,10 @@ const kukaColor = new Color(255, 115, 0);
 })
 export class PalletizingComponent implements OnInit {
 
-  @ViewChild('palletPreview', { static: false }) preview: ElementRef;
-  @ViewChild('palletContainer', { static: false }) container: ElementRef;
+  @ViewChild('palletPreview') preview: ElementRef;
+  @ViewChild('palletContainer') container: ElementRef;
 
-  @ViewChild('wizard', { static: false }) wizard: PalletWizardComponent;
+  @ViewChild('wizard') wizard: PalletWizardComponent;
 
   // tslint:disable-next-line: no-any
   private iso: any = null;

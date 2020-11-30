@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {DashboardService} from '../../services/dashboard.service';
 import {trigger, transition, style, animate} from '@angular/animations';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {NewDashboardDialogComponent} from '../new-dashboard-dialog/new-dashboard-dialog.component';
 
 @Component({
@@ -29,7 +29,7 @@ import {NewDashboardDialogComponent} from '../new-dashboard-dialog/new-dashboard
 })
 export class DashboardScreenComponent implements OnInit {
 
-  @ViewChild('container', {static: false}) container: ElementRef;
+  @ViewChild('container') container: ElementRef;
   
   init = false;
 

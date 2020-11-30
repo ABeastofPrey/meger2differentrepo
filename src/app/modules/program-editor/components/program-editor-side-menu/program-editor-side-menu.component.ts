@@ -3,7 +3,8 @@ import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { TourService } from 'ngx-tour-md-menu';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { of as observableOf, Subscription } from 'rxjs';
 import {
   ProgramEditorService
@@ -97,7 +98,7 @@ class TreeNode {
   styleUrls: ['./program-editor-side-menu.component.css'],
 })
 export class ProgramEditorSideMenuComponent implements OnInit {
-  @ViewChild('menu', { static: false }) menu: ElementRef;
+  @ViewChild('menu') menu: ElementRef;
 
   nestedTreeControl: NestedTreeControl<TreeNode>;
   nestedDataSource: MatTreeNestedDataSource<TreeNode>;

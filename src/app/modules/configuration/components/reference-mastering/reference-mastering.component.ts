@@ -8,12 +8,10 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReferenceMasteringService } from '../../services/reference-mastering.service';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  MatSnackBar,
-  MatDialog,
-  MatHorizontalStepper,
-  MatSelectChange,
-} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatHorizontalStepper } from '@angular/material/stepper';
 import { TpStatService } from '../../../../modules/core/services/tp-stat.service';
 import { YesNoDialogComponent } from '../../../../components/yes-no-dialog/yes-no-dialog.component';
 import { Either, Maybe } from 'ramda-fantasy';
@@ -57,7 +55,7 @@ export class ReferenceMasteringComponent implements OnInit, OnDestroy {
   selectedPoint: string;
   isMoveingComplete = true;
   moveCommand: string;
-  @ViewChild('stepper', { static: false }) stepper: MatHorizontalStepper;
+  @ViewChild('stepper') stepper: MatHorizontalStepper;
 
   private notifier: Subject<boolean> = new Subject();
 

@@ -9,9 +9,9 @@
 				<mat-icon>help</mat-icon>
 				{{ 'trivia_title' | translate }}
 			</div>
-			<h3 *ngIf="trivia.length > 0">{{trivia[selectedIndex].str}}</h3>
+			<h3 *ngIf="trivia.length > 0" [innerHTML]="trivia[selectedIndex].str"></h3>
 		</div>
-		<div class="image-container">
+		<div class="image-container primary-border">
 			<div [style.background-image]="background"></div>
 		</div>
 	</div>

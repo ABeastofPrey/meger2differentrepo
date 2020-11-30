@@ -14,7 +14,7 @@ import { ProgramEditorService } from '../../../program-editor/services/program-e
 import { SysLogWatcherService } from '../../services/sys-log-watcher.service';
 import { SystemLog } from '../../enums/sys-log.model';
 import { Router } from '@angular/router';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({selector: 'app-log-profile', template: ''})
 export class LogProfileComponent {

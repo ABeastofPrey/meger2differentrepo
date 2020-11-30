@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, EventEmitter, Output } from '@ang
 import { Observable, zip, from, of } from 'rxjs';
 import { map as rxjsMap, tap, filter, switchMap, debounceTime } from 'rxjs/operators';
 import { TraceService, Trace, TraceStatus } from '../../../services/trace.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { isNotUndefined, isUndefined } from 'ramda-adjunct';
 import { YesNoDialogComponent } from '../../../../../components/yes-no-dialog/yes-no-dialog.component';
 

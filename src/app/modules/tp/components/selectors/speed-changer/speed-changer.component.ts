@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { MatSliderChange, MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSliderChange } from '@angular/material/slider';
 import { WebsocketService, TpStatService, DataService } from '../../../../core';
 import { Input } from '@angular/core';
 

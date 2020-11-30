@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { DataService, WebsocketService } from '../../../core';
 import { ProgramEditorService } from '../../services/program-editor.service';
 import { GripperSelectorComponent } from '../dialogs/gripper-selector/gripper-selector.component';

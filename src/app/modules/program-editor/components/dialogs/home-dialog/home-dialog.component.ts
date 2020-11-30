@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  MatDialogRef,
-  ErrorStateMatcher,
-} from '@angular/material';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { HomeDialogService } from '../../../services/home-dialog.service';
 import {
   FormControl,

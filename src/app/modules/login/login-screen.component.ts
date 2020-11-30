@@ -4,7 +4,7 @@ import { LoginService } from '../../modules/core/services/login.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Errors } from '../core/models/errors.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ApiService, WebsocketService, MCQueryResponse } from '../core';
 import { environment } from '../../../environments/environment';
 import {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
 import { LangService } from '../../../core/services/lang.service';
 import { WebsocketService, LoginService, ApiService } from '../../../core';
 import { environment } from '../../../../../environments/environment';

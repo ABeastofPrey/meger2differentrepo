@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { fromEvent } from 'rxjs';
 import {
   InputType, LAYOUT_NUMBER2,LAYOUT_STRING_LOWER,LAYOUT_STRING_CAPITAL, LAYOUT_STRING_SYMBOL, DATA_TYPE, ILayoutOfNumber, IKeyboardDialogData
@@ -20,7 +20,7 @@ export class CustomKeyBoardDialogComponent implements OnInit,OnDestroy {
     public caseConversion: boolean = false;
     public keyBoardType: string = "";
 
-    @ViewChild('customKeyBoard', { static: false }) customKeyBoard: any;
+    @ViewChild('customKeyBoard') customKeyBoard: any;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public dialogData: IKeyboardDialogData, public dialogRef: MatDialogRef<CustomKeyBoardDialogComponent>,

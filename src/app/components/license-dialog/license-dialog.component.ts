@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { environment as env } from '../../../environments/environment';
 import { from, combineLatest } from 'rxjs';
 import { CommonService } from '../../modules/core/services/common.service';
@@ -15,7 +15,7 @@ export class LicenseDialogComponent implements OnInit {
   license: string | null = null;
   useInKukaAbout = false;
 
-  @ViewChild('container', { static: false }) container?: ElementRef<HTMLElement>;
+  @ViewChild('container') container?: ElementRef<HTMLElement>;
 
   constructor(
     private http: HttpClient,

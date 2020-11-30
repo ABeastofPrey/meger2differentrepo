@@ -19,7 +19,7 @@ declare var Plotly;
 })
 export class RecordGraphComponent implements OnInit {
   
-  @ViewChild('graph', { static: false }) graph: ElementRef;
+  @ViewChild('graph') graph: ElementRef;
   
   @Input() chartData: RecordTab;
 

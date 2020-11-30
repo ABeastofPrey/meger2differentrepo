@@ -8,13 +8,11 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import {
-  MatSnackBar,
-  MatDialog,
-  MatSlideToggleChange,
-  MatCheckboxChange,
-  MatHorizontalStepper,
-} from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatHorizontalStepper } from '@angular/material/stepper';
 import {
   FormGroup,
   FormBuilder,
@@ -83,11 +81,11 @@ export class PalletWizardComponent implements OnInit {
 
   public showStep3KeyboardError: boolean = false;
 
-  @ViewChild('palletPreviewStep1', { static: false }) preview1: ElementRef;
-  @ViewChild('palletContainer1', { static: false }) container: ElementRef;
-  @ViewChild('designer', { static: false }) designer: PalletLevelDesignerComponent;
-  @ViewChild('designer2', { static: false }) designer2: PalletLevelDesignerComponent;
-  @ViewChild('stepper', { static: false }) stepper: MatHorizontalStepper;
+  @ViewChild('palletPreviewStep1') preview1: ElementRef;
+  @ViewChild('palletContainer1') container: ElementRef;
+  @ViewChild('designer') designer: PalletLevelDesignerComponent;
+  @ViewChild('designer2') designer2: PalletLevelDesignerComponent;
+  @ViewChild('stepper') stepper: MatHorizontalStepper;
 
   @ViewChildren(CustomKeyBoardComponent) customKeyboards: QueryList<CustomKeyBoardComponent>;
 
@@ -125,7 +123,8 @@ export class PalletWizardComponent implements OnInit {
     private dialog: MatDialog,
     private api: ApiService,
     private utils: UtilsService,
-    private trn: TranslateService
+    private trn: TranslateService,
+    private ref: ElementRef
   ) {
     this.trn
       .get(['dismiss', 'button.save', 'button.discard'])
@@ -1114,7 +1113,6 @@ export class PalletWizardComponent implements OnInit {
         return Promise.resolve(null);
       });
     }
-    return Promise.resolve(null);
   }
 
   private validatePosX(changed: string, control: AbstractControl) {
@@ -1155,7 +1153,6 @@ export class PalletWizardComponent implements OnInit {
         return Promise.resolve(null);
       });
     }
-    return Promise.resolve(null);
   }
 
   private validatePosY(changed: string, control: AbstractControl) {
@@ -1192,7 +1189,6 @@ export class PalletWizardComponent implements OnInit {
         return Promise.resolve(null);
       });
     }
-    return Promise.resolve(null);
   }
 
   private validateFlag(flag: number, control: AbstractControl) {
@@ -1408,6 +1404,7 @@ export class PalletWizardComponent implements OnInit {
   ngOnInit() {
     this.initControls();
     this.setOriginPic(0);
+    
   }
 
   /*ngDoCheck() {
@@ -1857,23 +1854,56 @@ export class PalletWizardComponent implements OnInit {
   async ngAfterViewInit() {
     await this.getPalletInfo();
     await this.refreshDesigners();
+
+    // HANDLE TAB CLICK EVENT
+    this.ref.nativeElement.querySelectorAll('mat-step-header').forEach(item => {
+      item.addEventListener('click', event => {
+        const index = event.currentTarget.ariaPosInSet - 1;
+        const prev = index - 1;
+        if (prev < 0) return;
+        const isCustom = this.dataService.selectedPallet.type === 'CUSTOM';
+        const isDiffOdd = isCustom && this.dataService.selectedPallet.diffOddEven;
+        let ctrl: FormGroup;
+        switch (prev) {
+          case 0:
+            ctrl = this.step1;
+            break;
+          case 1:
+            ctrl = isCustom ? null : this.step2;
+            break;
+          case 2:
+            ctrl = isCustom ? (isDiffOdd ? null : this.step2) : this.step3;
+            break;
+          case 3:
+            ctrl = isCustom ? (isDiffOdd ? this.step2 : this.step3) : this.step4;
+            break;
+          case 4:
+            ctrl = isCustom ? (isDiffOdd ? this.step3 : this.step4) : null;
+            break;
+          default:
+            ctrl = null;
+        }
+        if (ctrl) {
+          Object.keys(ctrl.controls).forEach(key => {
+            this.setErrorsKeyboard([key], ctrl.controls[key].invalid ? {invalid: true} : null);
+          });
+        }
+       });
+    });
+
   }
 
-  refreshDesigners() : Promise<any> {
-    return new Promise(resolve=>{
-      setTimeout(async()=>{
-        let count = 0;
-        if (this.designer) {
-          this.designer.refresh();
-          count += await this.designer.onPalletInfoLoaded();
-        }
-        if (this.designer2) {
-          this.designer2.refresh();
-          count += await this.designer2.onPalletInfoLoaded();
-        }
-        resolve();
-      },0);
-    });
+  async refreshDesigners() {
+    let count = 0;
+    if (this.designer) {
+      this.designer.refresh();
+      count += await this.designer.onPalletInfoLoaded();
+    }
+    if (this.designer2) {
+      this.designer2.refresh();
+      count += await this.designer2.onPalletInfoLoaded();
+    }
+    return count;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -1947,6 +1977,15 @@ export class PalletWizardComponent implements OnInit {
     return this.ws.query('?PLT_STORE_PALLET_DATA("' + name + '")');
   }
 
+  async discard() {
+    const name = this.dataService.selectedPallet.name;
+    await this.ws.query('?PLT_RESTORE_PALLET("' + name + '")');
+    setTimeout(()=>{
+      this.customKeyboards = null;
+      this.getPalletInfo();
+    }, 200);
+  }
+
   closeDialog(prompt: boolean) {
     if (prompt) {
       const name = this.dataService.selectedPallet.name;
@@ -1965,12 +2004,7 @@ export class PalletWizardComponent implements OnInit {
           if (ret) {
             this.save();
           } else {
-            this.ws.query('?PLT_RESTORE_PALLET("' + name + '")').then(ret=>{
-              setTimeout(()=>{
-                this.customKeyboards = null;
-                this.getPalletInfo();
-              }, 200);
-            });
+            this.discard();
           }
           this.closed.emit();
         });
@@ -2008,13 +2042,15 @@ export class PalletWizardComponent implements OnInit {
 
   public setFormGroupItem(value: any,item: string,formGroup: FormGroup,onWindowResize: boolean = false,markAsDirty: boolean = true){
     if(!formGroup.controls || !formGroup.controls[item] || formGroup.controls[item].value === value) return;
-    if(isNaN(value)){
+    if(typeof value !== 'number'){
       formGroup.controls[item].setErrors({invalid: true});
+      this.setErrorsKeyboard([item], {invalid: true});
       return;
     }
     markAsDirty && formGroup.controls[item].markAsDirty();
     formGroup.controls[item].setValue(value);
     formGroup.controls[item].setErrors(null);
+    this.setErrorsKeyboard([item], null);
     onWindowResize && this.onWindowResize();
   }
 
@@ -2090,7 +2126,9 @@ onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup){
   if (item === 'index' && formGroup.controls['index'].value !== 'custom') {
     valid = true;
   }
-   formGroup.controls[item].setErrors(valid ? null : {invalid: true});
+  const err = valid ? null : {invalid: true};
+   formGroup.controls[item].setErrors(err);
+   this.setErrorsKeyboard([item], err);
 }
 
  private step2Origin(selectedPallet){
@@ -2165,7 +2203,7 @@ onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup){
 
  }
 
-   private setErrorsKeyboard(items: any[], error){
+   private setErrorsKeyboard(items: string[], error){
      if(!this.customKeyboards) return;
      const children: any[] = this.customKeyboards['_results'] || [];
      children.map(node=>{

@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivationService } from './activation.service';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   compose, invoker, applySpec, identity, converge,
   toLower, ifElse, anyPass, then, bind, tap, equals,
@@ -30,7 +31,7 @@ export class ActivationComponent implements OnInit {
   private machineId = '';
   private verficationCode = '';
   public isValid = false;
-  @ViewChild('customKeyBoard', { static: false }) customKeyBoard: any;
+  @ViewChild('customKeyBoard') customKeyBoard: any;
 
   constructor(
     public dialogRef: MatDialogRef<ActivationComponent, string>,

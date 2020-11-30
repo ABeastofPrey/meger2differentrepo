@@ -6,7 +6,8 @@
 	<h3>{{ 'payloads.ident.subtitle' | translate }}</h3>
   <div class="time">
     <div *ngIf="!started">{{ 'payloads.ident.moving' | translate }}</div>
-    <div *ngIf="started && !finished">{{ timeLeft }}</div>
+    <div *ngIf="started && !finished && timeLeft > 0">{{ timeLeft }}</div>
+    <div *ngIf="started && !finished && timeLeft === 0">{{ 'payloads.ident.zero' | translate }}</div>
     <div *ngIf="finished">{{ 'payloads.ident.finish' | translate }}</div>
   </div>
 	<div class="content">

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RobotService } from '../../../core/services/robot.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { RobotModel } from '../../../core/models/robot.model';
 import { RobotSelectionComponent } from '../../../../components/robot-selection/robot-selection.component';
 import {

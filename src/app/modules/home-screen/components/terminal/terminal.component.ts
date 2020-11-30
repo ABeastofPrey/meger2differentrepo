@@ -15,7 +15,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { KeywordService } from '../../../core/services/keywords.service';
 import { CommonService } from '../../../core/services/common.service';
 import { LoginService } from '../../../core';
-import { MatInput } from '@angular/material';
+import { MatInput } from '@angular/material/input';
 import { trim, equals, complement, compose, indexOf } from 'ramda';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -49,9 +49,9 @@ declare var ace: any;
 })
 export class TerminalComponent implements OnInit {
   
-  @ViewChild('wrapper', { static: false }) wrapper!: ElementRef;
-  @ViewChild('upload', { static: false }) uploadInput!: ElementRef;
-  @ViewChild('editorDiv', { static: false }) editorDiv!: ElementRef;
+  @ViewChild('wrapper') wrapper!: ElementRef;
+  @ViewChild('upload') uploadInput!: ElementRef;
+  @ViewChild('editorDiv') editorDiv!: ElementRef;
 
   private notifier: Subject<boolean> = new Subject();
   private lastCmdIndex = -1;

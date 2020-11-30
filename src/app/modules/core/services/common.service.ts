@@ -1,5 +1,5 @@
 import { MCProject } from './../models/project/mc-project.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Injectable } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
 import * as screenfull from 'screenfull';

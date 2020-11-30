@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, Input, ViewChild } from '@angular/core';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { NewDashboardParameterDialogComponent } from '../new-dashboard-parameter-dialog/new-dashboard-parameter-dialog.component';
 import {
   DashboardWindow,
@@ -28,7 +29,7 @@ export class DashboardWindowComponent implements OnInit {
   @Input() container: ElementRef;
   @Input() params: DashboardWindow;
 
-  @ViewChild('window', { static: false }) window: ElementRef;
+  @ViewChild('window') window: ElementRef;
 
   private words: {};
 

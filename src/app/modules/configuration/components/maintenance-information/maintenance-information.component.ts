@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MainTable3List, MainTable3Data } from '../../services/maintenance.enum';
 import { MaintenanceService } from '../../services/maintenance.service';
 import { MCQueryResponse } from '../../../core/services/websocket.service';
-import { MatTable } from '@angular/material';
+import { MatTable } from '@angular/material/table';
 
 @Component({
     selector: 'app-maintenance-information',
@@ -16,7 +16,7 @@ export class MaintenanceInformationComponent implements OnInit {
     public displayedColumns: string[] = ['moduleName', 'performTime', 'surplus'];
     public dataSource: MainTable3List[] = [];
 
-    @ViewChild('inforTable', { static: false })
+    @ViewChild('inforTable')
     inforTable: MatTable<MainTable3List>;
 
     ngOnInit() {

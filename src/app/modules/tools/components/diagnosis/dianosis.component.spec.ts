@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UnitTestModule } from '../../../shared/unit-test.module';
 import { DiagnosisComponent } from './diagnosis.component';
 import { DiagnosisService } from '../../services/diagnosis.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 
 const fakeService = jasmine.createSpyObj('DiagnosisService', [

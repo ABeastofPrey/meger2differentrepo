@@ -1,5 +1,7 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
-import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA, ErrorStateMatcher } from '@angular/material';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   DataService,
   WebsocketService,

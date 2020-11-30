@@ -4,7 +4,7 @@ import { TraceCommonComponent } from './trace-common.component';
 import { MaterialComponentsModule } from '../../../../material-components/material-components.module';
 import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';

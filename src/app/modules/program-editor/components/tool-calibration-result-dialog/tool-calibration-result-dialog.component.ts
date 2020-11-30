@@ -1,9 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {
-  MatTableDataSource,
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { WebsocketService, MCQueryResponse } from '../../../core';
 
 import {

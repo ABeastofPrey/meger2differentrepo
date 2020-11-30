@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MCQueryResponse, WebsocketService } from './websocket.service';
 import { TranslateService } from '@ngx-translate/core';
 import {UtilsService} from '../../../modules/core/services/utils.service';

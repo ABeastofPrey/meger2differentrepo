@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SysIO } from '../../../../../../../src/app/modules/gripper-screen/components/gripper-screen/gripper-screen.component';
 import { ApiService, TpStatService, UtilsService, WebsocketService } from '../../../../../../../src/app/modules/core';
-import { MatCheckboxChange, MatSelectChange } from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatSelectChange } from '@angular/material/select';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SysLogSnackBarService } from '../../../../../../../src/app/modules/sys-log/services/sys-log-snack-bar.service';
 

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { isNull } from 'ramda-adjunct';
 import { and, when, always, equals, identity } from 'ramda';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, Inject, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommandType, CommandOptions, GetCommandOption, CommandOptionAuth } from '../../enums/vision-command.enum';
 import { getVisionCommand, selectStationName, updateVisionCommand } from '../../actions/vision-command.actions';

@@ -27,7 +27,8 @@ import {
   KeywordService,
   LoginService,
 } from '../../../core';
-import { MatSnackBar, MatInput, MatDialog } from '@angular/material';
+import { MatInput } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../core/services/common.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
@@ -35,6 +36,7 @@ import { environment } from '../../../../../environments/environment';
 import { UtilsService } from '../../../core/services/utils.service';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 import { CustomKeyBoardDialogComponent } from '../../../../components/custom-key-board/custom-key-board-dialog/custom-key-board-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 declare var ace;
 
 const isBKGFile = (fileName: string): boolean => fileName.split('.').pop().toUpperCase() === 'BKG';
@@ -45,7 +47,7 @@ const isBKGFile = (fileName: string): boolean => fileName.split('.').pop().toUpp
   styleUrls: ['./program-editor-ace.component.css'],
 })
 export class ProgramEditorAceComponent implements OnInit {
-  @ViewChild('ace', { static: false }) editorDiv: ElementRef;
+  @ViewChild('ace') editorDiv: ElementRef;
   // tslint:disable-next-line: no-any
   private editor: any;
   private Range = ace.require('ace/range').Range;
@@ -818,7 +820,7 @@ export class ProgramEditorAceComponent implements OnInit {
       if(res.delete){
         this.deleteLine();
         return;
-      }
+  }
         this.onDummyKeyboardClose(res.value);
     });
   }

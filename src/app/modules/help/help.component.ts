@@ -3,7 +3,7 @@ import { CommonService } from './../core/services/common.service';
 import { Component, OnInit } from '@angular/core';
 import { TpStatService } from '../core';
 import { environment } from '../../../environments/environment';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ShortcutsComponent } from './components/shortcuts/shortcuts.component';
 import { UtilsService } from '../core/services/utils.service';
 import { ActivationComponent } from './components/activation/activation.component';

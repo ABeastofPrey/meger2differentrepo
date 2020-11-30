@@ -23,7 +23,8 @@ import {
   insertComma,
   combineNames,
 } from './position-trigger.component';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedModule } from '../../../../shared/shared.module';
 import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

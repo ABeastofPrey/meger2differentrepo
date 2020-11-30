@@ -46,6 +46,10 @@ $material-semi-black: rgba(0,0,0,0.54);
     color: mat-color($material-servotronix-primary, 500);
   }
 
+  .primary-border {
+    border-color: mat-color($material-servotronix-primary, 500);
+  }
+
   main-menu li:hover:not(.disabled), main-menu li.selected:not(.disabled) {
     color: #fff;
   }

@@ -1,7 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { WebsocketService, MCQueryResponse, errorString } from './websocket.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {GroupManagerService} from './group-manager.service';
 import {ApiService} from './api.service';
 import {BehaviorSubject} from 'rxjs';

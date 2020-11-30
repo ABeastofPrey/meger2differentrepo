@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { fromEvent, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators'
-import { MatButton } from '@angular/material';
+import { MatButton } from '@angular/material/button';
 import { FormControl } from '@angular/forms';
 import { Trace } from '../../../services/trace.service';
 
@@ -16,7 +16,7 @@ import { Trace } from '../../../services/trace.service';
 })
 export class TraceNewComponent implements OnInit, OnDestroy, AfterViewInit {
     // @ViewChild('newTraceInput', { static: true }) newTraceInput: ElementRef;
-    @ViewChild('createTraceBtn', { static: false }) createTraceBtn: MatButton;
+    @ViewChild('createTraceBtn') createTraceBtn: MatButton;
     @Output() createTraceEvent: EventEmitter<string> = new EventEmitter<string>();
     @Input() traceList: Trace[] = [];
     @Input() label: string;

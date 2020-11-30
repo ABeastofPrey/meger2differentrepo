@@ -225,6 +225,9 @@
 							<div *ngIf="stat.enabled" class="warn">
 								{{ 'payloads.ident.robot_enabled' | translate }}
 							</div>
+							<div *ngIf="!stat.enabled && utils.isTablet && stat.mode !== 'T2'" class="warn">
+								{{ 'payloads.ident.err_t2' | translate }}
+							</div>
 						</td>
 					</tr>
 				</tbody>

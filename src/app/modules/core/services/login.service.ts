@@ -8,7 +8,8 @@ import { JwtService } from './jwt.service';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { User, PermissionCode } from '../models/user.model';
 import { LicenseDialogComponent } from '../../../components/license-dialog/license-dialog.component';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Injectable()

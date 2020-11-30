@@ -3,7 +3,7 @@ import { WebsocketService, MCQueryResponse, errorString } from './websocket.serv
 import { ErrorFrame } from '../models/error-frame.model';
 import { TpStatService } from './tp-stat.service';
 import { TaskFilterPipe } from '../../task-manager/task-filter.pipe';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 import { SysLogSnackBarService } from '../../sys-log/services/sys-log-snack-bar.service';

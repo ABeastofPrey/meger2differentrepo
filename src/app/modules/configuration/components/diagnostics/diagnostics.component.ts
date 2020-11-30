@@ -30,7 +30,7 @@ export class DiagnosticsComponent implements OnInit {
   isRefreshing = false;
   interval: number;
   env = environment;
-  @ViewChild('container', { read: ViewContainerRef, static: false })
+  @ViewChild('container', { read: ViewContainerRef })
   ref: ViewContainerRef;
 
   private words: {};
@@ -41,7 +41,7 @@ export class DiagnosticsComponent implements OnInit {
   private mcuInterval: number | undefined;
   mcuConnected = false;
 
-  @ViewChild('topology', {static: false}) topology: TopologyComponent;
+  @ViewChild('topology') topology: TopologyComponent;
 
   constructor(
     private ws: WebsocketService,

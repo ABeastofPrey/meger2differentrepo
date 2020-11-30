@@ -2,7 +2,7 @@ import { LoginService } from './../core/services/login.service';
 import { TpStatService } from './../core/services/tp-stat.service';
 import { TranslateService } from '@ngx-translate/core';
 import { YesNoDialogComponent } from './../../components/yes-no-dialog/yes-no-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { DataService } from './../core/services/data.service';
 import { WebsocketService } from './../core/services/websocket.service';
 import { JogScreenComponent } from './components/jogscreen/jogscreen.component';

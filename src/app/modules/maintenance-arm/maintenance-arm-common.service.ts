@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { WebsocketService, TpStatService } from '../core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MaintenanceDialogComponent } from './maintenance-dialog/maintenance-dialog.component';
 import { ParamsType, CompareResult, RARM_ROBOT_STATUS } from './maintenance-arm.model';

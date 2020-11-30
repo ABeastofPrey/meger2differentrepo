@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { WebsocketService } from '../../core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { NewDialogTemplateComponent } from '../components/new-dialog-template/new-dialog-template.component';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';

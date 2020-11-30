@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiService, UploadResult } from './../../../core/services/api.service';
 import { Component, OnInit } from '@angular/core';
 import { UtilsService } from '../../../core/services/utils.service';

@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { Actions, ofType } from '@ngrx/effects';
 import { and, when, always, identity, concat, find, reduce, filter, compose, useWith } from 'ramda';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, Inject, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { JumpxCommand } from '../../models/jumpx-command.model';
 import { CommandType, CommandOptions, CommandOptionAuth, GetCommandOption } from '../../enums/jumpx-command.enums';

@@ -1,7 +1,8 @@
 import { GroupManagerService } from './../../../core/services/group-manager.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { WatchService, WatchVar } from '../../../../modules/core/services/watch.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { WebsocketService, MCQueryResponse, ApiService, errorString } from '../../../core';
 import { RecordDialogComponent, RecordParams } from '../../../../components/record-dialog/record-dialog.component';
 import { RecordService } from '../../../core/services/record.service';

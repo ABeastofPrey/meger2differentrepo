@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Feature } from '../../models/feature.model';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { GroupManagerService } from '../../../core';
 
 @Component({

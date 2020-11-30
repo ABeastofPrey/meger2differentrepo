@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { DataService, WebsocketService, MCQueryResponse } from '../../../core';
 import { TPVariable } from '../../../core/models/tp/tp-variable.model';
-import { MatTableDataSource, MatDialog, MatSnackBar, MatSort } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TPVariableType } from '../../../core/models/tp/tp-variable-type.model';
 import { AddFrameComponent } from '../add-frame/add-frame.component';
@@ -31,7 +34,7 @@ export class FramesComponent implements OnInit {
   );
 
   // To sort the table
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatSort) sort: MatSort;
 
   _legend: string[] = [];
   _value: Array<{ value: number }>;

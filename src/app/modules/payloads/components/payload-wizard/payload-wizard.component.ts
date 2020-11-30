@@ -2,7 +2,8 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { PayloadResultsComponent } from './../payload-results/payload-results.component';
 import { CommonService } from './../../../core/services/common.service';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { NewPayloadDialogComponent } from '../new-payload-dialog/new-payload-dialog.component';
 import {
   DataService,
@@ -62,13 +63,12 @@ export class PayloadWizardComponent implements OnInit {
     public data: DataService,
     private dialog: MatDialog,
     private ws: WebsocketService,
-    private snack: MatSnackBar,
     private snackbarService: SysLogSnackBarService,
     private trn: TranslateService,
     public login: LoginService,
     private stat: TpStatService,
     private cmn: CommonService,
-    private utils: UtilsService
+    public utils: UtilsService
   ) {
     this.trn
       .get(['payloads', 'button.delete', 'button.cancel', 'changeOK'])

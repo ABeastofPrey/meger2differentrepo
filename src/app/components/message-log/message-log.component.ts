@@ -33,7 +33,7 @@ const MIN_REFRESH_RATE = 200;
 })
 export class MessageLogComponent implements OnInit {
 
-  @ViewChild('wrapper', { static: false }) msgContainer: CdkVirtualScrollViewport;
+  @ViewChild('wrapper') msgContainer: CdkVirtualScrollViewport;
 
   style: object = {};
   contextMenuShown = false;
@@ -82,6 +82,7 @@ export class MessageLogComponent implements OnInit {
     }
   
     onContextMenu(e: MouseEvent) {
+      console.log(e);
       e.preventDefault();
       this.contextMenuX = e.offsetX + 8;
       this.contextMenuY = e.offsetY + 8;

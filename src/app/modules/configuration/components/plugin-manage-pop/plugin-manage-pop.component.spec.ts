@@ -5,7 +5,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { UnitTestModule } from '../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PluginManageService } from '../../services/plugin.manage.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { of } from 'rxjs';
 
 const fakePluginManageService = jasmine.createSpyObj('PluginManageService', ['getUnstallPluginDepend']);

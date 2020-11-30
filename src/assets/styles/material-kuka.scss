@@ -113,6 +113,10 @@ $kuka-theme: mat-light-theme($material-kuka-primary, $material-kuka-accent, $mat
     color: mat-color($material-kuka-primary, 800);
   }
 
+  .primary-border {
+    border-color: mat-color($material-kuka-primary, 600);
+  }
+
   .mat-subtitle-color {
     color: $material-semi-black;
   }

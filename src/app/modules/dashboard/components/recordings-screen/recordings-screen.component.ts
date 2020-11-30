@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {trigger, transition, style, animate} from '@angular/animations';
 import {RecordService, RecordTab} from '../../../core/services/record.service';
 import {environment} from '../../../../../environments/environment';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {GraphDerivativeComponent} from '../../../../components/graph-derivative/graph-derivative.component';
 import {ApiService} from '../../../core';
 import {ExternalGraphDialogComponent} from '../external-graph-dialog/external-graph-dialog.component';

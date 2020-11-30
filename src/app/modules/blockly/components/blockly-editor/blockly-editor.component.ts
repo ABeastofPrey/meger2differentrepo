@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import {MatSnackBar, MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {Subscription} from 'rxjs';
 import {ProgramEditorService} from '../../../program-editor/services/program-editor.service';
 import {DataService, WebsocketService, ApiService, LoginService, MCQueryResponse, MCFile} from '../../../core';

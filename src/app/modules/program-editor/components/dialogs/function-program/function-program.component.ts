@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, ValidatorFn, Validators } from '@angular/forms';
-import { MatDialogRef, MatTable, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
 import { ProgramEditorService } from '../../../services/program-editor.service';
 
 interface VariableList {
@@ -28,8 +29,7 @@ export class FunctionProgramComponent implements OnInit {
         }
     ) { }
 
-    @ViewChild('parameterTable', { static: false })
-    'parameterTable': MatTable<VariableList>;
+    @ViewChild('parameterTable') parameterTable: MatTable<VariableList>;
 
     public existParameter: string[] = [];
     public dataType: DataTypeList[] = [

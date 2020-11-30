@@ -24,6 +24,8 @@ export class CanDeactivateGuard implements CanDeactivate<PalletizingComponent> {
               resolve(true);
             });
           } else if (ret) {
+            // discard changes
+            component.wizard.discard();
             resolve(true);
           } else {
             resolve(false);

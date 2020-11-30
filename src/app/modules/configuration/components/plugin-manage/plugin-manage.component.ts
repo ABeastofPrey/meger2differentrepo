@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { MatSort, MatTableDataSource, PageEvent, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { LoginService, WebsocketService } from '../../../../modules/core';
 import { Collation, PMINFO, PageSet } from '../../services/plugin.manage.enum';
 import { PluginManageService } from '../../services/plugin.manage.service';
@@ -21,9 +24,9 @@ export class PluginManageComponent implements OnInit {
         private cdRef: ChangeDetectorRef,
         private lang: LangService) { }
 
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
-    @ViewChild("selectPlugin", { static: false }) selectPlugin: ElementRef;
-    @ViewChild("refreshData", { static: false }) refreshData: ElementRef;
+    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild("selectPlugin") selectPlugin: ElementRef;
+    @ViewChild("refreshData") refreshData: ElementRef;
 
     public displayedColumns: string[] = ['Name', 'Version', 'Date', 'State'];
     public dataSource = new MatTableDataSource([]);

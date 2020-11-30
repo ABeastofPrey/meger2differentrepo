@@ -1,7 +1,8 @@
 import { Router, NavigationEnd } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { IPosition } from 'angular2-draggable';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {WebsocketService } from '../../../modules/core/services/websocket.service';
 import { ScreenManagerService } from '../../../modules/core/services/screen-manager.service';
 import { ApiService } from '../../../modules/core/services/api.service';

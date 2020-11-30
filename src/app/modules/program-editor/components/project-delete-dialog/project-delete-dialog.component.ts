@@ -1,14 +1,9 @@
 import { SysLogSnackBarService } from './../../../sys-log/services/sys-log-snack-bar.service';
 import { ProjectManagerService } from './../../../core/services/project-manager.service';
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
-import {
-  MatDialogRef,
-  MatChipInputEvent,
-  MatAutocomplete,
-  MatAutocompleteSelectedEvent,
-  MAT_DIALOG_DATA,
-  MatDialog,
-} from '@angular/material';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { WebsocketService, MCQueryResponse } from '../../../core';
 import { FormControl, Validators } from '@angular/forms';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
@@ -29,8 +24,8 @@ export class ProjectDeleteDialogComponent implements OnInit {
   separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
   current = false;
 
-  @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
-  @ViewChild('prjInput', { static: false }) prjInput: ElementRef<
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  @ViewChild('prjInput') prjInput: ElementRef<
     HTMLInputElement
   >;
 

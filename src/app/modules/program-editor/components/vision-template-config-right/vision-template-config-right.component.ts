@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input, SimpleChanges } from '@angular/core';
-import { MatTable } from '@angular/material';
+import { MatTable } from '@angular/material/table';
 import { FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { VisionService } from '../../services/vision.service';
 import { RespondDataTable, RespondData, RespondError, Respondstatus, ResDataList, List, TemplateRespondData, CustomRespondError, CustomRespondStatus, CustomRespondData, AddCustomRespondData } from '../../services/vision.enum';
@@ -14,8 +14,7 @@ import { isUndefined } from 'ramda-adjunct';
 })
 export class VisionTemplateConfigRightComponent implements OnInit {
 
-    @ViewChild('respondDataTable', { static: false })
-    'respondDataTable': MatTable<RespondDataTable>;
+    @ViewChild('respondDataTable') respondDataTable: MatTable<RespondDataTable>;
 
     @Input() stationName: string;
     @Input() typeList: string[];

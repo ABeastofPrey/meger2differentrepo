@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { FormBuilder, Validators, FormGroup, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ApiService, DataService, MCQueryResponse } from '../../../../core/services';
 import { TPVariable } from '../../../../core/models/tp/tp-variable.model';

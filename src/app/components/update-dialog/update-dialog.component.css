@@ -3,11 +3,25 @@
   flex-direction: column;
   height: 100%;
   position: relative;
+  padding: 24px;
+  box-sizing: border-box;
+}
+h1 {
+  font-weight: bold;
+  font-size: 36px;
+}
+mat-progress-bar {
+  margin-bottom: 8px;
+}
+h3 {
+  font-size: 24px;
+  margin-bottom: 8px;
 }
 .info {
   flex: 1;
   display: flex;
   flex-direction: row;
+  border-radius: 6px;
 }
 .info-main {
   padding: 24px;
@@ -21,11 +35,13 @@
 .info-main h3 {
   flex: 1;
   padding: 16px;
-  -webkit-box-shadow: inset 2px 2px 8px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: inset 2px 2px 8px 0px rgba(0,0,0,0.75);
-  box-shadow: inset 2px 2px 8px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: inset 2px 2px 4px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: inset 2px 2px 4px 0px rgba(0,0,0,0.75);
+  box-shadow: inset 2px 2px 4px 0px rgba(0,0,0,0.75);
   background: #fff;
   color: #222;
+  font-size: 24px;
+  line-height: 1.5;
 }
 .info-main img {
   width: 100%;
@@ -40,7 +56,8 @@
   background-position: center;
   transition: background-image 1s ease-in-out;
   background-color: #fff;
-  border: 16px solid #fff;
+  border-width: 16px 16px 16px 0;
+  border-style: solid;
   box-sizing: border-box;
 }
 .image-container div {
@@ -52,11 +69,14 @@
   background-size: contain;
   background-position: center;
   transition: background-image 1s ease-in-out;
-  box-shadow: inset 2px 2px 8px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: inset 2px 2px 4px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: inset 2px 2px 4px 0px rgba(0,0,0,0.75);
+  box-shadow: inset 2px 2px 4px 0px rgba(0,0,0,0.75);
 }
 .title {
-  font-size: 22px;
+  font-size: 24px;
   line-height: 2;
+  font-weight: bold;
 }
 .title mat-icon {
   margin-right: 8px;

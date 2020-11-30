@@ -1,11 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA, EventEmitter } from '@angular/core';
-import {
-  MatSnackBar,
-  MatDialog,
-  MatHorizontalStepper,
-  MatSelectChange,
-} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatHorizontalStepper } from '@angular/material/stepper';
 import { TpStatService } from '../../../../modules/core/services/tp-stat.service';
 import { SharedModule } from '../../../shared/shared.module';
 import { UnitTestModule } from '../../../shared/unit-test.module';

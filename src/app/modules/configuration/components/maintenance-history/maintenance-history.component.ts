@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MainTable2List, MainTable2Data } from '../../services/maintenance.enum';
 import { MaintenanceService } from '../../services/maintenance.service';
-import { MatTable } from '@angular/material';
+import { MatTable } from '@angular/material/table';
 import { MCQueryResponse } from '../../../core/services/websocket.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class MaintenanceHistoryComponent implements OnInit {
 
     public displayedColumns: string[] = ['moduleName', 'date', 'person', 'orderNum', 'comment'];
     public dataSource: MainTable2List[] = [];
-    @ViewChild('historyTable', { static: false })
+    @ViewChild('historyTable')
     historyTable: MatTable<MainTable2List>;
 
     ngOnInit() {

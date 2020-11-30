@@ -1,12 +1,6 @@
 import { CommonService } from './../../../core/services/common.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import {
-  MatTableDataSource,
-  MatSort,
-  MatSnackBar,
-  MatDialog,
-} from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TPVariable } from '../../../core/models/tp/tp-variable.model';
 import {
@@ -22,10 +16,13 @@ import { AddVarComponent } from '../add-var/add-var.component';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject, throwError } from 'rxjs';
-import { UtilsService } from '../../../core/services/utils.service';
 import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-bar.service';
 import { catchError } from 'rxjs/internal/operators/catchError';
 import { resolve } from 'dns';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSort } from '@angular/material/sort';
 // import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 
 const BASE_COLS = ['select', 'name', 'arrIndex'];
@@ -67,6 +64,9 @@ export class DataScreenComponent implements OnInit {
   private setTimeOutRefreshVarId: any;
 
   private buildVariableTimeoutId: any;
+
+
+
   /*
     weather or not to display the mat-table element
   */
@@ -168,11 +168,9 @@ export class DataScreenComponent implements OnInit {
     this.buildVariableTimeoutId && clearTimeout(this.buildVariableTimeoutId);
   }
 
-  /*
-   * called after the data type has changed, and also on data screen init.
-   */
-
+  /** called after the data type has changed, and also on data screen init. */
   updateDataType() {
+    // console.log(e);
     let data = [];
     switch (this.displayVarType) {
       default:
@@ -200,13 +198,18 @@ export class DataScreenComponent implements OnInit {
         data = this.data.longs;
         break;
     }
-
-    this.dataSource.data = data;
-
-    this.colsToDisplay = BASE_COLS.concat(this._legend).concat(SUFFIX_COLS);
-    this.refreshValues();
-    this.selection.clear();
+    const legend = this._legend;
+    this._varRefreshing = true;
+    this.dataSource.data = [];
+    this.colsToDisplay = BASE_COLS.concat(legend).concat(SUFFIX_COLS); 
     this.changeDetectorRef.detectChanges();
+    this.setTimeOutRefreshVarId && clearTimeout(this.setTimeOutRefreshVarId);
+    this.setTimeOutRefreshVarId =  setTimeout(()=>{
+      this.selection.clear();
+      this.dataSource.data = data;
+      this.refreshValues(); // includes a change detection
+      this.changeDetectorRef.detectChanges();
+    }, 500);
   }
 
   getValue(element: TPVariable, i: number) {
@@ -229,9 +232,8 @@ export class DataScreenComponent implements OnInit {
       this.buildVariableTimeoutId && clearTimeout(this.buildVariableTimeoutId);
       this.buildVariableTimeoutId = setTimeout(()=>{
         this.buildVariable(v, ret.result);
+        this.changeDetectorRef.detectChanges();
       },0);
-      this.changeDetectorRef.detectChanges();
-
     });
   }
 
@@ -257,7 +259,7 @@ export class DataScreenComponent implements OnInit {
           selected.value = val;
           selected.dataLoaded = true;
         } else {
-          selected.value[0].value = toNumber ? Number(val[0].value) : val[0].value; val[0].value;
+          selected.value[0].value = toNumber ? Number(val[0].value) : val[0].value;
         }
       } else if (!v.dataLoaded) {
         val.forEach((item: any)=>{
@@ -266,7 +268,7 @@ export class DataScreenComponent implements OnInit {
         v.value = val;
         v.dataLoaded = true;
       } else {
-        v.value[0].value = toNumber ? Number(val[0].value) : val[0].value; val[0].value;
+        v.value[0].value = toNumber ? Number(val[0].value) : val[0].value;
       }
       return;
     }
@@ -337,6 +339,8 @@ export class DataScreenComponent implements OnInit {
       await this.ws.query("CALl VAR_CLEAR_NAMES");
       let res = await this.postNameInfoTolib(this.dataSource.data);//should store names for lib use
       if (!res) {
+        this._varRefreshing = false;
+        this.changeDetectorRef.detectChanges();
         return;
       }
       cmd = `?VAR_GET_APP_POINTS("${displayVarType}")`;
@@ -348,6 +352,7 @@ export class DataScreenComponent implements OnInit {
         this._varRefreshing = false;
         if (!res || typeof res !== 'string') {
           this.dataSource.data = [];
+          this._varRefreshing = false;
           this.changeDetectorRef.detectChanges();
           return;
         }

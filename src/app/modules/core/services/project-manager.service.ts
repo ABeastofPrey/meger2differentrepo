@@ -4,7 +4,7 @@ import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { BehaviorSubject } from 'rxjs';
 import { EventEmitter } from '@angular/core';
 import { DataService } from './data.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScreenManagerService } from './screen-manager.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectionModel } from '@angular/cdk/collections';

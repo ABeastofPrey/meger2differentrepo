@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { NewPositionTriggerComponent } from '../new-position-trigger/new-position-trigger.component';
 import { PositionTriggerService, IResPLS } from '../../../services/position-trigger.service';
 import {

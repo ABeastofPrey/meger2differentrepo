@@ -30,3 +30,19 @@
   background-color: #424242;
   color: #fff;
 }
+custom-key-board {
+  width: 80px;
+  display: block;
+  margin-bottom: -8px;
+  margin-top: -8px;
+}
+.color-select {
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  padding: 4px;
+}
+.color-select:hover {
+  border-color: #000;
+}

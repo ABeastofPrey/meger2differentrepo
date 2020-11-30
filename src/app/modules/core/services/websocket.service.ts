@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { ReplaySubject, Observable, BehaviorSubject, Observer } from 'rxjs';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { NotificationService } from './notification.service';
 import { JwtService } from './jwt.service';
 import { ErrorFrame } from '../models/error-frame.model';

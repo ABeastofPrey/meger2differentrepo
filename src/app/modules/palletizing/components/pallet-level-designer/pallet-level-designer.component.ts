@@ -11,7 +11,7 @@ import {
   ChangeDetectorRef,
   NgZone,
 } from '@angular/core';
-import { MatDialog, MatChipEvent } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { CustomItemMenuComponent } from '../custom-item-menu/custom-item-menu.component';
 import { Pallet } from '../../../core/models/pallet.model';
 import { ApiService } from '../../../core';
@@ -35,8 +35,8 @@ export class PalletLevelDesignerComponent implements OnInit {
   normalizePreview = 1;
   normalizeItem = 1;
 
-  @ViewChild('container', { static: false }) container: ElementRef;
-  @ViewChild('upload', { static: false }) uploadInput: ElementRef;
+  @ViewChild('container') container: ElementRef;
+  @ViewChild('upload') uploadInput: ElementRef;
 
   get items() {
     return this._items;
@@ -211,6 +211,10 @@ export class PalletLevelDesignerComponent implements OnInit {
   }
 
   addItem() {
+    // restore z-index for all other items
+    (this.container.nativeElement as HTMLElement).querySelectorAll('.item').forEach(el=>{
+      (el as HTMLElement).style.zIndex = el.innerHTML;
+    });
     const isFirst = this._items.length === 0;
     const item: CustomPalletItem = {
       x: 0,
@@ -233,6 +237,9 @@ export class PalletLevelDesignerComponent implements OnInit {
     for (let i = index; i < this._items.length; i++) this._items[i].order--;
     this._order--;
     this.changed.emit(this._items.length);
+    setTimeout(()=>{
+      this.validateAll();
+    });
   }
 
   onChipRemoved(e: string) {
@@ -249,62 +256,65 @@ export class PalletLevelDesignerComponent implements OnInit {
     return result;
   }
 
-  private setDataFromString(str: string, setOnlyThisLevel?: boolean) {
-    const lines = str.split('\n');
-    const items: CustomPalletItem[] = [];
-    let inFirstLevel = true;
-    let itemsOnFirstLevel = 0;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.trim().length === 0) continue;
-      if (line.indexOf('---') >= 0) {
-        inFirstLevel = false;
-        continue;
-      }
-      if (!setOnlyThisLevel && inFirstLevel) {
-        itemsOnFirstLevel++;
-        if (this.level === 2) {
+  private setDataFromString(str: string, setOnlyThisLevel?: boolean): Promise<any> {
+    return new Promise(resolve=>{
+      const lines = str.split('\n');
+      const items: CustomPalletItem[] = [];
+      let inFirstLevel = true;
+      let itemsOnFirstLevel = 0;
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.trim().length === 0) continue;
+        if (line.indexOf('---') >= 0) {
+          inFirstLevel = false;
           continue;
         }
-      } else if (this.level === 1 && !setOnlyThisLevel) {
-        break;
+        if (!setOnlyThisLevel && inFirstLevel) {
+          itemsOnFirstLevel++;
+          if (this.level === 2) {
+            continue;
+          }
+        } else if (this.level === 1 && !setOnlyThisLevel) {
+          break;
+        }
+        const parts = line.split(',');
+        if (parts.length !== 3) continue;
+        const x = Number(parts[0]);
+        const y = Number(parts[1]);
+        const r = Number(parts[2]);
+        if (!isNaN(x) && !isNaN(y) && !isNaN(r)) {
+          const item = {
+            x,
+            y,
+            r,
+            order: this.level === 1 || setOnlyThisLevel ? i + 1 : i - itemsOnFirstLevel,
+            error: false,
+            element: null,
+            untouched: false,
+          };
+          items.push(item);
+        }
       }
-      const parts = line.split(',');
-      if (parts.length !== 3) continue;
-      const x = Number(parts[0]);
-      const y = Number(parts[1]);
-      const r = Number(parts[2]);
-      if (!isNaN(x) && !isNaN(y) && !isNaN(r)) {
-        const item = {
-          x,
-          y,
-          r,
-          order: this.level === 1 || setOnlyThisLevel ? i + 1 : i - itemsOnFirstLevel,
-          error: false,
-          element: null,
-          untouched: false,
-        };
-        items.push(item);
-      }
-    }
-    this._items = items;
-    this._order = items.length + 1;
-    this.changed.emit(this._items.length);
-    setTimeout(()=>{
-      this.setPositions();
-      this.validateAll();
+      this._items = items;
+      this._order = items.length + 1;
+      this.changed.emit(this._items.length);
+      setTimeout(()=>{
+        this.setPositions();
+        this.validateAll();
+        resolve(true);
+      },0);
     });
   }
 
   setPositions() {
     const el: HTMLElement = this.container.nativeElement;
     const containerRect = el.getBoundingClientRect();
-    // THE FIRST CHILD NODE IS A COMMENT, SO START FROM POSITION i=1...
-    for (let i = 1; i < el.childNodes.length; i++) {
+    // THE LAST CHILD NODE IS A COMMENT, SO END BEFORE THE LAST NODE...
+    for (let i = 0; i < el.childNodes.length - 1; i++) {
       const e = el.childNodes[i] as HTMLElement;
-      if (e.style && this.items[i - 1]) {
-        e.style.left = this.items[i - 1].x / this.normalizeItem + 'px';
-        e.style.top = containerRect.height - this.items[i - 1].y / this.normalizeItem - e.getBoundingClientRect().height + 'px';
+      if (e.style && this.items[i]) {
+        e.style.left = this.items[i].x / this.normalizeItem + 'px';
+        e.style.top = containerRect.height - this.items[i].y / this.normalizeItem - e.getBoundingClientRect().height + 'px';
       }
     }
   }

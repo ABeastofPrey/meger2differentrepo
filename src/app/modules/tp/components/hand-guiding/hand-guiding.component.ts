@@ -1,4 +1,4 @@
-import { MatSlideToggleChange } from '@angular/material';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { WebsocketService } from './../../../core/services/websocket.service';
 import { Component, OnInit } from '@angular/core';
 

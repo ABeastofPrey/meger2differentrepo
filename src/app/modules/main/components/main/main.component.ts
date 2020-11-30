@@ -29,7 +29,8 @@ import {
   NavigationEnd,
 } from '@angular/router';
 import { JogSettingsDialogComponent } from '../../../../components/jog-settings-dialog/jog-settings-dialog.component';
-import { MatDialog, MatSidenav } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSidenav } from '@angular/material/sidenav';
 import { TourService } from 'ngx-tour-md-menu';
 import { environment } from '../../../../../environments/environment';
 import {
@@ -50,6 +51,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { SimulatorService } from '../../../core/services/simulator.service';
 import { MaintenanceArmCommonService } from '../../../maintenance-arm/maintenance-arm-common.service';
+import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
 
 @Component({
   selector: 'app-main',
@@ -111,10 +113,10 @@ export class MainComponent implements OnInit {
   @ViewChild('drawer', { static: true }) drawer: MatSidenav;
 
   // FLOATING WINDOWS
-  @ViewChild('terminalWindow', { static: false }) terminalWindow: ElementRef;
-  @ViewChild('notificationWindow', { static: false }) notificationWindow: ElementRef;
-  @ViewChild('simWindow', { static: false }) simWindow: ElementRef;
-  @ViewChild('watchWindow', { static: false }) watchWindow: ElementRef;
+  @ViewChild('terminalWindow') terminalWindow: ElementRef;
+  @ViewChild('notificationWindow') notificationWindow: ElementRef;
+  @ViewChild('simWindow') simWindow: ElementRef;
+  @ViewChild('watchWindow') watchWindow: ElementRef;
 
   private jogButtonPressed = false;
   private lastKeyDownTime = -1;

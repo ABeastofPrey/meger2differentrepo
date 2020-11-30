@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SystemLog } from '../../enums/sys-log.model';
 import { SysLogBookService } from '../../services/sys-log-book.service';
 import { SysLogWatcherService } from '../../services/sys-log-watcher.service';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import { slice, filter } from 'ramda';
 import { WebsocketService } from '../../../core/services/websocket.service';
 import { Subject } from 'rxjs';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { WebsocketService, MCQueryResponse } from '../../core';
 import { YesNoDialogComponent } from '../../../components/yes-no-dialog/yes-no-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 
 

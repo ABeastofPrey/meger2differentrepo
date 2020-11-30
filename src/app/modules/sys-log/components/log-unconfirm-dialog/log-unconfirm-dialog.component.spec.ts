@@ -10,7 +10,7 @@ import { LogEffectComponent } from '../log-effect/log-effect.component';
 import { LogUnconfirmDialogComponent } from './log-unconfirm-dialog.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { SysLogFetchService } from '../../services/sys-log-fetch.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Component, Input } from '@angular/core';
 import { of } from 'rxjs';
 

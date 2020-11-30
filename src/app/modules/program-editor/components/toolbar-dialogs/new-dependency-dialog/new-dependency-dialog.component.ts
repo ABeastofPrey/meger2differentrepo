@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialogRef} from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import {WebsocketService, ProjectManagerService, MCQueryResponse} from '../../../../core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 

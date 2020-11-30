@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource } from '@angular/material';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { of as observableOf, Subject } from 'rxjs';
 import { SceneObject } from 'stxsim-ng';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';

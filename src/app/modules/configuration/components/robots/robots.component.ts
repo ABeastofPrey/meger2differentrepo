@@ -1,7 +1,9 @@
 import { SingleInputDialogComponent } from './../../../../components/single-input-dialog/single-input-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { RobotService } from '../../../core/services/robot.service';
-import { MatDialog, MatSnackBar, MatDatepickerInputEvent } from '@angular/material';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdateDialogComponent } from '../../../../components/update-dialog/update-dialog.component';
 import {
   WebsocketService,

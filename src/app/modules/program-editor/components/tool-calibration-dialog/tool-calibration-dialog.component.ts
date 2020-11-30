@@ -1,11 +1,7 @@
 import { TPVariable } from './../../../core/models/tp/tp-variable.model';
 import { Component, OnInit, Inject } from '@angular/core';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatSnackBar,
-  MatDialog,
-} from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ComponentType } from '@angular/cdk/portal';
 import { WebsocketService, DataService, MCQueryResponse } from '../../../core';
 

@@ -1,3 +1,6 @@
+<div class="loading" *ngIf="isRefreshing">
+  <mat-spinner color="primary"></mat-spinner>
+</div>
 <div class="wrapper data-screen">
   <img
     *ngIf="!shouldDisplayTable"
@@ -19,7 +22,7 @@
       *ngIf="!useAsProjectPoints"
       #group="matButtonToggleGroup"
       [(ngModel)]="displayVarType"
-      (change)="updateDataType()"
+      (change)="updateDataType($event)"
       [disabled]="isRefreshing"
     >
       <mat-button-toggle *ngFor="let t of varTypes" [value]="t" [disabled]="(t === 'joint' || t === 'location') && !data.isRobotType">
@@ -45,7 +48,7 @@
     <h3>{{ 'variables.none_exist' | translate }}</h3>
   </div>
   <div class="table-wrapper {{ shouldDisplayTable ? '' : 'hidden' }}">
-    <!-- <cdk-virtual-scroll-viewport tvsItemSize class="table-virtual-wrapper"> -->
+    <!-- <cdk-virtual-scroll-viewport tvsItemSize="48" headerHeight="56" style="height: 400px;" class="table-virtual-wrapper"> -->
     <table
       mat-table
       #table
@@ -165,15 +168,14 @@
                 i < data?.robotCoordinateType?.legends?.length)
             ">
                 <custom-key-board
-                    type="{{element?.typeStr === 'LONG' ? 'int' : 'float' }}"  appearance="outline"
+                    class="value-field"
+                    type="{{element?.typeStr === 'LONG' ? 'int' : 'float' }}"
+                    appearance="outline"
                     [placeHolder]="leg"
                     [isShowPrecision]="false"
-                    [(value)]="
-                        element.isArr
-                        ? element.value[element.selectedIndex - 1].value[i].value
-                        : element.value[i].value
-                    "
-                     (blurEvent)="onKeyboardClose(element)"
+                    [(value)]="element.isArr ? element.value[element.selectedIndex - 1].value[i].value : element.value[i].value"
+                    (blurEvent)="onKeyboardClose(element)"
+                    (valueChange)="element?.isArr ? ((element?.value)[element.selectedIndex - 1].value[i].value = $event) : (element.value[i].value = $event)"
                 ></custom-key-board>
             </div>
           </div>
@@ -192,18 +194,12 @@
             ">
             <div *ngIf="element?.typeStr === 'STRING'">
                 <custom-key-board
+                    class="text-field"
                     appearance="outline"
                     type="string"
                     [placeHolder]="legend[i]"
-                    [(value)]="
-                        element.isArr
-                        ? element.isTwoDimension
-                            ? element.value[element.selectedIndex - 1][
-                                element.selectedSecondIndex - 1
-                            ].value[i].value
-                            : element.value[element.selectedIndex - 1].value[i].value
-                        : element.value[i].value
-                    "
+                    [(value)]="element.isArr ? element.isTwoDimension ? element.value[element.selectedIndex - 1][element.selectedSecondIndex - 1].value[i].value : element.value[element.selectedIndex - 1].value[i].value : element.value[i].value"
+                    (valueChange)="element.isArr ? element.isTwoDimension ? element.value[element.selectedIndex - 1][element.selectedSecondIndex - 1].value[i].value = $event : element.value[element.selectedIndex - 1].value[i].value = $event : element.value[i].value = $event"
                     (blurEvent)="onKeyboardClose(element)"
                     [maxLength]="80"
                 ></custom-key-board>

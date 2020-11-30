@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TPVariable } from '../../core/models/tp/tp-variable.model';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { TPVariableType } from '../../core/models/tp/tp-variable-type.model';

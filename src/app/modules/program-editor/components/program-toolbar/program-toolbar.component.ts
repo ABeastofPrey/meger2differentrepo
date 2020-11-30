@@ -1,6 +1,9 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatSnackBar, MatSliderChange, MatButtonToggleChange } from '@angular/material';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSliderChange } from '@angular/material/slider';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { NewProjectDialogComponent } from '../new-project-dialog/new-project-dialog.component';
 import {
   WebsocketService,
@@ -45,8 +48,8 @@ export class ProgramToolbarComponent implements OnInit {
   private words: {};
   private fromBackup: boolean;
 
-  @ViewChild('uploadFiles', { static: false }) uploadFiles: ElementRef;
-  @ViewChild('upload', { static: false }) uploadInput: ElementRef;
+  @ViewChild('uploadFiles') uploadFiles: ElementRef;
+  @ViewChild('upload') uploadInput: ElementRef;
 
   toggleFocus(e: MouseEvent) {
     if (this.cmn.isTablet) {

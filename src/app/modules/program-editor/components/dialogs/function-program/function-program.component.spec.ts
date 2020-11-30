@@ -4,7 +4,7 @@ import { UnitTestModule } from '../../../../shared/unit-test.module';
 import { SharedModule } from '../../../../shared/shared.module';
 
 import { FunctionProgramComponent } from './function-program.component';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, FormsModule, Validators } from '@angular/forms';
 import { ProgramEditorService } from '../../../services/program-editor.service';
 import { HttpClientModule } from '@angular/common/http';

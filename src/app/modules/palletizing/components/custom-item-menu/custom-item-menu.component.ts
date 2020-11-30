@@ -1,10 +1,7 @@
 import { CustomPalletItem } from './../pallet-level-designer/pallet-level-designer.component';
 import { Component, OnInit, Inject } from '@angular/core';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatSelectChange,
-} from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-custom-item-menu',

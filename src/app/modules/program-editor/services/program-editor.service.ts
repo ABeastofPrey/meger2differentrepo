@@ -1,7 +1,8 @@
 import { Router } from '@angular/router';
 import { TourService } from 'ngx-tour-md-menu';
 import { Injectable, EventEmitter, NgZone } from '@angular/core';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   MCFile,
   ApiService,
@@ -802,7 +803,7 @@ export class ProgramEditorService {
       return;
     }
     let cmd: string;
-    if (this.isLib && this.stat.onlineStatus.value) {
+    if (this.stat.onlineStatus.value) {
       // TP.LIB ONLINE
       cmd = 'cyc4,' + file;
     } else {
@@ -828,6 +829,8 @@ export class ProgramEditorService {
           this.zone.run(() => {
             if (this.isLib) {
               const tmpStatus = new ProgramStatus(err ? null : original);
+              tmpStatus.programLine = null;
+              tmpStatus.sourceLine = null;
               tmpStatus.statusCode = tmpStatus.statusCode === TASKSTATE_READY ? TASKSTATE_LIB_LOADED : TASKSTATE_NOTLOADED;
               this.status = tmpStatus;
               this.statusChange.next(this.status);

@@ -3,7 +3,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { UnitTestModule } from '../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { VersionComponent } from './version.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { DataService } from '../../../core';
 import { WebsocketService } from '../../../core/services/websocket.service';
 import { of } from 'rxjs';

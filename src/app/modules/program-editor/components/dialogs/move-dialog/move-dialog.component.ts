@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { TPVariable } from '../../../../core/models/tp/tp-variable.model';
 import { DataService } from '../../../../core';
 import { ProgramEditorService } from '../../../services/program-editor.service';

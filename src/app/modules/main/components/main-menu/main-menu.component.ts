@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { MatSnackBar, MatDrawer } from '@angular/material';
+import { MatDrawer } from '@angular/material/sidenav';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   ApiService,
   LoginService,
@@ -22,7 +23,7 @@ import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-b
   styleUrls: ['./main-menu.component.scss'],
 })
 export class MainMenuComponent implements OnInit {
-  @ViewChild('upload', { static: false }) uploadInput: ElementRef;
+  @ViewChild('upload') uploadInput: ElementRef;
   @Input('drawer') drawer: MatDrawer;
 
   profileSrc: string;

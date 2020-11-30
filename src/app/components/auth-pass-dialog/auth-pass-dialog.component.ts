@@ -1,7 +1,7 @@
 import { TpStatService } from './../../modules/core/services/tp-stat.service';
 import { ApiService } from './../../modules/core/services/api.service';
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LoginService } from '../../modules/core/services/login.service';
 import { CommonService } from '../../modules/core/services/common.service';
 import { DataService } from '../../modules/core/services/data.service';

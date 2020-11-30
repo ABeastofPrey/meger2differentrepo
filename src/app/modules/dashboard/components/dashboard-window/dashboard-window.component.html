@@ -98,8 +98,8 @@
 									ktype="text"
                             /></mat-form-field> -->
               <div *ngIf="p.inputType === 'INPUT'">
-                <custom-key-board type="string" [(value)]="p.value" [disabled]="login.isViewer"
-                    (valueChange)="dashboard.onChange(params, p, $event)"
+                <custom-key-board type="string" [(value)]="params.params[i].value" [disabled]="login.isViewer"
+                    (valueChange)="dashboard.onChange(params, params.params[i], $event)"
                 ></custom-key-board>
               </div>
               <!-- <ng-container *ngIf="p || p.inputType === 'INPUT'">

@@ -3,7 +3,7 @@ import { JumpxCommandComponent } from './jumpx-command.component';
 import { SharedModule } from '../../../../../shared/shared.module';
 import { UnitTestModule } from '../../../../../shared/unit-test.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { StoreModule, Store } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';

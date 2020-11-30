@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TpStatService, WebsocketService } from '../core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MaintenanceDialogComponent } from './maintenance-dialog/maintenance-dialog.component';
 import { SysLogSnackBarService } from '../sys-log/services/sys-log-snack-bar.service';

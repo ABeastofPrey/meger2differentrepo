@@ -1,6 +1,7 @@
 import { DOCS } from './../../../core/defs/docs.constants';
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MatAutocompleteSelectedEvent, MAT_DIALOG_DATA } from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { DashboardParam } from '../../services/dashboard.service';
 import { CommonService } from '../../../core/services/common.service';

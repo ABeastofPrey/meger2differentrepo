@@ -11,7 +11,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MatTable, MatTableDataSource, MatRow } from '@angular/material';
+import { MatTable, MatTableDataSource, MatRow } from '@angular/material/table';
 
 import {
   CustomIOTypes,
@@ -93,7 +93,7 @@ export class CustomIOComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * The custom io table instance.
    */
-  @ViewChild('customTable', { static: false })
+  @ViewChild('customTable')
   customTable: MatTable<CustomIO>;
 
   /**

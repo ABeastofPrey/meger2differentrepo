@@ -1,7 +1,8 @@
 import { ApiService } from './../../../core/services/api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { YesNoDialogComponent } from './../../../../components/yes-no-dialog/yes-no-dialog.component';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { WebsocketService } from './../../../core/services/websocket.service';
 import { DataService } from './../../../core/services/data.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';

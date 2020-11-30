@@ -6,7 +6,7 @@ import { SysLogSnackBarService } from './sys-log-snack-bar.service';
 import { SysLogFetchService } from './sys-log-fetch.service';
 import { isUndefined, isNotUndefined } from 'ramda-adjunct';
 import { LogUnconfirmDialogComponent } from '../components/log-unconfirm-dialog/log-unconfirm-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { filter, map, prop, compose, find, head, length, descend, sort } from 'ramda';
 import { LogInfoComponent } from '../components/log-info/log-info.component';
 import { NotificationService } from '../../core/services/notification.service';

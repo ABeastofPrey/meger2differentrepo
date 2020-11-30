@@ -4,10 +4,8 @@ import {
   NgZone,
   EventEmitter,
 } from '@angular/core';
-import {
-  MatDialog,
-  MatSnackBar,
-} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { WebsocketService, MCQueryResponse } from './websocket.service';
 import { ErrorDialogComponent } from '../../../components/error-dialog/error-dialog.component';
 import { BehaviorSubject, Subject } from 'rxjs';

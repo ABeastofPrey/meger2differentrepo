@@ -35,7 +35,6 @@
 .data-table {
   width: 100%;
   table-layout: fixed;
-  min-width: 970px;
 }
 .data-table.busy {
   background-color: #ccc;
@@ -113,4 +112,15 @@
 }
 ::ng-deep .data-screen .mat-form-field-wrapper {
   padding-bottom: 0;
+}
+.loading {
+  padding: 36px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+mat-button-toggle.mat-button-toggle-disabled {
+  background: #ccc!important;
 }

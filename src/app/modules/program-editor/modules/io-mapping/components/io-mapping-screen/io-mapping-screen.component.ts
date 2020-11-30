@@ -10,11 +10,9 @@ import {
 } from '../../../../../core';
 import { IoModule } from '../../../../../core/models/io/io-module.model';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeNestedDataSource,
-  MatSlideToggleChange,
-  MatDialog,
-} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { Io } from '../../../../../core/models/io/io.model';
 import { NgZone, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -186,7 +184,7 @@ export class IoMappingScreenComponent implements OnInit {
         } else {
           io.name = newVal;
           this.snackbarService.openTipSnackBar('changeOK');
-        }
+          }
       });
   }
 
@@ -207,7 +205,7 @@ export class IoMappingScreenComponent implements OnInit {
         } else {
           io.description = newVal;
           this.snackbarService.openTipSnackBar('changeOK');
-        }
+          }
       });
   }
 
@@ -247,6 +245,7 @@ export class IoMappingScreenComponent implements OnInit {
             const i = URL.indexOf('?');
             const finalURL = i === -1 ? URL : URL.substring(0,i);
             const newURL = finalURL + '?from=io';
+            console.log(newURL);
             window.location.href = newURL;
           }).catch(err => {
 

@@ -1,11 +1,11 @@
 import { Component, OnInit, Inject, AfterViewInit, EventEmitter } from '@angular/core';
 import { SystemLog } from '../../enums/sys-log.model';
 import { SysLogFetchService } from '../../services/sys-log-fetch.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { remove, map, prop, compose, find, filter } from 'ramda';
 import { isNotUndefined } from 'ramda-adjunct';
 import { debounceTime } from 'rxjs/operators';
-import { MatTooltip } from '@angular/material';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-log-unconfirm-dialog',

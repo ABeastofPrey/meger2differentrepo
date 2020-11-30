@@ -1,6 +1,5 @@
 import { YesNoDialogComponent } from './../../../components/yes-no-dialog/yes-no-dialog.component';
 import { DataService } from './data.service';
-import { ControlStudioScreen } from './screen-manager.service';
 import { TourService } from 'ngx-tour-md-menu';
 import { CoordinatesService } from './coordinates.service';
 import { OSUpgradeSuccessDialogComponent } from './../../../components/osupgrade-success-dialog/osupgrade-success-dialog.component';
@@ -9,7 +8,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { LoginService } from './login.service';
 import { TpStatService } from './tp-stat.service';
 import { Router, ActivatedRoute, RouterEvent, NavigationEnd } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { SuccessDialogComponent } from '../../../components/success-dialog/success-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from './common.service';

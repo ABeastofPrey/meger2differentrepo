@@ -1,11 +1,9 @@
 import { Router } from '@angular/router';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeNestedDataSource,
-  MatDialog,
-  MatSnackBar,
-} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import {
   ApiService,
   ProjectManagerService,
@@ -34,7 +32,7 @@ import { SysLogSnackBarService } from '../../../sys-log/services/sys-log-snack-b
 export class McFileTreeComponent implements OnInit {
 
 //   @ViewChild('searchInput', { static: false }) searchInput: ElementRef;
-  @ViewChild('menuDiv', { static: false }) menuDiv: ElementRef;
+  @ViewChild('menuDiv') menuDiv: ElementRef;
 
   nestedTreeControl: NestedTreeControl<TreeNode>;
   nestedDataSource: MatTreeNestedDataSource<TreeNode>;

@@ -9,12 +9,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from '@angular/core';
-import {
-  MatSort,
-  MatTableDataSource,
-  MatTabChangeEvent,
-  MatDialog, MatTab, MatButton
-} from '@angular/material';
+import { MatButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent, MatTab } from '@angular/material/tabs';
 import { FormControl, Validators } from '@angular/forms';
 import { IO, IoService } from '../../services/io.service';
 import {

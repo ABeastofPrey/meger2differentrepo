@@ -1,4 +1,4 @@
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { GroupManagerService } from './../../../core/services/group-manager.service';
 import { WebsocketService, MCQueryResponse } from './../../../core/services/websocket.service';
 import { Component, OnInit } from '@angular/core';

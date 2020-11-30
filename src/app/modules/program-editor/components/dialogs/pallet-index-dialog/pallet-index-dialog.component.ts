@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Pallet } from '../../../../core/models/pallet.model';
 import { DataService } from '../../../../core';
 import { ProgramEditorService } from '../../../services/program-editor.service';

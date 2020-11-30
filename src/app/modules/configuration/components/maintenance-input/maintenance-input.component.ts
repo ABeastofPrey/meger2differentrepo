@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { MainTable1List } from '../../services/maintenance.enum';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { MaintenanceService } from '../../services/maintenance.service';
 import { LoginService } from '../../../core';
 import { SysLogWatcherService, LogChangeSource } from '../../../../modules/sys-log/services/sys-log-watcher.service';

@@ -872,6 +872,7 @@
         "yes": "START IDENTIFICATION",
         "no": "CANCEL"
       },
+      "err_t2": "Payload Identification is only available at M2 mode",
       "finish": "Moving robot to the original position...",
       "moving": "Moving robot to start position...",
       "result-dialog": {
@@ -883,7 +884,8 @@
       "robot_enabled": "Robot must be disabled",
       "start": "START IDENTIFICATION...",
       "subtitle": "During this process, the robot will be ENABLED and move to various positions in its workspace. Make sure that the robot environment is clear of people, objects and other obstacles.",
-      "title": "Robot is now performing Payload Identification"
+      "title": "Robot is now performing Payload Identification",
+      "zero": "Calculating payload parameters..."
     },
     "inertia": "Inertia",
     "mass": "Mass",
@@ -1815,11 +1817,11 @@
     "tab_name": "Trigger"
   },
   "trivia": [
-    "You can record the robot's motion by pressing the RECORD button on the main app toolbar.",
-    "You can add a new application to the project by right clicking the Apps folder.",
-    "You can EXPAND or COLLAPSE the application's toolbar by clicking on the arrow button in the app toolbar.",
-    "You can CLEAR all commands from the terminal by using the command CLEAR in the terminal.",
-    "You can UPLOAD a new PROFILE PICTURE by expanding the app's side menu, clicking the profile picture, and choosing a photo."
+    "You can record the robot's motion by pressing the <b>RECORD</b> button on the main app toolbar.",
+    "You can add a new application to the project by <b>right-clicking</b> the Apps folder.",
+    "You can <b>expand</b> or <b>collapse</b> the application's toolbar by clicking on the arrow button in the app toolbar.",
+    "You can <b>clear</b> all commands from the terminal by using the command <span class='monospace-font'>clear</span> in the terminal.",
+    "You can <b>upload</b> a new profile picture by expanding the app's side menu, clicking the profile picture, and choosing a photo."
   ],
   "trivia_title": "Did you know?",
   "type": "Type",
