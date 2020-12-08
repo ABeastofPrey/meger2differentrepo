@@ -306,8 +306,7 @@
 									>{{ 'pallets.wizard.odd_even' | translate }}</mat-checkbox>
 							</div>
 						</div>
-						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile"
-							style="margin-top: 40px;">
+						<div *ngIf="dataService.selectedPallet.type === 'GRID' || dataService.selectedPallet.dataFile">
 							<h3>{{ 'pallets.wizard.curr_index' | translate }}:</h3>
 							<mat-error *ngIf="step1.controls['index'].hasError('invalidIndex')">{{
 								'pallets.wizard.invalid_val' | translate
@@ -350,7 +349,6 @@
                       identificationTag="index"
                       [(value)]="dataService.selectedPallet.index"
                       [disabled]="step1.controls['index'].value !== 'custom'"
-                      (isValidEvent)="onValidatorCheck($event,'index',step1)"
                       (blurEvent)="onIndexChange()"
                       (inputChange)="onIndexChange()"
                   ></custom-key-board>

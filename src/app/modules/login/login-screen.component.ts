@@ -211,7 +211,11 @@ export class LoginScreenComponent implements OnInit {
           this.trn.get('error.conn_mc').subscribe(err => {
             this.errors.error = err;
           });
-        } else this.errors = err;
+        } else {
+          this.trn.get('login.invalid_user').subscribe(err => {
+            this.errors.error = err;
+          });
+        }
         this.isSubmitting = false;
       }
     );
@@ -384,7 +388,7 @@ export class LoginScreenComponent implements OnInit {
     });
     this.pageLoaded = 'shown';
   }
-  
+
   public usernameBlur(value: string,key: string): void {
       this.authForm.controls[key].setValue(value);
       this.authForm.controls[key].markAsTouched();

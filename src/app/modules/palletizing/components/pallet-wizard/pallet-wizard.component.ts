@@ -548,11 +548,9 @@ export class PalletWizardComponent implements OnInit {
   }
 
   onIndexChange() {
-    console.log(this.step1.controls['index']);
     this.step1.controls['index'].markAsTouched();
     this.step1.controls['index'].markAsDirty();
     this.step1.controls['index'].setValue(this.step1.controls['index'].value);
-    console.log(this.step1.controls['index']);
   }
 
   private validateIndex(control: AbstractControl) {
@@ -995,8 +993,10 @@ export class PalletWizardComponent implements OnInit {
         this.ws.query(cmdRestore).then(ret=>{
           pallet.itemSizeX = Number(ret.result);
         });
+        this.setErrorsKeyboard(['itemSizeX'],{ invalidSizeX: true });
         return { invalidSizeX: true };
       }
+      this.setErrorsKeyboard(['itemSizeX'],null);
       return null;
     });
   }
@@ -1011,8 +1011,10 @@ export class PalletWizardComponent implements OnInit {
         this.ws.query(cmdRestore).then(ret=>{
           pallet.itemSizeY = Number(ret.result);
         });
+        this.setErrorsKeyboard(['itemSizeY'],{ invalidSizeY: true });
         return { invalidSizeY: true };
       }
+      this.setErrorsKeyboard(['itemSizeY'],null);
       return null;
     });
   }
@@ -1027,12 +1029,14 @@ export class PalletWizardComponent implements OnInit {
         this.ws.query(cmdRestore).then(ret=>{
           pallet.itemSizeZ = Number(ret.result);
         });
+        this.setErrorsKeyboard(['itemSizeZ'],{ invalidSizeZ: true });
         return { invalidSizeZ: true };
       }
       if (pallet.entryEnabled) {
         this.step3.controls['x'].markAsDirty();
         this.step3.controls['x'].updateValueAndValidity();
       }
+      this.setErrorsKeyboard(['itemSizeZ'],null);
       return null;
     });
   }
@@ -1404,7 +1408,7 @@ export class PalletWizardComponent implements OnInit {
   ngOnInit() {
     this.initControls();
     this.setOriginPic(0);
-    
+
   }
 
   /*ngDoCheck() {
@@ -2026,19 +2030,12 @@ export class PalletWizardComponent implements OnInit {
         this.designer2.setPositions();
         this.designer2.validateAll();
         this.onLevelChange(2, this.designer2.items.length);
-      } else if (i === 4  && this.dataService.selectedPallet.diffOddEven || i=== 3){ //step3 entry
-        this.checkEntry();
       }
-    } else if (i === 2) { //step3 entry
-      this.checkEntry();
     }
 
   }
 
-  private checkEntry(){
-    this.step3.controls['roll'].setValue(this.dataService.selectedPallet.entry.roll);
-    this.step3.controls['roll'].markAsDirty();
-  }
+
 
   public setFormGroupItem(value: any,item: string,formGroup: FormGroup,onWindowResize: boolean = false,markAsDirty: boolean = true){
     if(!formGroup.controls || !formGroup.controls[item] || formGroup.controls[item].value === value) return;
@@ -2047,10 +2044,8 @@ export class PalletWizardComponent implements OnInit {
       this.setErrorsKeyboard([item], {invalid: true});
       return;
     }
-    markAsDirty && formGroup.controls[item].markAsDirty();
+    !this.busy && markAsDirty && formGroup.controls[item].markAsDirty();
     formGroup.controls[item].setValue(value);
-    formGroup.controls[item].setErrors(null);
-    this.setErrorsKeyboard([item], null);
     onWindowResize && this.onWindowResize();
   }
 
@@ -2126,7 +2121,7 @@ onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup){
   if (item === 'index' && formGroup.controls['index'].value !== 'custom') {
     valid = true;
   }
-  const err = valid ? null : {invalid: true};
+  const err = valid && formGroup.controls[item].valid ? null : {invalid: true};
    formGroup.controls[item].setErrors(err);
    this.setErrorsKeyboard([item], err);
 }

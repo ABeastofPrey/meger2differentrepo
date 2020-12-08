@@ -9,6 +9,8 @@ export class NewPositionTriggerComponent implements OnInit {
   namePrefix = 'PT_';
   name: string = '';
 
+  valid: boolean;
+
   constructor(public dialogRef: MatDialogRef<NewPositionTriggerComponent, string>) {}
 
   ngOnInit(): void {}
@@ -16,4 +18,5 @@ export class NewPositionTriggerComponent implements OnInit {
   public close(): void {
     this.dialogRef.close(this.namePrefix + this.name);
   }
+
 }

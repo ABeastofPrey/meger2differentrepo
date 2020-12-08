@@ -201,7 +201,7 @@ export class DataScreenComponent implements OnInit {
     const legend = this._legend;
     this._varRefreshing = true;
     this.dataSource.data = [];
-    this.colsToDisplay = BASE_COLS.concat(legend).concat(SUFFIX_COLS); 
+    this.colsToDisplay = BASE_COLS.concat(legend).concat(SUFFIX_COLS);
     this.changeDetectorRef.detectChanges();
     this.setTimeOutRefreshVarId && clearTimeout(this.setTimeOutRefreshVarId);
     this.setTimeOutRefreshVarId =  setTimeout(()=>{
@@ -591,7 +591,12 @@ export class DataScreenComponent implements OnInit {
     });
   }
 
-  onKeyboardClose(v: TPVariable) {
+  onKeyboardClose(v: TPVariable,$event?: {value: number},selectedIndex?: number,index?: number) {
+    if($event){
+      v.isArr
+      ? (v.value[selectedIndex - 1].value[index].value = $event.value)
+      : (v.value[index].value = $event.value);
+    }
     const fullname = this.data.buildFullName(v);
     let parent = null;
     if (v.isArr) {

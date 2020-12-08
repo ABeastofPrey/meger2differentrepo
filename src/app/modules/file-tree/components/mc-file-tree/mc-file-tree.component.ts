@@ -77,7 +77,7 @@ export class McFileTreeComponent implements OnInit {
     private utils: UtilsService,
     private router: Router
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -517,7 +517,7 @@ export class McFileTreeComponent implements OnInit {
             //       duration: 1500,
             //     });
               this.snackbarService.openTipSnackBar("success");
-              
+
               this.prj.fileRefreshNeeded.emit();
               this.service.setFile(ret, null, null, -1);
             } else if (result.err === -1) {
@@ -546,8 +546,8 @@ export class McFileTreeComponent implements OnInit {
                                 //   this.words['success'],
                                 //   this.words['dismiss'],
                                 //   { duration: 1500 }
-                                // );   
-                                this.snackbarService.openTipSnackBar("success");                          
+                                // );
+                                this.snackbarService.openTipSnackBar("success");
                               this.prj.fileRefreshNeeded.emit();
                               this.service.setFile(ret, null, null, -1);
                             } else {
@@ -555,8 +555,8 @@ export class McFileTreeComponent implements OnInit {
                                 //   this.words['error.err'],
                                 //   this.words['dismiss'],
                                 //   { duration: 2000 }
-                                // );  
-                                this.snackbarService.openTipSnackBar("error.err");                           
+                                // );
+                                this.snackbarService.openTipSnackBar("error.err");
                             }
                           });
                       }
@@ -565,8 +565,8 @@ export class McFileTreeComponent implements OnInit {
             } else {
                 // this.snack.open(this.words['error.err'], this.words['dismiss'], {
                 //   duration: 2000,
-                // });      
-                this.snackbarService.openTipSnackBar("error.err");       
+                // });
+                this.snackbarService.openTipSnackBar("error.err");
             }
           });
         }
@@ -595,14 +595,14 @@ export class McFileTreeComponent implements OnInit {
             if (result) {
                 // this.snack.open(this.words['success'], this.words['dismiss'], {
                 //   duration: 1500,
-                // });   
-                this.snackbarService.openTipSnackBar("success");          
+                // });
+                this.snackbarService.openTipSnackBar("success");
               this.prj.fileRefreshNeeded.emit();
             } else {
                 // this.snack.open(this.words['error.err'], this.words['dismiss'], {
                 //   duration: 2000,
-                // });    
-                this.snackbarService.openTipSnackBar("error.err");         
+                // });
+                this.snackbarService.openTipSnackBar("error.err");
             }
           });
         }
@@ -624,8 +624,8 @@ export class McFileTreeComponent implements OnInit {
       } else {
         //   this.snack.open(this.words['error.err'], this.words['dismiss'], {
         //     duration: 2000,
-        //   });    
-          this.snackbarService.openTipSnackBar("error.err");   
+        //   });
+          this.snackbarService.openTipSnackBar("error.err");
       }
     });
   }
@@ -640,10 +640,10 @@ export class McFileTreeComponent implements OnInit {
       .open(SingleInputDialogComponent, {
         data: {
           icon: 'file_copy',
-          title: this.words['copy'],
-          placeholder: this.words['projects.toolbar.copy_name'],
+          title: 'copy',
+          placeholder: 'projects.toolbar.copy_name',
           initialValue: copyName,
-          accept: this.words['button.copy']
+          accept: 'button.copy'
         },
       })
       .afterClosed()

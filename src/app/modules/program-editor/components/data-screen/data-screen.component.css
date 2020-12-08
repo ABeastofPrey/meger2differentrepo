@@ -47,12 +47,9 @@
   overflow: auto;
   flex: 1;
 }
-.index-field {
-  max-width: 50px;
-  /* margin-bottom: -16px; */
-}
 .value-field {
   max-width: 90px;
+
   /* margin-bottom: -16px; */
 }
 .text-field {
@@ -106,6 +103,7 @@
 
 ::ng-deep .data-screen .mat-form-field {
   max-width: 90px;
+  width:100%;
 }
 ::ng-deep .data-screen .mat-form-field-appearance-outline .mat-form-field-wrapper {
   padding: 0.25em;
@@ -123,4 +121,15 @@
 }
 mat-button-toggle.mat-button-toggle-disabled {
   background: #ccc!important;
+}
+.indexArrayValue{
+  position: absolute;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 1;
+  width: calc(100% - 20px);
+}
+::ng-deep .indexArraySelect .mat-select-value {
+  opacity: 0;
 }

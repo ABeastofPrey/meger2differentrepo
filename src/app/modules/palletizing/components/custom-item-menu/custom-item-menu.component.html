@@ -1,6 +1,6 @@
 <div class="mat-typography">
 	<mat-form-field>
-		<mat-select placeholder="Item Order" [value]="data.order" (selectionChange)="orderChange($event)">
+		<mat-select placeholder="{{'pallets.wizard.item_order' | translate}}" [value]="data.order" (selectionChange)="orderChange($event)">
 			<mat-option *ngFor="let item of data.items" [value]="item.order">
 				{{ item.order }}
 			</mat-option>

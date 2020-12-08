@@ -99,7 +99,7 @@
                             /></mat-form-field> -->
               <div *ngIf="p.inputType === 'INPUT'">
                 <custom-key-board type="string" [(value)]="params.params[i].value" [disabled]="login.isViewer"
-                    (valueChange)="dashboard.onChange(params, params.params[i], $event)"
+                    (blurEvent)="dashboard.onChange(params, params.params[i], $event)"
                 ></custom-key-board>
               </div>
               <!-- <ng-container *ngIf="p || p.inputType === 'INPUT'">
@@ -109,7 +109,7 @@
                   [disabled]="login.isViewer"
                   type="int"
                   [isPositiveNum]="true"
-                  (valueChange)="
+                  (blurEvent)="
                     dashboard.onChange(params, p, $event.target.value)
                   "
                 ></custom-key-board>

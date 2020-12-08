@@ -322,6 +322,16 @@ export class UtilsService {
     }
   }
 
+  public fixedLengthValidator(fixedLength: number): ValidatorFn{
+    return ({ value }: AbstractControl): { [key: string]: any } | null => {
+      if((value || value=="0") && value.toString && value.toString().length !== fixedLength) {
+          return { fixedLength: 'fixedLength'}
+      }else {
+          return null;
+      }
+  }
+  }
+
   public firstLetterValidator(): ValidatorFn {
     return ({ value }: AbstractControl) => {
         let reg = /^[a-zA-Z]/;
@@ -336,10 +346,10 @@ export class UtilsService {
     };
   }
 
-  public existNameListValidator(list: string[]): ValidatorFn {
+  public existNameListValidator(list: string[],caseSensitive): ValidatorFn {
     return ({ value }: AbstractControl) => {
         if(!isArray(list)) return  null;
-        const newValue = value.toUpperCase();
+        const newValue = !caseSensitive ? value.toUpperCase() : value;
         const index = list.findIndex(item=> item === newValue);
         return (index >= 0 ? { "existNameList": "existNameList" } : null)
     };

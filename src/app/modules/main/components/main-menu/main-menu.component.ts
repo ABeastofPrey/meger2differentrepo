@@ -90,8 +90,9 @@ export class MainMenuComponent implements OnInit {
   }
 
   showUploadWindow() {
+    if (this.utils.isTablet) return;
     const username = this.login.getCurrentUser().user.username;
-    if (username !== 'admin' && username !== 'super') {
+    if (username !== 'admin' && username !== 'super' && !this.utils.isTablet) {
       this.uploadInput.nativeElement.click();
     }
   }

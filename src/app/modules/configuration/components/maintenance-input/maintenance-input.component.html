@@ -22,7 +22,7 @@
                         <custom-key-board type="int" [rightClosedInterval]="false"
                             [(value)]="element.usedLife.control.value" [isPositiveNum]="true"
                             (isValidEvent)="isValidEvent($event,element.usedLife.index)" [disabled]="!isAdmin"
-                            [suffix]='element.usedLife.unit' [min]="0" [max]="element.usedLife.max" [required]="true">
+                            suffix="{{element.usedLife.unit | translate}}" [min]="0" [max]="element.usedLife.max" [required]="true">
                         </custom-key-board>
                     </div>
                 </td>

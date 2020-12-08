@@ -75,7 +75,7 @@
 						[min]="1"
 						[max]="100"
 						[isPositiveNum]="true"
-						[placeHolder]="'VScale [%]'"
+						placeHolder="{{('projectSettings.vscale' | translate) +'[%]'}}"
 						[(value)]="ctrl.controls.vscale.value"
 						(valueChange)="vscaleChange($event)"
 						(blurEvent)="vscaleChange($event)">
@@ -89,7 +89,7 @@
 						[isPositiveNum]="true"
 						[min]="1"
 						[max]="100"
-						[placeHolder]="'AScale [%]'"
+            placeHolder="{{('projectSettings.ascale' | translate) +'[%]'}}"
 						[(value)]="ctrl.controls.ascale.value"
 						(valueChange)="ascaleChange($event)"
 						(blurEvent)="ascaleChange($event)">
@@ -118,7 +118,7 @@
 							[min]="0"
               [max]="vtranMax"
               [isPositiveNum]="true"
-							[placeHolder]="'VTran [mm/s]'"
+              placeHolder="{{('projectSettings.vtran' | translate) +'[mm/s]'}}"
 							[(value)]="ctrl.controls.vscale.value"
 							(valueChange)="vscaleChange($event)"
 							(blurEvent)="vscaleChange($event)">

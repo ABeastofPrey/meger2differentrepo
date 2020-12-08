@@ -94,7 +94,7 @@ export class FunctionProgramComponent implements OnInit {
         this.parameterTable.renderRows();
     }
 
-    public changeParameter(e: any, index: number): void {
+    public changeParameter(e: any, index: number,parameterRef?: any): void {
         this.isParameterEmpty = false;
         this.existParameter && this.existParameter.splice(0,this.existParameter.length);
         this.dataSource.forEach((item, i) => {
@@ -105,6 +105,7 @@ export class FunctionProgramComponent implements OnInit {
         this.dataSource[index].VariableName.patchValue(VariableName);
         this.parameterValid = this.dataSource[index].VariableName.valid;
         this.dataSource[index].VariableName.markAsTouched();
+        parameterRef && parameterRef.setControlValue(validName);
     }
 
     public blurParameter(index: number): void {

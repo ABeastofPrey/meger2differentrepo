@@ -69,6 +69,7 @@ export interface IKeyboardDialogData{
   useUnitPasswordRegex: boolean;
   emitNoDirtyValue: boolean;
   showPlaceHolderOnlyDialog: boolean;
+  caseSensitive: boolean;
 }
 
 

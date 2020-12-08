@@ -31,6 +31,7 @@
   "add": "Add",
   "Administrator": "Administrator",
   "advanced": "Advanced",
+  "angle":"Angle",
   "app_bar": {
     "menu_toggle": "Expand/Collapse App Menu",
     "toolbar_contract": "Collapse App Toolbar",
@@ -178,7 +179,8 @@
       "btnShow": "SHOW",
       "error": "Error uploading {{name}} - File exceeded the 10MB limit -OR- not enough space left on the controller.",
       "name": "Recording Name",
-      "title": "Open Recording"
+      "title": "Open Recording",
+      "upload":"Uploaded file"
     },
     "move_sent": "MOTION COMMAND SENT",
     "new": {
@@ -444,6 +446,10 @@
     "TOOL": "TOOL",
     "WORLD": "WORLD"
   },
+  "fwconfig":{
+    "switch_title":"Use static IP",
+    "tips":"(When OFF the controller will use DHCP)"
+  },
   "gap": "Gap",
   "gap_units": "Samples",
   "grippers": {
@@ -567,7 +573,8 @@
     "invalidUserName": "Must include letter, number or _",
     "invalidUserName2": "This username is reserved",
     "userNameReserved":"This username is reserved",
-    "letterAndNumber":"Password must be 4-15 characters long, and contain at least one letter and one number"
+    "letterAndNumber":"Password must be 4-15 characters long, and contain at least one letter and one number",
+    "fixedLength":"String length"
   },
   "topology": {
     "title": "Device Manager",
@@ -609,7 +616,8 @@
     "inputWord": "Input Word",
     "outputBit": "Output Bit",
     "outputByte": "Output Byte",
-    "outputWord": "Output Word"
+    "outputWord": "Output Word",
+    "refresh":"Refresh"
   },
   "interface": {
     "title": "User Interface"
@@ -644,6 +652,7 @@
     "percision": "Precision",
     "settings": "Jog Settings",
     "speed": "Speed",
+    "incremental":"Incremental",
     "speed_inc": {
       "s": "Small",
       "m": "Medium",
@@ -687,6 +696,11 @@
     "title": "ControlStudio+ License Agreement"
   },
   "loading": "Loading",
+  "loadingStep":{
+    "data":"Data",
+    "project":"Project",
+    "tpStatus":"TP Status"
+  },
   "location": "Location",
   "locations": "Locations",
   "log": {
@@ -699,7 +713,8 @@
     "user_new": "created a new user"
   },
   "login": {
-    "mc_offline": "Waiting for controller to connect"
+    "mc_offline": "Waiting for controller to connect",
+    "invalid_user":"Invalid username or password"
   },
   "long": "Long",
   "longs": "Longs",
@@ -845,7 +860,9 @@
       "step1": "General",
       "step4": "Approach&Retract",
       "sum_of": "Here's a summary of",
-      "title": "Pallet Wizard"
+      "title": "Pallet Wizard",
+      "options": "Options",
+      "item_order": "Item Order"
     },
     "wizard_open": "Open pallet wizard"
   },
@@ -1208,6 +1225,7 @@
       "lib_name": "Library Name",
       "menu_delete_files": "Delete selected",
       "menu_download_files": "Download selected",
+      "move_item": "Move selected items",
       "new": "New",
       "new_app": "New App",
       "new_dep": "New Dependency",
@@ -1293,6 +1311,7 @@
       "desc": "Define the machine table limits",
       "title": "Machine Table Limits"
     },
+    "none":"None",
     "pos": {
       "desc": "Define the joint position limits",
       "title": "Position Limits"
@@ -1454,7 +1473,8 @@
     "Administrator": "Administrator",
     "Programmer":"Programmer",
     "Operator":"Operator",
-    "Viewer":"Viewer"
+    "Viewer":"Viewer",
+    "Supervisor":"System Supervisor"
   },
   "robot": "Robot",
   "robots": {
@@ -1572,6 +1592,7 @@
     "password_change": {
       "btn": "CHANGE TP MODE PASSWORD...",
       "change": "Change TP Mode password",
+      "save":"CHANGE IP MODE PASSWORD",
       "err": "Could not change password",
       "err_regex": "Password must be 4-15 characters long, and contain at least one letter and one number",
       "new": "New Password",
@@ -1620,7 +1641,11 @@
     "stop": "Stop recording",
     "val": "Value",
     "background": "Background",
-    "trace": "Show Path"
+    "trace": "Show Path",
+    "save_screen":{
+      "title":"Save Simulation",
+      "placeholder":"File Name"
+    }
   },
   "softMC_log": "Controller Log",
   "softMC User": "Controller User",
@@ -1722,6 +1747,7 @@
   "terminal": "Terminal",
   "terminal_restricted": "Terminal is not available for privilege level \"{{user}}\"",
   "time_update": "Controller Date and Time are synced",
+  "time": "时间",
   "token_expire": {
     "message": "For safety reasons, ControlStudio+ will automatically logout in 15 minutes. All unsaved data will be lost. Please make sure to save your changes in the next 15 minutes.",
     "title": "Token Expire"

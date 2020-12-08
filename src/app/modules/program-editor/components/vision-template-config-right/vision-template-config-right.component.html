@@ -33,9 +33,9 @@
                                     {{ 'vision.templateConfig.nameExist' | translate }}</mat-error>
                             </mat-form-field> -->
                             <div class="customKeyBoard">
-                                <custom-key-board type="string" [required]="true" [(value)]="element.dataName.value" [maxLength]="32" class="inputElementName"
-                                    [nameRules]="true" (valueChange)="changeInput({target:{value:$event}},i,'respondData')" [emitNoDirtyValue]="true"
-                                    (blurEvent)="blurReapondData(i)" [existNameList]="respondExist"
+                                <custom-key-board type="string" #nameExist [required]="true" [(value)]="element.dataName.value" [maxLength]="32" class="inputElementName"
+                                    [nameRules]="true" (valueChange)="changeInput({target:{value:$event}},i,'respondData',nameExist)" [emitNoDirtyValue]="true"
+                                    (blurEvent)="blurReapondData(i)" [existNameList]="respondExist" [caseSensitive]="true"
                                 ></custom-key-board>
                             </div>
                         </td>

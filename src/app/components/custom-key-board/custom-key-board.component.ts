@@ -37,7 +37,8 @@ enum ErrorStringCode {
   IPAndMask = 'inValidIPAndMask',
   MaxLength = 'maxLength',
   MinLength = 'minLength',
-  PasswordRegex = 'passwordRegex'
+  PasswordRegex = 'passwordRegex',
+  FixedLength ='fixedLength'
 }
 
 @Component({
@@ -96,6 +97,7 @@ export class CustomKeyBoardComponent implements OnInit, OnDestroy, AfterViewInit
   @Input() isIPAndMask: boolean = false;  //IP:MASK add verification rules
   @Input() identificationTag: string;
   @Input() defaultValueOfInvalidNum = null;
+  @Input() caseSensitive: boolean = false; // (false a === A)  (true a !== A)
   @Input() emitNoDirtyValue: boolean = false;// if the value is not dirty ,emit it
   @Output() valueChange: EventEmitter<string | number> = new EventEmitter<string | number>();  //emit input event
   @Output() inputChange: EventEmitter<string | number> = new EventEmitter<string | number>();
@@ -159,20 +161,22 @@ export class CustomKeyBoardComponent implements OnInit, OnDestroy, AfterViewInit
       validatorsMap.set(ErrorNumberCode.InvalidNumber,this.utils.isNumberValidator());
     }
     if ((!isNotNumber(this.min) || !isNotNumber(this.max)) && this.isNumberValue) {
-
       const validatorLimit = this.utils.limitValidator(this.min, this.max, this.type === DATA_TYPE.Float, this.leftClosedInterval, this.rightClosedInterval);
       validatorsMap.set(ErrorNumberCode.Limit,validatorLimit);
     }
 
-    this.minLength && validatorsMap.set(ErrorStringCode.MinLength,this.utils.minLengthValidator(Number(this.minLength)));
-
-    this.maxLength && validatorsMap.set(ErrorStringCode.MaxLength,this.utils.maxLengthValidator(Number(this.maxLength)));
+    if(this.minLength && this.maxLength && (this.minLength === this.maxLength)){
+      validatorsMap.set(ErrorStringCode.FixedLength,this.utils.fixedLengthValidator(Number(this.maxLength)))
+    }else{
+      this.minLength && validatorsMap.set(ErrorStringCode.MinLength,this.utils.minLengthValidator(Number(this.minLength)));
+      this.maxLength && validatorsMap.set(ErrorStringCode.MaxLength,this.utils.maxLengthValidator(Number(this.maxLength)));
+    }
 
     this.firstLetter && validatorsMap.set(ErrorStringCode.FirstLetter,this.utils.firstLetterValidator());
 
     this.nameRules && validatorsMap.set(ErrorStringCode.NameRules,this.utils.nameRulesValidator());
 
-    this.existNameList && validatorsMap.set(ErrorStringCode.ExistNameList,this.utils.existNameListValidator(this.existNameList));
+    this.existNameList && validatorsMap.set(ErrorStringCode.ExistNameList,this.utils.existNameListValidator(this.existNameList,this.caseSensitive));
 
     this.reserved && validatorsMap.set(ErrorStringCode.UserNameReserved,this.utils.reserved());
 
@@ -235,7 +239,7 @@ export class CustomKeyBoardComponent implements OnInit, OnDestroy, AfterViewInit
       if (!currentValue || !previousValue) return;
       this.existNameList = currentValue;
       this.control.clearValidators();
-      this.validatorsMap.set(ErrorStringCode.ExistNameList,this.utils.existNameListValidator(this.existNameList))
+      this.validatorsMap.set(ErrorStringCode.ExistNameList,this.utils.existNameListValidator(this.existNameList,this.caseSensitive))
       this.control.setValidators(Array.from(this.validatorsMap.values()));
 
     })(changes);
@@ -351,7 +355,8 @@ export class CustomKeyBoardComponent implements OnInit, OnDestroy, AfterViewInit
           outSideValidators: this.outSideValidators,
           emitNoDirtyValue: this.emitNoDirtyValue,
           defaultValueOfInvalidNum: this.defaultValueOfInvalidNum,
-          useUnitPasswordRegex: this.useUnitPasswordRegex
+          useUnitPasswordRegex: this.useUnitPasswordRegex,
+          caseSensitive: this.caseSensitive
         },
         width: this.type === 'string' ? '839px' : '344px',
         height: this.type === 'string' ? '439.75px' : '384.75px',
@@ -563,20 +568,23 @@ export class CustomKeyBoardComponent implements OnInit, OnDestroy, AfterViewInit
 
   private emitBlurValue(value) {
     this.control.markAsTouched();
-    this.isValidEvent.emit(this.control.valid);
     this.control.setValue(this.isNumberValue ? this.handleBlurEmitValue(value) : value);
     if (this.control.status === 'INVALID' || this.control.value === '') {
-      if (!this.emitInvalidValue) return;
+      if (!this.emitInvalidValue) {
+        this.isValidEvent.emit(this.control.valid);
+        return;
+      }
       if (this.isNumberValue && this.defaultValueOfInvalidNum !== undefined && (this.control.value === '' || isNaN(+this.control.value))) {
         this.valueChange.emit(this.defaultValueOfInvalidNum);
         this.blurEvent.emit(this.defaultValueOfInvalidNum);
+        this.isValidEvent.emit(this.control.valid);
         return;
       }
     }
     this.valueChange.emit(this.control.value);
     this.blurEvent.emit(this.control.value);
     this.onConfirmPwValidator();
-
+    this.isValidEvent.emit(this.control.valid);
   }
 
   public resetStatus(): void {
@@ -717,13 +725,16 @@ export class CustomKeyBoardComponent implements OnInit, OnDestroy, AfterViewInit
         html = this.requiredErrMsg ? this.requiredErrMsg : transCode;
         break;
       case ErrorStringCode.MaxLength:
-        html = `${transCode} : ${this.maxLength}`;
+        html = `${transCode}: ${this.maxLength}`;
         break;
       case ErrorStringCode.MinLength:
-        html = `${transCode} : ${this.minLength}`;
+        html = `${transCode}: ${this.minLength}`;
+        break;
+      case ErrorStringCode.FixedLength:
+        html = `${transCode}: ${this.maxLength}`;
         break;
       case ErrorStringCode.LetterAndNumber:
-        html = `${transCode} : ${this.minLength}`
+        html = `${transCode}: ${this.minLength}`
       default: html = transCode; break;
         ;
     }
@@ -745,7 +756,7 @@ export class CustomKeyBoardComponent implements OnInit, OnDestroy, AfterViewInit
 
   private getStringErrorCode(): string[] {//// sort by error severity level
     return [ErrorStringCode.Required, ErrorStringCode.MaxLength, ErrorStringCode.MinLength, ErrorStringCode.FirstLetter, ErrorStringCode.NameRules, ErrorStringCode.ExistNameList, ErrorStringCode.LetterAndNumber, ErrorStringCode.IPAndMask,
-    ErrorStringCode.UserNameReserved, ErrorStringCode.InvalidUserName, ErrorStringCode.FullName, ErrorStringCode.ConfirmPassword,ErrorStringCode.PasswordRegex]
+    ErrorStringCode.UserNameReserved, ErrorStringCode.InvalidUserName, ErrorStringCode.FullName, ErrorStringCode.ConfirmPassword,ErrorStringCode.PasswordRegex,ErrorStringCode.FixedLength]
   }
 
 

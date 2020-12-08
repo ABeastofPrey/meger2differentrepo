@@ -37,7 +37,7 @@
 								<td>
 									<mat-form-field>
 										<mat-select [value]="app.id" (selectionChange)="updateAppId(app, $event)">
-											<mat-option [value]="-1">None</mat-option>
+											<mat-option [value]="-1">{{'projectSettings.none' | translate}}</mat-option>
 											<mat-option [value]="0">0 (0,0,0)</mat-option>
 											<mat-option [value]="1">1 (0,0,1)</mat-option>
 											<mat-option [value]="2">2 (0,1,0)</mat-option>

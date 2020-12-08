@@ -22,7 +22,7 @@ export class VisionTemplateConfigRightComponent implements OnInit {
     public templateName: string;
     public templateList: string[] = [];
 
-    private respondExist: string[] = [];
+    respondExist: string[] = [];
 
     public respondData: TemplateRespondData[] = [];
     public respondError: CustomRespondError[] = [];
@@ -90,7 +90,7 @@ export class VisionTemplateConfigRightComponent implements OnInit {
     public blurReapondData(index: number): void {
         let inputValid: boolean = this.respondData[index].dataName.valid;
         let originNameValid: string = this.respondData[index].originalName;
-        
+
         if (!inputValid && originNameValid) {
             this.respondData[index].dataName.patchValue(this.respondData[index].originalName);
         }
@@ -235,8 +235,8 @@ export class VisionTemplateConfigRightComponent implements OnInit {
         };
     }
 
-    public changeInput(e: any, faIndex: number, type: string): void {
-        this.respondExist = [];
+    public changeInput(e: any, faIndex: number, type: string,ref?: any): void {
+      this.respondExist && this.respondExist.splice(0,this.respondExist.length);
         this.respondData.forEach((value: TemplateRespondData, index: number) => {
             if (faIndex !== index) {
                 this.respondExist.push(value.dataName.value);
@@ -246,6 +246,8 @@ export class VisionTemplateConfigRightComponent implements OnInit {
         const dataName = validName.slice(0, 32);
         this[type][faIndex].dataName.patchValue(dataName);
         this[type][faIndex].dataName.markAsTouched();
+        ref && ref.setControlValue(validName);
     }
+
 
 }

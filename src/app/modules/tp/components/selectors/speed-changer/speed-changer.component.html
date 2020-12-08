@@ -12,7 +12,7 @@
   [displayWith]="getDisplayVal">
 </mat-slider>
 <div [class.hidden]="val !== 0.1" class="center-vertical">
-	<span>Incremental</span>
+	<span>{{ 'jogScreen.incremental' | translate }}</span>
 	<mat-form-field class="short">
 		<mat-select
 			[disabled]="disabled"

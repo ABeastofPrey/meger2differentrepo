@@ -103,7 +103,8 @@
             class="index-field"
             appearance="outline"
           >
-            <mat-select
+           <span class="indexArrayValue">{{element.selectedIndex}}</span>
+            <mat-select class="indexArraySelect"
               placeholder="{{ 'index' | translate }}"
               [(ngModel)]="element.selectedIndex"
               (selectionChange)="refreshVariable(element)"
@@ -111,6 +112,7 @@
             >
               <cdk-virtual-scroll-viewport
                 [itemSize]="24"
+                scrollToIndex ="element.selectedIndex"
                 style="width: 84px; height: 210px;"
               >
                 <mat-option
@@ -229,14 +231,15 @@
                 element?.typeStr === 'LOCATION' &&
                 i >= data?.robotCoordinateType?.legends?.length
               "
-              [(ngModel)]="
+              [value]="
                 element.isArr
                   ? element.value[element.selectedIndex - 1].value[i].value
                   : element.value[i].value
               "
-              (selectionChange)="onKeyboardClose(element)"
+              (selectionChange)="onKeyboardClose(element,$event,element.selectedIndex,i)"
             >
-              <mat-option disabled>{{ leg }}</mat-option>
+            <mat-label>{{ leg }}</mat-label>
+              <!-- <mat-option disabled>{{ leg }}</mat-option> -->
               <div
                 *ngIf="
                   (data?.robotCoordinateType?.flags)[
@@ -333,7 +336,7 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef style="width: 200px;">
+        <th mat-header-cell *matHeaderCellDef style="width: 180px;">
           {{ 'actions' | translate }}
         </th>
         >

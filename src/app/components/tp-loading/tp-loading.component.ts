@@ -32,14 +32,17 @@ export class TpLoadingComponent implements OnInit, OnDestroy {
   steps: LoadingStep[] = [
     {
       name: 'Data',
+      translateCode: 'loadingStep.data',
       done: false,
     },
     {
       name: 'Project',
+      translateCode: 'loadingStep.project',
       done: false,
     },
     {
       name: 'TP Status',
+      translateCode: 'loadingStep.tpStatus',
       done: false,
     },
   ];
@@ -116,7 +119,7 @@ export class TpLoadingComponent implements OnInit, OnDestroy {
     const step = this.steps.find(step => {
       return !step.done;
     });
-    if (step) return step.name;
+    if (step) return step.translateCode;
     return '';
   }
 
@@ -147,4 +150,5 @@ export class TpLoadingComponent implements OnInit, OnDestroy {
 interface LoadingStep {
   name: string;
   done: boolean;
+  translateCode: string;
 }

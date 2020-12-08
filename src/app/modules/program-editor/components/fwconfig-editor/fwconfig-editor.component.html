@@ -1,7 +1,7 @@
 <div *ngIf="config" class="wrapper">
   <div>
-    <mat-slide-toggle color="primary" [checked]="config.isStaticIP" (change)="toggleStaticIP($event.checked)" #useStatic>Use static IP</mat-slide-toggle>
-    <span>(When OFF the controller will use DHCP)</span>
+    <mat-slide-toggle color="primary" [checked]="config.isStaticIP" (change)="toggleStaticIP($event.checked)" #useStatic>{{'fwconfig.switch_title' | translate}}</mat-slide-toggle>
+    <span>{{'fwconfig.tips' | translate}}</span>
   </div>
   <div class="customKeyBoard">
   <!-- <mat-form-field>

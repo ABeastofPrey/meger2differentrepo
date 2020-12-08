@@ -23,14 +23,13 @@
 				<custom-key-board *ngFor="let p of positionList; let i = index"
           type="float"
           required="true"
-					[(value)]="positionList[i]"
+					[value]="positionList[i]"
 					[min]="limits[i]?.min"
 					[max]="limits[i]?.max"
 					[leftClosedInterval]="false"
 					[rightClosedInterval]="false"
 					prefix="J{{ i + 1 }}: &nbsp;"
 					suffix='{{i == 2 ? "[mm]" : "[deg]"}}'
-					(focusEvent)="onFocus($event)"
 					(blurEvent)="updatePosition(i+1,{value:$event})">
 				</custom-key-board>
 			</ng-container>

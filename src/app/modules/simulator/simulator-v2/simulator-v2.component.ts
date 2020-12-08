@@ -182,10 +182,10 @@ export class SimulatorV2Component implements OnInit {
       .open(SingleInputDialogComponent, {
         data: {
           type: 'text',
-          title: 'Save Simulation',
+          title: 'simulator_screen.save_screen.title',
           suffix: '.SIM',
-          placeholder: 'File Name',
-          accept: 'SAVE',
+          placeholder: 'simulator_screen.save_screen.placeholder',
+          accept: 'button.save',
           regex: '[a-zA-Z]+(\\w*)$',
           maxLength: 32,
           initialValue: sceneName,

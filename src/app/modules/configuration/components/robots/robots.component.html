@@ -218,7 +218,7 @@
 		<h2>
 			{{ 'robots.title' | translate }}
 		</h2>
-    	<mat-slide-toggle *ngIf="login.isSuper" color="warn" style="margin-bottom: 8px;" (change)="toggleDebug($event.checked)">DEBUG MODE</mat-slide-toggle>
+    	<mat-slide-toggle *ngIf="login.isSuper" color="warn" style="margin-bottom: 8px;" (change)="toggleDebug($event.checked)">{{"mode_debug" | translate}}</mat-slide-toggle>
 		<!-- <mat-form-field appearance="outline">
 			<mat-label>{{ 'robots.name' | translate }}</mat-label>
 			<input

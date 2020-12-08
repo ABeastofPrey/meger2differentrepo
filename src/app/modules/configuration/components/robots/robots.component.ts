@@ -444,9 +444,9 @@ export class RobotsComponent implements OnInit {
     this.dialog.open(SingleInputDialogComponent,{
       data: {
         icon: 'security',
-        title: this.words['safety.password_change']['change'],
-        placeholder: this.words['safety.password_change']['new'],
-        accept: this.words['safety.password_change']['change'].toUpperCase(),
+        title: 'safety.password_change.change',
+        placeholder: 'safety.password_change.new',
+        accept: 'safety.password_change.save',
         regex: '^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$',
         maxLength: 15,
         minLength: 4,

@@ -471,15 +471,15 @@ export class ApiService {
   getUserPermission(permission: number) {
     switch (permission) {
       case PERMISSION_ADMIN:
-        return 'Administrator';
+        return 'role.Administrator';
       case PERMISSION_PROGRAMMER:
-        return 'Programmer';
+        return 'role.Programmer';
       case PERMISSION_OPERATOR:
-        return 'Operator';
+        return 'role.Operator';
       case PERMISSION_VIEWER:
-        return 'Viewer';
+        return 'role.Viewer';
       case PERMISSION_SUPER:
-        return 'System Supervisor';
+        return 'role.Supervisor';
       default:
         return '';
     }

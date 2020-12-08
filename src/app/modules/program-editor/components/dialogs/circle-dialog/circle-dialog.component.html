@@ -28,7 +28,7 @@
 				<input matInput placeholder="Angle" formControlName="angle" virtualKeyboard ktype="numeric" />
             </mat-form-field> -->
             <div class="customKeyBoard">
-                <custom-key-board type="float" [placeHolder]="'Angle'"  [value]="ctrl.controls.angle.value" [isNgIf]="data.angle"
+                <custom-key-board type="float" placeHolder="{{'angle' | translate}}"  [value]="ctrl.controls.angle.value" [isNgIf]="data.angle"
                     (valueChange)="angleChange($event)"  (blurEvent)="angleChange($event)"
                 ></custom-key-board>
             </div>
@@ -71,7 +71,7 @@
 					</mat-error>
                 </mat-form-field> -->
                 <div class="customKeyBoard">
-                    <custom-key-board type="float" [isPositiveNum]="true" [min]="0" [max]="vtranMax" [leftClosedInterval]="false" [placeHolder]="'Vtran [mm/s]'" [(value)]="ctrl.controls.vtran.value"
+                    <custom-key-board type="float" [isPositiveNum]="true" [min]="0" [max]="vtranMax" [leftClosedInterval]="false"  placeHolder="{{('projectSettings.ascale' | translate) +'[%]'}}" [(value)]="ctrl.controls.vtran.value"
                         (valueChange)="vtranChange($event)"  (blurEvent)="vtranChange($event)"
                     ></custom-key-board>
                 </div>

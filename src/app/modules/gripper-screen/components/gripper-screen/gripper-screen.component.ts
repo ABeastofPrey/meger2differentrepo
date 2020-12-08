@@ -225,7 +225,7 @@ export class GripperScreenComponent implements OnInit {
         data: {
           icon: 'add',
           title,
-          placeholder: this.words['name'],
+          placeholder: 'name',
           accept: title,
           regex: '[a-zA-Z]+(\\w*)$',
           maxLength: 32,
@@ -452,7 +452,7 @@ export class GripperScreenComponent implements OnInit {
         val = i === 1 ? g.cmd1 : g.cmd2;
         g.cmd2_invert = inv;
         break;
-        
+
     }
     const cmd =
       '?GRP_GRIPPER_DOUT_COMMAND_SET("' +
