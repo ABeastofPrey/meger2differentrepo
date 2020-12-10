@@ -1,3 +1,13 @@
 #!/bin/bash
 
-rm -rf /usr/share/rs
+if [ -d "/usr/share/rs/" ];then
+
+  cd /usr/share/rs/ && ls | grep -v assets | xargs rm -rf
+
+  if [ -d "/usr/share/rs/assets/" ];then
+    cd assets && ls | grep -v plugin | xargs rm -rf
+  fi
+
+fi
+
+exit 0
