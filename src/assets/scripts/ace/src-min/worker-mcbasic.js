@@ -1744,7 +1744,7 @@ define("ace/mode/mcbasic/mcbasic_parse",[], function(require, exports, module) {
         returns error string or null if everything is OK.
     */
    function validateForCommand(line) {
-    const match = /^\s*for\s*([^\s=]+)?\s*=?\s*((?:(?!to).)+)?\s*(to)?\s*((?:(?!step).)+)?\s*(?:\bstep\b\s*\S+)?\s*(\S+)?/i.exec(line);
+    const match = /^\s*for\s*([^\s=]+)?\s*=?\s*((?:(?!to).)+)?\s*(to)?\s*((?:(?! step).)+)?\s*(?:\bstep\b\s*\S+)?\s*(\S+)?/i.exec(line);
     if (!match[1]) return new SyntaxError('Missing variable in for command',match,1);
     if (!match[2]) return new SyntaxError('Missing loop starting value',match,2);
     if (!match[3]) return new SyntaxError('Missing "to" keyword',match,3);

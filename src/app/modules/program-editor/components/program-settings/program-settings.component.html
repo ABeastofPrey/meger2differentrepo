@@ -28,7 +28,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr *ngFor="let app of prj.currProject.value.apps">
+							<tr *ngFor="let app of apps">
 								<td>
 									<mat-checkbox [disabled]="busy" color="primary" [checked]="app.active" (change)="toggleActiveApp(app, 'active')"
 										>{{ app.name }}

@@ -1,7 +1,7 @@
 import { takeUntil } from 'rxjs/operators';
 import { ScreenManagerService } from './../../../core/services/screen-manager.service';
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import {
   ProjectManagerService,
   WebsocketService,
@@ -20,6 +20,11 @@ import { Subject } from 'rxjs';
 export class ProgramSettingsComponent implements OnInit {
 
   private notifier: Subject<boolean> = new Subject();
+  private _apps: App[] = []; // will hold a sorted array of the project apps
+
+  get apps() {
+    return this._apps;
+  }
 
   constructor(
     public prj: ProjectManagerService,
@@ -39,6 +44,12 @@ export class ProgramSettingsComponent implements OnInit {
       if (stat) {
         this.router.navigateByUrl('/projects');
       }
+    });
+    this.prj.currProject.pipe(takeUntil(this.notifier)).subscribe(prj=>{
+      if (!prj) return;
+      this._apps = prj.apps.sort((a, b) => {
+        return a.name < b.name ? -1 : 1;
+      });
     });
   }
 
