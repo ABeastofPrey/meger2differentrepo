@@ -137,7 +137,7 @@ export class ProgramEditMenuComponent implements OnInit {
   menu_pay_use() {
     this.dialog
       .open(PayloadSelectorComponent, {
-        data: 'Set Payload',
+        data: 'payloads.set_payload.title',
       })
       .afterClosed()
       .subscribe((pay: Payload) => {

@@ -336,7 +336,7 @@
   "edit": "编辑",
   "element": "元素",
   "empty_list": "列表为空",
-  "enable": "使能",
+  "enable": "激活",
   "error": {
     "conn_mc": "无法连接到softMC",
     "conn_ws": "无法建立一个websocket连接",
@@ -470,7 +470,7 @@
     "pay_ef": "末端执行器有效载荷",
     "pay_item": "有效负载值",
     "set": "设置抓手",
-    "sleep": "休眠时间",
+    "sleep": "时间设置",
     "status1": "输出状态",
     "status2": "打开状态",
     "test": "测试抓手",
@@ -914,6 +914,9 @@
     "relative_pos": "振幅",
     "reset_msg": "重置该负载值，此操作不可撤回，确定进行下去？",
     "start_pos": "初始位置",
+    "set_payload":{
+      "title":"设置负载"
+    },
     "time": "持续时间"
   },
   "pluginManage": {
@@ -1337,8 +1340,8 @@
       "title": "世界坐标系工作空间"
     },
    "wp": {
-      "desc": "定义工件数量限制值",
-      "title": "位置触发器"
+      "desc": "定义工件坐标系下工作空间",
+      "title": "工件坐标系工件空间"
 	  },
     "position_trigger": {
       "desc": "定义位置触发器的参数",

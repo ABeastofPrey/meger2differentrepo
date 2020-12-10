@@ -79,7 +79,6 @@ export class PalletWizardComponent implements OnInit {
   previewWidth: number;
   previewHeight: number;
 
-  public showStep3KeyboardError: boolean = false;
 
   @ViewChild('palletPreviewStep1') preview1: ElementRef;
   @ViewChild('palletContainer1') container: ElementRef;
@@ -904,6 +903,7 @@ export class PalletWizardComponent implements OnInit {
 
   private validateLevels(control: AbstractControl) {
     if (this.dataService.selectedPallet.type === 'GRID' ||(!control.touched && !control.dirty)) {
+      this.setErrorsKeyboard(['levels'],null);
       return Promise.resolve(null);
     }
     const pallet = this.dataService.selectedPallet.name;
@@ -911,12 +911,14 @@ export class PalletWizardComponent implements OnInit {
       '?PLT_SET_NUMBER_OF_LEVELS("' + pallet + '",' + control.value + ')';
     return this.ws.query(cmd).then((ret: MCQueryResponse) => {
       if (ret.err || ret.result !== '0') {
+        this.setErrorsKeyboard(['levels'],{ invalidLevelCount: true });
         return { invalidLevelCount: true };
       }
       if (this.dataService.selectedPallet.entryEnabled) {
         this.step3.controls['x'].markAsDirty();
         this.step3.controls['x'].updateValueAndValidity();
       }
+      this.setErrorsKeyboard(['levels'],null);
       return null;
     });
   }
@@ -941,7 +943,11 @@ export class PalletWizardComponent implements OnInit {
       this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
       return Promise.resolve(null);
     }
+
+    const item = 'items'+ changed.toUpperCase();
+
     if (!control.touched && !control.dirty) {
+      this.setErrorsKeyboard([item],null);
       return Promise.resolve(null);
     }
     const x = changed === 'x' ? control.value : pallet.itemsX;
@@ -980,6 +986,7 @@ export class PalletWizardComponent implements OnInit {
     // this.step1.controls['itemsY'].setErrors(null);
     // this.step1.controls['itemsZ'].setErrors(null);
     // this.setErrorsKeyboard(['itemsX','itemsY','itemsZ'],null);
+    this.setErrorsKeyboard([item],null);
     return Promise.resolve(null);
   }
 
@@ -1052,7 +1059,9 @@ export class PalletWizardComponent implements OnInit {
         ? control.value
         : this.dataService.selectedPallet.palletSizeY;
     if (x && y) {
-      if (!control.touched && !control.dirty) return Promise.resolve(null);
+      if (!control.touched && !control.dirty) {
+        return Promise.resolve(null);
+      }
       const cmd = '?PLT_SET_PALLET_SIZE("' + pallet + '",' + x + ',' + y + ',0)';
       const cmdRestore = '?PLT_GET_PALLET_SIZE("' + pallet + '")';
       return this.ws.query(cmd).then((ret: MCQueryResponse) => {
@@ -1086,7 +1095,10 @@ export class PalletWizardComponent implements OnInit {
       typeof x !== 'undefined' && typeof y !== 'undefined' && typeof z !== 'undefined' &&
       !isNaN(Number(x)) && !isNaN(Number(y)) && !isNaN(Number(z))
     ) {
-      if (!control.touched && !control.dirty) return Promise.resolve(null);
+      if (!control.touched && !control.dirty) {
+        this.setErrorsKeyboard([`origin${changed.toUpperCase()}`],null);
+        return Promise.resolve(null);
+      }
       const cmd =
         '?PLT_FRAME_CALIBRATION_SET("' +
         this.dataService.selectedPallet.name +
@@ -1129,7 +1141,10 @@ export class PalletWizardComponent implements OnInit {
       typeof x !== 'undefined' && typeof y !== 'undefined' && typeof z !== 'undefined' &&
       !isNaN(Number(x)) && !isNaN(Number(y)) && !isNaN(Number(z))
     ) {
-      if (!control.touched && !control.dirty) return Promise.resolve(null);
+      if (!control.touched && !control.dirty) {
+        this.setErrorsKeyboard([`posX${changed.toUpperCase()}`],null);
+        return Promise.resolve(null);
+      }
       const cmd =
         '?PLT_FRAME_CALIBRATION_SET("' +
         this.dataService.selectedPallet.name +
@@ -1165,7 +1180,10 @@ export class PalletWizardComponent implements OnInit {
     const y = changed === 'y' ? control.value : pos.y;
     const z = changed === 'z' ? control.value : pos.z;
     if (x !== null && y !== null && z !== null) {
-      if (!control.touched && !control.dirty) return Promise.resolve(null);
+      if (!control.touched && !control.dirty){
+        this.setErrorsKeyboard([`posY${changed.toUpperCase()}`],null);
+        return Promise.resolve(null);
+      }
       const cmd =
         '?PLT_FRAME_CALIBRATION_SET("' +
         this.dataService.selectedPallet.name +
@@ -1196,7 +1214,10 @@ export class PalletWizardComponent implements OnInit {
   }
 
   private validateFlag(flag: number, control: AbstractControl) {
-    if (!control.touched && !control.dirty) return Promise.resolve(null);
+    if (!control.touched && !control.dirty) {
+      this.setErrorsKeyboard(['flag' + flag],{ invalidFlag: true });
+      return Promise.resolve(null);
+    }
     const pal = this.dataService.selectedPallet;
     // if every flag is NaN or one flag is AUTO - this is wrong
     const newVal = control.value;
@@ -1220,6 +1241,7 @@ export class PalletWizardComponent implements OnInit {
         this.step3.controls['x'].markAsDirty();
         this.step3.controls['x'].updateValueAndValidity();
       }
+      this.setErrorsKeyboard(['flag' + flag],{ invalidFlag: true });
       return Promise.resolve(null);
     });
   }
@@ -1268,7 +1290,6 @@ export class PalletWizardComponent implements OnInit {
           this.step3.controls['pitch'].setErrors({ invalidEntry: true });
           this.step3.controls['roll'].setErrors({ invalidEntry: true });
           this.setErrorsKeyboard(['x','y','z','yaw','pitch','roll'],{ invalidEntry: true });
-          // this.showStep3KeyboardError = true;
           return { invalidEntry: true };
         }
         this.step3.controls['x'].setErrors(null);
@@ -1278,11 +1299,10 @@ export class PalletWizardComponent implements OnInit {
         this.step3.controls['pitch'].setErrors(null);
         this.step3.controls['roll'].setErrors(null);
         this.setErrorsKeyboard(['x','y','z','yaw','pitch','roll'],null);
-        // this.showStep3KeyboardError = false;
         return Promise.resolve(null);
       });
     }
-    // this.showStep3KeyboardError = false;
+    this.setErrorsKeyboard([changed],null);
     return Promise.resolve(null);
   }
 
@@ -2121,9 +2141,9 @@ onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup){
   if (item === 'index' && formGroup.controls['index'].value !== 'custom') {
     valid = true;
   }
-  const err = valid && formGroup.controls[item].valid ? null : {invalid: true};
-   formGroup.controls[item].setErrors(err);
-   this.setErrorsKeyboard([item], err);
+  if(!valid || formGroup.controls[item].invalid){
+    formGroup.controls[item].setErrors({invalid: true});
+  }
 }
 
  private step2Origin(selectedPallet){
@@ -2178,20 +2198,25 @@ onValidatorCheck(valid: boolean,item: string,formGroup: FormGroup){
          key:"z",
          value:'z',
          markAsDirty: false
-       },
-       {
-         key:"yaw",
-         value:'yaw',
-         markAsDirty: false
-       }, {
-         key:"pitch",
-         value:'pitch',
-         markAsDirty: false
-       },  {
-         key:"roll",
-         value:'roll',
-         markAsDirty: true
        }];
+       if(this.dataService.robotType === 'PUMA'){
+        step3Control.push(   {
+                 key:"yaw",
+                 value:'yaw',
+                 markAsDirty: false
+               }, {
+                 key:"pitch",
+                 value:'pitch',
+                 markAsDirty: false
+               })
+       }
+
+      step3Control.push({
+                 key:"roll",
+                 value:'roll',
+                 markAsDirty: true
+      });
+
        step3Control.forEach((item) => {
         this.setFormGroupItem(selectedPallet.entry[item.value],item.key,this.step3,false,item.markAsDirty);
       })

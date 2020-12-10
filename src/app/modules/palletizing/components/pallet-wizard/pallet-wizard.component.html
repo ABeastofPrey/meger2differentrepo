@@ -736,7 +736,7 @@
 							<tr>
 								<td>
 									<h3 [class.title-disabled]="!dataService.selectedPallet.entryEnabled">{{ 'pallets.wizard.curr_pos' | translate }}:</h3>
-									<div style="display: flex;" [class.showKeyboardError]="showStep3KeyboardError && dataService.selectedPallet.entryEnabled">
+									<div style="display: flex;">
 										<!-- <mat-form-field class="input-small"
 											><input
 												matInput
@@ -802,6 +802,7 @@
                         [placeHolder]="'X'"
                         class="input-small"
                         [emitInvalidValue]="true"
+                        [emitNoDirtyValue]="true"
                         [(value)]="dataService.selectedPallet.entry.x"
                         [required]="true"
                         identificationTag="x"
@@ -815,6 +816,7 @@
                         [placeHolder]="'Y'"
                         class="input-small"
                         [emitInvalidValue]="true"
+                        [emitNoDirtyValue]="true"
                         [(value)]="dataService.selectedPallet.entry.y"
                         [required]="true"
                         identificationTag="y"
@@ -828,6 +830,7 @@
                         [placeHolder]="'Z'"
                         class="input-small"
                         [emitInvalidValue]="true"
+                        [emitNoDirtyValue]="true"
                         [(value)]="dataService.selectedPallet.entry.z"
                         [required]="true"
                         identificationTag="z"
@@ -842,6 +845,7 @@
                         [placeHolder]="'Yaw'"
                         class="input-small"
                         [emitInvalidValue]="true"
+                        [emitNoDirtyValue]="true"
                         [(value)]="dataService.selectedPallet.entry.yaw"
                         [required]="true"
                         identificationTag="yaw"
@@ -857,6 +861,7 @@
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
                         class="input-small"
                         [emitInvalidValue]="true"
+                        [emitNoDirtyValue]="true"
                         [(value)]="dataService.selectedPallet.entry.pitch"
                         [required]="true"
                         identificationTag="pitch"
@@ -870,6 +875,7 @@
                         [disabled]="!isCurrentRobotCompatible || !dataService.selectedPallet.entryEnabled"
                         class="input-small"
                         [emitInvalidValue]="true"
+                        [emitNoDirtyValue]="true"
                         [(value)]="dataService.selectedPallet.entry.roll"
                         [required]="true"
                         identificationTag="roll"

@@ -913,6 +913,9 @@
     "relative_pos": "Amplitude",
     "reset_msg": "This payload's values will be reset. This cannot be undone. Are you sure you want to proceed?",
     "start_pos": "Start Position",
+    "set_payload":{
+      "title":"Set Payload"
+    },
     "time": "Duration"
   },
   "pluginManage": {
@@ -1747,7 +1750,7 @@
   "terminal": "Terminal",
   "terminal_restricted": "Terminal is not available for privilege level \"{{user}}\"",
   "time_update": "Controller Date and Time are synced",
-  "time": "时间",
+  "time": "Time",
   "token_expire": {
     "message": "For safety reasons, ControlStudio+ will automatically logout in 15 minutes. All unsaved data will be lost. Please make sure to save your changes in the next 15 minutes.",
     "title": "Token Expire"

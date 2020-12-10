@@ -169,16 +169,6 @@ pallet-level-designer {
    display: flex;
    height:90px;
 }
-
-::ng-deep .showKeyboardError .mat-form-field-appearance-legacy .mat-form-field-underline {
-  background-color: #d50000;
-}
-::ng-deep .showKeyboardError .mat-form-field-appearance-legacy .mat-form-field-infix {
-  color: #d50000!important;
-}
-::ng-deep  .showKeyboardError .mat-form-field-appearance-legacy .mat-form-field-label {
-  color: #d50000;;
-}
 .form-index{
   display: flex;
   align-items: center;
