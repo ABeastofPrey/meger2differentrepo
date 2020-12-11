@@ -2,7 +2,7 @@
     <mat-form-field class="module-container">
         <mat-label>{{'dashboard.trace.module_label' | translate}}</mat-label>
         <mat-select [disableOptionCentering]="true"
-            (selectionChange)="changeModule()" 
+            (selectionChange)="changeModule()"
             [disabled]="!selectedTrace"
             [(ngModel)]="selectedModule">
             <mat-option *ngFor="let m of moduleList" [value]="m">{{m}}</mat-option>
@@ -20,13 +20,13 @@
             </div>
             <div class="content">
                 <cdk-virtual-scroll-viewport itemSize="40" [style.height]="'360px'">
-                    <div *cdkVirtualFor="let item of todoItems" 
+                    <div *cdkVirtualFor="let item of todoItems"
                         class="drag-drop-item"
                         [ngStyle]="{'color': item.disabled ? 'rgba(0, 0, 0, 0.26)' : 'inherit'}">
                         <span>{{item.module}}</span>
-                        <span [matTooltip]="item.variable">{{item.variable}}</span>
+                        <span>{{item.variable}}</span>
                         <mat-select *ngIf="item.isIO"
-                            [disabled]="item.disabled" 
+                            [disabled]="item.disabled"
                             [disableOptionCentering]="true"
                             [(ngModel)]="item.turnOn">
                             <mat-option [disabled]="item.axis1Disabled" [value]="1">1</mat-option>
@@ -35,7 +35,7 @@
                             <mat-option [disabled]="item.axis4Disabled" [value]="4">4</mat-option>
                             <mat-option [value]="0">All</mat-option>
                         </mat-select>
-                        <button [disabled]="item.disabled" 
+                        <button [disabled]="item.disabled"
                             (click)="selectOne(item)"
                             mat-icon-button color="primary">
                             <mat-icon>add</mat-icon>
@@ -58,13 +58,13 @@
                 <div *ngFor="let item of doneItems"
                     class="drag-drop-item">
                     <span>
-                        <div [matTooltip]="item.module">{{item.module}}</div>
+                        <div>{{item.module}}</div>
                         <div *ngIf="item.isIO">
                             {{'dashboard.trace.channel.instance' | translate }}: {{item.turnOn}}
                         </div>
                     </span>
-                    <span [matTooltip]="item.variable">{{item.variable}}</span>
-                    <button mat-icon-button 
+                    <span>{{item.variable}}</span>
+                    <button mat-icon-button
                         (click)="unselectOne(item)"
                         color="primary">
                         <mat-icon>clear</mat-icon>

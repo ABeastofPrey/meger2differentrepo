@@ -1,7 +1,7 @@
 <mat-card>
     <mat-form-field class="module-container">
         <mat-label>{{'dashboard.trace.module_label' | translate}}</mat-label>
-        <mat-select (selectionChange)="changeModule()" 
+        <mat-select (selectionChange)="changeModule()"
             [disableOptionCentering]="true"
             [disabled]="!selectedTrace"
             [(ngModel)]="selectedModule">
@@ -20,19 +20,19 @@
             </div>
             <div class="content">
                 <cdk-virtual-scroll-viewport itemSize="40" [style.height]="'360px'">
-                    <div *cdkVirtualFor="let item of todoItems" 
+                    <div *cdkVirtualFor="let item of todoItems"
                         class="drag-drop-item"
                         [ngStyle]="{'color': item.disabled ? 'rgba(0, 0, 0, 0.26)' : 'inherit'}">
                         <span>{{item.module}}</span>
-                        <span [matTooltip]="item.variable">{{item.variable}}</span>
+                        <span>{{item.variable}}</span>
                         <mat-select *ngIf="item.isIO"
-                            [disabled]="item.disabled" 
+                            [disabled]="item.disabled"
                             [disableOptionCentering]="true"
                             [(ngModel)]="item.turnOn">
                             <mat-option [value]="1">TRUE</mat-option>
                             <mat-option [value]="0">FALSE</mat-option>
                         </mat-select>
-                        <button [disabled]="item.disabled" 
+                        <button [disabled]="item.disabled"
                             (click)="selectOne(item)"
                             mat-icon-button color="primary">
                             <mat-icon>add</mat-icon>
@@ -55,7 +55,7 @@
                 <div *ngFor="let item of doneItems"
                     class="drag-drop-item">
                     <span>{{item.module}}</span>
-                    <span [matTooltip]="item.variable">{{item.variable}}</span>
+                    <span>{{item.variable}}</span>
                     <span>
                         <ng-container *ngIf="item.isIO">
                             {{item.turnOn === 1 ? 'TRUE' : 'FALSE'}}

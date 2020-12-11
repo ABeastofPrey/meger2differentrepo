@@ -525,6 +525,7 @@ export class CustomKeyBoardComponent implements OnInit, OnDestroy, AfterViewInit
 
   public onFocus() {
     this.hasFocus = true;
+    this.control && this.control.markAsTouched();
     if (!this.keyBoardDialog) {
       this.focusEvent.emit(this.handleBlurEmitValue(this.control.value));
     }
